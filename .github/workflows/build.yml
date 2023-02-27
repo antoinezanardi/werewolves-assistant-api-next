@@ -1,0 +1,27 @@
+name: Werewolves Assistant API Build Workflow
+on:
+  pull_request:
+    branches:
+      - 'main'
+      - 'develop'
+  push:
+    branches:
+      - 'main'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup GitHub repository 🔧
+        uses: actions/checkout@v3
+      - name: Setup NodeJS v18 ✨
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install project dependencies 📦
+        run: npm ci
+      - name: Build app ✨
+        run: npm run build
+      - name: Check and lint code 🔍
+        run: npm run lint
+      - name: Test 💯
+        run: npm run test:cov

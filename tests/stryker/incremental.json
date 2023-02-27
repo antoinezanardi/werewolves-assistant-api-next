@@ -1,0 +1,218 @@
+{
+  "files": {
+    "src/app.controller.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "0",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "\n> werewolves-assistant-api-next@1.0.0 test\n> jest --config config/jest/jest-global.ts\n\n\n\u001b[0m\u001b[7m\u001b[1m\u001b[31m FAIL \u001b[39m\u001b[22m\u001b[27m\u001b[0m \u001b[2mtests/unit/\u001b[22m\u001b[1mapp.controller.spec.ts\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAppController › root › should return \"Hello World!\"\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\n    Expected: \u001b[32m\"Hello World!\"\u001b[39m\n    Received: \u001b[31mundefined\u001b[39m\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 18 |\u001b[39m   describe(\u001b[32m\"root\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 19 |\u001b[39m     it(\u001b[32m\"should return \\\"Hello World!\\\"\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 20 |\u001b[39m       expect(appController\u001b[33m.\u001b[39mgetHello())\u001b[33m.\u001b[39mtoBe(\u001b[32m\"Hello World!\"\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 21 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 22 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 23 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/unit/app.controller.spec.ts\u001b[39m\u001b[0m\u001b[2m:20:40)\u001b[22m\u001b[2m\u001b[22m\n\n\n\u001b[0m\u001b[7m\u001b[1m\u001b[31m FAIL \u001b[39m\u001b[22m\u001b[27m\u001b[0m \u001b[2mtests/e2e/\u001b[22m\u001b[1mapp.e2e-spec.ts\u001b[22m\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAppController (e2e) › / (GET)\u001b[39m\u001b[22m\n\n    expected 'Hello World!' response body, got ''\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 18 |\u001b[39m     \u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m\"/\"\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 19 |\u001b[39m     \u001b[33m.\u001b[39mexpect(\u001b[35m200\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 20 |\u001b[39m     \u001b[33m.\u001b[39mexpect(\u001b[32m\"Hello World!\"\u001b[39m))\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m      \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 21 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/e2e/app.e2e-spec.ts\u001b[39m\u001b[0m\u001b[2m:20:6)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      ----\u001b[22m\n\u001b[2m      \u001b[2mat error (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:335:15)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test._assertBody (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:206:16)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:308:13\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test._assertFunction (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:285:13)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.assert (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:164:23)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Server.localAssert (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:120:14)\u001b[22m\u001b[2m\u001b[22m\n\n\n\u001b[1mTest Suites: \u001b[22m\u001b[1m\u001b[31m2 failed\u001b[39m\u001b[22m, 2 total\n\u001b[1mTests:       \u001b[22m\u001b[1m\u001b[31m2 failed\u001b[39m\u001b[22m, 2 total\n\u001b[1mSnapshots:   \u001b[22m0 total\n\u001b[1mTime:\u001b[22m        \u001b[1m\u001b[33m3.727 s\u001b[39m\u001b[22m\n\u001b[2mRan all test suites\u001b[22m\u001b[2m.\u001b[22m\n",
+          "status": "Killed",
+          "testsCompleted": 1,
+          "static": false,
+          "killedBy": [
+            "0"
+          ],
+          "coveredBy": [],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 11
+            },
+            "start": {
+              "column": 29,
+              "line": 9
+            }
+          }
+        }
+      ],
+      "source": "import { Controller, Get } from \"@nestjs/common\";\nimport { AppService } from \"./app.service\";\n\n@Controller()\nexport class AppController {\n  public constructor(private readonly appService: AppService) {}\n\n  @Get()\n  public getHello(): string {\n    return this.appService.getHello();\n  }\n}"
+    },
+    "src/app.service.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "1",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "\n> werewolves-assistant-api-next@1.0.0 test\n> jest --config config/jest/jest-global.ts\n\n\n\u001b[0m\u001b[7m\u001b[1m\u001b[31m FAIL \u001b[39m\u001b[22m\u001b[27m\u001b[0m \u001b[2mtests/unit/\u001b[22m\u001b[1mapp.controller.spec.ts\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAppController › root › should return \"Hello World!\"\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\n    Expected: \u001b[32m\"Hello World!\"\u001b[39m\n    Received: \u001b[31mundefined\u001b[39m\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 18 |\u001b[39m   describe(\u001b[32m\"root\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 19 |\u001b[39m     it(\u001b[32m\"should return \\\"Hello World!\\\"\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 20 |\u001b[39m       expect(appController\u001b[33m.\u001b[39mgetHello())\u001b[33m.\u001b[39mtoBe(\u001b[32m\"Hello World!\"\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 21 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 22 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 23 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/unit/app.controller.spec.ts\u001b[39m\u001b[0m\u001b[2m:20:40)\u001b[22m\u001b[2m\u001b[22m\n\n\n\u001b[0m\u001b[7m\u001b[1m\u001b[31m FAIL \u001b[39m\u001b[22m\u001b[27m\u001b[0m \u001b[2mtests/e2e/\u001b[22m\u001b[1mapp.e2e-spec.ts\u001b[22m\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAppController (e2e) › / (GET)\u001b[39m\u001b[22m\n\n    expected 'Hello World!' response body, got ''\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 18 |\u001b[39m     \u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m\"/\"\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 19 |\u001b[39m     \u001b[33m.\u001b[39mexpect(\u001b[35m200\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 20 |\u001b[39m     \u001b[33m.\u001b[39mexpect(\u001b[32m\"Hello World!\"\u001b[39m))\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m      \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 21 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/e2e/app.e2e-spec.ts\u001b[39m\u001b[0m\u001b[2m:20:6)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      ----\u001b[22m\n\u001b[2m      \u001b[2mat error (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:335:15)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test._assertBody (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:206:16)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:308:13\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test._assertFunction (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:285:13)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.assert (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:164:23)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Server.localAssert (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:120:14)\u001b[22m\u001b[2m\u001b[22m\n\n\n\u001b[1mTest Suites: \u001b[22m\u001b[1m\u001b[31m2 failed\u001b[39m\u001b[22m, 2 total\n\u001b[1mTests:       \u001b[22m\u001b[1m\u001b[31m2 failed\u001b[39m\u001b[22m, 2 total\n\u001b[1mSnapshots:   \u001b[22m0 total\n\u001b[1mTime:\u001b[22m        \u001b[1m\u001b[33m3.744 s\u001b[39m\u001b[22m\n\u001b[2mRan all test suites\u001b[22m\u001b[2m.\u001b[22m\n",
+          "status": "Killed",
+          "testsCompleted": 1,
+          "static": false,
+          "killedBy": [
+            "0"
+          ],
+          "coveredBy": [],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 8
+            },
+            "start": {
+              "column": 29,
+              "line": 5
+            }
+          }
+        },
+        {
+          "id": "2",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "\n> werewolves-assistant-api-next@1.0.0 test\n> jest --config config/jest/jest-global.ts\n\n\n\u001b[0m\u001b[7m\u001b[1m\u001b[31m FAIL \u001b[39m\u001b[22m\u001b[27m\u001b[0m \u001b[2mtests/unit/\u001b[22m\u001b[1mapp.controller.spec.ts\u001b[22m\n\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAppController › root › should return \"Hello World!\"\u001b[39m\u001b[22m\n\n    \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\n    Expected: \u001b[32m\"Hello World!\"\u001b[39m\n    Received: \u001b[31m\"\"\u001b[39m\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 18 |\u001b[39m   describe(\u001b[32m\"root\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 19 |\u001b[39m     it(\u001b[32m\"should return \\\"Hello World!\\\"\"\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 20 |\u001b[39m       expect(appController\u001b[33m.\u001b[39mgetHello())\u001b[33m.\u001b[39mtoBe(\u001b[32m\"Hello World!\"\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 21 |\u001b[39m     })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 22 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 23 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/unit/app.controller.spec.ts\u001b[39m\u001b[0m\u001b[2m:20:40)\u001b[22m\u001b[2m\u001b[22m\n\n\n\u001b[0m\u001b[7m\u001b[1m\u001b[31m FAIL \u001b[39m\u001b[22m\u001b[27m\u001b[0m \u001b[2mtests/e2e/\u001b[22m\u001b[1mapp.e2e-spec.ts\u001b[22m\n\u001b[1m\u001b[31m  \u001b[1m● \u001b[22m\u001b[1mAppController (e2e) › / (GET)\u001b[39m\u001b[22m\n\n    expected 'Hello World!' response body, got ''\n\u001b[2m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 18 |\u001b[39m     \u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m\"/\"\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 19 |\u001b[39m     \u001b[33m.\u001b[39mexpect(\u001b[35m200\u001b[39m)\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[2m\u001b[39m\u001b[90m 20 |\u001b[39m     \u001b[33m.\u001b[39mexpect(\u001b[32m\"Hello World!\"\u001b[39m))\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m    |\u001b[39m      \u001b[31m\u001b[1m^\u001b[22m\u001b[2m\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m    \u001b[0m \u001b[90m 21 |\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\u001b[22m\n\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Object.<anonymous> (\u001b[22m\u001b[2m\u001b[0m\u001b[36mtests/e2e/app.e2e-spec.ts\u001b[39m\u001b[0m\u001b[2m:20:6)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      ----\u001b[22m\n\u001b[2m      \u001b[2mat error (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:335:15)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test._assertBody (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:206:16)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat \u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:308:13\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test._assertFunction (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:285:13)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Test.assert (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:164:23)\u001b[22m\u001b[2m\u001b[22m\n\u001b[2m      \u001b[2mat Server.localAssert (\u001b[22m\u001b[2m../../node_modules/supertest/lib/test.js\u001b[2m:120:14)\u001b[22m\u001b[2m\u001b[22m\n\n\n\u001b[1mTest Suites: \u001b[22m\u001b[1m\u001b[31m2 failed\u001b[39m\u001b[22m, 2 total\n\u001b[1mTests:       \u001b[22m\u001b[1m\u001b[31m2 failed\u001b[39m\u001b[22m, 2 total\n\u001b[1mSnapshots:   \u001b[22m0 total\n\u001b[1mTime:\u001b[22m        \u001b[1m\u001b[33m3.687 s\u001b[39m\u001b[22m\n\u001b[2mRan all test suites\u001b[22m\u001b[2m.\u001b[22m\n",
+          "status": "Killed",
+          "testsCompleted": 1,
+          "static": false,
+          "killedBy": [
+            "0"
+          ],
+          "coveredBy": [],
+          "location": {
+            "end": {
+              "column": 26,
+              "line": 7
+            },
+            "start": {
+              "column": 12,
+              "line": 7
+            }
+          }
+        }
+      ],
+      "source": "import { Injectable } from \"@nestjs/common\";\n\n@Injectable()\nexport class AppService {\n  public getHello(): string {\n    void this;\n    return \"Hello World!\";\n  }\n}"
+    },
+    "src/main.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "3",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "status": "Survived",
+          "testsCompleted": 1,
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [],
+          "location": {
+            "end": {
+              "column": 2,
+              "line": 8
+            },
+            "start": {
+              "column": 43,
+              "line": 4
+            }
+          }
+        }
+      ],
+      "source": "import { NestFactory } from \"@nestjs/core\";\nimport { AppModule } from \"./app.module\";\n\nasync function bootstrap(): Promise<void> {\n  const port = 3000;\n  const app = await NestFactory.create(AppModule);\n  await app.listen(port);\n}\n\nvoid bootstrap();"
+    }
+  },
+  "schemaVersion": "1.0",
+  "thresholds": {
+    "high": 100,
+    "low": 100,
+    "break": 100
+  },
+  "testFiles": {
+    "": {
+      "tests": [
+        {
+          "id": "0",
+          "name": "All tests"
+        }
+      ]
+    }
+  },
+  "projectRoot": "/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next",
+  "config": {
+    "$schema": "../../node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+    "cleanTempDir": true,
+    "incremental": true,
+    "incrementalFile": "tests/stryker/incremental.json",
+    "reporters": [
+      "clear-text",
+      "progress",
+      "html",
+      "json"
+    ],
+    "htmlReporter": {
+      "fileName": "tests/stryker/coverage/index.html"
+    },
+    "jsonReporter": {
+      "fileName": "tests/stryker/coverage/mutation.json"
+    },
+    "thresholds": {
+      "high": 100,
+      "low": 100,
+      "break": 100
+    },
+    "configFile": "config/stryker/stryker.conf.json",
+    "allowConsoleColors": true,
+    "checkers": [],
+    "checkerNodeArgs": [],
+    "commandRunner": {
+      "command": "npm test"
+    },
+    "coverageAnalysis": "perTest",
+    "clearTextReporter": {
+      "allowColor": true,
+      "allowEmojis": false,
+      "logTests": true,
+      "maxTestsToLog": 3
+    },
+    "dashboard": {
+      "baseUrl": "https://dashboard.stryker-mutator.io/api/reports",
+      "reportType": "full"
+    },
+    "dryRunOnly": false,
+    "eventReporter": {
+      "baseDir": "reports/mutation/events"
+    },
+    "ignorePatterns": [],
+    "ignoreStatic": false,
+    "force": false,
+    "fileLogLevel": "off",
+    "inPlace": false,
+    "logLevel": "info",
+    "maxConcurrentTestRunners": 9007199254740991,
+    "maxTestRunnerReuse": 0,
+    "mutate": [
+      "{src,lib}/**/!(*.+(s|S)pec|*.+(t|T)est).+(cjs|mjs|js|ts|jsx|tsx|html|vue)",
+      "!{src,lib}/**/__tests__/**/*.+(cjs|mjs|js|ts|jsx|tsx|html|vue)"
+    ],
+    "mutator": {
+      "plugins": null,
+      "excludedMutations": []
+    },
+    "plugins": [
+      "@stryker-mutator/*"
+    ],
+    "appendPlugins": [],
+    "disableTypeChecks": "{test,src,lib}/**/*.{js,ts,jsx,tsx,html,vue}",
+    "symlinkNodeModules": true,
+    "tempDirName": ".stryker-tmp",
+    "testRunner": "command",
+    "testRunnerNodeArgs": [],
+    "timeoutFactor": 1.5,
+    "timeoutMS": 5000,
+    "dryRunTimeoutMinutes": 5,
+    "tsconfigFile": "tsconfig.json",
+    "warnings": true,
+    "disableBail": false
+  },
+  "framework": {
+    "name": "StrykerJS",
+    "version": "6.4.1",
+    "branding": {
+      "homepageUrl": "https://stryker-mutator.io",
+      "imageUrl": "data:image/svg+xml;utf8,%3Csvg viewBox='0 0 1458 1458' xmlns='http://www.w3.org/2000/svg' fill-rule='evenodd' clip-rule='evenodd' stroke-linejoin='round' stroke-miterlimit='2'%3E%3Cpath fill='none' d='M0 0h1458v1458H0z'/%3E%3CclipPath id='a'%3E%3Cpath d='M0 0h1458v1458H0z'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23a)'%3E%3Cpath d='M1458 729c0 402.655-326.345 729-729 729S0 1131.655 0 729C0 326.445 326.345 0 729 0s729 326.345 729 729' fill='%23e74c3c' fill-rule='nonzero'/%3E%3Cpath d='M778.349 1456.15L576.6 1254.401l233-105 85-78.668v-64.332l-257-257-44-187-50-208 251.806-82.793L1076.6 389.401l380.14 379.15c-19.681 367.728-311.914 663.049-678.391 687.599z' fill-opacity='.3'/%3E%3Cpath d='M753.4 329.503c41.79 0 74.579 7.83 97.925 25.444 23.571 18.015 41.69 43.956 55.167 77.097l11.662 28.679 165.733-58.183-14.137-32.13c-26.688-60.655-64.896-108.61-114.191-144.011-49.329-35.423-117.458-54.302-204.859-54.302-50.78 0-95.646 7.376-134.767 21.542-40.093 14.671-74.09 34.79-102.239 60.259-28.84 26.207-50.646 57.06-65.496 92.701-14.718 35.052-22.101 72.538-22.101 112.401 0 72.536 20.667 133.294 61.165 182.704 38.624 47.255 98.346 88.037 179.861 121.291 42.257 17.475 78.715 33.125 109.227 46.994 27.193 12.361 49.294 26.124 66.157 41.751 15.309 14.186 26.497 30.584 33.63 49.258 7.721 20.214 11.16 45.69 11.16 76.402 0 28.021-4.251 51.787-13.591 71.219-8.832 18.374-20.171 33.178-34.523 44.219-14.787 11.374-31.193 19.591-49.393 24.466-19.68 5.359-39.14 7.993-58.69 7.993-29.359 0-54.387-3.407-75.182-10.747-20.112-7.013-37.144-16.144-51.259-27.486-13.618-11.009-24.971-23.766-33.744-38.279-9.64-15.8-17.272-31.924-23.032-48.408l-10.965-31.376-161.669 60.585 10.734 30.124c10.191 28.601 24.197 56.228 42.059 82.748 18.208 27.144 41.322 51.369 69.525 72.745 27.695 21.075 60.904 38.218 99.481 51.041 37.777 12.664 82.004 19.159 132.552 19.159 49.998 0 95.818-8.321 137.611-24.622 42.228-16.471 78.436-38.992 108.835-67.291 30.719-28.597 54.631-62.103 71.834-100.642 17.263-38.56 25.923-79.392 25.923-122.248 0-54.339-8.368-100.37-24.208-138.32-16.29-38.759-38.252-71.661-65.948-98.797-26.965-26.418-58.269-48.835-93.858-67.175-33.655-17.241-69.196-33.11-106.593-47.533-35.934-13.429-65.822-26.601-89.948-39.525-22.153-11.868-40.009-24.21-53.547-37.309-11.429-11.13-19.83-23.678-24.718-37.664-5.413-15.49-7.98-33.423-7.98-53.577 0-40.883 11.293-71.522 37.086-90.539 28.443-20.825 64.985-30.658 109.311-30.658z' fill='%23f1c40f' fill-rule='nonzero'/%3E%3Cpath d='M720 0h18v113h-18zM1458 738v-18h-113v18h113zM720 1345h18v113h-18zM113 738v-18H0v18h113z'/%3E%3C/g%3E%3C/svg%3E"
+    },
+    "dependencies": {
+      "jest": "29.4.3",
+      "typescript": "4.9.5",
+      "webpack": "5.75.0",
+      "ts-jest": "29.0.5"
+    }
+  }
+}

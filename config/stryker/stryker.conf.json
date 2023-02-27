@@ -1,0 +1,20 @@
+{
+  "$schema": "../../node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "cleanTempDir": true,
+  "incremental": true,
+  "incrementalFile": "tests/stryker/incremental.json",
+  "reporters": [
+    "clear-text", "progress", "html", "json"
+  ],
+  "htmlReporter": {
+    "fileName": "tests/stryker/coverage/index.html"
+  },
+  "jsonReporter": {
+    "fileName": "tests/stryker/coverage/mutation.json"
+  },
+  "thresholds": {
+    "high": 100,
+    "low": 100,
+    "break": 100
+  }
+}
