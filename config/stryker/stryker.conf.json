@@ -3,6 +3,12 @@
   "cleanTempDir": true,
   "incremental": true,
   "incrementalFile": "tests/stryker/incremental.json",
+  "checkers": ["typescript"],
+  "tsconfigFile": "tsconfig.json",
+  "testRunner": "jest",
+  "jest": {
+    "configFile": "config/jest/jest-global.ts"
+  },
   "reporters": [
     "clear-text", "progress", "html", "json"
   ],

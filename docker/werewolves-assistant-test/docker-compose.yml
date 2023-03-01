@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  mongo:
+    container_name: "mongo-test"
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: speed_burger_is_the_best
+      MONGO_INITDB_DATABASE: werewolves-assistant
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data_container:/data/db
+
+volumes:
+  mongodb_data_container:

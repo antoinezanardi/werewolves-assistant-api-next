@@ -26,7 +26,7 @@ const importRules = Object.freeze({
   "import/no-named-as-default": ERROR,
   "import/no-named-as-default-member": ERROR,
   "import/no-deprecated": ERROR,
-  "import/no-extraneous-dependencies": ERROR,
+  "import/no-extraneous-dependencies": [ERROR, { peerDependencies: false }],
   "import/no-mutable-exports": ERROR,
   "import/no-unused-modules": [ERROR, { unusedExports: true }],
   // - Module systems (https://github.com/import-js/eslint-plugin-import#module-systems)
