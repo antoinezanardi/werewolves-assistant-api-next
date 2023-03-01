@@ -34,3 +34,12 @@ tests/**/coverage
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Env
+env/*
+!env/.env.example
+!env/.env.development
+!env/.env.test
+
+# Stryker
+.stryker-tmp
