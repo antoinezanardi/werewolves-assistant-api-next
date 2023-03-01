@@ -10,7 +10,6 @@ const config: Config = {
   resetMocks: true,
   restoreMocks: true,
   clearMocks: true,
-  resetModules: true,
   setupFiles: ["<rootDir>/tests/global-setup.ts"],
   coverageReporters: ["clover", "json", "lcov", "text", "text-summary"],
   collectCoverageFrom: [

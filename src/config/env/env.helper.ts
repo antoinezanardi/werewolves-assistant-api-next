@@ -17,4 +17,9 @@ function getEnvPath(): string {
   return `${basePath}${envSuffix}`;
 }
 
-export { validate, getEnvPath };
+function getEnvPaths(): string[] {
+  const envPath = getEnvPath();
+  return [envPath, `${envPath}.local`];
+}
+
+export { validate, getEnvPath, getEnvPaths };

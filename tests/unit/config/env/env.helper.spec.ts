@@ -1,6 +1,6 @@
 import { plainToInstance } from "class-transformer";
 import { EnvironmentVariables } from "../../../../src/config/env/env";
-import { validate, getEnvPath } from "../../../../src/config/env/env.helper";
+import { validate, getEnvPath, getEnvPaths } from "../../../../src/config/env/env.helper";
 
 describe("Config Env Helper", () => {
   describe("validate", () => {
@@ -9,6 +9,7 @@ describe("Config Env Helper", () => {
         ENVIRONMENT: "test",
         DATABASE_HOST: "localhost",
         DATABASE_PORT: 666,
+        DATABASE_NAME: "db",
         DATABASE_USERNAME: "john",
         DATABASE_PASSWORD: "doe",
       };
@@ -40,6 +41,12 @@ describe("Config Env Helper", () => {
 
     it("should return test env path when NODE_ENV is test.", () => {
       expect(getEnvPath()).toBe("env/.env.test");
+    });
+  });
+
+  describe("getEnvPaths", () => {
+    it("should return default and local test env paths when function is called.", () => {
+      expect(getEnvPaths()).toStrictEqual(["env/.env.test", "env/.env.test.local"]);
     });
   });
 });

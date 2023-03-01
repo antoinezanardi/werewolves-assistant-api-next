@@ -12,8 +12,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "6",
-            "7"
+            "6"
           ],
           "location": {
             "end": {
@@ -41,8 +40,7 @@
           "static": false,
           "killedBy": [],
           "coveredBy": [
-            "6",
-            "7"
+            "6"
           ],
           "location": {
             "end": {
@@ -59,16 +57,15 @@
           "id": "2",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"Hello World!\"\u001b[39m\nReceived: \u001b[31m\"\"\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/e2e/app.e2e-spec.ts:20:6)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:248:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:184:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:86:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)\n----\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/e2e/app.e2e-spec.ts:21:24\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/supertest/lib/test.js:308:13\n    at Test._assertFunction (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/supertest/lib/test.js:285:13)\n    at Test.assert (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/supertest/lib/test.js:164:23)\n    at Server.localAssert (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/supertest/lib/test.js:120:14)\n    at Object.onceWrapper (node:events:626:28)\n    at Server.emit (node:events:512:28)\n    at Server.emit (node:domain:489:12)\n    at emitCloseNT (node:net:2132:8)\n    at processTicksAndRejections (node:internal/process/task_queues:81:21)",
+          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"Hello World!\"\u001b[39m\nReceived: \u001b[31m\"\"\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:24:6)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:248:40)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:184:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:86:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)\n----\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:25:24\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/supertest/lib/test.js:308:13\n    at Test._assertFunction (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/supertest/lib/test.js:285:13)\n    at Test.assert (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/supertest/lib/test.js:164:23)\n    at Server.localAssert (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/supertest/lib/test.js:120:14)\n    at Object.onceWrapper (node:events:626:28)\n    at Server.emit (node:events:512:28)\n    at Server.emit (node:domain:489:12)\n    at emitCloseNT (node:net:2132:8)\n    at processTicksAndRejections (node:internal/process/task_queues:81:21)",
           "status": "Killed",
-          "testsCompleted": 2,
+          "testsCompleted": 1,
           "static": false,
           "killedBy": [
             "6"
           ],
           "coveredBy": [
-            "6",
-            "7"
+            "6"
           ],
           "location": {
             "end": {
@@ -84,11 +81,252 @@
       ],
       "source": "import { Injectable } from \"@nestjs/common\";\n\n@Injectable()\nexport class AppService {\n  public getHello(): string {\n    void this;\n    return \"Hello World!\";\n  }\n}"
     },
+    "src/config/database/database.helper.ts": {
+      "language": "typescript",
+      "mutants": [
+        {
+          "id": "5",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "undefined TypeError: Cannot read properties of undefined (reading 'close')\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:18:15)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusHook (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:213:40)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:114:7)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "RuntimeError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 64,
+              "line": 5
+            },
+            "start": {
+              "column": 49,
+              "line": 5
+            }
+          }
+        },
+        {
+          "id": "6",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "undefined TypeError: Cannot read properties of undefined (reading 'close')\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:18:15)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusHook (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:213:40)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:114:7)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "RuntimeError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 64,
+              "line": 6
+            },
+            "start": {
+              "column": 49,
+              "line": 6
+            }
+          }
+        },
+        {
+          "id": "7",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "undefined TypeError: Cannot read properties of undefined (reading 'close')\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:18:15)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusHook (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:213:40)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:114:7)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "RuntimeError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 72,
+              "line": 7
+            },
+            "start": {
+              "column": 57,
+              "line": 7
+            }
+          }
+        },
+        {
+          "id": "8",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "undefined TypeError: Cannot read properties of undefined (reading 'close')\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:18:15)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusHook (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:213:40)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:114:7)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "RuntimeError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 72,
+              "line": 8
+            },
+            "start": {
+              "column": 53,
+              "line": 8
+            }
+          }
+        },
+        {
+          "id": "9",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "undefined TypeError: Cannot read properties of undefined (reading 'close')\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:18:15)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusHook (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:213:40)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:114:7)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "RuntimeError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 72,
+              "line": 9
+            },
+            "start": {
+              "column": 53,
+              "line": 9
+            }
+          }
+        },
+        {
+          "id": "11",
+          "mutatorName": "StringLiteral",
+          "replacement": "``",
+          "statusReason": "undefined TypeError: Cannot read properties of undefined (reading 'close')\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:18:15)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusHook (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:213:40)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:114:7)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "RuntimeError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 37,
+              "line": 11
+            },
+            "start": {
+              "column": 10,
+              "line": 11
+            }
+          }
+        },
+        {
+          "id": "12",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"\"",
+          "statusReason": "undefined TypeError: Cannot read properties of undefined (reading 'close')\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:18:15)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusHook (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:213:40)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:114:7)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "RuntimeError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 24,
+              "line": 13
+            },
+            "start": {
+              "column": 17,
+              "line": 13
+            }
+          }
+        },
+        {
+          "id": "4",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/config/database/database.helper.ts(4,82): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 2,
+              "line": 17
+            },
+            "start": {
+              "column": 111,
+              "line": 4
+            }
+          }
+        },
+        {
+          "id": "3",
+          "mutatorName": "StringLiteral",
+          "replacement": "\"Stryker was here!\"",
+          "statusReason": "Error: thrown: \"Exceeded timeout of 5000 ms for a hookfalse.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.\"\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox4708462/tests/e2e/app.e2e-spec.ts:10:3\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox4708462/tests/e2e/app.e2e-spec.ts:7:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "static": false,
+          "testsCompleted": 2,
+          "killedBy": [
+            "6"
+          ],
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 79,
+              "line": 4
+            },
+            "start": {
+              "column": 77,
+              "line": 4
+            }
+          }
+        },
+        {
+          "id": "10",
+          "mutatorName": "ObjectLiteral",
+          "replacement": "{}",
+          "statusReason": "Error: thrown: \"Exceeded timeout of 5000 ms for a hookfalse.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.\"\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox4708462/tests/e2e/app.e2e-spec.ts:10:3\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox4708462/tests/e2e/app.e2e-spec.ts:7:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "static": false,
+          "testsCompleted": 2,
+          "killedBy": [
+            "6"
+          ],
+          "coveredBy": [
+            "5",
+            "6"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 16
+            },
+            "start": {
+              "column": 10,
+              "line": 10
+            }
+          }
+        }
+      ],
+      "source": "import type { ConfigService } from \"@nestjs/config\";\nimport type { MongooseModuleFactoryOptions } from \"@nestjs/mongoose\";\n\nfunction mongooseModuleFactory(configService: ConfigService, toto: string = ''): MongooseModuleFactoryOptions {\n  const host = configService.getOrThrow<string>(\"DATABASE_HOST\");\n  const port = configService.getOrThrow<string>(\"DATABASE_PORT\");\n  const databaseName = configService.getOrThrow<string>(\"DATABASE_NAME\");\n  const username = configService.getOrThrow<string>(\"DATABASE_USERNAME\");\n  const password = configService.getOrThrow<string>(\"DATABASE_PASSWORD\");\n  return {\n    uri: `mongodb://${host}:${port}`+toto,\n    dbName: databaseName,\n    authSource: \"admin\",\n    user: username,\n    pass: encodeURIComponent(password),\n  };\n}\n\nexport { mongooseModuleFactory };"
+    },
     "src/config/env/env.helper.ts": {
       "language": "typescript",
       "mutants": [
         {
-          "id": "3",
+          "id": "13",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
           "statusReason": "src/config/env/env.helper.ts(5,53): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
@@ -111,10 +349,10 @@
           }
         },
         {
-          "id": "4",
+          "id": "14",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
-          "statusReason": "undefinedAn instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n Error: An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/config/env/env.helper.ts:67:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefinedAn instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n Error: An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/server.ts:49:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/unit/server.spec.ts:2:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34), undefinedAn instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n Error: An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
@@ -134,10 +372,10 @@
           }
         },
         {
-          "id": "5",
+          "id": "15",
           "mutatorName": "BooleanLiteral",
           "replacement": "false",
-          "statusReason": "undefinedAn instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n Error: An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/config/env/env.helper.ts:67:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefinedAn instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n Error: An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/server.ts:49:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/unit/server.spec.ts:2:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34), undefinedAn instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n Error: An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
@@ -157,10 +395,10 @@
           }
         },
         {
-          "id": "6",
+          "id": "16",
           "mutatorName": "ConditionalExpression",
           "replacement": "true",
-          "statusReason": "undefined Error\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/config/env/env.helper.ts:67:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefined Error\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34), undefined Error\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/server.ts:49:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/unit/server.spec.ts:2:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
@@ -180,7 +418,7 @@
           }
         },
         {
-          "id": "7",
+          "id": "17",
           "mutatorName": "ConditionalExpression",
           "replacement": "false",
           "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoThrow\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected substring: \u001b[32m\"An instance of EnvironmentVariables has failed the validation\"\u001b[39m\n\nReceived function did not throw\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/unit/config/env/env.helper.spec.ts:21:48)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:248:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:184:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:86:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
@@ -206,10 +444,10 @@
           }
         },
         {
-          "id": "8",
+          "id": "18",
           "mutatorName": "EqualityOperator",
           "replacement": "errors.length >= 0",
-          "statusReason": "undefined Error\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/config/env/env.helper.ts:67:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefined Error\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34), undefined Error\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/server.ts:49:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/unit/server.spec.ts:2:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
@@ -229,10 +467,10 @@
           }
         },
         {
-          "id": "9",
+          "id": "19",
           "mutatorName": "EqualityOperator",
           "replacement": "errors.length <= 0",
-          "statusReason": "undefined Error\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/config/env/env.helper.ts:67:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefined Error\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34), undefined Error\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/app.module.ts:9:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/src/server.ts:49:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox1962402/tests/unit/server.spec.ts:2:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
@@ -252,7 +490,7 @@
           }
         },
         {
-          "id": "10",
+          "id": "20",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
           "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoThrow\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected substring: \u001b[32m\"An instance of EnvironmentVariables has failed the validation\"\u001b[39m\n\nReceived function did not throw\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/unit/config/env/env.helper.spec.ts:21:48)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:248:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:184:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:86:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
@@ -277,7 +515,7 @@
           }
         },
         {
-          "id": "11",
+          "id": "21",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
           "statusReason": "src/config/env/env.helper.ts(14,24): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
@@ -286,7 +524,8 @@
           "killedBy": [],
           "coveredBy": [
             "2",
-            "3"
+            "3",
+            "4"
           ],
           "location": {
             "end": {
@@ -300,16 +539,17 @@
           }
         },
         {
-          "id": "12",
+          "id": "22",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
-          "statusReason": "undefinedAn instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n Error: An instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/config/env/env.helper.ts:67:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefinedAn instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n Error: An instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34), undefinedAn instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n Error: An instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/server.ts:49:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/tests/unit/server.spec.ts:2:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
           "coveredBy": [
             "2",
-            "3"
+            "3",
+            "4"
           ],
           "location": {
             "end": {
@@ -323,7 +563,7 @@
           }
         },
         {
-          "id": "13",
+          "id": "23",
           "mutatorName": "LogicalOperator",
           "replacement": "process.env.NODE_ENV && \"development\"",
           "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"env/.env.\u001b[7mdevelopment\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"env/.env.\u001b[7mundefined\u001b[27m\"\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/unit/config/env/env.helper.spec.ts:38:28)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:248:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:184:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:86:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
@@ -335,7 +575,8 @@
           ],
           "coveredBy": [
             "2",
-            "3"
+            "3",
+            "4"
           ],
           "location": {
             "end": {
@@ -349,7 +590,7 @@
           }
         },
         {
-          "id": "14",
+          "id": "24",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
           "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"env/.env.\u001b[7mdevelopment\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"env/.env.\"\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/unit/config/env/env.helper.spec.ts:38:28)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:248:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:184:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:86:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
@@ -374,16 +615,17 @@
           }
         },
         {
-          "id": "15",
+          "id": "25",
           "mutatorName": "StringLiteral",
           "replacement": "``",
-          "statusReason": "undefinedAn instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n Error: An instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/config/env/env.helper.ts:67:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox924495/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefinedAn instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n Error: An instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34), undefinedAn instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n Error: An instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/server.ts:49:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/tests/unit/server.spec.ts:2:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
           "coveredBy": [
             "2",
-            "3"
+            "3",
+            "4"
           ],
           "location": {
             "end": {
@@ -395,27 +637,96 @@
               "line": 17
             }
           }
+        },
+        {
+          "id": "26",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/config/env/env.helper.ts(20,25): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": true,
+          "killedBy": [],
+          "coveredBy": [
+            "4"
+          ],
+          "location": {
+            "end": {
+              "column": 2,
+              "line": 23
+            },
+            "start": {
+              "column": 34,
+              "line": 20
+            }
+          }
+        },
+        {
+          "id": "27",
+          "mutatorName": "ArrayDeclaration",
+          "replacement": "[]",
+          "statusReason": "undefinedAn instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n Error: An instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/tests/e2e/app.e2e-spec.ts:5:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34), undefinedAn instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n Error: An instance of EnvironmentVariables has failed the validation:\n - property ENVIRONMENT has failed the following constraints: isEnum \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_HOST has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PORT has failed the following constraints: isNumber \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_USERNAME has failed the following constraints: isString \n,An instance of EnvironmentVariables has failed the validation:\n - property DATABASE_PASSWORD has failed the following constraints: isString \n\n    at Object.validate (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/config/env/env.helper.ts:65:15)\n    at Function.forRoot (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/@nestjs/config/dist/config.module.js:67:45)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/app.module.ts:8:26)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/src/server.ts:49:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at Runtime.requireModuleOrMock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1038:21)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/tests/unit/server.spec.ts:2:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1012:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:872:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "RuntimeError",
+          "static": true,
+          "killedBy": [],
+          "coveredBy": [
+            "4"
+          ],
+          "location": {
+            "end": {
+              "column": 39,
+              "line": 22
+            },
+            "start": {
+              "column": 10,
+              "line": 22
+            }
+          }
+        },
+        {
+          "id": "28",
+          "mutatorName": "StringLiteral",
+          "replacement": "``",
+          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoStrictEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"env/.env.test\",\u001b[22m\n\u001b[32m-   \"env/.env.test.local\",\u001b[39m\n\u001b[31m+   \"\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox9389547/tests/unit/config/env/env.helper.spec.ts:48:29)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:248:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:184:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:86:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:81:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:26:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:120:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 8,
+          "static": true,
+          "killedBy": [
+            "4"
+          ],
+          "coveredBy": [
+            "4"
+          ],
+          "location": {
+            "end": {
+              "column": 38,
+              "line": 22
+            },
+            "start": {
+              "column": 20,
+              "line": 22
+            }
+          }
         }
       ],
-      "source": "import { plainToInstance } from \"class-transformer\";\nimport { validateSync } from \"class-validator\";\nimport { EnvironmentVariables } from \"./env\";\n\nfunction validate(config: Record<string, unknown>): EnvironmentVariables {\n  const validatedConfig = plainToInstance(EnvironmentVariables, config, { enableImplicitConversion: true });\n  const errors = validateSync(validatedConfig);\n  if (errors.length > 0) {\n    throw new Error(errors.toString());\n  }\n  return validatedConfig;\n}\n\nfunction getEnvPath(): string {\n  const basePath = \"env/.env.\";\n  const envSuffix = process.env.NODE_ENV ?? \"development\";\n  return `${basePath}${envSuffix}`;\n}\n\nexport { validate, getEnvPath };"
+      "source": "import { plainToInstance } from \"class-transformer\";\nimport { validateSync } from \"class-validator\";\nimport { EnvironmentVariables } from \"./env\";\n\nfunction validate(config: Record<string, unknown>): EnvironmentVariables {\n  const validatedConfig = plainToInstance(EnvironmentVariables, config, { enableImplicitConversion: true });\n  const errors = validateSync(validatedConfig);\n  if (errors.length > 0) {\n    throw new Error(errors.toString());\n  }\n  return validatedConfig;\n}\n\nfunction getEnvPath(): string {\n  const basePath = \"env/.env.\";\n  const envSuffix = process.env.NODE_ENV ?? \"development\";\n  return `${basePath}${envSuffix}`;\n}\n\nfunction getEnvPaths(): string[] {\n  const envPath = getEnvPath();\n  return [envPath, `${envPath}.local`];\n}\n\nexport { validate, getEnvPath, getEnvPaths };"
     },
     "src/server.ts": {
       "language": "typescript",
       "mutants": [
         {
-          "id": "16",
+          "id": "29",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
           "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: \u001b[32m3000\u001b[39m\n\nNumber of calls: \u001b[31m0\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox7446739/tests/unit/server.spec.ts:11:22)",
           "status": "Killed",
-          "static": false,
           "testsCompleted": 2,
+          "static": false,
           "killedBy": [
-            "4"
+            "7"
           ],
           "coveredBy": [
-            "4",
-            "5"
+            "7",
+            "8"
           ],
           "location": {
             "end": {
@@ -457,7 +768,7 @@
           "location": {
             "start": {
               "column": 6,
-              "line": 19
+              "line": 20
             }
           }
         },
@@ -467,7 +778,7 @@
           "location": {
             "start": {
               "column": 6,
-              "line": 36
+              "line": 37
             }
           }
         },
@@ -477,17 +788,67 @@
           "location": {
             "start": {
               "column": 6,
-              "line": 41
+              "line": 42
+            }
+          }
+        },
+        {
+          "id": "4",
+          "name": "Config Env Helper getEnvPaths should return default and local test env paths when function is called.",
+          "location": {
+            "start": {
+              "column": 6,
+              "line": 48
             }
           }
         }
       ],
-      "source": "import { plainToInstance } from \"class-transformer\";\nimport { EnvironmentVariables } from \"../../../../src/config/env/env\";\nimport { validate, getEnvPath } from \"../../../../src/config/env/env.helper\";\n\ndescribe(\"Config Env Helper\", () => {\n  describe(\"validate\", () => {\n    it(\"should return the validated config when there is no error in env variables.\", () => {\n      const brutEnvVariables: Record<string, unknown> = {\n        ENVIRONMENT: \"test\",\n        DATABASE_HOST: \"localhost\",\n        DATABASE_PORT: 666,\n        DATABASE_USERNAME: \"john\",\n        DATABASE_PASSWORD: \"doe\",\n      };\n      const validatedEnvVariables = plainToInstance(EnvironmentVariables, brutEnvVariables, { enableImplicitConversion: true });\n      expect(validate(brutEnvVariables)).toStrictEqual(validatedEnvVariables);\n    });\n\n    it(\"should throw error when env variables is not valid.\", () => {\n      const brutEnvVariables: Record<string, unknown> = { ENVIRONMENT: \"test\" };\n      expect(() => validate(brutEnvVariables)).toThrow(\"An instance of EnvironmentVariables has failed the validation\");\n    });\n  });\n\n  describe(\"getEnvPath\", () => {\n    const env = process.env;\n\n    beforeEach(() => {\n      process.env = { ...env };\n    });\n\n    afterEach(() => {\n      process.env = env;\n    });\n\n    it(\"should return default development env path when NODE_ENV is undefined.\", () => {\n      process.env.NODE_ENV = undefined;\n      expect(getEnvPath()).toBe(\"env/.env.development\");\n    });\n\n    it(\"should return test env path when NODE_ENV is test.\", () => {\n      expect(getEnvPath()).toBe(\"env/.env.test\");\n    });\n  });\n});"
+      "source": "import { plainToInstance } from \"class-transformer\";\nimport { EnvironmentVariables } from \"../../../../src/config/env/env\";\nimport { validate, getEnvPath, getEnvPaths } from \"../../../../src/config/env/env.helper\";\n\ndescribe(\"Config Env Helper\", () => {\n  describe(\"validate\", () => {\n    it(\"should return the validated config when there is no error in env variables.\", () => {\n      const brutEnvVariables: Record<string, unknown> = {\n        ENVIRONMENT: \"test\",\n        DATABASE_HOST: \"localhost\",\n        DATABASE_PORT: 666,\n        DATABASE_NAME: \"db\",\n        DATABASE_USERNAME: \"john\",\n        DATABASE_PASSWORD: \"doe\",\n      };\n      const validatedEnvVariables = plainToInstance(EnvironmentVariables, brutEnvVariables, { enableImplicitConversion: true });\n      expect(validate(brutEnvVariables)).toStrictEqual(validatedEnvVariables);\n    });\n\n    it(\"should throw error when env variables is not valid.\", () => {\n      const brutEnvVariables: Record<string, unknown> = { ENVIRONMENT: \"test\" };\n      expect(() => validate(brutEnvVariables)).toThrow(\"An instance of EnvironmentVariables has failed the validation\");\n    });\n  });\n\n  describe(\"getEnvPath\", () => {\n    const env = process.env;\n\n    beforeEach(() => {\n      process.env = { ...env };\n    });\n\n    afterEach(() => {\n      process.env = env;\n    });\n\n    it(\"should return default development env path when NODE_ENV is undefined.\", () => {\n      process.env.NODE_ENV = undefined;\n      expect(getEnvPath()).toBe(\"env/.env.development\");\n    });\n\n    it(\"should return test env path when NODE_ENV is test.\", () => {\n      expect(getEnvPath()).toBe(\"env/.env.test\");\n    });\n  });\n\n  describe(\"getEnvPaths\", () => {\n    it(\"should return default and local test env paths when function is called.\", () => {\n      expect(getEnvPaths()).toStrictEqual([\"env/.env.test\", \"env/.env.test.local\"]);\n    });\n  });\n});"
+    },
+    "tests/unit/config/database/database.helper.spec.ts": {
+      "tests": [
+        {
+          "id": "5",
+          "name": "Database Helper mongooseModuleFactory should return connection string when called.",
+          "location": {
+            "start": {
+              "column": 6,
+              "line": 22
+            }
+          }
+        }
+      ],
+      "source": "import type { ConfigService } from \"@nestjs/config\";\nimport { when } from \"jest-when\";\nimport { mongooseModuleFactory } from \"../../../../src/config/database/database.helper\";\n\ndescribe(\"Database Helper\", () => {\n  const configServiceMock: Partial<ConfigService> = { getOrThrow: jest.fn() };\n  const host = \"localhost\";\n  const port = \"1234\";\n  const databaseName = \"test\";\n  const databaseUserName = \"user\";\n  const databasePassword = \"password\";\n\n  beforeEach(() => {\n    when(configServiceMock.getOrThrow as jest.Mock).calledWith(\"DATABASE_HOST\").mockReturnValue(host);\n    when(configServiceMock.getOrThrow as jest.Mock).calledWith(\"DATABASE_PORT\").mockReturnValue(port);\n    when(configServiceMock.getOrThrow as jest.Mock).calledWith(\"DATABASE_NAME\").mockReturnValue(databaseName);\n    when(configServiceMock.getOrThrow as jest.Mock).calledWith(\"DATABASE_USERNAME\").mockReturnValue(databaseUserName);\n    when(configServiceMock.getOrThrow as jest.Mock).calledWith(\"DATABASE_PASSWORD\").mockReturnValue(databasePassword);\n  });\n\n  describe(\"mongooseModuleFactory\", () => {\n    it(\"should return connection string when called.\", () => {\n      expect(mongooseModuleFactory(configServiceMock as ConfigService)).toStrictEqual({\n        uri: `mongodb://${host}:${port}`,\n        dbName: databaseName,\n        authSource: \"admin\",\n        user: databaseUserName,\n        pass: encodeURIComponent(databasePassword),\n      });\n    });\n  });\n});"
+    },
+    "tests/e2e/app.e2e-spec.ts": {
+      "tests": [
+        {
+          "id": "6",
+          "name": "AppController (e2e) should return Hello World when route is called.",
+          "location": {
+            "start": {
+              "column": 4,
+              "line": 21
+            }
+          }
+        },
+        {
+          "id": "9",
+          "name": "AppController (e2e) should return Hello World when route is called.",
+          "location": {
+            "start": {
+              "column": 6,
+              "line": 21
+            }
+          }
+        }
+      ],
+      "source": "import type { INestApplication } from \"@nestjs/common\";\nimport type { TestingModule } from \"@nestjs/testing\";\nimport { Test } from \"@nestjs/testing\";\nimport * as request from \"supertest\";\nimport { AppModule } from \"../../src/app.module\";\n\ndescribe(\"AppController (e2e)\", () => {\n  let app: INestApplication;\n\n  beforeEach(async() => {\n    const moduleFixture: TestingModule = await Test.createTestingModule({ imports: [AppModule] }).compile();\n\n    app = moduleFixture.createNestApplication();\n    await app.init();\n  });\n\n  afterAll(async() => {\n    // await app.close();\n  });\n\n  it(\"should return Hello World when route is called.\", async() => request(app.getHttpServer())\n    .get(\"/\")\n    .expect(200)\n    .expect(res => {\n      expect(res.text).toBe(\"Hello World!\");\n    }));\n});"
     },
     "tests/unit/server.spec.ts": {
       "tests": [
         {
-          "id": "4",
+          "id": "7",
           "name": "Server bootstrap should call listen with the default port when no port is provided.",
           "location": {
             "start": {
@@ -497,7 +858,7 @@
           }
         },
         {
-          "id": "5",
+          "id": "8",
           "name": "Server bootstrap should call listen with 4000 when port 4000 is provided.",
           "location": {
             "start": {
@@ -509,25 +870,10 @@
       ],
       "source": "import { NestFactory } from \"@nestjs/core\";\nimport { bootstrap } from \"../../src/server\";\n\njest.mock(\"@nestjs/core\");\ndescribe(\"Server\", () => {\n  describe(\"bootstrap\", () => {\n    it(\"should call listen with the default port when no port is provided.\", async() => {\n      const listen = jest.fn();\n      (NestFactory.create as jest.Mock).mockResolvedValue({ listen });\n      await bootstrap();\n      expect(listen).toHaveBeenCalledWith(3000);\n    });\n\n    it(\"should call listen with 4000 when port 4000 is provided.\", async() => {\n      const listen = jest.fn();\n      (NestFactory.create as jest.Mock).mockResolvedValue({ listen });\n      await bootstrap(4000);\n      expect(listen).toHaveBeenCalledWith(4000);\n    });\n  });\n});"
     },
-    "tests/e2e/app.e2e-spec.ts": {
-      "tests": [
-        {
-          "id": "6",
-          "name": "AppController (e2e) should return Hello World when route is called.",
-          "location": {
-            "start": {
-              "column": 4,
-              "line": 17
-            }
-          }
-        }
-      ],
-      "source": "import type { INestApplication } from \"@nestjs/common\";\nimport type { TestingModule } from \"@nestjs/testing\";\nimport { Test } from \"@nestjs/testing\";\nimport * as request from \"supertest\";\nimport { AppModule } from \"../../src/app.module\";\n\ndescribe(\"AppController (e2e)\", () => {\n  let app: INestApplication;\n\n  beforeEach(async() => {\n    const moduleFixture: TestingModule = await Test.createTestingModule({ imports: [AppModule] }).compile();\n\n    app = moduleFixture.createNestApplication();\n    await app.init();\n  });\n\n  it(\"should return Hello World when route is called.\", async() => request(app.getHttpServer())\n    .get(\"/\")\n    .expect(200)\n    .expect(res => {\n      expect(res.text).toBe(\"Hello World!\");\n    }));\n});"
-    },
     "tests/unit/app.controller.spec.ts": {
       "tests": [
         {
-          "id": "7",
+          "id": "10",
           "name": "AppController root should return \"Hello World!\" when method is called.",
           "location": {
             "start": {
@@ -536,13 +882,12 @@
             }
           }
         }
-      ],
-      "source": "import type { TestingModule } from \"@nestjs/testing\";\nimport { Test } from \"@nestjs/testing\";\nimport { AppController } from \"../../src/app.controller\";\nimport { AppService } from \"../../src/app.service\";\n\ndescribe(\"AppController\", () => {\n  let appController: AppController;\n\n  beforeEach(async() => {\n    const app: TestingModule = await Test.createTestingModule({\n      controllers: [AppController],\n      providers: [AppService],\n    }).compile();\n\n    appController = app.get<AppController>(AppController);\n  });\n\n  describe(\"root\", () => {\n    it(\"should return \\\"Hello World!\\\" when method is called.\", () => {\n      expect(appController.getHello()).toBe(\"Hello World!\");\n    });\n  });\n});"
+      ]
     },
     "": {
       "tests": [
         {
-          "id": "8",
+          "id": "11",
           "name": "All tests"
         }
       ]
