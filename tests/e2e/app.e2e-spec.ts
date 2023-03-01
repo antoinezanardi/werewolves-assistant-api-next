@@ -14,6 +14,10 @@ describe("AppController (e2e)", () => {
     await app.init();
   });
 
+  afterAll(async() => {
+    await app.close();
+  });
+
   it("should return Hello World when route is called.", async() => request(app.getHttpServer())
     .get("/")
     .expect(200)

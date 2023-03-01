@@ -7,9 +7,15 @@ const config: Config = {
   testRegex: ["tests/unit/.+.spec.ts", "tests/e2e/.+.e2e-spec.ts"],
   transform: { "^.+\\.(t|j)s$": "ts-jest" },
   verbose: true,
+  resetMocks: true,
+  restoreMocks: true,
+  clearMocks: true,
+  setupFiles: ["<rootDir>/tests/global-setup.ts"],
   coverageReporters: ["clover", "json", "lcov", "text", "text-summary"],
-  collectCoverageFrom: ["src/**/*.ts"],
-  coveragePathIgnorePatterns: ["main.ts$"],
+  collectCoverageFrom: [
+    "src/**/*.ts",
+    "!src/main.ts",
+  ],
   coverageDirectory: "tests/coverage",
   coverageThreshold: {
     global: {

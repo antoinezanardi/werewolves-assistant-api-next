@@ -14,6 +14,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+      - name: Start Docker containers 🐳
+        run: npm run docker:test:start
       - name: Install project dependencies 📦
         run: npm ci
       - name: Build app ✨
@@ -22,3 +24,6 @@ jobs:
         run: npm run lint
       - name: Test 💯
         run: npm run test:cov
+      - name: Stop Docker containers 🐳
+        if: ${{ always() }}
+        run: npm run docker:test:stop

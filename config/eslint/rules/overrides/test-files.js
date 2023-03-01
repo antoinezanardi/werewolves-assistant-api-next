@@ -5,6 +5,7 @@ const testFilesOverride = Object.freeze({
   plugins: ["jest"],
   extends: ["plugin:jest/recommended"],
   rules: {
+    "max-lines-per-function": OFF,
     "@typescript-eslint/init-declarations": OFF,
     "@typescript-eslint/no-magic-numbers": OFF,
     "import/no-namespace": OFF,
