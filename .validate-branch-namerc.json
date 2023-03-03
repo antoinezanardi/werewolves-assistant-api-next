@@ -1,4 +1,4 @@
 {
-  "pattern": "^develop|(feat|fix)\/.+$",
+  "pattern": "^main|develop|(feat|fix)\/.+$",
   "errorMsg": "Your branch name doesn't respect the established convention. Please respect the following format : (feat|fix)/[FEATURE_NAME]\nYou can change the name of your branch with the command `git branch -m NEW_NAME`"
 }

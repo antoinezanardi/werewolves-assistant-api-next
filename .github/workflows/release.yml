@@ -16,6 +16,6 @@ jobs:
         with:
           node-version: '18'
       - name: Install project dependencies 📦
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Release 🏷️
         run: npx semantic-release
