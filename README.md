@@ -75,6 +75,9 @@ npm run test:cov
 
 # Run mutant tests with coverage
 npm run test:stryker
+
+# Run mutant tests with coverage from scratch (without using the incremental file)
+npm run test:stryker:force
 ```
 
 ## <a name="code-analysis-and-consistency">☑️ Code analysis and consistency</a>

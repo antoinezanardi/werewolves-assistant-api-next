@@ -1,12 +1,13 @@
-import { Controller, Get } from "@nestjs/common";
-import { AppService } from "./app.service";
+import { Controller, Get, HttpCode, HttpStatus } from "@nestjs/common";
+import { ApiNoContentResponse, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("🐺 Root")
 @Controller()
 export class AppController {
-  public constructor(private readonly appService: AppService) {}
-
-  @Get()
-  public getHello(): string {
-    return this.appService.getHello();
-  }
+  // eslint-disable-next-line class-methods-use-this
+  @Get("/")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse()
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public root(): void {}
 }
