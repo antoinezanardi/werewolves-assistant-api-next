@@ -6,7 +6,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Setup GitHub repository 🔧
@@ -17,12 +17,5 @@ jobs:
           node-version: '18'
       - name: Install project dependencies 📦
         run: npm ci
-      - name: Wait for build to succeed ✋
-        uses: lewagon/wait-on-check-action@v1.3.1
-        with:
-          ref: ${{ github.ref }}
-          check-name: 'Werewolves Assistant API Build Workflow'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 5
       - name: Release 🏷️
         run: npx semantic-release
