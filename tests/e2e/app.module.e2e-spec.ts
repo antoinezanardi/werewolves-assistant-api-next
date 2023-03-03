@@ -4,7 +4,7 @@ import { Test } from "@nestjs/testing";
 import * as request from "supertest";
 import { AppModule } from "../../src/app.module";
 
-describe("AppController (e2e)", () => {
+describe("App Module", () => {
   let app: INestApplication;
 
   beforeEach(async() => {
@@ -18,10 +18,9 @@ describe("AppController (e2e)", () => {
     await app.close();
   });
 
-  it("should return Hello World when route is called.", async() => request(app.getHttpServer())
+  it("should return status code 204 when route is called.", async() => request(app.getHttpServer())
     .get("/")
-    .expect(200)
     .expect(res => {
-      expect(res.text).toBe("Hello World!");
+      expect(res.statusCode).toBe(204);
     }));
 });
