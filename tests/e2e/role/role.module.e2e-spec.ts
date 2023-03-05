@@ -1,20 +1,20 @@
-import type { INestApplication } from "@nestjs/common";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { plainToInstance } from "class-transformer";
-import * as request from "supertest";
 import { roles } from "../../../src/role/role.constant";
 import { Role } from "../../../src/role/role.entity";
 import { RoleModule } from "../../../src/role/role.module";
 import { E2eTestModule } from "../../../src/test/e2e-test.module";
 
 describe("Role Module", () => {
-  let app: INestApplication;
+  let app: NestFastifyApplication;
 
-  beforeEach(async() => {
+  beforeAll(async() => {
     const moduleFixture: TestingModule = await Test.createTestingModule({ imports: [E2eTestModule, RoleModule] }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
     await app.init();
   });
 
@@ -22,10 +22,9 @@ describe("Role Module", () => {
     await app.close();
   });
 
-  it("should return roles when route is called.", async() => request(app.getHttpServer())
-    .get("/roles")
-    .expect(200)
-    .expect(res => {
-      expect(plainToInstance(Role, res.body)).toStrictEqual(roles);
-    }));
+  it("should return roles when route is called.", async() => {
+    const response = await app.inject({ method: "GET", url: "/roles" });
+    expect(response.statusCode).toBe(200);
+    expect(plainToInstance(Role, response.json<Role[]>())).toStrictEqual(roles);
+  });
 });
