@@ -1,10 +1,12 @@
 import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { AppModule } from "../app.module";
 import { createSwaggerDocument } from "./swagger/swagger";
 
 async function bootstrap(port = 3000): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
   const documentationPath = "docs";
   createSwaggerDocument(documentationPath, app);
   await app.listen(port, "127.0.0.1");
