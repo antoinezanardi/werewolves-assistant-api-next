@@ -1,16 +1,16 @@
-import type { INestApplication } from "@nestjs/common";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import * as request from "supertest";
 import { AppModule } from "../../src/app.module";
 
 describe("App Module", () => {
-  let app: INestApplication;
+  let app: NestFastifyApplication;
 
-  beforeEach(async() => {
+  beforeAll(async() => {
     const moduleFixture: TestingModule = await Test.createTestingModule({ imports: [AppModule] }).compile();
 
-    app = moduleFixture.createNestApplication();
+    app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
     await app.init();
   });
 
@@ -18,9 +18,8 @@ describe("App Module", () => {
     await app.close();
   });
 
-  it("should return status code 204 when route is called.", async() => request(app.getHttpServer())
-    .get("/")
-    .expect(res => {
-      expect(res.statusCode).toBe(204);
-    }));
+  it("should return status code 204 when route is called.", async() => {
+    const response = await app.inject({ method: "GET", url: "/" });
+    expect(response.statusCode).toBe(204);
+  });
 });
