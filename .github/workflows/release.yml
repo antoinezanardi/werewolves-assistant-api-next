@@ -4,18 +4,20 @@ on:
     branches:
       - 'main'
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - name: Setup GitHub repository 🔧
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - name: Setup NodeJS v18 ✨
         uses: actions/setup-node@v3
         with:
           node-version: '18'
       - name: Install project dependencies 📦
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Release 🏷️
         run: npx semantic-release

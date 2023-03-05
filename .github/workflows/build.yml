@@ -17,7 +17,7 @@ jobs:
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
       - name: Install project dependencies 📦
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Build app ✨
         run: npm run build
       - name: Check and lint code 🔍

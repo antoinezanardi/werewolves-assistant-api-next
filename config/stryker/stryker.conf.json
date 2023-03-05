@@ -6,6 +6,7 @@
   "checkers": ["typescript"],
   "tsconfigFile": "tsconfig.json",
   "testRunner": "jest",
+  "ignoreStatic": true,
   "jest": {
     "configFile": "config/jest/jest-global.ts"
   },
