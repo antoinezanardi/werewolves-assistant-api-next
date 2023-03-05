@@ -4,12 +4,65 @@
   "debug": "false",
   "plugins": [
     "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
+    ["@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "types": [
+            {
+              "type": "feat",
+              "section": "🚀 Features",
+              "hidden": false
+            },
+            {
+              "type": "fix",
+              "section": "🐛 Bug Fixes",
+              "hidden": false
+            },
+            {
+              "type": "docs",
+              "section": "📖 Docs",
+              "hidden": false
+            },
+            {
+              "type": "style",
+              "section": "🎨 Styles",
+              "hidden": false
+            },
+            {
+              "type": "refactor",
+              "section": "🔩 Refactor",
+              "hidden": false
+            },
+            {
+              "type": "perf",
+              "section": "⚡️ Performances",
+              "hidden": false
+            },
+            {
+              "type": "test",
+              "section": "✅ Tests",
+              "hidden": false
+            },
+            {
+              "type": "ci",
+              "section": "🔁 CI",
+              "hidden": false
+            },
+            {
+              "type": "chore",
+              "section": "🧹 Chore",
+              "hidden": true
+            }
+          ]
+        }
+      }
+    ],
     [
       "@semantic-release/changelog",
       {
         "changelogFile": "CHANGELOG.md",
-        "changelogTitle": "# Semantic Versioning Changelog"
+        "changelogTitle": "# 🐺 Werewolves Assistant API Versioning Changelog"
       }
     ],
     [

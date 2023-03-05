@@ -1,4 +1,4 @@
-const { ERROR, OFF, NAMING_CONVENTION_DEFAULT_CONFIG } = require("../constants");
+const { ERROR, OFF, NAMING_CONVENTION_DEFAULT_CONFIG, INDENT_SPACE_COUNT } = require("../constants");
 
 const typescriptRules = Object.freeze({
   // ---- TypeScript Rules -----
@@ -118,8 +118,11 @@ const typescriptRules = Object.freeze({
   "@typescript-eslint/default-param-last": ERROR,
   "@typescript-eslint/dot-notation": ERROR,
   "@typescript-eslint/func-call-spacing": ERROR,
-  // rule below is OFF for the moment because it has an issue with certain TS nodes (https://github.com/typescript-eslint/typescript-eslint/issues/1824)
-  "@typescript-eslint/indent": OFF,
+  "@typescript-eslint/indent": [
+    ERROR,
+    INDENT_SPACE_COUNT,
+    { FunctionExpression: { parameters: "first" } },
+  ],
   "@typescript-eslint/init-declarations": ERROR,
   "@typescript-eslint/keyword-spacing": ERROR,
   "@typescript-eslint/lines-between-class-members": [ERROR, "always", { exceptAfterSingleLine: true }],

@@ -1,4 +1,4 @@
-const { ERROR, WARNING, OFF, MAX_NESTED_CALLBACK, MAX_PARAMS, INDENT_SPACE_COUNT, MAX_LENGTH_DEFAULT_CONFIG } = require("../constants");
+const { ERROR, WARNING, OFF, MAX_NESTED_CALLBACK, MAX_PARAMS, MAX_LENGTH_DEFAULT_CONFIG } = require("../constants");
 
 const standardRules = Object.freeze({
   // ---- ESLint Rules -----
@@ -211,11 +211,7 @@ const standardRules = Object.freeze({
     },
   ],
   "implicit-arrow-linebreak": OFF,
-  "indent": [
-    ERROR,
-    INDENT_SPACE_COUNT,
-    { FunctionExpression: { parameters: "first" } },
-  ],
+  "indent": OFF,
   "jsx-quotes": [ERROR, "prefer-double"],
   "key-spacing": [ERROR, { mode: "strict" }],
   "line-comment-position": ERROR,
