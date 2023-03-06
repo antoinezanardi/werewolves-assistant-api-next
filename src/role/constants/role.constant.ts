@@ -1,6 +1,6 @@
 import { plainToInstance } from "class-transformer";
-import { Role } from "./role.entity";
-import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "./role.enum";
+import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "../enums/role.enum";
+import { Role } from "../role.entity";
 
 const werewolvesRoles: readonly Role[] = Object.freeze(plainToInstance(Role, [
   {
