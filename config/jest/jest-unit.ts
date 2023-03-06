@@ -18,6 +18,7 @@ const config: Config = {
     "!src/main.ts",
     "!src/**/*.module.ts",
     "!src/**/*.controller.ts",
+    "!src/**/*.repository.ts",
   ],
   coverageDirectory: "tests/unit/coverage",
   coverageThreshold: {

@@ -21,6 +21,7 @@ const NAMING_CONVENTION_DEFAULT_CONFIG = [
   }, {
     selector: ["function", "classProperty", "classMethod", "accessor"],
     format: ["camelCase"],
+    leadingUnderscore: "allow",
   }, {
     selector: ["variable", "classProperty"],
     types: ["boolean"],

@@ -1,0 +1,5 @@
+class CreateGameDto {
+
+}
+
+export { CreateGameDto };

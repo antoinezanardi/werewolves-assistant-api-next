@@ -57,6 +57,7 @@ const typescriptRules = Object.freeze({
   "@typescript-eslint/no-type-alias": [
     ERROR, {
       allowLiterals: "always",
+      allowGenerics: "always",
       allowAliases: "in-unions",
     },
   ],

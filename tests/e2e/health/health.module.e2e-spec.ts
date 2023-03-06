@@ -10,9 +10,9 @@ describe("Health Module", () => {
   let app: NestFastifyApplication;
 
   beforeAll(async() => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({ imports: [E2eTestModule, HealthModule] }).compile();
+    const module: TestingModule = await Test.createTestingModule({ imports: [E2eTestModule, HealthModule] }).compile();
 
-    app = moduleFixture.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
     await app.init();
   });
 
@@ -20,15 +20,17 @@ describe("Health Module", () => {
     await app.close();
   });
 
-  it("should return app health when route is called.", async() => {
-    const response = await app.inject({ method: "GET", url: "/health" });
-    expect(response.statusCode).toBe(200);
-    const expectedHealthCheckResult: HealthCheckResult = {
-      status: "ok",
-      details: { mongoose: { status: "up" } },
-      error: {},
-      info: { mongoose: { status: "up" } },
-    };
-    expect(response.json<HealthCheckResult>()).toStrictEqual(expectedHealthCheckResult);
+  describe("GET /health", () => {
+    it("should return app health when route is called.", async() => {
+      const response = await app.inject({ method: "GET", url: "/health" });
+      expect(response.statusCode).toBe(200);
+      const expectedHealthCheckResult: HealthCheckResult = {
+        status: "ok",
+        details: { mongoose: { status: "up" } },
+        error: {},
+        info: { mongoose: { status: "up" } },
+      };
+      expect(response.json<HealthCheckResult>()).toStrictEqual(expectedHealthCheckResult);
+    });
   });
 });
