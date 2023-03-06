@@ -4,7 +4,7 @@ const config: Config = {
   moduleFileExtensions: ["js", "ts"],
   rootDir: "../../",
   testEnvironment: "node",
-  testRegex: "tests/unit/.+.spec.ts",
+  testRegex: "tests/unit/specs/.+.spec.ts",
   transform: { "^.+\\.(t|j)s$": "ts-jest" },
   verbose: true,
   resetMocks: true,
@@ -18,6 +18,9 @@ const config: Config = {
     "!src/main.ts",
     "!src/**/*.module.ts",
     "!src/**/*.controller.ts",
+    "!src/**/*.repository.ts",
+    "!src/**/*.dto.ts",
+    "!src/**/*.schema.ts",
   ],
   coverageDirectory: "tests/unit/coverage",
   coverageThreshold: {

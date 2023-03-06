@@ -15,6 +15,8 @@ const config: Config = {
   collectCoverageFrom: [
     "src/**/*.ts",
     "!src/main.ts",
+    "!src/**/*.dto.ts",
+    "!src/**/*.schema.ts",
   ],
   coverageDirectory: "tests/coverage",
   coverageThreshold: {
