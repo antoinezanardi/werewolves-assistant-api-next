@@ -1,4 +1,8 @@
-# 🐺 Werewolves Assistant API 🆕
+<p align="center">
+  <img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/feat/logo/assets/images/werewolves-logo.png?raw=true" width="400" alt="logo"/>
+</p>
+
+---
 
 [![GitHub release](https://img.shields.io/github/release/antoinezanardi/werewolves-assistant-api-next.svg)](https://GitHub.com/antoinezanardi/werewolves-assistant-api-next/releases/)
 [![GitHub license](https://img.shields.io/github/license/antoinezanardi/werewolves-assistant-api-next.svg)](https://github.com/antoinezanardi/https://img.shields.io/github/license/werewolves-assistant-api-next.svg/blob/main/LICENSE)
