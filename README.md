@@ -16,8 +16,9 @@
 2. 🔨 [Installation](#installation)
 3. 💯 [Tests](#tests)
 4. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-5. ©️ [License](#license)
-6. ❤️ [Contributors](#contributors)
+5. ✨ [Misc commands](#misc-commands)
+6. ©️ [License](#license)
+7. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
@@ -100,6 +101,14 @@ npm run lint
 
 # Lint and fix
 npm run lint:fix
+```
+
+## <a name="misc-commands">✨ Misc commands</a>
+
+### 🌳 Animated tree visualisation of the project's evolution with [Gource](https://gource.io/)
+```shell
+# Please ensure that `gource` is installed on your system.
+npm run gource
 ```
 
 ## <a name="license">©️ License</a>
