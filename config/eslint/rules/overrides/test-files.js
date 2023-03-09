@@ -2,9 +2,8 @@ const { OFF, ERROR } = require("../../constants");
 
 const testFilesOverride = Object.freeze({
   files: ["*.e2e-spec.ts", "*.spec.ts"],
-  plugins: ["jest"],
-  extends: ["plugin:jest/recommended"],
   rules: {
+    "max-len": OFF,
     "max-lines-per-function": OFF,
     "@typescript-eslint/init-declarations": OFF,
     "@typescript-eslint/no-magic-numbers": OFF,

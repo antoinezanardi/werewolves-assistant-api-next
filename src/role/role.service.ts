@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { roles } from "./role.constant";
+import { roles } from "./constants/role.constant";
 import type { Role } from "./role.entity";
 
 @Injectable()
