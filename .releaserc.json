@@ -4,7 +4,8 @@
   "debug": "false",
   "plugins": [
     "@semantic-release/commit-analyzer",
-    ["@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/release-notes-generator",
       {
         "preset": "conventionalcommits",
         "presetConfig": {
@@ -66,20 +67,19 @@
       }
     ],
     [
-      "@semantic-release/git",
+      "@semantic-release/npm",
       {
-        "assets": ["CHANGELOG.md"]
+        "npmPublish": false
       }
     ],
     [
-      "@semantic-release/github",
+      "@semantic-release/git",
       {
         "assets": [
-          {
-            "path": "release/**"
-          }
+          "CHANGELOG.md"
         ]
       }
-    ]
+    ],
+    "@semantic-release/github"
   ]
 }
