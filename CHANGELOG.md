@@ -1,3 +1,14 @@
+# 🐺 Werewolves Assistant API Versioning Changelog
+
+## [1.1.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.0.0...v1.1.0) (2023-03-05)
+
+
+### 🚀 Features
+
+* **fastify:** fastify engine for http server ([#10](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/10)) ([154fb13](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/154fb1372b2ba39440182be0a76eb3dc869aa170))
+* **release:** better release system ([5d13847](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/5d13847789abfcfe6716b74bf79bcf592c03133b))
+* **roles:** get roles route ([ec395f9](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ec395f97fbb2ea152fd8d4c5ca9be914ea94075f))
+
 # Semantic Versioning Changelog
 
 # 1.0.0 (2023-03-03)
