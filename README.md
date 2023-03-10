@@ -1,4 +1,8 @@
-# 🐺 Werewolves Assistant API 🆕
+<p align="center">
+  <img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/feat/logo/assets/images/werewolves-logo.png?raw=true" width="400" alt="logo"/>
+</p>
+
+---
 
 [![GitHub release](https://img.shields.io/github/release/antoinezanardi/werewolves-assistant-api-next.svg)](https://GitHub.com/antoinezanardi/werewolves-assistant-api-next/releases/)
 [![GitHub license](https://img.shields.io/github/license/antoinezanardi/werewolves-assistant-api-next.svg)](https://github.com/antoinezanardi/https://img.shields.io/github/license/werewolves-assistant-api-next.svg/blob/main/LICENSE)
@@ -16,8 +20,9 @@
 2. 🔨 [Installation](#installation)
 3. 💯 [Tests](#tests)
 4. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-5. ©️ [License](#license)
-6. ❤️ [Contributors](#contributors)
+5. ✨ [Misc commands](#misc-commands)
+6. ©️ [License](#license)
+7. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
@@ -100,6 +105,14 @@ npm run lint
 
 # Lint and fix
 npm run lint:fix
+```
+
+## <a name="misc-commands">✨ Misc commands</a>
+
+### 🌳 Animated tree visualisation of the project's evolution with [Gource](https://gource.io/)
+```shell
+# Please ensure that `gource` is installed on your system.
+npm run gource
 ```
 
 ## <a name="license">©️ License</a>

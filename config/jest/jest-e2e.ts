@@ -12,8 +12,9 @@ const config: Config = {
   clearMocks: true,
   coverageReporters: ["clover", "json", "lcov", "text", "text-summary"],
   collectCoverageFrom: [
-    "src/**/*.controller.ts",
     "src/**/*.module.ts",
+    "src/**/*.controller.ts",
+    "src/**/*.repository.ts",
   ],
   coverageDirectory: "tests/e2e/coverage",
   coverageThreshold: {
