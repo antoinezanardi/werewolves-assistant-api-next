@@ -86,7 +86,7 @@ const importRules = Object.freeze({
   "import/prefer-default-export": OFF,
   "import/max-dependencies": [
     ERROR, {
-      max: 20,
+      max: 25,
       ignoreTypeImports: true,
     },
   ],

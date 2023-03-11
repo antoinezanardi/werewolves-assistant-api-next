@@ -3,7 +3,7 @@ import type { CreateGameDto } from "../../../../../src/game/dto/create-game/crea
 import { ROLE_NAMES } from "../../../../../src/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "./create-game-player/create-game-player.dto.factory";
 
-function createFakeCreateGameDto(obj: Partial<CreateGameDto> = {}): CreateGameDto {
+function createFakeCreateGameDto(obj: Partial<CreateGameDto> = {}, override: Partial<CreateGameDto> = {}): CreateGameDto {
   const players: Partial<CreateGamePlayerDto>[] = [
     { name: "Antoine", role: ROLE_NAMES.WITCH },
     { name: "JB", role: ROLE_NAMES.SEER },
@@ -11,13 +11,10 @@ function createFakeCreateGameDto(obj: Partial<CreateGameDto> = {}): CreateGameDt
     { name: "Jérémy", role: ROLE_NAMES.LITTLE_GIRL },
   ];
   return {
-    players: bulkCreateFakeCreateGamePlayerDto(players.length, players),
-    ...obj,
+    players: obj.players ?? bulkCreateFakeCreateGamePlayerDto(players.length, players),
+    options: obj.options ?? undefined,
+    ...override,
   };
 }
 
-function bulkCreateFakeCreateGameDto(length: number): CreateGameDto[] {
-  return Array.from(Array(length)).map(() => createFakeCreateGameDto());
-}
-
-export { createFakeCreateGameDto, bulkCreateFakeCreateGameDto };
+export { createFakeCreateGameDto };

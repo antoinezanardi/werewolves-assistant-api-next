@@ -2,9 +2,14 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import type { HydratedDocument } from "mongoose";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
+import { GameOptions, GameOptionsSchema } from "./game-options/game-options.schema";
+import { PlayerSchema } from "./player/player.schema";
 import type { Player } from "./player/player.schema";
 
-@Schema({ timestamps: true, versionKey: false })
+@Schema({
+  timestamps: true,
+  versionKey: false,
+})
 class Game {
   @ApiProperty({
     description: "Game's ID",
@@ -16,45 +21,43 @@ class Game {
     description: "Starting at `1`, a turn starts with the first phase (the `night`) and ends with the second phase (the `day`)",
     default: 1,
   })
-  @Prop({
-    required: true,
-    default: 1,
-  })
+  @Prop({ default: 1 })
   public turn: number;
 
   @ApiProperty({
     description: "Each turn has two phases, `day` and `night`. Starting at `night`",
     default: GAME_PHASES.NIGHT,
   })
-  @Prop({
-    required: true,
-    default: GAME_PHASES.NIGHT,
-  })
+  @Prop({ default: GAME_PHASES.NIGHT })
   public phase: GAME_PHASES;
 
   @ApiProperty({
     description: "Starting at `1`, tick increments each time a play is made",
     default: 1,
   })
-  @Prop({
-    required: true,
-    default: 1,
-  })
+  @Prop({ default: 1 })
   public tick: number;
 
   @ApiProperty({
     description: "Game's current status",
     default: GAME_STATUSES.PLAYING,
   })
-  @Prop({
-    required: true,
-    default: GAME_STATUSES.PLAYING,
-  })
+  @Prop({ default: GAME_STATUSES.PLAYING })
   public status: GAME_STATUSES;
 
   @ApiProperty({ description: "Players of the game" })
-  @Prop({ required: true })
+  @Prop({
+    required: true,
+    type: [PlayerSchema],
+  })
   public players: Player[];
+
+  @ApiProperty({ description: "Game's options" })
+  @Prop({
+    type: GameOptionsSchema,
+    default: () => ({}),
+  })
+  public options: GameOptions;
 
   @ApiProperty({ description: "When the game was created" })
   public createdAt: Date;
