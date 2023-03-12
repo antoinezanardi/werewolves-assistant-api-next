@@ -1,68 +1,54 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import type { HydratedDocument } from "mongoose";
+import { gameApiProperties } from "../constants/game.constant";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
-import { GameOptions, GameOptionsSchema } from "./game-options/game-options.schema";
-import { PlayerSchema } from "./player/player.schema";
-import type { Player } from "./player/player.schema";
+import { GameOptions, GameOptionsSchema } from "./game-options/schemas/game-options.schema";
+import { PlayerSchema } from "./player/schemas/player.schema";
+import type { Player } from "./player/schemas/player.schema";
 
 @Schema({
   timestamps: true,
   versionKey: false,
 })
 class Game {
-  @ApiProperty({
-    description: "Game's ID",
-    example: "507f1f77bcf86cd799439011",
-  })
+  @ApiProperty(gameApiProperties._id)
   public _id: string;
 
-  @ApiProperty({
-    description: "Starting at `1`, a turn starts with the first phase (the `night`) and ends with the second phase (the `day`)",
-    default: 1,
-  })
-  @Prop({ default: 1 })
+  @ApiProperty(gameApiProperties.turn)
+  @Prop({ default: gameApiProperties.turn.default as number })
   public turn: number;
 
-  @ApiProperty({
-    description: "Each turn has two phases, `day` and `night`. Starting at `night`",
-    default: GAME_PHASES.NIGHT,
-  })
-  @Prop({ default: GAME_PHASES.NIGHT })
+  @ApiProperty(gameApiProperties.phase)
+  @Prop({ default: gameApiProperties.phase.default as GAME_PHASES })
   public phase: GAME_PHASES;
 
-  @ApiProperty({
-    description: "Starting at `1`, tick increments each time a play is made",
-    default: 1,
-  })
-  @Prop({ default: 1 })
+  @ApiProperty(gameApiProperties.tick)
+  @Prop({ default: gameApiProperties.tick.default as number })
   public tick: number;
 
-  @ApiProperty({
-    description: "Game's current status",
-    default: GAME_STATUSES.PLAYING,
-  })
-  @Prop({ default: GAME_STATUSES.PLAYING })
+  @ApiProperty(gameApiProperties.status)
+  @Prop({ default: gameApiProperties.status.default as GAME_STATUSES })
   public status: GAME_STATUSES;
 
-  @ApiProperty({ description: "Players of the game" })
+  @ApiProperty(gameApiProperties.players)
   @Prop({
     required: true,
     type: [PlayerSchema],
   })
   public players: Player[];
 
-  @ApiProperty({ description: "Game's options" })
+  @ApiProperty(gameApiProperties.options)
   @Prop({
     type: GameOptionsSchema,
     default: () => ({}),
   })
   public options: GameOptions;
 
-  @ApiProperty({ description: "When the game was created" })
+  @ApiProperty(gameApiProperties.createdAt)
   public createdAt: Date;
 
-  @ApiProperty({ description: "When the game was updated" })
+  @ApiProperty(gameApiProperties.updatedAt)
   public updatedAt: Date;
 }
 

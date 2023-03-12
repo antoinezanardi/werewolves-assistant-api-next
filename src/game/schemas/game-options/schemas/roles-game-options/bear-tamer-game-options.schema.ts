@@ -1,0 +1,18 @@
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ApiProperty } from "@nestjs/swagger";
+import { bearTamerGameOptionsApiProperties } from "../../constants/roles-game-options/bear-tamer-game-options.constant";
+
+@Schema({
+  versionKey: false,
+  id: false,
+  _id: false,
+})
+class BearTamerGameOptions {
+  @ApiProperty(bearTamerGameOptionsApiProperties.doesGrowlIfInfected)
+  @Prop({ default: bearTamerGameOptionsApiProperties.doesGrowlIfInfected.default as boolean })
+  public doesGrowlIfInfected: boolean;
+}
+
+const BearTamerGameOptionsSchema = SchemaFactory.createForClass(BearTamerGameOptions);
+
+export { BearTamerGameOptions, BearTamerGameOptionsSchema };
