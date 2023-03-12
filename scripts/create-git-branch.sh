@@ -1,5 +1,5 @@
 #!/bin/bash
-PS3="Are you starting a feature or a fix, a hotfix or a release ? ";
+PS3="Are you starting a feature or a fix ? ";
 select option in "feat" "fix";
 do
   case $option in
