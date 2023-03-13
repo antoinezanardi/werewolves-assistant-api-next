@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { twoSistersGameOptionsApiProperties } from "../../constants/roles-game-options/two-sisters-game-options.constant";
+import { twoSistersGameOptionsApiProperties, twoSistersGameOptionsFieldsSpecs } from "../../constants/roles-game-options/two-sisters-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,9 +10,9 @@ import { twoSistersGameOptionsApiProperties } from "../../constants/roles-game-o
 class TwoSistersGameOptions {
   @ApiProperty(twoSistersGameOptionsApiProperties.wakingUpInterval)
   @Prop({
-    default: twoSistersGameOptionsApiProperties.wakingUpInterval.default as number,
-    min: twoSistersGameOptionsApiProperties.wakingUpInterval.minimum,
-    max: twoSistersGameOptionsApiProperties.wakingUpInterval.maximum,
+    default: twoSistersGameOptionsFieldsSpecs.wakingUpInterval.default,
+    min: twoSistersGameOptionsFieldsSpecs.wakingUpInterval.minimum,
+    max: twoSistersGameOptionsFieldsSpecs.wakingUpInterval.maximum,
   })
   public wakingUpInterval: number;
 }

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { sheriffGameOptionsApiProperties } from "../../../constants/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
+import { sheriffGameOptionsApiProperties, sheriffGameOptionsFieldsSpecs } from "../../../constants/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
 import { SheriffElectionGameOptions, SheriffElectionGameOptionsSchema } from "./sheriff-election-game-options.schema";
 
 @Schema({
@@ -10,7 +10,7 @@ import { SheriffElectionGameOptions, SheriffElectionGameOptionsSchema } from "./
 })
 class SheriffGameOptions {
   @ApiProperty(sheriffGameOptionsApiProperties.isEnabled)
-  @Prop({ default: sheriffGameOptionsApiProperties.isEnabled.default as boolean })
+  @Prop({ default: sheriffGameOptionsFieldsSpecs.isEnabled.default })
   public isEnabled: boolean;
 
   @ApiProperty(sheriffGameOptionsApiProperties.electedAt)
@@ -21,7 +21,7 @@ class SheriffGameOptions {
   public electedAt: SheriffElectionGameOptions;
 
   @ApiProperty(sheriffGameOptionsApiProperties.hasDoubledVote)
-  @Prop({ default: sheriffGameOptionsApiProperties.hasDoubledVote.default as boolean })
+  @Prop({ default: sheriffGameOptionsFieldsSpecs.hasDoubledVote.default })
   public hasDoubledVote: boolean;
 }
 

@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsOptional, Max, Min } from "class-validator";
-import { ancientGameOptionsApiProperties } from "../../../../schemas/game-options/constants/roles-game-options/ancient-game-options.constant";
+import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/ancient-game-options.constant";
 
 class CreateAncientGameOptionsDto {
   @ApiProperty(ancientGameOptionsApiProperties.livesCountAgainstWerewolves)
   @IsOptional()
-  @Min(1)
-  @Max(5)
+  @Min(ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.minimum)
+  @Max(ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.maximum)
   public livesCountAgainstWerewolves?: number;
 
   @ApiProperty(ancientGameOptionsApiProperties.doesTakeHisRevenge)

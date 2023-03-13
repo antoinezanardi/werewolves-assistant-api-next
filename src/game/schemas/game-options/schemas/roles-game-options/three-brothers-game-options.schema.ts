@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { threeBrothersGameOptionsApiProperties } from "../../constants/roles-game-options/three-brothers-game-options.constant";
+import { threeBrothersGameOptionsApiProperties, threeBrothersGameOptionsFieldsSpecs } from "../../constants/roles-game-options/three-brothers-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,9 +10,9 @@ import { threeBrothersGameOptionsApiProperties } from "../../constants/roles-gam
 class ThreeBrothersGameOptions {
   @ApiProperty(threeBrothersGameOptionsApiProperties.wakingUpInterval)
   @Prop({
-    default: threeBrothersGameOptionsApiProperties.wakingUpInterval.default as number,
-    min: threeBrothersGameOptionsApiProperties.wakingUpInterval.minimum,
-    max: threeBrothersGameOptionsApiProperties.wakingUpInterval.maximum,
+    default: threeBrothersGameOptionsFieldsSpecs.wakingUpInterval.default,
+    min: threeBrothersGameOptionsFieldsSpecs.wakingUpInterval.minimum,
+    max: threeBrothersGameOptionsFieldsSpecs.wakingUpInterval.maximum,
   })
   public wakingUpInterval: number;
 }

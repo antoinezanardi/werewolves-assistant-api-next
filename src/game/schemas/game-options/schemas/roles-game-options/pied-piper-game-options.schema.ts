@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { piedPiperGameOptionsApiProperties } from "../../constants/roles-game-options/pied-piper-game-options.constant";
+import { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs } from "../../constants/roles-game-options/pied-piper-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,14 +10,14 @@ import { piedPiperGameOptionsApiProperties } from "../../constants/roles-game-op
 class PiedPiperGameOptions {
   @ApiProperty(piedPiperGameOptionsApiProperties.charmedPeopleCountPerNight)
   @Prop({
-    default: piedPiperGameOptionsApiProperties.charmedPeopleCountPerNight.default as number,
-    min: piedPiperGameOptionsApiProperties.charmedPeopleCountPerNight.minimum,
-    max: piedPiperGameOptionsApiProperties.charmedPeopleCountPerNight.maximum,
+    default: piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight.default,
+    min: piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight.minimum,
+    max: piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight.maximum,
   })
   public charmedPeopleCountPerNight: number;
 
   @ApiProperty(piedPiperGameOptionsApiProperties.isPowerlessIfInfected)
-  @Prop({ default: piedPiperGameOptionsApiProperties.isPowerlessIfInfected.default as boolean })
+  @Prop({ default: piedPiperGameOptionsFieldsSpecs.isPowerlessIfInfected.default })
   public isPowerlessIfInfected: boolean;
 }
 

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { idiotGameOptionsApiProperties } from "../../constants/roles-game-options/idiot-game-options.constant";
+import { idiotGameOptionsApiProperties, idiotGameOptionsFieldsSpecs } from "../../constants/roles-game-options/idiot-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -9,7 +9,7 @@ import { idiotGameOptionsApiProperties } from "../../constants/roles-game-option
 })
 class IdiotGameOptions {
   @ApiProperty(idiotGameOptionsApiProperties.doesDieOnAncientDeath)
-  @Prop({ default: idiotGameOptionsApiProperties.doesDieOnAncientDeath.default as boolean })
+  @Prop({ default: idiotGameOptionsFieldsSpecs.doesDieOnAncientDeath.default })
   public doesDieOnAncientDeath: boolean;
 }
 

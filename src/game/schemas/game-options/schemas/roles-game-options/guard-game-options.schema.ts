@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { guardGameOptionsApiProperties } from "../../constants/roles-game-options/guard-game-options.constant";
+import { guardGameOptionsApiProperties, guardGameOptionsFieldsSpecs } from "../../constants/roles-game-options/guard-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -9,7 +9,7 @@ import { guardGameOptionsApiProperties } from "../../constants/roles-game-option
 })
 class GuardGameOptions {
   @ApiProperty(guardGameOptionsApiProperties.canProtectTwice)
-  @Prop({ default: guardGameOptionsApiProperties.canProtectTwice.default as boolean })
+  @Prop({ default: guardGameOptionsFieldsSpecs.canProtectTwice.default })
   public canProtectTwice: boolean;
 }
 

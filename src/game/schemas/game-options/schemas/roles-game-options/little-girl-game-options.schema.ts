@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { littleGirlGameOptionsApiProperties } from "../../constants/roles-game-options/little-girl-game-options.constant";
+import { littleGirlGameOptionsApiProperties, littleGirlGameOptionsFieldsSpecs } from "../../constants/roles-game-options/little-girl-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -9,7 +9,7 @@ import { littleGirlGameOptionsApiProperties } from "../../constants/roles-game-o
 })
 class LittleGirlGameOptions {
   @ApiProperty(littleGirlGameOptionsApiProperties.isProtectedByGuard)
-  @Prop({ default: littleGirlGameOptionsApiProperties.isProtectedByGuard.default as boolean })
+  @Prop({ default: littleGirlGameOptionsFieldsSpecs.isProtectedByGuard.default })
   public isProtectedByGuard: boolean;
 }
 

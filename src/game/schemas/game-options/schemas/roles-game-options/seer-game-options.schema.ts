@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { seerGameOptionsApiProperties } from "../../constants/roles-game-options/seer-game-options.constant";
+import { seerGameOptionsApiProperties, seerGameOptionsFieldsSpecs } from "../../constants/roles-game-options/seer-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -9,11 +9,11 @@ import { seerGameOptionsApiProperties } from "../../constants/roles-game-options
 })
 class SeerGameOptions {
   @ApiProperty(seerGameOptionsApiProperties.isTalkative)
-  @Prop({ default: seerGameOptionsApiProperties.isTalkative.default as boolean })
+  @Prop({ default: seerGameOptionsFieldsSpecs.isTalkative.default })
   public isTalkative: boolean;
 
   @ApiProperty(seerGameOptionsApiProperties.canSeeRoles)
-  @Prop({ default: seerGameOptionsApiProperties.canSeeRoles.default as boolean })
+  @Prop({ default: seerGameOptionsFieldsSpecs.canSeeRoles.default })
   public canSeeRoles: boolean;
 }
 

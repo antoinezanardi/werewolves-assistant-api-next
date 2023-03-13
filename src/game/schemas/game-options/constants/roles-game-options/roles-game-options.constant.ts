@@ -2,10 +2,12 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { RolesGameOptions } from "../../schemas/roles-game-options/roles-game-options.schema";
 import { defaultGameOptions } from "../game-options.constant";
 
+const rolesGameOptionsFieldsSpecs = Object.freeze({ areRevealedOnDeath: { default: defaultGameOptions.roles.areRevealedOnDeath } });
+
 const rolesGameOptionsApiProperties: Record<keyof RolesGameOptions, ApiPropertyOptions> = Object.freeze({
   areRevealedOnDeath: {
     description: "If set to `true`, player's role is revealed when he's dead",
-    default: defaultGameOptions.roles.areRevealedOnDeath,
+    ...rolesGameOptionsFieldsSpecs.areRevealedOnDeath,
   },
   sheriff: { description: "Game `sheriff` role's options." },
   bigBadWolf: { description: "Game `big bad wolf` role's options." },
@@ -27,4 +29,4 @@ const rolesGameOptionsApiProperties: Record<keyof RolesGameOptions, ApiPropertyO
   raven: { description: "Game `raven` role's options." },
 });
 
-export { rolesGameOptionsApiProperties };
+export { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs };

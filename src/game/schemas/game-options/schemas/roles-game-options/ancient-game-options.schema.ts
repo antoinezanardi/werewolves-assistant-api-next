@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { ancientGameOptionsApiProperties } from "../../constants/roles-game-options/ancient-game-options.constant";
+import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "../../constants/roles-game-options/ancient-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,14 +10,14 @@ import { ancientGameOptionsApiProperties } from "../../constants/roles-game-opti
 class AncientGameOptions {
   @ApiProperty(ancientGameOptionsApiProperties.livesCountAgainstWerewolves)
   @Prop({
-    default: ancientGameOptionsApiProperties.livesCountAgainstWerewolves.default as number,
-    min: ancientGameOptionsApiProperties.livesCountAgainstWerewolves.minimum,
-    max: ancientGameOptionsApiProperties.livesCountAgainstWerewolves.maximum,
+    default: ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.default,
+    min: ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.minimum,
+    max: ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.maximum,
   })
   public livesCountAgainstWerewolves: number;
 
   @ApiProperty(ancientGameOptionsApiProperties.doesTakeHisRevenge)
-  @Prop({ default: ancientGameOptionsApiProperties.doesTakeHisRevenge.default as boolean })
+  @Prop({ default: ancientGameOptionsFieldsSpecs.doesTakeHisRevenge.default })
   public doesTakeHisRevenge: boolean;
 }
 

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { bigBadWolfGameOptionsApiProperties } from "../../constants/roles-game-options/big-bad-wolf-game-options.constant";
+import { bigBadWolfGameOptionsApiProperties, bigBadWolfGameOptionsFieldsSpecs } from "../../constants/roles-game-options/big-bad-wolf-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -9,7 +9,7 @@ import { bigBadWolfGameOptionsApiProperties } from "../../constants/roles-game-o
 })
 class BigBadWolfGameOptions {
   @ApiProperty(bigBadWolfGameOptionsApiProperties.isPowerlessIfWerewolfDies)
-  @Prop({ default: bigBadWolfGameOptionsApiProperties.isPowerlessIfWerewolfDies.default as boolean })
+  @Prop({ default: bigBadWolfGameOptionsFieldsSpecs.isPowerlessIfWerewolfDies.default })
   public isPowerlessIfWerewolfDies: boolean;
 }
 

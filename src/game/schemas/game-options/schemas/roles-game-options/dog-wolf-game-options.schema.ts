@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { dogWolfGameOptionsApiProperties } from "../../constants/roles-game-options/dog-wolf-game-options.constant";
+import { dogWolfGameOptionsApiProperties, dogWolfGameOptionsFieldsSpecs } from "../../constants/roles-game-options/dog-wolf-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -9,7 +9,7 @@ import { dogWolfGameOptionsApiProperties } from "../../constants/roles-game-opti
 })
 class DogWolfGameOptions {
   @ApiProperty(dogWolfGameOptionsApiProperties.isChosenSideRevealed)
-  @Prop({ default: dogWolfGameOptionsApiProperties.isChosenSideRevealed.default as boolean })
+  @Prop({ default: dogWolfGameOptionsFieldsSpecs.isChosenSideRevealed.default })
   public isChosenSideRevealed: boolean;
 }
 

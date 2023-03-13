@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { GAME_PHASES } from "../../../../../enums/game.enum";
-import { sheriffElectionGameOptionsApiProperties } from "../../../constants/roles-game-options/sheriff-game-options/sheriff-election-game-options.constant";
+import { sheriffElectionGameOptionsApiProperties, sheriffElectionGameOptionsFieldsSpecs } from "../../../constants/roles-game-options/sheriff-game-options/sheriff-election-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -11,13 +11,13 @@ import { sheriffElectionGameOptionsApiProperties } from "../../../constants/role
 class SheriffElectionGameOptions {
   @ApiProperty(sheriffElectionGameOptionsApiProperties.turn)
   @Prop({
-    default: sheriffElectionGameOptionsApiProperties.turn.default as number,
-    min: sheriffElectionGameOptionsApiProperties.turn.minimum,
+    default: sheriffElectionGameOptionsFieldsSpecs.turn.default,
+    min: sheriffElectionGameOptionsFieldsSpecs.turn.minimum,
   })
   public turn: number;
 
   @ApiProperty(sheriffElectionGameOptionsApiProperties.phase)
-  @Prop({ default: sheriffElectionGameOptionsApiProperties.phase.default as GAME_PHASES })
+  @Prop({ default: sheriffElectionGameOptionsFieldsSpecs.phase.default })
   public phase: GAME_PHASES;
 }
 

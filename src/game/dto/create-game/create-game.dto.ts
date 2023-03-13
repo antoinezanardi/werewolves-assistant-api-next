@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsArray, IsOptional, ValidateNested } from "class-validator";
-import { gameApiProperties, gamePlayersSpecs } from "../../constants/game.constant";
+import { gameApiProperties, gameFieldsSpecs } from "../../constants/game.constant";
 import { CreateGameOptionsDto } from "./create-game-options/create-game-options.dto";
 import { CreateGamePlayerDto } from "./create-game-player/create-game-player.dto";
 import { CompositionHasVillager } from "./decorators/composition-has-villager.decorator";
@@ -13,8 +13,8 @@ import { CompositionRolesMinInGame } from "./decorators/composition-roles-min-in
 class CreateGameDto {
   @ApiProperty(gameApiProperties.players)
   @IsArray()
-  @ArrayMinSize(gamePlayersSpecs.minItems)
-  @ArrayMaxSize(gamePlayersSpecs.maxItems)
+  @ArrayMinSize(gameFieldsSpecs.players.minItems)
+  @ArrayMaxSize(gameFieldsSpecs.players.maxItems)
   @ArrayUnique(({ name }: CreateGamePlayerDto) => name, { message: "players.name must be unique" })
   @Type(() => CreateGamePlayerDto)
   @ValidateNested({ each: true })

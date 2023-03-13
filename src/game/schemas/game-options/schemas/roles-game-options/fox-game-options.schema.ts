@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { foxGameOptionsApiProperties } from "../../constants/roles-game-options/fox-game-options.constant";
+import { foxGameOptionsApiProperties, foxGameOptionsFieldsSpecs } from "../../constants/roles-game-options/fox-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -9,7 +9,7 @@ import { foxGameOptionsApiProperties } from "../../constants/roles-game-options/
 })
 class FoxGameOptions {
   @ApiProperty(foxGameOptionsApiProperties.isPowerlessIfMissesWerewolf)
-  @Prop({ default: foxGameOptionsApiProperties.isPowerlessIfMissesWerewolf.default as boolean })
+  @Prop({ default: foxGameOptionsFieldsSpecs.isPowerlessIfMissesWerewolf.default })
   public isPowerlessIfMissesWerewolf: boolean;
 }
 

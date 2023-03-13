@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
-import { playerApiProperties } from "../constants/player.constant";
+import { playerApiProperties, playersFieldsSpecs } from "../constants/player.constant";
 
 @Schema({ versionKey: false })
 class Player {
@@ -11,8 +11,8 @@ class Player {
   @ApiProperty(playerApiProperties.name)
   @Prop({
     required: true,
-    minlength: playerApiProperties.name.minLength,
-    maxLength: playerApiProperties.name.maxLength,
+    minlength: playersFieldsSpecs.name.minLength,
+    maxLength: playersFieldsSpecs.name.maxLength,
   })
   public name: string;
 
@@ -21,7 +21,10 @@ class Player {
   public role: ROLE_NAMES;
 
   @ApiProperty(playerApiProperties.position)
-  @Prop({ required: false })
+  @Prop({
+    required: false,
+    min: playersFieldsSpecs.position.minimum,
+  })
   public position?: number;
 }
 

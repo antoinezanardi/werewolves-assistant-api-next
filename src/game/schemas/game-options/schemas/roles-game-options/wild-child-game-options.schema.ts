@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { wildChildGameOptionsApiProperties } from "../../constants/roles-game-options/wild-child-game-options.constant";
+import { wildChildGameOptionsApiProperties, wildChildGameOptionsFieldsSpecs } from "../../constants/roles-game-options/wild-child-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -9,7 +9,7 @@ import { wildChildGameOptionsApiProperties } from "../../constants/roles-game-op
 })
 class WildChildGameOptions {
   @ApiProperty(wildChildGameOptionsApiProperties.isTransformationRevealed)
-  @Prop({ default: wildChildGameOptionsApiProperties.isTransformationRevealed.default as boolean })
+  @Prop({ default: wildChildGameOptionsFieldsSpecs.isTransformationRevealed.default })
   public isTransformationRevealed: boolean;
 }
 

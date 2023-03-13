@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { ravenGameOptionsApiProperties } from "../../constants/roles-game-options/raven-game-options.constant";
+import { ravenGameOptionsApiProperties, ravenGameOptionsFieldsSpecs } from "../../constants/roles-game-options/raven-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,9 +10,9 @@ import { ravenGameOptionsApiProperties } from "../../constants/roles-game-option
 class RavenGameOptions {
   @ApiProperty(ravenGameOptionsApiProperties.markPenalty)
   @Prop({
-    default: ravenGameOptionsApiProperties.markPenalty.default as number,
-    min: ravenGameOptionsApiProperties.markPenalty.minimum,
-    max: ravenGameOptionsApiProperties.markPenalty.maximum,
+    default: ravenGameOptionsFieldsSpecs.markPenalty.default,
+    min: ravenGameOptionsFieldsSpecs.markPenalty.minimum,
+    max: ravenGameOptionsFieldsSpecs.markPenalty.maximum,
   })
   public markPenalty: number;
 }

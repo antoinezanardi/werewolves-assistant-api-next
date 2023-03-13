@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import type { HydratedDocument } from "mongoose";
-import { gameApiProperties } from "../constants/game.constant";
+import { gameApiProperties, gameFieldsSpecs } from "../constants/game.constant";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
 import { GameOptions, GameOptionsSchema } from "./game-options/schemas/game-options.schema";
 import { PlayerSchema } from "./player/schemas/player.schema";
@@ -16,19 +16,19 @@ class Game {
   public _id: string;
 
   @ApiProperty(gameApiProperties.turn)
-  @Prop({ default: gameApiProperties.turn.default as number })
+  @Prop({ default: gameFieldsSpecs.turn.default })
   public turn: number;
 
   @ApiProperty(gameApiProperties.phase)
-  @Prop({ default: gameApiProperties.phase.default as GAME_PHASES })
+  @Prop({ default: gameFieldsSpecs.phase.default })
   public phase: GAME_PHASES;
 
   @ApiProperty(gameApiProperties.tick)
-  @Prop({ default: gameApiProperties.tick.default as number })
+  @Prop({ default: gameFieldsSpecs.tick.default })
   public tick: number;
 
   @ApiProperty(gameApiProperties.status)
-  @Prop({ default: gameApiProperties.status.default as GAME_STATUSES })
+  @Prop({ default: gameFieldsSpecs.status.default })
   public status: GAME_STATUSES;
 
   @ApiProperty(gameApiProperties.players)

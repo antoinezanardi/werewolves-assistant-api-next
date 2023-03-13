@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { whiteWerewolfGameOptionsApiProperties } from "../../constants/roles-game-options/white-werewolf-game-options.constant";
+import { whiteWerewolfGameOptionsApiProperties, whiteWerewolfGameOptionsFieldsSpecs } from "../../constants/roles-game-options/white-werewolf-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,9 +10,9 @@ import { whiteWerewolfGameOptionsApiProperties } from "../../constants/roles-gam
 class WhiteWerewolfGameOptions {
   @ApiProperty(whiteWerewolfGameOptionsApiProperties.wakingUpInterval)
   @Prop({
-    default: whiteWerewolfGameOptionsApiProperties.wakingUpInterval.default as number,
-    min: whiteWerewolfGameOptionsApiProperties.wakingUpInterval.minimum,
-    max: whiteWerewolfGameOptionsApiProperties.wakingUpInterval.maximum,
+    default: whiteWerewolfGameOptionsFieldsSpecs.wakingUpInterval.default,
+    min: whiteWerewolfGameOptionsFieldsSpecs.wakingUpInterval.minimum,
+    max: whiteWerewolfGameOptionsFieldsSpecs.wakingUpInterval.maximum,
   })
   public wakingUpInterval: number;
 }

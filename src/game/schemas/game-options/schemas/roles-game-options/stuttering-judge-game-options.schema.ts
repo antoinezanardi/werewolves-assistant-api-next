@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { stutteringJudgeGameOptionsApiProperties } from "../../constants/roles-game-options/stuttering-judge-game-options.constant";
+import { stutteringJudgeGameOptionsApiProperties, stutteringJudgeGameOptionsFieldsSpecs } from "../../constants/roles-game-options/stuttering-judge-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,9 +10,9 @@ import { stutteringJudgeGameOptionsApiProperties } from "../../constants/roles-g
 class StutteringJudgeGameOptions {
   @ApiProperty(stutteringJudgeGameOptionsApiProperties.voteRequestsCount)
   @Prop({
-    default: stutteringJudgeGameOptionsApiProperties.voteRequestsCount.default as number,
-    min: stutteringJudgeGameOptionsApiProperties.voteRequestsCount.minimum,
-    max: stutteringJudgeGameOptionsApiProperties.voteRequestsCount.maximum,
+    default: stutteringJudgeGameOptionsFieldsSpecs.voteRequestsCount.default,
+    min: stutteringJudgeGameOptionsFieldsSpecs.voteRequestsCount.minimum,
+    max: stutteringJudgeGameOptionsFieldsSpecs.voteRequestsCount.maximum,
   })
   public voteRequestsCount: number;
 }

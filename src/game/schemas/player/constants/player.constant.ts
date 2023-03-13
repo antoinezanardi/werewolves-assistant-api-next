@@ -2,9 +2,12 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import type { Player } from "../schemas/player.schema";
 
-const playerNameSpecs = Object.freeze({
-  minLength: 1,
-  maxLength: 30,
+const playersFieldsSpecs = Object.freeze({
+  name: {
+    minLength: 1,
+    maxLength: 30,
+  },
+  position: { minimum: 0 },
 });
 
 const playerApiProperties: Record<keyof Player, ApiPropertyOptions> = Object.freeze({
@@ -15,8 +18,7 @@ const playerApiProperties: Record<keyof Player, ApiPropertyOptions> = Object.fre
   name: {
     description: "Player's name. Unique in the array",
     example: "Antoine",
-    minLength: playerNameSpecs.minLength,
-    maxLength: playerNameSpecs.maxLength,
+    ...playersFieldsSpecs.name,
   },
   role: {
     description: "Player's role",
@@ -25,7 +27,8 @@ const playerApiProperties: Record<keyof Player, ApiPropertyOptions> = Object.fre
   position: {
     description: "Unique player's position among all game's players. Increment from 0 to `players.length - 1`",
     example: 3,
+    ...playersFieldsSpecs.position,
   },
 });
 
-export { playerNameSpecs, playerApiProperties };
+export { playersFieldsSpecs, playerApiProperties };

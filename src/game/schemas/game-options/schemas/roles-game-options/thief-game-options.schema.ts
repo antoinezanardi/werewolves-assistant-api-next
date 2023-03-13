@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { thiefGameOptionsApiProperties } from "../../constants/roles-game-options/thief-judge-game-options.constant";
+import { thiefGameOptionsApiProperties, thiefGameOptionsFieldsSpecs } from "../../constants/roles-game-options/thief-judge-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -9,14 +9,14 @@ import { thiefGameOptionsApiProperties } from "../../constants/roles-game-option
 })
 class ThiefGameOptions {
   @ApiProperty(thiefGameOptionsApiProperties.mustChooseBetweenWerewolves)
-  @Prop({ default: thiefGameOptionsApiProperties.mustChooseBetweenWerewolves.default as boolean })
+  @Prop({ default: thiefGameOptionsFieldsSpecs.mustChooseBetweenWerewolves.default })
   public mustChooseBetweenWerewolves: boolean;
 
   @ApiProperty(thiefGameOptionsApiProperties.additionalCardsCount)
   @Prop({
-    default: thiefGameOptionsApiProperties.additionalCardsCount.default as number,
-    min: thiefGameOptionsApiProperties.additionalCardsCount.minimum,
-    max: thiefGameOptionsApiProperties.additionalCardsCount.maximum,
+    default: thiefGameOptionsFieldsSpecs.additionalCardsCount.default,
+    min: thiefGameOptionsFieldsSpecs.additionalCardsCount.minimum,
+    max: thiefGameOptionsFieldsSpecs.additionalCardsCount.maximum,
   })
   public additionalCardsCount: number;
 }

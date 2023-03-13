@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { rolesGameOptionsApiProperties } from "../../constants/roles-game-options/roles-game-options.constant";
+import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "../../constants/roles-game-options/roles-game-options.constant";
 import { AncientGameOptions, AncientGameOptionsSchema } from "./ancient-game-options.schema";
 import { BearTamerGameOptions, BearTamerGameOptionsSchema } from "./bear-tamer-game-options.schema";
 import { BigBadWolfGameOptions, BigBadWolfGameOptionsSchema } from "./big-bad-wolf-game-options.schema";
@@ -27,7 +27,7 @@ import { WildChildGameOptions, WildChildGameOptionsSchema } from "./wild-child-g
 })
 class RolesGameOptions {
   @ApiProperty(rolesGameOptionsApiProperties.areRevealedOnDeath)
-  @Prop({ default: rolesGameOptionsApiProperties.areRevealedOnDeath.default as boolean })
+  @Prop({ default: rolesGameOptionsFieldsSpecs.areRevealedOnDeath.default })
   public areRevealedOnDeath: boolean;
 
   @ApiProperty(rolesGameOptionsApiProperties.sheriff)
