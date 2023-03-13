@@ -10,7 +10,10 @@ import type { Model } from "mongoose";
 import type { CreateGameDto } from "../../../../src/game/dto/create-game/create-game.dto";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../src/game/enums/game.enum";
 import { GameModule } from "../../../../src/game/game.module";
+import { defaultGameOptions } from "../../../../src/game/schemas/game-options/constants/game-options.constant";
+import type { GameOptions } from "../../../../src/game/schemas/game-options/schemas/game-options.schema";
 import { Game } from "../../../../src/game/schemas/game.schema";
+import type { Player } from "../../../../src/game/schemas/player/schemas/player.schema";
 import { ROLE_NAMES } from "../../../../src/role/enums/role.enum";
 import { E2eTestModule } from "../../../../src/test/e2e-test.module";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
@@ -67,7 +70,7 @@ describe("Game Module", () => {
   describe("POST /games", () => {
     it.each<{ payload: CreateGameDto; test: string; errorMessage: string }>([
       {
-        payload: createFakeCreateGameDto({ players: undefined }),
+        payload: createFakeCreateGameDto({}, { players: undefined }),
         test: "no players are provided",
         errorMessage: "players must be an array",
       },
@@ -177,6 +180,11 @@ describe("Game Module", () => {
         url: "/games",
         payload,
       });
+      const expectedPlayers = payload.players.map<Player>(player => ({
+        _id: expect.any(String) as string,
+        name: player.name,
+        role: player.role,
+      }));
       expect(response.statusCode).toBe(HttpStatus.CREATED);
       expect(response.json()).toMatchObject<Game>({
         _id: expect.any(String) as string,
@@ -184,7 +192,77 @@ describe("Game Module", () => {
         status: GAME_STATUSES.PLAYING,
         turn: 1,
         tick: 1,
-        players: payload.players,
+        players: expectedPlayers,
+        options: defaultGameOptions,
+        createdAt: expect.any(String) as Date,
+        updatedAt: expect.any(String) as Date,
+      });
+    });
+
+    it(`should create game with different options when called with options specified.`, async() => {
+      const options: GameOptions = {
+        composition: { isHidden: false },
+        roles: {
+          areRevealedOnDeath: false,
+          sheriff: {
+            isEnabled: false,
+            electedAt: {
+              turn: 5,
+              phase: GAME_PHASES.DAY,
+            },
+            hasDoubledVote: false,
+          },
+          bigBadWolf: { isPowerlessIfWerewolfDies: false },
+          whiteWerewolf: { wakingUpInterval: 5 },
+          seer: {
+            isTalkative: false,
+            canSeeRoles: false,
+          },
+          littleGirl: { isProtectedByGuard: true },
+          guard: { canProtectTwice: true },
+          ancient: {
+            livesCountAgainstWerewolves: 1,
+            doesTakeHisRevenge: false,
+          },
+          idiot: { doesDieOnAncientDeath: false },
+          twoSisters: { wakingUpInterval: 0 },
+          threeBrothers: { wakingUpInterval: 5 },
+          fox: { isPowerlessIfMissesWerewolf: false },
+          bearTamer: { doesGrowlIfInfected: false },
+          stutteringJudge: { voteRequestsCount: 3 },
+          wildChild: { isTransformationRevealed: true },
+          dogWolf: { isChosenSideRevealed: true },
+          thief: {
+            mustChooseBetweenWerewolves: false,
+            additionalCardsCount: 4,
+          },
+          piedPiper: {
+            charmedPeopleCountPerNight: 1,
+            isPowerlessIfInfected: false,
+          },
+          raven: { markPenalty: 5 },
+        },
+      };
+      const payload = createFakeCreateGameDto({ options });
+      const response = await app.inject({
+        method: "POST",
+        url: "/games",
+        payload,
+      });
+      const expectedPlayers = payload.players.map<Player>(player => ({
+        _id: expect.any(String) as string,
+        name: player.name,
+        role: player.role,
+      }));
+      expect(response.statusCode).toBe(HttpStatus.CREATED);
+      expect(response.json()).toMatchObject<Game>({
+        _id: expect.any(String) as string,
+        phase: GAME_PHASES.NIGHT,
+        status: GAME_STATUSES.PLAYING,
+        turn: 1,
+        tick: 1,
+        players: expectedPlayers,
+        options,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
