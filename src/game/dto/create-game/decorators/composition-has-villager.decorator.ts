@@ -10,7 +10,7 @@ function doesCompositionHaveAtLeastOneVillager(players?: CreateGamePlayerDto[]):
     return false;
   }
   const werewolfRoles = roles.filter(role => role.side === ROLE_SIDES.VILLAGERS);
-  return players.some(({ role }) => werewolfRoles.find(werewolfRole => role === werewolfRole.name));
+  return players.some(({ role }) => werewolfRoles.find(werewolfRole => role.name === werewolfRole.name));
 }
 
 function getCompositionHasVillagerDefaultMessage(): string {

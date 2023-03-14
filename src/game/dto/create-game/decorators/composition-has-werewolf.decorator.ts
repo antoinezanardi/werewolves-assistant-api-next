@@ -10,7 +10,7 @@ function doesCompositionHaveAtLeastOneWerewolf(players?: CreateGamePlayerDto[]):
     return false;
   }
   const werewolfRoles = roles.filter(role => role.side === ROLE_SIDES.WEREWOLVES);
-  return players.some(({ role }) => werewolfRoles.find(werewolfRole => role === werewolfRole.name));
+  return players.some(({ role }) => werewolfRoles.find(werewolfRole => role.name === werewolfRole.name));
 }
 
 function getCompositionHasWerewolfDefaultMessage(): string {

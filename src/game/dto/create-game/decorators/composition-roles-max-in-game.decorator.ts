@@ -9,7 +9,7 @@ function areCompositionRolesMaxInGameRespected(players?: CreateGamePlayerDto[]):
     return false;
   }
   return roles.every(role => {
-    const roleCount = players.filter(player => player.role === role.name).length;
+    const roleCount = players.filter(player => player.role.name === role.name).length;
     return roleCount <= role.maxInGame;
   });
 }

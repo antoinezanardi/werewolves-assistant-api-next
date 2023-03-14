@@ -7,7 +7,10 @@ import { createSwaggerDocument } from "./swagger/swagger";
 
 async function bootstrap(port = 3000): Promise<NestFastifyApplication> {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+    whitelist: true,
+  }));
   const documentationPath = "docs";
   createSwaggerDocument(documentationPath, app);
   await app.listen(port, "127.0.0.1");

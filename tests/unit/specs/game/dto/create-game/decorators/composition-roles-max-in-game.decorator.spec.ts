@@ -13,10 +13,10 @@ describe("Composition Roles Max In Game Decorator", () => {
 
     it("should return false when there is 2 players with the same role but max in game is 1.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: ROLE_NAMES.WITCH },
-        { role: ROLE_NAMES.WITCH },
-        { role: ROLE_NAMES.WEREWOLF },
-        { role: ROLE_NAMES.VILLAGER },
+        { role: { name: ROLE_NAMES.WITCH } },
+        { role: { name: ROLE_NAMES.WITCH } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
       expect(areCompositionRolesMaxInGameRespected(players)).toBe(false);
     });
@@ -27,14 +27,14 @@ describe("Composition Roles Max In Game Decorator", () => {
 
     it("should return true when the limit for each role is respected.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(8, [
-        { role: ROLE_NAMES.WITCH },
-        { role: ROLE_NAMES.SEER },
-        { role: ROLE_NAMES.WEREWOLF },
-        { role: ROLE_NAMES.WEREWOLF },
-        { role: ROLE_NAMES.VILLAGER },
-        { role: ROLE_NAMES.VILLAGER },
-        { role: ROLE_NAMES.VILLAGER },
-        { role: ROLE_NAMES.VILLAGER },
+        { role: { name: ROLE_NAMES.WITCH } },
+        { role: { name: ROLE_NAMES.SEER } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
       expect(areCompositionRolesMaxInGameRespected(players)).toBe(true);
     });
