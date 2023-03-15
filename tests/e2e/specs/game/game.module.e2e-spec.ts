@@ -10,8 +10,11 @@ import type { Model } from "mongoose";
 import type { CreateGameDto } from "../../../../src/game/dto/create-game/create-game.dto";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../src/game/enums/game.enum";
 import { GameModule } from "../../../../src/game/game.module";
+import { defaultGameOptions } from "../../../../src/game/schemas/game-options/constants/game-options.constant";
+import type { GameOptions } from "../../../../src/game/schemas/game-options/schemas/game-options.schema";
 import { Game } from "../../../../src/game/schemas/game.schema";
-import { ROLE_NAMES } from "../../../../src/role/enums/role.enum";
+import type { Player } from "../../../../src/game/schemas/player/schemas/player.schema";
+import { ROLE_NAMES, ROLE_SIDES } from "../../../../src/role/enums/role.enum";
 import { E2eTestModule } from "../../../../src/test/e2e-test.module";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../factories/game/dto/create-game/create-game.dto.factory";
@@ -67,7 +70,7 @@ describe("Game Module", () => {
   describe("POST /games", () => {
     it.each<{ payload: CreateGameDto; test: string; errorMessage: string }>([
       {
-        payload: createFakeCreateGameDto({ players: undefined }),
+        payload: createFakeCreateGameDto({}, { players: undefined }),
         test: "no players are provided",
         errorMessage: "players must be an array",
       },
@@ -94,7 +97,7 @@ describe("Game Module", () => {
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { name: "John", role: ROLE_NAMES.THREE_BROTHERS },
+            { name: "John", role: { name: ROLE_NAMES.THREE_BROTHERS } },
             { name: "John" },
           ]),
         }),
@@ -102,15 +105,15 @@ describe("Game Module", () => {
         errorMessage: "players.name must be unique",
       },
       {
-        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ role: ROLE_NAMES.THREE_BROTHERS }]) }),
+        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ role: { name: ROLE_NAMES.THREE_BROTHERS } }]) }),
         test: "there is only one brother in the same game",
         errorMessage: "players.role minimum occurrences in game must be reached. Please check `minInGame` property of roles",
       },
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: ROLE_NAMES.WITCH },
-            { role: ROLE_NAMES.WITCH },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.WITCH } },
           ]),
         }),
         test: "there is two witches in the same game",
@@ -119,10 +122,10 @@ describe("Game Module", () => {
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: ROLE_NAMES.WEREWOLF },
-            { role: ROLE_NAMES.WHITE_WEREWOLF },
-            { role: ROLE_NAMES.WEREWOLF },
-            { role: ROLE_NAMES.WEREWOLF },
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.WEREWOLF } },
           ]),
         }),
         test: "there is no villager in game's composition",
@@ -131,10 +134,10 @@ describe("Game Module", () => {
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: ROLE_NAMES.VILLAGER },
-            { role: ROLE_NAMES.PIED_PIPER },
-            { role: ROLE_NAMES.WITCH },
-            { role: ROLE_NAMES.SEER },
+            { role: { name: ROLE_NAMES.VILLAGER } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.SEER } },
           ]),
         }),
         test: "there is no werewolf in game's composition",
@@ -148,10 +151,10 @@ describe("Game Module", () => {
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: ROLE_NAMES.VILLAGER, position: 0 },
-            { role: ROLE_NAMES.PIED_PIPER, position: 1 },
-            { role: ROLE_NAMES.WITCH, position: 2 },
-            { role: ROLE_NAMES.SEER, position: 666 },
+            { role: { name: ROLE_NAMES.VILLAGER }, position: 0 },
+            { role: { name: ROLE_NAMES.PIED_PIPER }, position: 1 },
+            { role: { name: ROLE_NAMES.WITCH }, position: 2 },
+            { role: { name: ROLE_NAMES.SEER }, position: 666 },
           ]),
         }),
         test: "one of the player position is not consistent faced to others",
@@ -171,12 +174,35 @@ describe("Game Module", () => {
     });
 
     it(`should create game when called.`, async() => {
-      const payload = createFakeCreateGameDto();
+      const payload = createFakeCreateGameDto({
+        players: bulkCreateFakeCreateGamePlayerDto(4, [
+          { role: { name: ROLE_NAMES.VILLAGER } },
+          { role: { name: ROLE_NAMES.WEREWOLF }, side: { current: ROLE_SIDES.WEREWOLVES } },
+          { role: { name: ROLE_NAMES.VILLAGER_VILLAGER } },
+          { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
+        ]),
+      }, { options: undefined });
       const response = await app.inject({
         method: "POST",
         url: "/games",
         payload,
       });
+      const expectedPlayers = payload.players.map<Player>((player, index) => ({
+        _id: expect.any(String) as string,
+        name: player.name,
+        role: {
+          current: player.role.name,
+          original: player.role.name,
+          isRevealed: player.role.name === ROLE_NAMES.VILLAGER_VILLAGER,
+        },
+        side: {
+          current: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+          original: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+        },
+        attributes: [],
+        position: index,
+        isAlive: true,
+      }));
       expect(response.statusCode).toBe(HttpStatus.CREATED);
       expect(response.json()).toMatchObject<Game>({
         _id: expect.any(String) as string,
@@ -184,10 +210,65 @@ describe("Game Module", () => {
         status: GAME_STATUSES.PLAYING,
         turn: 1,
         tick: 1,
-        players: payload.players,
+        players: expectedPlayers,
+        options: defaultGameOptions,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
+    });
+
+    it(`should create game with different options when called with options specified.`, async() => {
+      const options: GameOptions = {
+        composition: { isHidden: false },
+        roles: {
+          areRevealedOnDeath: false,
+          sheriff: {
+            isEnabled: false,
+            electedAt: {
+              turn: 5,
+              phase: GAME_PHASES.DAY,
+            },
+            hasDoubledVote: false,
+          },
+          bigBadWolf: { isPowerlessIfWerewolfDies: false },
+          whiteWerewolf: { wakingUpInterval: 5 },
+          seer: {
+            isTalkative: false,
+            canSeeRoles: false,
+          },
+          littleGirl: { isProtectedByGuard: true },
+          guard: { canProtectTwice: true },
+          ancient: {
+            livesCountAgainstWerewolves: 1,
+            doesTakeHisRevenge: false,
+          },
+          idiot: { doesDieOnAncientDeath: false },
+          twoSisters: { wakingUpInterval: 0 },
+          threeBrothers: { wakingUpInterval: 5 },
+          fox: { isPowerlessIfMissesWerewolf: false },
+          bearTamer: { doesGrowlIfInfected: false },
+          stutteringJudge: { voteRequestsCount: 3 },
+          wildChild: { isTransformationRevealed: true },
+          dogWolf: { isChosenSideRevealed: true },
+          thief: {
+            mustChooseBetweenWerewolves: false,
+            additionalCardsCount: 4,
+          },
+          piedPiper: {
+            charmedPeopleCountPerNight: 1,
+            isPowerlessIfInfected: false,
+          },
+          raven: { markPenalty: 5 },
+        },
+      };
+      const payload = createFakeCreateGameDto({ options });
+      const response = await app.inject({
+        method: "POST",
+        url: "/games",
+        payload,
+      });
+      expect(response.statusCode).toBe(HttpStatus.CREATED);
+      expect(response.json<Game>().options).toMatchObject<GameOptions>(options);
     });
   });
 });

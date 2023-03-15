@@ -1,8 +1,10 @@
 import type { ConfigService } from "@nestjs/config";
+import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 import { when } from "jest-when";
 import { mongooseModuleFactory } from "../../../../../src/config/database/database.helper";
 
 describe("Database Helper", () => {
+  const connectionTimeoutMs = 3000;
   const configServiceMock: Partial<ConfigService> = { getOrThrow: jest.fn() };
   const host = "localhost";
   const port = "1234";
@@ -20,12 +22,15 @@ describe("Database Helper", () => {
 
   describe("mongooseModuleFactory", () => {
     it("should return connection string when called.", () => {
-      expect(mongooseModuleFactory(configServiceMock as ConfigService)).toStrictEqual({
+      expect(mongooseModuleFactory(configServiceMock as ConfigService)).toStrictEqual<MongooseModuleFactoryOptions>({
         uri: `mongodb://${host}:${port}`,
         dbName: databaseName,
         authSource: "admin",
         user: databaseUserName,
         pass: encodeURIComponent(databasePassword),
+        retryAttempts: 3,
+        retryDelay: connectionTimeoutMs,
+        serverSelectionTimeoutMS: connectionTimeoutMs,
       });
     });
   });

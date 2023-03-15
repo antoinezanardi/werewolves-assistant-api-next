@@ -13,10 +13,10 @@ describe("Composition Roles Min In Game Decorator", () => {
 
     it("should return false when there is only 1 player with a role which min in game is 2.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: ROLE_NAMES.TWO_SISTERS },
-        { role: ROLE_NAMES.WITCH },
-        { role: ROLE_NAMES.WEREWOLF },
-        { role: ROLE_NAMES.VILLAGER },
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.WITCH } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
       expect(areCompositionRolesMinInGameRespected(players)).toBe(false);
     });
@@ -27,15 +27,15 @@ describe("Composition Roles Min In Game Decorator", () => {
 
     it("should return true when the limit for each role is respected.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(9, [
-        { role: ROLE_NAMES.WITCH },
-        { role: ROLE_NAMES.SEER },
-        { role: ROLE_NAMES.WEREWOLF },
-        { role: ROLE_NAMES.WEREWOLF },
-        { role: ROLE_NAMES.THREE_BROTHERS },
-        { role: ROLE_NAMES.THREE_BROTHERS },
-        { role: ROLE_NAMES.THREE_BROTHERS },
-        { role: ROLE_NAMES.TWO_SISTERS },
-        { role: ROLE_NAMES.TWO_SISTERS },
+        { role: { name: ROLE_NAMES.WITCH } },
+        { role: { name: ROLE_NAMES.SEER } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.THREE_BROTHERS } },
+        { role: { name: ROLE_NAMES.THREE_BROTHERS } },
+        { role: { name: ROLE_NAMES.THREE_BROTHERS } },
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
       ]);
       expect(areCompositionRolesMinInGameRespected(players)).toBe(true);
     });

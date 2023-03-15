@@ -8,9 +8,9 @@ const OFF = "off";
 const MAX_LENGTH_DEFAULT_CONFIG = {
   code: MAX_LENGTH,
   ignoreTemplateLiterals: true,
-  ignorePattern: "d=\"([\\s\\S]*?)\"",
+  ignorePattern: "^import\\s.+\\sfrom\\s.+;$",
 };
-const BOOLEAN_PREFIXES = ["is", "was", "should", "has", "can", "does"];
+const BOOLEAN_PREFIXES = ["is", "was", "are", "were", "should", "has", "can", "does", "must"];
 const NAMING_CONVENTION_DEFAULT_CONFIG = [
   {
     selector: ["enum", "enumMember"],

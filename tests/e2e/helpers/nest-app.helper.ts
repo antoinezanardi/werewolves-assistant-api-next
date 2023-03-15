@@ -2,7 +2,10 @@ import { ValidationPipe } from "@nestjs/common";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
 async function initNestApp(app: NestFastifyApplication): Promise<void> {
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+    whitelist: true,
+  }));
   await app.init();
 }
 
