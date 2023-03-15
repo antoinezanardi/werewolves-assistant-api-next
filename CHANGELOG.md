@@ -1,5 +1,23 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.2.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.1.0...v1.2.0) (2023-03-10)
+
+
+### 🚀 Features
+
+* **games:** basic game creation ([#13](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/13)) ([c3a1aad](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/c3a1aad1f6e5918a02e09b4c139f657959fa6d6d))
+* **gource:** commits tree visualisation with gource ([#14](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/14)) ([4a113ac](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/4a113ac0b79a99b9d2351871077a5d8b9a574bb9))
+
+
+### 🎨 Styles
+
+* **logo:** the most beautiful logo in the world ([#15](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/15)) ([1c87405](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1c87405d57dbdb95e4c0d01fed2a7d323ee30cfa))
+
+
+### 🔁 CI
+
+* **semantic-release:** package json version updated when merged to main ([#16](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/16)) ([8884d1a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/8884d1aaf34fd2d275f65ecad4fa05812db40c0e))
+
 ## [1.1.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.0.0...v1.1.0) (2023-03-05)
 
 
