@@ -2,6 +2,7 @@ import type { ConfigService } from "@nestjs/config";
 import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 
 function mongooseModuleFactory(configService: ConfigService): MongooseModuleFactoryOptions {
+  const connectionTimeoutMs = 3000;
   const host = configService.getOrThrow<string>("DATABASE_HOST");
   const port = configService.getOrThrow<string>("DATABASE_PORT");
   const databaseName = configService.getOrThrow<string>("DATABASE_NAME");
@@ -13,6 +14,9 @@ function mongooseModuleFactory(configService: ConfigService): MongooseModuleFact
     authSource: "admin",
     user: username,
     pass: encodeURIComponent(password),
+    retryAttempts: 3,
+    retryDelay: connectionTimeoutMs,
+    serverSelectionTimeoutMS: connectionTimeoutMs,
   };
 }
 
