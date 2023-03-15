@@ -14,7 +14,7 @@ import { defaultGameOptions } from "../../../../src/game/schemas/game-options/co
 import type { GameOptions } from "../../../../src/game/schemas/game-options/schemas/game-options.schema";
 import { Game } from "../../../../src/game/schemas/game.schema";
 import type { Player } from "../../../../src/game/schemas/player/schemas/player.schema";
-import { ROLE_NAMES } from "../../../../src/role/enums/role.enum";
+import { ROLE_NAMES, ROLE_SIDES } from "../../../../src/role/enums/role.enum";
 import { E2eTestModule } from "../../../../src/test/e2e-test.module";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../factories/game/dto/create-game/create-game.dto.factory";
@@ -97,7 +97,7 @@ describe("Game Module", () => {
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { name: "John", role: ROLE_NAMES.THREE_BROTHERS },
+            { name: "John", role: { name: ROLE_NAMES.THREE_BROTHERS } },
             { name: "John" },
           ]),
         }),
@@ -105,15 +105,15 @@ describe("Game Module", () => {
         errorMessage: "players.name must be unique",
       },
       {
-        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ role: ROLE_NAMES.THREE_BROTHERS }]) }),
+        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ role: { name: ROLE_NAMES.THREE_BROTHERS } }]) }),
         test: "there is only one brother in the same game",
         errorMessage: "players.role minimum occurrences in game must be reached. Please check `minInGame` property of roles",
       },
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: ROLE_NAMES.WITCH },
-            { role: ROLE_NAMES.WITCH },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.WITCH } },
           ]),
         }),
         test: "there is two witches in the same game",
@@ -122,10 +122,10 @@ describe("Game Module", () => {
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: ROLE_NAMES.WEREWOLF },
-            { role: ROLE_NAMES.WHITE_WEREWOLF },
-            { role: ROLE_NAMES.WEREWOLF },
-            { role: ROLE_NAMES.WEREWOLF },
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.WEREWOLF } },
           ]),
         }),
         test: "there is no villager in game's composition",
@@ -134,10 +134,10 @@ describe("Game Module", () => {
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: ROLE_NAMES.VILLAGER },
-            { role: ROLE_NAMES.PIED_PIPER },
-            { role: ROLE_NAMES.WITCH },
-            { role: ROLE_NAMES.SEER },
+            { role: { name: ROLE_NAMES.VILLAGER } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.SEER } },
           ]),
         }),
         test: "there is no werewolf in game's composition",
@@ -151,10 +151,10 @@ describe("Game Module", () => {
       {
         payload: createFakeCreateGameDto({
           players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: ROLE_NAMES.VILLAGER, position: 0 },
-            { role: ROLE_NAMES.PIED_PIPER, position: 1 },
-            { role: ROLE_NAMES.WITCH, position: 2 },
-            { role: ROLE_NAMES.SEER, position: 666 },
+            { role: { name: ROLE_NAMES.VILLAGER }, position: 0 },
+            { role: { name: ROLE_NAMES.PIED_PIPER }, position: 1 },
+            { role: { name: ROLE_NAMES.WITCH }, position: 2 },
+            { role: { name: ROLE_NAMES.SEER }, position: 666 },
           ]),
         }),
         test: "one of the player position is not consistent faced to others",
@@ -174,16 +174,34 @@ describe("Game Module", () => {
     });
 
     it(`should create game when called.`, async() => {
-      const payload = createFakeCreateGameDto();
+      const payload = createFakeCreateGameDto({
+        players: bulkCreateFakeCreateGamePlayerDto(4, [
+          { role: { name: ROLE_NAMES.VILLAGER } },
+          { role: { name: ROLE_NAMES.WEREWOLF }, side: { current: ROLE_SIDES.WEREWOLVES } },
+          { role: { name: ROLE_NAMES.VILLAGER_VILLAGER } },
+          { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
+        ]),
+      }, { options: undefined });
       const response = await app.inject({
         method: "POST",
         url: "/games",
         payload,
       });
-      const expectedPlayers = payload.players.map<Player>(player => ({
+      const expectedPlayers = payload.players.map<Player>((player, index) => ({
         _id: expect.any(String) as string,
         name: player.name,
-        role: player.role,
+        role: {
+          current: player.role.name,
+          original: player.role.name,
+          isRevealed: player.role.name === ROLE_NAMES.VILLAGER_VILLAGER,
+        },
+        side: {
+          current: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+          original: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+        },
+        attributes: [],
+        position: index,
+        isAlive: true,
       }));
       expect(response.statusCode).toBe(HttpStatus.CREATED);
       expect(response.json()).toMatchObject<Game>({
@@ -249,23 +267,8 @@ describe("Game Module", () => {
         url: "/games",
         payload,
       });
-      const expectedPlayers = payload.players.map<Player>(player => ({
-        _id: expect.any(String) as string,
-        name: player.name,
-        role: player.role,
-      }));
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json()).toMatchObject<Game>({
-        _id: expect.any(String) as string,
-        phase: GAME_PHASES.NIGHT,
-        status: GAME_STATUSES.PLAYING,
-        turn: 1,
-        tick: 1,
-        players: expectedPlayers,
-        options,
-        createdAt: expect.any(String) as Date,
-        updatedAt: expect.any(String) as Date,
-      });
+      expect(response.json<Game>().options).toMatchObject<GameOptions>(options);
     });
   });
 });

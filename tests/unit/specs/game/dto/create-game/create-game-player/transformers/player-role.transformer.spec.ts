@@ -1,0 +1,37 @@
+import type { CreateGamePlayerRoleDto } from "../../../../../../../../src/game/dto/create-game/create-game-player/create-game-player-role.dto/create-game-player-role.dto";
+import { playerRoleTransformer } from "../../../../../../../../src/game/dto/create-game/create-game-player/transformers/player-role.transformer";
+import { ROLE_NAMES } from "../../../../../../../../src/role/enums/role.enum";
+
+describe("Player Role Transformer", () => {
+  describe("playerRoleTransformer", () => {
+    it("should fill player role (seer) fields when called.", () => {
+      const createPlayerRoleDto: CreateGamePlayerRoleDto = { name: ROLE_NAMES.SEER };
+      expect(playerRoleTransformer({ value: createPlayerRoleDto })).toStrictEqual<CreateGamePlayerRoleDto>({
+        name: ROLE_NAMES.SEER,
+        original: ROLE_NAMES.SEER,
+        current: ROLE_NAMES.SEER,
+        isRevealed: false,
+      });
+    });
+
+    it("should fill player role (white-werewolf) fields when called.", () => {
+      const createPlayerRoleDto: CreateGamePlayerRoleDto = { name: ROLE_NAMES.WHITE_WEREWOLF };
+      expect(playerRoleTransformer({ value: createPlayerRoleDto })).toStrictEqual<CreateGamePlayerRoleDto>({
+        name: ROLE_NAMES.WHITE_WEREWOLF,
+        original: ROLE_NAMES.WHITE_WEREWOLF,
+        current: ROLE_NAMES.WHITE_WEREWOLF,
+        isRevealed: false,
+      });
+    });
+
+    it("should fill player role fields with isRevealed true when role is villager villager.", () => {
+      const createPlayerRoleDto: CreateGamePlayerRoleDto = { name: ROLE_NAMES.VILLAGER_VILLAGER };
+      expect(playerRoleTransformer({ value: createPlayerRoleDto })).toStrictEqual<CreateGamePlayerRoleDto>({
+        name: ROLE_NAMES.VILLAGER_VILLAGER,
+        original: ROLE_NAMES.VILLAGER_VILLAGER,
+        current: ROLE_NAMES.VILLAGER_VILLAGER,
+        isRevealed: true,
+      });
+    });
+  });
+});

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, ArrayMinSize, ArrayUnique, IsArray, IsOptional, ValidateNested } from "class-validator";
 import { gameApiProperties, gameFieldsSpecs } from "../../constants/game.constant";
 import { CreateGameOptionsDto } from "./create-game-options/create-game-options.dto";
@@ -9,6 +9,7 @@ import { CompositionHasWerewolf } from "./decorators/composition-has-werewolf.de
 import { CompositionPositionsConsistency } from "./decorators/composition-positions-consistency.decorator";
 import { CompositionRolesMaxInGame } from "./decorators/composition-roles-max-in-game.decorator";
 import { CompositionRolesMinInGame } from "./decorators/composition-roles-min-in-game.decorator";
+import { gamePlayersPositionTransformer } from "./transformers/game-players-position.transformer";
 
 class CreateGameDto {
   @ApiProperty(gameApiProperties.players)
@@ -23,6 +24,7 @@ class CreateGameDto {
   @CompositionHasVillager()
   @CompositionHasWerewolf()
   @CompositionPositionsConsistency()
+  @Transform(gamePlayersPositionTransformer)
   public players: CreateGamePlayerDto[];
 
   @ApiProperty(gameApiProperties.options)

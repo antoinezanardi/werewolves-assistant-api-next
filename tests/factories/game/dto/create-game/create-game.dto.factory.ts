@@ -5,10 +5,10 @@ import { bulkCreateFakeCreateGamePlayerDto } from "./create-game-player/create-g
 
 function createFakeCreateGameDto(obj: Partial<CreateGameDto> = {}, override: Partial<CreateGameDto> = {}): CreateGameDto {
   const players: Partial<CreateGamePlayerDto>[] = [
-    { name: "Antoine", role: ROLE_NAMES.WITCH },
-    { name: "JB", role: ROLE_NAMES.SEER },
-    { name: "Thomas", role: ROLE_NAMES.WEREWOLF },
-    { name: "Jérémy", role: ROLE_NAMES.LITTLE_GIRL },
+    { name: "Antoine", role: { name: ROLE_NAMES.WITCH } },
+    { name: "JB", role: { name: ROLE_NAMES.SEER } },
+    { name: "Thomas", role: { name: ROLE_NAMES.WEREWOLF } },
+    { name: "Jérémy", role: { name: ROLE_NAMES.LITTLE_GIRL } },
   ];
   return {
     players: obj.players ?? bulkCreateFakeCreateGamePlayerDto(players.length, players),

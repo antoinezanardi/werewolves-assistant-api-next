@@ -51,7 +51,10 @@ describe("Server", () => {
 
     it("should add validation pipe with transform when Validation Pipe constructor is called.", async() => {
       app = await bootstrap();
-      expect(NestCommon.ValidationPipe).toHaveBeenCalledWith({ transform: true });
+      expect(NestCommon.ValidationPipe).toHaveBeenCalledWith({
+        transform: true,
+        whitelist: true,
+      });
     });
 
     it("should print serveur and docs address with specific port when port is provided.", async() => {
