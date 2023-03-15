@@ -1,6 +1,6 @@
 {
   "name": "werewolves-assistant-api-next",
-  "version": "0.0.1",
+  "version": "1.3.0",
   "description": "About Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.",
   "scripts": {
     "create-branch": "./scripts/create-git-branch.sh",
