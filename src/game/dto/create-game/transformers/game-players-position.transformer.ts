@@ -3,7 +3,7 @@ import type { CreateGamePlayerDto } from "../create-game-player/create-game-play
 type GamePlayersPositionTransformerParams = { value: CreateGamePlayerDto[] };
 
 function gamePlayersPositionTransformer({ value }: GamePlayersPositionTransformerParams): CreateGamePlayerDto[] {
-  if (value.length && value[0].position !== undefined) {
+  if (value.some(player => player.position !== undefined)) {
     return value;
   }
   for (let i = 0; i < value.length; i++) {
