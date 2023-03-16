@@ -4,11 +4,14 @@ on:
     branches:
       - 'main'
       - 'develop'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup GitHub repository 🔧
+      - name: Setup GitHub repository  🔧
         uses: actions/checkout@v3
       - name: Setup NodeJS v18 ✨
         uses: actions/setup-node@v3
