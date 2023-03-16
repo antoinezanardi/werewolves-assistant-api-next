@@ -105,7 +105,14 @@ describe("Game Module", () => {
         errorMessage: "players.name must be unique",
       },
       {
-        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ role: { name: ROLE_NAMES.THREE_BROTHERS } }]) }),
+        payload: createFakeCreateGameDto({
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { role: { name: ROLE_NAMES.THREE_BROTHERS } },
+            { role: { name: ROLE_NAMES.VILLAGER_VILLAGER } },
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.SEER } },
+          ]),
+        }),
         test: "there is only one brother in the same game",
         errorMessage: "players.role minimum occurrences in game must be reached. Please check `minInGame` property of roles",
       },
