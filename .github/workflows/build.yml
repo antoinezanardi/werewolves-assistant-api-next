@@ -5,7 +5,7 @@ on:
       - 'main'
       - 'develop'
 jobs:
-  build:
+  install:
     runs-on: ubuntu-latest
     steps:
       - name: Setup GitHub repository 🔧
@@ -13,17 +13,129 @@ jobs:
       - name: Setup NodeJS v18 ✨
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-      - name: Start Docker containers 🐳
-        run: npm run docker:test:start
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Cache npm dependencies 🥡
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Install project dependencies 📦
         run: npm ci --ignore-scripts
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Setup GitHub repository 🔧
+        uses: actions/checkout@v3
+      - name: Setup NodeJS v18 ✨
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Cache npm dependencies 🥡
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Build app ✨
         run: npm run build
+  lint:
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Setup GitHub repository 🔧
+        uses: actions/checkout@v3
+      - name: Setup NodeJS v18 ✨
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Cache npm dependencies 🥡
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Check and lint code 🔍
         run: npm run lint
-      - name: Test 💯
-        run: npm run test:cov
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Setup GitHub repository 🔧
+        uses: actions/checkout@v3
+      - name: Setup NodeJS v18 ✨
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Cache npm dependencies 🥡
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+      - name: Start Docker containers 🐳
+        run: npm run docker:test:start
+      - name: Unit tests 💯
+        run: npm run test:unit:cov -- --verbose=false
+      - name: Stop Docker containers 🐳
+        if: ${{ always() }}
+        run: npm run docker:test:stop
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Setup GitHub repository 🔧
+        uses: actions/checkout@v3
+      - name: Setup NodeJS v18 ✨
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Cache npm dependencies 🥡
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+      - name: Start Docker containers 🐳
+        run: npm run docker:test:start
+      - name: E2E tests 💯
+        run: npm run test:e2e:cov -- --verbose=false
+      - name: Stop Docker containers 🐳
+        if: ${{ always() }}
+        run: npm run docker:test:stop
+  mutant-tests:
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Setup GitHub repository 🔧
+        uses: actions/checkout@v3
+      - name: Setup NodeJS v18 ✨
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Cache npm dependencies 🥡
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+      - name: Start Docker containers 🐳
+        run: npm run docker:test:start
+      - name: Mutant tests 👽
+        run: npm run test:stryker
       - name: Stop Docker containers 🐳
         if: ${{ always() }}
         run: npm run docker:test:stop
