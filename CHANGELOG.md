@@ -1,5 +1,25 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.3.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.2.0...v1.3.0) (2023-03-15)
+
+
+### 🎨 Styles
+
+* **gource:** logo in right bottom corner ([#20](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/20)) ([ef1f34a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ef1f34a733ace8e58c211730bce24ba0b95bbc5c))
+
+
+### 🐛 Bug Fixes
+
+* **create-branch-script:** good message when starting script ([#21](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/21)) ([950e289](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/950e2892b2c8ad431c395df2d4e90d9c8871ff2b))
+* **semantic-release:** package json version updated when merged to main ([d7694c3](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d7694c346f16d3264e45af23aaef374b0505ba69))
+
+
+### 🚀 Features
+
+* **game-options:** game options added in creation ([#19](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/19)) ([d0138f0](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d0138f05a47b6fec22d1233ec15b462b5f28f57e))
+* **game:** full game player schema ([#22](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/22)) ([76865cd](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/76865cd7b9e42169f07d714100d6c2bddd1774fe))
+* **mongoose:** limit mongoose connection retries for simpler debugging ([#24](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/24)) ([74a3d15](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/74a3d153f55f847d7f9239a72a094881ca6c832a))
+
 ## [1.2.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.1.0...v1.2.0) (2023-03-10)
 
 
