@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
       - name: Setup NodeJS v18 ⚙️
         uses: actions/setup-node@v3
         with:
@@ -38,6 +36,8 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - name: Setup NodeJS v18 ⚙️
         uses: actions/setup-node@v3
         with:
