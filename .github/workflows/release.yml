@@ -3,21 +3,50 @@ on:
   push:
     branches:
       - 'main'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 env:
   GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
 jobs:
-  release:
+  install:
+    name: Install ⚙️
     runs-on: ubuntu-latest
     steps:
-      - name: Setup GitHub repository 🔧
+      - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - name: Setup NodeJS v18 ✨
+      - name: Setup NodeJS v18 ⚙️
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Cache npm dependencies 🥡
+        uses: actions/cache/restore@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Install project dependencies 📦
         run: npm ci --ignore-scripts
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+  release:
+    name: Release 🏷️
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v3
+      - name: Setup NodeJS v18 ⚙️
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: Restore npm dependencies from cache 🥡
+        uses: actions/cache/restore@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Release 🏷️
         run: npx semantic-release

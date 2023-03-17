@@ -1,10 +1,12 @@
 const { importRules } = require("./config/eslint/rules/import");
 const { configFilesOverride } = require("./config/eslint/rules/overrides/config-files");
 const { constantFilesOverride } = require("./config/eslint/rules/overrides/constant-files");
+const { controllerFilesOverride } = require("./config/eslint/rules/overrides/controller-files");
 const { decoratorFilesOverride } = require("./config/eslint/rules/overrides/decorator-files");
 const { dtoFilesOverride } = require("./config/eslint/rules/overrides/dto-files");
 const { eslintConfigFilesOverride } = require("./config/eslint/rules/overrides/eslint-config-files");
 const { factoryFilesOverride } = require("./config/eslint/rules/overrides/factory-files");
+const { pipeFilesOverride } = require("./config/eslint/rules/overrides/pipe-files");
 const { schemaFilesOverride } = require("./config/eslint/rules/overrides/schema-files");
 const { testFilesOverride } = require("./config/eslint/rules/overrides/test-files");
 const { standardRules } = require("./config/eslint/rules/standard");
@@ -40,5 +42,7 @@ module.exports = {
     decoratorFilesOverride,
     schemaFilesOverride,
     constantFilesOverride,
+    pipeFilesOverride,
+    controllerFilesOverride,
   ],
 };

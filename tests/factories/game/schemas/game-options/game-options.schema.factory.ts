@@ -1,12 +1,12 @@
 import { faker } from "@faker-js/faker";
-import { GAME_PHASES } from "../../../../../src/game/enums/game.enum";
-import type { GameOptions } from "../../../../../src/game/schemas/game-options/schemas/game-options.schema";
-import type { AncientGameOptions } from "../../../../../src/game/schemas/game-options/schemas/roles-game-options/ancient-game-options.schema";
-import type { PiedPiperGameOptions } from "../../../../../src/game/schemas/game-options/schemas/roles-game-options/pied-piper-game-options.schema";
-import type { RolesGameOptions } from "../../../../../src/game/schemas/game-options/schemas/roles-game-options/roles-game-options.schema";
-import type { SeerGameOptions } from "../../../../../src/game/schemas/game-options/schemas/roles-game-options/seer-game-options.schema";
-import type { SheriffGameOptions } from "../../../../../src/game/schemas/game-options/schemas/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
-import type { ThiefGameOptions } from "../../../../../src/game/schemas/game-options/schemas/roles-game-options/thief-game-options.schema";
+import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
+import type { GameOptions } from "../../../../../src/modules/game/schemas/game-options/schemas/game-options.schema";
+import type { AncientGameOptions } from "../../../../../src/modules/game/schemas/game-options/schemas/roles-game-options/ancient-game-options.schema";
+import type { PiedPiperGameOptions } from "../../../../../src/modules/game/schemas/game-options/schemas/roles-game-options/pied-piper-game-options.schema";
+import type { RolesGameOptions } from "../../../../../src/modules/game/schemas/game-options/schemas/roles-game-options/roles-game-options.schema";
+import type { SeerGameOptions } from "../../../../../src/modules/game/schemas/game-options/schemas/roles-game-options/seer-game-options.schema";
+import type { SheriffGameOptions } from "../../../../../src/modules/game/schemas/game-options/schemas/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
+import type { ThiefGameOptions } from "../../../../../src/modules/game/schemas/game-options/schemas/roles-game-options/thief-game-options.schema";
 
 function createFakePiedPiperGameOptions(obj: Partial<PiedPiperGameOptions> = {}): PiedPiperGameOptions {
   return {

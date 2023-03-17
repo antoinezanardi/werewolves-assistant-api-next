@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
-import type { CreateGamePlayerDto } from "../../../../../../src/game/dto/create-game/create-game-player/create-game-player.dto";
-import { ROLE_NAMES } from "../../../../../../src/role/enums/role.enum";
+import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
+import { ROLE_NAMES } from "../../../../../../src/modules/role/enums/role.enum";
 
 function createFakeCreateGamePlayerDto(obj: Partial<CreateGamePlayerDto> = {}, override: Partial<CreateGamePlayerDto> = {}): CreateGamePlayerDto {
   return {
