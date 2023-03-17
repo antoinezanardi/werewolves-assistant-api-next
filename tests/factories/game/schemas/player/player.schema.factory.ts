@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
-import type { Player } from "../../../../../src/game/schemas/player/schemas/player.schema";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/role/enums/role.enum";
+import type { Player } from "../../../../../src/modules/game/schemas/player/schemas/player.schema";
+import { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
 
 function createFakePlayer(obj: Partial<Player> = {}): Player {
   return {
