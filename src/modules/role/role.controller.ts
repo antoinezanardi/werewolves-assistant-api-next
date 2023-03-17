@@ -1,15 +1,15 @@
 import { Controller, Get, HttpStatus } from "@nestjs/common";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
+import { API_RESOURCES } from "../../shared/api/enums/api.enum";
+import { roles } from "./constants/role.constant";
 import { Role } from "./role.entity";
-import { RoleService } from "./role.service";
 
 @ApiTags("🃏 Roles")
-@Controller("roles")
+@Controller(API_RESOURCES.ROLES)
 export class RoleController {
-  public constructor(private readonly roleService: RoleService) {}
   @Get()
   @ApiResponse({ status: HttpStatus.OK, type: Role, isArray: true })
   public getRoles(): readonly Role[] {
-    return this.roleService.getRoles();
+    return roles;
   }
 }
