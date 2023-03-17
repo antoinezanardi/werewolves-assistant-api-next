@@ -140,7 +140,8 @@ jobs:
       - name: All tests 💯
         run: npm run test:cov -- --verbose=false
       - name: Cache tests coverage 🥡
-        uses: actions/cache@v3
+        uses: actions/cache/save@v3
+        if: always()
         id: cache-tests-coverage
         with:
           path: tests/coverage
