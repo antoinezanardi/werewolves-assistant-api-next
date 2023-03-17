@@ -13,6 +13,10 @@ export class GameRepository {
     return this.gameModel.find(filter).exec();
   }
 
+  public async findOne(filter: FilterQuery<GameDocument>): Promise<Game | null> {
+    return this.gameModel.findOne(filter).exec();
+  }
+
   public async create(game: CreateGameDto): Promise<Game> {
     return this.gameModel.create(game);
   }

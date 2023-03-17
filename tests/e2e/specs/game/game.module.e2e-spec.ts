@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import type { BadRequestException } from "@nestjs/common";
+import type { BadRequestException, NotFoundException } from "@nestjs/common";
 import { HttpStatus } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
@@ -18,7 +18,7 @@ import { ROLE_NAMES, ROLE_SIDES } from "../../../../src/role/enums/role.enum";
 import { E2eTestModule } from "../../../../src/test/e2e-test.module";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../factories/game/dto/create-game/create-game.dto.factory";
-import { bulkCreateFakeGames } from "../../../factories/game/schemas/game.schema.factory";
+import { bulkCreateFakeGames, createFakeGame } from "../../../factories/game/schemas/game.schema.factory";
 import { initNestApp } from "../../helpers/nest-app.helper";
 
 describe("Game Module", () => {
@@ -64,6 +64,42 @@ describe("Game Module", () => {
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game[]>()).toHaveLength(3);
+    });
+  });
+
+  describe("GET /game/:id", () => {
+    it("should get a bad request error when id is not uuid.", async() => {
+      const response = await app.inject({
+        method: "GET",
+        url: "/games/123",
+      });
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.json<BadRequestException>().message).toBe("Validation failed (Mongo ObjectId is expected)");
+    });
+
+    it("should get a not found error when id doesn't exist in base.", async() => {
+      const unknownId = faker.database.mongodbObjectId();
+      const response = await app.inject({
+        method: "GET",
+        url: `/games/${unknownId}`,
+      });
+      expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+      expect(response.json<NotFoundException>().message).toBe(`Game with id "${unknownId}" not found`);
+    });
+
+    it("should get a game when id exists in base.", async() => {
+      const game = createFakeGame();
+      await model.create(game);
+      const response = await app.inject({
+        method: "GET",
+        url: `/games/${game._id}`,
+      });
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      expect(response.json<Game>()).toStrictEqual({
+        ...game,
+        createdAt: expect.any(String) as Date,
+        updatedAt: expect.any(String) as Date,
+      });
     });
   });
 
