@@ -68,7 +68,7 @@ describe("Game Module", () => {
   });
 
   describe("GET /game/:id", () => {
-    it("should get a bad request error when id is not uuid.", async() => {
+    it("should get a bad request error when id is not mongoId.", async() => {
       const response = await app.inject({
         method: "GET",
         url: "/games/123",
@@ -312,6 +312,54 @@ describe("Game Module", () => {
       });
       expect(response.statusCode).toBe(HttpStatus.CREATED);
       expect(response.json<Game>().options).toMatchObject<GameOptions>(options);
+    });
+  });
+
+  describe("DELETE /game/:id", () => {
+    it("should get a bad request error when id is not mongoId.", async() => {
+      const response = await app.inject({
+        method: "DELETE",
+        url: "/games/123",
+      });
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.json<BadRequestException>().message).toBe("Validation failed (Mongo ObjectId is expected)");
+    });
+
+    it("should get a not found error when id doesn't exist in base.", async() => {
+      const unknownId = faker.database.mongodbObjectId();
+      const response = await app.inject({
+        method: "DELETE",
+        url: `/games/${unknownId}`,
+      });
+      expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+      expect(response.json<NotFoundException>().message).toBe(`Game with id "${unknownId}" not found`);
+    });
+
+    it("should get a bad request error when game doesn't have playing status.", async() => {
+      const game = createFakeGame({ status: GAME_STATUSES.CANCELED });
+      await model.create(game);
+      const response = await app.inject({
+        method: "DELETE",
+        url: `/games/${game._id}`,
+      });
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.json<BadRequestException>().message).toBe(`Bad mutation for Game with id "${game._id}" : Game doesn't have status with value "playing"`);
+    });
+
+    it("should update game status to canceled when called.", async() => {
+      const game = createFakeGame({ status: GAME_STATUSES.PLAYING });
+      await model.create(game);
+      const response = await app.inject({
+        method: "DELETE",
+        url: `/games/${game._id}`,
+      });
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      expect(response.json<Game>()).toStrictEqual({
+        ...game,
+        status: GAME_STATUSES.CANCELED,
+        createdAt: expect.any(String) as Date,
+        updatedAt: expect.any(String) as Date,
+      });
     });
   });
 });
