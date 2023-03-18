@@ -1,5 +1,28 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.4.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.3.0...v1.4.0) (2023-03-17)
+
+
+### 🔁 CI
+
+* **build:** parallel jobs and cache for faster build ([#25](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/25)) ([0f84af0](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/0f84af05a6591bd684a501f581addc4ebfc0803d))
+* **pipeline:** concurrent pipelines are canceled ([#27](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/27)) ([3c5e3ce](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/3c5e3ce80136f41017ff01eabe9eb1658db07a6a))
+* **sonarcloud:** code quality and security scan ([#28](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/28)) ([052447d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/052447db18a935b640ba0a9ba8df99cf689873ff))
+
+
+### 🚀 Features
+
+* **eslint:** override controller files for eslint rules ([#34](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/34)) ([b4de0e0](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/b4de0e035940b0dec3b5bfdd8cb597bb0414cea5))
+* **game:** get a game by id route ([#29](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/29)) ([b636d5a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/b636d5a6c22ba150bb41a51be8b9b7cb34efec27))
+
+
+### 🐛 Bug Fixes
+
+* **pipeline:** always save tests coverage ([#31](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/31)) ([39417fa](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/39417fa452d3061095ea21288fbfa3245d5f9614))
+* **release:** good use of restore cache for deploying ([9eb4e0f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/9eb4e0f99a6ec4d3d85bb5784311a543768e5fea))
+* **release:** good use of restore cache for deploying ([f2e8595](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f2e85958ab4a74696d6e2d4c493b2100c2662d87))
+* **release:** good use of restore cache for deploying.. last time ([e6eff61](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/e6eff61feaecae7feebc8bcb039b51168e9bdb8c))
+
 ## [1.3.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.2.0...v1.3.0) (2023-03-15)
 
 

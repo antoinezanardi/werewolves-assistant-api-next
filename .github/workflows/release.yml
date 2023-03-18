@@ -20,15 +20,14 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
-      - name: Cache npm dependencies 🥡
-        uses: actions/cache/restore@v3
+      - name: Install project dependencies 📦
+        run: npm ci --ignore-scripts
+      - name: Save npm dependencies in cache 🥡
+        uses: actions/cache/save@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
-      - name: Install project dependencies 📦
-        run: npm ci --ignore-scripts
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
   release:
     name: Release 🏷️
     runs-on: ubuntu-latest
@@ -37,6 +36,8 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - name: Setup NodeJS v18 ⚙️
         uses: actions/setup-node@v3
         with:
