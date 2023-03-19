@@ -5,7 +5,7 @@ import { Test } from "@nestjs/testing";
 import { AppModule } from "../../../src/app.module";
 import { initNestApp } from "../helpers/nest-app.helper";
 
-describe("App Module", () => {
+describe("App Controller", () => {
   let app: NestFastifyApplication;
 
   beforeAll(async() => {

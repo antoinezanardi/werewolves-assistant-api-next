@@ -3,11 +3,11 @@ import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { HealthCheckResult } from "@nestjs/terminus";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { HealthModule } from "../../../../../src/modules/health/health.module";
-import { E2eTestModule } from "../../../../../src/modules/test/e2e-test.module";
-import { initNestApp } from "../../../helpers/nest-app.helper";
+import { HealthModule } from "../../../../../../src/modules/health/health.module";
+import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
+import { initNestApp } from "../../../../helpers/nest-app.helper";
 
-describe("Health Module", () => {
+describe("Health Controller", () => {
   let app: NestFastifyApplication;
 
   beforeAll(async() => {
