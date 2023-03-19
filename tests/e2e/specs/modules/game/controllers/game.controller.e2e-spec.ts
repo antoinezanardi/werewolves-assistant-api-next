@@ -7,21 +7,21 @@ import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import type { Model } from "mongoose";
-import type { CreateGameDto } from "../../../../../src/modules/game/dto/create-game/create-game.dto";
-import { GAME_PHASES, GAME_STATUSES } from "../../../../../src/modules/game/enums/game.enum";
-import { GameModule } from "../../../../../src/modules/game/game.module";
-import { defaultGameOptions } from "../../../../../src/modules/game/schemas/game-options/constants/game-options.constant";
-import type { GameOptions } from "../../../../../src/modules/game/schemas/game-options/schemas/game-options.schema";
-import { Game } from "../../../../../src/modules/game/schemas/game.schema";
-import type { Player } from "../../../../../src/modules/game/schemas/player/schemas/player.schema";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
-import { E2eTestModule } from "../../../../../src/modules/test/e2e-test.module";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
-import { createFakeCreateGameDto } from "../../../../factories/game/dto/create-game/create-game.dto.factory";
-import { bulkCreateFakeGames, createFakeGame } from "../../../../factories/game/schemas/game.schema.factory";
-import { initNestApp } from "../../../helpers/nest-app.helper";
+import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
+import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
+import { GameModule } from "../../../../../../src/modules/game/game.module";
+import { defaultGameOptions } from "../../../../../../src/modules/game/schemas/game-options/constants/game-options.constant";
+import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/schemas/game-options.schema";
+import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
+import type { Player } from "../../../../../../src/modules/game/schemas/player/schemas/player.schema";
+import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
+import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
+import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { createFakeCreateGameDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
+import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
+import { initNestApp } from "../../../../helpers/nest-app.helper";
 
-describe("Game Module", () => {
+describe("Game Controller", () => {
   let app: NestFastifyApplication;
   let model: Model<Game>;
 
