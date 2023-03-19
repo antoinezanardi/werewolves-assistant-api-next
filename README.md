@@ -130,6 +130,16 @@ You can check all metrics at the top of this README.
 npm run gource
 ```
 
+### 🔀 Create git branch with a conventional name
+```shell
+npm run script:create-branch
+```
+
+### ⤴️ Create pull request against the `develop` branch from current branch
+```shell
+npm run script:create-pull-request
+```
+
 ## <a name="license">©️ License</a>
 
 This project is licensed under the [MIT License](http://opensource.org/licenses/MIT).
