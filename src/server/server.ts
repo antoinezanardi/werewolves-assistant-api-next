@@ -13,6 +13,10 @@ async function bootstrap(port = 3000): Promise<NestFastifyApplication> {
   }));
   const documentationPath = "docs";
   createSwaggerDocument(documentationPath, app);
+  app.useStaticAssets({
+    root: `${process.cwd()}/public`,
+    prefix: "/public/",
+  });
   await app.listen(port, "127.0.0.1");
   const appUrl = await app.getUrl();
   Logger.log(`🐺 App is available at ${appUrl}`, "NestApplication");

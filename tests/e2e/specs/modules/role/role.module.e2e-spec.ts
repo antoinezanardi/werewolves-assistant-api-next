@@ -4,8 +4,8 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { plainToInstance } from "class-transformer";
 import { roles } from "../../../../../src/modules/role/constants/role.constant";
-import { Role } from "../../../../../src/modules/role/role.entity";
 import { RoleModule } from "../../../../../src/modules/role/role.module";
+import { Role } from "../../../../../src/modules/role/types/role.type";
 import { E2eTestModule } from "../../../../../src/modules/test/e2e-test.module";
 
 describe("Role Module", () => {

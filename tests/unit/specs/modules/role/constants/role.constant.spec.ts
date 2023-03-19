@@ -1,7 +1,7 @@
 import { plainToInstance } from "class-transformer";
-import { roles, villagerRoles, werewolvesRoles } from "../../../../../src/modules/role/constants/role.constant";
-import { ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
-import { Role } from "../../../../../src/modules/role/role.entity";
+import { roles, villagerRoles, werewolvesRoles } from "../../../../../../src/modules/role/constants/role.constant";
+import { ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
+import { Role } from "../../../../../../src/modules/role/types/role.type";
 
 describe("Role Constant", () => {
   describe("werewolvesRoles", () => {

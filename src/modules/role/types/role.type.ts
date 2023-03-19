@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
-import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "./enums/role.enum";
+import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "../enums/role.enum";
 
 class Role {
   @ApiProperty({ description: "Role's name" })

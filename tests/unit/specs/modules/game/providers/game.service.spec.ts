@@ -1,11 +1,11 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
-import { GAME_STATUSES } from "../../../../../src/modules/game/enums/game.enum";
-import { GameRepository } from "../../../../../src/modules/game/game.repository";
-import { GameService } from "../../../../../src/modules/game/game.service";
-import { createFakeCreateGameDto } from "../../../../factories/game/dto/create-game/create-game.dto.factory";
-import { createFakeGame } from "../../../../factories/game/schemas/game.schema.factory";
+import { GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
+import { GameRepository } from "../../../../../../src/modules/game/providers/game.repository";
+import { GameService } from "../../../../../../src/modules/game/providers/game.service";
+import { createFakeCreateGameDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
+import { createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
 
 describe("Game Service", () => {
   let service: GameService;

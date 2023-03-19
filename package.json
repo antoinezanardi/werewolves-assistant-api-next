@@ -12,7 +12,7 @@
     "docker:test:start": " docker-compose -f docker/werewolves-assistant-test/docker-compose.yml up -d",
     "docker:test:stop": " docker-compose -f docker/werewolves-assistant-test/docker-compose.yml down",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "rimraf dist && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint .",
@@ -44,7 +44,6 @@
   },
   "homepage": "https://github.com/antoinezanardi/werewolves-assistant-api-next#readme",
   "dependencies": {
-    "@fastify/static": "^6.9.0",
     "@nestjs/common": "^9.3.10",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.3.10",
