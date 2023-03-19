@@ -3,7 +3,6 @@
   "version": "1.4.0",
   "description": "About Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.",
   "scripts": {
-    "create-branch": "./scripts/create-git-branch.sh",
     "prepare": "husky install",
     "prebuild": "rimraf dist",
     "build": "NODE_ENV=production nest build",
@@ -31,6 +30,8 @@
     "test:e2e:watch": "NODE_ENV=test jest --watch --config config/jest/jest-e2e.ts",
     "test:e2e:cov": "NODE_ENV=test rimraf tests/e2e/coverage && jest --coverage --config config/jest/jest-e2e.ts",
     "test:e2e:debug": "NODE_ENV=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --config config/jest/jest-e2e.ts",
+    "script:create-branch": "./scripts/create-git-branch.sh",
+    "script:create-pull-request": "./scripts/create-pull-request.sh",
     "gource": "gource --load-config config/gource/gource.config"
   },
   "repository": {
