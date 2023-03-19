@@ -1,7 +1,7 @@
 import type { ConfigService } from "@nestjs/config";
 import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 import { when } from "jest-when";
-import { mongooseModuleFactory } from "../../../../../../src/modules/config/database/database.helper";
+import { mongooseModuleFactory } from "../../../../../../../src/modules/config/database/helpers/database.helper";
 
 describe("Database Helper", () => {
   const connectionTimeoutMs = 3000;

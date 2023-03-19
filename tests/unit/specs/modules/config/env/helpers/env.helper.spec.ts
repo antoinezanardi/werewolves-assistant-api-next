@@ -1,6 +1,6 @@
 import { plainToInstance } from "class-transformer";
-import { EnvironmentVariables } from "../../../../../../src/modules/config/env/env";
-import { validate, getEnvPath, getEnvPaths } from "../../../../../../src/modules/config/env/env.helper";
+import { validate, getEnvPath, getEnvPaths } from "../../../../../../../src/modules/config/env/helpers/env.helper";
+import { EnvironmentVariables } from "../../../../../../../src/modules/config/env/types/env.type";
 
 describe("Config Env Helper", () => {
   describe("validate", () => {

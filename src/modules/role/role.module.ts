@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { RoleController } from "./role.controller";
+import { RoleController } from "./controllers/role.controller";
 
 @Module({ controllers: [RoleController] })
 export class RoleModule {}

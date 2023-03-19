@@ -59,7 +59,7 @@ const standardRules = Object.freeze({
   "accessor-pairs": ERROR,
   "arrow-body-style": [ERROR, "as-needed"],
   "block-scoped-var": ERROR,
-  "camelcase": ERROR,
+  "camelcase": [ERROR, { allow: ["npm_package_version"] }],
   "capitalized-comments": [ERROR, "never", { ignorePattern: "TODO" }],
   "class-methods-use-this": ERROR,
   "complexity": ERROR,

@@ -1,14 +1,22 @@
 import type { INestApplication } from "@nestjs/common";
+import type { SwaggerCustomOptions } from "@nestjs/swagger";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 function createSwaggerDocument(path: string, app: INestApplication): void {
+  const title = "Werewolves Assistant API Reference 🐺";
+  const version = process.env.npm_package_version ?? "?";
   const config = new DocumentBuilder()
-    .setTitle("Werewolves Assistant API Reference 🐺")
+    .setTitle(title)
     .setDescription("Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.")
-    .setVersion("1.0")
+    .setVersion(version)
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(path, app, document);
+  const options: SwaggerCustomOptions = {
+    customSiteTitle: title,
+    customfavIcon: "public/assets/images/logo/square/werewolves-logo-small.png",
+    customCssUrl: "public/assets/css/custom-swagger.css",
+  };
+  SwaggerModule.setup(path, app, document, options);
 }
 
 export { createSwaggerDocument };

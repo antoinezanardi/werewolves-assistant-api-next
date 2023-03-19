@@ -15,7 +15,7 @@ const gameFieldsSpecs = Object.freeze({
 
 const gameApiProperties: Record<keyof Game, ApiPropertyOptions> = Object.freeze({
   _id: {
-    description: "Game's ID",
+    description: "Game's Mongo ObjectId",
     example: "507f1f77bcf86cd799439011",
   },
   turn: {

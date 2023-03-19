@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { getEnvPaths, validate } from "./env.helper";
+import { getEnvPaths, validate } from "./helpers/env.helper";
 
 @Module({
   imports: [
