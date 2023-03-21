@@ -1,5 +1,25 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.5.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.4.0...v1.5.0) (2023-03-21)
+
+
+### 📖 Docs
+
+* **swagger:** improve swagger docs ([#37](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/37)) ([f9ea037](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f9ea03710fdca23e6eb0df2918e666558879e943))
+
+
+### 🔁 CI
+
+* **sonarcloud:** sonarcloud analysis when releasing to main ([#41](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/41)) ([d337923](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d337923275d804c9f535f4a105b08a3799b0f584))
+
+
+### 🚀 Features
+
+* **dependabot:** add dependabot for dependencies updates ([#43](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/43)) ([54a047e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/54a047e1db20942f5093e931d53045db09764e08))
+* **game:** cancel playing game with DELETE endpoint ([#35](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/35)) ([16eef75](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/16eef75ea8a976ac5e40ccf34dcf55d5c2706713))
+* **game:** get random composition route ([#42](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/42)) ([88ea1d6](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/88ea1d6aac45efcccd6d7500cf3788029132267c))
+* **script:** create pull request against develop script ([#40](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/40)) ([1a4a964](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1a4a9645f96e6d16ca69ce0e1aca78a36e1be1a0))
+
 ## [1.4.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.3.0...v1.4.0) (2023-03-17)
 
 
