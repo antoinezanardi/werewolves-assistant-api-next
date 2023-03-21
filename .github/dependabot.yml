@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "antoinezanardi"
+    reviewers:
+      - "antoinezanardi"
+    commit-message:
+      prefix: "chore(deps)"
+    target-branch: "develop"
