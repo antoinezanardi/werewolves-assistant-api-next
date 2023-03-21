@@ -7,7 +7,10 @@ import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import type { Model } from "mongoose";
+import { stringify } from "qs";
+import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
+import type { GetGameRandomCompositionDto } from "../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
 import { GameModule } from "../../../../../../src/modules/game/game.module";
 import { defaultGameOptions } from "../../../../../../src/modules/game/schemas/game-options/constants/game-options.constant";
@@ -16,6 +19,7 @@ import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/schemas/player.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
+import { fastifyServerDefaultOptions } from "../../../../../../src/server/constants/server.constant";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
@@ -32,7 +36,7 @@ describe("Game Controller", () => {
         GameModule,
       ],
     }).compile();
-    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(fastifyServerDefaultOptions));
     model = module.get<Model<Game>>(getModelToken(Game.name));
 
     await initNestApp(app);
@@ -64,6 +68,95 @@ describe("Game Controller", () => {
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game[]>()).toHaveLength(3);
+    });
+  });
+
+  describe("GET /games/random-composition", () => {
+    it.each<{ query: Partial<GetGameRandomCompositionDto>; test: string; errorMessage: string }>([
+      {
+        query: { players: undefined },
+        test: "there is not enough players",
+        errorMessage: "players must contain at least 4 elements",
+      },
+      {
+        query: { players: [{ name: "Antoine" }] },
+        test: "there is not enough players",
+        errorMessage: "players must contain at least 4 elements",
+      },
+      {
+        query: { players: bulkCreateFakeCreateGamePlayerDto(45) },
+        test: "the maximum of players is reached",
+        errorMessage: "players must contain no more than 40 elements",
+      },
+      {
+        query: { players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: "" }]) },
+        test: "one of the player name is too short",
+        errorMessage: "players.0.name must be longer than or equal to 1 characters",
+      },
+      {
+        query: { players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: faker.datatype.string(31) }]) },
+        test: "one of the player name is too long",
+        errorMessage: "players.0.name must be shorter than or equal to 30 characters",
+      },
+      {
+        query: {
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { name: "John" },
+            { name: "John" },
+          ]),
+        },
+        test: "two players have the same name",
+        errorMessage: "players.name must be unique",
+      },
+      {
+        query: {
+          players: bulkCreateFakeCreateGamePlayerDto(4),
+          excludedRoles: [ROLE_NAMES.WEREWOLF, ROLE_NAMES.SEER],
+        },
+        test: "werewolf is in excluded roles",
+        errorMessage: "excludedRoles should not contain villager, werewolf values",
+      },
+      {
+        query: {
+          players: bulkCreateFakeCreateGamePlayerDto(4),
+          excludedRoles: [ROLE_NAMES.VILLAGER, ROLE_NAMES.SEER],
+        },
+        test: "villager is in excluded roles",
+        errorMessage: "excludedRoles should not contain villager, werewolf values",
+      },
+      {
+        query: {
+          players: bulkCreateFakeCreateGamePlayerDto(4),
+          excludedRoles: [ROLE_NAMES.SEER, ROLE_NAMES.SEER],
+        },
+        test: "there is twice the same excluded role",
+        errorMessage: "excluded roles must be unique",
+      },
+    ])("should not allow getting random game composition when $test [#$#].", async({
+      query,
+      errorMessage,
+    }) => {
+      const response = await app.inject({
+        method: "GET",
+        url: "/games/random-composition",
+        query: stringify(query),
+      });
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.json<BadRequestException>().message).toContainEqual(errorMessage);
+    });
+
+    it("should get random composition when called.", async() => {
+      const query: Partial<GetGameRandomCompositionDto> = { players: bulkCreateFakeCreateGamePlayerDto(40), arePowerfulVillagerRolesPrioritized: false };
+      const response = await app.inject({
+        method: "GET",
+        url: "/games/random-composition",
+        query: stringify(query),
+      });
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      const players = response.json<CreateGamePlayerDto[]>();
+      expect(players).toSatisfyAll<CreateGamePlayerDto>(({ role, side }) =>
+        role.current !== undefined && role.current === role.original &&
+        side.current !== undefined && side.current === side.original);
     });
   });
 

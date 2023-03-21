@@ -10,6 +10,7 @@ const config: Config = {
   resetMocks: true,
   restoreMocks: true,
   clearMocks: true,
+  setupFilesAfterEnv: ["jest-extended/all"],
   coverageReporters: ["clover", "json", "lcov", "text", "text-summary"],
   collectCoverageFrom: [
     "src/**/*.module.ts",

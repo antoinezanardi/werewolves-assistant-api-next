@@ -4,7 +4,7 @@ import { ROLE_NAMES } from "../../../../../../src/modules/role/enums/role.enum";
 
 function createFakeCreateGamePlayerDto(obj: Partial<CreateGamePlayerDto> = {}, override: Partial<CreateGamePlayerDto> = {}): CreateGamePlayerDto {
   return {
-    name: obj.name ?? faker.name.firstName(),
+    name: obj.name ?? faker.helpers.unique(faker.name.firstName),
     role: { name: obj.role?.name ?? faker.helpers.arrayElement(Object.values(ROLE_NAMES)) },
     side: {},
     position: obj.position ?? undefined,

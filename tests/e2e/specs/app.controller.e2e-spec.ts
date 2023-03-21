@@ -3,6 +3,7 @@ import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { AppModule } from "../../../src/app.module";
+import { fastifyServerDefaultOptions } from "../../../src/server/constants/server.constant";
 import { initNestApp } from "../helpers/nest-app.helper";
 
 describe("App Controller", () => {
@@ -10,7 +11,7 @@ describe("App Controller", () => {
 
   beforeAll(async() => {
     const module: TestingModule = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(fastifyServerDefaultOptions));
 
     await initNestApp(app);
   });

@@ -1,6 +1,8 @@
 import * as NestCommon from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { fastifyServerDefaultOptions } from "../../../../src/server/constants/server.constant";
 import { bootstrap } from "../../../../src/server/server";
 
 jest.mock<typeof NestCommon>("@nestjs/common", () => {
@@ -40,6 +42,11 @@ describe("Server", () => {
 
     afterEach(async() => {
       await app.close();
+    });
+
+    it("should create FastifyAdapter with default fastify server options when called.", async() => {
+      app = await bootstrap();
+      expect(FastifyAdapter).toHaveBeenCalledWith(fastifyServerDefaultOptions);
     });
 
     it("should call listen with the default port when no port is provided.", async() => {

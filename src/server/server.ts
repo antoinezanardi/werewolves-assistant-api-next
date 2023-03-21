@@ -3,14 +3,13 @@ import { NestFactory } from "@nestjs/core";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import { AppModule } from "../app.module";
+import { validationPipeDefaultOptions } from "../shared/validation/constants/validation.constant";
+import { fastifyServerDefaultOptions } from "./constants/server.constant";
 import { createSwaggerDocument } from "./swagger/swagger";
 
 async function bootstrap(port = 3000): Promise<NestFastifyApplication> {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-  }));
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(fastifyServerDefaultOptions));
+  app.useGlobalPipes(new ValidationPipe(validationPipeDefaultOptions));
   const documentationPath = "docs";
   createSwaggerDocument(documentationPath, app);
   app.useStaticAssets({
