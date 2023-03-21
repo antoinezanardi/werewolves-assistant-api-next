@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
-import { BAD_RESOURCE_MUTATION_REASONS } from "../../../shared/error/enums/bad-resource-mutation-error.enum";
-import { BadResourceMutationError } from "../../../shared/error/types/bad-resource-mutation-error.type";
-import { ResourceNotFoundError } from "../../../shared/error/types/resource-not-found-error.type";
-import type { CreateGameDto } from "../dto/create-game/create-game.dto";
-import { GAME_STATUSES } from "../enums/game.enum";
-import type { Game } from "../schemas/game.schema";
-import { GameRepository } from "./game.repository";
+import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
+import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../shared/error/enums/bad-resource-mutation-error.enum";
+import { BadResourceMutationError } from "../../../../shared/error/types/bad-resource-mutation-error.type";
+import { ResourceNotFoundError } from "../../../../shared/error/types/resource-not-found-error.type";
+import type { CreateGameDto } from "../../dto/create-game/create-game.dto";
+import { GAME_STATUSES } from "../../enums/game.enum";
+import type { Game } from "../../schemas/game.schema";
+import { GameRepository } from "../repositories/game.repository";
 
 @Injectable()
 export class GameService {

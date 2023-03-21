@@ -7,13 +7,14 @@ import { roles } from "../../../../../../src/modules/role/constants/role.constan
 import { RoleModule } from "../../../../../../src/modules/role/role.module";
 import { Role } from "../../../../../../src/modules/role/types/role.type";
 import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
+import { fastifyServerDefaultOptions } from "../../../../../../src/server/constants/server.constant";
 
 describe("Role Controller", () => {
   let app: NestFastifyApplication;
 
   beforeAll(async() => {
     const module: TestingModule = await Test.createTestingModule({ imports: [E2eTestModule, RoleModule] }).compile();
-    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(fastifyServerDefaultOptions));
 
     await app.init();
   });

@@ -8,6 +8,7 @@ const { eslintConfigFilesOverride } = require("./config/eslint/rules/overrides/e
 const { factoryFilesOverride } = require("./config/eslint/rules/overrides/factory-files");
 const { pipeFilesOverride } = require("./config/eslint/rules/overrides/pipe-files");
 const { schemaFilesOverride } = require("./config/eslint/rules/overrides/schema-files");
+const { serviceFilesOverride } = require("./config/eslint/rules/overrides/service-files");
 const { testFilesOverride } = require("./config/eslint/rules/overrides/test-files");
 const { standardRules } = require("./config/eslint/rules/standard");
 const { typescriptRules } = require("./config/eslint/rules/typescript");
@@ -44,5 +45,6 @@ module.exports = {
     constantFilesOverride,
     pipeFilesOverride,
     controllerFilesOverride,
+    serviceFilesOverride,
   ],
 };

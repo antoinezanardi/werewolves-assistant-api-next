@@ -7,6 +7,12 @@
   "tsconfigFile": "tsconfig.json",
   "testRunner": "jest",
   "ignoreStatic": true,
+  "mutate": [
+    "src/**/*.ts",
+    "!**/*.dto.ts",
+    "!**/*.schema.ts",
+    "!**/*.constant.ts"
+  ],
   "jest": {
     "configFile": "config/jest/jest-global.ts"
   },

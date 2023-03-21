@@ -5,6 +5,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { HealthModule } from "../../../../../../src/modules/health/health.module";
 import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
+import { fastifyServerDefaultOptions } from "../../../../../../src/server/constants/server.constant";
 import { initNestApp } from "../../../../helpers/nest-app.helper";
 
 describe("Health Controller", () => {
@@ -12,7 +13,7 @@ describe("Health Controller", () => {
 
   beforeAll(async() => {
     const module: TestingModule = await Test.createTestingModule({ imports: [E2eTestModule, HealthModule] }).compile();
-    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(fastifyServerDefaultOptions));
 
     await initNestApp(app);
   });

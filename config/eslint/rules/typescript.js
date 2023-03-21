@@ -40,7 +40,7 @@ const typescriptRules = Object.freeze({
   "@typescript-eslint/no-for-in-array": ERROR,
   // rule below is deprecated
   "@typescript-eslint/no-implicit-any-catch": OFF,
-  "@typescript-eslint/no-inferrable-types": ERROR,
+  "@typescript-eslint/no-inferrable-types": [ERROR, { ignoreProperties: true }],
   "@typescript-eslint/no-invalid-void-type": ERROR,
   "@typescript-eslint/no-meaningless-void-operator": ERROR,
   "@typescript-eslint/no-misused-new": ERROR,

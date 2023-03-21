@@ -20,6 +20,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
+  "files": ["node_modules/jest-extended/types/index.d.ts"],
   "include": [
     ".eslintrc.js",
     "**/*.js",

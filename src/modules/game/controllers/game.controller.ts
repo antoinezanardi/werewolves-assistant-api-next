@@ -1,11 +1,14 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
 import { ValidateMongoId } from "../../../shared/api/pipes/validate-mongo-id.pipe";
 import { getControllerRouteError } from "../../../shared/error/helpers/error.helper";
+import { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "../dto/create-game/create-game.dto";
+import { GetGameRandomCompositionDto } from "../dto/get-game-random-composition/get-game-random-composition.dto";
 import { GAME_STATUSES } from "../enums/game.enum";
-import { GameService } from "../providers/game.service";
+import { GameRandomCompositionService } from "../providers/services/game-random-composition.service";
+import { GameService } from "../providers/services/game.service";
 import { Game } from "../schemas/game.schema";
 import { ApiGameIdParam } from "./decorators/api-game-id-param.decorator";
 import { ApiGameNotFoundResponse } from "./decorators/api-game-not-found-response.decorator";
@@ -13,12 +16,23 @@ import { ApiGameNotFoundResponse } from "./decorators/api-game-not-found-respons
 @ApiTags("🎲 Games")
 @Controller(API_RESOURCES.GAMES)
 export class GameController {
-  public constructor(private readonly gameService: GameService) {}
+  public constructor(
+    private readonly gameService: GameService,
+    private readonly gameRandomCompositionService: GameRandomCompositionService,
+  ) {}
+
   @Get()
   @ApiOperation({ summary: "Get games" })
   @ApiResponse({ status: HttpStatus.OK, type: Game, isArray: true })
   public async getGames(): Promise<Game[]> {
     return this.gameService.getGames();
+  }
+
+  @Get("random-composition")
+  @ApiOperation({ summary: "Get game random composition for given players" })
+  @ApiResponse({ status: HttpStatus.OK, type: CreateGamePlayerDto, isArray: true })
+  public getGameRandomComposition(@Query() getGameRandomCompositionDto: GetGameRandomCompositionDto): CreateGamePlayerDto[] {
+    return this.gameRandomCompositionService.getGameRandomComposition(getGameRandomCompositionDto);
   }
 
   @Get(":id")
