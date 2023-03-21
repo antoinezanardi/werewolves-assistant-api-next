@@ -5,7 +5,7 @@ import { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/ro
 function createFakePlayer(obj: Partial<Player> = {}): Player {
   return {
     _id: obj._id ?? faker.database.mongodbObjectId(),
-    name: obj.name ?? faker.name.firstName(),
+    name: obj.name ?? faker.helpers.unique(faker.name.firstName),
     role: {
       current: obj.role?.current ?? faker.helpers.arrayElement(Object.values(ROLE_NAMES)),
       original: obj.role?.original ?? faker.helpers.arrayElement(Object.values(ROLE_NAMES)),

@@ -5,10 +5,10 @@ You want to contribute to this project, and we're thankful for that ❤. But fir
 ## 🤝 How To Contribute
 
 1. [**Fork**](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/fork-a-repo) the project.
-2. Create a new topic branch on your local forked copy. Its name must respect the git flow branch naming convention. You can name it `feat/[NAME_OF_YOUR_FEATURE]` or `fix/[NAME_OF_YOUR_FIX]`. To create a new branch for your feature or your fix, please run `npm run create-branch` and follow the steps.
+2. Create a new topic branch on your local forked copy. Its name must respect the git flow branch naming convention. You can name it `feat/[NAME_OF_YOUR_FEATURE]` or `fix/[NAME_OF_YOUR_FIX]`. To create a new branch for your feature or your fix, please run `npm run script:create-branch` and follow the steps.
 3. Before committing any change, install *Husky hooks* with `npm i`. Hooks will ensure that your branch name, commit, code quality and tests respect the project conventions and rules.
 4. Push your topic branch up to your fork. Don't forget to add [**tests**](https://github.com/antoinezanardi/werewolves-assistant-api-next/tree/main/tests). Please read the ESLint rules and the commit messages format in the dedicated sections below.
-5. [**Open a Pull Request**](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/about-pull-requests) with a clear title and description against the `develop` branch.
+5. [**Open a Pull Request**](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/about-pull-requests) with a clear title and description against the `develop` branch. You can use the `npm run script:create-pull-request` command to automatically create a PR against the `develop` branch from the current branch.
 
 ## ✅ ESLint rules for TypeScript files
 

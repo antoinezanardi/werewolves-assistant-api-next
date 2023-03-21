@@ -1,6 +1,8 @@
 import * as NestCommon from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { fastifyServerDefaultOptions } from "../../../../src/server/constants/server.constant";
 import { bootstrap } from "../../../../src/server/server";
 
 jest.mock<typeof NestCommon>("@nestjs/common", () => {
@@ -20,16 +22,19 @@ describe("Server", () => {
     let listenMock: jest.Mock;
     let getUrlMock: jest.Mock;
     let useGlobalPipesMock: jest.Mock;
+    let useStaticAssetsMock: jest.SpyInstance;
     let logMock: jest.SpyInstance;
 
     beforeEach(() => {
       listenMock = jest.fn();
       getUrlMock = jest.fn().mockReturnValue("http://127.0.0.1:3000");
       useGlobalPipesMock = jest.fn();
+      useStaticAssetsMock = jest.fn();
       (NestFactory.create as jest.Mock).mockImplementation().mockResolvedValue({
         listen: listenMock,
         getUrl: getUrlMock,
         useGlobalPipes: useGlobalPipesMock,
+        useStaticAssets: useStaticAssetsMock,
         close: jest.fn(),
       });
       logMock = jest.spyOn(NestCommon.Logger, "log").mockImplementation();
@@ -37,6 +42,11 @@ describe("Server", () => {
 
     afterEach(async() => {
       await app.close();
+    });
+
+    it("should create FastifyAdapter with default fastify server options when called.", async() => {
+      app = await bootstrap();
+      expect(FastifyAdapter).toHaveBeenCalledWith(fastifyServerDefaultOptions);
     });
 
     it("should call listen with the default port when no port is provided.", async() => {
@@ -57,7 +67,15 @@ describe("Server", () => {
       });
     });
 
-    it("should print serveur and docs address with specific port when port is provided.", async() => {
+    it("should serve public directory when called.", async() => {
+      app = await bootstrap();
+      expect(useStaticAssetsMock).toHaveBeenCalledWith({
+        root: `${process.cwd()}/public`,
+        prefix: "/public/",
+      });
+    });
+
+    it("should print server and docs address with specific port when port is provided.", async() => {
       const port = 4500;
       getUrlMock.mockReturnValue(`http://127.0.0.1:${port}`);
       app = await bootstrap(port);

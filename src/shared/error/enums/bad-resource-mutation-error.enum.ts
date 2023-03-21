@@ -1,0 +1,5 @@
+enum BAD_RESOURCE_MUTATION_REASONS {
+  GAME_NOT_PLAYING = "game-not-playing",
+}
+
+export { BAD_RESOURCE_MUTATION_REASONS };

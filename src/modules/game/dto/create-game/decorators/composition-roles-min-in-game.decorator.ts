@@ -1,7 +1,7 @@
 import type { ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
 import { roles } from "../../../../role/constants/role.constant";
-import type { Role } from "../../../../role/role.entity";
+import type { Role } from "../../../../role/types/role.type";
 import type { CreateGamePlayerDto } from "../create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "../create-game.dto";
 

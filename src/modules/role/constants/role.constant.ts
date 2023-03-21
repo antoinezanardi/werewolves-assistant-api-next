@@ -1,14 +1,16 @@
 import { plainToInstance } from "class-transformer";
 import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "../enums/role.enum";
-import { Role } from "../role.entity";
+import { Role } from "../types/role.type";
 
-const werewolvesRoles: readonly Role[] = Object.freeze(plainToInstance(Role, [
-  {
-    name: ROLE_NAMES.WEREWOLF,
-    side: ROLE_SIDES.WEREWOLVES,
-    type: ROLE_TYPES.WEREWOLF,
-    maxInGame: 99,
-  },
+const defaultWerewolfRole: Role = Object.freeze({
+  name: ROLE_NAMES.WEREWOLF,
+  side: ROLE_SIDES.WEREWOLVES,
+  type: ROLE_TYPES.WEREWOLF,
+  maxInGame: 99,
+});
+
+const werewolvesRoles: readonly Role[] = plainToInstance(Role, [
+  defaultWerewolfRole,
   {
     name: ROLE_NAMES.BIG_BAD_WOLF,
     side: ROLE_SIDES.WEREWOLVES,
@@ -30,15 +32,17 @@ const werewolvesRoles: readonly Role[] = Object.freeze(plainToInstance(Role, [
     maxInGame: 1,
     recommendedMinPlayers: 12,
   },
-]));
+]).map(role => Object.freeze(role));
 
-const villagerRoles: readonly Role[] = Object.freeze(plainToInstance(Role, [
-  {
-    name: ROLE_NAMES.VILLAGER,
-    side: ROLE_SIDES.VILLAGERS,
-    type: ROLE_TYPES.VILLAGER,
-    maxInGame: 99,
-  },
+const defaultVillagerRole: Role = Object.freeze({
+  name: ROLE_NAMES.VILLAGER,
+  side: ROLE_SIDES.VILLAGERS,
+  type: ROLE_TYPES.VILLAGER,
+  maxInGame: 99,
+});
+
+const villagerRoles: readonly Role[] = plainToInstance(Role, [
+  defaultVillagerRole,
   {
     name: ROLE_NAMES.VILLAGER_VILLAGER,
     side: ROLE_SIDES.VILLAGERS,
@@ -177,11 +181,11 @@ const villagerRoles: readonly Role[] = Object.freeze(plainToInstance(Role, [
     maxInGame: 1,
     type: ROLE_TYPES.VILLAGER,
   },
-]));
+]).map(role => Object.freeze(role));
 
-const roles: readonly Role[] = Object.freeze(plainToInstance(Role, [
+const roles: readonly Role[] = plainToInstance(Role, [
   ...werewolvesRoles,
   ...villagerRoles,
-]));
+]).map(role => Object.freeze(role));
 
-export { roles, werewolvesRoles, villagerRoles };
+export { roles, defaultWerewolfRole, werewolvesRoles, defaultVillagerRole, villagerRoles };
