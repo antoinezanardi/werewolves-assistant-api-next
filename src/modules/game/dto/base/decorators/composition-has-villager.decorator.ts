@@ -1,14 +1,15 @@
 import type { ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
+import { has } from "lodash";
 import { roles } from "../../../../role/constants/role.constant";
+import type { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { ROLE_SIDES } from "../../../../role/enums/role.enum";
-import type { CreateGamePlayerDto } from "../create-game-player/create-game-player.dto";
-import type { CreateGameDto } from "../create-game.dto";
 
-function doesCompositionHaveAtLeastOneVillager(players?: CreateGamePlayerDto[]): boolean {
-  if (!Array.isArray(players)) {
+function doesCompositionHaveAtLeastOneVillager(value?: unknown): boolean {
+  if (!Array.isArray(value) || value.some(player => typeof player !== "object" && !has(player, ["role", "name"]))) {
     return false;
   }
+  const players = value as { role: { name: ROLE_NAMES } }[];
   const werewolfRoles = roles.filter(role => role.side === ROLE_SIDES.VILLAGERS);
   return players.some(({ role }) => werewolfRoles.find(werewolfRole => role.name === werewolfRole.name));
 }
@@ -18,7 +19,7 @@ function getCompositionHasVillagerDefaultMessage(): string {
 }
 
 function CompositionHasVillager(validationOptions?: ValidationOptions) {
-  return (object: CreateGameDto, propertyName: keyof CreateGameDto): void => {
+  return (object: object, propertyName: string): void => {
     registerDecorator({
       name: "CompositionHasVillager",
       target: object.constructor,

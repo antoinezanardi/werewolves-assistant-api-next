@@ -1,12 +1,11 @@
 import type { ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
-import type { CreateGamePlayerDto } from "../create-game-player/create-game-player.dto";
-import type { CreateGameDto } from "../create-game.dto";
 
-function doesCompositionHaveConsistentPositions(players?: CreateGamePlayerDto[]): boolean {
-  if (!Array.isArray(players)) {
+function doesCompositionHaveConsistentPositions(value?: unknown): boolean {
+  if (!Array.isArray(value) || value.some(player => typeof player !== "object")) {
     return false;
   }
+  const players = value as { position?: number }[];
   const uniquePositions = players.reduce<number[]>((acc, { position }) => {
     if (position !== undefined && !acc.includes(position) && position < players.length) {
       acc.push(position);
@@ -21,7 +20,7 @@ function getCompositionPositionsConsistencyDefaultMessage(): string {
 }
 
 function CompositionPositionsConsistency(validationOptions?: ValidationOptions) {
-  return (object: CreateGameDto, propertyName: keyof CreateGameDto): void => {
+  return (object: object, propertyName: string): void => {
     registerDecorator({
       name: "CompositionPositionsConsistency",
       target: object.constructor,

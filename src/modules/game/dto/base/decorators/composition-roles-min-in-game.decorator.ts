@@ -1,14 +1,15 @@
 import type { ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
+import { has } from "lodash";
 import { roles } from "../../../../role/constants/role.constant";
+import type { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import type { Role } from "../../../../role/types/role.type";
-import type { CreateGamePlayerDto } from "../create-game-player/create-game-player.dto";
-import type { CreateGameDto } from "../create-game.dto";
 
-function areCompositionRolesMinInGameRespected(players?: CreateGamePlayerDto[]): boolean {
-  if (!Array.isArray(players)) {
+function areCompositionRolesMinInGameRespected(value?: unknown): boolean {
+  if (!Array.isArray(value) || value.some(player => typeof player !== "object" && !has(player, ["role", "name"]))) {
     return false;
   }
+  const players = value as { role: { name: ROLE_NAMES } }[];
   return roles
     .filter((role): role is Role & { minInGame: number } => role.minInGame !== undefined)
     .every(role => {
@@ -22,7 +23,7 @@ function getCompositionRolesMinInGameDefaultMessage(): string {
 }
 
 function CompositionRolesMinInGame(validationOptions?: ValidationOptions) {
-  return (object: CreateGameDto, propertyName: keyof CreateGameDto): void => {
+  return (object: object, propertyName: string): void => {
     registerDecorator({
       name: "CompositionRolesMinInGame",
       target: object.constructor,

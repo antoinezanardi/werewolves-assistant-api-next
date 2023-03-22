@@ -1,13 +1,9 @@
-import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
-import { Allow, IsEnum } from "class-validator";
+import { ApiHideProperty, PickType } from "@nestjs/swagger";
+import { Allow } from "class-validator";
 import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
-import { playerApiProperties } from "../../../../schemas/player/constants/player.constant";
+import { GamePlayerRoleBaseDto } from "../../../base/game-player/game-player-role/game-player-role.base.dto";
 
-class CreateGamePlayerRoleDto {
-  @ApiProperty(playerApiProperties.role)
-  @IsEnum(ROLE_NAMES)
-  public name: ROLE_NAMES;
-
+class CreateGamePlayerRoleDto extends PickType(GamePlayerRoleBaseDto, ["name"] as const) {
   @ApiHideProperty()
   @Allow()
   public original?: ROLE_NAMES;

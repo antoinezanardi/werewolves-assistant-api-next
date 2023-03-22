@@ -3,8 +3,8 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
 import { ValidateMongoId } from "../../../shared/api/pipes/validate-mongo-id.pipe";
 import { getControllerRouteError } from "../../../shared/error/helpers/error.helper";
-import { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "../dto/create-game/create-game.dto";
+import { GetGameRandomCompositionPlayerResponseDto } from "../dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import { GetGameRandomCompositionDto } from "../dto/get-game-random-composition/get-game-random-composition.dto";
 import { GAME_STATUSES } from "../enums/game.enum";
 import { GameRandomCompositionService } from "../providers/services/game-random-composition.service";
@@ -30,8 +30,8 @@ export class GameController {
 
   @Get("random-composition")
   @ApiOperation({ summary: "Get game random composition for given players" })
-  @ApiResponse({ status: HttpStatus.OK, type: CreateGamePlayerDto, isArray: true })
-  public getGameRandomComposition(@Query() getGameRandomCompositionDto: GetGameRandomCompositionDto): CreateGamePlayerDto[] {
+  @ApiResponse({ status: HttpStatus.OK, type: GetGameRandomCompositionPlayerResponseDto, isArray: true })
+  public getGameRandomComposition(@Query() getGameRandomCompositionDto: GetGameRandomCompositionDto): GetGameRandomCompositionPlayerResponseDto[] {
     return this.gameRandomCompositionService.getGameRandomComposition(getGameRandomCompositionDto);
   }
 
@@ -51,6 +51,7 @@ export class GameController {
   @Post()
   @ApiOperation({ summary: "Create a new game" })
   public async createGame(@Body() createGameDto: CreateGameDto): Promise<Game> {
+    console.log(createGameDto.options);
     return this.gameService.createGame(createGameDto);
   }
 

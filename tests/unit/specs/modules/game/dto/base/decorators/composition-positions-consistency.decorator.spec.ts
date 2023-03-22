@@ -1,7 +1,7 @@
 import {
   doesCompositionHaveConsistentPositions,
   getCompositionPositionsConsistencyDefaultMessage,
-} from "../../../../../../../../src/modules/game/dto/create-game/decorators/composition-positions-consistency.decorator";
+} from "../../../../../../../../src/modules/game/dto/base/decorators/composition-positions-consistency.decorator";
 import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 

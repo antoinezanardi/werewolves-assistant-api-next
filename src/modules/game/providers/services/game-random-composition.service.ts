@@ -5,7 +5,7 @@ import { defaultVillagerRole, defaultWerewolfRole, roles } from "../../../role/c
 import { ROLE_NAMES, ROLE_SIDES } from "../../../role/enums/role.enum";
 import { getRolesWithSide } from "../../../role/helpers/role.helper";
 import { Role } from "../../../role/types/role.type";
-import { CreateGamePlayerDto } from "../../dto/create-game/create-game-player/create-game-player.dto";
+import { GetGameRandomCompositionPlayerResponseDto } from "../../dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import type { GetGameRandomCompositionDto } from "../../dto/get-game-random-composition/get-game-random-composition.dto";
 
 @Injectable()
@@ -58,7 +58,7 @@ export class GameRandomCompositionService {
     });
   }
 
-  public getGameRandomComposition(getGameRandomCompositionDto: GetGameRandomCompositionDto): CreateGamePlayerDto[] {
+  public getGameRandomComposition(getGameRandomCompositionDto: GetGameRandomCompositionDto): GetGameRandomCompositionPlayerResponseDto[] {
     const availableRoles = plainToInstance(Role, this.getAvailableRolesForGameRandomComposition(getGameRandomCompositionDto));
     const werewolfRolesCount = this.getWerewolfCountForComposition(getGameRandomCompositionDto.players.length);
     const villagerRolesCount = getGameRandomCompositionDto.players.length - werewolfRolesCount;
@@ -67,7 +67,7 @@ export class GameRandomCompositionService {
       ...this.getRandomRolesForSide(availableRoles, villagerRolesCount, ROLE_SIDES.VILLAGERS),
     ];
     const shuffledRandomRoles = shuffle(randomRoles);
-    return getGameRandomCompositionDto.players.map<CreateGamePlayerDto>((player, index) => plainToInstance(CreateGamePlayerDto, {
+    return getGameRandomCompositionDto.players.map<GetGameRandomCompositionPlayerResponseDto>((player, index) => plainToInstance(GetGameRandomCompositionPlayerResponseDto, {
       name: player.name,
       role: { name: shuffledRandomRoles[index].name },
       side: {},

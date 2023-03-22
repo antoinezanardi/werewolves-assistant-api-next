@@ -6,6 +6,7 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+import { plainToInstance } from "class-transformer";
 import type { Model } from "mongoose";
 import { stringify } from "qs";
 import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
@@ -14,7 +15,7 @@ import type { GetGameRandomCompositionDto } from "../../../../../../src/modules/
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
 import { GameModule } from "../../../../../../src/modules/game/game.module";
 import { defaultGameOptions } from "../../../../../../src/modules/game/schemas/game-options/constants/game-options.constant";
-import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/schemas/game-options.schema";
+import { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/schemas/game-options.schema";
 import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/schemas/player.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
@@ -72,7 +73,7 @@ describe("Game Controller", () => {
   });
 
   describe("GET /games/random-composition", () => {
-    it.each<{ query: Partial<GetGameRandomCompositionDto>; test: string; errorMessage: string }>([
+    it.each<{ query: Record<string, unknown>; test: string; errorMessage: string }>([
       {
         query: { players: undefined },
         test: "there is not enough players",
@@ -110,8 +111,8 @@ describe("Game Controller", () => {
       },
       {
         query: {
-          players: bulkCreateFakeCreateGamePlayerDto(4),
-          excludedRoles: [ROLE_NAMES.WEREWOLF, ROLE_NAMES.SEER],
+          "players": bulkCreateFakeCreateGamePlayerDto(4),
+          "excluded-roles": [ROLE_NAMES.WEREWOLF, ROLE_NAMES.SEER],
         },
         test: "werewolf is in excluded roles",
         errorMessage: "excludedRoles should not contain villager, werewolf values",
@@ -397,14 +398,15 @@ describe("Game Controller", () => {
           raven: { markPenalty: 5 },
         },
       };
-      const payload = createFakeCreateGameDto({ options });
+      const payload = createFakeCreateGameDto({}, { options });
       const response = await app.inject({
         method: "POST",
         url: "/games",
         payload,
       });
+      console.log(response.json());
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json<Game>().options).toMatchObject<GameOptions>(options);
+      expect(response.json<Game>().options).toMatchObject<GameOptions>(plainToInstance(GameOptions, options));
     });
   });
 
