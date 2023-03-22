@@ -50,7 +50,7 @@
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.3.11",
     "@nestjs/mongoose": "^9.2.2",
-    "@nestjs/platform-express": "^9.3.11",
+    "@nestjs/platform-express": "^9.3.12",
     "@nestjs/platform-fastify": "^9.3.12",
     "@nestjs/swagger": "^6.2.1",
     "@nestjs/terminus": "^9.2.1",
