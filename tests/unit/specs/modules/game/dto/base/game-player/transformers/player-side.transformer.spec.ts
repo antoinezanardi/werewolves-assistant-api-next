@@ -6,6 +6,28 @@ import { createFakeCreateGamePlayerDto } from "../../../../../../../../factories
 
 describe("Player Side Transformer", () => {
   describe("playerSideTransformer", () => {
+    it("should return null when value is null.", () => {
+      const player = createFakeCreateGamePlayerDto({ role: { name: ROLE_NAMES.WHITE_WEREWOLF } });
+      expect(playerSideTransformer({ value: null, obj: player } as TransformFnParams)).toBeNull();
+    });
+
+    it("should return same value when value is not an object.", () => {
+      const player = createFakeCreateGamePlayerDto({ role: { name: ROLE_NAMES.WHITE_WEREWOLF } });
+      expect(playerSideTransformer({ value: "toto", obj: player } as TransformFnParams)).toBe("toto");
+    });
+
+    it("should return same value when obj is not an object.", () => {
+      expect(playerSideTransformer({ value: {}, obj: null } as TransformFnParams)).toStrictEqual({});
+    });
+
+    it("should return same value when obj doesn't have the role.name field.", () => {
+      expect(playerSideTransformer({ value: {}, obj: { role: { toto: ROLE_NAMES.WITCH } } } as TransformFnParams)).toStrictEqual({});
+    });
+
+    it("should return same value when role is unknown.", () => {
+      expect(playerSideTransformer({ value: {}, obj: { role: { name: "hello" } } } as TransformFnParams)).toStrictEqual({});
+    });
+
     it("should fill player side with werewolf data when role is white werewolf.", () => {
       const player = createFakeCreateGamePlayerDto({ role: { name: ROLE_NAMES.WHITE_WEREWOLF } });
       expect(playerSideTransformer({ value: {}, obj: player } as TransformFnParams)).toStrictEqual<CreateGamePlayerSideDto>({

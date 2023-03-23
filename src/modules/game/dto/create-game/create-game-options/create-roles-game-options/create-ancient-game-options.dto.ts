@@ -1,17 +1,25 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, Max, Min } from "class-validator";
+import { IsBoolean, IsInt, IsOptional, Max, Min } from "class-validator";
 import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/ancient-game-options.constant";
 
 class CreateAncientGameOptionsDto {
-  @ApiProperty(ancientGameOptionsApiProperties.livesCountAgainstWerewolves)
+  @ApiProperty({
+    ...ancientGameOptionsApiProperties.livesCountAgainstWerewolves,
+    required: false,
+  })
   @IsOptional()
+  @IsInt()
   @Min(ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.minimum)
   @Max(ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.maximum)
-  public livesCountAgainstWerewolves?: number;
+  public livesCountAgainstWerewolves: number = ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.default;
 
-  @ApiProperty(ancientGameOptionsApiProperties.doesTakeHisRevenge)
+  @ApiProperty({
+    ...ancientGameOptionsApiProperties.doesTakeHisRevenge,
+    required: false,
+  })
   @IsOptional()
-  public doesTakeHisRevenge?: boolean;
+  @IsBoolean()
+  public doesTakeHisRevenge: boolean = ancientGameOptionsFieldsSpecs.doesTakeHisRevenge.default;
 }
 
 export { CreateAncientGameOptionsDto };

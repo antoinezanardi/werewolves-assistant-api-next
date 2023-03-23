@@ -1,11 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
-import { idiotGameOptionsApiProperties } from "../../../../schemas/game-options/constants/roles-game-options/idiot-game-options.constant";
+import { IsBoolean, IsOptional } from "class-validator";
+import { idiotGameOptionsApiProperties, idiotGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/idiot-game-options.constant";
 
 class CreateIdiotGameOptionsDto {
-  @ApiProperty(idiotGameOptionsApiProperties.doesDieOnAncientDeath)
+  @ApiProperty({
+    ...idiotGameOptionsApiProperties.doesDieOnAncientDeath,
+    required: false,
+  })
   @IsOptional()
-  public doesDieOnAncientDeath?: boolean;
+  @IsBoolean()
+  public doesDieOnAncientDeath: boolean = idiotGameOptionsFieldsSpecs.doesDieOnAncientDeath.default;
 }
 
 export { CreateIdiotGameOptionsDto };

@@ -6,14 +6,23 @@ import { CreateCompositionGameOptionsDto } from "./create-composition-game-optio
 import { CreateRolesGameOptionsDto } from "./create-roles-game-options/create-roles-game-options.dto";
 
 class CreateGameOptionsDto {
-  @ApiProperty(gameOptionsApiProperties.composition)
+  @ApiProperty({
+    ...gameOptionsApiProperties.composition,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateCompositionGameOptionsDto)
   @ValidateNested()
-  public composition: CreateCompositionGameOptionsDto;
+  public composition: CreateCompositionGameOptionsDto = new CreateCompositionGameOptionsDto();
 
-  @ApiProperty(gameOptionsApiProperties.roles)
+  @ApiProperty({
+    ...gameOptionsApiProperties.roles,
+    required: false,
+  })
   @IsOptional()
-  public roles?: CreateRolesGameOptionsDto;
+  @Type(() => CreateRolesGameOptionsDto)
+  @ValidateNested()
+  public roles: CreateRolesGameOptionsDto = new CreateRolesGameOptionsDto();
 }
 
 export { CreateGameOptionsDto };

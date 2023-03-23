@@ -9,18 +9,20 @@ import { Test } from "@nestjs/testing";
 import { plainToInstance } from "class-transformer";
 import type { Model } from "mongoose";
 import { stringify } from "qs";
+import { CreateGameOptionsDto } from "../../../../../../src/modules/game/dto/create-game/create-game-options/create-game-options.dto";
 import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
 import { GameModule } from "../../../../../../src/modules/game/game.module";
 import { defaultGameOptions } from "../../../../../../src/modules/game/schemas/game-options/constants/game-options.constant";
-import { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/schemas/game-options.schema";
+import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/schemas/game-options.schema";
 import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/schemas/player.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
 import { fastifyServerDefaultOptions } from "../../../../../../src/server/constants/server.constant";
+import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
@@ -355,8 +357,7 @@ describe("Game Controller", () => {
     });
 
     it(`should create game with different options when called with options specified.`, async() => {
-      const options: GameOptions = {
-        composition: { isHidden: false },
+      const options: Partial<GameOptions> = {
         roles: {
           areRevealedOnDeath: false,
           sheriff: {
@@ -404,9 +405,8 @@ describe("Game Controller", () => {
         url: "/games",
         payload,
       });
-      console.log(response.json());
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json<Game>().options).toMatchObject<GameOptions>(plainToInstance(GameOptions, options));
+      expect(response.json<Game>().options).toMatchObject(plainToInstance(CreateGameOptionsDto, options, plainToInstanceDefaultOptions));
     });
   });
 

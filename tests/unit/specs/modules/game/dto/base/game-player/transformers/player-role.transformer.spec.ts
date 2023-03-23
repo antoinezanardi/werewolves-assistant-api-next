@@ -5,6 +5,22 @@ import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/ro
 
 describe("Player Role Transformer", () => {
   describe("playerRoleTransformer", () => {
+    it("should return null when value is null.", () => {
+      expect(playerRoleTransformer({ value: null } as TransformFnParams)).toBeNull();
+    });
+
+    it("should return same value when value is not an object.", () => {
+      expect(playerRoleTransformer({ value: "toto" } as TransformFnParams)).toBe("toto");
+    });
+
+    it("should return same value when value doesn't have the name field.", () => {
+      expect(playerRoleTransformer({ value: {} } as TransformFnParams)).toStrictEqual({});
+    });
+
+    it("should return same value when role is unknown.", () => {
+      expect(playerRoleTransformer({ value: { name: "hello" } } as TransformFnParams)).toStrictEqual({ name: "hello" });
+    });
+
     it("should fill player role (seer) fields when called.", () => {
       const createPlayerRoleDto: CreateGamePlayerRoleDto = { name: ROLE_NAMES.SEER };
       expect(playerRoleTransformer({ value: createPlayerRoleDto } as TransformFnParams)).toStrictEqual<CreateGamePlayerRoleDto>({

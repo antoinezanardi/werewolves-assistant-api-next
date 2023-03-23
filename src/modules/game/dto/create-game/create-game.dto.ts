@@ -28,10 +28,13 @@ class CreateGameDto {
   @CompositionPositionsConsistency()
   public players: CreateGamePlayerDto[];
 
-  @ApiProperty(gameApiProperties.options)
+  @ApiProperty({
+    ...gameApiProperties.options,
+    required: false,
+  })
   @Type(() => CreateGameOptionsDto)
   @ValidateNested()
-  public options?: CreateGameOptionsDto;
+  public options: CreateGameOptionsDto = new CreateGameOptionsDto();
 }
 
 export { CreateGameDto };

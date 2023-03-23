@@ -1,10 +1,11 @@
 import type { TransformFnParams } from "class-transformer/types/interfaces";
+import isObject from "isobject";
 import { has } from "lodash";
 import { roles } from "../../../../../role/constants/role.constant";
 import type { ROLE_SIDES, ROLE_NAMES } from "../../../../../role/enums/role.enum";
 
 function playerSideTransformer(params: TransformFnParams): unknown {
-  if (typeof params.value !== "object" || typeof params.obj !== "object" || !has(params.obj as object, ["role", "name"])) {
+  if (!isObject(params.value) || !isObject(params.obj) || !has(params.obj as object, ["role", "name"])) {
     return params.value;
   }
   const obj = params.obj as { role: { name: ROLE_NAMES } };

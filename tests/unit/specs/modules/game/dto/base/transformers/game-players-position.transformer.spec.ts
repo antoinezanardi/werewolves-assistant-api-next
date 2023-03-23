@@ -4,6 +4,15 @@ import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factorie
 
 describe("Game Players Position Transformer", () => {
   describe("gamePlayersPositionTransformer", () => {
+    it("should return same value when value is not an array.", () => {
+      expect(gamePlayersPositionTransformer({ value: null } as TransformFnParams)).toBeNull();
+    });
+
+    it("should return same value when one value of the array is not object.", () => {
+      const value = [...bulkCreateFakeCreateGamePlayerDto(3), "toto"];
+      expect(gamePlayersPositionTransformer({ value } as TransformFnParams)).toStrictEqual(value);
+    });
+
     it("should return players as is when every position is set.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [{ position: 0 }, { position: 1 }, { position: 2 }, { position: 3 }]);
       expect(gamePlayersPositionTransformer({ value: players } as TransformFnParams)).toStrictEqual(players);

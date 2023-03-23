@@ -4,7 +4,7 @@ import { roles } from "../../../../../role/constants/role.constant";
 import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
 
 function playerRoleTransformer(params: TransformFnParams): unknown {
-  if (typeof params.value !== "object" || !has(params.value as object, "name")) {
+  if (!has(params.value as object, "name")) {
     return params.value;
   }
   const value = params.value as {

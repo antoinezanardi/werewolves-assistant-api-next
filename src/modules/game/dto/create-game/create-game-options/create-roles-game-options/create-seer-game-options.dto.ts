@@ -1,15 +1,23 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
-import { seerGameOptionsApiProperties } from "../../../../schemas/game-options/constants/roles-game-options/seer-game-options.constant";
+import { IsBoolean, IsOptional } from "class-validator";
+import { seerGameOptionsApiProperties, seerGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/seer-game-options.constant";
 
 class CreateSeerGameOptionsDto {
-  @ApiProperty(seerGameOptionsApiProperties.isTalkative)
+  @ApiProperty({
+    ...seerGameOptionsApiProperties.isTalkative,
+    required: false,
+  })
   @IsOptional()
-  public isTalkative?: boolean;
+  @IsBoolean()
+  public isTalkative: boolean = seerGameOptionsFieldsSpecs.isTalkative.default;
 
-  @ApiProperty(seerGameOptionsApiProperties.canSeeRoles)
+  @ApiProperty({
+    ...seerGameOptionsApiProperties.canSeeRoles,
+    required: false,
+  })
   @IsOptional()
-  public canSeeRoles?: boolean;
+  @IsBoolean()
+  public canSeeRoles: boolean = seerGameOptionsFieldsSpecs.canSeeRoles.default;
 }
 
 export { CreateSeerGameOptionsDto };

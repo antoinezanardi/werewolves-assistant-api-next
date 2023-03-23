@@ -1,23 +1,34 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsOptional, ValidateNested } from "class-validator";
-import { sheriffGameOptionsApiProperties } from "../../../../../schemas/game-options/constants/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
+import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
+import { sheriffGameOptionsApiProperties, sheriffGameOptionsFieldsSpecs } from "../../../../../schemas/game-options/constants/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
 import { CreateSheriffElectionGameOptionsDto } from "./create-sheriff-election-game-options.dto";
 
 class CreateSheriffGameOptionsDto {
-  @ApiProperty(sheriffGameOptionsApiProperties.isEnabled)
+  @ApiProperty({
+    ...sheriffGameOptionsApiProperties.isEnabled,
+    required: false,
+  })
   @IsOptional()
-  public isEnabled?: boolean;
+  @IsBoolean()
+  public isEnabled: boolean = sheriffGameOptionsFieldsSpecs.isEnabled.default;
 
-  @ApiProperty(sheriffGameOptionsApiProperties.electedAt)
+  @ApiProperty({
+    ...sheriffGameOptionsApiProperties.electedAt,
+    required: false,
+  })
   @IsOptional()
-  @ValidateNested()
   @Type(() => CreateSheriffElectionGameOptionsDto)
-  public electedAt?: CreateSheriffElectionGameOptionsDto;
+  @ValidateNested()
+  public electedAt: CreateSheriffElectionGameOptionsDto = new CreateSheriffElectionGameOptionsDto();
 
-  @ApiProperty(sheriffGameOptionsApiProperties.hasDoubledVote)
+  @ApiProperty({
+    ...sheriffGameOptionsApiProperties.hasDoubledVote,
+    required: false,
+  })
   @IsOptional()
-  public hasDoubledVote?: boolean;
+  @IsBoolean()
+  public hasDoubledVote: boolean = sheriffGameOptionsFieldsSpecs.hasDoubledVote.default;
 }
 
 export { CreateSheriffGameOptionsDto };

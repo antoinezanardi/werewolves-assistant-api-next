@@ -11,6 +11,20 @@ describe("Composition Positions Consistency Decorator", () => {
       expect(doesCompositionHaveConsistentPositions(undefined)).toBe(false);
     });
 
+    it("should return false when players are not an array.", () => {
+      expect(doesCompositionHaveConsistentPositions(null)).toBe(false);
+    });
+
+    it("should return false when one of the players is not an object.", () => {
+      const players = bulkCreateFakeCreateGamePlayerDto(4, [
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
+      ]);
+      expect(doesCompositionHaveConsistentPositions([...players, "toto"])).toBe(false);
+    });
+
     it("should return true when there is no position set in composition.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
         { role: { name: ROLE_NAMES.VILLAGER } },
