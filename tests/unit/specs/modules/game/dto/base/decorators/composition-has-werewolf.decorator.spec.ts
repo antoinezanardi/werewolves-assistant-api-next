@@ -1,7 +1,7 @@
 import {
   doesCompositionHaveAtLeastOneWerewolf,
   getCompositionHasWerewolfDefaultMessage,
-} from "../../../../../../../../src/modules/game/dto/create-game/decorators/composition-has-werewolf.decorator";
+} from "../../../../../../../../src/modules/game/dto/base/decorators/composition-has-werewolf.decorator";
 import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
@@ -9,6 +9,30 @@ describe("Composition Has Werewolf Decorator", () => {
   describe("doesCompositionHaveAtLeastOneWerewolf", () => {
     it("should return false when players are undefined.", () => {
       expect(doesCompositionHaveAtLeastOneWerewolf(undefined)).toBe(false);
+    });
+
+    it("should return false when players are not an array.", () => {
+      expect(doesCompositionHaveAtLeastOneWerewolf(null)).toBe(false);
+    });
+
+    it("should return false when one of the players is not an object.", () => {
+      const players = bulkCreateFakeCreateGamePlayerDto(4, [
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
+      ]);
+      expect(doesCompositionHaveAtLeastOneWerewolf([...players, "toto"])).toBe(false);
+    });
+
+    it("should return false when one of the players doesn't have the good structure.", () => {
+      const players = bulkCreateFakeCreateGamePlayerDto(4, [
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
+      ]);
+      expect(doesCompositionHaveAtLeastOneWerewolf([...players, { name: "bad", role: { titi: "toto" } }])).toBe(false);
     });
 
     it("should return false when composition is full of villagers.", () => {

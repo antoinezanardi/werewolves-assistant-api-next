@@ -1,8 +1,8 @@
 import { ApiProperty, PickType } from "@nestjs/swagger";
-import { CreateGamePlayerDto } from "../../create-game/create-game-player/create-game-player.dto";
+import { GamePlayerBaseDto } from "../../base/game-player/game-player.base.dto";
 
-class GetGameRandomCompositionPlayerDto extends PickType(CreateGamePlayerDto, ["name"] as const) {
-  @ApiProperty({ description: "You must provide player names in query like this: `?players[0][name]=Antoine&players[1][name]=Damien`" })
+class GetGameRandomCompositionPlayerDto extends PickType(GamePlayerBaseDto, ["name"] as const) {
+  @ApiProperty({ name: "players.name", description: "You must provide player names in query like this: `?players[0][name]=Antoine&players[1][name]=Damien`" })
   public name: string;
 }
 

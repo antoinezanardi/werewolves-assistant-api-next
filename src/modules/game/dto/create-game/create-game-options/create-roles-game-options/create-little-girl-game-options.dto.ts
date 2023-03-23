@@ -1,11 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
-import { littleGirlGameOptionsApiProperties } from "../../../../schemas/game-options/constants/roles-game-options/little-girl-game-options.constant";
+import { IsBoolean, IsOptional } from "class-validator";
+import { littleGirlGameOptionsApiProperties, littleGirlGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/little-girl-game-options.constant";
 
 class CreateLittleGirlGameOptionsDto {
-  @ApiProperty(littleGirlGameOptionsApiProperties.isProtectedByGuard)
+  @ApiProperty({
+    ...littleGirlGameOptionsApiProperties.isProtectedByGuard,
+    required: false,
+  })
   @IsOptional()
-  public isProtectedByGuard?: boolean;
+  @IsBoolean()
+  public isProtectedByGuard: boolean = littleGirlGameOptionsFieldsSpecs.isProtectedByGuard.default;
 }
 
 export { CreateLittleGirlGameOptionsDto };

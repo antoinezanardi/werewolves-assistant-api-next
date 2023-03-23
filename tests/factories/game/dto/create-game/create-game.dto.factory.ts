@@ -1,9 +1,10 @@
 import type { CreateGamePlayerDto } from "../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "../../../../../src/modules/game/dto/create-game/create-game.dto";
+import { defaultGameOptions } from "../../../../../src/modules/game/schemas/game-options/constants/game-options.constant";
 import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "./create-game-player/create-game-player.dto.factory";
 
-function createFakeCreateGameDto(obj: Partial<CreateGameDto> = {}, override: Partial<CreateGameDto> = {}): CreateGameDto {
+function createFakeCreateGameDto(obj: Partial<CreateGameDto> = {}, override: object = {}): CreateGameDto {
   const players: Partial<CreateGamePlayerDto>[] = [
     { name: "Antoine", role: { name: ROLE_NAMES.WITCH } },
     { name: "JB", role: { name: ROLE_NAMES.SEER } },
@@ -12,7 +13,7 @@ function createFakeCreateGameDto(obj: Partial<CreateGameDto> = {}, override: Par
   ];
   return {
     players: obj.players ?? bulkCreateFakeCreateGamePlayerDto(players.length, players),
-    options: obj.options ?? undefined,
+    options: obj.options ?? defaultGameOptions,
     ...override,
   };
 }

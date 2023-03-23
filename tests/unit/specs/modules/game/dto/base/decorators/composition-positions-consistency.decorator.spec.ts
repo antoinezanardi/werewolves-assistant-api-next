@@ -1,7 +1,7 @@
 import {
   doesCompositionHaveConsistentPositions,
   getCompositionPositionsConsistencyDefaultMessage,
-} from "../../../../../../../../src/modules/game/dto/create-game/decorators/composition-positions-consistency.decorator";
+} from "../../../../../../../../src/modules/game/dto/base/decorators/composition-positions-consistency.decorator";
 import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
@@ -9,6 +9,20 @@ describe("Composition Positions Consistency Decorator", () => {
   describe("doesCompositionHaveConsistentPositions", () => {
     it("should return false when players are undefined.", () => {
       expect(doesCompositionHaveConsistentPositions(undefined)).toBe(false);
+    });
+
+    it("should return false when players are not an array.", () => {
+      expect(doesCompositionHaveConsistentPositions(null)).toBe(false);
+    });
+
+    it("should return false when one of the players is not an object.", () => {
+      const players = bulkCreateFakeCreateGamePlayerDto(4, [
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.TWO_SISTERS } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.VILLAGER } },
+      ]);
+      expect(doesCompositionHaveConsistentPositions([...players, "toto"])).toBe(false);
     });
 
     it("should return true when there is no position set in composition.", () => {

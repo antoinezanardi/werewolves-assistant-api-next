@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsOptional, ValidateNested } from "class-validator";
-import { rolesGameOptionsApiProperties } from "../../../../schemas/game-options/constants/roles-game-options/roles-game-options.constant";
+import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
+import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/roles-game-options.constant";
 import { CreateAncientGameOptionsDto } from "./create-ancient-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "./create-bear-tamer-game-options.dto";
 import { CreateBigBadWolfGameOptionsDto } from "./create-big-bad-wolf-game-options.dto";
@@ -22,117 +22,175 @@ import { CreateWhiteWerewolfGameOptionsDto } from "./create-white-werewolf-game-
 import { CreateWildChildGameOptionsDto } from "./create-wild-child-game-options.dto";
 
 class CreateRolesGameOptionsDto {
-  @ApiProperty(rolesGameOptionsApiProperties.areRevealedOnDeath)
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.areRevealedOnDeath,
+    required: false,
+  })
   @IsOptional()
-  public areRevealedOnDeath?: boolean;
+  @IsBoolean()
+  public areRevealedOnDeath: boolean = rolesGameOptionsFieldsSpecs.areRevealedOnDeath.default;
 
-  @ApiProperty(rolesGameOptionsApiProperties.sheriff)
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.sheriff,
+    required: false,
+  })
   @IsOptional()
-  @ValidateNested()
   @Type(() => CreateSheriffGameOptionsDto)
-  public sheriff?: CreateSheriffGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.bigBadWolf)
-  @IsOptional()
   @ValidateNested()
+  public sheriff: CreateSheriffGameOptionsDto = new CreateSheriffGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.bigBadWolf,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateBigBadWolfGameOptionsDto)
-  public bigBadWolf?: CreateBigBadWolfGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.whiteWerewolf)
-  @IsOptional()
   @ValidateNested()
+  public bigBadWolf: CreateBigBadWolfGameOptionsDto = new CreateBigBadWolfGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.whiteWerewolf,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateWhiteWerewolfGameOptionsDto)
-  public whiteWerewolf?: CreateWhiteWerewolfGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.seer)
-  @IsOptional()
   @ValidateNested()
+  public whiteWerewolf: CreateWhiteWerewolfGameOptionsDto = new CreateWhiteWerewolfGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.seer,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateSeerGameOptionsDto)
-  public seer?: CreateSeerGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.littleGirl)
-  @IsOptional()
   @ValidateNested()
+  public seer: CreateSeerGameOptionsDto = new CreateSeerGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.littleGirl,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateLittleGirlGameOptionsDto)
-  public littleGirl?: CreateLittleGirlGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.guard)
-  @IsOptional()
   @ValidateNested()
+  public littleGirl: CreateLittleGirlGameOptionsDto = new CreateLittleGirlGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.guard,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateGuardGameOptionsDto)
-  public guard?: CreateGuardGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.ancient)
-  @IsOptional()
   @ValidateNested()
+  public guard: CreateGuardGameOptionsDto = new CreateGuardGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.ancient,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateAncientGameOptionsDto)
-  public ancient?: CreateAncientGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.idiot)
-  @IsOptional()
   @ValidateNested()
+  public ancient: CreateAncientGameOptionsDto = new CreateAncientGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.idiot,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateIdiotGameOptionsDto)
-  public idiot?: CreateIdiotGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.twoSisters)
-  @IsOptional()
   @ValidateNested()
+  public idiot: CreateIdiotGameOptionsDto = new CreateIdiotGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.twoSisters,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateTwoSistersGameOptionsDto)
-  public twoSisters?: CreateTwoSistersGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.threeBrothers)
-  @IsOptional()
   @ValidateNested()
+  public twoSisters: CreateTwoSistersGameOptionsDto = new CreateTwoSistersGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.threeBrothers,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateThreeBrothersGameOptionsDto)
-  public threeBrothers?: CreateThreeBrothersGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.fox)
-  @IsOptional()
   @ValidateNested()
+  public threeBrothers: CreateThreeBrothersGameOptionsDto = new CreateThreeBrothersGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.fox,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateFoxGameOptionsDto)
-  public fox?: CreateFoxGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.bearTamer)
-  @IsOptional()
   @ValidateNested()
+  public fox: CreateFoxGameOptionsDto = new CreateFoxGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.bearTamer,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateBearTamerGameOptionsDto)
-  public bearTamer?: CreateBearTamerGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.stutteringJudge)
-  @IsOptional()
   @ValidateNested()
+  public bearTamer: CreateBearTamerGameOptionsDto = new CreateBearTamerGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.stutteringJudge,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateStutteringJudgeGameOptionsDto)
-  public stutteringJudge?: CreateStutteringJudgeGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.wildChild)
-  @IsOptional()
   @ValidateNested()
+  public stutteringJudge: CreateStutteringJudgeGameOptionsDto = new CreateStutteringJudgeGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.wildChild,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateWildChildGameOptionsDto)
-  public wildChild?: CreateWildChildGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.dogWolf)
-  @IsOptional()
   @ValidateNested()
+  public wildChild: CreateWildChildGameOptionsDto = new CreateWildChildGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.dogWolf,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateDogWolfGameOptionsDto)
-  public dogWolf?: CreateDogWolfGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.thief)
-  @IsOptional()
   @ValidateNested()
+  public dogWolf: CreateDogWolfGameOptionsDto = new CreateDogWolfGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.thief,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateThiefGameOptionsDto)
-  public thief?: CreateThiefGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.piedPiper)
-  @IsOptional()
   @ValidateNested()
+  public thief: CreateThiefGameOptionsDto = new CreateThiefGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.piedPiper,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreatePiedPiperGameOptionsDto)
-  public piedPiper?: CreatePiedPiperGameOptionsDto;
-
-  @ApiProperty(rolesGameOptionsApiProperties.raven)
-  @IsOptional()
   @ValidateNested()
+  public piedPiper: CreatePiedPiperGameOptionsDto = new CreatePiedPiperGameOptionsDto();
+
+  @ApiProperty({
+    ...rolesGameOptionsApiProperties.raven,
+    required: false,
+  })
+  @IsOptional()
   @Type(() => CreateRavenGameOptionsDto)
-  public raven?: CreateRavenGameOptionsDto;
+  @ValidateNested()
+  public raven: CreateRavenGameOptionsDto = new CreateRavenGameOptionsDto();
 }
 
 export { CreateRolesGameOptionsDto };

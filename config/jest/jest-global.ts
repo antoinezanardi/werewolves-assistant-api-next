@@ -17,6 +17,7 @@ const config: Config = {
     "src/**/*.ts",
     "!src/main.ts",
     "!src/**/*dto.ts",
+    "!src/**/*.schema.ts",
   ],
   coverageDirectory: "tests/coverage",
   coverageThreshold: {
