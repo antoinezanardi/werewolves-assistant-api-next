@@ -26,12 +26,13 @@
 ## 📋 Table of Contents
 
 1. 🐺 [What is this API ?](#what-is-this-api)
-2. 🔨 [Installation](#installation)
-3. 💯 [Tests](#tests)
-4. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-5. ✨ [Misc commands](#misc-commands)
-6. ©️ [License](#license)
-7. ❤️ [Contributors](#contributors)
+2. 🃏 [Roles available](#roles-available)
+3. 🔨 [Installation](#installation)
+4. 💯 [Tests](#tests)
+5. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
+6. ✨ [Misc commands](#misc-commands)
+7. ©️ [License](#license)
+8. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
@@ -39,6 +40,38 @@ Werewolves Assistant API provides over HTTP requests a way of manage Werewolves 
 This is the **next** version of the current [Werewolves Assistant API](https://github.com/antoinezanardi/werewolves-assistant-api). It is still under development.
 
 #### 🤔 Want to know more about this awesome project ? <a href="https://werewolves-assistant.antoinezanardi.fr/about" target="_blank">**Check out the dedicated about page**</a>.
+
+## <a name="roles-available">🃏 Roles available</a>
+
+**27 different official roles** are available to play :
+
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/werewolf/werewolf-small.jpeg?raw=true" width="25"/> The Werewolf**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/big-bad-wolf/big-bad-wolf-small.jpeg?raw=true" width="25"/> The Big Bad Wolf**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/vile-father-of-wolves/vile-father-of-wolves-small.jpeg?raw=true" width="25"/> The Vile Father Of Wolves**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/white-werewolf/white-werewolf-small.jpeg?raw=true" width="25"/> The White Werewolf**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/villager/villager-small.jpeg?raw=true" width="25"/> The Villager**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/villager/villager-small.jpeg?raw=true" width="25"/> The Villager-Villager**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/seer/seer-small.jpeg?raw=true" width="25"/> The Seer**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/cupid/cupid-small.jpeg?raw=true" width="25"/> The Cupid**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/witch/witch-small.jpeg?raw=true" width="25"/> The Witch**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/hunter/hunter-small.jpeg?raw=true" width="25"/> The Hunter**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/little-girl/little-girl-small.jpeg?raw=true" width="25"/> The Little Girl**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/guard/guard-small.jpeg?raw=true" width="25"/> The Guard**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/ancient/ancient-small.jpeg?raw=true" width="25"/> The Ancient**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/scapegoat/scapegoat-small.jpeg?raw=true" width="25"/> The Scapegoat**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/idiot/idiot-small.jpeg?raw=true" width="25"/> The Idiot**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/two-sisters/two-sisters-small.jpeg?raw=true" width="25"/> The Two Sisters**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/three-brothers/three-brothers-small.jpeg?raw=true" width="25"/> The Three Brothers**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/fox/fox-small.jpeg?raw=true" width="25"/> The Fox**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/bear-tamer/bear-tamer-small.jpeg?raw=true" width="25"/> The Bear Tamer**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/stuttering-judge/stuttering-judge-small.jpeg?raw=true" width="25"/> The Stuttering Judge**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/rusty-sword-knight/rusty-sword-knight-small.jpeg?raw=true" width="25"/> The Rusty Sword Knight**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/wild-child/wild-child-small.jpeg?raw=true" width="25"/> The Wild Child**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/dog-wolf/dog-wolf-small.jpeg?raw=true" width="25"/> The Dog-Wolf**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/thief/thief-small.jpeg?raw=true" width="25"/> The Thief**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/angel/angel-small.jpeg?raw=true" width="25"/> The Angel**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/pied-piper/pied-piper-small.jpeg?raw=true" width="25"/> The Pied Piper**
+- **<img src="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/public/assets/images/roles/raven/raven-small.jpeg?raw=true" width="25"/> The Raven**
 
 ## <a name="installation">🔨 Installation</a>
 
