@@ -1,7 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
-import { IsArray, ValidateNested } from "class-validator";
-import { gameApiProperties } from "../../constants/game.constant";
+import { ArrayMaxSize, Equals, IsArray, IsOptional, ValidateNested } from "class-validator";
+import { gameApiProperties, gameFieldsSpecs } from "../../constants/game.constant";
+import { GAME_PHASES } from "../../enums/game.enum";
+import type { GamePlay } from "../../schemas/game-play.schema";
 import { CompositionBounds } from "../base/decorators/composition-bounds.decorator";
 import { CompositionHasVillager } from "../base/decorators/composition-has-villager.decorator";
 import { CompositionHasWerewolf } from "../base/decorators/composition-has-werewolf.decorator";
@@ -14,6 +16,16 @@ import { CreateGameOptionsDto } from "./create-game-options/create-game-options.
 import { CreateGamePlayerDto } from "./create-game-player/create-game-player.dto";
 
 class CreateGameDto {
+  @ApiHideProperty()
+  @IsOptional()
+  @Equals(gameFieldsSpecs.turn.default)
+  public turn: number = gameFieldsSpecs.turn.default;
+
+  @ApiHideProperty()
+  @IsOptional()
+  @Equals(gameFieldsSpecs.phase.default)
+  public phase: GAME_PHASES = gameFieldsSpecs.phase.default;
+
   @ApiProperty(gameApiProperties.players)
   @Transform(gamePlayersPositionTransformer)
   @Type(() => CreateGamePlayerDto)
@@ -27,6 +39,11 @@ class CreateGameDto {
   @CompositionHasWerewolf()
   @CompositionPositionsConsistency()
   public players: CreateGamePlayerDto[];
+
+  @ApiHideProperty()
+  @IsOptional()
+  @ArrayMaxSize(0)
+  public upcomingPlays: GamePlay[] = [];
 
   @ApiProperty({
     ...gameApiProperties.options,

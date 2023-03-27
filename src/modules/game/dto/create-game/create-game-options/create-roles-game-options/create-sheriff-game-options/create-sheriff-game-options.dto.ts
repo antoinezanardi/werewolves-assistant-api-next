@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
-import { sheriffGameOptionsApiProperties, sheriffGameOptionsFieldsSpecs } from "../../../../../schemas/game-options/constants/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
+import { sheriffGameOptionsApiProperties, sheriffGameOptionsFieldsSpecs } from "../../../../../constants/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
 import { CreateSheriffElectionGameOptionsDto } from "./create-sheriff-election-game-options.dto";
 
 class CreateSheriffGameOptionsDto {

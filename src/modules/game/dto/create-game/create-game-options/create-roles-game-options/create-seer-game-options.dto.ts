@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsOptional } from "class-validator";
-import { seerGameOptionsApiProperties, seerGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/seer-game-options.constant";
+import { seerGameOptionsApiProperties, seerGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/seer-game-options.constant";
 
 class CreateSeerGameOptionsDto {
   @ApiProperty({

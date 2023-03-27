@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum } from "class-validator";
 import { ROLE_SIDES } from "../../../../../role/enums/role.enum";
-import { playerSideApiProperties } from "../../../../schemas/player/schemas/player-side/constants/player-side.constant";
+import { playerSideApiProperties } from "../../../../constants/player/player-side.constant";
 
 class GamePlayerSideBaseDto {
   @ApiProperty(playerSideApiProperties.original)

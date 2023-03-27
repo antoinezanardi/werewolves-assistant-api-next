@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
-import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/roles-game-options.constant";
+import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/roles-game-options.constant";
 import { CreateAncientGameOptionsDto } from "./create-ancient-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "./create-bear-tamer-game-options.dto";
 import { CreateBigBadWolfGameOptionsDto } from "./create-big-bad-wolf-game-options.dto";

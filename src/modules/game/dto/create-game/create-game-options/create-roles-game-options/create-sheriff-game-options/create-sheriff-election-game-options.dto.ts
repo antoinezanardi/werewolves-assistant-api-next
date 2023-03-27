@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
+import { sheriffElectionGameOptionsApiProperties, sheriffElectionGameOptionsFieldsSpecs } from "../../../../../constants/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options.constant";
 import { GAME_PHASES } from "../../../../../enums/game.enum";
-import { sheriffElectionGameOptionsApiProperties, sheriffElectionGameOptionsFieldsSpecs } from "../../../../../schemas/game-options/constants/roles-game-options/sheriff-game-options/sheriff-election-game-options.constant";
 
 class CreateSheriffElectionGameOptionsDto {
   @ApiProperty({
