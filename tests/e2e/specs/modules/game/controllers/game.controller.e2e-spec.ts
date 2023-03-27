@@ -6,19 +6,21 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { plainToInstance } from "class-transformer";
+import { instanceToPlain, plainToInstance } from "class-transformer";
 import type { Model } from "mongoose";
 import { stringify } from "qs";
+import { defaultGameOptions } from "../../../../../../src/modules/game/constants/game-options/game-options.constant";
 import { CreateGameOptionsDto } from "../../../../../../src/modules/game/dto/create-game/create-game-options/create-game-options.dto";
 import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
+import { GAME_PLAY_ACTIONS } from "../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
+import { PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
 import { GameModule } from "../../../../../../src/modules/game/game.module";
-import { defaultGameOptions } from "../../../../../../src/modules/game/schemas/game-options/constants/game-options.constant";
-import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/schemas/game-options.schema";
+import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/game-options.schema";
 import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
-import type { Player } from "../../../../../../src/modules/game/schemas/player/schemas/player.schema";
+import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
 import { fastifyServerDefaultOptions } from "../../../../../../src/server/constants/server.constant";
@@ -191,8 +193,8 @@ describe("Game Controller", () => {
         url: `/games/${game._id}`,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toStrictEqual({
-        ...game,
+      expect(response.json<Game>()).toMatchObject({
+        ...instanceToPlain(game, { excludeExtraneousValues: true }),
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -314,11 +316,13 @@ describe("Game Controller", () => {
 
     it(`should create game when called.`, async() => {
       const payload = createFakeCreateGameDto({
-        players: bulkCreateFakeCreateGamePlayerDto(4, [
+        players: bulkCreateFakeCreateGamePlayerDto(6, [
           { role: { name: ROLE_NAMES.VILLAGER } },
-          { role: { name: ROLE_NAMES.WEREWOLF }, side: { current: ROLE_SIDES.WEREWOLVES } },
+          { role: { name: ROLE_NAMES.WEREWOLF } },
           { role: { name: ROLE_NAMES.VILLAGER_VILLAGER } },
           { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
+          { role: { name: ROLE_NAMES.CUPID } },
+          { role: { name: ROLE_NAMES.SEER } },
         ]),
       }, { options: undefined });
       const response = await app.inject({
@@ -335,8 +339,8 @@ describe("Game Controller", () => {
           isRevealed: player.role.name === ROLE_NAMES.VILLAGER_VILLAGER,
         },
         side: {
-          current: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
-          original: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+          current: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER, ROLE_NAMES.CUPID, ROLE_NAMES.SEER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+          original: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER, ROLE_NAMES.CUPID, ROLE_NAMES.SEER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
         },
         attributes: [],
         position: index,
@@ -350,6 +354,14 @@ describe("Game Controller", () => {
         turn: 1,
         tick: 1,
         players: expectedPlayers,
+        upcomingPlays: [
+          { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF },
+          { source: ROLE_NAMES.CUPID, action: GAME_PLAY_ACTIONS.CHARM },
+          { source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK },
+          { source: PLAYER_GROUPS.LOVERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER },
+          { source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT },
+          { source: ROLE_NAMES.WHITE_WEREWOLF, action: GAME_PLAY_ACTIONS.EAT },
+        ],
         options: defaultGameOptions,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
@@ -449,8 +461,8 @@ describe("Game Controller", () => {
         url: `/games/${game._id}`,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toStrictEqual({
-        ...game,
+      expect(response.json<Game>()).toMatchObject({
+        ...instanceToPlain(game, { excludeExtraneousValues: true }),
         status: GAME_STATUSES.CANCELED,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,

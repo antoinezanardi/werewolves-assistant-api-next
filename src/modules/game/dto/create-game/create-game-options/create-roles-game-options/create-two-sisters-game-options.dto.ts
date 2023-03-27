@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, Max, Min } from "class-validator";
-import { twoSistersGameOptionsApiProperties, twoSistersGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/two-sisters-game-options.constant";
+import { twoSistersGameOptionsApiProperties, twoSistersGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/two-sisters-game-options.constant";
 
 class CreateTwoSistersGameOptionsDto {
   @ApiProperty({

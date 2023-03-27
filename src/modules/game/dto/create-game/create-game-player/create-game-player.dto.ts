@@ -1,7 +1,7 @@
 import { ApiHideProperty, ApiProperty, IntersectionType, PartialType, PickType } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { ValidateNested } from "class-validator";
-import { playerApiProperties } from "../../../schemas/player/constants/player.constant";
+import { playerApiProperties } from "../../../constants/player/player.constant";
 import { GamePlayerBaseDto } from "../../base/game-player/game-player.base.dto";
 import { playerRoleTransformer } from "../../base/game-player/transformers/player-role.transformer";
 import { playerSideTransformer } from "../../base/game-player/transformers/player-side.transformer";

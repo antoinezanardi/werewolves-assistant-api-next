@@ -7,10 +7,15 @@ import type { CreateGameDto } from "../../dto/create-game/create-game.dto";
 import { GAME_STATUSES } from "../../enums/game.enum";
 import type { Game } from "../../schemas/game.schema";
 import { GameRepository } from "../repositories/game.repository";
+import { GamePlaysManagerService } from "./game-plays-manager.service";
 
 @Injectable()
 export class GameService {
-  public constructor(private readonly gameRepository: GameRepository) {}
+  public constructor(
+    private readonly gamePlaysManagerService: GamePlaysManagerService,
+    private readonly gameRepository: GameRepository,
+  ) {}
+
   public async getGames(): Promise<Game[]> {
     return this.gameRepository.find();
   }
@@ -24,6 +29,7 @@ export class GameService {
   }
 
   public async createGame(game: CreateGameDto): Promise<Game> {
+    game.upcomingPlays = this.gamePlaysManagerService.getUpcomingNightPlays(game);
     return this.gameRepository.create(game);
   }
 

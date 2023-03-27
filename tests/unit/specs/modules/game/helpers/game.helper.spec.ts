@@ -1,0 +1,218 @@
+import { cloneDeep } from "lodash";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
+import { areAllVillagersAlive, areAllWerewolvesAlive, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
+import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
+import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { bulkCreateFakePlayers } from "../../../../../factories/game/schemas/player/player.schema.factory";
+
+describe("Game Helper", () => {
+  describe("getPlayerDtoWithRole", () => {
+    const players = bulkCreateFakeCreateGamePlayerDto(6, [
+      { role: { name: ROLE_NAMES.WITCH } },
+      { role: { name: ROLE_NAMES.SEER } },
+      { role: { name: ROLE_NAMES.WEREWOLF } },
+      { role: { name: ROLE_NAMES.TWO_SISTERS } },
+      { role: { name: ROLE_NAMES.TWO_SISTERS } },
+      { role: { name: ROLE_NAMES.IDIOT } },
+    ]);
+
+    it("should return player with role when a player has this role.", () => {
+      expect(getPlayerDtoWithRole(players, ROLE_NAMES.WEREWOLF)).toStrictEqual(players[2]);
+    });
+
+    it("should return undefined when player with role is not found.", () => {
+      expect(getPlayerDtoWithRole(players, ROLE_NAMES.THREE_BROTHERS)).toBeUndefined();
+    });
+  });
+
+  describe("getPlayerWithCurrentRole", () => {
+    const players = bulkCreateFakePlayers(6, [
+      { role: { current: ROLE_NAMES.WITCH, original: ROLE_NAMES.WITCH, isRevealed: false } },
+      { role: { current: ROLE_NAMES.SEER, original: ROLE_NAMES.SEER, isRevealed: false } },
+      { role: { current: ROLE_NAMES.WEREWOLF, original: ROLE_NAMES.WEREWOLF, isRevealed: false } },
+      { role: { current: ROLE_NAMES.TWO_SISTERS, original: ROLE_NAMES.TWO_SISTERS, isRevealed: false } },
+      { role: { current: ROLE_NAMES.TWO_SISTERS, original: ROLE_NAMES.TWO_SISTERS, isRevealed: false } },
+      { role: { current: ROLE_NAMES.IDIOT, original: ROLE_NAMES.IDIOT, isRevealed: false } },
+    ]);
+
+    it("should return player with role when a player has this role.", () => {
+      expect(getPlayerWithCurrentRole(players, ROLE_NAMES.SEER)).toStrictEqual(players[1]);
+    });
+
+    it("should return undefined when player with role is not found.", () => {
+      expect(getPlayerWithCurrentRole(players, ROLE_NAMES.BIG_BAD_WOLF)).toBeUndefined();
+    });
+  });
+
+  describe("getPlayersWithCurrentRole", () => {
+    const players = bulkCreateFakePlayers(6, [
+      { role: { current: ROLE_NAMES.THREE_BROTHERS, original: ROLE_NAMES.WITCH, isRevealed: false } },
+      { role: { current: ROLE_NAMES.THREE_BROTHERS, original: ROLE_NAMES.SEER, isRevealed: false } },
+      { role: { current: ROLE_NAMES.THREE_BROTHERS, original: ROLE_NAMES.WEREWOLF, isRevealed: false } },
+      { role: { current: ROLE_NAMES.TWO_SISTERS, original: ROLE_NAMES.TWO_SISTERS, isRevealed: false } },
+      { role: { current: ROLE_NAMES.TWO_SISTERS, original: ROLE_NAMES.TWO_SISTERS, isRevealed: false } },
+      { role: { current: ROLE_NAMES.IDIOT, original: ROLE_NAMES.IDIOT, isRevealed: false } },
+    ]);
+
+    it("should return players when they have this role.", () => {
+      expect(getPlayersWithCurrentRole(players, ROLE_NAMES.THREE_BROTHERS)).toStrictEqual([players[0], players[1], players[2]]);
+    });
+
+    it("should return empty array when no one has the role.", () => {
+      expect(getPlayersWithCurrentRole(players, ROLE_NAMES.WEREWOLF)).toStrictEqual([]);
+    });
+  });
+
+  describe("getPlayersWithCurrentSide", () => {
+    const players = bulkCreateFakePlayers(6, [
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
+      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS } },
+      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS } },
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
+    ]);
+
+    it("should return werewolves when they have this side.", () => {
+      expect(getPlayersWithCurrentSide(players, ROLE_SIDES.WEREWOLVES)).toStrictEqual([players[0], players[1], players[4], players[5]]);
+    });
+
+    it("should return villagers when they have this side.", () => {
+      expect(getPlayersWithCurrentSide(players, ROLE_SIDES.VILLAGERS)).toStrictEqual([players[2], players[3]]);
+    });
+  });
+
+  describe("areAllWerewolvesAlive", () => {
+    const players = bulkCreateFakePlayers(6, [
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
+      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
+      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
+    ]);
+
+    it("should return false when empty array is provided.", () => {
+      expect(areAllWerewolvesAlive([])).toBe(false);
+    });
+
+    it("should return true when all werewolves are alive.", () => {
+      expect(areAllWerewolvesAlive(players)).toBe(true);
+    });
+
+    it("should return true when at least one werewolf is dead.", () => {
+      const notAllAlivePlayers = cloneDeep(players);
+      notAllAlivePlayers[0].isAlive = false;
+      expect(areAllWerewolvesAlive(notAllAlivePlayers)).toBe(false);
+    });
+  });
+
+  describe("areAllVillagersAlive", () => {
+    const players = bulkCreateFakePlayers(4, [
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
+      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
+      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
+      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
+    ]);
+
+    it("should return false when empty array is provided.", () => {
+      expect(areAllVillagersAlive([])).toBe(false);
+    });
+
+    it("should return true when all villagers are alive.", () => {
+      expect(areAllVillagersAlive(players)).toBe(true);
+    });
+
+    it("should return true when at least one villager is dead.", () => {
+      const notAllAlivePlayers = cloneDeep(players);
+      notAllAlivePlayers[1].isAlive = false;
+      expect(areAllVillagersAlive(notAllAlivePlayers)).toBe(false);
+    });
+  });
+
+  describe("getPlayersWithAttribute", () => {
+    const players = bulkCreateFakePlayers(4, [
+      { attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.CHARMED, source: ROLE_NAMES.WITCH }] },
+      { attributes: [] },
+      { attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.CHARMED, source: ROLE_NAMES.WITCH }] },
+      { attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.EATEN, source: ROLE_NAMES.WITCH }] },
+    ]);
+
+    it("should return players when they have the attribute.", () => {
+      expect(getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.CHARMED)).toStrictEqual([players[0], players[2]]);
+    });
+
+    it("should return empty array when none has the attribute.", () => {
+      expect(getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.SEEN)).toStrictEqual([]);
+    });
+  });
+
+  describe("getGroupOfPlayers", () => {
+    const players = bulkCreateFakePlayers(6, [
+      {
+        side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS },
+        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.CHARMED, source: ROLE_NAMES.WITCH }],
+      },
+      {
+        side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES },
+        attributes: [],
+      },
+      {
+        side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS },
+        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.IN_LOVE, source: ROLE_NAMES.WITCH }],
+      },
+      {
+        side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES },
+        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.CHARMED, source: ROLE_NAMES.WITCH }],
+      },
+      {
+        side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS },
+        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.EATEN, source: ROLE_NAMES.WITCH }],
+      },
+      {
+        side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES },
+        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.IN_LOVE, source: ROLE_NAMES.WITCH }],
+      },
+    ]);
+
+    it("should return all players when group is all.", () => {
+      expect(getGroupOfPlayers(players, PLAYER_GROUPS.ALL)).toStrictEqual(players);
+    });
+
+    it("should return players in love when group is lovers.", () => {
+      expect(getGroupOfPlayers(players, PLAYER_GROUPS.LOVERS)).toStrictEqual([players[2], players[5]]);
+    });
+
+    it("should return charmed players when group is charmed.", () => {
+      expect(getGroupOfPlayers(players, PLAYER_GROUPS.CHARMED)).toStrictEqual([players[0], players[3]]);
+    });
+
+    it("should return villagers when group is villagers.", () => {
+      expect(getGroupOfPlayers(players, PLAYER_GROUPS.VILLAGERS)).toStrictEqual([players[0], players[2], players[4]]);
+    });
+
+    it("should return werewolves when group is werewolves.", () => {
+      expect(getGroupOfPlayers(players, PLAYER_GROUPS.WEREWOLVES)).toStrictEqual([players[1], players[3], players[5]]);
+    });
+  });
+
+  describe("isGameSourceRole", () => {
+    it("should return true when source is role.", () => {
+      expect(isGameSourceRole(ROLE_NAMES.WITCH)).toBe(true);
+    });
+
+    it("should return false when source is group.", () => {
+      expect(isGameSourceRole(PLAYER_GROUPS.ALL)).toBe(false);
+    });
+  });
+
+  describe("isGameSourceGroup", () => {
+    it("should return true when source is group.", () => {
+      expect(isGameSourceGroup(PLAYER_GROUPS.WEREWOLVES)).toBe(true);
+    });
+
+    it("should return false when source is role.", () => {
+      expect(isGameSourceGroup(ROLE_NAMES.SEER)).toBe(false);
+    });
+  });
+});

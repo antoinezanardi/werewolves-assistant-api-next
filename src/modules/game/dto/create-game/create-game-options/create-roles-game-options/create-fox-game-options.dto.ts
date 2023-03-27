@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsOptional } from "class-validator";
-import { foxGameOptionsApiProperties, foxGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/fox-game-options.constant";
+import { foxGameOptionsApiProperties, foxGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/fox-game-options.constant";
 
 class CreateFoxGameOptionsDto {
   @ApiProperty({

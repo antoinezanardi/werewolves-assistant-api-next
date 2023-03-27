@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
-import { gameOptionsApiProperties } from "../../../schemas/game-options/constants/game-options.constant";
+import { gameOptionsApiProperties } from "../../../constants/game-options/game-options.constant";
 import { CreateCompositionGameOptionsDto } from "./create-composition-game-options/create-composition-game-options.dto";
 import { CreateRolesGameOptionsDto } from "./create-roles-game-options/create-roles-game-options.dto";
 

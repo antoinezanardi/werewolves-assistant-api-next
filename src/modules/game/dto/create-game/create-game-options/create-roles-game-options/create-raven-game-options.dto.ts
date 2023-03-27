@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, Max, Min } from "class-validator";
-import { ravenGameOptionsApiProperties, ravenGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/raven-game-options.constant";
+import { ravenGameOptionsApiProperties, ravenGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/raven-game-options.constant";
 
 class CreateRavenGameOptionsDto {
   @ApiProperty({

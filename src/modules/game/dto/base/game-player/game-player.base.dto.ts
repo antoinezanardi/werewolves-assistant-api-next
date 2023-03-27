@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { IsInt, IsString, MaxLength, Min, MinLength, ValidateNested } from "class-validator";
-import { playerApiProperties, playersFieldsSpecs } from "../../../schemas/player/constants/player.constant";
+import { playerApiProperties, playersFieldsSpecs } from "../../../constants/player/player.constant";
 import { GamePlayerRoleBaseDto } from "./game-player-role/game-player-role.base.dto";
 import { GamePlayerSideBaseDto } from "./game-player-side/game-player-side.base.dto";
 import { playerRoleTransformer } from "./transformers/player-role.transformer";

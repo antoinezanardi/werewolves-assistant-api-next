@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsOptional } from "class-validator";
-import { littleGirlGameOptionsApiProperties, littleGirlGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/little-girl-game-options.constant";
+import { littleGirlGameOptionsApiProperties, littleGirlGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/little-girl-game-options.constant";
 
 class CreateLittleGirlGameOptionsDto {
   @ApiProperty({
