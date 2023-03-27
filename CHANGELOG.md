@@ -1,5 +1,36 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.6.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.5.0...v1.6.0) (2023-03-27)
+
+
+### 🔁 CI
+
+* **sonarcloud:** skip step if author is dependabot ([#52](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/52)) ([699e19d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/699e19d6714e5e4166e94e535b123bb6b8041a98))
+* **sonarcloud:** skip step if author is dependabot... 2 ([#53](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/53)) ([1f70e24](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1f70e24ff0187f4b890cc69a833f062c18fe741b))
+
+
+### 🔩 Refactor
+
+* **dto:** better structure and composition for dto ([#51](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/51)) ([3bc3b6e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/3bc3b6e4688a8e15ff3cbbbd40beb3304d148344))
+
+
+### 🐛 Bug Fixes
+
+* **readme:** project logo restored ([#61](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/61)) ([18501a7](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/18501a7daf686aced9fc1df15ce69a9221dbd0fa))
+
+
+### 🎨 Styles
+
+* **gource:** add dependabot image ([#60](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/60)) ([1412be6](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1412be631f8377446b142f2bcb250b55384695f8))
+* **roles:** images of different sizes ([#63](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/63)) ([7ef6126](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/7ef61267075cd5e0308e404856fd69881000df82))
+
+
+### 🚀 Features
+
+* **dependabot:** increase pr limit to 20 ([#62](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/62)) ([2fad24a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/2fad24a1a4e5308f58884cf6c5e9baa10ceefc8e))
+* **game-queue:** game initial upcoming night plays ([#70](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/70)) ([d457b02](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d457b02a8a0a253f71edc583a59629621739e964))
+* **sonarcloud:** more defined config file ([#45](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/45)) ([31c835c](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/31c835c2b9a331d76c85a9955fba17681261510b))
+
 ## [1.5.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.4.0...v1.5.0) (2023-03-21)
 
 
