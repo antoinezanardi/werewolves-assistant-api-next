@@ -1,5 +1,12 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.6.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.6.0...v1.6.1) (2023-03-27)
+
+
+### 🐛 Bug Fixes
+
+* **sonarcloud:** code coverage exclusion ([3318098](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/3318098ad688de32468013af65242005d5f1c9d2))
+
 ## [1.6.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.5.0...v1.6.0) (2023-03-27)
 
 
