@@ -1,13 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, Max, Min } from "class-validator";
-import { ravenGameOptionsApiProperties, ravenGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/raven-game-options.constant";
+import { IsInt, IsOptional, Max, Min } from "class-validator";
+import { ravenGameOptionsApiProperties, ravenGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/raven-game-options.constant";
 
 class CreateRavenGameOptionsDto {
-  @ApiProperty(ravenGameOptionsApiProperties.markPenalty)
+  @ApiProperty({
+    ...ravenGameOptionsApiProperties.markPenalty,
+    required: false,
+  })
   @IsOptional()
+  @IsInt()
   @Min(ravenGameOptionsFieldsSpecs.markPenalty.minimum)
   @Max(ravenGameOptionsFieldsSpecs.markPenalty.maximum)
-  public markPenalty?: number;
+  public markPenalty: number = ravenGameOptionsFieldsSpecs.markPenalty.default;
 }
 
 export { CreateRavenGameOptionsDto };

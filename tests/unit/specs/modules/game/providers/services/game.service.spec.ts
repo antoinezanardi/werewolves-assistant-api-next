@@ -3,6 +3,7 @@ import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.enum";
 import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
+import { GamePlaysManagerService } from "../../../../../../../src/modules/game/providers/services/game-plays-manager.service";
 import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
 import { createFakeCreateGameDto } from "../../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
@@ -25,6 +26,7 @@ describe("Game Service", () => {
           provide: GameRepository,
           useValue: gameRepositoryMock,
         },
+        GamePlaysManagerService,
         GameService,
       ],
     }).compile();

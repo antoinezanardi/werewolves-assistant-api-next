@@ -1,13 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, Max, Min } from "class-validator";
-import { whiteWerewolfGameOptionsApiProperties, whiteWerewolfGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/white-werewolf-game-options.constant";
+import { IsInt, IsOptional, Max, Min } from "class-validator";
+import { whiteWerewolfGameOptionsApiProperties, whiteWerewolfGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/white-werewolf-game-options.constant";
 
 class CreateWhiteWerewolfGameOptionsDto {
-  @ApiProperty(whiteWerewolfGameOptionsApiProperties.wakingUpInterval)
+  @ApiProperty({
+    ...whiteWerewolfGameOptionsApiProperties.wakingUpInterval,
+    required: false,
+  })
   @IsOptional()
+  @IsInt()
   @Min(whiteWerewolfGameOptionsFieldsSpecs.wakingUpInterval.minimum)
   @Max(whiteWerewolfGameOptionsFieldsSpecs.wakingUpInterval.maximum)
-  public wakingUpInterval?: number;
+  public wakingUpInterval: number = whiteWerewolfGameOptionsFieldsSpecs.wakingUpInterval.default;
 }
 
 export { CreateWhiteWerewolfGameOptionsDto };

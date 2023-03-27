@@ -6,20 +6,25 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+import { instanceToPlain, plainToInstance } from "class-transformer";
 import type { Model } from "mongoose";
 import { stringify } from "qs";
+import { defaultGameOptions } from "../../../../../../src/modules/game/constants/game-options/game-options.constant";
+import { CreateGameOptionsDto } from "../../../../../../src/modules/game/dto/create-game/create-game-options/create-game-options.dto";
 import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
+import { GAME_PLAY_ACTIONS } from "../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
+import { PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
 import { GameModule } from "../../../../../../src/modules/game/game.module";
-import { defaultGameOptions } from "../../../../../../src/modules/game/schemas/game-options/constants/game-options.constant";
-import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/schemas/game-options.schema";
+import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/game-options.schema";
 import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
-import type { Player } from "../../../../../../src/modules/game/schemas/player/schemas/player.schema";
+import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
 import { fastifyServerDefaultOptions } from "../../../../../../src/server/constants/server.constant";
+import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
@@ -72,7 +77,7 @@ describe("Game Controller", () => {
   });
 
   describe("GET /games/random-composition", () => {
-    it.each<{ query: Partial<GetGameRandomCompositionDto>; test: string; errorMessage: string }>([
+    it.each<{ query: Record<string, unknown>; test: string; errorMessage: string }>([
       {
         query: { players: undefined },
         test: "there is not enough players",
@@ -110,8 +115,8 @@ describe("Game Controller", () => {
       },
       {
         query: {
-          players: bulkCreateFakeCreateGamePlayerDto(4),
-          excludedRoles: [ROLE_NAMES.WEREWOLF, ROLE_NAMES.SEER],
+          "players": bulkCreateFakeCreateGamePlayerDto(4),
+          "excluded-roles": [ROLE_NAMES.WEREWOLF, ROLE_NAMES.SEER],
         },
         test: "werewolf is in excluded roles",
         errorMessage: "excludedRoles should not contain villager, werewolf values",
@@ -188,8 +193,8 @@ describe("Game Controller", () => {
         url: `/games/${game._id}`,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toStrictEqual({
-        ...game,
+      expect(response.json<Game>()).toMatchObject({
+        ...instanceToPlain(game, { excludeExtraneousValues: true }),
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -311,11 +316,13 @@ describe("Game Controller", () => {
 
     it(`should create game when called.`, async() => {
       const payload = createFakeCreateGameDto({
-        players: bulkCreateFakeCreateGamePlayerDto(4, [
+        players: bulkCreateFakeCreateGamePlayerDto(6, [
           { role: { name: ROLE_NAMES.VILLAGER } },
-          { role: { name: ROLE_NAMES.WEREWOLF }, side: { current: ROLE_SIDES.WEREWOLVES } },
+          { role: { name: ROLE_NAMES.WEREWOLF } },
           { role: { name: ROLE_NAMES.VILLAGER_VILLAGER } },
           { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
+          { role: { name: ROLE_NAMES.CUPID } },
+          { role: { name: ROLE_NAMES.SEER } },
         ]),
       }, { options: undefined });
       const response = await app.inject({
@@ -332,8 +339,8 @@ describe("Game Controller", () => {
           isRevealed: player.role.name === ROLE_NAMES.VILLAGER_VILLAGER,
         },
         side: {
-          current: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
-          original: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+          current: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER, ROLE_NAMES.CUPID, ROLE_NAMES.SEER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+          original: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER, ROLE_NAMES.CUPID, ROLE_NAMES.SEER].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
         },
         attributes: [],
         position: index,
@@ -347,6 +354,14 @@ describe("Game Controller", () => {
         turn: 1,
         tick: 1,
         players: expectedPlayers,
+        upcomingPlays: [
+          { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF },
+          { source: ROLE_NAMES.CUPID, action: GAME_PLAY_ACTIONS.CHARM },
+          { source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK },
+          { source: PLAYER_GROUPS.LOVERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER },
+          { source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT },
+          { source: ROLE_NAMES.WHITE_WEREWOLF, action: GAME_PLAY_ACTIONS.EAT },
+        ],
         options: defaultGameOptions,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
@@ -354,8 +369,7 @@ describe("Game Controller", () => {
     });
 
     it(`should create game with different options when called with options specified.`, async() => {
-      const options: GameOptions = {
-        composition: { isHidden: false },
+      const options: Partial<GameOptions> = {
         roles: {
           areRevealedOnDeath: false,
           sheriff: {
@@ -397,14 +411,14 @@ describe("Game Controller", () => {
           raven: { markPenalty: 5 },
         },
       };
-      const payload = createFakeCreateGameDto({ options });
+      const payload = createFakeCreateGameDto({}, { options });
       const response = await app.inject({
         method: "POST",
         url: "/games",
         payload,
       });
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json<Game>().options).toMatchObject<GameOptions>(options);
+      expect(response.json<Game>().options).toMatchObject(plainToInstance(CreateGameOptionsDto, options, plainToInstanceDefaultOptions));
     });
   });
 
@@ -447,8 +461,8 @@ describe("Game Controller", () => {
         url: `/games/${game._id}`,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toStrictEqual({
-        ...game,
+      expect(response.json<Game>()).toMatchObject({
+        ...instanceToPlain(game, { excludeExtraneousValues: true }),
         status: GAME_STATUSES.CANCELED,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,

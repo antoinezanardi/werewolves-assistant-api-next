@@ -3,9 +3,11 @@ import { ApiProperty } from "@nestjs/swagger";
 import type { HydratedDocument } from "mongoose";
 import { gameApiProperties, gameFieldsSpecs } from "../constants/game.constant";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
-import { GameOptions, GameOptionsSchema } from "./game-options/schemas/game-options.schema";
-import { PlayerSchema } from "./player/schemas/player.schema";
-import type { Player } from "./player/schemas/player.schema";
+import { GameOptions, GameOptionsSchema } from "./game-options/game-options.schema";
+import type { GamePlay } from "./game-play.schema";
+import { GamePlaySchema } from "./game-play.schema";
+import { PlayerSchema } from "./player/player.schema";
+import type { Player } from "./player/player.schema";
 
 @Schema({
   timestamps: true,
@@ -37,6 +39,13 @@ class Game {
     type: [PlayerSchema],
   })
   public players: Player[];
+
+  @ApiProperty(gameApiProperties.upcomingPlays)
+  @Prop({
+    required: true,
+    type: [GamePlaySchema],
+  })
+  public upcomingPlays: GamePlay[];
 
   @ApiProperty(gameApiProperties.options)
   @Prop({

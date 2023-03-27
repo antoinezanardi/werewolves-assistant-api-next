@@ -1,6 +1,9 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
+import { ROLE_NAMES } from "../../role/enums/role.enum";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../enums/player.enum";
 import type { Game } from "../schemas/game.schema";
+import type { GameSource } from "../types/game.type";
 
 const gameFieldsSpecs = Object.freeze({
   players: {
@@ -38,9 +41,12 @@ const gameApiProperties: Record<keyof Game, ApiPropertyOptions> = Object.freeze(
     description: "Players of the game",
     ...gameFieldsSpecs.players,
   },
+  upcomingPlays: { description: "Queue of upcoming plays that needs to be performed to continue the game" },
   options: { description: "Game's options" },
   createdAt: { description: "When the game was created" },
   updatedAt: { description: "When the game was updated" },
 });
 
-export { gameFieldsSpecs, gameApiProperties };
+const gameSourceValues: readonly GameSource[] = Object.freeze([...Object.values(PLAYER_GROUPS), ...Object.values(ROLE_NAMES), PLAYER_ATTRIBUTE_NAMES.SHERIFF]);
+
+export { gameFieldsSpecs, gameApiProperties, gameSourceValues };

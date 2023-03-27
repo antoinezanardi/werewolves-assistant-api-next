@@ -1,11 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
-import { foxGameOptionsApiProperties } from "../../../../schemas/game-options/constants/roles-game-options/fox-game-options.constant";
+import { IsBoolean, IsOptional } from "class-validator";
+import { foxGameOptionsApiProperties, foxGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/fox-game-options.constant";
 
 class CreateFoxGameOptionsDto {
-  @ApiProperty(foxGameOptionsApiProperties.isPowerlessIfMissesWerewolf)
+  @ApiProperty({
+    ...foxGameOptionsApiProperties.isPowerlessIfMissesWerewolf,
+    required: false,
+  })
   @IsOptional()
-  public isPowerlessIfMissesWerewolf?: boolean;
+  @IsBoolean()
+  public isPowerlessIfMissesWerewolf: boolean = foxGameOptionsFieldsSpecs.isPowerlessIfMissesWerewolf.default;
 }
 
 export { CreateFoxGameOptionsDto };

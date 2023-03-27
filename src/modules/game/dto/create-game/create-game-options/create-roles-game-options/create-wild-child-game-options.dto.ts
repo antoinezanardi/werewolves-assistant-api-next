@@ -1,11 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
-import { wildChildGameOptionsApiProperties } from "../../../../schemas/game-options/constants/roles-game-options/wild-child-game-options.constant";
+import { IsBoolean, IsOptional } from "class-validator";
+import { wildChildGameOptionsApiProperties, wildChildGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/wild-child-game-options.constant";
 
 class CreateWildChildGameOptionsDto {
-  @ApiProperty(wildChildGameOptionsApiProperties.isTransformationRevealed)
+  @ApiProperty({
+    ...wildChildGameOptionsApiProperties.isTransformationRevealed,
+    required: false,
+  })
   @IsOptional()
-  public isTransformationRevealed?: boolean;
+  @IsBoolean()
+  public isTransformationRevealed: boolean = wildChildGameOptionsFieldsSpecs.isTransformationRevealed.default;
 }
 
 export { CreateWildChildGameOptionsDto };

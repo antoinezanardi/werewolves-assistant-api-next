@@ -1,17 +1,25 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, Max, Min } from "class-validator";
-import { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs } from "../../../../schemas/game-options/constants/roles-game-options/pied-piper-game-options.constant";
+import { IsBoolean, IsInt, IsOptional, Max, Min } from "class-validator";
+import { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/pied-piper-game-options.constant";
 
 class CreatePiedPiperGameOptionsDto {
-  @ApiProperty(piedPiperGameOptionsApiProperties.charmedPeopleCountPerNight)
+  @ApiProperty({
+    ...piedPiperGameOptionsApiProperties.charmedPeopleCountPerNight,
+    required: false,
+  })
   @IsOptional()
+  @IsInt()
   @Min(piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight.minimum)
   @Max(piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight.maximum)
-  public charmedPeopleCountPerNight?: number;
+  public charmedPeopleCountPerNight: number = piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight.default;
 
-  @ApiProperty(piedPiperGameOptionsApiProperties.isPowerlessIfInfected)
+  @ApiProperty({
+    ...piedPiperGameOptionsApiProperties.isPowerlessIfInfected,
+    required: false,
+  })
   @IsOptional()
-  public isPowerlessIfInfected?: boolean;
+  @IsBoolean()
+  public isPowerlessIfInfected: boolean = piedPiperGameOptionsFieldsSpecs.isPowerlessIfInfected.default;
 }
 
 export { CreatePiedPiperGameOptionsDto };
