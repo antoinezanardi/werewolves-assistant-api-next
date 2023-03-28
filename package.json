@@ -1,6 +1,6 @@
 {
   "name": "werewolves-assistant-api-next",
-  "version": "1.5.0",
+  "version": "1.6.1",
   "description": "About Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.",
   "scripts": {
     "prepare": "husky install",
