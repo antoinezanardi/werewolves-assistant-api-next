@@ -53,9 +53,13 @@
             {
               "type": "chore",
               "section": "🧹 Chore",
-              "hidden": true
+              "hidden": false
             }
           ]
+        },
+        "writerOpts": {
+          "groupBy": "type",
+          "commitGroupsSort": ["feat", "fix", "docs", "style", "refactor", "perf", "test", "ci", "chore"]
         }
       }
     ],

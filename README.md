@@ -5,6 +5,7 @@
 ---
 
 [![GitHub release](https://img.shields.io/github/release/antoinezanardi/werewolves-assistant-api-next.svg)](https://GitHub.com/antoinezanardi/werewolves-assistant-api-next/releases/)
+[![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventional%20commits-Æ1A7DBD?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 [![GitHub license](https://img.shields.io/github/license/antoinezanardi/werewolves-assistant-api-next.svg)](https://github.com/antoinezanardi/https://img.shields.io/github/license/werewolves-assistant-api-next.svg/blob/main/LICENSE)
 ![NPM](https://img.shields.io/badge/-npm-black?style=flat-square&logoColor=white&logo=npm&color=CE0201)[![Known Vulnerabilities](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next/badge.svg?targetFile=package.json&style=flat-square)](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next?targetFile=package.json)
 
@@ -154,6 +155,20 @@ Project is scanned by :
 ![SonarCloud](https://img.shields.io/badge/-SonarCloud-black?style=for-the-badge&logoColor=white&logo=sonarcloud&color=F37A3A)
 
 You can check all metrics at the top of this README.
+
+## <a name="versions">📈 Releases & Changelog</a>
+
+Releases on **main** branch are generated and published automatically by :
+
+![Semantic Release](https://img.shields.io/badge/-Semantic%20Release-black?style=for-the-badge&logoColor=white&logo=semantic-release&color=000000)
+
+It uses the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) strategy.
+
+Each change when a new release comes up is listed in the <a href="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/master/CHANGELOG.md" target="_blank">CHANGELOG.md file</a>.
+
+Also, you can keep up with changes by watching releases via the **Watch GitHub button** at the top of this page.
+
+#### 🏷️ <a href="https://github.com/antoinezanardi/werewolves-assistant-api-next/releases" target="_blank">All releases for this project are available here</a>.
 
 ## <a name="misc-commands">✨ Misc commands</a>
 
