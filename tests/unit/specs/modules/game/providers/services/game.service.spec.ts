@@ -47,8 +47,8 @@ describe("Game Service", () => {
     const unknownId = "bad-id";
 
     beforeEach(() => {
-      when(gameRepositoryMock.findOne).calledWith({ id: existingId }).mockResolvedValue(existingGame);
-      when(gameRepositoryMock.findOne).calledWith({ id: unknownId }).mockResolvedValue(null);
+      when(gameRepositoryMock.findOne).calledWith({ _id: existingId }).mockResolvedValue(existingGame);
+      when(gameRepositoryMock.findOne).calledWith({ _id: unknownId }).mockResolvedValue(null);
     });
 
     it("should return a game when called with existing id.", async() => {
@@ -77,14 +77,14 @@ describe("Game Service", () => {
     const unknownId = "bad-id";
 
     beforeEach(() => {
-      when(gameRepositoryMock.findOne).calledWith({ id: existingPlayingId }).mockResolvedValue(existingPlayingGame);
-      when(gameRepositoryMock.findOne).calledWith({ id: existingDoneId }).mockResolvedValue(existingDoneGame);
-      when(gameRepositoryMock.findOne).calledWith({ id: unknownId }).mockResolvedValue(null);
+      when(gameRepositoryMock.findOne).calledWith({ _id: existingPlayingId }).mockResolvedValue(existingPlayingGame);
+      when(gameRepositoryMock.findOne).calledWith({ _id: existingDoneId }).mockResolvedValue(existingDoneGame);
+      when(gameRepositoryMock.findOne).calledWith({ _id: unknownId }).mockResolvedValue(null);
     });
 
     it("should call update method from repository when game can be canceled.", async() => {
       await service.cancelGameById(existingPlayingId);
-      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ id: existingPlayingId }, { status: GAME_STATUSES.CANCELED });
+      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ _id: existingPlayingId }, { status: GAME_STATUSES.CANCELED });
     });
 
     it("should throw an error when called with unknown id.", async() => {
