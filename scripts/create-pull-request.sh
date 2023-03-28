@@ -55,7 +55,6 @@ git push -u origin "$current_branch"
 word_map=("feat:🚀 feature" "fix:🐛 bug" "chore:🧹 chore" "docs:📖 docs" "style:🎨 style" "refactor:🔩 refactor" "perf:⚡️ perf" "test:✅ test" "ci:🔁 ci")
 
 first_commit_message=$(git log --format=%B -n 1 "$base_branch".."$current_branch")
-
 first_word=$(echo "$first_commit_message" | cut -d'(' -f1)
 
 label=""
