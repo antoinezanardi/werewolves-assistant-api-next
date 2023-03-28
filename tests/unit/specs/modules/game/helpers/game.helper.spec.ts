@@ -3,6 +3,8 @@ import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/mod
 import { areAllVillagersAlive, areAllWerewolvesAlive, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { createFakePlayerCharmedAttribute, createFakePlayerEatenAttribute, createFakePlayerInLoveAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeSeerPlayer, createFakeVillagerPlayer, createFakeWerewolfPlayer, createFakeWhiteWerewolfPlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers } from "../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Game Helper", () => {
@@ -109,10 +111,10 @@ describe("Game Helper", () => {
 
   describe("areAllVillagersAlive", () => {
     const players = bulkCreateFakePlayers(4, [
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
+      createFakeWerewolfPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeWerewolfPlayer(),
     ]);
 
     it("should return false when empty array is provided.", () => {
@@ -132,10 +134,10 @@ describe("Game Helper", () => {
 
   describe("getPlayersWithAttribute", () => {
     const players = bulkCreateFakePlayers(4, [
-      { attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.CHARMED, source: ROLE_NAMES.WITCH }] },
+      { attributes: [createFakePlayerCharmedAttribute()] },
       { attributes: [] },
-      { attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.CHARMED, source: ROLE_NAMES.WITCH }] },
-      { attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.EATEN, source: ROLE_NAMES.WITCH }] },
+      { attributes: [createFakePlayerCharmedAttribute()] },
+      { attributes: [createFakePlayerEatenAttribute()] },
     ]);
 
     it("should return players when they have the attribute.", () => {
@@ -149,30 +151,12 @@ describe("Game Helper", () => {
 
   describe("getGroupOfPlayers", () => {
     const players = bulkCreateFakePlayers(6, [
-      {
-        side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS },
-        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.CHARMED, source: ROLE_NAMES.WITCH }],
-      },
-      {
-        side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES },
-        attributes: [],
-      },
-      {
-        side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS },
-        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.IN_LOVE, source: ROLE_NAMES.WITCH }],
-      },
-      {
-        side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES },
-        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.CHARMED, source: ROLE_NAMES.WITCH }],
-      },
-      {
-        side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS },
-        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.EATEN, source: ROLE_NAMES.WITCH }],
-      },
-      {
-        side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES },
-        attributes: [{ name: PLAYER_ATTRIBUTE_NAMES.IN_LOVE, source: ROLE_NAMES.WITCH }],
-      },
+      createFakeVillagerPlayer({ attributes: [createFakePlayerCharmedAttribute()] }),
+      createFakeWerewolfPlayer(),
+      createFakeSeerPlayer({ attributes: [createFakePlayerInLoveAttribute()] }),
+      createFakeWhiteWerewolfPlayer({ attributes: [createFakePlayerCharmedAttribute()] }),
+      createFakeVillagerPlayer({ attributes: [createFakePlayerEatenAttribute()] }),
+      createFakeWerewolfPlayer({ attributes: [createFakePlayerInLoveAttribute()] }),
     ]);
 
     it("should return all players when group is all.", () => {
