@@ -3668,6 +3668,35 @@
           }
         },
         {
+          "id": "108",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/game/dto/base/decorators/composition-has-werewolf.decorator.ts(18,53): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "91",
+            "92",
+            "94",
+            "95",
+            "98",
+            "100",
+            "102",
+            "228"
+          ],
+          "location": {
+            "end": {
+              "column": 2,
+              "line": 20
+            },
+            "start": {
+              "column": 60,
+              "line": 18
+            }
+          }
+        },
+        {
           "id": "109",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
@@ -3681,9 +3710,10 @@
           "coveredBy": [
             "91",
             "92",
+            "94",
+            "95",
             "98",
             "100",
-            "101",
             "102",
             "228"
           ],
@@ -3790,33 +3820,6 @@
             "start": {
               "column": 18,
               "line": 29
-            }
-          }
-        },
-        {
-          "id": "108",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/game/dto/base/decorators/composition-has-werewolf.decorator.ts(18,53): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "91",
-            "92",
-            "98",
-            "100",
-            "101",
-            "102",
-            "228"
-          ],
-          "location": {
-            "end": {
-              "column": 2,
-              "line": 20
-            },
-            "start": {
-              "column": 60,
-              "line": 18
             }
           }
         }
@@ -6489,6 +6492,31 @@
           }
         },
         {
+          "id": "181",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/game/dto/base/decorators/composition-roles-max-in-game.decorator.ts(19,56): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "91",
+            "93",
+            "98",
+            "203"
+          ],
+          "location": {
+            "end": {
+              "column": 2,
+              "line": 21
+            },
+            "start": {
+              "column": 63,
+              "line": 19
+            }
+          }
+        },
+        {
           "id": "182",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
@@ -6502,7 +6530,6 @@
           "coveredBy": [
             "91",
             "93",
-            "95",
             "98",
             "203"
           ],
@@ -6609,31 +6636,6 @@
             "start": {
               "column": 18,
               "line": 30
-            }
-          }
-        },
-        {
-          "id": "181",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/game/dto/base/decorators/composition-roles-max-in-game.decorator.ts(19,56): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "91",
-            "93",
-            "95",
-            "98",
-            "203"
-          ],
-          "location": {
-            "end": {
-              "column": 2,
-              "line": 21
-            },
-            "start": {
-              "column": 63,
-              "line": 19
             }
           }
         }
@@ -8150,6 +8152,7 @@
           "coveredBy": [
             "92",
             "93",
+            "94",
             "96",
             "97",
             "130",
@@ -8184,6 +8187,7 @@
           "coveredBy": [
             "92",
             "93",
+            "94",
             "96",
             "97",
             "130",
@@ -8218,6 +8222,7 @@
           "coveredBy": [
             "92",
             "93",
+            "94",
             "96",
             "97",
             "130",
@@ -8253,6 +8258,7 @@
             "91",
             "92",
             "93",
+            "94",
             "96",
             "97",
             "195"
@@ -8374,6 +8380,7 @@
             "91",
             "92",
             "93",
+            "94",
             "96",
             "97",
             "195"
@@ -9134,9 +9141,13 @@
           "id": "246",
           "mutatorName": "ConditionalExpression",
           "replacement": "false",
-          "status": "Timeout",
+          "statusReason": "TypeError: Cannot read properties of null (reading 'name')\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/src/modules/game/dto/base/game-player/transformers/player-role.transformer.ts:73:178\n    at Array.find (<anonymous>)\n    at playerRoleTransformer (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/src/modules/game/dto/base/game-player/transformers/player-role.transformer.ts:71:24)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/unit/specs/modules/game/dto/base/game-player/transformers/player-role.transformer.spec.ts:9:35)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 80,
           "static": true,
-          "killedBy": [],
+          "killedBy": [
+            "236"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -9454,9 +9465,13 @@
           "id": "250",
           "mutatorName": "ConditionalExpression",
           "replacement": "true",
-          "status": "Timeout",
+          "statusReason": "Error: expect(received).toMatchObject(expected)\n\n- Expected  - 11\n+ Received  + 11\n\n@@ -79,13 +79,13 @@\n        \"attributes\": Array [],\n        \"isAlive\": true,\n        \"name\": \"Xzavier\",\n        \"position\": 0,\n        \"role\": Object {\n-         \"current\": \"villager\",\n+         \"current\": \"werewolf\",\n          \"isRevealed\": false,\n-         \"original\": \"villager\",\n+         \"original\": \"werewolf\",\n        },\n        \"side\": Object {\n          \"current\": \"villagers\",\n          \"original\": \"villagers\",\n        },\n@@ -111,13 +111,13 @@\n        \"attributes\": Array [],\n        \"isAlive\": true,\n        \"name\": \"Jedidiah\",\n        \"position\": 2,\n        \"role\": Object {\n-         \"current\": \"villager-villager\",\n-         \"isRevealed\": true,\n-         \"original\": \"villager-villager\",\n+         \"current\": \"werewolf\",\n+         \"isRevealed\": false,\n+         \"original\": \"werewolf\",\n        },\n        \"side\": Object {\n          \"current\": \"villagers\",\n          \"original\": \"villagers\",\n        },\n@@ -127,13 +127,13 @@\n        \"attributes\": Array [],\n        \"isAlive\": true,\n        \"name\": \"Salvatore\",\n        \"position\": 3,\n        \"role\": Object {\n-         \"current\": \"white-werewolf\",\n+         \"current\": \"werewolf\",\n          \"isRevealed\": false,\n-         \"original\": \"white-werewolf\",\n+         \"original\": \"werewolf\",\n        },\n        \"side\": Object {\n          \"current\": \"werewolves\",\n          \"original\": \"werewolves\",\n        },\n@@ -143,13 +143,13 @@\n        \"attributes\": Array [],\n        \"isAlive\": true,\n        \"name\": \"Itzel\",\n        \"position\": 4,\n        \"role\": Object {\n-         \"current\": \"cupid\",\n+         \"current\": \"werewolf\",\n          \"isRevealed\": false,\n-         \"original\": \"cupid\",\n+         \"original\": \"werewolf\",\n        },\n        \"side\": Object {\n          \"current\": \"villagers\",\n          \"original\": \"villagers\",\n        },\n@@ -159,13 +159,13 @@\n        \"attributes\": Array [],\n        \"isAlive\": true,\n        \"name\": \"Lavada\",\n        \"position\": 5,\n        \"role\": Object {\n-         \"current\": \"seer\",\n+         \"current\": \"werewolf\",\n          \"isRevealed\": false,\n-         \"original\": \"seer\",\n+         \"original\": \"werewolf\",\n        },\n        \"side\": Object {\n          \"current\": \"villagers\",\n          \"original\": \"villagers\",\n        },\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:350:31)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "status": "Killed",
+          "testsCompleted": 77,
           "static": true,
-          "killedBy": [],
+          "killedBy": [
+            "103"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -10157,9 +10172,13 @@
           "id": "258",
           "mutatorName": "ConditionalExpression",
           "replacement": "false",
-          "status": "Timeout",
+          "statusReason": "Error: expect(received).toMatchObject(expected)\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -112,11 +112,11 @@\n        \"isAlive\": true,\n        \"name\": \"Kasey\",\n        \"position\": 2,\n        \"role\": Object {\n          \"current\": \"villager-villager\",\n-         \"isRevealed\": true,\n+         \"isRevealed\": false,\n          \"original\": \"villager-villager\",\n        },\n        \"side\": Object {\n          \"current\": \"villagers\",\n          \"original\": \"villagers\",\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:350:31)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "status": "Killed",
+          "testsCompleted": 76,
           "static": true,
-          "killedBy": [],
+          "killedBy": [
+            "103"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -10645,9 +10664,13 @@
           "id": "263",
           "mutatorName": "LogicalOperator",
           "replacement": "(!isObject(params.value) || !isObject(params.obj)) && !has((params.obj as object), [\"role\", \"name\"])",
-          "status": "Timeout",
+          "statusReason": "TypeError: Cannot set properties of null (setting 'current')\n    at playerSideTransformer (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/src/modules/game/dto/base/game-player/transformers/player-side.transformer.ts:86:18)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/unit/specs/modules/game/dto/base/game-player/transformers/player-side.transformer.spec.ts:11:35)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 76,
           "static": true,
-          "killedBy": [],
+          "killedBy": [
+            "229"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -10933,9 +10956,13 @@
           "id": "266",
           "mutatorName": "BooleanLiteral",
           "replacement": "isObject(params.value)",
-          "status": "Timeout",
+          "statusReason": "Error: expect(received).toSatisfyAll(expected)\n\nExpected array to satisfy predicate for all values:\n  [Function anonymous]\nReceived:\n  [{\"name\": \"Zoie\", \"role\": {\"current\": \"seer\", \"isRevealed\": false, \"name\": \"seer\", \"original\": \"seer\"}, \"side\": {}}, {\"name\": \"Sam\", \"role\": {\"current\": \"angel\", \"isRevealed\": false, \"name\": \"angel\", \"original\": \"angel\"}, \"side\": {}}, {\"name\": \"Bryon\", \"role\": {\"current\": \"villager\", \"isRevealed\": false, \"name\": \"villager\", \"original\": \"villager\"}, \"side\": {}}, {\"name\": \"Eliza\", \"role\": {\"current\": \"thief\", \"isRevealed\": false, \"name\": \"thief\", \"original\": \"thief\"}, \"side\": {}}, {\"name\": \"Tomas\", \"role\": {\"current\": \"werewolf\", \"isRevealed\": false, \"name\": \"werewolf\", \"original\": \"werewolf\"}, \"side\": {}}, {\"name\": \"Kenny\", \"role\": {\"current\": \"idiot\", \"isRevealed\": false, \"name\": \"idiot\", \"original\": \"idiot\"}, \"side\": {}}, {\"name\": \"Kianna\", \"role\": {\"current\": \"dog-wolf\", \"isRevealed\": false, \"name\": \"dog-wolf\", \"original\": \"dog-wolf\"}, \"side\": {}}, {\"name\": \"Sofia\", \"role\": {\"current\": \"fox\", \"isRevealed\": false, \"name\": \"fox\", \"original\": \"fox\"}, \"side\": {}}, {\"name\": \"Berneice\", \"role\": {\"current\": \"werewolf\", \"isRevealed\": false, \"name\": \"werewolf\", \"original\": \"werewolf\"}, \"side\": {}}, {\"name\": \"Charles\", \"role\": {\"current\": \"three-brothers\", \"isRevealed\": false, \"name\": \"three-brothers\", \"original\": \"three-brothers\"}, \"side\": {}}, …]\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:162:23)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "status": "Killed",
+          "testsCompleted": 76,
           "static": true,
-          "killedBy": [],
+          "killedBy": [
+            "87"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -11529,9 +11556,13 @@
           "id": "273",
           "mutatorName": "ArrowFunction",
           "replacement": "() => undefined",
-          "status": "Timeout",
+          "statusReason": "Error: expect(received).toSatisfyAll(expected)\n\nExpected array to satisfy predicate for all values:\n  [Function anonymous]\nReceived:\n  [{\"name\": \"Skye\", \"role\": {\"current\": \"stuttering-judge\", \"isRevealed\": false, \"name\": \"stuttering-judge\", \"original\": \"stuttering-judge\"}, \"side\": {}}, {\"name\": \"Margarete\", \"role\": {\"current\": \"fox\", \"isRevealed\": false, \"name\": \"fox\", \"original\": \"fox\"}, \"side\": {}}, {\"name\": \"Eusebio\", \"role\": {\"current\": \"villager\", \"isRevealed\": false, \"name\": \"villager\", \"original\": \"villager\"}, \"side\": {}}, {\"name\": \"Dominique\", \"role\": {\"current\": \"three-brothers\", \"isRevealed\": false, \"name\": \"three-brothers\", \"original\": \"three-brothers\"}, \"side\": {}}, {\"name\": \"Beau\", \"role\": {\"current\": \"cupid\", \"isRevealed\": false, \"name\": \"cupid\", \"original\": \"cupid\"}, \"side\": {}}, {\"name\": \"Jackie\", \"role\": {\"current\": \"hunter\", \"isRevealed\": false, \"name\": \"hunter\", \"original\": \"hunter\"}, \"side\": {}}, {\"name\": \"Susie\", \"role\": {\"current\": \"villager\", \"isRevealed\": false, \"name\": \"villager\", \"original\": \"villager\"}, \"side\": {}}, {\"name\": \"Jovanny\", \"role\": {\"current\": \"big-bad-wolf\", \"isRevealed\": false, \"name\": \"big-bad-wolf\", \"original\": \"big-bad-wolf\"}, \"side\": {}}, {\"name\": \"Kristian\", \"role\": {\"current\": \"villager\", \"isRevealed\": false, \"name\": \"villager\", \"original\": \"villager\"}, \"side\": {}}, {\"name\": \"Ariane\", \"role\": {\"current\": \"white-werewolf\", \"isRevealed\": false, \"name\": \"white-werewolf\", \"original\": \"white-werewolf\"}, \"side\": {}}, …]\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:162:23)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "status": "Killed",
+          "testsCompleted": 74,
           "static": true,
-          "killedBy": [],
+          "killedBy": [
+            "87"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -12282,7 +12313,7 @@
           "id": "282",
           "mutatorName": "BooleanLiteral",
           "replacement": "Array.isArray(params.value)",
-          "statusReason": "undefinedCannot read properties of undefined (reading 'some') TypeError: Cannot read properties of undefined (reading 'some')\n    at Object.gamePlayersPositionTransformer [as transformFn] (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/src/modules/game/dto/base/transformers/game-players-position.transformer.ts:66:144)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:412:24\n    at Array.forEach (<anonymous>)\n    at TransformOperationExecutor.applyCustomTransformations (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:411:15)\n    at TransformOperationExecutor.transform (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:334:33)\n    at ClassTransformer.plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/ClassTransformer.ts:77:21)\n    at plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/index.ts:84:27)\n    at createFakeCreateGameDto (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/factories/game/dto/create-game/create-game.dto.factory.ts:16:25)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:207:41\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:204:3\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:33:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1013:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:873:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefinedCannot read properties of undefined (reading 'some') TypeError: Cannot read properties of undefined (reading 'some')\n    at Object.gamePlayersPositionTransformer [as transformFn] (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/src/modules/game/dto/base/transformers/game-players-position.transformer.ts:66:144)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:412:24\n    at Array.forEach (<anonymous>)\n    at TransformOperationExecutor.applyCustomTransformations (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:411:15)\n    at TransformOperationExecutor.transform (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:334:33)\n    at ClassTransformer.plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/ClassTransformer.ts:77:21)\n    at plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/index.ts:84:27)\n    at createFakeCreateGameDto (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/factories/game/dto/create-game/create-game.dto.factory.ts:16:25)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:207:41\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:204:3\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:33:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1013:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:873:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
@@ -12405,7 +12436,7 @@
           "id": "284",
           "mutatorName": "ConditionalExpression",
           "replacement": "false",
-          "statusReason": "undefinedCannot read properties of undefined (reading 'some') TypeError: Cannot read properties of undefined (reading 'some')\n    at Object.gamePlayersPositionTransformer [as transformFn] (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/src/modules/game/dto/base/transformers/game-players-position.transformer.ts:66:144)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:412:24\n    at Array.forEach (<anonymous>)\n    at TransformOperationExecutor.applyCustomTransformations (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:411:15)\n    at TransformOperationExecutor.transform (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:334:33)\n    at ClassTransformer.plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/ClassTransformer.ts:77:21)\n    at plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/index.ts:84:27)\n    at createFakeCreateGameDto (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/factories/game/dto/create-game/create-game.dto.factory.ts:16:25)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:207:41\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:204:3\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:33:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1013:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:873:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefinedCannot read properties of undefined (reading 'some') TypeError: Cannot read properties of undefined (reading 'some')\n    at Object.gamePlayersPositionTransformer [as transformFn] (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/src/modules/game/dto/base/transformers/game-players-position.transformer.ts:66:144)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:412:24\n    at Array.forEach (<anonymous>)\n    at TransformOperationExecutor.applyCustomTransformations (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:411:15)\n    at TransformOperationExecutor.transform (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:334:33)\n    at ClassTransformer.plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/ClassTransformer.ts:77:21)\n    at plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/index.ts:84:27)\n    at createFakeCreateGameDto (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/factories/game/dto/create-game/create-game.dto.factory.ts:16:25)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:207:41\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:204:3\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:33:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1013:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:873:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
@@ -12487,9 +12518,13 @@
           "id": "286",
           "mutatorName": "ConditionalExpression",
           "replacement": "true",
-          "status": "Timeout",
+          "statusReason": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 0\nReceived: undefined\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/unit/specs/modules/game/dto/base/transformers/game-players-position.transformer.spec.ts:30:64)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 38,
           "static": true,
-          "killedBy": [],
+          "killedBy": [
+            "251"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -12545,9 +12580,13 @@
           "id": "287",
           "mutatorName": "ConditionalExpression",
           "replacement": "false",
-          "status": "Timeout",
+          "statusReason": "TypeError: Cannot create property 'position' on string 'toto'\n    at gamePlayersPositionTransformer (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/src/modules/game/dto/base/transformers/game-players-position.transformer.ts:90:28)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/unit/specs/modules/game/dto/base/transformers/game-players-position.transformer.spec.ts:13:44)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 38,
           "static": true,
-          "killedBy": [],
+          "killedBy": [
+            "248"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -13494,7 +13533,7 @@
           "id": "303",
           "mutatorName": "EqualityOperator",
           "replacement": "i <= value.length",
-          "statusReason": "undefinedCannot set properties of undefined (setting 'position') TypeError: Cannot set properties of undefined (setting 'position')\n    at Object.gamePlayersPositionTransformer [as transformFn] (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/src/modules/game/dto/base/transformers/game-players-position.transformer.ts:90:28)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:412:24\n    at Array.forEach (<anonymous>)\n    at TransformOperationExecutor.applyCustomTransformations (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:411:15)\n    at TransformOperationExecutor.transform (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:334:33)\n    at ClassTransformer.plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/ClassTransformer.ts:77:21)\n    at plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/index.ts:84:27)\n    at createFakeCreateGameDto (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/factories/game/dto/create-game/create-game.dto.factory.ts:16:25)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:212:41\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:204:3\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:33:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1013:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:873:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "statusReason": "undefinedCannot set properties of undefined (setting 'position') TypeError: Cannot set properties of undefined (setting 'position')\n    at Object.gamePlayersPositionTransformer [as transformFn] (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/src/modules/game/dto/base/transformers/game-players-position.transformer.ts:90:28)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:412:24\n    at Array.forEach (<anonymous>)\n    at TransformOperationExecutor.applyCustomTransformations (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:411:15)\n    at TransformOperationExecutor.transform (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:334:33)\n    at ClassTransformer.plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/ClassTransformer.ts:77:21)\n    at plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/index.ts:84:27)\n    at createFakeCreateGameDto (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/factories/game/dto/create-game/create-game.dto.factory.ts:16:25)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:212:41\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:204:3\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:33:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1013:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:873:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
           "status": "RuntimeError",
           "static": true,
           "killedBy": [],
@@ -13587,8 +13626,7 @@
           "id": "305",
           "mutatorName": "UpdateOperator",
           "replacement": "i--",
-          "statusReason": "undefinedCannot set properties of undefined (setting 'position') TypeError: Cannot set properties of undefined (setting 'position')\n    at Object.gamePlayersPositionTransformer [as transformFn] (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/src/modules/game/dto/base/transformers/game-players-position.transformer.ts:90:28)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:412:24\n    at Array.forEach (<anonymous>)\n    at TransformOperationExecutor.applyCustomTransformations (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:411:15)\n    at TransformOperationExecutor.transform (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/TransformOperationExecutor.ts:334:33)\n    at ClassTransformer.plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/ClassTransformer.ts:77:21)\n    at plainToInstance (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/src/index.ts:84:27)\n    at createFakeCreateGameDto (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/factories/game/dto/create-game/create-game.dto.factory.ts:16:25)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:212:41\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at /Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:204:3\n    at _dispatchDescribe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:91:26)\n    at describe (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/index.js:55:5)\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:33:1)\n    at Runtime._execModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1429:24)\n    at Runtime._loadModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:1013:12)\n    at Runtime.requireModule (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runtime/build/index.js:873:12)\n    at jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
-          "status": "RuntimeError",
+          "status": "Timeout",
           "static": true,
           "killedBy": [],
           "coveredBy": [
@@ -13632,9 +13670,13 @@
           "id": "306",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "status": "Timeout",
+          "statusReason": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 0\nReceived: undefined\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/unit/specs/modules/game/dto/base/transformers/game-players-position.transformer.spec.ts:30:64)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 24,
           "static": true,
-          "killedBy": [],
+          "killedBy": [
+            "251"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -14208,6 +14250,43 @@
           }
         },
         {
+          "id": "317",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/game/helpers/game.helper.ts(16,74): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "61",
+            "62",
+            "74",
+            "138",
+            "139"
+          ],
+          "location": {
+            "end": {
+              "column": 2,
+              "line": 18
+            },
+            "start": {
+              "column": 83,
+              "line": 16
+            }
+          }
+        },
+        {
           "id": "318",
           "mutatorName": "MethodExpression",
           "replacement": "players",
@@ -14283,6 +14362,46 @@
             },
             "start": {
               "column": 25,
+              "line": 17
+            }
+          }
+        },
+        {
+          "id": "320",
+          "mutatorName": "ConditionalExpression",
+          "replacement": "true",
+          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:576:62)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 16,
+          "static": false,
+          "killedBy": [
+            "50"
+          ],
+          "coveredBy": [
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "61",
+            "62",
+            "74",
+            "138",
+            "139"
+          ],
+          "location": {
+            "end": {
+              "column": 63,
+              "line": 17
+            },
+            "start": {
+              "column": 35,
               "line": 17
             }
           }
@@ -15709,82 +15828,6 @@
               "line": 55
             }
           }
-        },
-        {
-          "id": "317",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/game/helpers/game.helper.ts(16,74): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "46",
-            "47",
-            "48",
-            "49",
-            "50",
-            "51",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "61",
-            "62",
-            "74",
-            "138",
-            "139"
-          ],
-          "location": {
-            "end": {
-              "column": 2,
-              "line": 18
-            },
-            "start": {
-              "column": 83,
-              "line": 16
-            }
-          }
-        },
-        {
-          "id": "320",
-          "mutatorName": "ConditionalExpression",
-          "replacement": "true",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:576:62)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 16,
-          "killedBy": [
-            "50"
-          ],
-          "coveredBy": [
-            "46",
-            "47",
-            "48",
-            "49",
-            "50",
-            "51",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "61",
-            "62",
-            "74",
-            "138",
-            "139"
-          ],
-          "location": {
-            "end": {
-              "column": 63,
-              "line": 17
-            },
-            "start": {
-              "column": 35,
-              "line": 17
-            }
-          }
         }
       ],
       "source": "import { ROLE_NAMES, ROLE_SIDES } from \"../../role/enums/role.enum\";\nimport type { CreateGamePlayerDto } from \"../dto/create-game/create-game-player/create-game-player.dto\";\nimport { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from \"../enums/player.enum\";\nimport type { Player } from \"../schemas/player/player.schema\";\nimport type { GameSource } from \"../types/game.type\";\nimport { doesPlayerHaveAttribute } from \"./player/player.helper\";\n\nfunction getPlayerDtoWithRole(players: CreateGamePlayerDto[], role: ROLE_NAMES): CreateGamePlayerDto | undefined {\n  return players.find(player => player.role.name === role);\n}\n\nfunction getPlayerWithCurrentRole(players: Player[], role: ROLE_NAMES): Player | undefined {\n  return players.find(player => player.role.current === role);\n}\n\nfunction getPlayersWithCurrentRole(players: Player[], role: ROLE_NAMES): Player[] {\n  return players.filter(player => player.role.current === role);\n}\n\nfunction getPlayersWithCurrentSide(players: Player[], side: ROLE_SIDES): Player[] {\n  return players.filter(player => player.side.current === side);\n}\n\nfunction areAllWerewolvesAlive(players: Player[]): boolean {\n  const werewolfPlayers = getPlayersWithCurrentSide(players, ROLE_SIDES.WEREWOLVES);\n  return werewolfPlayers.length > 0 && werewolfPlayers.every(werewolf => werewolf.isAlive);\n}\n\nfunction areAllVillagersAlive(players: Player[]): boolean {\n  const villagerPlayers = getPlayersWithCurrentSide(players, ROLE_SIDES.VILLAGERS);\n  return villagerPlayers.length > 0 && villagerPlayers.every(villager => villager.isAlive);\n}\n\nfunction getPlayersWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player[] {\n  return players.filter(player => doesPlayerHaveAttribute(player, attribute));\n}\n\nfunction getGroupOfPlayers(players: Player[], group: PLAYER_GROUPS): Player[] {\n  if (group === PLAYER_GROUPS.ALL) {\n    return players;\n  } else if (group === PLAYER_GROUPS.LOVERS) {\n    return getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);\n  } else if (group === PLAYER_GROUPS.CHARMED) {\n    return getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.CHARMED);\n  } else if (group === PLAYER_GROUPS.VILLAGERS) {\n    return getPlayersWithCurrentSide(players, ROLE_SIDES.VILLAGERS);\n  }\n  return getPlayersWithCurrentSide(players, ROLE_SIDES.WEREWOLVES);\n}\n\nfunction isGameSourceRole(source: GameSource): source is ROLE_NAMES {\n  return Object.values(ROLE_NAMES).includes(source as ROLE_NAMES);\n}\n\nfunction isGameSourceGroup(source: GameSource): source is PLAYER_GROUPS {\n  return Object.values(PLAYER_GROUPS).includes(source as PLAYER_GROUPS);\n}\n\nexport {\n  getPlayerDtoWithRole,\n  getPlayerWithCurrentRole,\n  getPlayersWithCurrentRole,\n  getPlayersWithCurrentSide,\n  areAllWerewolvesAlive,\n  areAllVillagersAlive,\n  getPlayersWithAttribute,\n  getGroupOfPlayers,\n  isGameSourceRole,\n  isGameSourceGroup,\n};"
@@ -15792,58 +15835,6 @@
     "src/modules/game/helpers/player/player.helper.ts": {
       "language": "typescript",
       "mutants": [
-        {
-          "id": "369",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/game/helpers/player/player.helper.ts(5,98): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "killedBy": [],
-          "coveredBy": [
-            "8",
-            "9",
-            "14",
-            "15",
-            "21",
-            "22",
-            "29",
-            "30",
-            "40",
-            "41",
-            "42",
-            "63",
-            "65",
-            "68",
-            "69",
-            "73",
-            "74",
-            "75",
-            "148",
-            "149",
-            "151",
-            "152",
-            "177",
-            "178",
-            "179",
-            "180",
-            "182",
-            "183",
-            "184",
-            "186",
-            "187"
-          ],
-          "location": {
-            "end": {
-              "column": 2,
-              "line": 7
-            },
-            "start": {
-              "column": 106,
-              "line": 5
-            }
-          }
-        },
         {
           "id": "370",
           "mutatorName": "ConditionalExpression",
@@ -15860,6 +15851,7 @@
             "9",
             "14",
             "15",
+            "18",
             "21",
             "22",
             "29",
@@ -15881,7 +15873,6 @@
             "177",
             "178",
             "179",
-            "180",
             "182",
             "183",
             "184",
@@ -15915,6 +15906,7 @@
             "9",
             "14",
             "15",
+            "18",
             "21",
             "22",
             "29",
@@ -15936,7 +15928,6 @@
             "177",
             "178",
             "179",
-            "180",
             "182",
             "183",
             "184",
@@ -15970,6 +15961,7 @@
             "9",
             "14",
             "15",
+            "18",
             "21",
             "22",
             "29",
@@ -15991,7 +15983,6 @@
             "177",
             "178",
             "179",
-            "180",
             "182",
             "183",
             "184",
@@ -16025,6 +16016,7 @@
             "9",
             "14",
             "15",
+            "18",
             "21",
             "22",
             "29",
@@ -16046,7 +16038,6 @@
             "177",
             "178",
             "179",
-            "180",
             "182",
             "183",
             "184",
@@ -16078,6 +16069,7 @@
           "coveredBy": [
             "8",
             "14",
+            "18",
             "21",
             "29",
             "68",
@@ -16087,7 +16079,6 @@
             "152",
             "178",
             "179",
-            "180",
             "186"
           ],
           "location": {
@@ -16115,6 +16106,7 @@
           "coveredBy": [
             "8",
             "14",
+            "18",
             "21",
             "29",
             "68",
@@ -16124,7 +16116,6 @@
             "152",
             "178",
             "179",
-            "180",
             "186"
           ],
           "location": {
@@ -16152,6 +16143,7 @@
           "coveredBy": [
             "8",
             "14",
+            "18",
             "21",
             "29",
             "68",
@@ -16161,7 +16153,6 @@
             "152",
             "178",
             "179",
-            "180",
             "186"
           ],
           "location": {
@@ -16191,6 +16182,7 @@
             "9",
             "14",
             "15",
+            "18",
             "21",
             "22",
             "29",
@@ -16212,7 +16204,6 @@
             "177",
             "178",
             "179",
-            "180",
             "182",
             "183",
             "184",
@@ -16335,6 +16326,7 @@
             "182"
           ],
           "coveredBy": [
+            "18",
             "74",
             "182",
             "183",
@@ -16363,6 +16355,7 @@
             "183"
           ],
           "coveredBy": [
+            "18",
             "74",
             "182",
             "183",
@@ -16391,6 +16384,7 @@
             "182"
           ],
           "coveredBy": [
+            "18",
             "74",
             "182",
             "183",
@@ -16419,6 +16413,7 @@
             "184"
           ],
           "coveredBy": [
+            "18",
             "74",
             "182",
             "184"
@@ -16446,6 +16441,7 @@
             "182"
           ],
           "coveredBy": [
+            "18",
             "74",
             "182",
             "184"
@@ -16645,6 +16641,7 @@
             "9",
             "14",
             "15",
+            "18",
             "21",
             "22",
             "29",
@@ -16659,7 +16656,6 @@
             "73",
             "74",
             "75",
-            "180",
             "182",
             "183",
             "184",
@@ -16674,33 +16670,6 @@
             "start": {
               "column": 28,
               "line": 14
-            }
-          }
-        },
-        {
-          "id": "378",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/game/helpers/player/player.helper.ts(9,86): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "18",
-            "74",
-            "180",
-            "181",
-            "182",
-            "183",
-            "184"
-          ],
-          "location": {
-            "end": {
-              "column": 2,
-              "line": 11
-            },
-            "start": {
-              "column": 94,
-              "line": 9
             }
           }
         },
@@ -16753,6 +16722,84 @@
             "start": {
               "column": 60,
               "line": 13
+            }
+          }
+        },
+        {
+          "id": "378",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/game/helpers/player/player.helper.ts(9,86): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "18",
+            "74",
+            "180",
+            "181",
+            "182",
+            "183",
+            "184"
+          ],
+          "location": {
+            "end": {
+              "column": 2,
+              "line": 11
+            },
+            "start": {
+              "column": 94,
+              "line": 9
+            }
+          }
+        },
+        {
+          "id": "369",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/game/helpers/player/player.helper.ts(5,98): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "8",
+            "9",
+            "14",
+            "15",
+            "18",
+            "21",
+            "22",
+            "29",
+            "30",
+            "40",
+            "41",
+            "42",
+            "63",
+            "65",
+            "68",
+            "69",
+            "73",
+            "74",
+            "75",
+            "148",
+            "149",
+            "151",
+            "152",
+            "177",
+            "178",
+            "179",
+            "182",
+            "183",
+            "184",
+            "186",
+            "187"
+          ],
+          "location": {
+            "end": {
+              "column": 2,
+              "line": 7
+            },
+            "start": {
+              "column": 106,
+              "line": 5
             }
           }
         }
@@ -16835,32 +16882,10 @@
           }
         },
         {
-          "id": "395",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/game/providers/repositories/game.repository.ts(24,111): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "killedBy": [],
-          "coveredBy": [
-            "108"
-          ],
-          "location": {
-            "end": {
-              "column": 4,
-              "line": 26
-            },
-            "start": {
-              "column": 132,
-              "line": 24
-            }
-          }
-        },
-        {
           "id": "396",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatchObject\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[33m@@ -77,11 +77,11 @@\u001b[39m\n\u001b[2m      Object {},\u001b[22m\n\u001b[2m      Object {},\u001b[22m\n\u001b[2m      Object {},\u001b[22m\n\u001b[2m      Object {},\u001b[22m\n\u001b[2m    ],\u001b[22m\n\u001b[32m-   \"status\": \"canceled\",\u001b[39m\n\u001b[31m+   \"status\": \"playing\",\u001b[39m\n\u001b[2m    \"tick\": 24574,\u001b[22m\n\u001b[2m    \"turn\": 7542,\u001b[22m\n\u001b[2m    \"upcomingPlays\": Array [\u001b[22m\n\u001b[2m      Object {\u001b[22m\n\u001b[2m        \"action\": \"use-potions\",\u001b[22m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:464:37)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "statusReason": "Error: expect(received).toMatchObject(expected)\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -77,11 +77,11 @@\n      Object {},\n      Object {},\n      Object {},\n      Object {},\n    ],\n-   \"status\": \"canceled\",\n+   \"status\": \"playing\",\n    \"tick\": 8943,\n    \"turn\": 93761,\n    \"upcomingPlays\": Array [\n      Object {\n        \"action\": \"delegate\",\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:464:37)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
           "status": "Killed",
           "testsCompleted": 1,
           "static": false,
@@ -16885,7 +16910,7 @@
           "id": "397",
           "mutatorName": "BooleanLiteral",
           "replacement": "false",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoMatchObject\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 1\u001b[39m\n\n\u001b[33m@@ -77,11 +77,11 @@\u001b[39m\n\u001b[2m      Object {},\u001b[22m\n\u001b[2m      Object {},\u001b[22m\n\u001b[2m      Object {},\u001b[22m\n\u001b[2m      Object {},\u001b[22m\n\u001b[2m    ],\u001b[22m\n\u001b[32m-   \"status\": \"canceled\",\u001b[39m\n\u001b[31m+   \"status\": \"playing\",\u001b[39m\n\u001b[2m    \"tick\": 71698,\u001b[22m\n\u001b[2m    \"turn\": 23982,\u001b[22m\n\u001b[2m    \"upcomingPlays\": Array [\u001b[22m\n\u001b[2m      Object {\u001b[22m\n\u001b[2m        \"action\": \"mark\",\u001b[22m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:464:37)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "statusReason": "Error: expect(received).toMatchObject(expected)\n\n- Expected  - 1\n+ Received  + 1\n\n@@ -77,11 +77,11 @@\n      Object {},\n      Object {},\n      Object {},\n      Object {},\n    ],\n-   \"status\": \"canceled\",\n+   \"status\": \"playing\",\n    \"tick\": 18982,\n    \"turn\": 37278,\n    \"upcomingPlays\": Array [\n      Object {\n        \"action\": \"protect\",\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:464:37)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
           "status": "Killed",
           "testsCompleted": 1,
           "static": false,
@@ -16903,6 +16928,27 @@
             "start": {
               "column": 65,
               "line": 25
+            }
+          }
+        },
+        {
+          "id": "395",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/game/providers/repositories/game.repository.ts(24,111): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "coveredBy": [
+            "108"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 26
+            },
+            "start": {
+              "column": 132,
+              "line": 24
             }
           }
         }
@@ -17241,7 +17287,7 @@
           "id": "408",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(32,65): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(22,65): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -17274,7 +17320,7 @@
           "id": "409",
           "mutatorName": "ConditionalExpression",
           "replacement": "true",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(34,37): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(36,50): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\nsrc/modules/game/providers/services/game-plays-manager.service.ts(37,54): error TS2345: Argument of type 'Player | undefined' is not assignable to parameter of type 'Player'.\n  Type 'undefined' is not assignable to type 'Player'.\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(24,37): error TS2345: Argument of type 'Player[] | CreateGamePlayerDto[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(26,50): error TS2345: Argument of type 'Player[] | CreateGamePlayerDto[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\nsrc/modules/game/providers/services/game-plays-manager.service.ts(27,54): error TS2345: Argument of type 'Player | undefined' is not assignable to parameter of type 'Player'.\n  Type 'undefined' is not assignable to type 'Player'.\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -17307,7 +17353,7 @@
           "id": "410",
           "mutatorName": "ConditionalExpression",
           "replacement": "false",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(34,37): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(36,50): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(24,37): error TS2345: Argument of type 'Player[] | CreateGamePlayerDto[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(26,50): error TS2345: Argument of type 'Player[] | CreateGamePlayerDto[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -17340,7 +17386,7 @@
           "id": "411",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(34,50): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(24,50): error TS2345: Argument of type 'Player[] | CreateGamePlayerDto[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -17366,9 +17412,13 @@
           "id": "412",
           "mutatorName": "BooleanLiteral",
           "replacement": "!getPlayerDtoWithRole(game.players, ROLE_NAMES.CUPID)",
-          "status": "Timeout",
+          "statusReason": "Error: expect(received).toMatchObject(expected)\n\n- Expected  - 4\n+ Received  + 0\n\n@@ -186,14 +186,10 @@\n      Object {\n        \"action\": \"look\",\n        \"source\": \"seer\",\n      },\n      Object {\n-       \"action\": \"meet-each-other\",\n-       \"source\": \"lovers\",\n-     },\n-     Object {\n        \"action\": \"eat\",\n        \"source\": \"werewolves\",\n      },\n      Object {\n        \"action\": \"eat\",\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:350:31)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "status": "Killed",
+          "testsCompleted": 5,
           "static": false,
-          "killedBy": [],
+          "killedBy": [
+            "103"
+          ],
           "coveredBy": [
             "4",
             "5",
@@ -17591,7 +17641,7 @@
           "id": "420",
           "mutatorName": "ConditionalExpression",
           "replacement": "true",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(32,37): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(34,50): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\nsrc/modules/game/providers/services/game-plays-manager.service.ts(35,54): error TS2345: Argument of type 'Player | undefined' is not assignable to parameter of type 'Player'.\n  Type 'undefined' is not assignable to type 'Player'.\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(32,37): error TS2345: Argument of type 'Player[] | CreateGamePlayerDto[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(34,50): error TS2345: Argument of type 'Player[] | CreateGamePlayerDto[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\nsrc/modules/game/providers/services/game-plays-manager.service.ts(35,54): error TS2345: Argument of type 'Player | undefined' is not assignable to parameter of type 'Player'.\n  Type 'undefined' is not assignable to type 'Player'.\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -17657,7 +17707,7 @@
           "id": "422",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(42,50): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(32,50): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -18269,7 +18319,7 @@
           "id": "441",
           "mutatorName": "ConditionalExpression",
           "replacement": "true",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(59,39): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(49,39): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -18300,7 +18350,7 @@
           "id": "442",
           "mutatorName": "ConditionalExpression",
           "replacement": "false",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(59,39): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(49,39): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -18331,7 +18381,7 @@
           "id": "443",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(57,39): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(47,39): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -20456,6 +20506,37 @@
           }
         },
         {
+          "id": "515",
+          "mutatorName": "BlockStatement",
+          "replacement": "{}",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(92,69): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "61",
+            "74"
+          ],
+          "location": {
+            "end": {
+              "column": 4,
+              "line": 100
+            },
+            "start": {
+              "column": 77,
+              "line": 92
+            }
+          }
+        },
+        {
           "id": "516",
           "mutatorName": "ConditionalExpression",
           "replacement": "true",
@@ -20588,6 +20669,68 @@
             "start": {
               "column": 38,
               "line": 94
+            }
+          }
+        },
+        {
+          "id": "520",
+          "mutatorName": "ConditionalExpression",
+          "replacement": "true",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(96,65): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(98,57): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "61",
+            "74"
+          ],
+          "location": {
+            "end": {
+              "column": 38,
+              "line": 95
+            },
+            "start": {
+              "column": 9,
+              "line": 95
+            }
+          }
+        },
+        {
+          "id": "521",
+          "mutatorName": "ConditionalExpression",
+          "replacement": "false",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(96,65): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(98,57): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
+          "status": "CompileError",
+          "static": false,
+          "killedBy": [],
+          "coveredBy": [
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "61",
+            "74"
+          ],
+          "location": {
+            "end": {
+              "column": 38,
+              "line": 95
+            },
+            "start": {
+              "column": 9,
+              "line": 95
             }
           }
         },
@@ -20737,6 +20880,37 @@
           }
         },
         {
+          "id": "528",
+          "mutatorName": "ConditionalExpression",
+          "replacement": "true",
+          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 7,
+          "static": false,
+          "killedBy": [
+            "55"
+          ],
+          "coveredBy": [
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "61",
+            "74"
+          ],
+          "location": {
+            "end": {
+              "column": 121,
+              "line": 99
+            },
+            "start": {
+              "column": 12,
+              "line": 99
+            }
+          }
+        },
+        {
           "id": "529",
           "mutatorName": "ConditionalExpression",
           "replacement": "false",
@@ -20763,6 +20937,159 @@
             },
             "start": {
               "column": 12,
+              "line": 99
+            }
+          }
+        },
+        {
+          "id": "530",
+          "mutatorName": "LogicalOperator",
+          "replacement": "shouldTwoSistersBeCalled && twoSistersPlayers.length > 0 || twoSistersPlayers.every(sister => sister.isAlive)",
+          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 7,
+          "static": false,
+          "killedBy": [
+            "55"
+          ],
+          "coveredBy": [
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "61",
+            "74"
+          ],
+          "location": {
+            "end": {
+              "column": 121,
+              "line": 99
+            },
+            "start": {
+              "column": 12,
+              "line": 99
+            }
+          }
+        },
+        {
+          "id": "531",
+          "mutatorName": "ConditionalExpression",
+          "replacement": "true",
+          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 7,
+          "static": false,
+          "killedBy": [
+            "55"
+          ],
+          "coveredBy": [
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "61",
+            "74"
+          ],
+          "location": {
+            "end": {
+              "column": 68,
+              "line": 99
+            },
+            "start": {
+              "column": 12,
+              "line": 99
+            }
+          }
+        },
+        {
+          "id": "532",
+          "mutatorName": "LogicalOperator",
+          "replacement": "shouldTwoSistersBeCalled || twoSistersPlayers.length > 0",
+          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 7,
+          "static": false,
+          "killedBy": [
+            "55"
+          ],
+          "coveredBy": [
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "61",
+            "74"
+          ],
+          "location": {
+            "end": {
+              "column": 68,
+              "line": 99
+            },
+            "start": {
+              "column": 12,
+              "line": 99
+            }
+          }
+        },
+        {
+          "id": "533",
+          "mutatorName": "ConditionalExpression",
+          "replacement": "true",
+          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 6,
+          "static": false,
+          "killedBy": [
+            "55"
+          ],
+          "coveredBy": [
+            "55",
+            "57",
+            "58",
+            "59",
+            "61",
+            "74"
+          ],
+          "location": {
+            "end": {
+              "column": 68,
+              "line": 99
+            },
+            "start": {
+              "column": 40,
+              "line": 99
+            }
+          }
+        },
+        {
+          "id": "534",
+          "mutatorName": "EqualityOperator",
+          "replacement": "twoSistersPlayers.length >= 0",
+          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
+          "status": "Killed",
+          "testsCompleted": 6,
+          "static": false,
+          "killedBy": [
+            "55"
+          ],
+          "coveredBy": [
+            "55",
+            "57",
+            "58",
+            "59",
+            "61",
+            "74"
+          ],
+          "location": {
+            "end": {
+              "column": 68,
+              "line": 99
+            },
+            "start": {
+              "column": 40,
               "line": 99
             }
           }
@@ -20859,7 +21186,7 @@
           "id": "538",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(112,82): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(102,82): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -20897,7 +21224,7 @@
           "id": "539",
           "mutatorName": "BooleanLiteral",
           "replacement": "player",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(127,12): error TS2358: The left-hand side of an 'instanceof' expression must be of type 'any', an object type or a type parameter.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(127,78): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'Player'.\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(117,12): error TS2358: The left-hand side of an 'instanceof' expression must be of type 'any', an object type or a type parameter.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(117,78): error TS2345: Argument of type 'undefined' is not assignable to parameter of type 'Player'.\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -20935,7 +21262,7 @@
           "id": "540",
           "mutatorName": "ConditionalExpression",
           "replacement": "true",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(127,78): error TS2345: Argument of type 'CreateGamePlayerDto | Player | undefined' is not assignable to parameter of type 'Player'.\n  Type 'undefined' is not assignable to type 'Player'.\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(117,78): error TS2345: Argument of type 'CreateGamePlayerDto | Player | undefined' is not assignable to parameter of type 'Player'.\n  Type 'undefined' is not assignable to type 'Player'.\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -20973,7 +21300,7 @@
           "id": "541",
           "mutatorName": "ConditionalExpression",
           "replacement": "false",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(127,78): error TS2345: Argument of type 'Player | undefined' is not assignable to parameter of type 'Player'.\n  Type 'undefined' is not assignable to type 'Player'.\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(117,78): error TS2345: Argument of type 'Player | undefined' is not assignable to parameter of type 'Player'.\n  Type 'undefined' is not assignable to type 'Player'.\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -21595,9 +21922,13 @@
           "id": "560",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "status": "Timeout",
+          "statusReason": "Error: expect(received).toMatchObject(expected)\n\n- Expected  - 12\n+ Received  +  0\n\n@@ -178,27 +178,15 @@\n      Object {\n        \"action\": \"elect-sheriff\",\n        \"source\": \"all\",\n      },\n      Object {\n-       \"action\": \"charm\",\n-       \"source\": \"cupid\",\n-     },\n-     Object {\n-       \"action\": \"look\",\n-       \"source\": \"seer\",\n-     },\n-     Object {\n        \"action\": \"meet-each-other\",\n        \"source\": \"lovers\",\n      },\n      Object {\n        \"action\": \"eat\",\n        \"source\": \"werewolves\",\n-     },\n-     Object {\n-       \"action\": \"eat\",\n-       \"source\": \"white-werewolf\",\n      },\n    ],\n    \"updatedAt\": Any<String>,\n  }\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:350:31)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "status": "Killed",
+          "testsCompleted": 7,
           "static": false,
-          "killedBy": [],
+          "killedBy": [
+            "103"
+          ],
           "coveredBy": [
             "71",
             "73",
@@ -21736,7 +22067,7 @@
           "id": "565",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(139,61): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(129,61): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -22129,7 +22460,7 @@
           "id": "579",
           "mutatorName": "BlockStatement",
           "replacement": "{}",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(144,5): error TS2322: Type 'GamePlay & { isFirstNightOnly?: boolean | undefined; }' is not assignable to type 'GamePlay[]'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(144,38): error TS2769: No overload matches this call.\n  Overload 1 of 3, '(callbackfn: (previousValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentIndex: number, array: (GamePlay & { ...; })[]) => GamePlay & { ...; }, initialValue: GamePlay & { ...; }): GamePlay & { ...; }', gave the following error.\n    Argument of type '(acc: GamePlay[], gamePlay: GamePlay & { isFirstNightOnly?: boolean | undefined; }) => void' is not assignable to parameter of type '(previousValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentIndex: number, array: (GamePlay & { ...; })[]) => GamePlay & { ...; }'.\n      Types of parameters 'acc' and 'previousValue' are incompatible.\n        Type 'GamePlay & { isFirstNightOnly?: boolean | undefined; }' is missing the following properties from type 'GamePlay[]': length, pop, push, concat, and 29 more.\n  Overload 2 of 3, '(callbackfn: (previousValue: GamePlay[], currentValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentIndex: number, array: (GamePlay & { isFirstNightOnly?: boolean | undefined; })[]) => GamePlay[], initialValue: GamePlay[]): GamePlay[]', gave the following error.\n    Argument of type '(acc: GamePlay[], gamePlay: GamePlay & { isFirstNightOnly?: boolean | undefined; }) => void' is not assignable to parameter of type '(previousValue: GamePlay[], currentValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentIndex: number, array: (GamePlay & { isFirstNightOnly?: boolean | undefined; })[]) => GamePlay[]'.\n      Type 'void' is not assignable to type 'GamePlay[]'.\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(134,5): error TS2322: Type 'GamePlay & { isFirstNightOnly?: boolean | undefined; }' is not assignable to type 'GamePlay[]'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(134,38): error TS2769: No overload matches this call.\n  Overload 1 of 3, '(callbackfn: (previousValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentIndex: number, array: (GamePlay & { ...; })[]) => GamePlay & { ...; }, initialValue: GamePlay & { ...; }): GamePlay & { ...; }', gave the following error.\n    Argument of type '(acc: GamePlay[], gamePlay: GamePlay & { isFirstNightOnly?: boolean | undefined; }) => void' is not assignable to parameter of type '(previousValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentIndex: number, array: (GamePlay & { ...; })[]) => GamePlay & { ...; }'.\n      Types of parameters 'acc' and 'previousValue' are incompatible.\n        Type 'GamePlay & { isFirstNightOnly?: boolean | undefined; }' is missing the following properties from type 'GamePlay[]': length, pop, push, concat, and 29 more.\n  Overload 2 of 3, '(callbackfn: (previousValue: GamePlay[], currentValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentIndex: number, array: (GamePlay & { isFirstNightOnly?: boolean | undefined; })[]) => GamePlay[], initialValue: GamePlay[]): GamePlay[]', gave the following error.\n    Argument of type '(acc: GamePlay[], gamePlay: GamePlay & { isFirstNightOnly?: boolean | undefined; }) => void' is not assignable to parameter of type '(previousValue: GamePlay[], currentValue: GamePlay & { isFirstNightOnly?: boolean | undefined; }, currentIndex: number, array: (GamePlay & { isFirstNightOnly?: boolean | undefined; })[]) => GamePlay[]'.\n      Type 'void' is not assignable to type 'GamePlay[]'.\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -22186,7 +22517,7 @@
           "id": "581",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(144,5): error TS2322: Type '{}[]' is not assignable to type 'GamePlay[]'.\n  Type '{}' is missing the following properties from type 'GamePlay': source, action\n",
+          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(134,5): error TS2322: Type '{}[]' is not assignable to type 'GamePlay[]'.\n  Type '{}' is missing the following properties from type 'GamePlay': source, action\n",
           "status": "CompileError",
           "static": false,
           "killedBy": [],
@@ -22206,280 +22537,6 @@
             "start": {
               "column": 69,
               "line": 136
-            }
-          }
-        },
-        {
-          "id": "515",
-          "mutatorName": "BlockStatement",
-          "replacement": "{}",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(92,69): error TS2355: A function whose declared type is neither 'void' nor 'any' must return a value.\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "52",
-            "53",
-            "54",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "61",
-            "74"
-          ],
-          "location": {
-            "end": {
-              "column": 4,
-              "line": 100
-            },
-            "start": {
-              "column": 77,
-              "line": 92
-            }
-          }
-        },
-        {
-          "id": "521",
-          "mutatorName": "ConditionalExpression",
-          "replacement": "false",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(96,65): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(98,57): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "52",
-            "53",
-            "54",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "61",
-            "74"
-          ],
-          "location": {
-            "end": {
-              "column": 38,
-              "line": 95
-            },
-            "start": {
-              "column": 9,
-              "line": 95
-            }
-          }
-        },
-        {
-          "id": "520",
-          "mutatorName": "ConditionalExpression",
-          "replacement": "true",
-          "statusReason": "src/modules/game/providers/services/game-plays-manager.service.ts(96,65): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'CreateGamePlayerDto[]'.\n  Type 'Player[]' is not assignable to type 'CreateGamePlayerDto[]'.\n    Type 'Player' is not assignable to type 'CreateGamePlayerDto'.\n      Types of property 'role' are incompatible.\n        Property 'name' is missing in type 'PlayerRole' but required in type 'CreateGamePlayerRoleDto'.\nsrc/modules/game/providers/services/game-plays-manager.service.ts(98,57): error TS2345: Argument of type 'CreateGamePlayerDto[] | Player[]' is not assignable to parameter of type 'Player[]'.\n  Type 'CreateGamePlayerDto[]' is not assignable to type 'Player[]'.\n    Type 'CreateGamePlayerDto' is missing the following properties from type 'Player': _id, attributes, isAlive\n",
-          "status": "CompileError",
-          "static": false,
-          "coveredBy": [
-            "52",
-            "53",
-            "54",
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "61",
-            "74"
-          ],
-          "location": {
-            "end": {
-              "column": 38,
-              "line": 95
-            },
-            "start": {
-              "column": 9,
-              "line": 95
-            }
-          }
-        },
-        {
-          "id": "528",
-          "mutatorName": "ConditionalExpression",
-          "replacement": "true",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 7,
-          "killedBy": [
-            "55"
-          ],
-          "coveredBy": [
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "61",
-            "74"
-          ],
-          "location": {
-            "end": {
-              "column": 121,
-              "line": 99
-            },
-            "start": {
-              "column": 12,
-              "line": 99
-            }
-          }
-        },
-        {
-          "id": "530",
-          "mutatorName": "LogicalOperator",
-          "replacement": "shouldTwoSistersBeCalled && twoSistersPlayers.length > 0 || twoSistersPlayers.every(sister => sister.isAlive)",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 7,
-          "killedBy": [
-            "55"
-          ],
-          "coveredBy": [
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "61",
-            "74"
-          ],
-          "location": {
-            "end": {
-              "column": 121,
-              "line": 99
-            },
-            "start": {
-              "column": 12,
-              "line": 99
-            }
-          }
-        },
-        {
-          "id": "532",
-          "mutatorName": "LogicalOperator",
-          "replacement": "shouldTwoSistersBeCalled || twoSistersPlayers.length > 0",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 7,
-          "killedBy": [
-            "55"
-          ],
-          "coveredBy": [
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "61",
-            "74"
-          ],
-          "location": {
-            "end": {
-              "column": 68,
-              "line": 99
-            },
-            "start": {
-              "column": 12,
-              "line": 99
-            }
-          }
-        },
-        {
-          "id": "531",
-          "mutatorName": "ConditionalExpression",
-          "replacement": "true",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 7,
-          "killedBy": [
-            "55"
-          ],
-          "coveredBy": [
-            "55",
-            "56",
-            "57",
-            "58",
-            "59",
-            "61",
-            "74"
-          ],
-          "location": {
-            "end": {
-              "column": 68,
-              "line": 99
-            },
-            "start": {
-              "column": 12,
-              "line": 99
-            }
-          }
-        },
-        {
-          "id": "534",
-          "mutatorName": "EqualityOperator",
-          "replacement": "twoSistersPlayers.length >= 0",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 6,
-          "killedBy": [
-            "55"
-          ],
-          "coveredBy": [
-            "55",
-            "57",
-            "58",
-            "59",
-            "61",
-            "74"
-          ],
-          "location": {
-            "end": {
-              "column": 68,
-              "line": 99
-            },
-            "start": {
-              "column": 40,
-              "line": 99
-            }
-          }
-        },
-        {
-          "id": "533",
-          "mutatorName": "ConditionalExpression",
-          "replacement": "true",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mfalse\u001b[39m\nReceived: \u001b[31mtrue\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox2119899/tests/unit/specs/modules/game/providers/services/game-plays-manager.service.spec.ts:637:59)\n    at Promise.then.completed (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:293:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/utils.js:226:10)\n    at _callCircusTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:297:40)\n    at async _runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:233:3)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:135:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async _runTestsForDescribeBlock (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:130:9)\n    at async run (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/run.js:68:3)\n    at async runAndTransformResultsToJestFormat (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async runTestInternal (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/node_modules/jest-runner/build/runTest.js:444:34)",
-          "status": "Killed",
-          "static": false,
-          "testsCompleted": 6,
-          "killedBy": [
-            "55"
-          ],
-          "coveredBy": [
-            "55",
-            "57",
-            "58",
-            "59",
-            "61",
-            "74"
-          ],
-          "location": {
-            "end": {
-              "column": 68,
-              "line": 99
-            },
-            "start": {
-              "column": 40,
-              "line": 99
             }
           }
         }
@@ -24985,7 +25042,7 @@
           "id": "655",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoStrictEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\nExpected: \u001b[32m{\"_id\": \"afd52fab3e4f60b99dc4ffed\", \"createdAt\": 2023-03-27T08:42:49.483Z, \"options\": {\"composition\": {\"isHidden\": true}, \"roles\": {\"ancient\": {\"doesTakeHisRevenge\": false, \"livesCountAgainstWerewolves\": 1}, \"areRevealedOnDeath\": true, \"bearTamer\": {\"doesGrowlIfInfected\": false}, \"bigBadWolf\": {\"isPowerlessIfWerewolfDies\": false}, \"dogWolf\": {\"isChosenSideRevealed\": false}, \"fox\": {\"isPowerlessIfMissesWerewolf\": true}, \"guard\": {\"canProtectTwice\": true}, \"idiot\": {\"doesDieOnAncientDeath\": false}, \"littleGirl\": {\"isProtectedByGuard\": true}, \"piedPiper\": {\"charmedPeopleCountPerNight\": 3, \"isPowerlessIfInfected\": true}, \"raven\": {\"markPenalty\": 1}, \"seer\": {\"canSeeRoles\": false, \"isTalkative\": false}, \"sheriff\": {\"electedAt\": {\"phase\": \"night\", \"turn\": 91210}, \"hasDoubledVote\": true, \"isEnabled\": false}, \"stutteringJudge\": {\"voteRequestsCount\": 5}, \"thief\": {\"additionalCardsCount\": 5, \"mustChooseBetweenWerewolves\": false}, \"threeBrothers\": {\"wakingUpInterval\": 5}, \"twoSisters\": {\"wakingUpInterval\": 2}, \"whiteWerewolf\": {\"wakingUpInterval\": 2}, \"wildChild\": {\"isTransformationRevealed\": true}}}, \"phase\": \"night\", \"players\": [{\"_id\": \"c0b2e6bb1be6ecf97befd0a9\", \"attributes\": [{\"activeAt\": undefined, \"name\": \"cant-vote\", \"remainingPhases\": undefined, \"source\": \"angel\"}, {\"activeAt\": undefined, \"name\": \"powerless\", \"remainingPhases\": undefined, \"source\": \"werewolves\"}, {\"activeAt\": undefined, \"name\": \"powerless\", \"remainingPhases\": undefined, \"source\": \"three-brothers\"}, {\"activeAt\": undefined, \"name\": \"in-love\", \"remainingPhases\": undefined, \"source\": \"werewolves\"}], \"death\": undefined, \"isAlive\": false, \"name\": \"Aiden\", \"position\": 65159, \"role\": {\"current\": \"hunter\", \"isRevealed\": true, \"original\": \"witch\"}, \"side\": {\"current\": \"werewolves\", \"original\": \"villagers\"}}, {\"_id\": \"bf5aea118f23faa50f8bcc9f\", \"attributes\": [{\"activeAt\": undefined, \"name\": \"contaminated\", \"remainingPhases\": undefined, \"source\": \"ancient\"}, {\"activeAt\": undefined, \"name\": \"growled\", \"remainingPhases\": undefined, \"source\": \"ancient\"}, {\"activeAt\": undefined, \"name\": \"contaminated\", \"remainingPhases\": undefined, \"source\": \"pied-piper\"}, {\"activeAt\": undefined, \"name\": \"worshiped\", \"remainingPhases\": undefined, \"source\": \"villager-villager\"}], \"death\": undefined, \"isAlive\": true, \"name\": \"Sandy\", \"position\": 46881, \"role\": {\"current\": \"bear-tamer\", \"isRevealed\": true, \"original\": \"werewolf\"}, \"side\": {\"current\": \"werewolves\", \"original\": \"werewolves\"}}, {\"_id\": \"d27fa9bb4e9c41e8ebddf069\", \"attributes\": [{\"activeAt\": undefined, \"name\": \"powerless\", \"remainingPhases\": undefined, \"source\": \"fox\"}, {\"activeAt\": undefined, \"name\": \"in-love\", \"remainingPhases\": undefined, \"source\": \"werewolf\"}, {\"activeAt\": undefined, \"name\": \"drank-life-potion\", \"remainingPhases\": undefined, \"source\": \"stuttering-judge\"}, {\"activeAt\": undefined, \"name\": \"protected\", \"remainingPhases\": undefined, \"source\": \"scapegoat\"}], \"death\": undefined, \"isAlive\": true, \"name\": \"Golden\", \"position\": 19679, \"role\": {\"current\": \"angel\", \"isRevealed\": false, \"original\": \"rusty-sword-knight\"}, \"side\": {\"current\": \"villagers\", \"original\": \"werewolves\"}}, {\"_id\": \"7ffaf2c0ec1d5044dc7c4b67\", \"attributes\": [{\"activeAt\": undefined, \"name\": \"raven-marked\", \"remainingPhases\": undefined, \"source\": \"dog-wolf\"}, {\"activeAt\": undefined, \"name\": \"worshiped\", \"remainingPhases\": undefined, \"source\": \"little-girl\"}, {\"activeAt\": undefined, \"name\": \"charmed\", \"remainingPhases\": undefined, \"source\": \"ancient\"}, {\"activeAt\": undefined, \"name\": \"eaten\", \"remainingPhases\": undefined, \"source\": \"stuttering-judge\"}], \"death\": undefined, \"isAlive\": true, \"name\": \"Theodora\", \"position\": 60369, \"role\": {\"current\": \"rusty-sword-knight\", \"isRevealed\": true, \"original\": \"hunter\"}, \"side\": {\"current\": \"werewolves\", \"original\": \"werewolves\"}}], \"status\": \"done\", \"tick\": 51248, \"turn\": 13557, \"upcomingPlays\": [{\"action\": \"choose-card\", \"source\": \"fox\"}, {\"action\": \"choose-side\", \"source\": \"sheriff\"}, {\"action\": \"elect-sheriff\", \"source\": \"idiot\"}, {\"action\": \"choose-side\", \"source\": \"stuttering-judge\"}], \"updatedAt\": 2023-03-27T00:15:08.892Z}\u001b[39m\nReceived: \u001b[31mundefined\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/unit/specs/modules/game/providers/services/game.service.spec.ts:56:22)",
+          "statusReason": "Error: expect(received).toStrictEqual(expected) // deep equality\n\nExpected: {\"_id\": \"8cedd5900ca8bbbefed59755\", \"createdAt\": 2023-03-28T07:59:04.252Z, \"options\": {\"composition\": {\"isHidden\": true}, \"roles\": {\"ancient\": {\"doesTakeHisRevenge\": false, \"livesCountAgainstWerewolves\": 3}, \"areRevealedOnDeath\": false, \"bearTamer\": {\"doesGrowlIfInfected\": false}, \"bigBadWolf\": {\"isPowerlessIfWerewolfDies\": false}, \"dogWolf\": {\"isChosenSideRevealed\": false}, \"fox\": {\"isPowerlessIfMissesWerewolf\": true}, \"guard\": {\"canProtectTwice\": true}, \"idiot\": {\"doesDieOnAncientDeath\": true}, \"littleGirl\": {\"isProtectedByGuard\": false}, \"piedPiper\": {\"charmedPeopleCountPerNight\": 3, \"isPowerlessIfInfected\": true}, \"raven\": {\"markPenalty\": 2}, \"seer\": {\"canSeeRoles\": true, \"isTalkative\": false}, \"sheriff\": {\"electedAt\": {\"phase\": \"day\", \"turn\": 25829}, \"hasDoubledVote\": true, \"isEnabled\": false}, \"stutteringJudge\": {\"voteRequestsCount\": 4}, \"thief\": {\"additionalCardsCount\": 4, \"mustChooseBetweenWerewolves\": true}, \"threeBrothers\": {\"wakingUpInterval\": 1}, \"twoSisters\": {\"wakingUpInterval\": 3}, \"whiteWerewolf\": {\"wakingUpInterval\": 5}, \"wildChild\": {\"isTransformationRevealed\": false}}}, \"phase\": \"night\", \"players\": [{\"_id\": \"ad7ffdbdbaf31b3e8c8b2941\", \"attributes\": [{\"activeAt\": undefined, \"name\": \"cant-vote\", \"remainingPhases\": undefined, \"source\": \"charmed\"}, {\"activeAt\": undefined, \"name\": \"raven-marked\", \"remainingPhases\": undefined, \"source\": \"white-werewolf\"}, {\"activeAt\": undefined, \"name\": \"worshiped\", \"remainingPhases\": undefined, \"source\": \"hunter\"}, {\"activeAt\": undefined, \"name\": \"seen\", \"remainingPhases\": undefined, \"source\": \"sheriff\"}], \"death\": undefined, \"isAlive\": false, \"name\": \"Dante\", \"position\": 24019, \"role\": {\"current\": \"idiot\", \"isRevealed\": true, \"original\": \"two-sisters\"}, \"side\": {\"current\": \"villagers\", \"original\": \"villagers\"}}, {\"_id\": \"42e9fcedc4f9cc9466c44d36\", \"attributes\": [{\"activeAt\": undefined, \"name\": \"drank-life-potion\", \"remainingPhases\": undefined, \"source\": \"villager-villager\"}, {\"activeAt\": undefined, \"name\": \"worshiped\", \"remainingPhases\": undefined, \"source\": \"thief\"}, {\"activeAt\": undefined, \"name\": \"drank-life-potion\", \"remainingPhases\": undefined, \"source\": \"vile-father-of-wolves\"}, {\"activeAt\": undefined, \"name\": \"drank-death-potion\", \"remainingPhases\": undefined, \"source\": \"dog-wolf\"}], \"death\": undefined, \"isAlive\": false, \"name\": \"Sarai\", \"position\": 95213, \"role\": {\"current\": \"white-werewolf\", \"isRevealed\": false, \"original\": \"rusty-sword-knight\"}, \"side\": {\"current\": \"villagers\", \"original\": \"villagers\"}}, {\"_id\": \"dbd5bf0f3facc18b1b5fd9e2\", \"attributes\": [{\"activeAt\": undefined, \"name\": \"drank-life-potion\", \"remainingPhases\": undefined, \"source\": \"wild-child\"}, {\"activeAt\": undefined, \"name\": \"sheriff\", \"remainingPhases\": undefined, \"source\": \"witch\"}, {\"activeAt\": undefined, \"name\": \"contaminated\", \"remainingPhases\": undefined, \"source\": \"seer\"}, {\"activeAt\": undefined, \"name\": \"contaminated\", \"remainingPhases\": undefined, \"source\": \"all\"}], \"death\": undefined, \"isAlive\": false, \"name\": \"Wilfredo\", \"position\": 72353, \"role\": {\"current\": \"villager\", \"isRevealed\": false, \"original\": \"werewolf\"}, \"side\": {\"current\": \"villagers\", \"original\": \"werewolves\"}}, {\"_id\": \"69c4d98df9f82e3266bc8db9\", \"attributes\": [{\"activeAt\": undefined, \"name\": \"powerless\", \"remainingPhases\": undefined, \"source\": \"villagers\"}, {\"activeAt\": undefined, \"name\": \"eaten\", \"remainingPhases\": undefined, \"source\": \"pied-piper\"}, {\"activeAt\": undefined, \"name\": \"sheriff\", \"remainingPhases\": undefined, \"source\": \"fox\"}, {\"activeAt\": undefined, \"name\": \"seen\", \"remainingPhases\": undefined, \"source\": \"white-werewolf\"}], \"death\": undefined, \"isAlive\": false, \"name\": \"Cicero\", \"position\": 57760, \"role\": {\"current\": \"bear-tamer\", \"isRevealed\": false, \"original\": \"white-werewolf\"}, \"side\": {\"current\": \"villagers\", \"original\": \"werewolves\"}}], \"status\": \"done\", \"tick\": 16742, \"turn\": 52623, \"upcomingPlays\": [{\"action\": \"sniff\", \"source\": \"three-brothers\"}, {\"action\": \"protect\", \"source\": \"two-sisters\"}, {\"action\": \"vote\", \"source\": \"charmed\"}, {\"action\": \"look\", \"source\": \"vile-father-of-wolves\"}], \"updatedAt\": 2023-03-28T14:19:40.416Z}\nReceived: undefined\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/unit/specs/modules/game/providers/services/game.service.spec.ts:56:22)",
           "status": "Killed",
           "testsCompleted": 4,
           "static": false,
@@ -25000,7 +25057,7 @@
           ],
           "location": {
             "end": {
-              "column": 58,
+              "column": 63,
               "line": 24
             },
             "start": {
@@ -25163,7 +25220,7 @@
           "id": "662",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
-          "statusReason": "TypeError: Cannot read properties of undefined (reading 'status')\n    at GameService.cancelGameById (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/src/modules/game/providers/services/game.service.ts:112:193)\n    at async Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/unit/specs/modules/game/providers/services/game.service.spec.ts:86:7)",
+          "statusReason": "TypeError: Cannot read properties of undefined (reading 'status')\n    at GameService.cancelGameById (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/src/modules/game/providers/services/game.service.ts:112:193)\n    at async Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/unit/specs/modules/game/providers/services/game.service.spec.ts:86:7)",
           "status": "Killed",
           "testsCompleted": 7,
           "static": false,
@@ -25181,7 +25238,7 @@
           ],
           "location": {
             "end": {
-              "column": 58,
+              "column": 63,
               "line": 37
             },
             "start": {
@@ -25356,9 +25413,13 @@
           "id": "669",
           "mutatorName": "EqualityOperator",
           "replacement": "game.status === GAME_STATUSES.PLAYING",
-          "status": "Timeout",
+          "statusReason": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 400\nReceived: 200\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/e2e/specs/modules/game/controllers/game.controller.e2e-spec.ts:452:35)\n    at processTicksAndRejections (node:internal/process/task_queues:95:5)",
+          "status": "Killed",
+          "testsCompleted": 5,
           "static": false,
-          "killedBy": [],
+          "killedBy": [
+            "107"
+          ],
           "coveredBy": [
             "107",
             "108",
@@ -25407,7 +25468,7 @@
           "id": "671",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
-          "statusReason": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mjest.fn()\u001b[39m\u001b[2m).\u001b[22mtoHaveBeenCalledWith\u001b[2m(\u001b[22m\u001b[32m...expected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[32m- Expected\u001b[39m\n\u001b[31m+ Received\u001b[39m\n\n\u001b[32m- Object {\u001b[39m\n\u001b[32m-   \"id\": \"playing-id\",\u001b[39m\n\u001b[32m- }\u001b[39m\n\u001b[31m+ Object {}\u001b[39m,\n  \u001b[2m{\"status\": \"canceled\"}\u001b[22m,\n\nNumber of calls: \u001b[31m1\u001b[39m\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox889991/tests/unit/specs/modules/game/providers/services/game.service.spec.ts:87:44)",
+          "statusReason": "Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\n- Expected\n+ Received\n\n- Object {\n-   \"_id\": \"playing-id\",\n- }\n+ Object {},\n  {\"status\": \"canceled\"},\n\nNumber of calls: 1\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/unit/specs/modules/game/providers/services/game.service.spec.ts:87:44)",
           "status": "Killed",
           "testsCompleted": 3,
           "static": false,
@@ -25421,7 +25482,7 @@
           ],
           "location": {
             "end": {
-              "column": 67,
+              "column": 72,
               "line": 43
             },
             "start": {
@@ -25434,9 +25495,13 @@
           "id": "672",
           "mutatorName": "ObjectLiteral",
           "replacement": "{}",
-          "status": "Timeout",
+          "statusReason": "Error: expect(jest.fn()).toHaveBeenCalledWith(...expected)\n\n- Expected\n+ Received\n\n  {\"_id\": \"playing-id\"},\n- Object {\n-   \"status\": \"canceled\",\n- }\n+ Object {},\n\nNumber of calls: 1\n    at Object.<anonymous> (/Users/antoinezanardi/WebstormProjects/werewolves-assistant-api-next/.stryker-tmp/sandbox170022/tests/unit/specs/modules/game/providers/services/game.service.spec.ts:87:44)",
+          "status": "Killed",
+          "testsCompleted": 3,
           "static": false,
-          "killedBy": [],
+          "killedBy": [
+            "173"
+          ],
           "coveredBy": [
             "108",
             "173",
@@ -25444,11 +25509,11 @@
           ],
           "location": {
             "end": {
-              "column": 103,
+              "column": 108,
               "line": 43
             },
             "start": {
-              "column": 69,
+              "column": 74,
               "line": 43
             }
           }
@@ -25548,7 +25613,7 @@
           }
         }
       ],
-      "source": "import { Injectable } from \"@nestjs/common\";\nimport { API_RESOURCES } from \"../../../../shared/api/enums/api.enum\";\nimport { BAD_RESOURCE_MUTATION_REASONS } from \"../../../../shared/error/enums/bad-resource-mutation-error.enum\";\nimport { BadResourceMutationError } from \"../../../../shared/error/types/bad-resource-mutation-error.type\";\nimport { ResourceNotFoundError } from \"../../../../shared/error/types/resource-not-found-error.type\";\nimport type { CreateGameDto } from \"../../dto/create-game/create-game.dto\";\nimport { GAME_STATUSES } from \"../../enums/game.enum\";\nimport type { Game } from \"../../schemas/game.schema\";\nimport { GameRepository } from \"../repositories/game.repository\";\nimport { GamePlaysManagerService } from \"./game-plays-manager.service\";\n\n@Injectable()\nexport class GameService {\n  public constructor(\n    private readonly gamePlaysManagerService: GamePlaysManagerService,\n    private readonly gameRepository: GameRepository,\n  ) {}\n\n  public async getGames(): Promise<Game[]> {\n    return this.gameRepository.find();\n  }\n\n  public async getGameById(id: string): Promise<Game> {\n    const game = await this.gameRepository.findOne({ id });\n    if (game === null) {\n      throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);\n    }\n    return game;\n  }\n\n  public async createGame(game: CreateGameDto): Promise<Game> {\n    game.upcomingPlays = this.gamePlaysManagerService.getUpcomingNightPlays(game);\n    return this.gameRepository.create(game);\n  }\n\n  public async cancelGameById(id: string): Promise<Game> {\n    const game = await this.gameRepository.findOne({ id });\n    if (game === null) {\n      throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);\n    } else if (game.status !== GAME_STATUSES.PLAYING) {\n      throw new BadResourceMutationError(API_RESOURCES.GAMES, game._id, BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);\n    }\n    const updatedGame = await this.gameRepository.updateOne({ id }, { status: GAME_STATUSES.CANCELED });\n    if (updatedGame === null) {\n      throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);\n    }\n    return updatedGame;\n  }\n}"
+      "source": "import { Injectable } from \"@nestjs/common\";\nimport { API_RESOURCES } from \"../../../../shared/api/enums/api.enum\";\nimport { BAD_RESOURCE_MUTATION_REASONS } from \"../../../../shared/error/enums/bad-resource-mutation-error.enum\";\nimport { BadResourceMutationError } from \"../../../../shared/error/types/bad-resource-mutation-error.type\";\nimport { ResourceNotFoundError } from \"../../../../shared/error/types/resource-not-found-error.type\";\nimport type { CreateGameDto } from \"../../dto/create-game/create-game.dto\";\nimport { GAME_STATUSES } from \"../../enums/game.enum\";\nimport type { Game } from \"../../schemas/game.schema\";\nimport { GameRepository } from \"../repositories/game.repository\";\nimport { GamePlaysManagerService } from \"./game-plays-manager.service\";\n\n@Injectable()\nexport class GameService {\n  public constructor(\n    private readonly gamePlaysManagerService: GamePlaysManagerService,\n    private readonly gameRepository: GameRepository,\n  ) {}\n\n  public async getGames(): Promise<Game[]> {\n    return this.gameRepository.find();\n  }\n\n  public async getGameById(id: string): Promise<Game> {\n    const game = await this.gameRepository.findOne({ _id: id });\n    if (game === null) {\n      throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);\n    }\n    return game;\n  }\n\n  public async createGame(game: CreateGameDto): Promise<Game> {\n    game.upcomingPlays = this.gamePlaysManagerService.getUpcomingNightPlays(game);\n    return this.gameRepository.create(game);\n  }\n\n  public async cancelGameById(id: string): Promise<Game> {\n    const game = await this.gameRepository.findOne({ _id: id });\n    if (game === null) {\n      throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);\n    } else if (game.status !== GAME_STATUSES.PLAYING) {\n      throw new BadResourceMutationError(API_RESOURCES.GAMES, game._id, BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);\n    }\n    const updatedGame = await this.gameRepository.updateOne({ _id: id }, { status: GAME_STATUSES.CANCELED });\n    if (updatedGame === null) {\n      throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);\n    }\n    return updatedGame;\n  }\n}"
     },
     "src/modules/health/controllers/health.controller.ts": {
       "language": "typescript",
@@ -29525,7 +29590,7 @@
           }
         }
       ],
-      "source": "import type { TestingModule } from \"@nestjs/testing\";\nimport { Test } from \"@nestjs/testing\";\nimport { when } from \"jest-when\";\nimport { GAME_STATUSES } from \"../../../../../../../src/modules/game/enums/game.enum\";\nimport { GameRepository } from \"../../../../../../../src/modules/game/providers/repositories/game.repository\";\nimport { GamePlaysManagerService } from \"../../../../../../../src/modules/game/providers/services/game-plays-manager.service\";\nimport { GameService } from \"../../../../../../../src/modules/game/providers/services/game.service\";\nimport { createFakeCreateGameDto } from \"../../../../../../factories/game/dto/create-game/create-game.dto.factory\";\nimport { createFakeGame } from \"../../../../../../factories/game/schemas/game.schema.factory\";\n\ndescribe(\"Game Service\", () => {\n  let service: GameService;\n  let repository: GameRepository;\n\n  const gameRepositoryMock = {\n    find: jest.fn(),\n    findOne: jest.fn(),\n    create: jest.fn(),\n    updateOne: jest.fn(),\n  };\n\n  beforeEach(async() => {\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        {\n          provide: GameRepository,\n          useValue: gameRepositoryMock,\n        },\n        GamePlaysManagerService,\n        GameService,\n      ],\n    }).compile();\n    service = module.get<GameService>(GameService);\n    repository = module.get<GameRepository>(GameRepository);\n  });\n\n  describe(\"getGames\", () => {\n    it(\"should get all games when called.\", async() => {\n      await service.getGames();\n      expect(repository.find).toHaveBeenCalledWith();\n    });\n  });\n\n  describe(\"getGameById\", () => {\n    const existingId = \"good-id\";\n    const existingGame = createFakeGame();\n    const unknownId = \"bad-id\";\n\n    beforeEach(() => {\n      when(gameRepositoryMock.findOne).calledWith({ id: existingId }).mockResolvedValue(existingGame);\n      when(gameRepositoryMock.findOne).calledWith({ id: unknownId }).mockResolvedValue(null);\n    });\n\n    it(\"should return a game when called with existing id.\", async() => {\n      const result = await service.getGameById(existingId);\n      expect(result).toStrictEqual(existingGame);\n    });\n\n    it(\"should throw an error when called with unknown id.\", async() => {\n      await expect(service.getGameById(unknownId)).rejects.toThrow(`Game with id \"${unknownId}\" not found`);\n    });\n  });\n\n  describe(\"createGame\", () => {\n    it(\"should create game when called.\", async() => {\n      const toCreateGame = createFakeCreateGameDto();\n      await service.createGame(toCreateGame);\n      expect(repository.create).toHaveBeenCalledWith(toCreateGame);\n    });\n  });\n\n  describe(\"cancelGameById\", () => {\n    const existingPlayingId = \"playing-id\";\n    const existingPlayingGame = createFakeGame({ _id: existingPlayingId, status: GAME_STATUSES.PLAYING });\n    const existingDoneId = \"done-id\";\n    const existingDoneGame = createFakeGame({ _id: existingDoneId, status: GAME_STATUSES.DONE });\n    const unknownId = \"bad-id\";\n\n    beforeEach(() => {\n      when(gameRepositoryMock.findOne).calledWith({ id: existingPlayingId }).mockResolvedValue(existingPlayingGame);\n      when(gameRepositoryMock.findOne).calledWith({ id: existingDoneId }).mockResolvedValue(existingDoneGame);\n      when(gameRepositoryMock.findOne).calledWith({ id: unknownId }).mockResolvedValue(null);\n    });\n\n    it(\"should call update method from repository when game can be canceled.\", async() => {\n      await service.cancelGameById(existingPlayingId);\n      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ id: existingPlayingId }, { status: GAME_STATUSES.CANCELED });\n    });\n\n    it(\"should throw an error when called with unknown id.\", async() => {\n      await expect(service.cancelGameById(unknownId)).rejects.toThrow(`Game with id \"${unknownId}\" not found`);\n    });\n\n    it(\"should throw an error when game doesn't have playing status.\", async() => {\n      await expect(service.cancelGameById(existingDoneId)).rejects.toThrow(`Bad mutation for Game with id \"${existingDoneId}\" : Game doesn't have status with value \"playing\"`);\n    });\n\n    it(\"should throw an error when game not found by update repository method.\", async() => {\n      gameRepositoryMock.updateOne.mockResolvedValue(null);\n      await expect(service.cancelGameById(existingPlayingId)).rejects.toThrow(`Game with id \"${existingPlayingId}\" not found`);\n    });\n  });\n});"
+      "source": "import type { TestingModule } from \"@nestjs/testing\";\nimport { Test } from \"@nestjs/testing\";\nimport { when } from \"jest-when\";\nimport { GAME_STATUSES } from \"../../../../../../../src/modules/game/enums/game.enum\";\nimport { GameRepository } from \"../../../../../../../src/modules/game/providers/repositories/game.repository\";\nimport { GamePlaysManagerService } from \"../../../../../../../src/modules/game/providers/services/game-plays-manager.service\";\nimport { GameService } from \"../../../../../../../src/modules/game/providers/services/game.service\";\nimport { createFakeCreateGameDto } from \"../../../../../../factories/game/dto/create-game/create-game.dto.factory\";\nimport { createFakeGame } from \"../../../../../../factories/game/schemas/game.schema.factory\";\n\ndescribe(\"Game Service\", () => {\n  let service: GameService;\n  let repository: GameRepository;\n\n  const gameRepositoryMock = {\n    find: jest.fn(),\n    findOne: jest.fn(),\n    create: jest.fn(),\n    updateOne: jest.fn(),\n  };\n\n  beforeEach(async() => {\n    const module: TestingModule = await Test.createTestingModule({\n      providers: [\n        {\n          provide: GameRepository,\n          useValue: gameRepositoryMock,\n        },\n        GamePlaysManagerService,\n        GameService,\n      ],\n    }).compile();\n    service = module.get<GameService>(GameService);\n    repository = module.get<GameRepository>(GameRepository);\n  });\n\n  describe(\"getGames\", () => {\n    it(\"should get all games when called.\", async() => {\n      await service.getGames();\n      expect(repository.find).toHaveBeenCalledWith();\n    });\n  });\n\n  describe(\"getGameById\", () => {\n    const existingId = \"good-id\";\n    const existingGame = createFakeGame();\n    const unknownId = \"bad-id\";\n\n    beforeEach(() => {\n      when(gameRepositoryMock.findOne).calledWith({ _id: existingId }).mockResolvedValue(existingGame);\n      when(gameRepositoryMock.findOne).calledWith({ _id: unknownId }).mockResolvedValue(null);\n    });\n\n    it(\"should return a game when called with existing id.\", async() => {\n      const result = await service.getGameById(existingId);\n      expect(result).toStrictEqual(existingGame);\n    });\n\n    it(\"should throw an error when called with unknown id.\", async() => {\n      await expect(service.getGameById(unknownId)).rejects.toThrow(`Game with id \"${unknownId}\" not found`);\n    });\n  });\n\n  describe(\"createGame\", () => {\n    it(\"should create game when called.\", async() => {\n      const toCreateGame = createFakeCreateGameDto();\n      await service.createGame(toCreateGame);\n      expect(repository.create).toHaveBeenCalledWith(toCreateGame);\n    });\n  });\n\n  describe(\"cancelGameById\", () => {\n    const existingPlayingId = \"playing-id\";\n    const existingPlayingGame = createFakeGame({ _id: existingPlayingId, status: GAME_STATUSES.PLAYING });\n    const existingDoneId = \"done-id\";\n    const existingDoneGame = createFakeGame({ _id: existingDoneId, status: GAME_STATUSES.DONE });\n    const unknownId = \"bad-id\";\n\n    beforeEach(() => {\n      when(gameRepositoryMock.findOne).calledWith({ _id: existingPlayingId }).mockResolvedValue(existingPlayingGame);\n      when(gameRepositoryMock.findOne).calledWith({ _id: existingDoneId }).mockResolvedValue(existingDoneGame);\n      when(gameRepositoryMock.findOne).calledWith({ _id: unknownId }).mockResolvedValue(null);\n    });\n\n    it(\"should call update method from repository when game can be canceled.\", async() => {\n      await service.cancelGameById(existingPlayingId);\n      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ _id: existingPlayingId }, { status: GAME_STATUSES.CANCELED });\n    });\n\n    it(\"should throw an error when called with unknown id.\", async() => {\n      await expect(service.cancelGameById(unknownId)).rejects.toThrow(`Game with id \"${unknownId}\" not found`);\n    });\n\n    it(\"should throw an error when game doesn't have playing status.\", async() => {\n      await expect(service.cancelGameById(existingDoneId)).rejects.toThrow(`Bad mutation for Game with id \"${existingDoneId}\" : Game doesn't have status with value \"playing\"`);\n    });\n\n    it(\"should throw an error when game not found by update repository method.\", async() => {\n      gameRepositoryMock.updateOne.mockResolvedValue(null);\n      await expect(service.cancelGameById(existingPlayingId)).rejects.toThrow(`Game with id \"${existingPlayingId}\" not found`);\n    });\n  });\n});"
     },
     "tests/unit/specs/modules/game/helpers/player.helper.spec.ts": {
       "tests": [
@@ -30818,7 +30883,7 @@
       "@stryker-mutator/typescript-checker": "6.4.2",
       "jest": "29.5.0",
       "typescript": "4.9.5",
-      "webpack": "5.76.2",
+      "webpack": "5.76.3",
       "ts-jest": "29.0.5"
     }
   }
