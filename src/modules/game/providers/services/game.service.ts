@@ -21,7 +21,7 @@ export class GameService {
   }
 
   public async getGameById(id: string): Promise<Game> {
-    const game = await this.gameRepository.findOne({ id });
+    const game = await this.gameRepository.findOne({ _id: id });
     if (game === null) {
       throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);
     }
@@ -34,13 +34,13 @@ export class GameService {
   }
 
   public async cancelGameById(id: string): Promise<Game> {
-    const game = await this.gameRepository.findOne({ id });
+    const game = await this.gameRepository.findOne({ _id: id });
     if (game === null) {
       throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);
     } else if (game.status !== GAME_STATUSES.PLAYING) {
       throw new BadResourceMutationError(API_RESOURCES.GAMES, game._id, BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
     }
-    const updatedGame = await this.gameRepository.updateOne({ id }, { status: GAME_STATUSES.CANCELED });
+    const updatedGame = await this.gameRepository.updateOne({ _id: id }, { status: GAME_STATUSES.CANCELED });
     if (updatedGame === null) {
       throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);
     }
