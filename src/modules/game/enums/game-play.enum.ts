@@ -23,4 +23,9 @@ enum GAME_PLAY_CAUSES {
   STUTTERING_JUDGE_REQUEST = "stuttering-judge-request",
 }
 
-export { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES };
+enum WITCH_POTIONS {
+  LIFE = "life",
+  DEATH = "death",
+}
+
+export { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS };
