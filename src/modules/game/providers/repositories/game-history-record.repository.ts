@@ -9,11 +9,8 @@ import type { GameHistoryRecordToInsert } from "../../types/game-history-record.
 @Injectable()
 export class GameHistoryRecordRepository {
   public constructor(@InjectModel(GameHistoryRecord.name) private readonly gameHistoryRecordModel: Model<GameHistoryRecordDocument>) {}
-  public async findForGameId(gameId: string, filter: FilterQuery<GameHistoryRecordDocument> = {}): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordModel.find({
-      gameId,
-      ...filter,
-    });
+  public async find(filter: FilterQuery<GameHistoryRecordDocument> = {}): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordModel.find(filter);
   }
 
   public async create(gameHistoryRecord: GameHistoryRecordToInsert): Promise<GameHistoryRecord> {

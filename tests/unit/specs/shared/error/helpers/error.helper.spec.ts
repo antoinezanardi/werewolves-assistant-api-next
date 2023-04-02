@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from "@nestjs/common";
 import { API_RESOURCES } from "../../../../../../src/shared/api/enums/api.enum";
 import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../../../src/shared/error/enums/bad-resource-mutation-error.enum";
-import { getBadResourceMutationReasonMessage, getControllerRouteError } from "../../../../../../src/shared/error/helpers/error.helper";
+import { getControllerRouteError } from "../../../../../../src/shared/error/helpers/error.helper";
 import { BadResourceMutationError } from "../../../../../../src/shared/error/types/bad-resource-mutation-error.type";
 import { ResourceNotFoundError } from "../../../../../../src/shared/error/types/resource-not-found-error.type";
 
@@ -20,18 +20,20 @@ describe("Error Helper", () => {
       expect((result as NotFoundException).message).toBe(`Game with id "${id}" not found`);
     });
 
-    it("should return a BadRequestException when error is BadResourceMutationError.", () => {
+    it("should return a BadRequestException when error is BadResourceMutationError without a reason.", () => {
+      const id = "123";
+      const error = new BadResourceMutationError(API_RESOURCES.GAMES, id);
+      const result = getControllerRouteError(error);
+      expect(result instanceof BadRequestException).toBe(true);
+      expect((result as BadRequestException).message).toBe(`Bad mutation for Game with id "${id}"`);
+    });
+
+    it("should return a BadRequestException when error is BadResourceMutationError with a reason.", () => {
       const id = "123";
       const error = new BadResourceMutationError(API_RESOURCES.GAMES, id, BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
       const result = getControllerRouteError(error);
       expect(result instanceof BadRequestException).toBe(true);
       expect((result as BadRequestException).message).toBe(`Bad mutation for Game with id "${id}" : Game doesn't have status with value "playing"`);
-    });
-  });
-
-  describe("getBadResourceMutationReasonMessage", () => {
-    it.each<{ reason: BAD_RESOURCE_MUTATION_REASONS; message: string }>([{ reason: BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING, message: `Game doesn't have status with value "playing"` }])("should return message $message when reason is $reason [#$#].", ({ reason, message }) => {
-      expect(getBadResourceMutationReasonMessage(reason)).toBe(message);
     });
   });
 });

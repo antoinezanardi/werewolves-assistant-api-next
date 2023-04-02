@@ -194,7 +194,7 @@ describe("Game Controller", () => {
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true }),
+        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -462,7 +462,7 @@ describe("Game Controller", () => {
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true }),
+        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
         status: GAME_STATUSES.CANCELED,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,

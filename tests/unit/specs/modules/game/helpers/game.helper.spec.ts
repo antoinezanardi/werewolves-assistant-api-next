@@ -1,11 +1,11 @@
 import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { areAllVillagersAlive, areAllWerewolvesAlive, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
+import { areAllVillagersAlive, areAllWerewolvesAlive, getGroupOfPlayers, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, getPlayerWithId, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakePlayerCharmedAttribute, createFakePlayerEatenAttribute, createFakePlayerInLoveAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerPlayer, createFakeVillagerPlayer, createFakeWerewolfPlayer, createFakeWhiteWerewolfPlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers } from "../../../../../factories/game/schemas/player/player.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Game Helper", () => {
   describe("getPlayerDtoWithRole", () => {
@@ -67,12 +67,12 @@ describe("Game Helper", () => {
 
   describe("getPlayersWithCurrentSide", () => {
     const players = bulkCreateFakePlayers(6, [
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS } },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS } },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
+      createFakeWerewolfPlayer(),
+      createFakeWerewolfPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeWerewolfPlayer(),
+      createFakeWerewolfPlayer(),
     ]);
 
     it("should return werewolves when they have this side.", () => {
@@ -84,14 +84,26 @@ describe("Game Helper", () => {
     });
   });
 
+  describe("getPlayerWithId", () => {
+    it("should get player with specific id when called with this id.", () => {
+      const players = bulkCreateFakePlayers(6);
+      expect(getPlayerWithId(players, players[2]._id)).toStrictEqual(players[2]);
+    });
+    
+    it("should return undefined when called with unknown id.", () => {
+      const players = bulkCreateFakePlayers(6);
+      expect(getPlayerWithId(players, "123")).toBeUndefined();
+    });
+  });
+
   describe("areAllWerewolvesAlive", () => {
     const players = bulkCreateFakePlayers(6, [
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
+      createFakeWerewolfPlayer(),
+      createFakeWerewolfPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeWerewolfPlayer(),
+      createFakeWerewolfPlayer(),
     ]);
 
     it("should return false when empty array is provided.", () => {
@@ -197,6 +209,31 @@ describe("Game Helper", () => {
 
     it("should return false when source is role.", () => {
       expect(isGameSourceGroup(ROLE_NAMES.SEER)).toBe(false);
+    });
+  });
+
+  describe("getNonexistentPlayerId", () => {
+    it("should return undefined when all candidate ids are found.", () => {
+      const players = bulkCreateFakePlayers(6);
+      expect(getNonexistentPlayerId(players, players.map(player => player._id))).toBeUndefined();
+    });
+
+    it("should return unknown id when one candidate id is not found.", () => {
+      const players = bulkCreateFakePlayers(6);
+      expect(getNonexistentPlayerId(players, [...players.map(player => player._id), "123"])).toBe("123");
+    });
+  });
+
+  describe("getNonexistentPlayer", () => {
+    it("should return undefined when all candidate ids are found.", () => {
+      const players = bulkCreateFakePlayers(6);
+      expect(getNonexistentPlayer(players, players)).toBeUndefined();
+    });
+
+    it("should return unknown id when one candidate id is not found.", () => {
+      const players = bulkCreateFakePlayers(6);
+      const otherPlayer = createFakePlayer();
+      expect(getNonexistentPlayer(players, [...players, otherPlayer])).toStrictEqual(otherPlayer);
     });
   });
 });

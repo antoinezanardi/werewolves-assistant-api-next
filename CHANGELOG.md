@@ -1,5 +1,25 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.6.2](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.6.1...v1.6.2) (2023-03-28)
+
+
+### 🧹 Chore
+
+* **deps:** bump @nestjs/terminus from 9.2.1 to 9.2.2 ([#74](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/74)) ([2f8dc4c](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/2f8dc4c5d2ba27a0f2637f29829da3aed33deb78))
+* **deps:** bump mongoose from 6.10.4 to 7.0.3 ([#59](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/59)) ([b4efa64](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/b4efa642f47a4d866fa952805d57bc6aead3cafa))
+* **scripts:** set assignee and labels in create pull request script ([#77](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/77)) ([a9e827f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a9e827feac3cf1154caf7ff58329a8be83992bfe))
+* **semantic:** release rules ([4743081](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/474308124d3e9239b8e288247bc31201f9fa0e5e))
+
+
+### ✅ Tests
+
+* **factories:** multiple factories for clearer tests ([#78](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/78)) ([9ed0189](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/9ed01898f4dbf612bd2babdf0bddf8277c84ee23))
+
+
+### 🔁 CI
+
+* **changelog:** chore section displayed and semantic release docs in readme ([#75](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/75)) ([75ac728](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/75ac728a0243b9e9bdcc82e359856e5fab37f46c))
+
 ## [1.6.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.6.0...v1.6.1) (2023-03-27)
 
 

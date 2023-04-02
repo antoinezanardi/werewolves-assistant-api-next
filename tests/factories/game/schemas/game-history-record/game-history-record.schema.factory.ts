@@ -7,7 +7,6 @@ import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
 import { GameHistoryRecordPlay } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { GameHistoryRecord } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import { ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
-import { createFakeGameAdditionalCard } from "../game-additional-card/game-additional-card.schema.factory";
 import { createFakePlayer } from "../player/player.schema.factory";
 
 function createFakeGameHistoryRecordPlay(obj: Partial<GameHistoryRecordPlay> = {}): GameHistoryRecordPlay {
@@ -22,7 +21,7 @@ function createFakeGameHistoryRecordPlay(obj: Partial<GameHistoryRecordPlay> = {
     votingResult: obj.votingResult ?? faker.helpers.arrayElement(Object.values(GAME_HISTORY_RECORD_VOTING_RESULTS)),
     didJudgeRequestAnotherVote: obj.didJudgeRequestAnotherVote ?? faker.datatype.boolean(),
     chosenSide: obj.chosenSide ?? faker.helpers.arrayElement(Object.values(ROLE_SIDES)),
-    chosenCard: obj.chosenCard ?? createFakeGameAdditionalCard(),
+    chosenCard: obj.chosenCard ?? undefined,
   }, { enableCircularCheck: true });
 }
 
@@ -41,8 +40,11 @@ function createFakeGameHistoryRecord(obj: Partial<GameHistoryRecord> = {}): Game
   };
 }
 
-function bulkCreateFakeGameHistoryRecords(length: number): GameHistoryRecord[] {
-  return Array.from(Array(length)).map(() => createFakeGameHistoryRecord());
+function bulkCreateFakeGameHistoryRecords(length: number, gameHistoryRecords: Partial<GameHistoryRecord>[] = []): GameHistoryRecord[] {
+  return Array.from(Array(length)).map((item, index) => {
+    const override = index < gameHistoryRecords.length ? gameHistoryRecords[index] : {};
+    return createFakeGameHistoryRecord(override);
+  });
 }
 
 export { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecord, bulkCreateFakeGameHistoryRecords };

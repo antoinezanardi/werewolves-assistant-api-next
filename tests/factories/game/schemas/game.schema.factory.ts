@@ -14,6 +14,7 @@ function createFakeGame(obj: Partial<Game> = {}): Game {
     status: obj.status ?? faker.helpers.arrayElement(Object.values(GAME_STATUSES)),
     tick: obj.tick ?? faker.datatype.number({ min: 1 }),
     turn: obj.turn ?? faker.datatype.number({ min: 1 }),
+    additionalCards: obj.additionalCards ?? undefined,
     options: obj.options ?? createFakeGameOptions(),
     createdAt: obj.createdAt ?? faker.date.recent(),
     updatedAt: obj.updatedAt ?? faker.date.recent(),

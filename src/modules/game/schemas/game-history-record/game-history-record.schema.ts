@@ -31,7 +31,10 @@ class GameHistoryRecord {
   public turn: number;
 
   @ApiProperty(gameHistoryRecordApiProperties.phase)
-  @Prop({ required: gameHistoryRecordFieldsSpecs.phase.required, enum: gameHistoryRecordFieldsSpecs.phase.enum })
+  @Prop({
+    enum: gameHistoryRecordFieldsSpecs.phase.enum,
+    required: gameHistoryRecordFieldsSpecs.phase.required,
+  })
   public phase: GAME_PHASES;
 
   @ApiProperty(gameHistoryRecordApiProperties.tick)

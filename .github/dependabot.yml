@@ -1,9 +1,25 @@
 version: 2
 updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "04:00"
+      timezone: "UTC"
+    assignees:
+      - "antoinezanardi"
+    reviewers:
+      - "antoinezanardi"
+    commit-message:
+      prefix: "chore(github-actions)"
+    target-branch: "develop"
+    open-pull-requests-limit: 20
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
+      time: "04:00"
+      timezone: "UTC"
     assignees:
       - "antoinezanardi"
     reviewers:
