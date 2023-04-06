@@ -46,7 +46,7 @@
   "homepage": "https://github.com/antoinezanardi/werewolves-assistant-api-next#readme",
   "dependencies": {
     "@fastify/static": "^6.10.0",
-    "@nestjs/common": "^9.3.12",
+    "@nestjs/common": "^9.4.0",
     "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.4.0",
     "@nestjs/mongoose": "^9.2.2",
