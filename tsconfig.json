@@ -23,6 +23,7 @@
   "files": ["node_modules/jest-extended/types/index.d.ts"],
   "include": [
     ".eslintrc.js",
+    ".releaserc.js",
     "**/*.js",
     "**/*.ts"
   ]
