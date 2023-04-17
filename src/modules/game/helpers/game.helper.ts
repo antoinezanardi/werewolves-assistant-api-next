@@ -21,6 +21,10 @@ function getPlayersWithCurrentSide(players: Player[], side: ROLE_SIDES): Player[
   return players.filter(player => player.side.current === side);
 }
 
+function getPlayerWithId(players: Player[], id: string): Player | undefined {
+  return players.find(({ _id }) => _id === id);
+}
+
 function areAllWerewolvesAlive(players: Player[]): boolean {
   const werewolfPlayers = getPlayersWithCurrentSide(players, ROLE_SIDES.WEREWOLVES);
   return werewolfPlayers.length > 0 && werewolfPlayers.every(werewolf => werewolf.isAlive);
@@ -56,15 +60,26 @@ function isGameSourceGroup(source: GameSource): source is PLAYER_GROUPS {
   return Object.values(PLAYER_GROUPS).includes(source as PLAYER_GROUPS);
 }
 
+function getNonexistentPlayerId(players: Player[], candidateIds?: string[]): string | undefined {
+  return candidateIds?.find(candidateId => !getPlayerWithId(players, candidateId));
+}
+
+function getNonexistentPlayer(players: Player[], candidatePlayers?: Player[]): Player | undefined {
+  return candidatePlayers?.find(candidatePlayer => !getPlayerWithId(players, candidatePlayer._id));
+}
+
 export {
   getPlayerDtoWithRole,
   getPlayerWithCurrentRole,
   getPlayersWithCurrentRole,
   getPlayersWithCurrentSide,
+  getPlayerWithId,
   areAllWerewolvesAlive,
   areAllVillagersAlive,
   getPlayersWithAttribute,
   getGroupOfPlayers,
   isGameSourceRole,
   isGameSourceGroup,
+  getNonexistentPlayerId,
+  getNonexistentPlayer,
 };
