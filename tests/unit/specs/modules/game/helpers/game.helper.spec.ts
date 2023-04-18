@@ -1,8 +1,10 @@
+import { faker } from "@faker-js/faker";
 import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { areAllVillagersAlive, areAllWerewolvesAlive, getGroupOfPlayers, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, getPlayerWithId, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
+import { areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getGroupOfPlayers, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, getPlayerWithId, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { bulkCreateFakeGameAdditionalCards } from "../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakePlayerCharmedAttribute, createFakePlayerEatenAttribute, createFakePlayerInLoveAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerPlayer, createFakeVillagerPlayer, createFakeWerewolfPlayer, createFakeWhiteWerewolfPlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
@@ -93,6 +95,22 @@ describe("Game Helper", () => {
     it("should return undefined when called with unknown id.", () => {
       const players = bulkCreateFakePlayers(6);
       expect(getPlayerWithId(players, "123")).toBeUndefined();
+    });
+  });
+
+  describe("getAdditionalCardWithId", () => {
+    it("should get card with specific id when called with this id.", () => {
+      const cards = bulkCreateFakeGameAdditionalCards(6);
+      expect(getAdditionalCardWithId(cards, cards[3]._id)).toStrictEqual(cards[3]);
+    });
+
+    it("should return undefined when cards are undefined.", () => {
+      expect(getAdditionalCardWithId(undefined, faker.database.mongodbObjectId())).toBeUndefined();
+    });
+
+    it("should return undefined when called with unknown id.", () => {
+      const cards = bulkCreateFakeGameAdditionalCards(6);
+      expect(getAdditionalCardWithId(cards, faker.database.mongodbObjectId())).toBeUndefined();
     });
   });
 

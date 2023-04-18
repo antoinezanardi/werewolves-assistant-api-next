@@ -1,14 +1,15 @@
 import { Injectable } from "@nestjs/common";
-import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
-import { RESOURCE_NOT_FOUND_REASONS } from "../../../../shared/error/enums/resource-not-found-error.enum";
-import { ResourceNotFoundError } from "../../../../shared/error/types/resource-not-found-error.type";
-import { getNonexistentPlayer } from "../../helpers/game.helper";
-import type { GameHistoryRecordPlay } from "../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import type { GameHistoryRecord } from "../../schemas/game-history-record/game-history-record.schema";
-import type { Game } from "../../schemas/game.schema";
-import type { GameHistoryRecordToInsert } from "../../types/game-history-record.type";
-import { GameHistoryRecordRepository } from "../repositories/game-history-record.repository";
-import { GameRepository } from "../repositories/game.repository";
+import type { FilterQuery } from "mongoose";
+import { API_RESOURCES } from "../../../../../shared/api/enums/api.enum";
+import { RESOURCE_NOT_FOUND_REASONS } from "../../../../../shared/error/enums/resource-not-found-error.enum";
+import { ResourceNotFoundError } from "../../../../../shared/error/types/resource-not-found-error.type";
+import { getAdditionalCardWithId, getNonexistentPlayer } from "../../../helpers/game.helper";
+import type { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import type { GameHistoryRecord, GameHistoryRecordDocument } from "../../../schemas/game-history-record/game-history-record.schema";
+import type { Game } from "../../../schemas/game.schema";
+import type { GameHistoryRecordToInsert } from "../../../types/game-history-record.type";
+import { GameHistoryRecordRepository } from "../../repositories/game-history-record.repository";
+import { GameRepository } from "../../repositories/game.repository";
 
 @Injectable()
 export class GameHistoryRecordService {
@@ -17,8 +18,8 @@ export class GameHistoryRecordService {
     private readonly gameRepository: GameRepository,
   ) {}
 
-  public async getGameHistoryRecordsByGameId(gameId: string): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.find({ gameId });
+  public async getGameHistoryRecordsByGameId(gameId: string, filter: FilterQuery<GameHistoryRecordDocument> = {}): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.find({ gameId, ...filter });
   }
 
   public checkGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {
@@ -38,7 +39,7 @@ export class GameHistoryRecordService {
     if (unmatchedVoteTarget) {
       throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, unmatchedVoteTarget._id, RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
     }
-    if (play.chosenCard && game.additionalCards?.find(card => card._id === play.chosenCard?._id) === undefined) {
+    if (play.chosenCard && !getAdditionalCardWithId(game.additionalCards, play.chosenCard._id)) {
       throw new ResourceNotFoundError(API_RESOURCES.GAME_ADDITIONAL_CARDS, play.chosenCard._id, RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
     }
   }

@@ -6,6 +6,7 @@ import { getControllerRouteError } from "../../../shared/error/helpers/error.hel
 import { CreateGameDto } from "../dto/create-game/create-game.dto";
 import { GetGameRandomCompositionPlayerResponseDto } from "../dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import { GetGameRandomCompositionDto } from "../dto/get-game-random-composition/get-game-random-composition.dto";
+import { MakeGamePlayDto } from "../dto/make-game-play/make-game-play.dto";
 import { GAME_STATUSES } from "../enums/game.enum";
 import { GameRandomCompositionService } from "../providers/services/game-random-composition.service";
 import { GameService } from "../providers/services/game.service";
@@ -62,6 +63,16 @@ export class GameController {
   public async cancelGame(@Param("id", ValidateMongoId) id: string): Promise<Game> {
     try {
       return await this.gameService.cancelGameById(id);
+    } catch (err) {
+      throw getControllerRouteError(err);
+    }
+  }
+
+  @Post(":id/play")
+  @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the \`${GAME_STATUSES.PLAYING}\` status. Body parameters fields are required or optional based on the upcoming game play.` })
+  public async makeGamePlay(@Param("id", ValidateMongoId) id: string, @Body() makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
+    try {
+      return await this.gameService.makeGamePlay(id, makeGamePlayDto);
     } catch (err) {
       throw getControllerRouteError(err);
     }

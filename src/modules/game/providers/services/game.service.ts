@@ -1,18 +1,23 @@
 import { Injectable } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
 import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
 import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../shared/error/enums/bad-resource-mutation-error.enum";
 import { BadResourceMutationError } from "../../../../shared/error/types/bad-resource-mutation-error.type";
 import { ResourceNotFoundError } from "../../../../shared/error/types/resource-not-found-error.type";
-import type { CreateGameDto } from "../../dto/create-game/create-game.dto";
+import { CreateGameDto } from "../../dto/create-game/create-game.dto";
+import type { MakeGamePlayDto } from "../../dto/make-game-play/make-game-play.dto";
 import { GAME_STATUSES } from "../../enums/game.enum";
+import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play.helper";
 import type { Game } from "../../schemas/game.schema";
 import { GameRepository } from "../repositories/game.repository";
-import { GamePlaysManagerService } from "./game-plays-manager.service";
+import { GamePlaysManagerService } from "./game-play/game-plays-manager.service";
+import { GamePlaysValidatorService } from "./game-play/game-plays-validator.service";
 
 @Injectable()
 export class GameService {
   public constructor(
     private readonly gamePlaysManagerService: GamePlaysManagerService,
+    private readonly gamePlaysValidatorService: GamePlaysValidatorService,
     private readonly gameRepository: GameRepository,
   ) {}
 
@@ -29,21 +34,36 @@ export class GameService {
   }
 
   public async createGame(game: CreateGameDto): Promise<Game> {
-    game.upcomingPlays = this.gamePlaysManagerService.getUpcomingNightPlays(game);
-    return this.gameRepository.create(game);
+    const gameToCreate = plainToInstance(CreateGameDto, {
+      ...game,
+      upcomingPlays: this.gamePlaysManagerService.getUpcomingNightPlays(game),
+    });
+    return this.gameRepository.create(gameToCreate);
   }
 
-  public async cancelGameById(id: string): Promise<Game> {
-    const game = await this.gameRepository.findOne({ _id: id });
+  public async getGameAndCheckPlayingStatus(gameId: string): Promise<Game> {
+    const game = await this.gameRepository.findOne({ _id: gameId });
     if (game === null) {
-      throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);
+      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId);
     } else if (game.status !== GAME_STATUSES.PLAYING) {
       throw new BadResourceMutationError(API_RESOURCES.GAMES, game._id, BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
     }
-    const updatedGame = await this.gameRepository.updateOne({ _id: id }, { status: GAME_STATUSES.CANCELED });
+    return game;
+  }
+
+  public async cancelGameById(gameId: string): Promise<Game> {
+    await this.getGameAndCheckPlayingStatus(gameId);
+    const updatedGame = await this.gameRepository.updateOne({ _id: gameId }, { status: GAME_STATUSES.CANCELED });
     if (updatedGame === null) {
-      throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);
+      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId);
     }
     return updatedGame;
+  }
+
+  public async makeGamePlay(gameId: string, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
+    const game = await this.getGameAndCheckPlayingStatus(gameId);
+    const makeGamePlayWithRelationsDto = createMakeGamePlayDtoWithRelations(makeGamePlayDto, game);
+    await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(makeGamePlayWithRelationsDto, game);
+    return game;
   }
 }

@@ -14,6 +14,7 @@ import { CreateGameOptionsDto } from "../../../../../../src/modules/game/dto/cre
 import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
+import type { MakeGamePlayDto } from "../../../../../../src/modules/game/dto/make-game-play/make-game-play.dto";
 import { GAME_PLAY_ACTIONS } from "../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
@@ -27,6 +28,7 @@ import { fastifyServerDefaultOptions } from "../../../../../../src/server/consta
 import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
+import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
 import { initNestApp } from "../../../../helpers/nest-app.helper";
 
@@ -467,6 +469,51 @@ describe("Game Controller", () => {
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
+    });
+  });
+
+  describe("POST /game/:id/play", () => {
+    it("should not allow game play when game id is not a mongo id.", async() => {
+      const response = await app.inject({
+        method: "POST",
+        url: `/games/123/play`,
+      });
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.json<BadRequestException>().message).toBe("Validation failed (Mongo ObjectId is expected)");
+    });
+
+    it.each<{ payload: MakeGamePlayDto; test: string; errorMessage: string }>([
+      {
+        payload: createFakeMakeGamePlayDto({ targets: [{ playerId: "123" }] }),
+        test: "player ids in targets must be mongoId",
+        errorMessage: "targets.0.playerId must be a mongodb id",
+      },
+      {
+        payload: createFakeMakeGamePlayDto({ targets: [{ playerId: "507f1f77bcf86cd799439011" }, { playerId: "507f1f77bcf86cd799439011" }] }),
+        test: "player ids in targets must be unique",
+        errorMessage: "targets.playerId must be unique",
+      },
+      {
+        payload: createFakeMakeGamePlayDto({
+          votes: [
+            { sourceId: "507f1f77bcf86cd799439011", targetId: "507f1f77bcf86cd799439012" },
+            { sourceId: "507f1f77bcf86cd799439011", targetId: "507f1f77bcf86cd799439012" },
+          ],
+        }),
+        test: "player ids in targets must be unique",
+        errorMessage: "votes.sourceId must be unique",
+      },
+    ])("should not allow game play when $test [#$#].", async({
+      payload,
+      errorMessage,
+    }) => {
+      const response = await app.inject({
+        method: "POST",
+        url: `/games/${faker.database.mongodbObjectId()}/play`,
+        payload,
+      });
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.json<BadRequestException>().message).toContainEqual(errorMessage);
     });
   });
 });

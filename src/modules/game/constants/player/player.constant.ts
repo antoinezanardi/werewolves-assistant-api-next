@@ -11,7 +11,7 @@ const playersFieldsSpecs = Object.freeze({
   isAlive: { default: true },
 });
 
-const playerApiProperties: Record<keyof Player, ApiPropertyOptions> = Object.freeze({
+const playerApiProperties: Readonly<Record<keyof Player, ApiPropertyOptions>> = Object.freeze({
   _id: {
     description: "Player's ID",
     example: "507f1f77bcf86cd799439011",

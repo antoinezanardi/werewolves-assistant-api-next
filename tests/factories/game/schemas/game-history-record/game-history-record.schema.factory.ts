@@ -4,10 +4,39 @@ import { gameSourceValues } from "../../../../../src/modules/game/constants/game
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../src/modules/game/enums/game-history-record.enum";
 import { GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
+import { PLAYER_GROUPS } from "../../../../../src/modules/game/enums/player.enum";
 import { GameHistoryRecordPlay } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { GameHistoryRecord } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
-import { ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
+import { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
 import { createFakePlayer } from "../player/player.schema.factory";
+
+function createFakeGameHistoryRecordUseEatPlay(obj: Partial<GameHistoryRecordPlay> = {}): GameHistoryRecordPlay {
+  const play: Partial<GameHistoryRecordPlay> = {
+    action: GAME_PLAY_ACTIONS.EAT,
+    source: {
+      name: PLAYER_GROUPS.WEREWOLVES,
+      players: obj.source?.players ?? [createFakePlayer({})],
+    },
+  };
+  return createFakeGameHistoryRecordPlay({
+    ...play,
+    ...obj,
+  });
+}
+
+function createFakeGameHistoryRecordUsePotionsPlay(obj: Partial<GameHistoryRecordPlay> = {}): GameHistoryRecordPlay {
+  const play: Partial<GameHistoryRecordPlay> = {
+    action: GAME_PLAY_ACTIONS.USE_POTIONS,
+    source: {
+      name: ROLE_NAMES.WITCH,
+      players: obj.source?.players ?? [createFakePlayer({})],
+    },
+  };
+  return createFakeGameHistoryRecordPlay({
+    ...play,
+    ...obj,
+  });
+}
 
 function createFakeGameHistoryRecordPlay(obj: Partial<GameHistoryRecordPlay> = {}): GameHistoryRecordPlay {
   return plainToInstance(GameHistoryRecordPlay, {
@@ -47,4 +76,10 @@ function bulkCreateFakeGameHistoryRecords(length: number, gameHistoryRecords: Pa
   });
 }
 
-export { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecord, bulkCreateFakeGameHistoryRecords };
+export {
+  createFakeGameHistoryRecordUseEatPlay,
+  createFakeGameHistoryRecordUsePotionsPlay,
+  createFakeGameHistoryRecordPlay,
+  createFakeGameHistoryRecord,
+  bulkCreateFakeGameHistoryRecords,
+};

@@ -2,8 +2,11 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.enum";
+import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
-import { GamePlaysManagerService } from "../../../../../../../src/modules/game/providers/services/game-plays-manager.service";
+import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
+import { GamePlaysManagerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-manager.service";
+import { GamePlaysValidatorService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-validator.service";
 import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
 import { createFakeCreateGameDto } from "../../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
@@ -19,6 +22,11 @@ describe("Game Service", () => {
     updateOne: jest.fn(),
   };
 
+  const gameHistoryRecordRepositoryMock = {
+    find: jest.fn(),
+    create: jest.fn(),
+  };
+
   beforeEach(async() => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -26,7 +34,13 @@ describe("Game Service", () => {
           provide: GameRepository,
           useValue: gameRepositoryMock,
         },
+        {
+          provide: GameHistoryRecordRepository,
+          useValue: gameHistoryRecordRepositoryMock,
+        },
         GamePlaysManagerService,
+        GamePlaysValidatorService,
+        GameHistoryRecordService,
         GameService,
       ],
     }).compile();
@@ -65,7 +79,7 @@ describe("Game Service", () => {
     it("should create game when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
       await service.createGame(toCreateGame);
-      expect(repository.create).toHaveBeenCalledWith(toCreateGame);
+      expect(repository.create).toHaveBeenCalledOnce();
     });
   });
 

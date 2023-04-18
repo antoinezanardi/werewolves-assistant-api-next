@@ -1,6 +1,9 @@
 import { ROLE_NAMES, ROLE_SIDES } from "../../role/enums/role.enum";
 import type { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
+import type { GAME_PLAY_ACTIONS } from "../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../enums/player.enum";
+import type { GameAdditionalCard } from "../schemas/game-additional-card/game-additional-card.schema";
+import type { GamePlay } from "../schemas/game-play.schema";
 import type { Player } from "../schemas/player/player.schema";
 import type { GameSource } from "../types/game.type";
 import { doesPlayerHaveAttribute } from "./player/player.helper";
@@ -23,6 +26,10 @@ function getPlayersWithCurrentSide(players: Player[], side: ROLE_SIDES): Player[
 
 function getPlayerWithId(players: Player[], id: string): Player | undefined {
   return players.find(({ _id }) => _id === id);
+}
+
+function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: string): GameAdditionalCard | undefined {
+  return cards?.find(({ _id }) => _id === id);
 }
 
 function areAllWerewolvesAlive(players: Player[]): boolean {
@@ -68,12 +75,22 @@ function getNonexistentPlayer(players: Player[], candidatePlayers?: Player[]): P
   return candidatePlayers?.find(candidatePlayer => !getPlayerWithId(players, candidatePlayer._id));
 }
 
+function getUpcomingGamePlay(upcomingActions: GamePlay[]): GamePlay | undefined {
+  return upcomingActions.length ? upcomingActions[0] : undefined;
+}
+
+function getUpcomingGamePlayAction(upcomingActions: GamePlay[]): GAME_PLAY_ACTIONS | undefined {
+  const upcomingGamePlay = getUpcomingGamePlay(upcomingActions);
+  return upcomingGamePlay?.action;
+}
+
 export {
   getPlayerDtoWithRole,
   getPlayerWithCurrentRole,
   getPlayersWithCurrentRole,
   getPlayersWithCurrentSide,
   getPlayerWithId,
+  getAdditionalCardWithId,
   areAllWerewolvesAlive,
   areAllVillagersAlive,
   getPlayersWithAttribute,
@@ -82,4 +99,6 @@ export {
   isGameSourceGroup,
   getNonexistentPlayerId,
   getNonexistentPlayer,
+  getUpcomingGamePlay,
+  getUpcomingGamePlayAction,
 };

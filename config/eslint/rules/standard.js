@@ -132,7 +132,7 @@ const standardRules = Object.freeze({
   "no-nonoctal-decimal-escape": ERROR,
   "no-octal": ERROR,
   "no-octal-escape": ERROR,
-  "no-param-reassign": OFF,
+  "no-param-reassign": [ERROR, { props: true }],
   "no-plusplus": OFF,
   "no-proto": ERROR,
   "no-regex-spaces": ERROR,

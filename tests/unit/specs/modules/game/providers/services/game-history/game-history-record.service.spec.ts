@@ -1,17 +1,17 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../src/modules/game/enums/player.enum";
-import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
-import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
-import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history-record.service";
-import type { GameHistoryRecordPlay } from "../../../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import type { GameHistoryRecordToInsert } from "../../../../../../../src/modules/game/types/game-history-record.type";
-import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGameHistoryRecordPlay } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
-import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
-import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
+import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../../src/modules/game/enums/player.enum";
+import { GameHistoryRecordRepository } from "../../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
+import { GameRepository } from "../../../../../../../../src/modules/game/providers/repositories/game.repository";
+import { GameHistoryRecordService } from "../../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
+import type { GameHistoryRecordPlay } from "../../../../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import type { GameHistoryRecordToInsert } from "../../../../../../../../src/modules/game/types/game-history-record.type";
+import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { createFakeGameHistoryRecordPlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
+import { createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
+import { createFakeGameHistoryRecordToInsert } from "../../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
 
 describe("Game History Record Service", () => {
   let service: GameHistoryRecordService;

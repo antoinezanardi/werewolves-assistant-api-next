@@ -1,9 +1,9 @@
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../src/modules/game/enums/player.enum";
-import { canPiedPiperCharm, doesPlayerHaveAttribute, isPlayerAliveAndPowerful } from "../../../../../../src/modules/game/helpers/player/player.helper";
-import { ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
-import { createFakePlayerEatenAttribute, createFakePlayerPowerlessAttribute, createFakePlayerSeenAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePiedPiperPlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer, createFakePlayerSide } from "../../../../../factories/game/schemas/player/player.schema.factory";
+import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../src/modules/game/enums/player.enum";
+import { canPiedPiperCharm, doesPlayerHaveAttribute, isPlayerAliveAndPowerful } from "../../../../../../../src/modules/game/helpers/player/player.helper";
+import { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
+import { createFakePlayerEatenAttribute, createFakePlayerPowerlessAttribute, createFakePlayerSeenAttribute } from "../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePiedPiperPlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePlayer, createFakePlayerSide } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Player Helper", () => {
   describe("doesPlayerHaveAttribute", () => {
