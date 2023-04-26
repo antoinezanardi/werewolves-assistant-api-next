@@ -98,7 +98,7 @@ const standardRules = Object.freeze({
   "no-caller": ERROR,
   "no-case-declarations": ERROR,
   "no-confusing-arrow": [ERROR, { allowParens: true }],
-  "no-console": process.env.nodeEnv === "production" ? ERROR : OFF,
+  "no-console": ERROR,
   "no-continue": ERROR,
   "no-delete-var": ERROR,
   "no-div-regex": ERROR,

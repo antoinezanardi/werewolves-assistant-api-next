@@ -3,8 +3,8 @@ import { MakeGamePlayDto } from "../../../../../src/modules/game/dto/make-game-p
 
 function createFakeMakeGamePlayDto(obj: Partial<MakeGamePlayDto> = {}, override: object = {}): MakeGamePlayDto {
   return plainToInstance(MakeGamePlayDto, {
-    targets: obj.targets ?? undefined,
-    votes: obj.votes ?? undefined,
+    targets: obj.targets ? obj.targets : undefined,
+    votes: obj.votes ? obj.votes : undefined,
     doesJudgeRequestAnotherVote: obj.doesJudgeRequestAnotherVote ?? undefined,
     chosenCardId: obj.chosenCardId ?? undefined,
     chosenSide: obj.chosenSide ?? undefined,

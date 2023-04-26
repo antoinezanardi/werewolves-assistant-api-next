@@ -8,6 +8,7 @@ import { ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
+import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
 
 describe("Game Play Helper", () => {
   describe("getVotesWithRelationsFromMakeGamePlayDto", () => {
@@ -19,26 +20,26 @@ describe("Game Play Helper", () => {
 
     it("should throw error when votes contains one unknown source.", () => {
       const game = createFakeGame();
-      const fakePlayerId = faker.database.mongodbObjectId();
+      const fakePlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
           { sourceId: game.players[0]._id, targetId: game.players[1]._id },
           { sourceId: fakePlayerId, targetId: game.players[0]._id },
         ],
       });
-      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(`Player with id "${fakePlayerId}" not found : Game Play - Player in \`votes.source\` is not in the game players`);
+      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(`Player with id "${fakePlayerId.toString()}" not found : Game Play - Player in \`votes.source\` is not in the game players`);
     });
 
     it("should throw error when votes contains one unknown target.", () => {
       const game = createFakeGame();
-      const fakePlayerId = faker.database.mongodbObjectId();
+      const fakePlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
           { sourceId: game.players[0]._id, targetId: game.players[1]._id },
           { sourceId: game.players[1]._id, targetId: fakePlayerId },
         ],
       });
-      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(`Player with id "${fakePlayerId}" not found : Game Play - Player in \`votes.target\` is not in the game players`);
+      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(`Player with id "${fakePlayerId.toString()}" not found : Game Play - Player in \`votes.target\` is not in the game players`);
     });
 
     it("should fill votes with game players when called.", () => {
@@ -65,7 +66,7 @@ describe("Game Play Helper", () => {
 
     it("should throw error when targets contains one unknown player.", () => {
       const game = createFakeGame();
-      const fakePlayerId = faker.database.mongodbObjectId();
+      const fakePlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         targets: [
           { playerId: game.players[0]._id },
@@ -73,7 +74,7 @@ describe("Game Play Helper", () => {
           { playerId: fakePlayerId },
         ],
       });
-      expect(() => getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(`Player with id "${fakePlayerId}" not found : Game Play - Player in \`targets.player\` is not in the game players`);
+      expect(() => getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(`Player with id "${fakePlayerId.toString()}" not found : Game Play - Player in \`targets.player\` is not in the game players`);
     });
 
     it("should fill targets with game players when called.", () => {
@@ -102,9 +103,9 @@ describe("Game Play Helper", () => {
 
     it("should throw error when chosen card is unknown from game cards.", () => {
       const game = createFakeGame({ additionalCards: bulkCreateFakeGameAdditionalCards(4) });
-      const fakeCardId = faker.database.mongodbObjectId();
+      const fakeCardId = createObjectIdFromString(faker.database.mongodbObjectId());
       const makeGamePlayDto = createFakeMakeGamePlayDto({ chosenCardId: fakeCardId });
-      expect(() => getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(`Additional card with id "${fakeCardId}" not found : Game Play - Chosen card is not in the game additional cards`);
+      expect(() => getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(`Additional card with id "${fakeCardId.toString()}" not found : Game Play - Chosen card is not in the game additional cards`);
     });
 
     it("should return chosen card when called.", () => {

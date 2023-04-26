@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { ArrayUnique, IsArray, IsBoolean, IsEnum, IsMongoId, IsOptional, ValidateNested } from "class-validator";
+import { Types } from "mongoose";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../role/enums/role.enum";
 import { requiredTargetsActions, requiredVotesActions, stutteringJudgeRequestOpportunityActions } from "../../constants/game-play.constant";
 import { GAME_PLAY_ACTIONS } from "../../enums/game-play.enum";
@@ -31,8 +32,9 @@ class MakeGamePlayDto {
 
   @ApiProperty({ description: `Can be set when game's upcoming action is \`${GAME_PLAY_ACTIONS.CHOOSE_CARD}\`` })
   @IsOptional()
+  @Type(() => String)
   @IsMongoId()
-  public chosenCardId?: string;
+  public chosenCardId?: Types.ObjectId;
 
   @ApiProperty({ description: `Side chosen by \`${ROLE_NAMES.DOG_WOLF}\`. Required when game's upcoming action is \`${GAME_PLAY_ACTIONS.CHOOSE_SIDE}\`` })
   @IsOptional()

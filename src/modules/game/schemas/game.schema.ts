@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { Types } from "mongoose";
 import type { HydratedDocument } from "mongoose";
 import { gameApiProperties, gameFieldsSpecs } from "../constants/game.constant";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
@@ -17,7 +19,8 @@ import type { Player } from "./player/player.schema";
 })
 class Game {
   @ApiProperty(gameApiProperties._id)
-  public _id: string;
+  @Type(() => String)
+  public _id: Types.ObjectId;
 
   @ApiProperty(gameApiProperties.turn)
   @Prop({ default: gameFieldsSpecs.turn.default })

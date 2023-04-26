@@ -109,18 +109,21 @@ const sheriffElectionPlay: Readonly<GamePlay> = Object.freeze({
 });
 
 const requiredTargetsActions: Readonly<GAME_PLAY_ACTIONS[]> = Object.freeze([
-  GAME_PLAY_ACTIONS.USE_POTIONS,
-  GAME_PLAY_ACTIONS.EAT,
   GAME_PLAY_ACTIONS.LOOK,
-  GAME_PLAY_ACTIONS.PROTECT,
+  GAME_PLAY_ACTIONS.CHARM,
   GAME_PLAY_ACTIONS.SHOOT,
-  GAME_PLAY_ACTIONS.MARK,
+  GAME_PLAY_ACTIONS.PROTECT,
+  GAME_PLAY_ACTIONS.CHOOSE_MODEL,
   GAME_PLAY_ACTIONS.DELEGATE,
   GAME_PLAY_ACTIONS.SETTLE_VOTES,
+]);
+
+const optionalTargetsActions: Readonly<GAME_PLAY_ACTIONS[]> = Object.freeze([
+  GAME_PLAY_ACTIONS.EAT,
+  GAME_PLAY_ACTIONS.USE_POTIONS,
+  GAME_PLAY_ACTIONS.MARK,
   GAME_PLAY_ACTIONS.SNIFF,
-  GAME_PLAY_ACTIONS.CHARM,
   GAME_PLAY_ACTIONS.BAN_VOTING,
-  GAME_PLAY_ACTIONS.CHOOSE_MODEL,
 ]);
 
 const requiredVotesActions: Readonly<GAME_PLAY_ACTIONS[]> = Object.freeze([
@@ -138,6 +141,7 @@ export {
   gamePlaysNightOrder,
   sheriffElectionPlay,
   requiredTargetsActions,
+  optionalTargetsActions,
   requiredVotesActions,
   stutteringJudgeRequestOpportunityActions,
 };

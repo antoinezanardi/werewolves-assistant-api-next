@@ -1,3 +1,4 @@
+import type { Types } from "mongoose";
 import { ROLE_NAMES, ROLE_SIDES } from "../../role/enums/role.enum";
 import type { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
 import type { GAME_PLAY_ACTIONS } from "../enums/game-play.enum";
@@ -24,12 +25,12 @@ function getPlayersWithCurrentSide(players: Player[], side: ROLE_SIDES): Player[
   return players.filter(player => player.side.current === side);
 }
 
-function getPlayerWithId(players: Player[], id: string): Player | undefined {
-  return players.find(({ _id }) => _id === id);
+function getPlayerWithId(players: Player[], id: Types.ObjectId): Player | undefined {
+  return players.find(({ _id }) => _id.toString() === id.toString());
 }
 
-function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: string): GameAdditionalCard | undefined {
-  return cards?.find(({ _id }) => _id === id);
+function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Types.ObjectId): GameAdditionalCard | undefined {
+  return cards?.find(({ _id }) => _id.toString() === id.toString());
 }
 
 function areAllWerewolvesAlive(players: Player[]): boolean {
@@ -44,6 +45,14 @@ function areAllVillagersAlive(players: Player[]): boolean {
 
 function getPlayersWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player[] {
   return players.filter(player => doesPlayerHaveAttribute(player, attribute));
+}
+
+function getAlivePlayers(players: Player[]): Player[] {
+  return players.filter(player => player.isAlive);
+}
+
+function getLeftToCharmByPiedPiperPlayers(players: Player[]): Player[] {
+  return players.filter(player => player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.CHARMED) && player.role.current !== ROLE_NAMES.PIED_PIPER);
 }
 
 function getGroupOfPlayers(players: Player[], group: PLAYER_GROUPS): Player[] {
@@ -67,7 +76,7 @@ function isGameSourceGroup(source: GameSource): source is PLAYER_GROUPS {
   return Object.values(PLAYER_GROUPS).includes(source as PLAYER_GROUPS);
 }
 
-function getNonexistentPlayerId(players: Player[], candidateIds?: string[]): string | undefined {
+function getNonexistentPlayerId(players: Player[], candidateIds?: Types.ObjectId[]): Types.ObjectId | undefined {
   return candidateIds?.find(candidateId => !getPlayerWithId(players, candidateId));
 }
 
@@ -84,6 +93,11 @@ function getUpcomingGamePlayAction(upcomingActions: GamePlay[]): GAME_PLAY_ACTIO
   return upcomingGamePlay?.action;
 }
 
+function getUpcomingGamePlaySource(upcomingActions: GamePlay[]): GameSource | undefined {
+  const upcomingGamePlay = getUpcomingGamePlay(upcomingActions);
+  return upcomingGamePlay?.source;
+}
+
 export {
   getPlayerDtoWithRole,
   getPlayerWithCurrentRole,
@@ -94,6 +108,8 @@ export {
   areAllWerewolvesAlive,
   areAllVillagersAlive,
   getPlayersWithAttribute,
+  getAlivePlayers,
+  getLeftToCharmByPiedPiperPlayers,
   getGroupOfPlayers,
   isGameSourceRole,
   isGameSourceGroup,
@@ -101,4 +117,5 @@ export {
   getNonexistentPlayer,
   getUpcomingGamePlay,
   getUpcomingGamePlayAction,
+  getUpcomingGamePlaySource,
 };

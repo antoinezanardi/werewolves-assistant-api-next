@@ -4,9 +4,9 @@ import { Types } from "mongoose";
 
 @Injectable()
 class ValidateMongoId implements PipeTransform<string> {
-  public transform(value: string): string {
+  public transform(value: string): Types.ObjectId {
     if (Types.ObjectId.isValid(value)) {
-      return value;
+      return new Types.ObjectId(value);
     }
     throw new BadRequestException("Validation failed (Mongo ObjectId is expected)");
   }

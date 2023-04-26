@@ -14,4 +14,18 @@ function isPlayerAliveAndPowerful(player: Player): boolean {
   return player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS);
 }
 
-export { doesPlayerHaveAttribute, canPiedPiperCharm, isPlayerAliveAndPowerful };
+function isPlayerOnWerewolvesSide(player: Player): boolean {
+  return player.side.current === ROLE_SIDES.WEREWOLVES;
+}
+
+function isPlayerOnVillagersSide(player: Player): boolean {
+  return player.side.current === ROLE_SIDES.VILLAGERS;
+}
+
+export {
+  doesPlayerHaveAttribute,
+  canPiedPiperCharm,
+  isPlayerAliveAndPowerful,
+  isPlayerOnWerewolvesSide,
+  isPlayerOnVillagersSide,
+};

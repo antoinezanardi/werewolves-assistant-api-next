@@ -18,13 +18,12 @@ function getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayD
     const source = getPlayerWithId(game.players, vote.sourceId);
     const target = getPlayerWithId(game.players, vote.targetId);
     if (source === undefined) {
-      throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, vote.sourceId, RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
+      throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, vote.sourceId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
     }
     if (target === undefined) {
-      throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, vote.targetId, RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
+      throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, vote.targetId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
     }
-    console.log();
-    const voteWithRelations = plainToInstance(MakeGamePlayVoteWithRelationsDto, { ...vote, source, target });
+    const voteWithRelations = plainToInstance(MakeGamePlayVoteWithRelationsDto, { ...vote, source, target }, { enableCircularCheck: true });
     return [...acc, voteWithRelations];
   }, []);
 }
@@ -36,9 +35,9 @@ function getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePla
   return makeGamePlayDto.targets.reduce<MakeGamePlayTargetWithRelationsDto[]>((acc, target) => {
     const player = getPlayerWithId(game.players, target.playerId);
     if (player === undefined) {
-      throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, target.playerId, RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
+      throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, target.playerId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
     }
-    const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, { ...target, player });
+    const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, { ...target, player }, { enableCircularCheck: true });
     return [...acc, targetWithRelations];
   }, []);
 }
@@ -49,7 +48,7 @@ function getChosenCardFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayDto, game
   }
   const chosenCard = getAdditionalCardWithId(game.additionalCards, makeGamePlayDto.chosenCardId);
   if (chosenCard === undefined) {
-    throw new ResourceNotFoundError(API_RESOURCES.GAME_ADDITIONAL_CARDS, makeGamePlayDto.chosenCardId, RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
+    throw new ResourceNotFoundError(API_RESOURCES.GAME_ADDITIONAL_CARDS, makeGamePlayDto.chosenCardId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
   }
   return chosenCard;
 }

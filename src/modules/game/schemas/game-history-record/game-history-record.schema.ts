@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { SchemaTypes } from "mongoose";
+import { Type } from "class-transformer";
+import { SchemaTypes, Types } from "mongoose";
 import type { HydratedDocument } from "mongoose";
 import { gameHistoryRecordApiProperties, gameHistoryRecordFieldsSpecs } from "../../constants/game-history-record/game-history-record.constant";
 import { GAME_PHASES } from "../../enums/game.enum";
@@ -14,14 +15,16 @@ import { GameHistoryRecordPlay, GameHistoryRecordPlaySchema } from "./game-histo
 })
 class GameHistoryRecord {
   @ApiProperty(gameHistoryRecordApiProperties._id)
-  public _id: string;
+  @Type(() => String)
+  public _id: Types.ObjectId;
 
   @ApiProperty(gameHistoryRecordApiProperties.gameId)
   @Prop({
     type: SchemaTypes.ObjectId,
     required: gameHistoryRecordFieldsSpecs.gameId.required,
   })
-  public gameId: string;
+  @Type(() => String)
+  public gameId: Types.ObjectId;
 
   @ApiProperty(gameHistoryRecordApiProperties.turn)
   @Prop({

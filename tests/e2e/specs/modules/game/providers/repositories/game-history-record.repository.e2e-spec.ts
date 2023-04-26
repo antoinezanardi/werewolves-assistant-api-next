@@ -5,7 +5,7 @@ import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { instanceToPlain } from "class-transformer";
-import type { Model } from "mongoose";
+import type { Types, Model } from "mongoose";
 import type { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../src/modules/game/enums/game-history-record.enum";
 import type { WITCH_POTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
 import type { GAME_PHASES } from "../../../../../../../src/modules/game/enums/game.enum";
@@ -21,6 +21,7 @@ import { fastifyServerDefaultOptions } from "../../../../../../../src/server/con
 import { bulkCreateFakeGameHistoryRecords, createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
+import { createObjectIdFromString } from "../../../../../../helpers/mongoose/mongoose.helper";
 
 describe("Game History Record Repository", () => {
   let app: NestFastifyApplication;
@@ -57,7 +58,7 @@ describe("Game History Record Repository", () => {
     });
 
     it("should get 3 game history records when called with a specific gameId.", async() => {
-      const gameId = faker.database.mongodbObjectId();
+      const gameId = createObjectIdFromString(faker.database.mongodbObjectId());
       await populate(10, [createFakeGameHistoryRecord({ gameId }), createFakeGameHistoryRecord({ gameId }), createFakeGameHistoryRecord({ gameId })]);
       await expect(repository.find({ gameId })).resolves.toHaveLength(3);
     });
@@ -65,11 +66,6 @@ describe("Game History Record Repository", () => {
   
   describe("create", () => {
     it.each<{ toInsert: GameHistoryRecordToInsert; errorMessage: string; test: string }>([
-      {
-        toInsert: createFakeGameHistoryRecord({ gameId: "123" }),
-        errorMessage: "GameHistoryRecord validation failed: gameId: Cast to ObjectId failed",
-        test: "gameId is not a valid ObjectId",
-      },
       {
         toInsert: createFakeGameHistoryRecord({ turn: 0 }),
         errorMessage: "GameHistoryRecord validation failed: turn: Path `turn` (0) is less than minimum allowed value (1).",
@@ -120,7 +116,7 @@ describe("Game History Record Repository", () => {
       const gameHistoryRecord = await repository.create(gameHistoryRecordToInsert);
       expect(JSON.parse(JSON.stringify(gameHistoryRecord))).toMatchObject<GameHistoryRecord>({
         ...instanceToPlain(gameHistoryRecordToInsert, { excludeExtraneousValues: true }) as GameHistoryRecordToInsert,
-        _id: expect.any(String) as string,
+        _id: expect.any(String) as Types.ObjectId,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });

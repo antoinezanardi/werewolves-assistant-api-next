@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
+import type { Types } from "mongoose";
 import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
 import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../shared/error/enums/bad-resource-mutation-error.enum";
 import { BadResourceMutationError } from "../../../../shared/error/types/bad-resource-mutation-error.type";
@@ -41,26 +42,26 @@ export class GameService {
     return this.gameRepository.create(gameToCreate);
   }
 
-  public async getGameAndCheckPlayingStatus(gameId: string): Promise<Game> {
+  public async getGameAndCheckPlayingStatus(gameId: Types.ObjectId): Promise<Game> {
     const game = await this.gameRepository.findOne({ _id: gameId });
     if (game === null) {
-      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId);
+      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId.toString());
     } else if (game.status !== GAME_STATUSES.PLAYING) {
-      throw new BadResourceMutationError(API_RESOURCES.GAMES, game._id, BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
+      throw new BadResourceMutationError(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
     }
     return game;
   }
 
-  public async cancelGameById(gameId: string): Promise<Game> {
+  public async cancelGameById(gameId: Types.ObjectId): Promise<Game> {
     await this.getGameAndCheckPlayingStatus(gameId);
     const updatedGame = await this.gameRepository.updateOne({ _id: gameId }, { status: GAME_STATUSES.CANCELED });
     if (updatedGame === null) {
-      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId);
+      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId.toString());
     }
     return updatedGame;
   }
 
-  public async makeGamePlay(gameId: string, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
+  public async makeGamePlay(gameId: Types.ObjectId, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
     const game = await this.getGameAndCheckPlayingStatus(gameId);
     const makeGamePlayWithRelationsDto = createMakeGamePlayDtoWithRelations(makeGamePlayDto, game);
     await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(makeGamePlayWithRelationsDto, game);
