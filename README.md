@@ -5,7 +5,7 @@
 ---
 
 [![GitHub release](https://img.shields.io/github/release/antoinezanardi/werewolves-assistant-api-next.svg)](https://GitHub.com/antoinezanardi/werewolves-assistant-api-next/releases/)
-[![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventional%20commits-Æ1A7DBD?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+[![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventional%20commits-Æ1A7DBD?logo=semantic-release&color=1E7FBF)](https://github.com/semantic-release/semantic-release)
 [![GitHub license](https://img.shields.io/github/license/antoinezanardi/werewolves-assistant-api-next.svg)](https://github.com/antoinezanardi/https://img.shields.io/github/license/werewolves-assistant-api-next.svg/blob/main/LICENSE)
 ![NPM](https://img.shields.io/badge/-npm-black?style=flat-square&logoColor=white&logo=npm&color=CE0201)[![Known Vulnerabilities](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next/badge.svg?targetFile=package.json&style=flat-square)](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next?targetFile=package.json)
 
@@ -31,9 +31,10 @@
 3. 🔨 [Installation](#installation)
 4. 💯 [Tests](#tests)
 5. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-6. ✨ [Misc commands](#misc-commands)
-7. ©️ [License](#license)
-8. ❤️ [Contributors](#contributors)
+6. 📈 [Releases & Changelog](#versions)
+7. ✨ [Misc commands](#misc-commands)
+8. ©️ [License](#license)
+9. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
