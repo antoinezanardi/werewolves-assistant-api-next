@@ -1,11 +1,15 @@
+import { faker } from "@faker-js/faker";
 import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { areAllVillagersAlive, areAllWerewolvesAlive, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
+import { areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, getPlayerWithId, getUpcomingGamePlay, getUpcomingGamePlayAction, getUpcomingGamePlaySource, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
-import { createFakePlayerCharmedAttribute, createFakePlayerEatenAttribute, createFakePlayerInLoveAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeSeerPlayer, createFakeVillagerPlayer, createFakeWerewolfPlayer, createFakeWhiteWerewolfPlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers } from "../../../../../factories/game/schemas/player/player.schema.factory";
+import { bulkCreateFakeGameAdditionalCards } from "../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { bulkCreateFakeGamePlays } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakePlayerCharmedAttribute, createFakePlayerEatenByWerewolvesAttribute, createFakePlayerInLoveAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePiedPiperPlayer, createFakeSeerPlayer, createFakeVillagerPlayer, createFakeWerewolfPlayer, createFakeWhiteWerewolfPlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
+import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
 
 describe("Game Helper", () => {
   describe("getPlayerDtoWithRole", () => {
@@ -67,12 +71,12 @@ describe("Game Helper", () => {
 
   describe("getPlayersWithCurrentSide", () => {
     const players = bulkCreateFakePlayers(6, [
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS } },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS } },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES } },
+      createFakeWerewolfPlayer(),
+      createFakeWerewolfPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeWerewolfPlayer(),
+      createFakeWerewolfPlayer(),
     ]);
 
     it("should return werewolves when they have this side.", () => {
@@ -84,14 +88,42 @@ describe("Game Helper", () => {
     });
   });
 
+  describe("getPlayerWithId", () => {
+    it("should get player with specific id when called with this id.", () => {
+      const players = bulkCreateFakePlayers(6);
+      expect(getPlayerWithId(players, players[2]._id)).toStrictEqual(players[2]);
+    });
+    
+    it("should return undefined when called with unknown id.", () => {
+      const players = bulkCreateFakePlayers(6);
+      expect(getPlayerWithId(players, createObjectIdFromString(faker.database.mongodbObjectId()))).toBeUndefined();
+    });
+  });
+
+  describe("getAdditionalCardWithId", () => {
+    it("should get card with specific id when called with this id.", () => {
+      const cards = bulkCreateFakeGameAdditionalCards(6);
+      expect(getAdditionalCardWithId(cards, cards[3]._id)).toStrictEqual(cards[3]);
+    });
+
+    it("should return undefined when cards are undefined.", () => {
+      expect(getAdditionalCardWithId(undefined, createObjectIdFromString(faker.database.mongodbObjectId()))).toBeUndefined();
+    });
+
+    it("should return undefined when called with unknown id.", () => {
+      const cards = bulkCreateFakeGameAdditionalCards(6);
+      expect(getAdditionalCardWithId(cards, createObjectIdFromString(faker.database.mongodbObjectId()))).toBeUndefined();
+    });
+  });
+
   describe("areAllWerewolvesAlive", () => {
     const players = bulkCreateFakePlayers(6, [
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
-      { side: { current: ROLE_SIDES.VILLAGERS, original: ROLE_SIDES.VILLAGERS }, isAlive: true },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
-      { side: { current: ROLE_SIDES.WEREWOLVES, original: ROLE_SIDES.WEREWOLVES }, isAlive: true },
+      createFakeWerewolfPlayer(),
+      createFakeWerewolfPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeVillagerPlayer(),
+      createFakeWerewolfPlayer(),
+      createFakeWerewolfPlayer(),
     ]);
 
     it("should return false when empty array is provided.", () => {
@@ -137,7 +169,7 @@ describe("Game Helper", () => {
       { attributes: [createFakePlayerCharmedAttribute()] },
       { attributes: [] },
       { attributes: [createFakePlayerCharmedAttribute()] },
-      { attributes: [createFakePlayerEatenAttribute()] },
+      { attributes: [createFakePlayerEatenByWerewolvesAttribute()] },
     ]);
 
     it("should return players when they have the attribute.", () => {
@@ -149,13 +181,38 @@ describe("Game Helper", () => {
     });
   });
 
+  describe("getAlivePlayers", () => {
+    it("should get all alive players when called.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfPlayer(),
+        createFakeVillagerPlayer(),
+        createFakeVillagerPlayer({ isAlive: false }),
+        createFakeWerewolfPlayer(),
+      ]);
+      expect(getAlivePlayers(players)).toStrictEqual([players[0], players[1], players[3]]);
+    });
+  });
+
+  describe("getLeftToCharmByPiedPiperPlayers", () => {
+    it("should get left to charm by pied piper players when called.", () => {
+      const players = bulkCreateFakePlayers(5, [
+        createFakeWerewolfPlayer({ attributes: [createFakePlayerCharmedAttribute()] }),
+        createFakePiedPiperPlayer(),
+        createFakeVillagerPlayer(),
+        createFakeVillagerPlayer({ isAlive: false, attributes: [createFakePlayerCharmedAttribute()] }),
+        createFakeWerewolfPlayer(),
+      ]);
+      expect(getLeftToCharmByPiedPiperPlayers(players)).toStrictEqual([players[2], players[4]]);
+    });
+  });
+
   describe("getGroupOfPlayers", () => {
     const players = bulkCreateFakePlayers(6, [
       createFakeVillagerPlayer({ attributes: [createFakePlayerCharmedAttribute()] }),
       createFakeWerewolfPlayer(),
       createFakeSeerPlayer({ attributes: [createFakePlayerInLoveAttribute()] }),
       createFakeWhiteWerewolfPlayer({ attributes: [createFakePlayerCharmedAttribute()] }),
-      createFakeVillagerPlayer({ attributes: [createFakePlayerEatenAttribute()] }),
+      createFakeVillagerPlayer({ attributes: [createFakePlayerEatenByWerewolvesAttribute()] }),
       createFakeWerewolfPlayer({ attributes: [createFakePlayerInLoveAttribute()] }),
     ]);
 
@@ -197,6 +254,65 @@ describe("Game Helper", () => {
 
     it("should return false when source is role.", () => {
       expect(isGameSourceGroup(ROLE_NAMES.SEER)).toBe(false);
+    });
+  });
+
+  describe("getNonexistentPlayerId", () => {
+    it("should return undefined when all candidate ids are found.", () => {
+      const players = bulkCreateFakePlayers(6);
+      expect(getNonexistentPlayerId(players, players.map(player => player._id))).toBeUndefined();
+    });
+
+    it("should return unknown id when one candidate id is not found.", () => {
+      const players = bulkCreateFakePlayers(6);
+      const unknownId = createObjectIdFromString(faker.database.mongodbObjectId());
+      expect(getNonexistentPlayerId(players, [...players.map(player => player._id), unknownId])).toStrictEqual(unknownId);
+    });
+  });
+
+  describe("getNonexistentPlayer", () => {
+    it("should return undefined when all candidate ids are found.", () => {
+      const players = bulkCreateFakePlayers(6);
+      expect(getNonexistentPlayer(players, players)).toBeUndefined();
+    });
+
+    it("should return unknown id when one candidate id is not found.", () => {
+      const players = bulkCreateFakePlayers(6);
+      const otherPlayer = createFakePlayer();
+      expect(getNonexistentPlayer(players, [...players, otherPlayer])).toStrictEqual(otherPlayer);
+    });
+  });
+
+  describe("getUpcomingGamePlay", () => {
+    it("should return undefined when upcoming game plays are empty.", () => {
+      expect(getUpcomingGamePlay([])).toBeUndefined();
+    });
+
+    it("should return upcoming game play when called.", () => {
+      const upcomingGamePlays = bulkCreateFakeGamePlays(4);
+      expect(getUpcomingGamePlay(upcomingGamePlays)).toStrictEqual(upcomingGamePlays[0]);
+    });
+  });
+
+  describe("getUpcomingGamePlayAction", () => {
+    it("should return undefined when upcoming game plays are empty.", () => {
+      expect(getUpcomingGamePlayAction([])).toBeUndefined();
+    });
+
+    it("should return upcoming game play action when called.", () => {
+      const upcomingGamePlays = bulkCreateFakeGamePlays(4);
+      expect(getUpcomingGamePlayAction(upcomingGamePlays)).toStrictEqual(upcomingGamePlays[0].action);
+    });
+  });
+
+  describe("getUpcomingGamePlaySource", () => {
+    it("should return undefined when upcoming game plays are empty.", () => {
+      expect(getUpcomingGamePlaySource([])).toBeUndefined();
+    });
+
+    it("should return upcoming game play action when called.", () => {
+      const upcomingGamePlays = bulkCreateFakeGamePlays(4);
+      expect(getUpcomingGamePlaySource(upcomingGamePlays)).toStrictEqual(upcomingGamePlays[0].source);
     });
   });
 });

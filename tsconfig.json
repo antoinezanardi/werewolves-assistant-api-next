@@ -6,7 +6,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2022",
+    "target": "esnext",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
@@ -23,6 +23,7 @@
   "files": ["node_modules/jest-extended/types/index.d.ts"],
   "include": [
     ".eslintrc.js",
+    ".releaserc.js",
     "**/*.js",
     "**/*.ts"
   ]

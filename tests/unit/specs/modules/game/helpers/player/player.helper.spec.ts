@@ -1,9 +1,9 @@
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../src/modules/game/enums/player.enum";
-import { canPiedPiperCharm, doesPlayerHaveAttribute, isPlayerAliveAndPowerful } from "../../../../../../src/modules/game/helpers/player/player.helper";
-import { ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
-import { createFakePlayerEatenAttribute, createFakePlayerPowerlessAttribute, createFakePlayerSeenAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePiedPiperPlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer, createFakePlayerSide } from "../../../../../factories/game/schemas/player/player.schema.factory";
+import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../src/modules/game/enums/player.enum";
+import { canPiedPiperCharm, doesPlayerHaveAttribute, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "../../../../../../../src/modules/game/helpers/player/player.helper";
+import { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
+import { createFakePlayerEatenByWerewolvesAttribute, createFakePlayerPowerlessAttribute, createFakePlayerSeenAttribute } from "../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePiedPiperPlayer, createFakeWhiteWerewolfPlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePlayer, createFakePlayerSide } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Player Helper", () => {
   describe("doesPlayerHaveAttribute", () => {
@@ -13,7 +13,7 @@ describe("Player Helper", () => {
     });
 
     it("should return false when player doesn't have the attribute.", () => {
-      const player = createFakePlayer({ attributes: [createFakePlayerEatenAttribute()] });
+      const player = createFakePlayer({ attributes: [createFakePlayerEatenByWerewolvesAttribute()] });
       expect(doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.SEEN)).toBe(false);
     });
 
@@ -64,6 +64,26 @@ describe("Player Helper", () => {
     it("should return true when player is alive and powerful.", () => {
       const player = createFakePlayer({ isAlive: true, attributes: [] });
       expect(isPlayerAliveAndPowerful(player)).toBe(true);
+    });
+  });
+
+  describe("isPlayerOnWerewolvesSide", () => {
+    it("should return false when player is on villagers side.", () => {
+      expect(isPlayerOnWerewolvesSide(createFakePiedPiperPlayer())).toBe(false);
+    });
+
+    it("should return true when player is on werewolves side.", () => {
+      expect(isPlayerOnWerewolvesSide(createFakeWhiteWerewolfPlayer())).toBe(true);
+    });
+  });
+
+  describe("isPlayerOnVillagersSide", () => {
+    it("should return true when player is on villagers side.", () => {
+      expect(isPlayerOnVillagersSide(createFakePiedPiperPlayer())).toBe(true);
+    });
+
+    it("should return false when player is on werewolves side.", () => {
+      expect(isPlayerOnVillagersSide(createFakeWhiteWerewolfPlayer())).toBe(false);
     });
   });
 });

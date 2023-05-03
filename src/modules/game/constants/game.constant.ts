@@ -43,6 +43,7 @@ const gameApiProperties: Record<keyof Game, ApiPropertyOptions> = Object.freeze(
   },
   upcomingPlays: { description: "Queue of upcoming plays that needs to be performed to continue the game" },
   options: { description: "Game's options" },
+  additionalCards: { description: "Game's additional cards" },
   createdAt: { description: "When the game was created" },
   updatedAt: { description: "When the game was updated" },
 });

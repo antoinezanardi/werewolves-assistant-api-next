@@ -78,4 +78,8 @@ function createFakeGameOptions(obj: Partial<GameOptions> = {}): GameOptions {
   };
 }
 
-export { createFakeGameOptions };
+export {
+  createFakePiedPiperGameOptions,
+  createFakeRolesGameOptions,
+  createFakeGameOptions,
+};

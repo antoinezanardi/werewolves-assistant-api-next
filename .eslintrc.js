@@ -6,6 +6,7 @@ const { decoratorFilesOverride } = require("./config/eslint/rules/overrides/deco
 const { dtoFilesOverride } = require("./config/eslint/rules/overrides/dto-files");
 const { eslintConfigFilesOverride } = require("./config/eslint/rules/overrides/eslint-config-files");
 const { factoryFilesOverride } = require("./config/eslint/rules/overrides/factory-files");
+const { javascriptFilesOverride } = require("./config/eslint/rules/overrides/javascript-files");
 const { pipeFilesOverride } = require("./config/eslint/rules/overrides/pipe-files");
 const { schemaFilesOverride } = require("./config/eslint/rules/overrides/schema-files");
 const { serviceFilesOverride } = require("./config/eslint/rules/overrides/service-files");
@@ -22,7 +23,7 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   extends: ["plugin:@typescript-eslint/recommended"],
   plugins: ["@typescript-eslint", "import", "jest"],
-  ignorePatterns: ["node_modules/", "dist/"],
+  ignorePatterns: ["node_modules/", "dist/", "!.releaserc.js"],
   parserOptions: {
     parser: "@typescript-eslint/parser",
     ecmaVersion: 2022,
@@ -37,6 +38,7 @@ module.exports = {
   overrides: [
     eslintConfigFilesOverride,
     configFilesOverride,
+    javascriptFilesOverride,
     testFilesOverride,
     dtoFilesOverride,
     factoryFilesOverride,

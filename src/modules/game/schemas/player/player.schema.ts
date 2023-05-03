@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { Types } from "mongoose";
 import { playerApiProperties, playersFieldsSpecs } from "../../constants/player/player.constant";
 import type { PlayerAttribute } from "./player-attribute/player-attribute.schema";
 import { PlayerAttributeSchema } from "./player-attribute/player-attribute.schema";
@@ -10,7 +12,8 @@ import { PlayerSide, PlayerSideSchema } from "./player-side.schema";
 @Schema({ versionKey: false })
 class Player {
   @ApiProperty(playerApiProperties._id)
-  public _id: string;
+  @Type(() => String)
+  public _id: Types.ObjectId;
 
   @ApiProperty(playerApiProperties.name)
   @Prop({

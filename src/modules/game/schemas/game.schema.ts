@@ -1,8 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { Types } from "mongoose";
 import type { HydratedDocument } from "mongoose";
 import { gameApiProperties, gameFieldsSpecs } from "../constants/game.constant";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
+import type { GameAdditionalCard } from "./game-additional-card/game-additional-card.schema";
+import { GameAdditionalCardSchema } from "./game-additional-card/game-additional-card.schema";
 import { GameOptions, GameOptionsSchema } from "./game-options/game-options.schema";
 import type { GamePlay } from "./game-play.schema";
 import { GamePlaySchema } from "./game-play.schema";
@@ -15,7 +19,8 @@ import type { Player } from "./player/player.schema";
 })
 class Game {
   @ApiProperty(gameApiProperties._id)
-  public _id: string;
+  @Type(() => String)
+  public _id: Types.ObjectId;
 
   @ApiProperty(gameApiProperties.turn)
   @Prop({ default: gameFieldsSpecs.turn.default })
@@ -53,6 +58,10 @@ class Game {
     default: () => ({}),
   })
   public options: GameOptions;
+  
+  @ApiProperty(gameApiProperties.additionalCards)
+  @Prop({ type: [GameAdditionalCardSchema], default: undefined })
+  public additionalCards?: GameAdditionalCard[];
 
   @ApiProperty(gameApiProperties.createdAt)
   public createdAt: Date;

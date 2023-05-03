@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import { ROLE_NAMES } from "../../../role/enums/role.enum";
-import { gamePlaysNightOrder, sheriffElectionPlay } from "../../constants/game-play.constant";
-import { CreateGamePlayerDto } from "../../dto/create-game/create-game-player/create-game-player.dto";
-import { CreateGameDto } from "../../dto/create-game/create-game.dto";
-import type { GAME_PHASES } from "../../enums/game.enum";
-import { PLAYER_GROUPS } from "../../enums/player.enum";
-import { areAllWerewolvesAlive, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../helpers/game.helper";
-import { canPiedPiperCharm, isPlayerAliveAndPowerful } from "../../helpers/player/player.helper";
-import type { SheriffGameOptions } from "../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
-import type { GamePlay } from "../../schemas/game-play.schema";
-import type { Game } from "../../schemas/game.schema";
-import type { GameSource } from "../../types/game.type";
+import { ROLE_NAMES } from "../../../../role/enums/role.enum";
+import { gamePlaysNightOrder, sheriffElectionPlay } from "../../../constants/game-play.constant";
+import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
+import { CreateGameDto } from "../../../dto/create-game/create-game.dto";
+import type { GAME_PHASES } from "../../../enums/game.enum";
+import { PLAYER_GROUPS } from "../../../enums/player.enum";
+import { areAllWerewolvesAlive, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
+import { canPiedPiperCharm, isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
+import type { SheriffGameOptions } from "../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
+import type { GamePlay } from "../../../schemas/game-play.schema";
+import type { Game } from "../../../schemas/game.schema";
+import type { GameSource } from "../../../types/game.type";
 
 @Injectable()
 export class GamePlaysManagerService {
