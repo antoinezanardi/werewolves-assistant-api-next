@@ -1,8 +1,14 @@
 {
   "name": "werewolves-assistant-api-next",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "description": "Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.",
-  "keywords": ["nest", "werewolves", "assistant", "mongoose", "typescript"],
+  "keywords": [
+    "nest",
+    "werewolves",
+    "assistant",
+    "mongoose",
+    "typescript"
+  ],
   "scripts": {
     "prepare": "husky install",
     "prebuild": "rimraf dist",
@@ -39,7 +45,10 @@
     "type": "git",
     "url": "git+https://github.com/antoinezanardi/werewolves-assistant-api-next.git"
   },
-  "os": ["darwin", "linux"],
+  "os": [
+    "darwin",
+    "linux"
+  ],
   "author": {
     "name": "Antoine ZANARDI",
     "email": "antoine.zanardi@epitech.eu",
