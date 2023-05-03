@@ -21,10 +21,18 @@ function createFakePlayerSeenAttribute(obj: Partial<PlayerAttribute> = {}): Play
   });
 }
 
-function createFakePlayerEatenAttribute(obj: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createFakePlayerEatenByWerewolvesAttribute(obj: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.EATEN,
     source: PLAYER_GROUPS.WEREWOLVES,
+    ...obj,
+  });
+}
+
+function createFakePlayerEatenByBigBadWolfAttribute(obj: Partial<PlayerAttribute> = {}): PlayerAttribute {
+  return createFakePlayerAttribute({
+    name: PLAYER_ATTRIBUTE_NAMES.EATEN,
+    source: ROLE_NAMES.BIG_BAD_WOLF,
     ...obj,
   });
 }
@@ -134,7 +142,8 @@ function bulkCreateFakePlayerAttributes(length: number, attributes: Partial<Play
 export {
   createFakePlayerSheriffAttribute,
   createFakePlayerSeenAttribute,
-  createFakePlayerEatenAttribute,
+  createFakePlayerEatenByWerewolvesAttribute,
+  createFakePlayerEatenByBigBadWolfAttribute,
   createFakePlayerDrankLifePotionAttribute,
   createFakePlayerDrankDeathPotionAttribute,
   createFakePlayerProtectedAttribute,

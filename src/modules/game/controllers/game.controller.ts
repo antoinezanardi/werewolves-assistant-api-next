@@ -1,11 +1,13 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Types } from "mongoose";
 import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
 import { ValidateMongoId } from "../../../shared/api/pipes/validate-mongo-id.pipe";
 import { getControllerRouteError } from "../../../shared/error/helpers/error.helper";
 import { CreateGameDto } from "../dto/create-game/create-game.dto";
 import { GetGameRandomCompositionPlayerResponseDto } from "../dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import { GetGameRandomCompositionDto } from "../dto/get-game-random-composition/get-game-random-composition.dto";
+import { MakeGamePlayDto } from "../dto/make-game-play/make-game-play.dto";
 import { GAME_STATUSES } from "../enums/game.enum";
 import { GameRandomCompositionService } from "../providers/services/game-random-composition.service";
 import { GameService } from "../providers/services/game.service";
@@ -59,9 +61,20 @@ export class GameController {
   @ApiGameIdParam()
   @ApiResponse({ status: HttpStatus.OK, type: Game, description: `Game's status will be set to ${GAME_STATUSES.CANCELED}` })
   @ApiGameNotFoundResponse()
-  public async cancelGame(@Param("id", ValidateMongoId) id: string): Promise<Game> {
+  public async cancelGame(@Param("id", ValidateMongoId) id: Types.ObjectId): Promise<Game> {
     try {
       return await this.gameService.cancelGameById(id);
+    } catch (err) {
+      throw getControllerRouteError(err);
+    }
+  }
+
+  @Post(":id/play")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the \`${GAME_STATUSES.PLAYING}\` status. Body parameters fields are required or optional based on the upcoming game play.` })
+  public async makeGamePlay(@Param("id", ValidateMongoId) id: Types.ObjectId, @Body() makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
+    try {
+      return await this.gameService.makeGamePlay(id, makeGamePlayDto);
     } catch (err) {
       throw getControllerRouteError(err);
     }

@@ -2,14 +2,14 @@ import { plainToInstance } from "class-transformer";
 import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "../enums/role.enum";
 import { Role } from "../types/role.type";
 
-const defaultWerewolfRole: Role = Object.freeze({
+const defaultWerewolfRole: Readonly<Role> = Object.freeze({
   name: ROLE_NAMES.WEREWOLF,
   side: ROLE_SIDES.WEREWOLVES,
   type: ROLE_TYPES.WEREWOLF,
   maxInGame: 99,
 });
 
-const werewolvesRoles: readonly Role[] = plainToInstance(Role, [
+const werewolvesRoles: Readonly<Role[]> = plainToInstance(Role, [
   defaultWerewolfRole,
   {
     name: ROLE_NAMES.BIG_BAD_WOLF,
@@ -34,14 +34,14 @@ const werewolvesRoles: readonly Role[] = plainToInstance(Role, [
   },
 ]).map(role => Object.freeze(role));
 
-const defaultVillagerRole: Role = Object.freeze({
+const defaultVillagerRole: Readonly<Role> = Object.freeze({
   name: ROLE_NAMES.VILLAGER,
   side: ROLE_SIDES.VILLAGERS,
   type: ROLE_TYPES.VILLAGER,
   maxInGame: 99,
 });
 
-const villagerRoles: readonly Role[] = plainToInstance(Role, [
+const villagerRoles: Readonly<Role[]> = plainToInstance(Role, [
   defaultVillagerRole,
   {
     name: ROLE_NAMES.VILLAGER_VILLAGER,
@@ -183,7 +183,7 @@ const villagerRoles: readonly Role[] = plainToInstance(Role, [
   },
 ]).map(role => Object.freeze(role));
 
-const roles: readonly Role[] = plainToInstance(Role, [
+const roles: Readonly<Role[]> = plainToInstance(Role, [
   ...werewolvesRoles,
   ...villagerRoles,
 ]).map(role => Object.freeze(role));

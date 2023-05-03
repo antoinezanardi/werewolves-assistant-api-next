@@ -3,6 +3,7 @@ const { OFF, ERROR } = require("../../constants");
 const testFilesOverride = Object.freeze({
   files: ["*.e2e-spec.ts", "*.spec.ts"],
   rules: {
+    "import/max-dependencies": OFF,
     "max-len": OFF,
     "max-lines-per-function": OFF,
     "@typescript-eslint/init-declarations": OFF,
@@ -12,7 +13,7 @@ const testFilesOverride = Object.freeze({
     // - Supported Rules (https://github.com/jest-community/eslint-plugin-jest#rules)
     "jest/consistent-test-it": ERROR,
     "jest/expect-expect": ERROR,
-    "jest/max-expects": ERROR,
+    "jest/max-expects": [ERROR, { max: 15 }],
     "jest/max-nested-describe": ERROR,
     "jest/no-alias-methods": ERROR,
     "jest/no-commented-out-tests": ERROR,

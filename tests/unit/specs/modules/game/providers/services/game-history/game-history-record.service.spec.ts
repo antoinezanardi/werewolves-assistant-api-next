@@ -1,17 +1,19 @@
+import { faker } from "@faker-js/faker";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../src/modules/game/enums/player.enum";
-import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
-import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
-import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history-record.service";
-import type { GameHistoryRecordPlay } from "../../../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import type { GameHistoryRecordToInsert } from "../../../../../../../src/modules/game/types/game-history-record.type";
-import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGameHistoryRecordPlay } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
-import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
-import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
+import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../../src/modules/game/enums/player.enum";
+import { GameHistoryRecordRepository } from "../../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
+import { GameRepository } from "../../../../../../../../src/modules/game/providers/repositories/game.repository";
+import { GameHistoryRecordService } from "../../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
+import type { GameHistoryRecordPlay } from "../../../../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import type { GameHistoryRecordToInsert } from "../../../../../../../../src/modules/game/types/game-history-record.type";
+import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { createFakeGameHistoryRecordPlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
+import { createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
+import { createFakeGameHistoryRecordToInsert } from "../../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
+import { createObjectIdFromString } from "../../../../../../../helpers/mongoose/mongoose.helper";
 
 describe("Game History Record Service", () => {
   let service: GameHistoryRecordService;
@@ -44,8 +46,9 @@ describe("Game History Record Service", () => {
 
   describe("getGameHistoryRecordsByGameId", () => {
     it("should get all game history records when called with specific id.", async() => {
-      await service.getGameHistoryRecordsByGameId("123");
-      expect(repository.find).toHaveBeenCalledWith({ gameId: "123" });
+      const gameId = createObjectIdFromString(faker.database.mongodbObjectId());
+      await service.getGameHistoryRecordsByGameId(gameId);
+      expect(repository.find).toHaveBeenCalledWith({ gameId });
     });
   });
 
@@ -59,7 +62,7 @@ describe("Game History Record Service", () => {
       {
         play: createFakeGameHistoryRecordPlay({ source: { name: PLAYER_ATTRIBUTE_NAMES.SHERIFF, players: [fakePlayer] } }),
         test: "a source is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id}" not found : Game Play - Player in \`source.players\` is not in the game players`,
+        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`source.players\` is not in the game players`,
       },
       {
         play: createFakeGameHistoryRecordPlay({
@@ -70,7 +73,7 @@ describe("Game History Record Service", () => {
           targets: [{ player: fakePlayer }],
         }),
         test: "a target is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id}" not found : Game Play - Player in \`targets.player\` is not in the game players`,
+        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`targets.player\` is not in the game players`,
       },
       {
         play: createFakeGameHistoryRecordPlay({
@@ -81,7 +84,7 @@ describe("Game History Record Service", () => {
           votes: [{ source: fakePlayer, target: fakeGame.players[0] }],
         }),
         test: "a vote source is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id}" not found : Game Play - Player in \`votes.source\` is not in the game players`,
+        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`votes.source\` is not in the game players`,
       },
       {
         play: createFakeGameHistoryRecordPlay({
@@ -92,7 +95,7 @@ describe("Game History Record Service", () => {
           votes: [{ target: fakePlayer, source: fakeGame.players[0] }],
         }),
         test: "a vote target is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id}" not found : Game Play - Player in \`votes.target\` is not in the game players`,
+        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`votes.target\` is not in the game players`,
       },
       {
         play: createFakeGameHistoryRecordPlay({
@@ -103,7 +106,7 @@ describe("Game History Record Service", () => {
           chosenCard: fakeCard,
         }),
         test: "chosen card is not in the game",
-        errorMessage: `Additional card with id "${fakeCard._id}" not found : Game Play - Chosen card is not in the game additional cards`,
+        errorMessage: `Additional card with id "${fakeCard._id.toString()}" not found : Game Play - Chosen card is not in the game additional cards`,
       },
     ])("should throw resource not found error when $test [#$#].", ({ play, errorMessage }) => {
       expect(() => service.checkGameHistoryRecordToInsertPlayData(play, fakeGame)).toThrow(errorMessage);
@@ -124,32 +127,31 @@ describe("Game History Record Service", () => {
   });
 
   describe("checkGameHistoryRecordToInsertData", () => {
-    const existingId = "good-id";
+    const existingId = createObjectIdFromString(faker.database.mongodbObjectId());
     const existingGame = createFakeGame();
-    let fakePlayer = createFakePlayer();
-    const unknownId = "bad-id";
+    const fakePlayer = createFakePlayer();
+    const unknownId = createObjectIdFromString(faker.database.mongodbObjectId());
 
     beforeEach(() => {
-      when(gameRepositoryMock.findOne).calledWith({ _id: unknownId }).mockResolvedValue(null);
-      when(gameRepositoryMock.findOne).calledWith({ _id: existingId }).mockResolvedValue(existingGame);
-      fakePlayer = createFakePlayer();
+      when(gameRepositoryMock.findOne).calledWith({ _id: unknownId.toJSON() }).mockResolvedValue(null);
+      when(gameRepositoryMock.findOne).calledWith({ _id: existingId.toJSON() }).mockResolvedValue(existingGame);
     });
 
     it.each<{ gameHistoryRecord: GameHistoryRecordToInsert; test: string; errorMessage: string }>([
       {
         gameHistoryRecord: createFakeGameHistoryRecordToInsert({ gameId: unknownId }),
         test: "game is not found with specified gameId",
-        errorMessage: `Game with id "${unknownId}" not found : Game Play - Game Id is unknown in database`,
+        errorMessage: `Game with id "${unknownId.toString()}" not found : Game Play - Game Id is unknown in database`,
       },
       {
         gameHistoryRecord: createFakeGameHistoryRecordToInsert({ gameId: existingId, revealedPlayers: [fakePlayer] }),
         test: "a revealed player is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id}" not found : Game Play - Player in \`revealedPlayers\` is not in the game players`,
+        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`revealedPlayers\` is not in the game players`,
       },
       {
         gameHistoryRecord: createFakeGameHistoryRecordToInsert({ gameId: existingId, deadPlayers: [fakePlayer] }),
         test: "a dead player is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id}" not found : Game Play - Player in \`deadPlayers\` is not in the game players`,
+        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`deadPlayers\` is not in the game players`,
       },
     ])("should throw resource not found error when $test [#$#].", async({ gameHistoryRecord, errorMessage }) => {
       await expect(service.checkGameHistoryRecordToInsertData(gameHistoryRecord)).rejects.toThrow(errorMessage);
@@ -170,7 +172,7 @@ describe("Game History Record Service", () => {
     it("should create game history record when called with valid data.", async() => {
       jest.spyOn(service, "checkGameHistoryRecordToInsertData").mockImplementation();
       const validPlay = createFakeGameHistoryRecordToInsert({
-        gameId: "123",
+        gameId: createObjectIdFromString(faker.database.mongodbObjectId()),
         play: createFakeGameHistoryRecordPlay(),
       });
       await service.createGameHistoryRecord(validPlay);

@@ -2,7 +2,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ROLE_NAMES } from "../../../role/enums/role.enum";
 import type { GameAdditionalCard } from "../../schemas/game-additional-card/game-additional-card.schema";
 
-const gameAdditionalCardFieldsSpecs = Object.freeze<Record<keyof GameAdditionalCard, ApiPropertyOptions>>({
+const gameAdditionalCardFieldsSpecs: Readonly<Record<keyof GameAdditionalCard, ApiPropertyOptions>> = Object.freeze({
   _id: { required: true },
   roleName: {
     required: true,
@@ -18,7 +18,7 @@ const gameAdditionalCardFieldsSpecs = Object.freeze<Record<keyof GameAdditionalC
   },
 });
 
-const gameAdditionalCardApiProperties = Object.freeze<Record<keyof GameAdditionalCard, ApiPropertyOptions>>({
+const gameAdditionalCardApiProperties: Readonly<Record<keyof GameAdditionalCard, ApiPropertyOptions>> = Object.freeze({
   _id: {
     description: "Game additional card Mongo Object Id",
     ...gameAdditionalCardFieldsSpecs._id,

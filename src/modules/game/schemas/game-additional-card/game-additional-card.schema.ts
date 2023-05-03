@@ -1,12 +1,15 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { Types } from "mongoose";
 import { ROLE_NAMES } from "../../../role/enums/role.enum";
 import { gameAdditionalCardApiProperties, gameAdditionalCardFieldsSpecs } from "../../constants/game-additional-card/game-additional-card.constant";
 
 @Schema({ versionKey: false })
 class GameAdditionalCard {
   @ApiProperty(gameAdditionalCardApiProperties._id)
-  public _id: string;
+  @Type(() => String)
+  public _id: Types.ObjectId;
   
   @ApiProperty(gameAdditionalCardApiProperties.roleName)
   @Prop({
