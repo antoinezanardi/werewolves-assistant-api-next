@@ -8,6 +8,7 @@ import { ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
+import { bulkCreateFakePlayers } from "../../../../../factories/game/schemas/player/player.schema.factory";
 import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
 
 describe("Game Play Helper", () => {
@@ -19,7 +20,7 @@ describe("Game Play Helper", () => {
     });
 
     it("should throw error when votes contains one unknown source.", () => {
-      const game = createFakeGame();
+      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
       const fakePlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
@@ -31,7 +32,7 @@ describe("Game Play Helper", () => {
     });
 
     it("should throw error when votes contains one unknown target.", () => {
-      const game = createFakeGame();
+      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
       const fakePlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
@@ -43,7 +44,7 @@ describe("Game Play Helper", () => {
     });
 
     it("should fill votes with game players when called.", () => {
-      const game = createFakeGame();
+      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
           { sourceId: game.players[0]._id, targetId: game.players[1]._id },
@@ -65,7 +66,7 @@ describe("Game Play Helper", () => {
     });
 
     it("should throw error when targets contains one unknown player.", () => {
-      const game = createFakeGame();
+      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
       const fakePlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         targets: [
@@ -78,7 +79,7 @@ describe("Game Play Helper", () => {
     });
 
     it("should fill targets with game players when called.", () => {
-      const game = createFakeGame();
+      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         targets: [
           { playerId: game.players[0]._id, isInfected: true },
@@ -117,7 +118,7 @@ describe("Game Play Helper", () => {
 
   describe("createMakeGamePlayDtoWithRelations", () => {
     it("should return same dto with relations when called.", () => {
-      const game = createFakeGame({ additionalCards: bulkCreateFakeGameAdditionalCards(4) });
+      const game = createFakeGame({ players: bulkCreateFakePlayers(4), additionalCards: bulkCreateFakeGameAdditionalCards(4) });
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
           { sourceId: game.players[0]._id, targetId: game.players[1]._id },

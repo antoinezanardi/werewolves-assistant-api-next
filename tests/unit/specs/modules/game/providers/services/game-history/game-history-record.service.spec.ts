@@ -11,7 +11,7 @@ import type { GameHistoryRecordToInsert } from "../../../../../../../../src/modu
 import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecordPlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
 import { createObjectIdFromString } from "../../../../../../../helpers/mongoose/mongoose.helper";
 
@@ -54,7 +54,7 @@ describe("Game History Record Service", () => {
 
   describe("checkGameHistoryRecordToInsertPlayData", () => {
     const fakeGameAdditionalCards = bulkCreateFakeGameAdditionalCards(3);
-    const fakeGame = createFakeGame({ additionalCards: fakeGameAdditionalCards });
+    const fakeGame = createFakeGame({ players: bulkCreateFakePlayers(4), additionalCards: fakeGameAdditionalCards });
     const fakePlayer = createFakePlayer();
     const fakeCard = createFakeGameAdditionalCard();
 

@@ -22,7 +22,7 @@ class CreateGamePlayerDto extends IntersectionType(
   @Type(() => CreateGamePlayerSideDto)
   @ValidateNested()
   @Transform(playerSideTransformer)
-  public side: CreateGamePlayerSideDto;
+  public side: CreateGamePlayerSideDto = {};
 
   @ApiProperty({ description: "Player's unique position among all players. Maximum is `players.length - 1`. Either all players position must be set or none of them. In that last case, it will be generated automatically" })
   public position?: number;

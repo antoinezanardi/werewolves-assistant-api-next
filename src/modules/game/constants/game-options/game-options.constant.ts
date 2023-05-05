@@ -3,7 +3,7 @@ import { GAME_PHASES } from "../../enums/game.enum";
 import type { GameOptions } from "../../schemas/game-options/game-options.schema";
 
 const defaultGameOptions: GameOptions = Object.freeze({
-  composition: { isHidden: true },
+  composition: { isHidden: false },
   roles: {
     areRevealedOnDeath: true,
     sheriff: {

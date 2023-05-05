@@ -5,115 +5,115 @@ import { villagerRoles } from "../../../../../src/modules/role/constants/role.co
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
 import { createFakePlayer } from "./player.schema.factory";
 
-function createFakeWerewolfPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.WEREWOLF, obj);
+function createFakeWerewolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.WEREWOLF, player, override);
 }
 
-function createFakeBigBadWolfPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.BIG_BAD_WOLF, obj);
+function createFakeBigBadWolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.BIG_BAD_WOLF, player, override);
 }
 
-function createFakeVileFatherOfWolvesPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.VILE_FATHER_OF_WOLVES, obj);
+function createFakeVileFatherOfWolvesAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.VILE_FATHER_OF_WOLVES, player, override);
 }
 
-function createFakeWhiteWerewolfPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.WHITE_WEREWOLF, obj);
+function createFakeWhiteWerewolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.WHITE_WEREWOLF, player, override);
 }
 
-function createFakeVillagerPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.VILLAGER, obj);
+function createFakeVillagerAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.VILLAGER, player, override);
 }
 
-function createFakeVillagerVillagerPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.VILLAGER_VILLAGER, obj);
+function createFakeVillagerVillagerAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.VILLAGER_VILLAGER, player, override);
 }
 
-function createFakeSeerPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.SEER, obj);
+function createFakeSeerAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.SEER, player, override);
 }
 
-function createFakeCupidPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.CUPID, obj);
+function createFakeCupidAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.CUPID, player, override);
 }
 
-function createFakeWitchPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.WITCH, obj);
+function createFakeWitchAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.WITCH, player, override);
 }
 
-function createFakeHunterPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.HUNTER, obj);
+function createFakeHunterAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.HUNTER, player, override);
 }
 
-function createFakeLittleGirlPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.LITTLE_GIRL, obj);
+function createFakeLittleGirlAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.LITTLE_GIRL, player, override);
 }
 
-function createFakeGuardPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.GUARD, obj);
+function createFakeGuardAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.GUARD, player, override);
 }
 
-function createFakeAncientPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.ANCIENT, obj);
+function createFakeAncientAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.ANCIENT, player, override);
 }
 
-function createFakeScapegoatPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.SCAPEGOAT, obj);
+function createFakeScapegoatAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.SCAPEGOAT, player, override);
 }
 
-function createFakeIdiotPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.IDIOT, obj);
+function createFakeIdiotAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.IDIOT, player, override);
 }
 
-function createFakeTwoSistersPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.TWO_SISTERS, obj);
+function createFakeTwoSistersAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.TWO_SISTERS, player, override);
 }
 
-function createFakeThreeBrothersPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.THREE_BROTHERS, obj);
+function createFakeThreeBrothersAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.THREE_BROTHERS, player, override);
 }
 
-function createFakeFoxPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.FOX, obj);
+function createFakeFoxAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.FOX, player, override);
 }
 
-function createFakeBearTamerPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.BEAR_TAMER, obj);
+function createFakeBearTamerAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.BEAR_TAMER, player, override);
 }
 
-function createFakeStutteringJudgePlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.STUTTERING_JUDGE, obj);
+function createFakeStutteringJudgeAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.STUTTERING_JUDGE, player, override);
 }
 
-function createFakeRustySwordKnightPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.RUSTY_SWORD_KNIGHT, obj);
+function createFakeRustySwordKnightAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.RUSTY_SWORD_KNIGHT, player, override);
 }
 
-function createFakeWildChildPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.WILD_CHILD, obj);
+function createFakeWildChildAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.WILD_CHILD, player, override);
 }
 
-function createFakeDogWolfPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.DOG_WOLF, obj);
+function createFakeDogWolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.DOG_WOLF, player, override);
 }
 
-function createFakeThiefPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.THIEF, obj);
+function createFakeThiefAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.THIEF, player, override);
 }
 
-function createFakeAngelPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.ANGEL, obj);
+function createFakeAngelAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.ANGEL, player, override);
 }
 
-function createFakePiedPiperPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.PIED_PIPER, obj);
+function createFakePiedPiperAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.PIED_PIPER, player, override);
 }
 
-function createFakeRavenPlayer(obj: Partial<Player> = {}): Player {
-  return createFakePlayerWithRole(ROLE_NAMES.RAVEN, obj);
+function createFakeRavenAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(ROLE_NAMES.RAVEN, player, override);
 }
 
-function createFakePlayerWithRole(role: ROLE_NAMES, obj: Partial<Player> = {}): Player {
+function createFakeAlivePlayerWithRole(role: ROLE_NAMES, player: Partial<Player> = {}, override: object = {}): Player {
   const playerRole: PlayerRole = {
     current: role,
     original: role,
@@ -128,37 +128,37 @@ function createFakePlayerWithRole(role: ROLE_NAMES, obj: Partial<Player> = {}): 
     side: playerSide,
     attributes: [],
     isAlive: true,
-    ...obj,
-  });
+    ...player,
+  }, override);
 }
 
 export {
-  createFakePlayerWithRole,
-  createFakeWerewolfPlayer,
-  createFakeBigBadWolfPlayer,
-  createFakeVileFatherOfWolvesPlayer,
-  createFakeWhiteWerewolfPlayer,
-  createFakeVillagerPlayer,
-  createFakeVillagerVillagerPlayer,
-  createFakeSeerPlayer,
-  createFakeCupidPlayer,
-  createFakeWitchPlayer,
-  createFakeHunterPlayer,
-  createFakeLittleGirlPlayer,
-  createFakeGuardPlayer,
-  createFakeAncientPlayer,
-  createFakeScapegoatPlayer,
-  createFakeIdiotPlayer,
-  createFakeTwoSistersPlayer,
-  createFakeThreeBrothersPlayer,
-  createFakeFoxPlayer,
-  createFakeBearTamerPlayer,
-  createFakeStutteringJudgePlayer,
-  createFakeRustySwordKnightPlayer,
-  createFakeWildChildPlayer,
-  createFakeDogWolfPlayer,
-  createFakeThiefPlayer,
-  createFakeAngelPlayer,
-  createFakePiedPiperPlayer,
-  createFakeRavenPlayer,
+  createFakeAlivePlayerWithRole,
+  createFakeWerewolfAlivePlayer,
+  createFakeBigBadWolfAlivePlayer,
+  createFakeVileFatherOfWolvesAlivePlayer,
+  createFakeWhiteWerewolfAlivePlayer,
+  createFakeVillagerAlivePlayer,
+  createFakeVillagerVillagerAlivePlayer,
+  createFakeSeerAlivePlayer,
+  createFakeCupidAlivePlayer,
+  createFakeWitchAlivePlayer,
+  createFakeHunterAlivePlayer,
+  createFakeLittleGirlAlivePlayer,
+  createFakeGuardAlivePlayer,
+  createFakeAncientAlivePlayer,
+  createFakeScapegoatAlivePlayer,
+  createFakeIdiotAlivePlayer,
+  createFakeTwoSistersAlivePlayer,
+  createFakeThreeBrothersAlivePlayer,
+  createFakeFoxAlivePlayer,
+  createFakeBearTamerAlivePlayer,
+  createFakeStutteringJudgeAlivePlayer,
+  createFakeRustySwordKnightAlivePlayer,
+  createFakeWildChildAlivePlayer,
+  createFakeDogWolfAlivePlayer,
+  createFakeThiefAlivePlayer,
+  createFakeAngelAlivePlayer,
+  createFakePiedPiperAlivePlayer,
+  createFakeRavenAlivePlayer,
 };

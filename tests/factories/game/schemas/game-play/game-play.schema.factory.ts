@@ -1,21 +1,22 @@
 import { faker } from "@faker-js/faker";
+import { plainToInstance } from "class-transformer";
 import { gameSourceValues } from "../../../../../src/modules/game/constants/game.constant";
 import { GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
-import type { GamePlay } from "../../../../../src/modules/game/schemas/game-play.schema";
+import { GamePlay } from "../../../../../src/modules/game/schemas/game-play.schema";
+import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
+import { bulkCreate } from "../../../shared/bulk-create.factory";
 
-function createFakeGamePlay(obj: Partial<GamePlay> = {}): GamePlay {
-  const gamePlay: GamePlay = {
-    action: obj.action ?? faker.helpers.arrayElement(Object.values(GAME_PLAY_ACTIONS)),
-    source: obj.source ?? faker.helpers.arrayElement(Object.values(gameSourceValues)),
-  };
-  if (obj.cause) {
-    gamePlay.cause = obj.cause;
-  }
-  return gamePlay;
+function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+  return plainToInstance(GamePlay, {
+    action: gamePlay.action ?? faker.helpers.arrayElement(Object.values(GAME_PLAY_ACTIONS)),
+    source: gamePlay.source ?? faker.helpers.arrayElement(Object.values(gameSourceValues)),
+    cause: gamePlay.cause ?? undefined,
+    ...override,
+  }, plainToInstanceDefaultOptions);
 }
 
-function bulkCreateFakeGamePlays(length: number): GamePlay[] {
-  return Array.from(Array(length)).map(() => createFakeGamePlay());
+function bulkCreateFakeGamePlays(length: number, gamePlays: Partial<GamePlay>[] = [], overrides: object[] = []): GamePlay[] {
+  return bulkCreate(length, createFakeGamePlay, gamePlays, overrides);
 }
 
 export { createFakeGamePlay, bulkCreateFakeGamePlays };

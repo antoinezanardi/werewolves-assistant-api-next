@@ -1,18 +1,17 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { plainToInstance } from "class-transformer";
 import { doesCompositionHaveAtLeastOneVillager } from "../../../../../../../src/modules/game/dto/base/decorators/composition-has-villager.decorator";
 import { doesCompositionHaveAtLeastOneWerewolf } from "../../../../../../../src/modules/game/dto/base/decorators/composition-has-werewolf.decorator";
 import { areCompositionRolesMaxInGameRespected } from "../../../../../../../src/modules/game/dto/base/decorators/composition-roles-max-in-game.decorator";
 import { areCompositionRolesMinInGameRespected } from "../../../../../../../src/modules/game/dto/base/decorators/composition-roles-min-in-game.decorator";
 import type { CreateGamePlayerDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
-import { GetGameRandomCompositionDto } from "../../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
+import type { GetGameRandomCompositionDto } from "../../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import { GameRandomCompositionService } from "../../../../../../../src/modules/game/providers/services/game-random-composition.service";
 import { roles } from "../../../../../../../src/modules/role/constants/role.constant";
 import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "../../../../../../../src/modules/role/enums/role.enum";
 import type { Role } from "../../../../../../../src/modules/role/types/role.type";
-import { plainToInstanceDefaultOptions } from "../../../../../../../src/shared/validation/constants/validation.constant";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { createFakeGetGameRandomCompositionDto } from "../../../../../../factories/game/dto/get-game-random-composition/get-game-random-composition.dto.factory";
 
 describe("Game Random Composition Service", () => {
   let service: GameRandomCompositionService;
@@ -39,52 +38,52 @@ describe("Game Random Composition Service", () => {
     const players = bulkCreateFakeCreateGamePlayerDto(60);
     it("should not include some roles when there are excluded.", () => {
       const excludedRoles: ROLE_NAMES[] = [ROLE_NAMES.SEER, ROLE_NAMES.WITCH, ROLE_NAMES.PIED_PIPER, ROLE_NAMES.WHITE_WEREWOLF];
-      const result = service.getAvailableRolesForGameRandomComposition(plainToInstance(GetGameRandomCompositionDto, { players, excludedRoles }, plainToInstanceDefaultOptions));
+      const result = service.getAvailableRolesForGameRandomComposition(createFakeGetGameRandomCompositionDto({ players, excludedRoles }));
       expect(result.every(role => !excludedRoles.includes(role.name))).toBe(true);
     });
 
     it("should not include default villager role when powerful villager roles are prioritized.", () => {
-      const compositionDto = plainToInstance(GetGameRandomCompositionDto, { players, arePowerfulVillagerRolesPrioritized: false }, plainToInstanceDefaultOptions);
+      const compositionDto = createFakeGetGameRandomCompositionDto({ players, arePowerfulVillagerRolesPrioritized: false });
       const result = service.getAvailableRolesForGameRandomComposition(compositionDto);
       expect(result.some(role => role.name === ROLE_NAMES.VILLAGER)).toBe(true);
     });
 
     it("should include default villager role when powerful villager roles are not prioritized.", () => {
-      const compositionDto = plainToInstance(GetGameRandomCompositionDto, { players, arePowerfulVillagerRolesPrioritized: true }, plainToInstanceDefaultOptions);
+      const compositionDto = createFakeGetGameRandomCompositionDto({ players, arePowerfulVillagerRolesPrioritized: true });
       const result = service.getAvailableRolesForGameRandomComposition(compositionDto);
       expect(result.some(role => role.name === ROLE_NAMES.VILLAGER)).toBe(false);
     });
 
     it("should not include default werewolf role when powerful werewolf roles are prioritized.", () => {
-      const compositionDto = plainToInstance(GetGameRandomCompositionDto, { players, arePowerfulWerewolfRolesPrioritized: false }, plainToInstanceDefaultOptions);
+      const compositionDto = createFakeGetGameRandomCompositionDto({ players, arePowerfulWerewolfRolesPrioritized: false });
       const result = service.getAvailableRolesForGameRandomComposition(compositionDto);
       expect(result.some(role => role.name === ROLE_NAMES.WEREWOLF)).toBe(true);
     });
 
     it("should include default werewolf role when powerful werewolf roles are not prioritized.", () => {
-      const compositionDto = plainToInstance(GetGameRandomCompositionDto, { players, arePowerfulWerewolfRolesPrioritized: true }, plainToInstanceDefaultOptions);
+      const compositionDto = createFakeGetGameRandomCompositionDto({ players, arePowerfulWerewolfRolesPrioritized: true });
       const result = service.getAvailableRolesForGameRandomComposition(compositionDto);
       expect(result.some(role => role.name === ROLE_NAMES.WEREWOLF)).toBe(false);
     });
 
     it("should not include roles with recommended minimum of players when areRecommendedMinPlayersRespected is true and not enough players.", () => {
       const rolesWithoutRecommendedMinPlayers = roles.filter(role => role.recommendedMinPlayers === undefined);
-      const result = service.getAvailableRolesForGameRandomComposition(plainToInstance(GetGameRandomCompositionDto, {
+      const result = service.getAvailableRolesForGameRandomComposition(createFakeGetGameRandomCompositionDto({
         players: bulkCreateFakeCreateGamePlayerDto(10),
         excludedRoles: rolesWithoutRecommendedMinPlayers.map(({ name }) => name),
         areRecommendedMinPlayersRespected: true,
-      }, plainToInstanceDefaultOptions));
+      }));
       const expectedRoleNames = [ROLE_NAMES.VILLAGER, ROLE_NAMES.WEREWOLF];
       expect(result.every(role => expectedRoleNames.includes(role.name))).toBe(true);
     });
 
     it("should include roles with recommended minimum of players when areRecommendedMinPlayersRespected is true when enough players.", () => {
       const rolesWithoutRecommendedMinPlayers = roles.filter(role => role.recommendedMinPlayers === undefined);
-      const result = service.getAvailableRolesForGameRandomComposition(plainToInstance(GetGameRandomCompositionDto, {
+      const result = service.getAvailableRolesForGameRandomComposition(createFakeGetGameRandomCompositionDto({
         players: bulkCreateFakeCreateGamePlayerDto(12),
         excludedRoles: rolesWithoutRecommendedMinPlayers.map(({ name }) => name),
         areRecommendedMinPlayersRespected: true,
-      }, plainToInstanceDefaultOptions));
+      }));
       const expectedRoleNames = [
         ROLE_NAMES.WEREWOLF,
         ROLE_NAMES.PIED_PIPER,
@@ -190,11 +189,11 @@ describe("Game Random Composition Service", () => {
 
     describe("getGameRandomComposition", () => {
       it.each<GetGameRandomCompositionDto>([
-        plainToInstance(GetGameRandomCompositionDto, { players: bulkCreateFakeCreateGamePlayerDto(4) }, plainToInstanceDefaultOptions),
-        plainToInstance(GetGameRandomCompositionDto, { players: bulkCreateFakeCreateGamePlayerDto(40) }, plainToInstanceDefaultOptions),
-        plainToInstance(GetGameRandomCompositionDto, { players: bulkCreateFakeCreateGamePlayerDto(40) }, plainToInstanceDefaultOptions),
-        plainToInstance(GetGameRandomCompositionDto, { players: bulkCreateFakeCreateGamePlayerDto(75) }, plainToInstanceDefaultOptions),
-        plainToInstance(GetGameRandomCompositionDto, { players: bulkCreateFakeCreateGamePlayerDto(100) }, plainToInstanceDefaultOptions),
+        createFakeGetGameRandomCompositionDto({ players: bulkCreateFakeCreateGamePlayerDto(4) }),
+        createFakeGetGameRandomCompositionDto({ players: bulkCreateFakeCreateGamePlayerDto(40) }),
+        createFakeGetGameRandomCompositionDto({ players: bulkCreateFakeCreateGamePlayerDto(40) }),
+        createFakeGetGameRandomCompositionDto({ players: bulkCreateFakeCreateGamePlayerDto(75) }),
+        createFakeGetGameRandomCompositionDto({ players: bulkCreateFakeCreateGamePlayerDto(100) }),
       ])("should return random composition when called [#$#].", getGameRandomCompositionDto => {
         const result = service.getGameRandomComposition(getGameRandomCompositionDto);
         expect(result).toSatisfyAll<CreateGamePlayerDto>(player => player.role.current === player.role.original);
