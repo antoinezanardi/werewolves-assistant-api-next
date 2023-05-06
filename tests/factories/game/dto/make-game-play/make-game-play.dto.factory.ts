@@ -1,15 +1,16 @@
 import { plainToInstance } from "class-transformer";
 import { MakeGamePlayDto } from "../../../../../src/modules/game/dto/make-game-play/make-game-play.dto";
+import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
 
-function createFakeMakeGamePlayDto(obj: Partial<MakeGamePlayDto> = {}, override: object = {}): MakeGamePlayDto {
+function createFakeMakeGamePlayDto(makeGamePlayDto: Partial<MakeGamePlayDto> = {}, override: object = {}): MakeGamePlayDto {
   return plainToInstance(MakeGamePlayDto, {
-    targets: obj.targets ? obj.targets : undefined,
-    votes: obj.votes ? obj.votes : undefined,
-    doesJudgeRequestAnotherVote: obj.doesJudgeRequestAnotherVote ?? undefined,
-    chosenCardId: obj.chosenCardId ?? undefined,
-    chosenSide: obj.chosenSide ?? undefined,
+    targets: makeGamePlayDto.targets ?? undefined,
+    votes: makeGamePlayDto.votes ?? undefined,
+    doesJudgeRequestAnotherVote: makeGamePlayDto.doesJudgeRequestAnotherVote ?? undefined,
+    chosenCardId: makeGamePlayDto.chosenCardId ?? undefined,
+    chosenSide: makeGamePlayDto.chosenSide ?? undefined,
     ...override,
-  });
+  }, plainToInstanceDefaultOptions);
 }
 
 export { createFakeMakeGamePlayDto };
