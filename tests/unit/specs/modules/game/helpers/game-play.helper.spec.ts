@@ -5,6 +5,9 @@ import type { MakeGamePlayWithRelationsDto } from "../../../../../../src/modules
 import { WITCH_POTIONS } from "../../../../../../src/modules/game/enums/game-play.enum";
 import { createMakeGamePlayDtoWithRelations, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto } from "../../../../../../src/modules/game/helpers/game-play.helper";
 import { ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
+import { createFakeMakeGamePlayTargetWithRelationsDto } from "../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
+import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
+import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
@@ -51,10 +54,12 @@ describe("Game Play Helper", () => {
           { sourceId: game.players[1]._id, targetId: game.players[0]._id },
         ],
       });
-      expect(getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toMatchObject<MakeGamePlayVoteWithRelationsDto[]>([
-        { source: game.players[0], target: game.players[1] },
-        { source: game.players[1], target: game.players[0] },
-      ]);
+      const votes = getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game);
+      const expectedVotes = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[1], target: game.players[0] }),
+      ];
+      expect(votes).toStrictEqual<MakeGamePlayVoteWithRelationsDto[]>(expectedVotes);
     });
   });
 
@@ -87,11 +92,12 @@ describe("Game Play Helper", () => {
           { playerId: game.players[2]._id, drankPotion: WITCH_POTIONS.DEATH },
         ],
       });
-      expect(getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toMatchObject<MakeGamePlayTargetWithRelationsDto[]>([
-        { player: game.players[0], isInfected: true },
-        { player: game.players[1] },
-        { player: game.players[2], drankPotion: WITCH_POTIONS.DEATH },
-      ]);
+      const expectedTargets = [
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2], drankPotion: WITCH_POTIONS.DEATH }),
+      ];
+      expect(getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayTargetWithRelationsDto[]>(expectedTargets);
     });
   });
 
@@ -133,7 +139,7 @@ describe("Game Play Helper", () => {
         doesJudgeRequestAnotherVote: true,
         chosenSide: ROLE_SIDES.WEREWOLVES,
       });
-      expect(createMakeGamePlayDtoWithRelations(makeGamePlayDto, game)).toMatchObject<MakeGamePlayWithRelationsDto>({
+      const expectedMakeGamePlayDtoWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({
         votes: [
           { source: game.players[0], target: game.players[1] },
           { source: game.players[1], target: game.players[0] },
@@ -147,6 +153,7 @@ describe("Game Play Helper", () => {
         doesJudgeRequestAnotherVote: true,
         chosenSide: ROLE_SIDES.WEREWOLVES,
       });
+      expect(createMakeGamePlayDtoWithRelations(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayWithRelationsDto>(expectedMakeGamePlayDtoWithRelationsDto);
     });
   });
 });

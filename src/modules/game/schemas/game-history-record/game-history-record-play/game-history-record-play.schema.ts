@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 import { ROLE_SIDES } from "../../../../role/enums/role.enum";
 import { gameHistoryRecordPlayApiProperties, gameHistoryRecordPlayFieldsSpecs } from "../../../constants/game-history-record/game-history-record-play/game-history-record-play.constant";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-record.enum";
@@ -22,6 +23,7 @@ class GameHistoryRecordPlay {
     required: gameHistoryRecordPlayFieldsSpecs.action.required,
     enum: gameHistoryRecordPlayFieldsSpecs.action.enum,
   })
+  @Expose()
   public action: GAME_PLAY_ACTIONS;
 
   @ApiProperty(gameHistoryRecordPlayApiProperties.source)
@@ -29,20 +31,25 @@ class GameHistoryRecordPlay {
     required: gameHistoryRecordPlayFieldsSpecs.source.required,
     type: GameHistoryRecordPlaySourceSchema,
   })
+  @Expose()
   public source: GameHistoryRecordPlaySource;
 
   @ApiProperty(gameHistoryRecordPlayApiProperties.targets)
   @Prop({
     required: gameHistoryRecordPlayFieldsSpecs.targets.required,
     type: [GameHistoryRecordPlayTargetSchema],
+    default: undefined,
   })
+  @Expose()
   public targets?: GameHistoryRecordPlayTarget[];
 
   @ApiProperty(gameHistoryRecordPlayApiProperties.votes)
   @Prop({
     required: gameHistoryRecordPlayFieldsSpecs.votes.required,
     type: [GameHistoryRecordPlayVoteSchema],
+    default: undefined,
   })
+  @Expose()
   public votes?: GameHistoryRecordPlayVote[];
 
   @ApiProperty(gameHistoryRecordPlayApiProperties.votingResult)
@@ -50,10 +57,12 @@ class GameHistoryRecordPlay {
     required: gameHistoryRecordPlayFieldsSpecs.votingResult.required,
     enum: gameHistoryRecordPlayFieldsSpecs.votingResult.enum,
   })
+  @Expose()
   public votingResult?: GAME_HISTORY_RECORD_VOTING_RESULTS;
 
   @ApiProperty(gameHistoryRecordPlayApiProperties.didJudgeRequestAnotherVote)
   @Prop({ required: gameHistoryRecordPlayFieldsSpecs.didJudgeRequestAnotherVote.required })
+  @Expose()
   public didJudgeRequestAnotherVote?: boolean;
 
   @ApiProperty(gameHistoryRecordPlayApiProperties.chosenCard)
@@ -61,6 +70,7 @@ class GameHistoryRecordPlay {
     required: gameHistoryRecordPlayFieldsSpecs.chosenCard.required,
     type: GameAdditionalCardSchema,
   })
+  @Expose()
   public chosenCard?: GameAdditionalCard;
 
   @ApiProperty(gameHistoryRecordPlayApiProperties.chosenSide)
@@ -68,6 +78,7 @@ class GameHistoryRecordPlay {
     required: gameHistoryRecordPlayFieldsSpecs.chosenSide.required,
     enum: gameHistoryRecordPlayFieldsSpecs.chosenSide.enum,
   })
+  @Expose()
   public chosenSide?: ROLE_SIDES;
 }
 

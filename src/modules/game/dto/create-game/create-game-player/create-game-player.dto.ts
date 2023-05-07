@@ -1,5 +1,5 @@
 import { ApiHideProperty, ApiProperty, IntersectionType, PartialType, PickType } from "@nestjs/swagger";
-import { Transform, Type } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 import { ValidateNested } from "class-validator";
 import { playerApiProperties } from "../../../constants/player/player.constant";
 import { GamePlayerBaseDto } from "../../base/game-player/game-player.base.dto";
@@ -16,15 +16,18 @@ class CreateGamePlayerDto extends IntersectionType(
   @ApiProperty(playerApiProperties.role)
   @Type(() => CreateGamePlayerRoleDto)
   @ValidateNested()
+  @Expose()
   public role: CreateGamePlayerRoleDto;
 
   @ApiHideProperty()
   @Type(() => CreateGamePlayerSideDto)
   @ValidateNested()
   @Transform(playerSideTransformer)
+  @Expose()
   public side: CreateGamePlayerSideDto = {};
 
   @ApiProperty({ description: "Player's unique position among all players. Maximum is `players.length - 1`. Either all players position must be set or none of them. In that last case, it will be generated automatically" })
+  @Expose()
   public position?: number;
 }
 

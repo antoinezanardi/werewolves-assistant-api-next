@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 import { Types } from "mongoose";
 import { playerApiProperties, playersFieldsSpecs } from "../../constants/player/player.constant";
 import type { PlayerAttribute } from "./player-attribute/player-attribute.schema";
@@ -13,6 +13,7 @@ import { PlayerSide, PlayerSideSchema } from "./player-side.schema";
 class Player {
   @ApiProperty(playerApiProperties._id)
   @Type(() => String)
+  @Expose()
   public _id: Types.ObjectId;
 
   @ApiProperty(playerApiProperties.name)
@@ -21,6 +22,7 @@ class Player {
     minlength: playersFieldsSpecs.name.minLength,
     maxLength: playersFieldsSpecs.name.maxLength,
   })
+  @Expose()
   public name: string;
 
   @ApiProperty(playerApiProperties.role)
@@ -28,6 +30,7 @@ class Player {
     required: true,
     type: PlayerRoleSchema,
   })
+  @Expose()
   public role: PlayerRole;
 
   @ApiProperty(playerApiProperties.side)
@@ -35,6 +38,7 @@ class Player {
     required: true,
     type: PlayerSideSchema,
   })
+  @Expose()
   public side: PlayerSide;
 
   @ApiProperty(playerApiProperties.attributes)
@@ -43,6 +47,7 @@ class Player {
     type: [PlayerAttributeSchema],
     default: playersFieldsSpecs.attributes.default,
   })
+  @Expose()
   public attributes: PlayerAttribute[];
 
   @ApiProperty(playerApiProperties.position)
@@ -50,14 +55,17 @@ class Player {
     required: true,
     min: playersFieldsSpecs.position.minimum,
   })
+  @Expose()
   public position: number;
 
   @ApiProperty(playerApiProperties.isAlive)
   @Prop({ default: playersFieldsSpecs.isAlive.default })
+  @Expose()
   public isAlive: boolean;
 
   @ApiProperty(playerApiProperties.death)
   @Prop({ type: PlayerDeathSchema })
+  @Expose()
   public death?: PlayerDeath;
 }
 

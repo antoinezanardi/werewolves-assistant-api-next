@@ -197,8 +197,8 @@ describe("Game Controller", () => {
         url: `/games/${game._id.toString()}`,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
+      expect(response.json<Game>()).toStrictEqual<Game>({
+        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -351,7 +351,7 @@ describe("Game Controller", () => {
         isAlive: true,
       }));
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json()).toMatchObject<Game>({
+      expect(response.json()).toStrictEqual<Game>({
         _id: expect.any(String) as Types.ObjectId,
         phase: GAME_PHASES.NIGHT,
         status: GAME_STATUSES.PLAYING,
@@ -372,7 +372,7 @@ describe("Game Controller", () => {
       });
     });
 
-    it(`should create game with different options when called with options specified.`, async() => {
+    it(`should create game with different options when called with options specified and some omitted.`, async() => {
       const options: Partial<GameOptions> = {
         roles: {
           areRevealedOnDeath: false,
@@ -416,13 +416,14 @@ describe("Game Controller", () => {
         },
       };
       const payload = createFakeCreateGameWithPlayersDto({}, { options });
+      const expectedOptions = createFakeGameOptionsDto({ ...options, composition: { isHidden: defaultGameOptions.composition.isHidden } });
       const response = await app.inject({
         method: "POST",
         url: "/games",
         payload,
       });
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json<Game>().options).toMatchObject(createFakeGameOptionsDto({ ...options, composition: { isHidden: defaultGameOptions.composition.isHidden } }));
+      expect(response.json<Game>().options).toStrictEqual<GameOptions>(instanceToPlain(expectedOptions) as GameOptions);
     });
   });
 
@@ -465,8 +466,8 @@ describe("Game Controller", () => {
         url: `/games/${game._id.toString()}`,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
+      expect(response.json<Game>()).toStrictEqual<Game>({
+        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
         status: GAME_STATUSES.CANCELED,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
@@ -548,8 +549,8 @@ describe("Game Controller", () => {
         payload,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
+      expect(response.json<Game>()).toStrictEqual<Game>({
+        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -575,8 +576,8 @@ describe("Game Controller", () => {
         payload,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
+      expect(response.json<Game>()).toStrictEqual<Game>({
+        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
