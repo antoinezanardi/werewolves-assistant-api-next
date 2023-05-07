@@ -64,7 +64,10 @@ describe("Server", () => {
       expect(NestCommon.ValidationPipe).toHaveBeenCalledWith({
         transform: true,
         whitelist: true,
-        transformOptions: { exposeDefaultValues: true },
+        transformOptions: {
+          exposeDefaultValues: true,
+          exposeUnsetFields: false,
+        },
       });
     });
 

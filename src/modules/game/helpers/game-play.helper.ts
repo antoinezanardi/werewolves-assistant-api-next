@@ -2,6 +2,7 @@ import { plainToInstance } from "class-transformer";
 import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
 import { RESOURCE_NOT_FOUND_REASONS } from "../../../shared/error/enums/resource-not-found-error.enum";
 import { ResourceNotFoundError } from "../../../shared/error/types/resource-not-found-error.type";
+import { plainToInstanceDefaultOptions } from "../../../shared/validation/constants/validation.constant";
 import { MakeGamePlayTargetWithRelationsDto } from "../dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import { MakeGamePlayVoteWithRelationsDto } from "../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { MakeGamePlayWithRelationsDto } from "../dto/make-game-play/make-game-play-with-relations.dto";
@@ -23,7 +24,8 @@ function getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayD
     if (target === undefined) {
       throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, vote.targetId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
     }
-    const voteWithRelations = plainToInstance(MakeGamePlayVoteWithRelationsDto, { ...vote, source, target }, { enableCircularCheck: true });
+    const plainToInstanceOptions = { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true };
+    const voteWithRelations = plainToInstance(MakeGamePlayVoteWithRelationsDto, { ...vote, source, target }, plainToInstanceOptions);
     return [...acc, voteWithRelations];
   }, []);
 }
@@ -37,7 +39,8 @@ function getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePla
     if (player === undefined) {
       throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, target.playerId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
     }
-    const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, { ...target, player }, { enableCircularCheck: true });
+    const plainToInstanceOptions = { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true };
+    const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, { ...target, player }, plainToInstanceOptions);
     return [...acc, targetWithRelations];
   }, []);
 }
@@ -62,7 +65,7 @@ function createMakeGamePlayDtoWithRelations(makeGamePlayDto: MakeGamePlayDto, ga
     chosenCard,
     targets,
     votes,
-  });
+  }, { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true });
 }
 
 export {

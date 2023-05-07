@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 import { SchemaTypes, Types } from "mongoose";
 import type { HydratedDocument } from "mongoose";
 import { gameHistoryRecordApiProperties, gameHistoryRecordFieldsSpecs } from "../../constants/game-history-record/game-history-record.constant";
@@ -16,6 +16,7 @@ import { GameHistoryRecordPlay, GameHistoryRecordPlaySchema } from "./game-histo
 class GameHistoryRecord {
   @ApiProperty(gameHistoryRecordApiProperties._id)
   @Type(() => String)
+  @Expose()
   public _id: Types.ObjectId;
 
   @ApiProperty(gameHistoryRecordApiProperties.gameId)
@@ -24,6 +25,7 @@ class GameHistoryRecord {
     required: gameHistoryRecordFieldsSpecs.gameId.required,
   })
   @Type(() => String)
+  @Expose()
   public gameId: Types.ObjectId;
 
   @ApiProperty(gameHistoryRecordApiProperties.turn)
@@ -31,6 +33,7 @@ class GameHistoryRecord {
     min: gameHistoryRecordApiProperties.turn.minimum,
     required: gameHistoryRecordFieldsSpecs.turn.required,
   })
+  @Expose()
   public turn: number;
 
   @ApiProperty(gameHistoryRecordApiProperties.phase)
@@ -38,10 +41,12 @@ class GameHistoryRecord {
     enum: gameHistoryRecordFieldsSpecs.phase.enum,
     required: gameHistoryRecordFieldsSpecs.phase.required,
   })
+  @Expose()
   public phase: GAME_PHASES;
 
   @ApiProperty(gameHistoryRecordApiProperties.tick)
   @Prop({ min: gameHistoryRecordApiProperties.tick.minimum })
+  @Expose()
   public tick: number;
 
   @ApiProperty(gameHistoryRecordApiProperties.play)
@@ -49,26 +54,33 @@ class GameHistoryRecord {
     required: gameHistoryRecordFieldsSpecs.play.required,
     type: GameHistoryRecordPlaySchema,
   })
+  @Expose()
   public play: GameHistoryRecordPlay;
 
   @ApiProperty(gameHistoryRecordApiProperties.revealedPlayers)
   @Prop({
     required: gameHistoryRecordFieldsSpecs.revealedPlayers.required,
     type: [PlayerSchema],
+    default: undefined,
   })
+  @Expose()
   public revealedPlayers?: Player[];
 
   @ApiProperty(gameHistoryRecordApiProperties.deadPlayers)
   @Prop({
     required: gameHistoryRecordFieldsSpecs.deadPlayers.required,
     type: [PlayerSchema],
+    default: undefined,
   })
+  @Expose()
   public deadPlayers?: Player[];
 
   @ApiProperty(gameHistoryRecordApiProperties.createdAt)
+  @Expose()
   public createdAt: Date;
 
   @ApiProperty(gameHistoryRecordApiProperties.updatedAt)
+  @Expose()
   public updatedAt: Date;
 }
 

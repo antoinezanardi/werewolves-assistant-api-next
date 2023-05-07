@@ -134,8 +134,8 @@ describe("Game History Record Repository", () => {
       const gameHistoryRecordPlayToInsert = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlayToInsert });
       const gameHistoryRecord = await repository.create(gameHistoryRecordToInsert);
-      expect(JSON.parse(JSON.stringify(gameHistoryRecord))).toMatchObject<GameHistoryRecord>({
-        ...instanceToPlain(gameHistoryRecordToInsert, { excludeExtraneousValues: true }) as GameHistoryRecordToInsert,
+      expect(JSON.parse(JSON.stringify(gameHistoryRecord))).toStrictEqual<GameHistoryRecord>({
+        ...instanceToPlain(gameHistoryRecordToInsert, { exposeUnsetFields: false }) as GameHistoryRecordToInsert,
         _id: expect.any(String) as Types.ObjectId,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
