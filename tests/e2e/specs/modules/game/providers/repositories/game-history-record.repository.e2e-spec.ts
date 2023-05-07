@@ -18,7 +18,7 @@ import type { GameSource } from "../../../../../../../src/modules/game/types/gam
 import type { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
 import { E2eTestModule } from "../../../../../../../src/modules/test/e2e-test.module";
 import { fastifyServerDefaultOptions } from "../../../../../../../src/server/constants/server.constant";
-import { bulkCreateFakeGameHistoryRecords, createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { bulkCreateFakeGameHistoryRecords, createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
 import { createObjectIdFromString } from "../../../../../../helpers/mongoose/mongoose.helper";
@@ -43,8 +43,8 @@ describe("Game History Record Repository", () => {
     await app.close();
   });
 
-  async function populate(length: number, override: Partial<GameHistoryRecord>[] = []): Promise<void> {
-    await model.insertMany(bulkCreateFakeGameHistoryRecords(length, override));
+  async function populate(length: number, gameHistoryRecords: Partial<GameHistoryRecord>[] = []): Promise<void> {
+    await model.insertMany(bulkCreateFakeGameHistoryRecords(length, gameHistoryRecords));
   }
 
   describe("find", () => {
@@ -53,13 +53,32 @@ describe("Game History Record Repository", () => {
     });
 
     it("should get 10 game history records when called.", async() => {
-      await populate(10);
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
+      await populate(10, [
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+      ]);
       await expect(repository.find()).resolves.toHaveLength(10);
     });
 
     it("should get 3 game history records when called with a specific gameId.", async() => {
       const gameId = createObjectIdFromString(faker.database.mongodbObjectId());
-      await populate(10, [createFakeGameHistoryRecord({ gameId }), createFakeGameHistoryRecord({ gameId }), createFakeGameHistoryRecord({ gameId })]);
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
+      await populate(5, [
+        createFakeGameHistoryRecord({ gameId, play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ gameId, play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ gameId, play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
+      ]);
       await expect(repository.find({ gameId })).resolves.toHaveLength(3);
     });
   });
@@ -112,10 +131,11 @@ describe("Game History Record Repository", () => {
     });
 
     it("should create history record when called.", async() => {
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
+      const gameHistoryRecordPlayToInsert = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlayToInsert });
       const gameHistoryRecord = await repository.create(gameHistoryRecordToInsert);
-      expect(JSON.parse(JSON.stringify(gameHistoryRecord))).toMatchObject<GameHistoryRecord>({
-        ...instanceToPlain(gameHistoryRecordToInsert, { excludeExtraneousValues: true }) as GameHistoryRecordToInsert,
+      expect(JSON.parse(JSON.stringify(gameHistoryRecord))).toStrictEqual<GameHistoryRecord>({
+        ...instanceToPlain(gameHistoryRecordToInsert, { exposeUnsetFields: false }) as GameHistoryRecordToInsert,
         _id: expect.any(String) as Types.ObjectId,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,

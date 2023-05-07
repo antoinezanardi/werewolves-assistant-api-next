@@ -6,11 +6,10 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { instanceToPlain, plainToInstance } from "class-transformer";
+import { instanceToPlain } from "class-transformer";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 import { defaultGameOptions } from "../../../../../../src/modules/game/constants/game-options/game-options.constant";
-import { CreateGameOptionsDto } from "../../../../../../src/modules/game/dto/create-game/create-game-options/create-game-options.dto";
 import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
@@ -25,12 +24,12 @@ import type { Player } from "../../../../../../src/modules/game/schemas/player/p
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
 import { fastifyServerDefaultOptions } from "../../../../../../src/server/constants/server.constant";
-import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
+import { createFakeGameOptionsDto } from "../../../../../factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
-import { createFakeCreateGameDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
+import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeSeerPlayer, createFakeVillagerPlayer, createFakeWerewolfPlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers } from "../../../../../factories/game/schemas/player/player.schema.factory";
 import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
 import { initNestApp } from "../../../../helpers/nest-app.helper";
@@ -198,8 +197,8 @@ describe("Game Controller", () => {
         url: `/games/${game._id.toString()}`,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
+      expect(response.json<Game>()).toStrictEqual<Game>({
+        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -352,7 +351,7 @@ describe("Game Controller", () => {
         isAlive: true,
       }));
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json()).toMatchObject<Game>({
+      expect(response.json()).toStrictEqual<Game>({
         _id: expect.any(String) as Types.ObjectId,
         phase: GAME_PHASES.NIGHT,
         status: GAME_STATUSES.PLAYING,
@@ -373,7 +372,7 @@ describe("Game Controller", () => {
       });
     });
 
-    it(`should create game with different options when called with options specified.`, async() => {
+    it(`should create game with different options when called with options specified and some omitted.`, async() => {
       const options: Partial<GameOptions> = {
         roles: {
           areRevealedOnDeath: false,
@@ -416,14 +415,15 @@ describe("Game Controller", () => {
           raven: { markPenalty: 5 },
         },
       };
-      const payload = createFakeCreateGameDto({}, { options });
+      const payload = createFakeCreateGameWithPlayersDto({}, { options });
+      const expectedOptions = createFakeGameOptionsDto({ ...options, composition: { isHidden: defaultGameOptions.composition.isHidden } });
       const response = await app.inject({
         method: "POST",
         url: "/games",
         payload,
       });
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json<Game>().options).toMatchObject(plainToInstance(CreateGameOptionsDto, options, plainToInstanceDefaultOptions));
+      expect(response.json<Game>().options).toStrictEqual<GameOptions>(instanceToPlain(expectedOptions) as GameOptions);
     });
   });
 
@@ -466,8 +466,8 @@ describe("Game Controller", () => {
         url: `/games/${game._id.toString()}`,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
+      expect(response.json<Game>()).toStrictEqual<Game>({
+        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
         status: GAME_STATUSES.CANCELED,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
@@ -526,10 +526,10 @@ describe("Game Controller", () => {
 
     it("should make a game play when called with votes.", async() => {
       const players = bulkCreateFakePlayers(4, [
-        createFakeWerewolfPlayer(),
-        createFakeSeerPlayer(),
-        createFakeVillagerPlayer(),
-        createFakeWerewolfPlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
@@ -549,8 +549,8 @@ describe("Game Controller", () => {
         payload,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
+      expect(response.json<Game>()).toStrictEqual<Game>({
+        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -558,10 +558,10 @@ describe("Game Controller", () => {
     
     it("should make a game play when called with targets.", async() => {
       const players = bulkCreateFakePlayers(4, [
-        createFakeWerewolfPlayer(),
-        createFakeSeerPlayer(),
-        createFakeVillagerPlayer(),
-        createFakeWerewolfPlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
@@ -576,8 +576,8 @@ describe("Game Controller", () => {
         payload,
       });
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(response.json<Game>()).toMatchObject({
-        ...instanceToPlain(game, { excludeExtraneousValues: true, exposeUnsetFields: false }),
+      expect(response.json<Game>()).toStrictEqual<Game>({
+        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });

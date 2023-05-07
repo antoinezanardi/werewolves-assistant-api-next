@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { Type } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 import { Types } from "mongoose";
 import type { HydratedDocument } from "mongoose";
 import { gameApiProperties, gameFieldsSpecs } from "../constants/game.constant";
@@ -20,22 +20,27 @@ import type { Player } from "./player/player.schema";
 class Game {
   @ApiProperty(gameApiProperties._id)
   @Type(() => String)
+  @Expose()
   public _id: Types.ObjectId;
 
   @ApiProperty(gameApiProperties.turn)
   @Prop({ default: gameFieldsSpecs.turn.default })
+  @Expose()
   public turn: number;
 
   @ApiProperty(gameApiProperties.phase)
   @Prop({ default: gameFieldsSpecs.phase.default })
+  @Expose()
   public phase: GAME_PHASES;
 
   @ApiProperty(gameApiProperties.tick)
   @Prop({ default: gameFieldsSpecs.tick.default })
+  @Expose()
   public tick: number;
 
   @ApiProperty(gameApiProperties.status)
   @Prop({ default: gameFieldsSpecs.status.default })
+  @Expose()
   public status: GAME_STATUSES;
 
   @ApiProperty(gameApiProperties.players)
@@ -43,6 +48,7 @@ class Game {
     required: true,
     type: [PlayerSchema],
   })
+  @Expose()
   public players: Player[];
 
   @ApiProperty(gameApiProperties.upcomingPlays)
@@ -50,6 +56,7 @@ class Game {
     required: true,
     type: [GamePlaySchema],
   })
+  @Expose()
   public upcomingPlays: GamePlay[];
 
   @ApiProperty(gameApiProperties.options)
@@ -57,16 +64,20 @@ class Game {
     type: GameOptionsSchema,
     default: () => ({}),
   })
+  @Expose()
   public options: GameOptions;
-  
+
   @ApiProperty(gameApiProperties.additionalCards)
   @Prop({ type: [GameAdditionalCardSchema], default: undefined })
+  @Expose()
   public additionalCards?: GameAdditionalCard[];
 
   @ApiProperty(gameApiProperties.createdAt)
+  @Expose()
   public createdAt: Date;
 
   @ApiProperty(gameApiProperties.updatedAt)
+  @Expose()
   public updatedAt: Date;
 }
 

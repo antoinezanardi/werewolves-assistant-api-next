@@ -4,7 +4,7 @@ import { fastifyServerDefaultOptions } from "../../../../../src/server/constants
 describe("Server Constant", () => {
   describe("fastifyServerDefaultOptions", () => {
     it("should get fastify server default options when called.", () => {
-      expect(fastifyServerDefaultOptions).toMatchObject<FastifyServerOptions>({ querystringParser: expect.any(Function) as (string) => Record<string, unknown> });
+      expect(fastifyServerDefaultOptions).toStrictEqual<FastifyServerOptions>({ querystringParser: expect.any(Function) as (string) => Record<string, unknown> });
     });
   });
 });

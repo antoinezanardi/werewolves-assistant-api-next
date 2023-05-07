@@ -1,0 +1,224 @@
+import { faker } from "@faker-js/faker";
+import { plainToInstance } from "class-transformer";
+import { CreateAncientGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-ancient-game-options.dto";
+import { CreateBearTamerGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
+import { CreateBigBadWolfGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
+import { CreateDogWolfGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
+import { CreateFoxGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-fox-game-options.dto";
+import { CreateGuardGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-guard-game-options.dto";
+import { CreateIdiotGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
+import { CreateLittleGirlGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-little-girl-game-options.dto";
+import { CreatePiedPiperGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-pied-piper-game-options.dto";
+import { CreateRavenGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-raven-game-options.dto";
+import { CreateRolesGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto";
+import { CreateSeerGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-seer-game-options.dto";
+import { CreateSheriffElectionGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-election-game-options.dto";
+import { CreateSheriffGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-game-options.dto";
+import { CreateStutteringJudgeGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-stuttering-judge-game-options.dto";
+import { CreateThiefGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-thief-game-options.dto";
+import { CreateThreeBrothersGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-three-brothers-game-options.dto";
+import { CreateTwoSistersGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-two-sisters-game-options.dto";
+import { CreateWhiteWerewolfGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-white-werewolf-game-options.dto";
+import { CreateWildChildGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-wild-child-game-options.dto";
+import { GAME_PHASES } from "../../../../../../../src/modules/game/enums/game.enum";
+import { plainToInstanceDefaultOptions } from "../../../../../../../src/shared/validation/constants/validation.constant";
+
+function createFakeCreateRavenGameOptionsDto(ravenGameOptions: Partial<CreateRavenGameOptionsDto> = {}, override: object = {}): CreateRavenGameOptionsDto {
+  return plainToInstance(CreateRavenGameOptionsDto, {
+    markPenalty: ravenGameOptions.markPenalty ?? faker.datatype.number({ min: 1, max: 5 }),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreatePiedPiperGameOptionsDto(piedPiperGameOptions: Partial<CreatePiedPiperGameOptionsDto> = {}, override: object = {}): CreatePiedPiperGameOptionsDto {
+  return plainToInstance(CreatePiedPiperGameOptionsDto, {
+    charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.datatype.number({ min: 1, max: 5 }),
+    isPowerlessIfInfected: piedPiperGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateThiefGameOptionsDto(thiefGameOptions: Partial<CreateThiefGameOptionsDto> = {}, override: object = {}): CreateThiefGameOptionsDto {
+  return plainToInstance(CreateThiefGameOptionsDto, {
+    mustChooseBetweenWerewolves: thiefGameOptions.mustChooseBetweenWerewolves ?? faker.datatype.boolean(),
+    additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.datatype.number({ min: 1, max: 5 }),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateDogWolfGameOptionsDto(dogWolfGameOptions: Partial<CreateDogWolfGameOptionsDto> = {}, override: object = {}): CreateDogWolfGameOptionsDto {
+  return plainToInstance(CreateDogWolfGameOptionsDto, {
+    isChosenSideRevealed: dogWolfGameOptions.isChosenSideRevealed ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateWildChildGameOptionsDto(wildChildGameOptions: Partial<CreateWildChildGameOptionsDto> = {}, override: object = {}): CreateWildChildGameOptionsDto {
+  return plainToInstance(CreateWildChildGameOptionsDto, {
+    isTransformationRevealed: wildChildGameOptions.isTransformationRevealed ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateStutteringJudgeGameOptionsDto(
+  stutteringJudgeGameOptions: Partial<CreateStutteringJudgeGameOptionsDto> = {},
+  override: object = {},
+): CreateStutteringJudgeGameOptionsDto {
+  return plainToInstance(CreateStutteringJudgeGameOptionsDto, {
+    voteRequestsCount: stutteringJudgeGameOptions.voteRequestsCount ?? faker.datatype.number({ min: 1, max: 5 }),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateBearTamerGameOptionsDto(bearTamerGameOptions: Partial<CreateBearTamerGameOptionsDto> = {}, override: object = {}): CreateBearTamerGameOptionsDto {
+  return plainToInstance(CreateBearTamerGameOptionsDto, {
+    doesGrowlIfInfected: bearTamerGameOptions.doesGrowlIfInfected ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateFoxGameOptionsDto(foxGameOptions: Partial<CreateFoxGameOptionsDto> = {}, override: object = {}): CreateFoxGameOptionsDto {
+  return plainToInstance(CreateFoxGameOptionsDto, {
+    isPowerlessIfMissesWerewolf: foxGameOptions.isPowerlessIfMissesWerewolf ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateThreeBrothersGameOptionsDto(
+  threeBrothersGameOptions: Partial<CreateThreeBrothersGameOptionsDto> = {},
+  override: object = {},
+): CreateThreeBrothersGameOptionsDto {
+  return plainToInstance(CreateThreeBrothersGameOptionsDto, {
+    wakingUpInterval: threeBrothersGameOptions.wakingUpInterval ?? faker.datatype.number({ min: 0, max: 5 }),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateTwoSistersGameOptionsDto(twoSistersGameOptions: Partial<CreateTwoSistersGameOptionsDto> = {}, override: object = {}): CreateTwoSistersGameOptionsDto {
+  return plainToInstance(CreateTwoSistersGameOptionsDto, {
+    wakingUpInterval: twoSistersGameOptions.wakingUpInterval ?? faker.datatype.number({ min: 0, max: 5 }),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateIdiotGameOptionsDto(idiotGameOptions: Partial<CreateIdiotGameOptionsDto> = {}, override: object = {}): CreateIdiotGameOptionsDto {
+  return plainToInstance(CreateIdiotGameOptionsDto, {
+    doesDieOnAncientDeath: idiotGameOptions.doesDieOnAncientDeath ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateAncientGameOptionsDto(ancientGameOptions: Partial<CreateAncientGameOptionsDto> = {}, override: object = {}): CreateAncientGameOptionsDto {
+  return plainToInstance(CreateAncientGameOptionsDto, {
+    livesCountAgainstWerewolves: ancientGameOptions.livesCountAgainstWerewolves ?? faker.datatype.number({ min: 1, max: 5 }),
+    doesTakeHisRevenge: ancientGameOptions.doesTakeHisRevenge ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateGuardGameOptionsDto(guardGameOptions: Partial<CreateGuardGameOptionsDto> = {}, override: object = {}): CreateGuardGameOptionsDto {
+  return plainToInstance(CreateGuardGameOptionsDto, {
+    canProtectTwice: guardGameOptions.canProtectTwice ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateLittleGirlGameOptionsDto(littleGirlGameOptions: Partial<CreateLittleGirlGameOptionsDto> = {}, override: object = {}): CreateLittleGirlGameOptionsDto {
+  return plainToInstance(CreateLittleGirlGameOptionsDto, {
+    isProtectedByGuard: littleGirlGameOptions.isProtectedByGuard ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateSeerGameOptionsDto(seerGameOptions: Partial<CreateSeerGameOptionsDto> = {}, override: object = {}): CreateSeerGameOptionsDto {
+  return plainToInstance(CreateSeerGameOptionsDto, {
+    isTalkative: seerGameOptions.isTalkative ?? faker.datatype.boolean(),
+    canSeeRoles: seerGameOptions.canSeeRoles ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateWhiteWerewolfGameOptionsDto(
+  whiteWerewolfOptions: Partial<CreateWhiteWerewolfGameOptionsDto> = {},
+  override: object = {},
+): CreateWhiteWerewolfGameOptionsDto {
+  return plainToInstance(CreateWhiteWerewolfGameOptionsDto, {
+    wakingUpInterval: whiteWerewolfOptions.wakingUpInterval ?? faker.datatype.number({ min: 1, max: 5 }),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateBigBadWolfGameOptionsDto(bigBadWolfOptions: Partial<CreateBigBadWolfGameOptionsDto> = {}, override: object = {}): CreateBigBadWolfGameOptionsDto {
+  return plainToInstance(CreateBigBadWolfGameOptionsDto, {
+    isPowerlessIfWerewolfDies: bigBadWolfOptions.isPowerlessIfWerewolfDies ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateSheriffElectionGameOptionsDto(
+  sheriffElectionGameOptions: Partial<CreateSheriffElectionGameOptionsDto> = {},
+  override: object = {},
+): CreateSheriffElectionGameOptionsDto {
+  return plainToInstance(CreateSheriffElectionGameOptionsDto, {
+    turn: sheriffElectionGameOptions.turn ?? faker.datatype.number({ min: 1 }),
+    phase: sheriffElectionGameOptions.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeCreateSheriffGameOptionsDto(sheriffGameOptions: Partial<CreateSheriffGameOptionsDto> = {}, override: object = {}): CreateSheriffGameOptionsDto {
+  return plainToInstance(CreateSheriffGameOptionsDto, {
+    isEnabled: sheriffGameOptions.isEnabled ?? faker.datatype.boolean(),
+    electedAt: createFakeCreateSheriffElectionGameOptionsDto(sheriffGameOptions.electedAt),
+    hasDoubledVote: sheriffGameOptions.hasDoubledVote ?? faker.datatype.boolean(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGameOptionsDto> = {}, override: object = {}): CreateRolesGameOptionsDto {
+  return plainToInstance(CreateRolesGameOptionsDto, {
+    areRevealedOnDeath: rolesGameOptions.areRevealedOnDeath ?? faker.datatype.boolean(),
+    sheriff: createFakeCreateSheriffGameOptionsDto(rolesGameOptions.sheriff),
+    bigBadWolf: createFakeCreateBigBadWolfGameOptionsDto(rolesGameOptions.bigBadWolf),
+    whiteWerewolf: createFakeCreateWhiteWerewolfGameOptionsDto(rolesGameOptions.whiteWerewolf),
+    seer: createFakeCreateSeerGameOptionsDto(rolesGameOptions.seer),
+    littleGirl: createFakeCreateLittleGirlGameOptionsDto(rolesGameOptions.littleGirl),
+    guard: createFakeCreateGuardGameOptionsDto(rolesGameOptions.guard),
+    ancient: createFakeCreateAncientGameOptionsDto(rolesGameOptions.ancient),
+    idiot: createFakeCreateIdiotGameOptionsDto(rolesGameOptions.idiot),
+    twoSisters: createFakeCreateTwoSistersGameOptionsDto(rolesGameOptions.twoSisters),
+    threeBrothers: createFakeCreateThreeBrothersGameOptionsDto(rolesGameOptions.threeBrothers),
+    fox: createFakeCreateFoxGameOptionsDto(rolesGameOptions.fox),
+    bearTamer: createFakeCreateBearTamerGameOptionsDto(rolesGameOptions.bearTamer),
+    stutteringJudge: createFakeCreateStutteringJudgeGameOptionsDto(rolesGameOptions.stutteringJudge),
+    wildChild: createFakeCreateWildChildGameOptionsDto(rolesGameOptions.wildChild),
+    dogWolf: createFakeCreateDogWolfGameOptionsDto(rolesGameOptions.dogWolf),
+    thief: createFakeCreateThiefGameOptionsDto(rolesGameOptions.thief),
+    piedPiper: createFakeCreatePiedPiperGameOptionsDto(rolesGameOptions.piedPiper),
+    raven: createFakeCreateRavenGameOptionsDto(rolesGameOptions.raven),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+export {
+  createFakeCreateRavenGameOptionsDto,
+  createFakeCreatePiedPiperGameOptionsDto,
+  createFakeCreateThiefGameOptionsDto,
+  createFakeCreateDogWolfGameOptionsDto,
+  createFakeCreateWildChildGameOptionsDto,
+  createFakeCreateStutteringJudgeGameOptionsDto,
+  createFakeCreateBearTamerGameOptionsDto,
+  createFakeCreateFoxGameOptionsDto,
+  createFakeCreateThreeBrothersGameOptionsDto,
+  createFakeCreateTwoSistersGameOptionsDto,
+  createFakeCreateIdiotGameOptionsDto,
+  createFakeCreateAncientGameOptionsDto,
+  createFakeCreateGuardGameOptionsDto,
+  createFakeCreateLittleGirlGameOptionsDto,
+  createFakeCreateSeerGameOptionsDto,
+  createFakeCreateWhiteWerewolfGameOptionsDto,
+  createFakeCreateBigBadWolfGameOptionsDto,
+  createFakeCreateSheriffElectionGameOptionsDto,
+  createFakeCreateSheriffGameOptionsDto,
+  createFakeRolesGameOptionsDto,
+};

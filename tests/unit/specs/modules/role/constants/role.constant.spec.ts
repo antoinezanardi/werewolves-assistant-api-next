@@ -1,7 +1,6 @@
-import { plainToInstance } from "class-transformer";
 import { roles, villagerRoles, werewolvesRoles } from "../../../../../../src/modules/role/constants/role.constant";
 import { ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
-import { Role } from "../../../../../../src/modules/role/types/role.type";
+import { bulkCreateFakeRoles } from "../../../../../factories/role/types/role.type.factory";
 
 describe("Role Constant", () => {
   describe("werewolvesRoles", () => {
@@ -20,7 +19,7 @@ describe("Role Constant", () => {
 
   describe("roles", () => {
     it("should contain all roles when called.", () => {
-      expect(roles).toStrictEqual(plainToInstance(Role, [...werewolvesRoles, ...villagerRoles]));
+      expect(roles).toStrictEqual(bulkCreateFakeRoles([...werewolvesRoles, ...villagerRoles].length, [...werewolvesRoles, ...villagerRoles]));
     });
   });
 });
