@@ -1,5 +1,29 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.7.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.7.0...v1.7.1) (2023-05-07)
+
+
+### 🐛 Bug Fixes
+
+* **stryker:** exit code 1 when failing ([#146](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/146)) ([00be608](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/00be6080554e58e3b9424f5b91f7f6a3379e0a14))
+
+
+### 📖 Docs
+
+* **package-json:** deleted leading spaces in some package-json commands ([#141](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/141)) ([f9a080a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f9a080a8b2bd9389a9956084a94258e0c989e221))
+
+
+### ✅ Tests
+
+* **factories:** add or improve factories among tests ([#145](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/145)) ([8cedb0e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/8cedb0ef848cf1af7512ee9ff51fdf4d9dc06f45))
+* **object-equality:** use strictEqual instead of matchObject ([#147](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/147)) ([1cf3779](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1cf3779742184c68237aad312a1c7c4d9dc193d9))
+
+
+### 🧹 Chore
+
+* **deps:** bump @commitlint/cli from 17.6.1 to 17.6.3 ([#144](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/144)) ([5b3650f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/5b3650f04fc6386786102e3a31db6a4ee9f78872))
+* **deps:** bump @commitlint/config-conventional from 17.6.1 to 17.6.3 ([#143](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/143)) ([aad2258](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/aad2258688e4d1765d14b7d7ab3dce9c83fe6071))
+
 ## [1.7.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.6.2...v1.7.0) (2023-05-03)
 
 
