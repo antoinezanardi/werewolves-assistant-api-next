@@ -71,7 +71,7 @@
     "@nestjs/swagger": "^6.3.0",
     "@nestjs/terminus": "^9.2.2",
     "@types/lodash": "^4.14.194",
-    "@types/validator": "^13.7.15",
+    "@types/validator": "^13.7.16",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "isobject": "^4.0.0",
