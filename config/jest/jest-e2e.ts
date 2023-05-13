@@ -6,7 +6,6 @@ const config: Config = {
   testEnvironment: "node",
   testRegex: "tests/e2e/.+.e2e-spec.ts",
   transform: { "^.+\\.(t|j)s$": "ts-jest" },
-  verbose: true,
   resetMocks: true,
   restoreMocks: true,
   clearMocks: true,
