@@ -131,7 +131,7 @@ function createFakePlayerContaminatedByRustySwordKnightAttribute(attribute: Part
 
 function createFakePlayerAttributeActivation(attributeActivation: Partial<PlayerAttributeActivation> = {}, override: object = {}): PlayerAttributeActivation {
   return plainToInstance(PlayerAttributeActivation, {
-    turn: attributeActivation.turn ?? faker.datatype.number({ min: 1 }),
+    turn: attributeActivation.turn ?? faker.number.int({ min: 1 }),
     phase: attributeActivation.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
     ...override,
   }, plainToInstanceDefaultOptions);

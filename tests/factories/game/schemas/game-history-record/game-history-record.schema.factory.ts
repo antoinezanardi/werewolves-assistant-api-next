@@ -300,8 +300,8 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
   return plainToInstance(GameHistoryRecord, {
     _id: gameHistoryRecord._id ?? createObjectIdFromString(faker.database.mongodbObjectId()),
     gameId: gameHistoryRecord.gameId ?? createObjectIdFromString(faker.database.mongodbObjectId()),
-    tick: gameHistoryRecord.tick ?? faker.datatype.number({ min: 1 }),
-    turn: gameHistoryRecord.turn ?? faker.datatype.number({ min: 1 }),
+    tick: gameHistoryRecord.tick ?? faker.number.int({ min: 1 }),
+    turn: gameHistoryRecord.turn ?? faker.number.int({ min: 1 }),
     phase: gameHistoryRecord.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
     play: createFakeGameHistoryRecordPlay(gameHistoryRecord.play),
     revealedPlayers: gameHistoryRecord.revealedPlayers ?? undefined,
