@@ -43,6 +43,10 @@ function areAllVillagersAlive(players: Player[]): boolean {
   return villagerPlayers.length > 0 && villagerPlayers.every(villager => villager.isAlive);
 }
 
+function areAllPlayersDead(players: Player[]): boolean {
+  return players.length > 0 && players.every(({ isAlive }) => !isAlive);
+}
+
 function getPlayersWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player[] {
   return players.filter(player => doesPlayerHaveAttribute(player, attribute));
 }
@@ -107,6 +111,7 @@ export {
   getAdditionalCardWithId,
   areAllWerewolvesAlive,
   areAllVillagersAlive,
+  areAllPlayersDead,
   getPlayersWithAttribute,
   getAlivePlayers,
   getLeftToCharmByPiedPiperPlayers,

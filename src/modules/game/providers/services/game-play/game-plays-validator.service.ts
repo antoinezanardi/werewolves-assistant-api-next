@@ -8,7 +8,7 @@ import type { MakeGamePlayVoteWithRelationsDto } from "../../../dto/make-game-pl
 import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
 import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import { getLastGamePlayFromHistory, getLastGamePlayTieInVotesFromHistory } from "../../../helpers/game-history-record.helper";
+import { getLastGamePlayFromHistory, getLastGamePlayTieInVotesFromHistory } from "../../../helpers/game-history-record/game-history-record.helper";
 import { getLeftToCharmByPiedPiperPlayers, getPlayerWithCurrentRole, getUpcomingGamePlay, getUpcomingGamePlayAction, getUpcomingGamePlaySource } from "../../../helpers/game.helper";
 import { doesPlayerHaveAttribute, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "../../../helpers/player/player.helper";
 import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";

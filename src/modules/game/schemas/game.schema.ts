@@ -10,6 +10,7 @@ import { GameAdditionalCardSchema } from "./game-additional-card/game-additional
 import { GameOptions, GameOptionsSchema } from "./game-options/game-options.schema";
 import type { GamePlay } from "./game-play.schema";
 import { GamePlaySchema } from "./game-play.schema";
+import { GameVictory, GameVictorySchema } from "./game-victory/game-victory.schema";
 import { PlayerSchema } from "./player/player.schema";
 import type { Player } from "./player/player.schema";
 
@@ -71,6 +72,11 @@ class Game {
   @Prop({ type: [GameAdditionalCardSchema], default: undefined })
   @Expose()
   public additionalCards?: GameAdditionalCard[];
+
+  @ApiProperty(gameApiProperties.victory)
+  @Prop({ type: [GameVictorySchema], default: undefined })
+  @Expose()
+  public victory?: GameVictory;
 
   @ApiProperty(gameApiProperties.createdAt)
   @Expose()

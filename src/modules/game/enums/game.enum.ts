@@ -5,7 +5,7 @@ enum GAME_PHASES {
 
 enum GAME_STATUSES {
   PLAYING = "playing",
-  DONE = "done",
+  OVER = "over",
   CANCELED = "canceled",
 }
 

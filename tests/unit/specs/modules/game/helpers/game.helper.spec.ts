@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, getPlayerWithId, getUpcomingGamePlay, getUpcomingGamePlayAction, getUpcomingGamePlaySource, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, getPlayerWithId, getUpcomingGamePlay, getUpcomingGamePlayAction, getUpcomingGamePlaySource, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
@@ -161,6 +161,28 @@ describe("Game Helper", () => {
       const notAllAlivePlayers = cloneDeep(players);
       notAllAlivePlayers[1].isAlive = false;
       expect(areAllVillagersAlive(notAllAlivePlayers)).toBe(false);
+    });
+  });
+
+  describe("areAllPlayersDead", () => {
+    const players = bulkCreateFakePlayers(4, [
+      createFakePlayer({ isAlive: false }),
+      createFakePlayer({ isAlive: false }),
+      createFakePlayer({ isAlive: true }),
+      createFakePlayer({ isAlive: false }),
+    ]);
+
+    it("should return false when empty array is provided.", () => {
+      expect(areAllPlayersDead([])).toBe(false);
+    });
+
+    it("should return false when at least one player is alive.", () => {
+      expect(areAllPlayersDead(players)).toBe(false);
+    });
+
+    it("should return true when all players are dead.", () => {
+      players[2].isAlive = false;
+      expect(areAllPlayersDead(players)).toBe(true);
     });
   });
 
