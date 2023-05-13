@@ -9,6 +9,7 @@ import { CreateGameDto } from "../../dto/create-game/create-game.dto";
 import type { MakeGamePlayDto } from "../../dto/make-game-play/make-game-play.dto";
 import { GAME_STATUSES } from "../../enums/game.enum";
 import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play.helper";
+import { generateGameVictoryData, isGameOver } from "../../helpers/game-victory/game-victory.helper";
 import type { Game } from "../../schemas/game.schema";
 import { GameRepository } from "../repositories/game.repository";
 import { GamePlaysManagerService } from "./game-play/game-plays-manager.service";
@@ -63,8 +64,17 @@ export class GameService {
 
   public async makeGamePlay(gameId: Types.ObjectId, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
     const game = await this.getGameAndCheckPlayingStatus(gameId);
+    const gameDataToUpdate: Partial<Game> = {};
     const makeGamePlayWithRelationsDto = createMakeGamePlayDtoWithRelations(makeGamePlayDto, game);
     await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(makeGamePlayWithRelationsDto, game);
-    return game;
+    if (isGameOver(game)) {
+      gameDataToUpdate.status = GAME_STATUSES.OVER;
+      gameDataToUpdate.victory = generateGameVictoryData(game);
+    }
+    const updatedGame = await this.gameRepository.updateOne({ _id: gameId }, gameDataToUpdate);
+    if (updatedGame === null) {
+      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId.toString());
+    }
+    return updatedGame;
   }
 }

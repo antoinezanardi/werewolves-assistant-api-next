@@ -18,6 +18,7 @@ function createFakeGame(obj: Partial<Game> = {}, override: object = {}): Game {
     turn: obj.turn ?? faker.datatype.number({ min: 1 }),
     additionalCards: obj.additionalCards ?? undefined,
     options: obj.options ?? createFakeGameOptions(),
+    victory: obj.victory ?? undefined,
     createdAt: obj.createdAt ?? faker.date.recent(),
     updatedAt: obj.updatedAt ?? faker.date.recent(),
     ...override,

@@ -16,7 +16,7 @@ const gameFieldsSpecs = Object.freeze({
   status: { default: GAME_STATUSES.PLAYING },
 });
 
-const gameApiProperties: Record<keyof Game, ApiPropertyOptions> = Object.freeze({
+const gameApiProperties: Readonly<Record<keyof Game, ApiPropertyOptions>> = Object.freeze({
   _id: {
     description: "Game's Mongo ObjectId",
     example: "507f1f77bcf86cd799439011",
@@ -44,6 +44,7 @@ const gameApiProperties: Record<keyof Game, ApiPropertyOptions> = Object.freeze(
   upcomingPlays: { description: "Queue of upcoming plays that needs to be performed to continue the game" },
   options: { description: "Game's options" },
   additionalCards: { description: "Game's additional cards" },
+  victory: { description: "Victory data set when `status` is `over`" },
   createdAt: { description: "When the game was created" },
   updatedAt: { description: "When the game was updated" },
 });

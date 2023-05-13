@@ -3,6 +3,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.enum";
+import * as GameVictoryHelper from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
 import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
@@ -11,7 +12,9 @@ import { GamePlaysValidatorService } from "../../../../../../../src/modules/game
 import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
 import { createFakeCreateGameDto } from "../../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
+import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { createObjectIdFromString } from "../../../../../../helpers/mongoose/mongoose.helper";
 
 describe("Game Service", () => {
@@ -95,7 +98,7 @@ describe("Game Service", () => {
     const existingPlayingId = createObjectIdFromString(faker.database.mongodbObjectId());
     const existingPlayingGame = createFakeGame({ _id: existingPlayingId, status: GAME_STATUSES.PLAYING });
     const existingDoneId = createObjectIdFromString(faker.database.mongodbObjectId());
-    const existingDoneGame = createFakeGame({ _id: existingDoneId, status: GAME_STATUSES.DONE });
+    const existingDoneGame = createFakeGame({ _id: existingDoneId, status: GAME_STATUSES.OVER });
     const unknownId = createObjectIdFromString(faker.database.mongodbObjectId());
 
     beforeEach(() => {
@@ -136,19 +139,49 @@ describe("Game Service", () => {
   });
 
   describe("makeGamePlay", () => {
-    const existingPlayingId = createObjectIdFromString(faker.database.mongodbObjectId());
-    const existingPlayingGame = createFakeGame();
+    const gameId = createObjectIdFromString(faker.database.mongodbObjectId());
+    const soonToBeOverGameId = createObjectIdFromString(faker.database.mongodbObjectId());
+    const players = [
+      createFakeWerewolfAlivePlayer(),
+      createFakeWerewolfAlivePlayer(),
+      createFakeVillagerAlivePlayer(),
+      createFakeVillagerAlivePlayer(),
+    ];
+    const game = createFakeGame({ status: GAME_STATUSES.PLAYING, players });
+    const nearlyAllDeadPlayers = [
+      createFakeWerewolfAlivePlayer(),
+      createFakeWerewolfAlivePlayer({ isAlive: false }),
+      createFakeVillagerAlivePlayer({ isAlive: false }),
+      createFakeVillagerAlivePlayer({ isAlive: false }),
+    ];
+    const soonToBeOverGame = createFakeGame({ status: GAME_STATUSES.PLAYING, players: nearlyAllDeadPlayers });
     let getGameAndCheckPlayingStatusMock: jest.SpyInstance;
     
     beforeEach(() => {
       getGameAndCheckPlayingStatusMock = jest.spyOn(service, "getGameAndCheckPlayingStatus");
-      when(getGameAndCheckPlayingStatusMock).calledWith(existingPlayingId).mockResolvedValue(existingPlayingGame);
+      when(getGameAndCheckPlayingStatusMock).calledWith(gameId).mockResolvedValue(game);
+      when(getGameAndCheckPlayingStatusMock).calledWith(soonToBeOverGameId).mockResolvedValue(soonToBeOverGame);
+      gameRepositoryMock.updateOne.mockResolvedValue(game);
     });
-    
+
     it("should call play validator when called.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
-      await expect(service.makeGamePlay(existingPlayingId, makeGamePlayDto)).resolves.toStrictEqual(existingPlayingGame);
+      await expect(service.makeGamePlay(gameId, makeGamePlayDto)).resolves.toStrictEqual(game);
       expect(gamePlaysValidatorServiceMock.validateGamePlayWithRelationsDtoData).toHaveBeenCalledOnce();
+    });
+
+    it("should throw an error when game not found by update repository method.", async() => {
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      gameRepositoryMock.updateOne.mockResolvedValue(null);
+      await expect(service.makeGamePlay(gameId, makeGamePlayDto)).rejects.toThrow(`Game with id "${gameId.toString()}" not found`);
+    });
+
+    it("should set game as over when the game is done.", async() => {
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      const gameVictoryData = createFakeGameVictory();
+      jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
+      await service.makeGamePlay(soonToBeOverGameId, makeGamePlayDto);
+      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ _id: soonToBeOverGameId }, { status: GAME_STATUSES.OVER, victory: gameVictoryData });
     });
   });
 });
