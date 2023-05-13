@@ -8,12 +8,16 @@ import { GameRepository } from "../../../../../../../../src/modules/game/provide
 import { GameHistoryRecordService } from "../../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
 import type { GameHistoryRecordPlay } from "../../../../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { GameHistoryRecordToInsert } from "../../../../../../../../src/modules/game/types/game-history-record.type";
+import { API_RESOURCES } from "../../../../../../../../src/shared/api/enums/api.enum";
+import { ResourceNotFoundException } from "../../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
 import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecordPlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
 import { createObjectIdFromString } from "../../../../../../../helpers/mongoose/mongoose.helper";
+
+jest.mock("../../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game History Record Service", () => {
   let service: GameHistoryRecordService;
@@ -58,11 +62,11 @@ describe("Game History Record Service", () => {
     const fakePlayer = createFakePlayer();
     const fakeCard = createFakeGameAdditionalCard();
 
-    it.each<{ play: GameHistoryRecordPlay; test: string; errorMessage: string }>([
+    it.each<{ play: GameHistoryRecordPlay; test: string; errorParameters: [API_RESOURCES, string, string] }>([
       {
         play: createFakeGameHistoryRecordPlay({ source: { name: PLAYER_ATTRIBUTE_NAMES.SHERIFF, players: [fakePlayer] } }),
         test: "a source is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`source.players\` is not in the game players`,
+        errorParameters: [API_RESOURCES.PLAYERS, fakePlayer._id.toString(), "Game Play - Player in `source.players` is not in the game players"],
       },
       {
         play: createFakeGameHistoryRecordPlay({
@@ -73,7 +77,7 @@ describe("Game History Record Service", () => {
           targets: [{ player: fakePlayer }],
         }),
         test: "a target is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`targets.player\` is not in the game players`,
+        errorParameters: [API_RESOURCES.PLAYERS, fakePlayer._id.toString(), "Game Play - Player in `targets.player` is not in the game players"],
       },
       {
         play: createFakeGameHistoryRecordPlay({
@@ -84,7 +88,7 @@ describe("Game History Record Service", () => {
           votes: [{ source: fakePlayer, target: fakeGame.players[0] }],
         }),
         test: "a vote source is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`votes.source\` is not in the game players`,
+        errorParameters: [API_RESOURCES.PLAYERS, fakePlayer._id.toString(), "Game Play - Player in `votes.source` is not in the game players"],
       },
       {
         play: createFakeGameHistoryRecordPlay({
@@ -95,7 +99,7 @@ describe("Game History Record Service", () => {
           votes: [{ target: fakePlayer, source: fakeGame.players[0] }],
         }),
         test: "a vote target is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`votes.target\` is not in the game players`,
+        errorParameters: [API_RESOURCES.PLAYERS, fakePlayer._id.toString(), "Game Play - Player in `votes.target` is not in the game players"],
       },
       {
         play: createFakeGameHistoryRecordPlay({
@@ -106,12 +110,13 @@ describe("Game History Record Service", () => {
           chosenCard: fakeCard,
         }),
         test: "chosen card is not in the game",
-        errorMessage: `Additional card with id "${fakeCard._id.toString()}" not found : Game Play - Chosen card is not in the game additional cards`,
+        errorParameters: [API_RESOURCES.GAME_ADDITIONAL_CARDS, fakeCard._id.toString(), "Game Play - Chosen card is not in the game additional cards"],
       },
-    ])("should throw resource not found error when $test [#$#].", ({ play, errorMessage }) => {
-      expect(() => service.checkGameHistoryRecordToInsertPlayData(play, fakeGame)).toThrow(errorMessage);
+    ])("should throw resource not found error when $test [#$#].", ({ play, errorParameters }) => {
+      expect(() => service.checkGameHistoryRecordToInsertPlayData(play, fakeGame)).toThrow(ResourceNotFoundException);
+      expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
     });
-    
+
     it("should not throw any errors when called with valid play data.", () => {
       const validPlay = createFakeGameHistoryRecordPlay({
         source: {
@@ -137,26 +142,27 @@ describe("Game History Record Service", () => {
       when(gameRepositoryMock.findOne).calledWith({ _id: existingId.toJSON() }).mockResolvedValue(existingGame);
     });
 
-    it.each<{ gameHistoryRecord: GameHistoryRecordToInsert; test: string; errorMessage: string }>([
+    it.each<{ gameHistoryRecord: GameHistoryRecordToInsert; test: string; errorParameters: [API_RESOURCES, string, string] }>([
       {
         gameHistoryRecord: createFakeGameHistoryRecordToInsert({ gameId: unknownId }),
         test: "game is not found with specified gameId",
-        errorMessage: `Game with id "${unknownId.toString()}" not found : Game Play - Game Id is unknown in database`,
+        errorParameters: [API_RESOURCES.GAMES, unknownId.toString(), "Game Play - Game Id is unknown in database"],
       },
       {
         gameHistoryRecord: createFakeGameHistoryRecordToInsert({ gameId: existingId, revealedPlayers: [fakePlayer] }),
         test: "a revealed player is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`revealedPlayers\` is not in the game players`,
+        errorParameters: [API_RESOURCES.PLAYERS, fakePlayer._id.toString(), "Game Play - Player in `revealedPlayers` is not in the game players"],
       },
       {
         gameHistoryRecord: createFakeGameHistoryRecordToInsert({ gameId: existingId, deadPlayers: [fakePlayer] }),
         test: "a dead player is not in the game",
-        errorMessage: `Player with id "${fakePlayer._id.toString()}" not found : Game Play - Player in \`deadPlayers\` is not in the game players`,
+        errorParameters: [API_RESOURCES.PLAYERS, fakePlayer._id.toString(), "Game Play - Player in `deadPlayers` is not in the game players"],
       },
-    ])("should throw resource not found error when $test [#$#].", async({ gameHistoryRecord, errorMessage }) => {
-      await expect(service.checkGameHistoryRecordToInsertData(gameHistoryRecord)).rejects.toThrow(errorMessage);
+    ])("should throw resource not found error when $test [#$#].", async({ gameHistoryRecord, errorParameters }) => {
+      await expect(service.checkGameHistoryRecordToInsertData(gameHistoryRecord)).toReject();
+      expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
     });
-    
+
     it("should not throw any errors when called with valid data.", async() => {
       const validPlay = createFakeGameHistoryRecordToInsert({
         gameId: existingId,

@@ -10,12 +10,18 @@ import { GameHistoryRecordService } from "../../../../../../../src/modules/game/
 import { GamePlaysManagerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-manager.service";
 import { GamePlaysValidatorService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-validator.service";
 import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
+import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enum";
+import { BadResourceMutationException } from "../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type";
+import { ResourceNotFoundException } from "../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
 import { createFakeCreateGameDto } from "../../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { createObjectIdFromString } from "../../../../../../helpers/mongoose/mongoose.helper";
+
+jest.mock("../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type");
+jest.mock("../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game Service", () => {
   let service: GameService;
@@ -82,7 +88,8 @@ describe("Game Service", () => {
     });
 
     it("should throw an error when called with unknown id.", async() => {
-      await expect(service.getGameById(unknownId)).rejects.toThrow(`Game with id "${unknownId}" not found`);
+      await expect(service.getGameById(unknownId)).toReject();
+      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, unknownId);
     });
   });
 
@@ -108,11 +115,13 @@ describe("Game Service", () => {
     });
 
     it("should throw an error when called with unknown id.", async() => {
-      await expect(service.getGameAndCheckPlayingStatus(unknownId)).rejects.toThrow(`Game with id "${unknownId.toString()}" not found`);
+      await expect(service.getGameAndCheckPlayingStatus(unknownId)).toReject();
+      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, unknownId.toString());
     });
 
     it("should throw an error when game doesn't have playing status.", async() => {
-      await expect(service.getGameAndCheckPlayingStatus(existingDoneId)).rejects.toThrow(`Bad mutation for Game with id "${existingDoneId.toString()}" : Game doesn't have status with value "playing"`);
+      await expect(service.getGameAndCheckPlayingStatus(existingDoneId)).toReject();
+      expect(BadResourceMutationException).toHaveBeenCalledWith(API_RESOURCES.GAMES, existingDoneId.toString(), `Game doesn't have status with value "playing"`);
     });
 
     it("should return existing when game exists in database.", async() => {
@@ -122,7 +131,7 @@ describe("Game Service", () => {
 
   describe("cancelGameById", () => {
     const existingPlayingId = createObjectIdFromString(faker.database.mongodbObjectId());
-    
+
     beforeEach(() => {
       jest.spyOn(service, "getGameAndCheckPlayingStatus").mockImplementation();
     });
@@ -134,7 +143,8 @@ describe("Game Service", () => {
 
     it("should throw an error when game not found by update repository method.", async() => {
       gameRepositoryMock.updateOne.mockResolvedValue(null);
-      await expect(service.cancelGameById(existingPlayingId)).rejects.toThrow(`Game with id "${existingPlayingId.toString()}" not found`);
+      await expect(service.cancelGameById(existingPlayingId)).toReject();
+      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, existingPlayingId.toString());
     });
   });
 
@@ -173,7 +183,8 @@ describe("Game Service", () => {
     it("should throw an error when game not found by update repository method.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       gameRepositoryMock.updateOne.mockResolvedValue(null);
-      await expect(service.makeGamePlay(gameId, makeGamePlayDto)).rejects.toThrow(`Game with id "${gameId.toString()}" not found`);
+      await expect(service.makeGamePlay(gameId, makeGamePlayDto)).toReject();
+      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, gameId.toString());
     });
 
     it("should set game as over when the game is done.", async() => {

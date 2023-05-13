@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
-import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../shared/error/enums/bad-resource-mutation-error.enum";
-import { BadResourceMutationError } from "../../../../shared/error/types/bad-resource-mutation-error.type";
-import { ResourceNotFoundError } from "../../../../shared/error/types/resource-not-found-error.type";
+import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../shared/exception/enums/bad-resource-mutation-error.enum";
+import { BadResourceMutationException } from "../../../../shared/exception/types/bad-resource-mutation-exception.type";
+import { ResourceNotFoundException } from "../../../../shared/exception/types/resource-not-found-exception.type";
 import { CreateGameDto } from "../../dto/create-game/create-game.dto";
 import type { MakeGamePlayDto } from "../../dto/make-game-play/make-game-play.dto";
 import { GAME_STATUSES } from "../../enums/game.enum";
@@ -30,7 +30,7 @@ export class GameService {
   public async getGameById(id: string): Promise<Game> {
     const game = await this.gameRepository.findOne({ _id: id });
     if (game === null) {
-      throw new ResourceNotFoundError(API_RESOURCES.GAMES, id);
+      throw new ResourceNotFoundException(API_RESOURCES.GAMES, id);
     }
     return game;
   }
@@ -46,9 +46,9 @@ export class GameService {
   public async getGameAndCheckPlayingStatus(gameId: Types.ObjectId): Promise<Game> {
     const game = await this.gameRepository.findOne({ _id: gameId });
     if (game === null) {
-      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId.toString());
+      throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString());
     } else if (game.status !== GAME_STATUSES.PLAYING) {
-      throw new BadResourceMutationError(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
+      throw new BadResourceMutationException(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
     }
     return game;
   }
@@ -57,7 +57,7 @@ export class GameService {
     await this.getGameAndCheckPlayingStatus(gameId);
     const updatedGame = await this.gameRepository.updateOne({ _id: gameId }, { status: GAME_STATUSES.CANCELED });
     if (updatedGame === null) {
-      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId.toString());
+      throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString());
     }
     return updatedGame;
   }
@@ -73,7 +73,7 @@ export class GameService {
     }
     const updatedGame = await this.gameRepository.updateOne({ _id: gameId }, gameDataToUpdate);
     if (updatedGame === null) {
-      throw new ResourceNotFoundError(API_RESOURCES.GAMES, gameId.toString());
+      throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString());
     }
     return updatedGame;
   }
