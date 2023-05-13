@@ -39,12 +39,12 @@ function createFakePlayerRole(obj: Partial<PlayerRole> = {}, override: object = 
 function createFakePlayer(obj: Partial<Player> = {}, override: object = {}): Player {
   return plainToInstance(Player, {
     _id: obj._id ?? createObjectIdFromString(faker.database.mongodbObjectId()),
-    name: obj.name ?? faker.helpers.unique(faker.name.firstName),
+    name: obj.name ?? faker.person.firstName(),
     role: createFakePlayerRole(obj.role, (override as Player).role),
     side: createFakePlayerSide(obj.side, (override as Player).side),
     attributes: obj.attributes ?? [],
     isAlive: obj.isAlive ?? faker.datatype.boolean(),
-    position: obj.position ?? faker.datatype.number({ min: 0 }),
+    position: obj.position ?? faker.number.int({ min: 0 }),
     death: obj.death ? createFakePlayerDeath(obj.death) : undefined,
     ...override,
   }, plainToInstanceDefaultOptions);

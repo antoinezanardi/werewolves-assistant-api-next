@@ -7,7 +7,7 @@ import { bulkCreate } from "../../../../shared/bulk-create.factory";
 
 function createFakeCreateGamePlayerDto(createGamePlayerDto: Partial<CreateGamePlayerDto> = {}, override: Partial<CreateGamePlayerDto> = {}): CreateGamePlayerDto {
   return plainToInstance(CreateGamePlayerDto, {
-    name: createGamePlayerDto.name ?? faker.helpers.unique(faker.name.firstName),
+    name: createGamePlayerDto.name ?? faker.person.firstName(),
     role: { name: createGamePlayerDto.role?.name ?? faker.helpers.arrayElement(Object.values(ROLE_NAMES)) },
     position: createGamePlayerDto.position ?? undefined,
     ...override,

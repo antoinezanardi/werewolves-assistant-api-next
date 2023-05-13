@@ -25,14 +25,14 @@ import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validat
 
 function createFakeRavenGameOptions(ravenGameOptions: Partial<RavenGameOptions> = {}, override: object = {}): RavenGameOptions {
   return plainToInstance(RavenGameOptions, {
-    markPenalty: ravenGameOptions.markPenalty ?? faker.datatype.number({ min: 1, max: 5 }),
+    markPenalty: ravenGameOptions.markPenalty ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
 
 function createFakePiedPiperGameOptions(piedPiperGameOptions: Partial<PiedPiperGameOptions> = {}, override: object = {}): PiedPiperGameOptions {
   return plainToInstance(PiedPiperGameOptions, {
-    charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.datatype.number({ min: 1, max: 5 }),
+    charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.number.int({ min: 1, max: 5 }),
     isPowerlessIfInfected: piedPiperGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
     ...override,
   }, plainToInstanceDefaultOptions);
@@ -41,7 +41,7 @@ function createFakePiedPiperGameOptions(piedPiperGameOptions: Partial<PiedPiperG
 function createFakeThiefGameOptions(thiefGameOptions: Partial<ThiefGameOptions> = {}, override: object = {}): ThiefGameOptions {
   return plainToInstance(ThiefGameOptions, {
     mustChooseBetweenWerewolves: thiefGameOptions.mustChooseBetweenWerewolves ?? faker.datatype.boolean(),
-    additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.datatype.number({ min: 1, max: 5 }),
+    additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -62,7 +62,7 @@ function createFakeWildChildGameOptions(wildChildGameOptions: Partial<WildChildG
 
 function createFakeStutteringJudgeGameOptions(stutteringJudgeGameOptions: Partial<StutteringJudgeGameOptions> = {}, override: object = {}): StutteringJudgeGameOptions {
   return plainToInstance(StutteringJudgeGameOptions, {
-    voteRequestsCount: stutteringJudgeGameOptions.voteRequestsCount ?? faker.datatype.number({ min: 1, max: 5 }),
+    voteRequestsCount: stutteringJudgeGameOptions.voteRequestsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -83,14 +83,14 @@ function createFakeFoxGameOptions(foxGameOptions: Partial<FoxGameOptions> = {}, 
 
 function createFakeThreeBrothersGameOptions(threeBrothersGameOptions: Partial<ThreeBrothersGameOptions> = {}, override: object = {}): ThreeBrothersGameOptions {
   return plainToInstance(ThreeBrothersGameOptions, {
-    wakingUpInterval: threeBrothersGameOptions.wakingUpInterval ?? faker.datatype.number({ min: 0, max: 5 }),
+    wakingUpInterval: threeBrothersGameOptions.wakingUpInterval ?? faker.number.int({ min: 0, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
 
 function createFakeTwoSistersGameOptions(twoSistersGameOptions: Partial<TwoSistersGameOptions> = {}, override: object = {}): TwoSistersGameOptions {
   return plainToInstance(TwoSistersGameOptions, {
-    wakingUpInterval: twoSistersGameOptions.wakingUpInterval ?? faker.datatype.number({ min: 0, max: 5 }),
+    wakingUpInterval: twoSistersGameOptions.wakingUpInterval ?? faker.number.int({ min: 0, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -104,7 +104,7 @@ function createFakeIdiotGameOptions(idiotGameOptions: Partial<IdiotGameOptions> 
 
 function createFakeAncientGameOptions(ancientGameOptions: Partial<AncientGameOptions> = {}, override: object = {}): AncientGameOptions {
   return plainToInstance(AncientGameOptions, {
-    livesCountAgainstWerewolves: ancientGameOptions.livesCountAgainstWerewolves ?? faker.datatype.number({ min: 1, max: 5 }),
+    livesCountAgainstWerewolves: ancientGameOptions.livesCountAgainstWerewolves ?? faker.number.int({ min: 1, max: 5 }),
     doesTakeHisRevenge: ancientGameOptions.doesTakeHisRevenge ?? faker.datatype.boolean(),
     ...override,
   }, plainToInstanceDefaultOptions);
@@ -134,7 +134,7 @@ function createFakeSeerGameOptions(seerGameOptions: Partial<SeerGameOptions> = {
 
 function createFakeWhiteWerewolfGameOptions(whiteWerewolfOptions: Partial<WhiteWerewolfGameOptions> = {}, override: object = {}): WhiteWerewolfGameOptions {
   return plainToInstance(WhiteWerewolfGameOptions, {
-    wakingUpInterval: whiteWerewolfOptions.wakingUpInterval ?? faker.datatype.number({ min: 1, max: 5 }),
+    wakingUpInterval: whiteWerewolfOptions.wakingUpInterval ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -148,7 +148,7 @@ function createFakeBigBadWolfGameOptions(bigBadWolfOptions: Partial<BigBadWolfGa
 
 function createFakeSheriffElectionGameOptions(sheriffElectionGameOptions: Partial<SheriffElectionGameOptions> = {}, override: object = {}): SheriffElectionGameOptions {
   return plainToInstance(SheriffElectionGameOptions, {
-    turn: sheriffElectionGameOptions.turn ?? faker.datatype.number({ min: 1 }),
+    turn: sheriffElectionGameOptions.turn ?? faker.number.int({ min: 1 }),
     phase: sheriffElectionGameOptions.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
     ...override,
   }, plainToInstanceDefaultOptions);
