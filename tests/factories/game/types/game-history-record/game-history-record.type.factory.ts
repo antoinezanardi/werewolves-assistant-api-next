@@ -11,8 +11,8 @@ import { createFakeGameHistoryRecordPlay } from "../../schemas/game-history-reco
 function createFakeGameHistoryRecordToInsert(gameHistoryRecordToInsert: Partial<GameHistoryRecordToInsert> = {}, override: object = {}): GameHistoryRecordToInsert {
   return plainToInstance(GameHistoryRecordToInsert, {
     gameId: gameHistoryRecordToInsert.gameId ?? createObjectIdFromString(faker.database.mongodbObjectId()),
-    tick: gameHistoryRecordToInsert.tick ?? faker.datatype.number({ min: gameHistoryRecordFieldsSpecs.tick.minimum }),
-    turn: gameHistoryRecordToInsert.turn ?? faker.datatype.number({ min: gameHistoryRecordFieldsSpecs.turn.minimum }),
+    tick: gameHistoryRecordToInsert.tick ?? faker.number.int({ min: gameHistoryRecordFieldsSpecs.tick.minimum }),
+    turn: gameHistoryRecordToInsert.turn ?? faker.number.int({ min: gameHistoryRecordFieldsSpecs.turn.minimum }),
     phase: gameHistoryRecordToInsert.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
     play: createFakeGameHistoryRecordPlay(gameHistoryRecordToInsert.play),
     revealedPlayers: gameHistoryRecordToInsert.revealedPlayers ?? undefined,

@@ -1,7 +1,7 @@
 import { plainToInstance } from "class-transformer";
 import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
-import { RESOURCE_NOT_FOUND_REASONS } from "../../../shared/error/enums/resource-not-found-error.enum";
-import { ResourceNotFoundError } from "../../../shared/error/types/resource-not-found-error.type";
+import { RESOURCE_NOT_FOUND_REASONS } from "../../../shared/exception/enums/resource-not-found-error.enum";
+import { ResourceNotFoundException } from "../../../shared/exception/types/resource-not-found-exception.type";
 import { plainToInstanceDefaultOptions } from "../../../shared/validation/constants/validation.constant";
 import { MakeGamePlayTargetWithRelationsDto } from "../dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import { MakeGamePlayVoteWithRelationsDto } from "../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
@@ -19,10 +19,10 @@ function getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayD
     const source = getPlayerWithId(game.players, vote.sourceId);
     const target = getPlayerWithId(game.players, vote.targetId);
     if (source === undefined) {
-      throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, vote.sourceId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
+      throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, vote.sourceId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
     }
     if (target === undefined) {
-      throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, vote.targetId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
+      throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, vote.targetId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
     }
     const plainToInstanceOptions = { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true };
     const voteWithRelations = plainToInstance(MakeGamePlayVoteWithRelationsDto, { ...vote, source, target }, plainToInstanceOptions);
@@ -37,7 +37,7 @@ function getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePla
   return makeGamePlayDto.targets.reduce<MakeGamePlayTargetWithRelationsDto[]>((acc, target) => {
     const player = getPlayerWithId(game.players, target.playerId);
     if (player === undefined) {
-      throw new ResourceNotFoundError(API_RESOURCES.PLAYERS, target.playerId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
+      throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, target.playerId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
     }
     const plainToInstanceOptions = { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true };
     const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, { ...target, player }, plainToInstanceOptions);
@@ -51,7 +51,7 @@ function getChosenCardFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayDto, game
   }
   const chosenCard = getAdditionalCardWithId(game.additionalCards, makeGamePlayDto.chosenCardId);
   if (chosenCard === undefined) {
-    throw new ResourceNotFoundError(API_RESOURCES.GAME_ADDITIONAL_CARDS, makeGamePlayDto.chosenCardId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
+    throw new ResourceNotFoundException(API_RESOURCES.GAME_ADDITIONAL_CARDS, makeGamePlayDto.chosenCardId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
   }
   return chosenCard;
 }

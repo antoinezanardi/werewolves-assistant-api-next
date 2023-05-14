@@ -74,7 +74,7 @@ jobs:
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
       - name: All tests 🧬
-        run: npm run test:cov -- --verbose=false
+        run: npm run test:cov
       - name: Save tests coverage in cache 🥡
         uses: actions/cache/save@v3
         id: cache-tests-coverage

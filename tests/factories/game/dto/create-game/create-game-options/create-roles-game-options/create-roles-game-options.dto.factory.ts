@@ -25,14 +25,14 @@ import { plainToInstanceDefaultOptions } from "../../../../../../../src/shared/v
 
 function createFakeCreateRavenGameOptionsDto(ravenGameOptions: Partial<CreateRavenGameOptionsDto> = {}, override: object = {}): CreateRavenGameOptionsDto {
   return plainToInstance(CreateRavenGameOptionsDto, {
-    markPenalty: ravenGameOptions.markPenalty ?? faker.datatype.number({ min: 1, max: 5 }),
+    markPenalty: ravenGameOptions.markPenalty ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
 
 function createFakeCreatePiedPiperGameOptionsDto(piedPiperGameOptions: Partial<CreatePiedPiperGameOptionsDto> = {}, override: object = {}): CreatePiedPiperGameOptionsDto {
   return plainToInstance(CreatePiedPiperGameOptionsDto, {
-    charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.datatype.number({ min: 1, max: 5 }),
+    charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.number.int({ min: 1, max: 5 }),
     isPowerlessIfInfected: piedPiperGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
     ...override,
   }, plainToInstanceDefaultOptions);
@@ -41,7 +41,7 @@ function createFakeCreatePiedPiperGameOptionsDto(piedPiperGameOptions: Partial<C
 function createFakeCreateThiefGameOptionsDto(thiefGameOptions: Partial<CreateThiefGameOptionsDto> = {}, override: object = {}): CreateThiefGameOptionsDto {
   return plainToInstance(CreateThiefGameOptionsDto, {
     mustChooseBetweenWerewolves: thiefGameOptions.mustChooseBetweenWerewolves ?? faker.datatype.boolean(),
-    additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.datatype.number({ min: 1, max: 5 }),
+    additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -65,7 +65,7 @@ function createFakeCreateStutteringJudgeGameOptionsDto(
   override: object = {},
 ): CreateStutteringJudgeGameOptionsDto {
   return plainToInstance(CreateStutteringJudgeGameOptionsDto, {
-    voteRequestsCount: stutteringJudgeGameOptions.voteRequestsCount ?? faker.datatype.number({ min: 1, max: 5 }),
+    voteRequestsCount: stutteringJudgeGameOptions.voteRequestsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -89,14 +89,14 @@ function createFakeCreateThreeBrothersGameOptionsDto(
   override: object = {},
 ): CreateThreeBrothersGameOptionsDto {
   return plainToInstance(CreateThreeBrothersGameOptionsDto, {
-    wakingUpInterval: threeBrothersGameOptions.wakingUpInterval ?? faker.datatype.number({ min: 0, max: 5 }),
+    wakingUpInterval: threeBrothersGameOptions.wakingUpInterval ?? faker.number.int({ min: 0, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
 
 function createFakeCreateTwoSistersGameOptionsDto(twoSistersGameOptions: Partial<CreateTwoSistersGameOptionsDto> = {}, override: object = {}): CreateTwoSistersGameOptionsDto {
   return plainToInstance(CreateTwoSistersGameOptionsDto, {
-    wakingUpInterval: twoSistersGameOptions.wakingUpInterval ?? faker.datatype.number({ min: 0, max: 5 }),
+    wakingUpInterval: twoSistersGameOptions.wakingUpInterval ?? faker.number.int({ min: 0, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -110,7 +110,7 @@ function createFakeCreateIdiotGameOptionsDto(idiotGameOptions: Partial<CreateIdi
 
 function createFakeCreateAncientGameOptionsDto(ancientGameOptions: Partial<CreateAncientGameOptionsDto> = {}, override: object = {}): CreateAncientGameOptionsDto {
   return plainToInstance(CreateAncientGameOptionsDto, {
-    livesCountAgainstWerewolves: ancientGameOptions.livesCountAgainstWerewolves ?? faker.datatype.number({ min: 1, max: 5 }),
+    livesCountAgainstWerewolves: ancientGameOptions.livesCountAgainstWerewolves ?? faker.number.int({ min: 1, max: 5 }),
     doesTakeHisRevenge: ancientGameOptions.doesTakeHisRevenge ?? faker.datatype.boolean(),
     ...override,
   }, plainToInstanceDefaultOptions);
@@ -143,7 +143,7 @@ function createFakeCreateWhiteWerewolfGameOptionsDto(
   override: object = {},
 ): CreateWhiteWerewolfGameOptionsDto {
   return plainToInstance(CreateWhiteWerewolfGameOptionsDto, {
-    wakingUpInterval: whiteWerewolfOptions.wakingUpInterval ?? faker.datatype.number({ min: 1, max: 5 }),
+    wakingUpInterval: whiteWerewolfOptions.wakingUpInterval ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -160,7 +160,7 @@ function createFakeCreateSheriffElectionGameOptionsDto(
   override: object = {},
 ): CreateSheriffElectionGameOptionsDto {
   return plainToInstance(CreateSheriffElectionGameOptionsDto, {
-    turn: sheriffElectionGameOptions.turn ?? faker.datatype.number({ min: 1 }),
+    turn: sheriffElectionGameOptions.turn ?? faker.number.int({ min: 1 }),
     phase: sheriffElectionGameOptions.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
     ...override,
   }, plainToInstanceDefaultOptions);

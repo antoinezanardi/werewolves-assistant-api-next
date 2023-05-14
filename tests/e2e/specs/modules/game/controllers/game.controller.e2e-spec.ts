@@ -32,6 +32,7 @@ import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/ga
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers } from "../../../../../factories/game/schemas/player/player.schema.factory";
 import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
+import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
 import { initNestApp } from "../../../../helpers/nest-app.helper";
 
 describe("Game Controller", () => {
@@ -103,7 +104,7 @@ describe("Game Controller", () => {
         errorMessage: "players.0.name must be longer than or equal to 1 characters",
       },
       {
-        query: { players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: faker.datatype.string(31) }]) },
+        query: { players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: faker.string.sample(31) }]) },
         test: "one of the player name is too long",
         errorMessage: "players.0.name must be shorter than or equal to 30 characters",
       },
@@ -155,7 +156,50 @@ describe("Game Controller", () => {
     });
 
     it("should get random composition when called.", async() => {
-      const query: Partial<GetGameRandomCompositionDto> = { players: bulkCreateFakeCreateGamePlayerDto(40), arePowerfulVillagerRolesPrioritized: false };
+      const query: Partial<GetGameRandomCompositionDto> = {
+        players: bulkCreateFakeCreateGamePlayerDto(40, [
+          { name: "1" },
+          { name: "2" },
+          { name: "3" },
+          { name: "4" },
+          { name: "5" },
+          { name: "6" },
+          { name: "7" },
+          { name: "8" },
+          { name: "9" },
+          { name: "10" },
+          { name: "11" },
+          { name: "12" },
+          { name: "13" },
+          { name: "14" },
+          { name: "15" },
+          { name: "16" },
+          { name: "17" },
+          { name: "18" },
+          { name: "19" },
+          { name: "20" },
+          { name: "21" },
+          { name: "22" },
+          { name: "23" },
+          { name: "24" },
+          { name: "25" },
+          { name: "26" },
+          { name: "27" },
+          { name: "28" },
+          { name: "29" },
+          { name: "30" },
+          { name: "31" },
+          { name: "32" },
+          { name: "33" },
+          { name: "34" },
+          { name: "35" },
+          { name: "36" },
+          { name: "37" },
+          { name: "38" },
+          { name: "39" },
+          { name: "40" },
+        ]), arePowerfulVillagerRolesPrioritized: false,
+      };
       const response = await app.inject({
         method: "GET",
         url: "/games/random-composition",
@@ -228,7 +272,7 @@ describe("Game Controller", () => {
         errorMessage: "players.0.name must be longer than or equal to 1 characters",
       },
       {
-        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: faker.datatype.string(31) }]) }),
+        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: faker.string.sample(31) }]) }),
         test: "one of the player name is too long",
         errorMessage: "players.0.name must be shorter than or equal to 30 characters",
       },
@@ -455,7 +499,11 @@ describe("Game Controller", () => {
         url: `/games/${game._id.toString()}`,
       });
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.json<BadRequestException>().message).toBe(`Bad mutation for Game with id "${game._id.toString()}" : Game doesn't have status with value "playing"`);
+      expect(response.json<ExceptionResponse>()).toStrictEqual<ExceptionResponse>({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: `Bad mutation for Game with id "${game._id.toString()}"`,
+        error: `Game doesn't have status with value "playing"`,
+      });
     });
 
     it("should update game status to canceled when called.", async() => {
@@ -522,6 +570,61 @@ describe("Game Controller", () => {
       });
       expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
       expect(response.json<BadRequestException>().message).toBe(`Game with id "${unknownId}" not found`);
+    });
+
+    it("should not allow game play when payload contains unknown resources id.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ]);
+      const game = createFakeGame({
+        status: GAME_STATUSES.PLAYING,
+        upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
+        players,
+      });
+      await model.create(game);
+      const unknownPlayerId = faker.database.mongodbObjectId();
+      const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: createObjectIdFromString(unknownPlayerId) }] });
+      const response = await app.inject({
+        method: "POST",
+        url: `/games/${game._id.toString()}/play`,
+        payload,
+      });
+      expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+      expect(response.json<ExceptionResponse>()).toStrictEqual<ExceptionResponse>({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: `Player with id "${unknownPlayerId.toString()}" not found`,
+        error: "Game Play - Player in `targets.player` is not in the game players",
+      });
+    });
+
+    it("should not allow game play when payload is not valid.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ]);
+      const game = createFakeGame({
+        status: GAME_STATUSES.PLAYING,
+        upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
+        players,
+      });
+      await model.create(game);
+      const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
+      const response = await app.inject({
+        method: "POST",
+        url: `/games/${game._id.toString()}/play`,
+        payload,
+      });
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.json<ExceptionResponse>()).toStrictEqual<ExceptionResponse>({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: `Bad game play payload`,
+        error: "`votes` is required on this current game's state",
+      });
     });
 
     it("should make a game play when called with votes.", async() => {
