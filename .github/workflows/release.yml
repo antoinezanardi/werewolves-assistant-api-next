@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
-      - name: Setup NodeJS v18 ⚙️
+      - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - name: Setup NodeJS v18 ⚙️
+      - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -60,7 +60,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
-      - name: Setup NodeJS v18 ⚙️
+      - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
