@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import type { Types } from "mongoose";
 import { ROLE_NAMES, ROLE_SIDES } from "../../role/enums/role.enum";
 import type { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
@@ -10,27 +11,27 @@ import type { GameSource } from "../types/game.type";
 import { doesPlayerHaveAttribute } from "./player/player.helper";
 
 function getPlayerDtoWithRole(players: CreateGamePlayerDto[], role: ROLE_NAMES): CreateGamePlayerDto | undefined {
-  return players.find(player => player.role.name === role);
+  return cloneDeep(players.find(player => player.role.name === role));
 }
 
 function getPlayerWithCurrentRole(players: Player[], role: ROLE_NAMES): Player | undefined {
-  return players.find(player => player.role.current === role);
+  return cloneDeep(players.find(player => player.role.current === role));
 }
 
 function getPlayersWithCurrentRole(players: Player[], role: ROLE_NAMES): Player[] {
-  return players.filter(player => player.role.current === role);
+  return cloneDeep(players.filter(player => player.role.current === role));
 }
 
 function getPlayersWithCurrentSide(players: Player[], side: ROLE_SIDES): Player[] {
-  return players.filter(player => player.side.current === side);
+  return cloneDeep(players.filter(player => player.side.current === side));
 }
 
 function getPlayerWithId(players: Player[], id: Types.ObjectId): Player | undefined {
-  return players.find(({ _id }) => _id.toString() === id.toString());
+  return cloneDeep(players.find(({ _id }) => _id.toString() === id.toString()));
 }
 
 function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Types.ObjectId): GameAdditionalCard | undefined {
-  return cards?.find(({ _id }) => _id.toString() === id.toString());
+  return cloneDeep(cards?.find(({ _id }) => _id.toString() === id.toString()));
 }
 
 function areAllWerewolvesAlive(players: Player[]): boolean {
@@ -48,20 +49,20 @@ function areAllPlayersDead(players: Player[]): boolean {
 }
 
 function getPlayersWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player[] {
-  return players.filter(player => doesPlayerHaveAttribute(player, attribute));
+  return cloneDeep(players.filter(player => doesPlayerHaveAttribute(player, attribute)));
 }
 
 function getAlivePlayers(players: Player[]): Player[] {
-  return players.filter(player => player.isAlive);
+  return cloneDeep(players.filter(player => player.isAlive));
 }
 
 function getLeftToCharmByPiedPiperPlayers(players: Player[]): Player[] {
-  return players.filter(player => player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.CHARMED) && player.role.current !== ROLE_NAMES.PIED_PIPER);
+  return cloneDeep(players.filter(player => player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.CHARMED) && player.role.current !== ROLE_NAMES.PIED_PIPER));
 }
 
 function getGroupOfPlayers(players: Player[], group: PLAYER_GROUPS): Player[] {
   if (group === PLAYER_GROUPS.ALL) {
-    return players;
+    return cloneDeep(players);
   } else if (group === PLAYER_GROUPS.LOVERS) {
     return getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
   } else if (group === PLAYER_GROUPS.CHARMED) {
@@ -85,11 +86,11 @@ function getNonexistentPlayerId(players: Player[], candidateIds?: Types.ObjectId
 }
 
 function getNonexistentPlayer(players: Player[], candidatePlayers?: Player[]): Player | undefined {
-  return candidatePlayers?.find(candidatePlayer => !getPlayerWithId(players, candidatePlayer._id));
+  return cloneDeep(candidatePlayers?.find(candidatePlayer => !getPlayerWithId(players, candidatePlayer._id)));
 }
 
 function getUpcomingGamePlay(upcomingActions: GamePlay[]): GamePlay | undefined {
-  return upcomingActions.length ? upcomingActions[0] : undefined;
+  return upcomingActions.length ? cloneDeep(upcomingActions[0]) : undefined;
 }
 
 function getUpcomingGamePlayAction(upcomingActions: GamePlay[]): GAME_PLAY_ACTIONS | undefined {
