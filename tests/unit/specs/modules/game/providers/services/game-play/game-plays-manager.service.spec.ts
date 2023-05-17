@@ -16,7 +16,7 @@ import { createFakeCreateGameDto } from "../../../../../../../factories/game/dto
 import { createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlay } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePlayerPowerlessByAncientAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePowerlessByAncientPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
@@ -100,7 +100,7 @@ describe("Game Plays Manager Service", () => {
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-        createFakeCupidAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeCupidAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ]);
       const game = createFakeGame({ players });
       expect(service.areLoversPlayableForNight(game)).toBe(false);
@@ -168,7 +168,7 @@ describe("Game Plays Manager Service", () => {
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-        createFakeAngelAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeAngelAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ]);
       const game = createFakeGame({ players });
       expect(service.areAllPlayableForNight(game)).toBe(false);
@@ -221,8 +221,8 @@ describe("Game Plays Manager Service", () => {
 
     it("should return false when group is werewolves and all are powerless.", () => {
       const players = bulkCreateFakePlayers(4, [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
-        createFakeBigBadWolfAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeBigBadWolfAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeWitchAlivePlayer(),
         createFakeWildChildAlivePlayer(),
       ]);
@@ -315,7 +315,7 @@ describe("Game Plays Manager Service", () => {
 
     it("should return false when white werewolf is in the game but powerless.", () => {
       const players = bulkCreateFakePlayers(4, [
-        createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeSeerAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
@@ -790,7 +790,7 @@ describe("Game Plays Manager Service", () => {
     it("should return false when player is powerless.", () => {
       const players = bulkCreateFakePlayers(4, [
         createFakeTwoSistersAlivePlayer(),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeTwoSistersAlivePlayer(),
         createFakeWildChildAlivePlayer(),
       ]);
@@ -915,7 +915,7 @@ describe("Game Plays Manager Service", () => {
             createFakeCupidAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
             createFakeSeerAlivePlayer({ isAlive: false }),
-            createFakeWitchAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+            createFakeWitchAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
             createFakeAngelAlivePlayer(),
           ]),
           options: defaultGameOptions,

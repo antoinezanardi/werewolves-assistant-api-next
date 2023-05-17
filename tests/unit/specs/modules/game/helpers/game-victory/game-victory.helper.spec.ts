@@ -9,7 +9,7 @@ import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../.
 import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePlayerCharmedByPiedPiperAttribute, createFakePlayerInLoveByCupidAttribute, createFakePlayerPowerlessByAncientAttribute } from "../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute } from "../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayerDeath, createFakePlayerSide } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 
@@ -101,8 +101,8 @@ describe("Game Victory Helper", () => {
       const players = [
         createFakeVillagerAlivePlayer(),
         createFakeSeerAlivePlayer({ isAlive: false }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()] }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
       expect(doLoversWin(players)).toBe(false);
     });
@@ -111,8 +111,8 @@ describe("Game Victory Helper", () => {
       const players = [
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeSeerAlivePlayer({ isAlive: false }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()] }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()], isAlive: false }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()], isAlive: false }),
       ];
       expect(doLoversWin(players)).toBe(false);
     });
@@ -121,8 +121,8 @@ describe("Game Victory Helper", () => {
       const players = [
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeSeerAlivePlayer({ isAlive: false }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()] }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
       expect(doLoversWin(players)).toBe(true);
     });
@@ -187,9 +187,9 @@ describe("Game Victory Helper", () => {
 
     it("should return false when pied piper is dead but all are charmed.", () => {
       const players = [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakePiedPiperAlivePlayer({ isAlive: false }),
       ];
       const game = createFakeGame({ players });
@@ -198,10 +198,10 @@ describe("Game Victory Helper", () => {
 
     it("should return false when pied piper is powerless but all are charmed.", () => {
       const players = [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakePiedPiperAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
       expect(doesPiedPiperWin(game)).toBe(false);
@@ -209,10 +209,10 @@ describe("Game Victory Helper", () => {
 
     it("should return false when there are still left to charm players.", () => {
       const players = [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ attributes: [] }),
-        createFakePiedPiperAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
       expect(doesPiedPiperWin(game)).toBe(false);
@@ -220,9 +220,9 @@ describe("Game Victory Helper", () => {
 
     it("should return false when all are charmed but pied piper is powerless because infected.", () => {
       const players = [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
@@ -232,9 +232,9 @@ describe("Game Victory Helper", () => {
 
     it("should return true when all are charmed but pied piper is not powerless because infected.", () => {
       const players = [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
@@ -244,9 +244,9 @@ describe("Game Victory Helper", () => {
 
     it("should return true when all are charmed and pied piper is not infected anyway.", () => {
       const players = [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakePiedPiperAlivePlayer(),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
@@ -298,7 +298,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerDeath({ cause: PLAYER_DEATH_CAUSES.EATEN }), attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerDeath({ cause: PLAYER_DEATH_CAUSES.EATEN }), attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
       expect(doesAngelWin(game)).toBe(false);
@@ -410,8 +410,8 @@ describe("Game Victory Helper", () => {
       const players = [
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeSeerAlivePlayer({ isAlive: false }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()] }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
       const upcomingPlays = [
         createFakeGamePlayAllVote(),
@@ -437,9 +437,9 @@ describe("Game Victory Helper", () => {
 
     it("should return true when pied piper wins.", () => {
       const players = [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) }),
       ];
       const upcomingPlays = [
@@ -500,8 +500,8 @@ describe("Game Victory Helper", () => {
       const players = [
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeSeerAlivePlayer({ isAlive: false }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()] }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerInLoveByCupidAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory = createFakeGameVictory({ type: GAME_VICTORY_TYPES.LOVERS, winners: [players[2], players[3]] });
@@ -510,9 +510,9 @@ describe("Game Victory Helper", () => {
 
     it("should return pied piper victory when pied piper wins.", () => {
       const players = [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });

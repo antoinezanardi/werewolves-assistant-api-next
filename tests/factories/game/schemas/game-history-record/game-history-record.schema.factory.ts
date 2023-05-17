@@ -11,7 +11,7 @@ import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
 import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
 import { createObjectIdFromString } from "../../../../helpers/mongoose/mongoose.helper";
 import { bulkCreate } from "../../../shared/bulk-create.factory";
-import { createFakePlayerCharmedByPiedPiperAttribute, createFakePlayerSheriffByAllAttribute } from "../player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../player/player-attribute/player-attribute.schema.factory";
 import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../player/player-with-role.schema.factory";
 import { createFakePlayer } from "../player/player.schema.factory";
 
@@ -151,8 +151,8 @@ function createFakeGameHistoryRecordThreeBrothersMeetEachOtherPlay(gameHistoryRe
 
 function createFakeGameHistoryRecordCharmedMeetEachOtherPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   const sourcePlayers = [
-    createFakePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-    createFakePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
+    createFakePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+    createFakePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
   ];
   return createFakeGameHistoryRecordPlay({
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
@@ -257,7 +257,7 @@ function createFakeGameHistoryRecordSheriffDelegatePlay(gameHistoryRecordPlay: P
     action: GAME_PLAY_ACTIONS.DELEGATE,
     source: {
       name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakePlayerSheriffByAllAttribute()] })],
+      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] })],
     },
     ...gameHistoryRecordPlay,
   }, override);
@@ -268,7 +268,7 @@ function createFakeGameHistoryRecordSheriffSettleVotesPlay(gameHistoryRecordPlay
     action: GAME_PLAY_ACTIONS.SETTLE_VOTES,
     source: {
       name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakePlayerSheriffByAllAttribute()] })],
+      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] })],
     },
     ...gameHistoryRecordPlay,
   }, override);
