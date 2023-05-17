@@ -64,7 +64,7 @@
     "@fastify/static": "^6.10.1",
     "@nestjs/common": "^9.4.0",
     "@nestjs/config": "^2.3.2",
-    "@nestjs/core": "^9.4.0",
+    "@nestjs/core": "^9.4.1",
     "@nestjs/mongoose": "^9.2.2",
     "@nestjs/platform-express": "^9.4.0",
     "@nestjs/platform-fastify": "^9.4.0",
