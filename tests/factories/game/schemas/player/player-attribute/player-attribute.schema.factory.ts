@@ -104,6 +104,14 @@ function createFakePowerlessByAncientPlayerAttribute(attribute: Partial<PlayerAt
   }, override);
 }
 
+function createFakeCantVoteByAllPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+  return createFakePlayerAttribute({
+    name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
+    source: PLAYER_GROUPS.ALL,
+    ...attribute,
+  }, override);
+}
+
 function createFakeCantVoteByScapegoatPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
@@ -173,6 +181,7 @@ export {
   createFakeInLoveByCupidPlayerAttribute,
   createFakeWorshipedByWildChildPlayerAttribute,
   createFakePowerlessByAncientPlayerAttribute,
+  createFakeCantVoteByAllPlayerAttribute,
   createFakeCantVoteByScapegoatPlayerAttribute,
   createFakeCharmedByPiedPiperPlayerAttribute,
   createFakeGrowledByBearTamerPlayerAttribute,

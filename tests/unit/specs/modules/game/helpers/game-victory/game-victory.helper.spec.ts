@@ -1,6 +1,5 @@
 import { GAME_PLAY_ACTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_VICTORY_TYPES } from "../../../../../../../src/modules/game/enums/game-victory.enum";
-import { PLAYER_DEATH_CAUSES } from "../../../../../../../src/modules/game/enums/player.enum";
 import { doesAngelWin, doesPiedPiperWin, doesWhiteWerewolfWin, doLoversWin, doVillagersWin, doWerewolvesWin, generateGameVictoryData, isGameOver } from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
 import type { GameVictory } from "../../../../../../../src/modules/game/schemas/game-victory/game-victory.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
@@ -10,8 +9,9 @@ import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGa
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute } from "../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerVoteByAllDeath } from "../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayerDeath, createFakePlayerSide } from "../../../../../../factories/game/schemas/player/player.schema.factory";
+import { createFakePlayerSide } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Game Victory Helper", () => {
   describe("doWerewolvesWin", () => {
@@ -298,7 +298,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerDeath({ cause: PLAYER_DEATH_CAUSES.EATEN }), attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerEatenByWerewolvesDeath(), attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
       expect(doesAngelWin(game)).toBe(false);
@@ -309,7 +309,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerDeath({ cause: PLAYER_DEATH_CAUSES.EATEN }) }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerEatenByWerewolvesDeath() }),
       ];
       const game = createFakeGame({ players, turn: 2 });
       expect(doesAngelWin(game)).toBe(false);
@@ -320,7 +320,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerDeath({ cause: PLAYER_DEATH_CAUSES.BROKEN_HEART }) }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerBrokenHeartByCupidDeath() }),
       ];
       const game = createFakeGame({ players, turn: 1 });
       expect(doesAngelWin(game)).toBe(false);
@@ -331,7 +331,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerDeath({ cause: PLAYER_DEATH_CAUSES.EATEN }) }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerEatenByWerewolvesDeath() }),
       ];
       const game = createFakeGame({ players, turn: 1 });
       expect(doesAngelWin(game)).toBe(true);
@@ -342,7 +342,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerDeath({ cause: PLAYER_DEATH_CAUSES.VOTE }) }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteByAllDeath() }),
       ];
       const game = createFakeGame({ players, turn: 1 });
       expect(doesAngelWin(game)).toBe(true);
@@ -456,7 +456,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerDeath({ cause: PLAYER_DEATH_CAUSES.VOTE }) }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteByAllDeath() }),
       ];
       const upcomingPlays = [
         createFakeGamePlayAllVote(),
@@ -488,7 +488,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerDeath({ cause: PLAYER_DEATH_CAUSES.VOTE }) }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteByAllDeath() }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
       const game = createFakeGame({ players, options, turn: 1 });

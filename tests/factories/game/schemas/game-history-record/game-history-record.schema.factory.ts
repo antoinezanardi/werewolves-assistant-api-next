@@ -5,6 +5,7 @@ import { GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-pl
 import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../src/modules/game/enums/player.enum";
 import { GameHistoryRecordPlaySource } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
+import { GameHistoryRecordPlayTarget } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
 import { GameHistoryRecordPlay } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { GameHistoryRecord } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
@@ -23,8 +24,7 @@ function createFakeGameHistoryRecordWerewolvesEatPlay(gameHistoryRecordPlay: Par
       players: gameHistoryRecordPlay.source?.players ?? [createFakeWerewolfAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
-    ...override,
-  });
+  }, override);
 }
 
 function createFakeGameHistoryRecordBigBadWolfEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
@@ -35,8 +35,7 @@ function createFakeGameHistoryRecordBigBadWolfEatPlay(gameHistoryRecordPlay: Par
       players: gameHistoryRecordPlay.source?.players ?? [createFakeBigBadWolfAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
-    ...override,
-  });
+  }, override);
 }
 
 function createFakeGameHistoryRecordWhiteWerewolfEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
@@ -282,6 +281,15 @@ function createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlaySource: Part
   }, plainToInstanceDefaultOptions);
 }
 
+function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Partial<GameHistoryRecordPlayTarget> = {}, override: object = {}): GameHistoryRecordPlayTarget {
+  return plainToInstance(GameHistoryRecordPlayTarget, {
+    player: gameHistoryRecordPlayTarget.player ?? createFakePlayer(),
+    isInfected: gameHistoryRecordPlayTarget.isInfected ?? undefined,
+    drankPotion: gameHistoryRecordPlayTarget.drankPotion ?? undefined,
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
 function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return plainToInstance(GameHistoryRecordPlay, {
     source: createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlay.source),
@@ -341,6 +349,7 @@ export {
   createFakeGameHistoryRecordSheriffDelegatePlay,
   createFakeGameHistoryRecordSheriffSettleVotesPlay,
   createFakeGameHistoryRecordPlaySource,
+  createFakeGameHistoryRecordPlayTarget,
   createFakeGameHistoryRecordPlay,
   createFakeGameHistoryRecord,
   bulkCreateFakeGameHistoryRecords,
