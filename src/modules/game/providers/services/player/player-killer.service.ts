@@ -144,12 +144,9 @@ export class PlayerKillerService {
 
   public applyRustySwordKnightDeathOutcomes(killedPlayer: Player, game: Game, death: PlayerDeath): Game {
     const clonedGame = cloneDeep(game);
-    if (killedPlayer.role.current !== ROLE_NAMES.RUSTY_SWORD_KNIGHT || doesPlayerHaveAttribute(killedPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) ||
-      death.cause !== PLAYER_DEATH_CAUSES.EATEN) {
-      return clonedGame;
-    }
     const leftAliveWerewolfNeighbor = getNearestAliveNeighbor(killedPlayer._id, clonedGame, { direction: "left", playerSide: ROLE_SIDES.WEREWOLVES });
-    if (!leftAliveWerewolfNeighbor) {
+    if (killedPlayer.role.current !== ROLE_NAMES.RUSTY_SWORD_KNIGHT || doesPlayerHaveAttribute(killedPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) ||
+      death.cause !== PLAYER_DEATH_CAUSES.EATEN || !leftAliveWerewolfNeighbor) {
       return clonedGame;
     }
     return addPlayerAttributeInGame(leftAliveWerewolfNeighbor._id, clonedGame, createContaminatedByRustySwordKnightPlayerAttribute());
@@ -210,7 +207,7 @@ export class PlayerKillerService {
   public applyPlayerDeathOutcomes(killedPlayer: Player, game: Game, death: PlayerDeath): Game {
     let clonedGame = cloneDeep(game);
     let clonedPlayerToKill = cloneDeep(killedPlayer);
-    const cantFindPlayerException = createCantFindPlayerUnexpectedException("killPlayer", { gameId: game._id, playerId: killedPlayer._id });
+    const cantFindPlayerException = createCantFindPlayerUnexpectedException("applyPlayerDeathOutcomes", { gameId: game._id, playerId: killedPlayer._id });
     clonedGame = this.applyPlayerRoleDeathOutcomes(clonedPlayerToKill, clonedGame, death);
     clonedPlayerToKill = getPlayerWithIdOrThrow(clonedPlayerToKill._id, clonedGame, cantFindPlayerException);
     return this.applyPlayerAttributesDeathOutcomes(clonedPlayerToKill, clonedGame);
@@ -223,10 +220,10 @@ export class PlayerKillerService {
     clonedPlayerToKill.isAlive = false;
     clonedPlayerToKill.role.isRevealed = true;
     clonedPlayerToKill.death = createPlayerDeath(death);
-    clonedGame = updatePlayerInGame(clonedPlayerToKill._id, playerToKill, clonedGame);
-    clonedPlayerToKill = getPlayerWithIdOrThrow(playerToKill._id, clonedGame, cantFindPlayerException);
+    clonedGame = updatePlayerInGame(clonedPlayerToKill._id, clonedPlayerToKill, clonedGame);
+    clonedPlayerToKill = getPlayerWithIdOrThrow(clonedPlayerToKill._id, clonedGame, cantFindPlayerException);
     clonedGame = this.applyPlayerDeathOutcomes(clonedPlayerToKill, clonedGame, death);
-    clonedPlayerToKill = getPlayerWithIdOrThrow(playerToKill._id, clonedGame, cantFindPlayerException);
+    clonedPlayerToKill = getPlayerWithIdOrThrow(clonedPlayerToKill._id, clonedGame, cantFindPlayerException);
     return updatePlayerInGame(clonedPlayerToKill._id, { attributes: [] }, clonedGame);
   }
 
