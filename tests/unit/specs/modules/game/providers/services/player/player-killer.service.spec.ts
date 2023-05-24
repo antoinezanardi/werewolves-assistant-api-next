@@ -22,8 +22,6 @@ import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerDeathPotionByW
 import { createFakeAncientAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakeIdiotAlivePlayer, createFakeLittleGirlAlivePlayer, createFakeRustySwordKnightAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer, createFakePlayerRole, createFakePlayerSide } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
-jest.mock("../../../../../../../../src/shared/exception/types/unexpected-exception.type");
-
 describe("Player Killer Service", () => {
   let service: PlayerKillerService;
 
@@ -79,8 +77,13 @@ describe("Player Killer Service", () => {
       ];
       const game = createFakeGame({ players });
       const unknownPlayer = createFakePlayer();
-      const exception = new UnexpectedException("revealPlayerRole", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, { gameId: game._id.toString(), playerId: unknownPlayer._id.toString() });
+      const interpolations = { gameId: game._id.toString(), playerId: unknownPlayer._id.toString() };
+      const exception = new UnexpectedException("revealPlayerRole", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, interpolations);
+
+      const createCantFindPlayerUnexpectedExceptionMock = jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerUnexpectedException").mockReturnValue(exception);
+
       expect(() => service.revealPlayerRole(unknownPlayer, game)).toThrow(exception);
+      expect(createCantFindPlayerUnexpectedExceptionMock).toHaveBeenCalledOnceWith("revealPlayerRole", interpolations);
     });
 
     it("should reveal player role when called.", () => {
@@ -502,9 +505,24 @@ describe("Player Killer Service", () => {
       expect(service.applySheriffPlayerDeathOutcomes(players[0], game)).toStrictEqual<Game>(game);
     });
 
-    it("should prepend sheriff election game play when called.", () => {
+    it("should prepend sheriff election game play when called with powerless idiot.", () => {
       const players = [
         createFakeIdiotAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute(), createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeGuardAlivePlayer(),
+      ];
+      const upcomingPlays = [createFakeGamePlayHunterShoots()];
+      const game = createFakeGame({ players, upcomingPlays });
+      expect(service.applySheriffPlayerDeathOutcomes(players[0], game)).toStrictEqual<Game>(createFakeGame({
+        ...game,
+        upcomingPlays: [createFakeGamePlaySheriffDelegates(), ...game.upcomingPlays],
+      }));
+    });
+
+    it("should prepend sheriff election game play when called with any other role.", () => {
+      const players = [
+        createFakeWildChildAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeGuardAlivePlayer(),
@@ -556,7 +574,8 @@ describe("Player Killer Service", () => {
         createFakeGuardAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const exception = new UnexpectedException("applyPlayerAttributesDeathOutcomes", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, { gameId: game._id.toString(), playerId: players[2]._id.toString() });
+      const interpolations = { gameId: game._id.toString(), playerId: players[2]._id.toString() };
+      const exception = new UnexpectedException("applyPlayerAttributesDeathOutcomes", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, interpolations);
 
       applySheriffPlayerDeathOutcomesMock.mockReturnValue(game);
       applyInLovePlayerDeathOutcomesMock.mockReturnValue(game);
@@ -565,6 +584,7 @@ describe("Player Killer Service", () => {
       createCantFindPlayerUnexpectedExceptionMock.mockReturnValue(exception);
       service.applyPlayerAttributesDeathOutcomes(game.players[2], game);
 
+      expect(createCantFindPlayerUnexpectedExceptionMock).toHaveBeenCalledOnceWith("applyPlayerAttributesDeathOutcomes", interpolations);
       expect(applySheriffPlayerDeathOutcomesMock).toHaveBeenCalledWith(game.players[2], game);
       expect(applyInLovePlayerDeathOutcomesMock).toHaveBeenCalledWith(game.players[2], game);
       expect(applyWorshipedPlayerDeathOutcomesMock).toHaveBeenCalledWith(game.players[2], game);
@@ -702,12 +722,15 @@ describe("Player Killer Service", () => {
   describe("applyAncientDeathOutcomes", () => {
     it("should return game as is when killed player is not ancient.", () => {
       const players = [
-        createFakeIdiotAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
+        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: ROLE_NAMES.IDIOT, original: ROLE_NAMES.IDIOT }) }),
         createFakeWerewolfAlivePlayer(),
         createFakeGuardAlivePlayer(),
       ];
-      const game = createFakeGame({ players });
+      const ancientOptions = createFakeAncientGameOptions({ doesTakeHisRevenge: true });
+      const idiotOptions = createFakeIdiotGameOptions({ doesDieOnAncientDeath: true });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ idiot: idiotOptions, ancient: ancientOptions }) });
+      const game = createFakeGame({ players, options });
       const death = createFakePlayerVoteScapegoatedByAllDeath();
       expect(service.applyAncientDeathOutcomes(players[0], game, death)).toStrictEqual<Game>(game);
     });
@@ -715,12 +738,15 @@ describe("Player Killer Service", () => {
     it("should return game as is when killed player is powerless.", () => {
       const players = [
         createFakeAncientAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: ROLE_NAMES.IDIOT, original: ROLE_NAMES.IDIOT }) }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeGuardAlivePlayer(),
       ];
-      const game = createFakeGame({ players });
-      const death = createFakePlayerVoteScapegoatedByAllDeath();
+      const ancientOptions = createFakeAncientGameOptions({ doesTakeHisRevenge: true });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: ancientOptions }) });
+      const game = createFakeGame({ players, options });
+      const death = createFakePlayerVoteByAllDeath();
       expect(service.applyAncientDeathOutcomes(players[0], game, death)).toStrictEqual<Game>(game);
     });
 
@@ -1006,12 +1032,16 @@ describe("Player Killer Service", () => {
         createFakeSeerAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const exception = new UnexpectedException("getPlayerToKillInGame", UNEXPECTED_EXCEPTION_REASONS.PLAYER_IS_DEAD, { gameId: game._id.toString(), playerId: players[1]._id.toString() });
+      const exceptionInterpolations = { gameId: game._id.toString(), playerId: players[1]._id.toString() };
+      const cantFindPlayerException = new UnexpectedException("getPlayerToKillInGame", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+      const playerIsDeadException = new UnexpectedException("getPlayerToKillInGame", UNEXPECTED_EXCEPTION_REASONS.PLAYER_IS_DEAD, exceptionInterpolations);
 
-      const createPlayerIsDeadUnexpectedExceptionMock = jest.spyOn(UnexpectedExceptionFactory, "createPlayerIsDeadUnexpectedException").mockReturnValue(exception);
+      const createCantFindPlayerUnexpectedExceptionMock = jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerUnexpectedException").mockReturnValue(cantFindPlayerException);
+      const createPlayerIsDeadUnexpectedExceptionMock = jest.spyOn(UnexpectedExceptionFactory, "createPlayerIsDeadUnexpectedException").mockReturnValue(playerIsDeadException);
 
-      expect(() => service.getPlayerToKillInGame(players[1]._id, game)).toThrow(exception);
-      expect(createPlayerIsDeadUnexpectedExceptionMock).toHaveBeenCalledWith("getPlayerToKillInGame", { gameId: game._id.toString(), playerId: players[1]._id.toString() });
+      expect(() => service.getPlayerToKillInGame(players[1]._id, game)).toThrow(playerIsDeadException);
+      expect(createCantFindPlayerUnexpectedExceptionMock).toHaveBeenCalledWith("getPlayerToKillInGame", exceptionInterpolations);
+      expect(createPlayerIsDeadUnexpectedExceptionMock).toHaveBeenCalledWith("getPlayerToKillInGame", exceptionInterpolations);
     });
 
     it("should get player to kill when called.", () => {
