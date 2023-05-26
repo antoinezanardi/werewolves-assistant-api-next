@@ -1,7 +1,7 @@
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../src/modules/game/enums/player.enum";
 import { canPiedPiperCharm, doesPlayerHaveAttribute, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "../../../../../../../src/modules/game/helpers/player/player.helper";
 import { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
-import { createFakePlayerEatenByWerewolvesAttribute, createFakePlayerPowerlessByAncientAttribute, createFakePlayerSeenBySeerAttribute } from "../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeEatenByWerewolvesPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeSeenBySeerPlayerAttribute } from "../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePiedPiperAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer, createFakePlayerSide } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 
@@ -13,19 +13,19 @@ describe("Player Helper", () => {
     });
 
     it("should return false when player doesn't have the attribute.", () => {
-      const player = createFakePlayer({ attributes: [createFakePlayerEatenByWerewolvesAttribute()] });
+      const player = createFakePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
       expect(doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.SEEN)).toBe(false);
     });
 
     it("should return true when player has the attribute.", () => {
-      const player = createFakePlayer({ attributes: [createFakePlayerSeenBySeerAttribute()] });
+      const player = createFakePlayer({ attributes: [createFakeSeenBySeerPlayerAttribute()] });
       expect(doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.SEEN)).toBe(true);
     });
   });
 
   describe("canPiedPiperCharm", () => {
     it("should return false when pied piper is powerless.", () => {
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] });
+      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] });
       expect(canPiedPiperCharm(piedPiperPlayer, false)).toBe(false);
     });
 
@@ -57,7 +57,7 @@ describe("Player Helper", () => {
     });
 
     it("should return false when player is powerless.", () => {
-      const player = createFakePlayer({ isAlive: true, attributes: [createFakePlayerPowerlessByAncientAttribute()] });
+      const player = createFakePlayer({ isAlive: true, attributes: [createFakePowerlessByAncientPlayerAttribute()] });
       expect(isPlayerAliveAndPowerful(player)).toBe(false);
     });
 

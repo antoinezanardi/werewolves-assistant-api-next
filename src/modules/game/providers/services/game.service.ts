@@ -8,7 +8,7 @@ import { ResourceNotFoundException } from "../../../../shared/exception/types/re
 import { CreateGameDto } from "../../dto/create-game/create-game.dto";
 import type { MakeGamePlayDto } from "../../dto/make-game-play/make-game-play.dto";
 import { GAME_STATUSES } from "../../enums/game.enum";
-import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play.helper";
+import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play/game-play.helper";
 import { generateGameVictoryData, isGameOver } from "../../helpers/game-victory/game-victory.helper";
 import type { Game } from "../../schemas/game.schema";
 import { GameRepository } from "../repositories/game.repository";

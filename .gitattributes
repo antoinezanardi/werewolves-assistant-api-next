@@ -1,0 +1,39 @@
+# Handle line endings automatically for files detected as text
+* text=auto
+
+# These files are text and should be normalized (Convert crlf => lf)
+.editorconfig   text    eol=lf
+.gitignore      text    eol=lf
+*.css           text    eol=lf
+*.df            text    eol=lf
+*.htm           text    eol=lf
+*.html          text    eol=lf
+*.java          text    eol=lf
+*.js            text    eol=lf
+*.json          text    eol=lf
+*.jsp           text    eol=lf
+*.jspf          text    eol=lf
+*.md            text    eol=lf
+*.properties    text    eol=lf
+*.scss          text    eol=lf
+*.sh            text    eol=lf
+*.tld           text    eol=lf
+*.ts            text    eol=lf
+*.txt           text    eol=lf
+*.xml           text    eol=lf
+
+# These files are binary and should be left untouched
+*.class         binary
+*.dll           binary
+*.ear           binary
+*.gif           binary
+*.ico           binary
+*.jar           binary
+*.jpg           binary
+*.jpeg          binary
+*.png           binary
+*.so            binary
+*.war           binary
+
+# These files won't be in git diff
+tests/stryker/incremental.json  -diff linguist-generated=true

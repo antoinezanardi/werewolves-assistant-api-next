@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 import { playerAttributeApiProperties, playerAttributeFieldsSpecs } from "../../../constants/player/player-attribute/player-attribute.constant";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../enums/player.enum";
 import { GameSource } from "../../../types/game.type";
@@ -13,18 +14,22 @@ import { PlayerAttributeActivation, PlayerAttributeActivationSchema } from "./pl
 class PlayerAttribute {
   @ApiProperty(playerAttributeApiProperties.name)
   @Prop({ required: true })
+  @Expose()
   public name: PLAYER_ATTRIBUTE_NAMES;
 
   @ApiProperty(playerAttributeApiProperties.source)
   @Prop({ required: true })
+  @Expose()
   public source: GameSource;
 
   @ApiProperty(playerAttributeApiProperties.remainingPhases)
   @Prop({ min: playerAttributeFieldsSpecs.remainingPhases.minimum })
+  @Expose()
   public remainingPhases?: number;
 
   @ApiProperty(playerAttributeApiProperties.activeAt)
   @Prop({ type: PlayerAttributeActivationSchema })
+  @Expose()
   public activeAt?: PlayerAttributeActivation;
 }
 

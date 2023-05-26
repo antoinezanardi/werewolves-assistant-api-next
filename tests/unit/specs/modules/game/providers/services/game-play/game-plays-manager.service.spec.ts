@@ -14,8 +14,9 @@ import { createFakeGameOptionsDto } from "../../../../../../../factories/game/dt
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeGamePlay } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePlayerPowerlessByAncientAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePowerlessByAncientPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
@@ -99,7 +100,7 @@ describe("Game Plays Manager Service", () => {
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-        createFakeCupidAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeCupidAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ]);
       const game = createFakeGame({ players });
       expect(service.areLoversPlayableForNight(game)).toBe(false);
@@ -167,7 +168,7 @@ describe("Game Plays Manager Service", () => {
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-        createFakeAngelAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeAngelAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ]);
       const game = createFakeGame({ players });
       expect(service.areAllPlayableForNight(game)).toBe(false);
@@ -220,8 +221,8 @@ describe("Game Plays Manager Service", () => {
 
     it("should return false when group is werewolves and all are powerless.", () => {
       const players = bulkCreateFakePlayers(4, [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
-        createFakeBigBadWolfAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeBigBadWolfAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeWitchAlivePlayer(),
         createFakeWildChildAlivePlayer(),
       ]);
@@ -314,7 +315,7 @@ describe("Game Plays Manager Service", () => {
 
     it("should return false when white werewolf is in the game but powerless.", () => {
       const players = bulkCreateFakePlayers(4, [
-        createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeSeerAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
@@ -789,7 +790,7 @@ describe("Game Plays Manager Service", () => {
     it("should return false when player is powerless.", () => {
       const players = bulkCreateFakePlayers(4, [
         createFakeTwoSistersAlivePlayer(),
-        createFakeSeerAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeTwoSistersAlivePlayer(),
         createFakeWildChildAlivePlayer(),
       ]);
@@ -846,9 +847,9 @@ describe("Game Plays Manager Service", () => {
           options: defaultGameOptions,
         }),
         output: [
-          { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF },
-          { source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK },
-          { source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT },
+          createFakeGamePlay({ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF }),
+          createFakeGamePlay({ source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK }),
+          createFakeGamePlay({ source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT }),
         ],
       },
       {
@@ -883,26 +884,26 @@ describe("Game Plays Manager Service", () => {
           options: defaultGameOptions,
         }),
         output: [
-          { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF },
-          { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE },
-          { source: ROLE_NAMES.THIEF, action: GAME_PLAY_ACTIONS.CHOOSE_CARD },
-          { source: ROLE_NAMES.DOG_WOLF, action: GAME_PLAY_ACTIONS.CHOOSE_SIDE },
-          { source: ROLE_NAMES.CUPID, action: GAME_PLAY_ACTIONS.CHARM },
-          { source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK },
-          { source: ROLE_NAMES.FOX, action: GAME_PLAY_ACTIONS.SNIFF },
-          { source: PLAYER_GROUPS.LOVERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER },
-          { source: ROLE_NAMES.STUTTERING_JUDGE, action: GAME_PLAY_ACTIONS.CHOOSE_SIGN },
-          { source: ROLE_NAMES.TWO_SISTERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER },
-          { source: ROLE_NAMES.THREE_BROTHERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER },
-          { source: ROLE_NAMES.WILD_CHILD, action: GAME_PLAY_ACTIONS.CHOOSE_MODEL },
-          { source: ROLE_NAMES.RAVEN, action: GAME_PLAY_ACTIONS.MARK },
-          { source: ROLE_NAMES.GUARD, action: GAME_PLAY_ACTIONS.PROTECT },
-          { source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT },
-          { source: ROLE_NAMES.WHITE_WEREWOLF, action: GAME_PLAY_ACTIONS.EAT },
-          { source: ROLE_NAMES.BIG_BAD_WOLF, action: GAME_PLAY_ACTIONS.EAT },
-          { source: ROLE_NAMES.WITCH, action: GAME_PLAY_ACTIONS.USE_POTIONS },
-          { source: ROLE_NAMES.PIED_PIPER, action: GAME_PLAY_ACTIONS.CHARM },
-          { source: PLAYER_GROUPS.CHARMED, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER },
+          createFakeGamePlay({ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF }),
+          createFakeGamePlay({ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }),
+          createFakeGamePlay({ source: ROLE_NAMES.THIEF, action: GAME_PLAY_ACTIONS.CHOOSE_CARD }),
+          createFakeGamePlay({ source: ROLE_NAMES.DOG_WOLF, action: GAME_PLAY_ACTIONS.CHOOSE_SIDE }),
+          createFakeGamePlay({ source: ROLE_NAMES.CUPID, action: GAME_PLAY_ACTIONS.CHARM }),
+          createFakeGamePlay({ source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK }),
+          createFakeGamePlay({ source: ROLE_NAMES.FOX, action: GAME_PLAY_ACTIONS.SNIFF }),
+          createFakeGamePlay({ source: PLAYER_GROUPS.LOVERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER }),
+          createFakeGamePlay({ source: ROLE_NAMES.STUTTERING_JUDGE, action: GAME_PLAY_ACTIONS.CHOOSE_SIGN }),
+          createFakeGamePlay({ source: ROLE_NAMES.TWO_SISTERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER }),
+          createFakeGamePlay({ source: ROLE_NAMES.THREE_BROTHERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER }),
+          createFakeGamePlay({ source: ROLE_NAMES.WILD_CHILD, action: GAME_PLAY_ACTIONS.CHOOSE_MODEL }),
+          createFakeGamePlay({ source: ROLE_NAMES.RAVEN, action: GAME_PLAY_ACTIONS.MARK }),
+          createFakeGamePlay({ source: ROLE_NAMES.GUARD, action: GAME_PLAY_ACTIONS.PROTECT }),
+          createFakeGamePlay({ source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT }),
+          createFakeGamePlay({ source: ROLE_NAMES.WHITE_WEREWOLF, action: GAME_PLAY_ACTIONS.EAT }),
+          createFakeGamePlay({ source: ROLE_NAMES.BIG_BAD_WOLF, action: GAME_PLAY_ACTIONS.EAT }),
+          createFakeGamePlay({ source: ROLE_NAMES.WITCH, action: GAME_PLAY_ACTIONS.USE_POTIONS }),
+          createFakeGamePlay({ source: ROLE_NAMES.PIED_PIPER, action: GAME_PLAY_ACTIONS.CHARM }),
+          createFakeGamePlay({ source: PLAYER_GROUPS.CHARMED, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER }),
         ],
       },
       {
@@ -914,12 +915,12 @@ describe("Game Plays Manager Service", () => {
             createFakeCupidAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
             createFakeSeerAlivePlayer({ isAlive: false }),
-            createFakeWitchAlivePlayer({ attributes: [createFakePlayerPowerlessByAncientAttribute()] }),
+            createFakeWitchAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
             createFakeAngelAlivePlayer(),
           ]),
           options: defaultGameOptions,
         }),
-        output: [{ source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT }],
+        output: [createFakeGamePlay({ source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT })],
       },
     ])("should get upcoming night plays when $test [#$#].", ({ game, output }) => {
       expect(service.getUpcomingNightPlays(game)).toStrictEqual(output);

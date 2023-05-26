@@ -9,7 +9,7 @@ import { ROLE_NAMES } from "../../../../../../src/modules/role/enums/role.enum";
 import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
 import { bulkCreate } from "../../../../shared/bulk-create.factory";
 
-function createFakePlayerSheriffByAllAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeSheriffByAllPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
     source: PLAYER_GROUPS.ALL,
@@ -17,63 +17,70 @@ function createFakePlayerSheriffByAllAttribute(attribute: Partial<PlayerAttribut
   }, override);
 }
 
-function createFakePlayerSeenBySeerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeSeenBySeerPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.SEEN,
     source: ROLE_NAMES.SEER,
+    remainingPhases: 1,
     ...attribute,
   }, override);
 }
 
-function createFakePlayerEatenByWerewolvesAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeEatenByWerewolvesPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.EATEN,
     source: PLAYER_GROUPS.WEREWOLVES,
+    remainingPhases: 1,
     ...attribute,
   }, override);
 }
 
-function createFakePlayerEatenByBigBadWolfAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeEatenByBigBadWolfPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.EATEN,
     source: ROLE_NAMES.BIG_BAD_WOLF,
+    remainingPhases: 1,
     ...attribute,
   }, override);
 }
 
-function createFakePlayerDrankLifePotionByWitchAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeDrankLifePotionByWitchPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.DRANK_LIFE_POTION,
     source: ROLE_NAMES.WITCH,
+    remainingPhases: 1,
     ...attribute,
   }, override);
 }
 
-function createFakePlayerDrankDeathPotionByWitchAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeDrankDeathPotionByWitchPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.DRANK_DEATH_POTION,
     source: ROLE_NAMES.WITCH,
+    remainingPhases: 1,
     ...attribute,
   }, override);
 }
 
-function createFakePlayerProtectedByGuardAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeProtectedByGuardPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.PROTECTED,
     source: ROLE_NAMES.GUARD,
+    remainingPhases: 1,
     ...attribute,
   }, override);
 }
 
-function createFakePlayerRavenMarkedByRavenAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeRavenMarkedByRavenPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.RAVEN_MARKED,
     source: ROLE_NAMES.RAVEN,
+    remainingPhases: 1,
     ...attribute,
   }, override);
 }
 
-function createFakePlayerInLoveByCupidAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeInLoveByCupidPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.IN_LOVE,
     source: ROLE_NAMES.CUPID,
@@ -81,7 +88,7 @@ function createFakePlayerInLoveByCupidAttribute(attribute: Partial<PlayerAttribu
   }, override);
 }
 
-function createFakePlayerWorshipedByWildChildAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeWorshipedByWildChildPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.WORSHIPED,
     source: ROLE_NAMES.WILD_CHILD,
@@ -89,7 +96,7 @@ function createFakePlayerWorshipedByWildChildAttribute(attribute: Partial<Player
   }, override);
 }
 
-function createFakePlayerPowerlessByAncientAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakePowerlessByAncientPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
     source: ROLE_NAMES.ANCIENT,
@@ -97,15 +104,24 @@ function createFakePlayerPowerlessByAncientAttribute(attribute: Partial<PlayerAt
   }, override);
 }
 
-function createFakePlayerCantVoteByScapegoatAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeCantVoteByAllPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
-    source: ROLE_NAMES.SCAPEGOAT,
+    source: PLAYER_GROUPS.ALL,
     ...attribute,
   }, override);
 }
 
-function createFakePlayerCharmedByPiedPiperAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeCantVoteByScapegoatPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+  return createFakePlayerAttribute({
+    name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
+    source: ROLE_NAMES.SCAPEGOAT,
+    remainingPhases: 2,
+    ...attribute,
+  }, override);
+}
+
+function createFakeCharmedByPiedPiperPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.CHARMED,
     source: ROLE_NAMES.PIED_PIPER,
@@ -113,18 +129,20 @@ function createFakePlayerCharmedByPiedPiperAttribute(attribute: Partial<PlayerAt
   }, override);
 }
 
-function createFakePlayerGrowledByBearTamerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeGrowledByBearTamerPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.GROWLED,
     source: ROLE_NAMES.BEAR_TAMER,
+    remainingPhases: 1,
     ...attribute,
   }, override);
 }
 
-function createFakePlayerContaminatedByRustySwordKnightAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeContaminatedByRustySwordKnightPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.CONTAMINATED,
     source: ROLE_NAMES.RUSTY_SWORD_KNIGHT,
+    remainingPhases: 2,
     ...attribute,
   }, override);
 }
@@ -152,21 +170,22 @@ function bulkCreateFakePlayerAttributes(length: number, attributes: Partial<Play
 }
 
 export {
-  createFakePlayerSheriffByAllAttribute,
-  createFakePlayerSeenBySeerAttribute,
-  createFakePlayerEatenByWerewolvesAttribute,
-  createFakePlayerEatenByBigBadWolfAttribute,
-  createFakePlayerDrankLifePotionByWitchAttribute,
-  createFakePlayerDrankDeathPotionByWitchAttribute,
-  createFakePlayerProtectedByGuardAttribute,
-  createFakePlayerRavenMarkedByRavenAttribute,
-  createFakePlayerInLoveByCupidAttribute,
-  createFakePlayerWorshipedByWildChildAttribute,
-  createFakePlayerPowerlessByAncientAttribute,
-  createFakePlayerCantVoteByScapegoatAttribute,
-  createFakePlayerCharmedByPiedPiperAttribute,
-  createFakePlayerGrowledByBearTamerAttribute,
-  createFakePlayerContaminatedByRustySwordKnightAttribute,
+  createFakeSheriffByAllPlayerAttribute,
+  createFakeSeenBySeerPlayerAttribute,
+  createFakeEatenByWerewolvesPlayerAttribute,
+  createFakeEatenByBigBadWolfPlayerAttribute,
+  createFakeDrankLifePotionByWitchPlayerAttribute,
+  createFakeDrankDeathPotionByWitchPlayerAttribute,
+  createFakeProtectedByGuardPlayerAttribute,
+  createFakeRavenMarkedByRavenPlayerAttribute,
+  createFakeInLoveByCupidPlayerAttribute,
+  createFakeWorshipedByWildChildPlayerAttribute,
+  createFakePowerlessByAncientPlayerAttribute,
+  createFakeCantVoteByAllPlayerAttribute,
+  createFakeCantVoteByScapegoatPlayerAttribute,
+  createFakeCharmedByPiedPiperPlayerAttribute,
+  createFakeGrowledByBearTamerPlayerAttribute,
+  createFakeContaminatedByRustySwordKnightPlayerAttribute,
   createFakePlayerAttributeActivation,
   createFakePlayerAttribute,
   bulkCreateFakePlayerAttributes,
