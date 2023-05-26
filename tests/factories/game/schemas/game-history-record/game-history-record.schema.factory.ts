@@ -5,13 +5,14 @@ import { GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-pl
 import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../src/modules/game/enums/player.enum";
 import { GameHistoryRecordPlaySource } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
+import { GameHistoryRecordPlayTarget } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
 import { GameHistoryRecordPlay } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { GameHistoryRecord } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
 import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
 import { createObjectIdFromString } from "../../../../helpers/mongoose/mongoose.helper";
 import { bulkCreate } from "../../../shared/bulk-create.factory";
-import { createFakePlayerCharmedByPiedPiperAttribute, createFakePlayerSheriffByAllAttribute } from "../player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../player/player-attribute/player-attribute.schema.factory";
 import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../player/player-with-role.schema.factory";
 import { createFakePlayer } from "../player/player.schema.factory";
 
@@ -23,8 +24,7 @@ function createFakeGameHistoryRecordWerewolvesEatPlay(gameHistoryRecordPlay: Par
       players: gameHistoryRecordPlay.source?.players ?? [createFakeWerewolfAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
-    ...override,
-  });
+  }, override);
 }
 
 function createFakeGameHistoryRecordBigBadWolfEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
@@ -35,8 +35,7 @@ function createFakeGameHistoryRecordBigBadWolfEatPlay(gameHistoryRecordPlay: Par
       players: gameHistoryRecordPlay.source?.players ?? [createFakeBigBadWolfAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
-    ...override,
-  });
+  }, override);
 }
 
 function createFakeGameHistoryRecordWhiteWerewolfEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
@@ -151,8 +150,8 @@ function createFakeGameHistoryRecordThreeBrothersMeetEachOtherPlay(gameHistoryRe
 
 function createFakeGameHistoryRecordCharmedMeetEachOtherPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   const sourcePlayers = [
-    createFakePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
-    createFakePlayer({ attributes: [createFakePlayerCharmedByPiedPiperAttribute()] }),
+    createFakePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+    createFakePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
   ];
   return createFakeGameHistoryRecordPlay({
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
@@ -257,7 +256,7 @@ function createFakeGameHistoryRecordSheriffDelegatePlay(gameHistoryRecordPlay: P
     action: GAME_PLAY_ACTIONS.DELEGATE,
     source: {
       name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakePlayerSheriffByAllAttribute()] })],
+      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] })],
     },
     ...gameHistoryRecordPlay,
   }, override);
@@ -268,7 +267,7 @@ function createFakeGameHistoryRecordSheriffSettleVotesPlay(gameHistoryRecordPlay
     action: GAME_PLAY_ACTIONS.SETTLE_VOTES,
     source: {
       name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakePlayerSheriffByAllAttribute()] })],
+      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] })],
     },
     ...gameHistoryRecordPlay,
   }, override);
@@ -278,6 +277,15 @@ function createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlaySource: Part
   return plainToInstance(GameHistoryRecordPlaySource, {
     name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(gameSourceValues),
     players: gameHistoryRecordPlaySource.players ?? [],
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Partial<GameHistoryRecordPlayTarget> = {}, override: object = {}): GameHistoryRecordPlayTarget {
+  return plainToInstance(GameHistoryRecordPlayTarget, {
+    player: gameHistoryRecordPlayTarget.player ?? createFakePlayer(),
+    isInfected: gameHistoryRecordPlayTarget.isInfected ?? undefined,
+    drankPotion: gameHistoryRecordPlayTarget.drankPotion ?? undefined,
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -341,6 +349,7 @@ export {
   createFakeGameHistoryRecordSheriffDelegatePlay,
   createFakeGameHistoryRecordSheriffSettleVotesPlay,
   createFakeGameHistoryRecordPlaySource,
+  createFakeGameHistoryRecordPlayTarget,
   createFakeGameHistoryRecordPlay,
   createFakeGameHistoryRecord,
   bulkCreateFakeGameHistoryRecords,

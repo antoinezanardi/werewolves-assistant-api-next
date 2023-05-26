@@ -18,7 +18,7 @@ import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay, cr
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePlayerEatenByWerewolvesAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeEatenByWerewolvesPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeDogWolfAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
@@ -107,7 +107,7 @@ describe("Game Plays Validator Service", () => {
     });
 
     it("should throw error when life potion target is not alive.", () => {
-      const targetedPlayer = createFakePlayer({ isAlive: false, attributes: [createFakePlayerEatenByWerewolvesAttribute()] });
+      const targetedPlayer = createFakePlayer({ isAlive: false, attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
       const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WITCH_POTIONS.LIFE })];
       expect(() => service.validateDrankLifePotionTargets(drankLifePotionTargets)).toThrow(BadGamePlayPayloadException);
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("Life potion can't be applied to this target (`targets.drankPotion`)");
@@ -125,7 +125,7 @@ describe("Game Plays Validator Service", () => {
     });
 
     it("should do nothing when life potion target is applied on valid target.", () => {
-      const targetedPlayer = createFakePlayer({ attributes: [createFakePlayerEatenByWerewolvesAttribute()], isAlive: true });
+      const targetedPlayer = createFakePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()], isAlive: true });
       const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WITCH_POTIONS.LIFE })];
       expect(() => service.validateDrankLifePotionTargets(drankLifePotionTargets)).not.toThrow();
     });
@@ -446,7 +446,7 @@ describe("Game Plays Validator Service", () => {
 
     it("should throw error when source is BIG_BAD_WOLF and targeted player is already eaten.", () => {
       const game = createFakeGame({ upcomingPlays: [{ action: GAME_PLAY_ACTIONS.EAT, source: ROLE_NAMES.BIG_BAD_WOLF }] });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ attributes: [createFakePlayerEatenByWerewolvesAttribute()] }) })];
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }) })];
       expect(() => service.validateGamePlayWerewolvesTargets(makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("Big bad wolf can't eat this target");
     });

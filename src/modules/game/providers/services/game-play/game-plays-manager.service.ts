@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
-import { gamePlaysNightOrder, sheriffElectionPlay } from "../../../constants/game-play.constant";
+import { gamePlaysNightOrder } from "../../../constants/game.constant";
 import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "../../../dto/create-game/create-game.dto";
 import type { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_GROUPS } from "../../../enums/player.enum";
+import { createGamePlayAllElectSheriff } from "../../../helpers/game-play/game-play.factory";
 import { areAllWerewolvesAlive, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
 import type { SheriffGameOptions } from "../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
@@ -131,7 +132,7 @@ export class GamePlaysManagerService {
     const isFirstNight = game.turn === 1;
     const eligibleNightPlays = gamePlaysNightOrder.filter(play => isFirstNight || play.isFirstNightOnly !== true);
     const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase);
-    const upcomingNightPlays: GamePlay[] = isSheriffElectionTime ? [sheriffElectionPlay] : [];
+    const upcomingNightPlays: GamePlay[] = isSheriffElectionTime ? [createGamePlayAllElectSheriff()] : [];
     return plainToInstance(GamePlay, eligibleNightPlays.reduce((acc: GamePlay[], gamePlay) => {
       const { source, action } = gamePlay;
       return this.isSourcePlayableForNight(game, source) ? [...acc, { source, action }] : acc;

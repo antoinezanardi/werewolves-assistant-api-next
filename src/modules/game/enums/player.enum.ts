@@ -28,6 +28,7 @@ enum PLAYER_DEATH_CAUSES {
   EATEN = "eaten",
   SHOT = "shot",
   VOTE = "vote",
+  VOTE_SCAPEGOATED = "vote-scapegoated",
   RECONSIDER_PARDON = "reconsider-pardon",
   BROKEN_HEART = "broken-heart",
   DISEASE = "disease",
