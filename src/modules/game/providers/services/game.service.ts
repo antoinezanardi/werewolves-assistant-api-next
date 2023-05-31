@@ -53,17 +53,21 @@ export class GameService {
     return game;
   }
 
-  public async cancelGameById(gameId: Types.ObjectId): Promise<Game> {
-    await this.getGameAndCheckPlayingStatus(gameId);
-    const updatedGame = await this.gameRepository.updateOne({ _id: gameId }, { status: GAME_STATUSES.CANCELED });
+  public async cancelGame(game: Game): Promise<Game> {
+    if (game.status !== GAME_STATUSES.PLAYING) {
+      throw new BadResourceMutationException(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
+    }
+    const updatedGame = await this.gameRepository.updateOne({ _id: game._id }, { status: GAME_STATUSES.CANCELED });
     if (updatedGame === null) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString());
+      throw new ResourceNotFoundException(API_RESOURCES.GAMES, game._id.toString());
     }
     return updatedGame;
   }
 
-  public async makeGamePlay(gameId: Types.ObjectId, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
-    const game = await this.getGameAndCheckPlayingStatus(gameId);
+  public async makeGamePlay(game: Game, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
+    if (game.status !== GAME_STATUSES.PLAYING) {
+      throw new BadResourceMutationException(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
+    }
     const gameDataToUpdate: Partial<Game> = {};
     const makeGamePlayWithRelationsDto = createMakeGamePlayDtoWithRelations(makeGamePlayDto, game);
     await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(makeGamePlayWithRelationsDto, game);
@@ -71,9 +75,9 @@ export class GameService {
       gameDataToUpdate.status = GAME_STATUSES.OVER;
       gameDataToUpdate.victory = generateGameVictoryData(game);
     }
-    const updatedGame = await this.gameRepository.updateOne({ _id: gameId }, gameDataToUpdate);
+    const updatedGame = await this.gameRepository.updateOne({ _id: game._id }, gameDataToUpdate);
     if (updatedGame === null) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString());
+      throw new ResourceNotFoundException(API_RESOURCES.GAMES, game._id.toString());
     }
     return updatedGame;
   }
