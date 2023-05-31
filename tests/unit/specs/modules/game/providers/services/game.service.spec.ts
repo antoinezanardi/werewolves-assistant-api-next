@@ -129,28 +129,32 @@ describe("Game Service", () => {
     });
   });
 
-  describe("cancelGameById", () => {
-    const existingPlayingId = createObjectIdFromString(faker.database.mongodbObjectId());
+  describe("cancelGame", () => {
+    const existingPlayingGame = createFakeGame({ status: GAME_STATUSES.PLAYING });
 
     beforeEach(() => {
       jest.spyOn(service, "getGameAndCheckPlayingStatus").mockImplementation();
     });
 
+    it("should throw error when game is not playing.", async() => {
+      const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
+      await expect(service.cancelGame(canceledGame)).toReject();
+      expect(BadResourceMutationException).toHaveBeenCalledWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
+    });
+    
     it("should call update method from repository when game can be canceled.", async() => {
-      await service.cancelGameById(existingPlayingId);
-      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ _id: existingPlayingId }, { status: GAME_STATUSES.CANCELED });
+      await service.cancelGame(existingPlayingGame);
+      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ _id: existingPlayingGame._id }, { status: GAME_STATUSES.CANCELED });
     });
 
     it("should throw an error when game not found by update repository method.", async() => {
       gameRepositoryMock.updateOne.mockResolvedValue(null);
-      await expect(service.cancelGameById(existingPlayingId)).toReject();
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, existingPlayingId.toString());
+      await expect(service.cancelGame(existingPlayingGame)).toReject();
+      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, existingPlayingGame._id.toString());
     });
   });
 
   describe("makeGamePlay", () => {
-    const gameId = createObjectIdFromString(faker.database.mongodbObjectId());
-    const soonToBeOverGameId = createObjectIdFromString(faker.database.mongodbObjectId());
     const players = [
       createFakeWerewolfAlivePlayer(),
       createFakeWerewolfAlivePlayer(),
@@ -165,34 +169,37 @@ describe("Game Service", () => {
       createFakeVillagerAlivePlayer({ isAlive: false }),
     ];
     const soonToBeOverGame = createFakeGame({ status: GAME_STATUSES.PLAYING, players: nearlyAllDeadPlayers });
-    let getGameAndCheckPlayingStatusMock: jest.SpyInstance;
-    
+
     beforeEach(() => {
-      getGameAndCheckPlayingStatusMock = jest.spyOn(service, "getGameAndCheckPlayingStatus");
-      when(getGameAndCheckPlayingStatusMock).calledWith(gameId).mockResolvedValue(game);
-      when(getGameAndCheckPlayingStatusMock).calledWith(soonToBeOverGameId).mockResolvedValue(soonToBeOverGame);
       gameRepositoryMock.updateOne.mockResolvedValue(game);
+    });
+
+    it("should throw an error when game is not playing.", async() => {
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
+      await expect(service.makeGamePlay(canceledGame, makeGamePlayDto)).toReject();
+      expect(BadResourceMutationException).toHaveBeenCalledWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
     });
 
     it("should call play validator when called.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
-      await expect(service.makeGamePlay(gameId, makeGamePlayDto)).resolves.toStrictEqual(game);
+      await expect(service.makeGamePlay(game, makeGamePlayDto)).resolves.toStrictEqual(game);
       expect(gamePlaysValidatorServiceMock.validateGamePlayWithRelationsDtoData).toHaveBeenCalledOnce();
     });
 
     it("should throw an error when game not found by update repository method.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       gameRepositoryMock.updateOne.mockResolvedValue(null);
-      await expect(service.makeGamePlay(gameId, makeGamePlayDto)).toReject();
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, gameId.toString());
+      await expect(service.makeGamePlay(game, makeGamePlayDto)).toReject();
+      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, game._id.toString());
     });
 
     it("should set game as over when the game is done.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const gameVictoryData = createFakeGameVictory();
       jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
-      await service.makeGamePlay(soonToBeOverGameId, makeGamePlayDto);
-      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ _id: soonToBeOverGameId }, { status: GAME_STATUSES.OVER, victory: gameVictoryData });
+      await service.makeGamePlay(soonToBeOverGame, makeGamePlayDto);
+      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ _id: soonToBeOverGame._id }, { status: GAME_STATUSES.OVER, victory: gameVictoryData });
     });
   });
 });

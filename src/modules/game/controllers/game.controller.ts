@@ -1,8 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Types } from "mongoose";
 import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
-import { ValidateMongoId } from "../../../shared/api/pipes/validate-mongo-id.pipe";
 import { CreateGameDto } from "../dto/create-game/create-game.dto";
 import { GetGameRandomCompositionPlayerResponseDto } from "../dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import { GetGameRandomCompositionDto } from "../dto/get-game-random-composition/get-game-random-composition.dto";
@@ -13,6 +11,7 @@ import { GameService } from "../providers/services/game.service";
 import { Game } from "../schemas/game.schema";
 import { ApiGameIdParam } from "./decorators/api-game-id-param.decorator";
 import { ApiGameNotFoundResponse } from "./decorators/api-game-not-found-response.decorator";
+import { GetGameByIdPipe } from "./pipes/get-game-by-id.pipe";
 
 @ApiTags("🎲 Games")
 @Controller(API_RESOURCES.GAMES)
@@ -41,8 +40,8 @@ export class GameController {
   @ApiGameIdParam()
   @ApiResponse({ status: HttpStatus.OK, type: Game })
   @ApiGameNotFoundResponse()
-  public async getGame(@Param("id", ValidateMongoId) id: string): Promise<Game> {
-    return this.gameService.getGameById(id);
+  public getGame(@Param("id", GetGameByIdPipe) game: Game): Game {
+    return game;
   }
 
   @Post()
@@ -56,14 +55,14 @@ export class GameController {
   @ApiGameIdParam()
   @ApiResponse({ status: HttpStatus.OK, type: Game, description: `Game's status will be set to ${GAME_STATUSES.CANCELED}` })
   @ApiGameNotFoundResponse()
-  public async cancelGame(@Param("id", ValidateMongoId) id: Types.ObjectId): Promise<Game> {
-    return this.gameService.cancelGameById(id);
+  public async cancelGame(@Param("id", GetGameByIdPipe) game: Game): Promise<Game> {
+    return this.gameService.cancelGame(game);
   }
 
   @Post(":id/play")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the \`${GAME_STATUSES.PLAYING}\` status. Body parameters fields are required or optional based on the upcoming game play.` })
-  public async makeGamePlay(@Param("id", ValidateMongoId) id: Types.ObjectId, @Body() makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
-    return this.gameService.makeGamePlay(id, makeGamePlayDto);
+  public async makeGamePlay(@Param("id", GetGameByIdPipe) game: Game, @Body() makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
+    return this.gameService.makeGamePlay(game, makeGamePlayDto);
   }
 }
