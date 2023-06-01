@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
-import type { Types } from "mongoose";
 import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
 import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../shared/exception/enums/bad-resource-mutation-error.enum";
 import { BadResourceMutationException } from "../../../../shared/exception/types/bad-resource-mutation-exception.type";
@@ -41,16 +40,6 @@ export class GameService {
       upcomingPlays: this.gamePlaysManagerService.getUpcomingNightPlays(game),
     });
     return this.gameRepository.create(gameToCreate);
-  }
-
-  public async getGameAndCheckPlayingStatus(gameId: Types.ObjectId): Promise<Game> {
-    const game = await this.gameRepository.findOne({ _id: gameId });
-    if (game === null) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString());
-    } else if (game.status !== GAME_STATUSES.PLAYING) {
-      throw new BadResourceMutationException(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
-    }
-    return game;
   }
 
   public async cancelGame(game: Game): Promise<Game> {
