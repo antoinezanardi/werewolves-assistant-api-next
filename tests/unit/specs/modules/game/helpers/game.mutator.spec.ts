@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { cloneDeep } from "lodash";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "../../../../../../src/modules/game/helpers/game.mutator";
 import type { Game } from "../../../../../../src/modules/game/schemas/game.schema";
@@ -7,12 +6,12 @@ import { createFakeGame } from "../../../../../factories/game/schemas/game.schem
 import { createFakeCharmedByPiedPiperPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
-import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
+import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
 
 describe("Game Mutator", () => {
   describe("updatePlayerInGame", () => {
     it("should return game as is when player id is not found among players.", () => {
-      const unknownPlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
+      const unknownPlayerId = createFakeObjectId();
       const players = bulkCreateFakePlayers(4);
       const updatedPlayer = createFakeSeerAlivePlayer();
       const game = createFakeGame({ players });
@@ -53,7 +52,7 @@ describe("Game Mutator", () => {
   describe("addPlayerAttributeInGame", () => {
     it("should return game as is when player id is not found among players.", () => {
       const attributeToAdd = createFakeCharmedByPiedPiperPlayerAttribute();
-      const unknownPlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
+      const unknownPlayerId = createFakeObjectId();
       const players = bulkCreateFakePlayers(4);
       const game = createFakeGame({ players });
       expect(addPlayerAttributeInGame(unknownPlayerId, game, attributeToAdd)).toStrictEqual<Game>(game);
@@ -92,9 +91,9 @@ describe("Game Mutator", () => {
     it("should return game as is when player ids are not in the game.", () => {
       const attributeToAdd = createFakeCharmedByPiedPiperPlayerAttribute();
       const unknownPlayerIds = [
-        createObjectIdFromString(faker.database.mongodbObjectId()),
-        createObjectIdFromString(faker.database.mongodbObjectId()),
-        createObjectIdFromString(faker.database.mongodbObjectId()),
+        createFakeObjectId(),
+        createFakeObjectId(),
+        createFakeObjectId(),
       ];
       const players = bulkCreateFakePlayers(4);
       const game = createFakeGame({ players });
