@@ -17,7 +17,6 @@ import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
 
 jest.mock("../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type");
 jest.mock("../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
@@ -100,40 +99,8 @@ describe("Game Service", () => {
     });
   });
 
-  describe("getGameAndCheckPlayingStatus", () => {
-    const existingPlayingId = createFakeObjectId();
-    const existingPlayingGame = createFakeGame({ _id: existingPlayingId, status: GAME_STATUSES.PLAYING });
-    const existingDoneId = createFakeObjectId();
-    const existingDoneGame = createFakeGame({ _id: existingDoneId, status: GAME_STATUSES.OVER });
-    const unknownId = createFakeObjectId();
-
-    beforeEach(() => {
-      when(gameRepositoryMock.findOne).calledWith({ _id: existingPlayingId }).mockResolvedValue(existingPlayingGame);
-      when(gameRepositoryMock.findOne).calledWith({ _id: existingDoneId }).mockResolvedValue(existingDoneGame);
-      when(gameRepositoryMock.findOne).calledWith({ _id: unknownId }).mockResolvedValue(null);
-    });
-
-    it("should throw an error when called with unknown id.", async() => {
-      await expect(service.getGameAndCheckPlayingStatus(unknownId)).toReject();
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, unknownId.toString());
-    });
-
-    it("should throw an error when game doesn't have playing status.", async() => {
-      await expect(service.getGameAndCheckPlayingStatus(existingDoneId)).toReject();
-      expect(BadResourceMutationException).toHaveBeenCalledWith(API_RESOURCES.GAMES, existingDoneId.toString(), `Game doesn't have status with value "playing"`);
-    });
-
-    it("should return existing when game exists in database.", async() => {
-      await expect(service.getGameAndCheckPlayingStatus(existingPlayingId)).resolves.toStrictEqual(existingPlayingGame);
-    });
-  });
-
   describe("cancelGame", () => {
     const existingPlayingGame = createFakeGame({ status: GAME_STATUSES.PLAYING });
-
-    beforeEach(() => {
-      jest.spyOn(service, "getGameAndCheckPlayingStatus").mockImplementation();
-    });
 
     it("should throw error when game is not playing.", async() => {
       const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
