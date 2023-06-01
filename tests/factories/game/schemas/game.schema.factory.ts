@@ -3,13 +3,13 @@ import { plainToInstance } from "class-transformer";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../src/modules/game/enums/game.enum";
 import { Game } from "../../../../src/modules/game/schemas/game.schema";
 import { plainToInstanceDefaultOptions } from "../../../../src/shared/validation/constants/validation.constant";
-import { createObjectIdFromString } from "../../../helpers/mongoose/mongoose.helper";
 import { bulkCreate } from "../../shared/bulk-create.factory";
+import { createFakeObjectId } from "../../shared/mongoose/mongoose.factory";
 import { createFakeGameOptions } from "./game-options/game-options.schema.factory";
 
 function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
   return plainToInstance(Game, {
-    _id: game._id ?? createObjectIdFromString(faker.database.mongodbObjectId()),
+    _id: game._id ?? createFakeObjectId(),
     players: game.players ?? [],
     upcomingPlays: game.upcomingPlays ?? [],
     phase: game.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),

@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { getModelToken } from "@nestjs/mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
@@ -21,7 +20,7 @@ import { fastifyServerDefaultOptions } from "../../../../../../../src/server/con
 import { bulkCreateFakeGameHistoryRecords, createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
-import { createObjectIdFromString } from "../../../../../../helpers/mongoose/mongoose.helper";
+import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
 
 describe("Game History Record Repository", () => {
   let app: NestFastifyApplication;
@@ -70,7 +69,7 @@ describe("Game History Record Repository", () => {
     });
 
     it("should get 3 game history records when called with a specific gameId.", async() => {
-      const gameId = createObjectIdFromString(faker.database.mongodbObjectId());
+      const gameId = createFakeObjectId();
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
       await populate(5, [
         createFakeGameHistoryRecord({ gameId, play: gameHistoryRecordPlay }),

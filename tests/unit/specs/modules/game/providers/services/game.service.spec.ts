@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
@@ -18,7 +17,7 @@ import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createObjectIdFromString } from "../../../../../../helpers/mongoose/mongoose.helper";
+import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
 
 jest.mock("../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type");
 jest.mock("../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
@@ -102,11 +101,11 @@ describe("Game Service", () => {
   });
 
   describe("getGameAndCheckPlayingStatus", () => {
-    const existingPlayingId = createObjectIdFromString(faker.database.mongodbObjectId());
+    const existingPlayingId = createFakeObjectId();
     const existingPlayingGame = createFakeGame({ _id: existingPlayingId, status: GAME_STATUSES.PLAYING });
-    const existingDoneId = createObjectIdFromString(faker.database.mongodbObjectId());
+    const existingDoneId = createFakeObjectId();
     const existingDoneGame = createFakeGame({ _id: existingDoneId, status: GAME_STATUSES.OVER });
-    const unknownId = createObjectIdFromString(faker.database.mongodbObjectId());
+    const unknownId = createFakeObjectId();
 
     beforeEach(() => {
       when(gameRepositoryMock.findOne).calledWith({ _id: existingPlayingId }).mockResolvedValue(existingPlayingGame);
