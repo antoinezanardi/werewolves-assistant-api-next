@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
 import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getUpcomingGamePlay, getUpcomingGamePlayAction, getUpcomingGamePlaySource, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
@@ -15,7 +14,7 @@ import { createFakeGame } from "../../../../../factories/game/schemas/game.schem
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
-import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
+import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
 
 describe("Game Helper", () => {
   describe("getPlayerDtoWithRole", () => {
@@ -102,7 +101,7 @@ describe("Game Helper", () => {
     
     it("should return undefined when called with unknown id.", () => {
       const players = bulkCreateFakePlayers(6);
-      expect(getPlayerWithId(players, createObjectIdFromString(faker.database.mongodbObjectId()))).toBeUndefined();
+      expect(getPlayerWithId(players, createFakeObjectId())).toBeUndefined();
     });
   });
 
@@ -118,7 +117,7 @@ describe("Game Helper", () => {
     it("should throw error when called with unknown id.", () => {
       const players = bulkCreateFakePlayers(6);
       const game = createFakeGame({ players });
-      const unknownPlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
+      const unknownPlayerId = createFakeObjectId();
       const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: unknownPlayerId.toString() };
       const exception = new UnexpectedException("killPlayer", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
       expect(() => getPlayerWithIdOrThrow(unknownPlayerId, game, exception)).toThrow(exception);
@@ -132,12 +131,12 @@ describe("Game Helper", () => {
     });
 
     it("should return undefined when cards are undefined.", () => {
-      expect(getAdditionalCardWithId(undefined, createObjectIdFromString(faker.database.mongodbObjectId()))).toBeUndefined();
+      expect(getAdditionalCardWithId(undefined, createFakeObjectId())).toBeUndefined();
     });
 
     it("should return undefined when called with unknown id.", () => {
       const cards = bulkCreateFakeGameAdditionalCards(6);
-      expect(getAdditionalCardWithId(cards, createObjectIdFromString(faker.database.mongodbObjectId()))).toBeUndefined();
+      expect(getAdditionalCardWithId(cards, createFakeObjectId())).toBeUndefined();
     });
   });
 
@@ -336,7 +335,7 @@ describe("Game Helper", () => {
 
     it("should return unknown id when one candidate id is not found.", () => {
       const players = bulkCreateFakePlayers(6);
-      const unknownId = createObjectIdFromString(faker.database.mongodbObjectId());
+      const unknownId = createFakeObjectId();
       expect(getNonexistentPlayerId(players, [...players.map(player => player._id), unknownId])).toStrictEqual(unknownId);
     });
   });
@@ -399,7 +398,7 @@ describe("Game Helper", () => {
       ];
       const game = createFakeGame({ players });
       const options: GetNearestPlayerOptions = { direction: "right" };
-      const unknownPlayerId = createObjectIdFromString(faker.database.mongodbObjectId());
+      const unknownPlayerId = createFakeObjectId();
       const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: unknownPlayerId.toString() };
       const exception = new UnexpectedException("getNearestAliveNeighbor", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
       expect(() => getNearestAliveNeighbor(unknownPlayerId, game, options)).toThrow(exception);

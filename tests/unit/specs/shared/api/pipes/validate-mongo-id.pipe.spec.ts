@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { BadRequestException } from "@nestjs/common";
 import { ValidateMongoId } from "../../../../../../src/shared/api/pipes/validate-mongo-id.pipe";
+import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
 import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
 
 describe("Validate MongoId Pipe", () => {
@@ -14,7 +15,7 @@ describe("Validate MongoId Pipe", () => {
     });
 
     it("should return the value as ObjectId when value is a correct MongoId (objectId).", () => {
-      const validObjectId = createObjectIdFromString(faker.database.mongodbObjectId());
+      const validObjectId = createFakeObjectId();
 
       expect(pipe.transform(validObjectId)).toStrictEqual(validObjectId);
     });

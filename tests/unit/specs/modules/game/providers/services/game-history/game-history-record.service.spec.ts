@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
@@ -15,7 +14,7 @@ import { createFakeGameHistoryRecordPlay } from "../../../../../../../factories/
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
-import { createObjectIdFromString } from "../../../../../../../helpers/mongoose/mongoose.helper";
+import { createFakeObjectId } from "../../../../../../../factories/shared/mongoose/mongoose.factory";
 
 jest.mock("../../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
 
@@ -50,7 +49,7 @@ describe("Game History Record Service", () => {
 
   describe("getGameHistoryRecordsByGameId", () => {
     it("should get all game history records when called with specific id.", async() => {
-      const gameId = createObjectIdFromString(faker.database.mongodbObjectId());
+      const gameId = createFakeObjectId();
       await service.getGameHistoryRecordsByGameId(gameId);
       expect(repository.find).toHaveBeenCalledWith({ gameId });
     });
@@ -132,10 +131,10 @@ describe("Game History Record Service", () => {
   });
 
   describe("checkGameHistoryRecordToInsertData", () => {
-    const existingId = createObjectIdFromString(faker.database.mongodbObjectId());
+    const existingId = createFakeObjectId();
     const existingGame = createFakeGame();
     const fakePlayer = createFakePlayer();
-    const unknownId = createObjectIdFromString(faker.database.mongodbObjectId());
+    const unknownId = createFakeObjectId();
 
     beforeEach(() => {
       when(gameRepositoryMock.findOne).calledWith({ _id: unknownId.toJSON() }).mockResolvedValue(null);
@@ -178,7 +177,7 @@ describe("Game History Record Service", () => {
     it("should create game history record when called with valid data.", async() => {
       jest.spyOn(service, "checkGameHistoryRecordToInsertData").mockImplementation();
       const validPlay = createFakeGameHistoryRecordToInsert({
-        gameId: createObjectIdFromString(faker.database.mongodbObjectId()),
+        gameId: createFakeObjectId(),
         play: createFakeGameHistoryRecordPlay(),
       });
       await service.createGameHistoryRecord(validPlay);
