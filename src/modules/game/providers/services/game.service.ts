@@ -26,14 +26,6 @@ export class GameService {
     return this.gameRepository.find();
   }
 
-  public async getGameById(id: string): Promise<Game> {
-    const game = await this.gameRepository.findOne({ _id: id });
-    if (game === null) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAMES, id);
-    }
-    return game;
-  }
-
   public async createGame(game: CreateGameDto): Promise<Game> {
     const gameToCreate = plainToInstance(CreateGameDto, {
       ...game,

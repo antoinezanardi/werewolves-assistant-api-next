@@ -24,14 +24,14 @@ export class GameController {
   @Get()
   @ApiOperation({ summary: "Get games" })
   @ApiResponse({ status: HttpStatus.OK, type: Game, isArray: true })
-  public async getGames(): Promise<Game[]> {
+  private async getGames(): Promise<Game[]> {
     return this.gameService.getGames();
   }
 
   @Get("random-composition")
   @ApiOperation({ summary: "Get game random composition for given players" })
   @ApiResponse({ status: HttpStatus.OK, type: GetGameRandomCompositionPlayerResponseDto, isArray: true })
-  public getGameRandomComposition(@Query() getGameRandomCompositionDto: GetGameRandomCompositionDto): GetGameRandomCompositionPlayerResponseDto[] {
+  private getGameRandomComposition(@Query() getGameRandomCompositionDto: GetGameRandomCompositionDto): GetGameRandomCompositionPlayerResponseDto[] {
     return this.gameRandomCompositionService.getGameRandomComposition(getGameRandomCompositionDto);
   }
 
@@ -40,13 +40,13 @@ export class GameController {
   @ApiGameIdParam()
   @ApiResponse({ status: HttpStatus.OK, type: Game })
   @ApiGameNotFoundResponse()
-  public getGame(@Param("id", GetGameByIdPipe) game: Game): Game {
+  private getGame(@Param("id", GetGameByIdPipe) game: Game): Game {
     return game;
   }
 
   @Post()
   @ApiOperation({ summary: "Create a new game" })
-  public async createGame(@Body() createGameDto: CreateGameDto): Promise<Game> {
+  private async createGame(@Body() createGameDto: CreateGameDto): Promise<Game> {
     return this.gameService.createGame(createGameDto);
   }
 
@@ -55,14 +55,14 @@ export class GameController {
   @ApiGameIdParam()
   @ApiResponse({ status: HttpStatus.OK, type: Game, description: `Game's status will be set to ${GAME_STATUSES.CANCELED}` })
   @ApiGameNotFoundResponse()
-  public async cancelGame(@Param("id", GetGameByIdPipe) game: Game): Promise<Game> {
+  private async cancelGame(@Param("id", GetGameByIdPipe) game: Game): Promise<Game> {
     return this.gameService.cancelGame(game);
   }
 
   @Post(":id/play")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the \`${GAME_STATUSES.PLAYING}\` status. Body parameters fields are required or optional based on the upcoming game play.` })
-  public async makeGamePlay(@Param("id", GetGameByIdPipe) game: Game, @Body() makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
+  private async makeGamePlay(@Param("id", GetGameByIdPipe) game: Game, @Body() makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
     return this.gameService.makeGamePlay(game, makeGamePlayDto);
   }
 }

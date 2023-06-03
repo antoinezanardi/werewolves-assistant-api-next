@@ -55,7 +55,19 @@ describe("Game History Record Service", () => {
     });
   });
 
-  describe("checkGameHistoryRecordToInsertPlayData", () => {
+  describe("createGameHistoryRecord", () => {
+    it("should create game history record when called with valid data.", async() => {
+      jest.spyOn(service as unknown as { validateGameHistoryRecordToInsertData }, "validateGameHistoryRecordToInsertData").mockImplementation();
+      const validPlay = createFakeGameHistoryRecordToInsert({
+        gameId: createFakeObjectId(),
+        play: createFakeGameHistoryRecordPlay(),
+      });
+      await service.createGameHistoryRecord(validPlay);
+      expect(repository.create).toHaveBeenCalledWith(validPlay);
+    });
+  });
+
+  describe("validateGameHistoryRecordToInsertPlayData", () => {
     const fakeGameAdditionalCards = bulkCreateFakeGameAdditionalCards(3);
     const fakeGame = createFakeGame({ players: bulkCreateFakePlayers(4), additionalCards: fakeGameAdditionalCards });
     const fakePlayer = createFakePlayer();
@@ -112,7 +124,7 @@ describe("Game History Record Service", () => {
         errorParameters: [API_RESOURCES.GAME_ADDITIONAL_CARDS, fakeCard._id.toString(), "Game Play - Chosen card is not in the game additional cards"],
       },
     ])("should throw resource not found error when $test [#$#].", ({ play, errorParameters }) => {
-      expect(() => service.checkGameHistoryRecordToInsertPlayData(play, fakeGame)).toThrow(ResourceNotFoundException);
+      expect(() => service["validateGameHistoryRecordToInsertPlayData"](play, fakeGame)).toThrow(ResourceNotFoundException);
       expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
     });
 
@@ -126,11 +138,11 @@ describe("Game History Record Service", () => {
         votes: [{ target: fakeGame.players[1], source: fakeGame.players[0] }],
         chosenCard: fakeGameAdditionalCards[1],
       });
-      expect(() => service.checkGameHistoryRecordToInsertPlayData(validPlay, fakeGame)).not.toThrow();
+      expect(() => service["validateGameHistoryRecordToInsertPlayData"](validPlay, fakeGame)).not.toThrow();
     });
   });
 
-  describe("checkGameHistoryRecordToInsertData", () => {
+  describe("validateGameHistoryRecordToInsertData", () => {
     const existingId = createFakeObjectId();
     const existingGame = createFakeGame();
     const fakePlayer = createFakePlayer();
@@ -158,7 +170,7 @@ describe("Game History Record Service", () => {
         errorParameters: [API_RESOURCES.PLAYERS, fakePlayer._id.toString(), "Game Play - Player in `deadPlayers` is not in the game players"],
       },
     ])("should throw resource not found error when $test [#$#].", async({ gameHistoryRecord, errorParameters }) => {
-      await expect(service.checkGameHistoryRecordToInsertData(gameHistoryRecord)).toReject();
+      await expect(service["validateGameHistoryRecordToInsertData"](gameHistoryRecord)).toReject();
       expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
     });
 
@@ -169,19 +181,7 @@ describe("Game History Record Service", () => {
         revealedPlayers: existingGame.players,
         deadPlayers: existingGame.players,
       });
-      await expect(service.checkGameHistoryRecordToInsertData(validPlay)).resolves.not.toThrow();
-    });
-  });
-
-  describe("createGameHistoryRecord", () => {
-    it("should create game history record when called with valid data.", async() => {
-      jest.spyOn(service, "checkGameHistoryRecordToInsertData").mockImplementation();
-      const validPlay = createFakeGameHistoryRecordToInsert({
-        gameId: createFakeObjectId(),
-        play: createFakeGameHistoryRecordPlay(),
-      });
-      await service.createGameHistoryRecord(validPlay);
-      expect(repository.create).toHaveBeenCalledWith(validPlay);
+      await expect(service["validateGameHistoryRecordToInsertData"](validPlay)).resolves.not.toThrow();
     });
   });
 });

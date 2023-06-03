@@ -10,7 +10,7 @@ export class RoleController {
   @Get()
   @ApiOperation({ summary: "Get all available roles for games" })
   @ApiResponse({ status: HttpStatus.OK, type: Role, isArray: true })
-  public getRoles(): readonly Role[] {
+  private getRoles(): readonly Role[] {
     return roles;
   }
 }
