@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/@stryker-mutator/core/schema/stryker-schema.json",
-  "cleanTempDir": true,
+  "cleanTempDir": "always",
   "incremental": true,
   "incrementalFile": "tests/stryker/incremental.json",
   "checkers": ["typescript"],
@@ -29,5 +29,6 @@
     "high": 100,
     "low": 100,
     "break": 100
-  }
+  },
+  "disableTypeChecks": "{test,src,lib}/**/*.{js,ts,jsx,tsx,html,vue}"
 }
