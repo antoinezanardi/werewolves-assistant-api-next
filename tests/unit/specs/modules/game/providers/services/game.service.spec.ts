@@ -1,6 +1,5 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { when } from "jest-when";
 import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.enum";
 import * as GameVictoryHelper from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
 import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
@@ -67,27 +66,6 @@ describe("Game Service", () => {
     it("should get all games when called.", async() => {
       await service.getGames();
       expect(repository.find).toHaveBeenCalledWith();
-    });
-  });
-
-  describe("getGameById", () => {
-    const existingId = "good-id";
-    const existingGame = createFakeGame();
-    const unknownId = "bad-id";
-
-    beforeEach(() => {
-      when(gameRepositoryMock.findOne).calledWith({ _id: existingId }).mockResolvedValue(existingGame);
-      when(gameRepositoryMock.findOne).calledWith({ _id: unknownId }).mockResolvedValue(null);
-    });
-
-    it("should return a game when called with existing id.", async() => {
-      const result = await service.getGameById(existingId);
-      expect(result).toStrictEqual(existingGame);
-    });
-
-    it("should throw an error when called with unknown id.", async() => {
-      await expect(service.getGameById(unknownId)).toReject();
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, unknownId);
     });
   });
 

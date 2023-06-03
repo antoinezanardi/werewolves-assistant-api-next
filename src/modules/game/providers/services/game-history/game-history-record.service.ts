@@ -22,7 +22,12 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.find({ gameId, ...filter });
   }
 
-  public checkGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {
+  public async createGameHistoryRecord(gameHistoryRecordToInsert: GameHistoryRecordToInsert): Promise<GameHistoryRecord> {
+    await this.validateGameHistoryRecordToInsertData(gameHistoryRecordToInsert);
+    return this.gameHistoryRecordRepository.create(gameHistoryRecordToInsert);
+  }
+
+  private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {
     const unmatchedSource = getNonexistentPlayer(game.players, play.source.players);
     if (unmatchedSource) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedSource._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_SOURCE);
@@ -44,7 +49,7 @@ export class GameHistoryRecordService {
     }
   }
 
-  public async checkGameHistoryRecordToInsertData(gameHistoryRecordToInsert: GameHistoryRecordToInsert): Promise<void> {
+  private async validateGameHistoryRecordToInsertData(gameHistoryRecordToInsert: GameHistoryRecordToInsert): Promise<void> {
     const { gameId, play, revealedPlayers, deadPlayers } = gameHistoryRecordToInsert;
     const game = await this.gameRepository.findOne({ _id: gameId });
     if (game === null) {
@@ -58,11 +63,6 @@ export class GameHistoryRecordService {
     if (unmatchedDeadPlayer) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedDeadPlayer._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_DEAD_PLAYER);
     }
-    this.checkGameHistoryRecordToInsertPlayData(play, game);
-  }
-
-  public async createGameHistoryRecord(gameHistoryRecordToInsert: GameHistoryRecordToInsert): Promise<GameHistoryRecord> {
-    await this.checkGameHistoryRecordToInsertData(gameHistoryRecordToInsert);
-    return this.gameHistoryRecordRepository.create(gameHistoryRecordToInsert);
+    this.validateGameHistoryRecordToInsertPlayData(play, game);
   }
 }

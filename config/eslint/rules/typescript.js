@@ -117,7 +117,12 @@ const typescriptRules = Object.freeze({
     },
   ],
   "@typescript-eslint/default-param-last": ERROR,
-  "@typescript-eslint/dot-notation": ERROR,
+  "@typescript-eslint/dot-notation": [
+    ERROR, {
+      allowPrivateClassPropertyAccess: true,
+      allowProtectedClassPropertyAccess: true,
+    },
+  ],
   "@typescript-eslint/func-call-spacing": ERROR,
   "@typescript-eslint/indent": [
     ERROR,
