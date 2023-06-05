@@ -5,12 +5,12 @@ import type { ExceptionResponse } from "../../../../../types/exception/exception
 describe("Unexpected exception type", () => {
   describe("getResponse", () => {
     it("should get response with description without interpolations when interpolations are not necessary.", () => {
-      const exception = new UnexpectedException("werewolvesEat", UNEXPECTED_EXCEPTION_REASONS.TOO_LESS_TARGETED_PLAYERS);
+      const exception = new UnexpectedException("werewolvesEat", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME);
 
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 500,
         message: `Unexpected exception in werewolvesEat`,
-        error: "Too less targeted players for this game play",
+        error: "Can't find player with id \"playerId\" in game \"gameId\"",
       });
     });
 
