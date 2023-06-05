@@ -15,6 +15,7 @@ describe("Game Mutator", () => {
       const players = bulkCreateFakePlayers(4);
       const updatedPlayer = createFakeSeerAlivePlayer();
       const game = createFakeGame({ players });
+      
       expect(updatePlayerInGame(unknownPlayerId, updatedPlayer, game)).toStrictEqual<Game>(game);
     });
 
@@ -35,6 +36,7 @@ describe("Game Mutator", () => {
           createFakePlayer(game.players[3]),
         ],
       });
+      
       expect(updatePlayerInGame(updatedPlayer._id, updatedPlayer, game)).toStrictEqual<Game>(expectedGame);
     });
 
@@ -45,6 +47,7 @@ describe("Game Mutator", () => {
       const updatedPlayer = createFakeSeerAlivePlayer({ ...players[2], name: newName });
       const clonedGame = cloneDeep(game);
       updatePlayerInGame(updatedPlayer._id, updatedPlayer, game);
+      
       expect(game).toStrictEqual<Game>(clonedGame);
     });
   });
@@ -55,6 +58,7 @@ describe("Game Mutator", () => {
       const unknownPlayerId = createFakeObjectId();
       const players = bulkCreateFakePlayers(4);
       const game = createFakeGame({ players });
+      
       expect(addPlayerAttributeInGame(unknownPlayerId, game, attributeToAdd)).toStrictEqual<Game>(game);
     });
 
@@ -74,6 +78,7 @@ describe("Game Mutator", () => {
           createFakePlayer(game.players[3]),
         ],
       });
+      
       expect(addPlayerAttributeInGame(players[2]._id, game, attributeToAdd)).toStrictEqual<Game>(expectedGame);
     });
 
@@ -83,6 +88,7 @@ describe("Game Mutator", () => {
       const game = createFakeGame({ players });
       const clonedGame = cloneDeep(game);
       addPlayerAttributeInGame(players[2]._id, game, attributeToAdd);
+      
       expect(game).toStrictEqual<Game>(clonedGame);
     });
   });
@@ -97,6 +103,7 @@ describe("Game Mutator", () => {
       ];
       const players = bulkCreateFakePlayers(4);
       const game = createFakeGame({ players });
+      
       expect(addPlayersAttributeInGame(unknownPlayerIds, game, attributeToAdd)).toStrictEqual<Game>(game);
     });
 
@@ -119,6 +126,7 @@ describe("Game Mutator", () => {
           createFakePlayer(game.players[3]),
         ],
       });
+      
       expect(addPlayersAttributeInGame([players[1]._id, players[2]._id], game, attributeToAdd)).toStrictEqual<Game>(expectedGame);
     });
 
@@ -128,6 +136,7 @@ describe("Game Mutator", () => {
       const game = createFakeGame({ players });
       const clonedGame = cloneDeep(game);
       addPlayersAttributeInGame([players[1]._id, players[2]._id], game, attributeToAdd);
+      
       expect(game).toStrictEqual<Game>(clonedGame);
     });
   });
@@ -140,6 +149,7 @@ describe("Game Mutator", () => {
         ...game,
         upcomingPlays: [gamePlayToPrepend, ...game.upcomingPlays],
       });
+      
       expect(prependUpcomingPlayInGame(gamePlayToPrepend, game)).toStrictEqual<Game>(expectedGame);
     });
 
@@ -148,6 +158,7 @@ describe("Game Mutator", () => {
       const game = createFakeGame({ upcomingPlays: [createFakeGamePlayCupidCharms()] });
       const clonedGame = cloneDeep(game);
       prependUpcomingPlayInGame(gamePlayToPrepend, game);
+      
       expect(game).toStrictEqual<Game>(clonedGame);
     });
   });
@@ -160,6 +171,7 @@ describe("Game Mutator", () => {
         ...game,
         upcomingPlays: [...game.upcomingPlays, gamePlayToAppend],
       });
+      
       expect(appendUpcomingPlayInGame(gamePlayToAppend, game)).toStrictEqual<Game>(expectedGame);
     });
 
@@ -168,6 +180,7 @@ describe("Game Mutator", () => {
       const game = createFakeGame({ upcomingPlays: [createFakeGamePlayCupidCharms()] });
       const clonedGame = cloneDeep(game);
       appendUpcomingPlayInGame(gamePlayToAppend, game);
+      
       expect(game).toStrictEqual<Game>(clonedGame);
     });
   });

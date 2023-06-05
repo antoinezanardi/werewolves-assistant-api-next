@@ -21,11 +21,12 @@ import { createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFake
 import { bulkCreateFakePlayers } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Game Plays Manager Service", () => {
-  let service: GamePlaysManagerService;
+  let services: { gamePlaysManager: GamePlaysManagerService };
 
   beforeEach(async() => {
     const module: TestingModule = await Test.createTestingModule({ providers: [GamePlaysManagerService] }).compile();
-    service = module.get<GamePlaysManagerService>(GamePlaysManagerService);
+    
+    services = { gamePlaysManager: module.get<GamePlaysManagerService>(GamePlaysManagerService) };
   });
 
   describe("getUpcomingNightPlays", () => {
@@ -120,29 +121,33 @@ describe("Game Plays Manager Service", () => {
         output: [createFakeGamePlay({ source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT })],
       },
     ])("should get upcoming night plays when $test [#$#].", ({ game, output }) => {
-      expect(service.getUpcomingNightPlays(game)).toStrictEqual(output);
+      expect(services.gamePlaysManager.getUpcomingNightPlays(game)).toStrictEqual(output);
     });
   });
 
   describe("isSheriffElectionTime", () => {
     it("should return false when sheriff is not enabled even if it's the time.", () => {
       const sheriffGameOptions = createFakeSheriffGameOptions({ electedAt: { turn: 1, phase: GAME_PHASES.NIGHT }, isEnabled: false, hasDoubledVote: false });
-      expect(service["isSheriffElectionTime"](sheriffGameOptions, 1, GAME_PHASES.NIGHT)).toBe(false);
+      
+      expect(services.gamePlaysManager["isSheriffElectionTime"](sheriffGameOptions, 1, GAME_PHASES.NIGHT)).toBe(false);
     });
 
     it("should return false when it's not the right turn.", () => {
       const sheriffGameOptions = createFakeSheriffGameOptions({ electedAt: { turn: 1, phase: GAME_PHASES.NIGHT }, isEnabled: true, hasDoubledVote: false });
-      expect(service["isSheriffElectionTime"](sheriffGameOptions, 2, GAME_PHASES.NIGHT)).toBe(false);
+      
+      expect(services.gamePlaysManager["isSheriffElectionTime"](sheriffGameOptions, 2, GAME_PHASES.NIGHT)).toBe(false);
     });
 
     it("should return false when it's not the right phase.", () => {
       const sheriffGameOptions = createFakeSheriffGameOptions({ electedAt: { turn: 1, phase: GAME_PHASES.DAY }, isEnabled: true, hasDoubledVote: false });
-      expect(service["isSheriffElectionTime"](sheriffGameOptions, 1, GAME_PHASES.NIGHT)).toBe(false);
+      
+      expect(services.gamePlaysManager["isSheriffElectionTime"](sheriffGameOptions, 1, GAME_PHASES.NIGHT)).toBe(false);
     });
 
     it("should return true when it's the right phase and turn.", () => {
       const sheriffGameOptions = createFakeSheriffGameOptions({ electedAt: { turn: 1, phase: GAME_PHASES.NIGHT }, isEnabled: true, hasDoubledVote: false });
-      expect(service["isSheriffElectionTime"](sheriffGameOptions, 1, GAME_PHASES.NIGHT)).toBe(true);
+      
+      expect(services.gamePlaysManager["isSheriffElectionTime"](sheriffGameOptions, 1, GAME_PHASES.NIGHT)).toBe(true);
     });
   });
 
@@ -155,7 +160,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["areLoversPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["areLoversPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return true when there is cupid in the game dto.", () => {
@@ -166,7 +172,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.CUPID } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["areLoversPlayableForNight"](gameDto)).toBe(true);
+      
+      expect(services.gamePlaysManager["areLoversPlayableForNight"](gameDto)).toBe(true);
     });
 
     it("should return false when there is no cupid in the game.", () => {
@@ -177,7 +184,8 @@ describe("Game Plays Manager Service", () => {
         createFakeVillagerAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["areLoversPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areLoversPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when there is cupid in the game but he is dead.", () => {
@@ -188,7 +196,8 @@ describe("Game Plays Manager Service", () => {
         createFakeCupidAlivePlayer({ isAlive: false }),
       ]);
       const game = createFakeGame({ players });
-      expect(service["areLoversPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areLoversPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when there is cupid in the game but he is powerless.", () => {
@@ -199,7 +208,8 @@ describe("Game Plays Manager Service", () => {
         createFakeCupidAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ]);
       const game = createFakeGame({ players });
-      expect(service["areLoversPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areLoversPlayableForNight"](game)).toBe(false);
     });
 
     it("should return true when there is cupid alive and powerful.", () => {
@@ -210,7 +220,8 @@ describe("Game Plays Manager Service", () => {
         createFakeCupidAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["areLoversPlayableForNight"](game)).toBe(true);
+      
+      expect(services.gamePlaysManager["areLoversPlayableForNight"](game)).toBe(true);
     });
   });
 
@@ -223,7 +234,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["areAllPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["areAllPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return true when there is angel in the game dto.", () => {
@@ -234,7 +246,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.ANGEL } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["areAllPlayableForNight"](gameDto)).toBe(true);
+      
+      expect(services.gamePlaysManager["areAllPlayableForNight"](gameDto)).toBe(true);
     });
 
     it("should return false when there is no angel in the game.", () => {
@@ -245,7 +258,8 @@ describe("Game Plays Manager Service", () => {
         createFakeVillagerVillagerAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["areAllPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areAllPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when there is angel in the game but he is dead.", () => {
@@ -256,7 +270,8 @@ describe("Game Plays Manager Service", () => {
         createFakeAngelAlivePlayer({ isAlive: false }),
       ]);
       const game = createFakeGame({ players });
-      expect(service["areAllPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areAllPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when there is angel in the game but he is powerless.", () => {
@@ -267,7 +282,8 @@ describe("Game Plays Manager Service", () => {
         createFakeAngelAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
       ]);
       const game = createFakeGame({ players });
-      expect(service["areAllPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areAllPlayableForNight"](game)).toBe(false);
     });
 
     it("should return true when there is angel in the game alive and powerful.", () => {
@@ -278,41 +294,48 @@ describe("Game Plays Manager Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["areAllPlayableForNight"](game)).toBe(true);
+      
+      expect(services.gamePlaysManager["areAllPlayableForNight"](game)).toBe(true);
     });
   });
 
   describe("isGroupPlayableForNight", () => {
     it("should call all playable method when group is all.", () => {
-      const areAllPlayableForNightSpy = jest.spyOn(service as unknown as { areAllPlayableForNight }, "areAllPlayableForNight").mockReturnValue(true);
+      const areAllPlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { areAllPlayableForNight }, "areAllPlayableForNight").mockReturnValue(true);
       const game = createFakeGame();
-      const isPlayable = service["isGroupPlayableForNight"](game, PLAYER_GROUPS.ALL);
+      const isPlayable = services.gamePlaysManager["isGroupPlayableForNight"](game, PLAYER_GROUPS.ALL);
+      
       expect(areAllPlayableForNightSpy).toHaveBeenCalledWith(game);
+      
       expect(isPlayable).toBe(true);
     });
 
     it("should call lovers playable method when group is lovers.", () => {
-      const areLoversPlayableForNightSpy = jest.spyOn(service as unknown as { areLoversPlayableForNight }, "areLoversPlayableForNight");
+      const areLoversPlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { areLoversPlayableForNight }, "areLoversPlayableForNight");
       const game = createFakeGame();
-      service["isGroupPlayableForNight"](game, PLAYER_GROUPS.LOVERS);
+      services.gamePlaysManager["isGroupPlayableForNight"](game, PLAYER_GROUPS.LOVERS);
+      
       expect(areLoversPlayableForNightSpy).toHaveBeenCalledWith(game);
     });
 
     it("should call charmed playable method when group is charmed people.", () => {
-      const isPiedPiperPlayableForNightSpy = jest.spyOn(service as unknown as { isPiedPiperPlayableForNight }, "isPiedPiperPlayableForNight");
+      const isPiedPiperPlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { isPiedPiperPlayableForNight }, "isPiedPiperPlayableForNight");
       const game = createFakeGame();
-      service["isGroupPlayableForNight"](game, PLAYER_GROUPS.CHARMED);
+      services.gamePlaysManager["isGroupPlayableForNight"](game, PLAYER_GROUPS.CHARMED);
+      
       expect(isPiedPiperPlayableForNightSpy).toHaveBeenCalledWith(game);
     });
 
     it("should return true when group is werewolves and game is dto.", () => {
       const gameDto = createFakeCreateGameDto();
-      expect(service["isGroupPlayableForNight"](gameDto, PLAYER_GROUPS.WEREWOLVES)).toBe(true);
+      
+      expect(services.gamePlaysManager["isGroupPlayableForNight"](gameDto, PLAYER_GROUPS.WEREWOLVES)).toBe(true);
     });
 
     it("should return true when group is villagers and game is dto.", () => {
       const gameDto = createFakeCreateGameDto();
-      expect(service["isGroupPlayableForNight"](gameDto, PLAYER_GROUPS.VILLAGERS)).toBe(true);
+      
+      expect(services.gamePlaysManager["isGroupPlayableForNight"](gameDto, PLAYER_GROUPS.VILLAGERS)).toBe(true);
     });
 
     it("should return false when group is werewolves and all are powerless.", () => {
@@ -323,7 +346,8 @@ describe("Game Plays Manager Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isGroupPlayableForNight"](game, PLAYER_GROUPS.WEREWOLVES)).toBe(false);
+      
+      expect(services.gamePlaysManager["isGroupPlayableForNight"](game, PLAYER_GROUPS.WEREWOLVES)).toBe(false);
     });
 
     it("should return true when group is werewolves and at least one is alive.", () => {
@@ -334,7 +358,8 @@ describe("Game Plays Manager Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isGroupPlayableForNight"](game, PLAYER_GROUPS.WEREWOLVES)).toBe(true);
+      
+      expect(services.gamePlaysManager["isGroupPlayableForNight"](game, PLAYER_GROUPS.WEREWOLVES)).toBe(true);
     });
   });
 
@@ -347,7 +372,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["isWhiteWerewolfPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["isWhiteWerewolfPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return false when white werewolf is in the game dto but options specify that he's never called.", () => {
@@ -359,7 +385,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 0 } }) });
       const gameDto = createFakeCreateGameDto({ players, options });
-      expect(service["isWhiteWerewolfPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["isWhiteWerewolfPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return true when white werewolf is in the game dto and options specify that he's called every other night.", () => {
@@ -371,7 +398,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 2 } }) });
       const gameDto = createFakeCreateGameDto({ players, options });
-      expect(service["isWhiteWerewolfPlayableForNight"](gameDto)).toBe(true);
+      
+      expect(services.gamePlaysManager["isWhiteWerewolfPlayableForNight"](gameDto)).toBe(true);
     });
 
     it("should return false when white werewolf is not in the game.", () => {
@@ -382,7 +410,8 @@ describe("Game Plays Manager Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isWhiteWerewolfPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["isWhiteWerewolfPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when white werewolf is in the game but options specify that he's never called.", () => {
@@ -394,7 +423,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 0 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["isWhiteWerewolfPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["isWhiteWerewolfPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when white werewolf is in the game but dead.", () => {
@@ -406,7 +436,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 1 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["isWhiteWerewolfPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["isWhiteWerewolfPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when white werewolf is in the game but powerless.", () => {
@@ -418,7 +449,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 1 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["isWhiteWerewolfPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["isWhiteWerewolfPlayableForNight"](game)).toBe(false);
     });
 
     it("should return true when white werewolf is in the game, alive and powerful.", () => {
@@ -430,7 +462,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["isWhiteWerewolfPlayableForNight"](game)).toBe(true);
+      
+      expect(services.gamePlaysManager["isWhiteWerewolfPlayableForNight"](game)).toBe(true);
     });
   });
 
@@ -443,7 +476,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["isPiedPiperPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["isPiedPiperPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return true when pied piper is in the game dto.", () => {
@@ -454,7 +488,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.PIED_PIPER } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["isPiedPiperPlayableForNight"](gameDto)).toBe(true);
+      
+      expect(services.gamePlaysManager["isPiedPiperPlayableForNight"](gameDto)).toBe(true);
     });
 
     it("should return false when pied piper is not in the game.", () => {
@@ -465,7 +500,8 @@ describe("Game Plays Manager Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isPiedPiperPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["isPiedPiperPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when pied piper is in the game can't charm anymore.", () => {
@@ -477,7 +513,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       jest.spyOn(PlayerHelper, "canPiedPiperCharm").mockReturnValue(false);
       const game = createFakeGame({ players });
-      expect(service["isPiedPiperPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["isPiedPiperPlayableForNight"](game)).toBe(false);
     });
 
     it("should return true when pied piper is in the game and can still charm.", () => {
@@ -489,7 +526,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       jest.spyOn(PlayerHelper, "canPiedPiperCharm").mockReturnValue(true);
       const game = createFakeGame({ players });
-      expect(service["isPiedPiperPlayableForNight"](game)).toBe(true);
+      
+      expect(services.gamePlaysManager["isPiedPiperPlayableForNight"](game)).toBe(true);
     });
   });
 
@@ -502,7 +540,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["isBigBadWolfPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["isBigBadWolfPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return true when big bad wolf is in the game dto.", () => {
@@ -513,7 +552,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.BIG_BAD_WOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["isBigBadWolfPlayableForNight"](gameDto)).toBe(true);
+      
+      expect(services.gamePlaysManager["isBigBadWolfPlayableForNight"](gameDto)).toBe(true);
     });
 
     it("should return false when big bad wolf is not in the game.", () => {
@@ -524,7 +564,8 @@ describe("Game Plays Manager Service", () => {
         createFakePiedPiperAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isBigBadWolfPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["isBigBadWolfPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when big bad wolf is in the game but dead.", () => {
@@ -535,7 +576,8 @@ describe("Game Plays Manager Service", () => {
         createFakeBigBadWolfAlivePlayer({ isAlive: false }),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isBigBadWolfPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["isBigBadWolfPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when big bad wolf is in the game but one werewolf is dead.", () => {
@@ -548,7 +590,8 @@ describe("Game Plays Manager Service", () => {
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       jest.spyOn(GameHelper, "areAllWerewolvesAlive").mockReturnValue(false);
       const game = createFakeGame({ players, options });
-      expect(service["isBigBadWolfPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["isBigBadWolfPlayableForNight"](game)).toBe(false);
     });
 
     it("should return true when big bad wolf is in the game, one werewolf is dead but classic rules are not followed.", () => {
@@ -561,7 +604,8 @@ describe("Game Plays Manager Service", () => {
       jest.spyOn(GameHelper, "areAllWerewolvesAlive").mockReturnValue(false);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ bigBadWolf: { isPowerlessIfWerewolfDies: false } }) });
       const game = createFakeGame({ players, options });
-      expect(service["isBigBadWolfPlayableForNight"](game)).toBe(true);
+      
+      expect(services.gamePlaysManager["isBigBadWolfPlayableForNight"](game)).toBe(true);
     });
 
     it("should return true when big bad wolf is in the game and all werewolves are alive.", () => {
@@ -574,7 +618,8 @@ describe("Game Plays Manager Service", () => {
       jest.spyOn(GameHelper, "areAllWerewolvesAlive").mockReturnValue(true);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
-      expect(service["isBigBadWolfPlayableForNight"](game)).toBe(true);
+      
+      expect(services.gamePlaysManager["isBigBadWolfPlayableForNight"](game)).toBe(true);
     });
   });
 
@@ -587,7 +632,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["areThreeBrothersPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["areThreeBrothersPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return false when three brothers are in the game dto but options specify that they are never called.", () => {
@@ -599,7 +645,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 0 } }) });
       const gameDto = createFakeCreateGameDto({ players, options });
-      expect(service["areThreeBrothersPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["areThreeBrothersPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return true when three brother are in the game dto and options specify that they are called every other night.", () => {
@@ -611,7 +658,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 2 } }) });
       const gameDto = createFakeCreateGameDto({ players, options });
-      expect(service["areThreeBrothersPlayableForNight"](gameDto)).toBe(true);
+      
+      expect(services.gamePlaysManager["areThreeBrothersPlayableForNight"](gameDto)).toBe(true);
     });
 
     it("should return false when three brothers are not in the game.", () => {
@@ -622,7 +670,8 @@ describe("Game Plays Manager Service", () => {
         createFakeBigBadWolfAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["areThreeBrothersPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areThreeBrothersPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when three brothers is in the game but options specify that they are never called.", () => {
@@ -634,7 +683,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 0 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areThreeBrothersPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areThreeBrothersPlayableForNight"](game)).toBe(false);
     });
 
     it("should return true when three brothers are alive.", () => {
@@ -646,7 +696,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areThreeBrothersPlayableForNight"](game)).toBe(true);
+      
+      expect(services.gamePlaysManager["areThreeBrothersPlayableForNight"](game)).toBe(true);
     });
 
     it("should return true when two brothers are alive.", () => {
@@ -658,7 +709,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areThreeBrothersPlayableForNight"](game)).toBe(true);
+      
+      expect(services.gamePlaysManager["areThreeBrothersPlayableForNight"](game)).toBe(true);
     });
 
     it("should return false when one brothers is alive.", () => {
@@ -670,7 +722,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areThreeBrothersPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areThreeBrothersPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when all brothers are dead.", () => {
@@ -682,7 +735,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areThreeBrothersPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areThreeBrothersPlayableForNight"](game)).toBe(false);
     });
   });
 
@@ -695,7 +749,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["areTwoSistersPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["areTwoSistersPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return false when two sisters are in the game dto but options specify that they are never called.", () => {
@@ -707,7 +762,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 0 } }) });
       const gameDto = createFakeCreateGameDto({ players, options });
-      expect(service["areTwoSistersPlayableForNight"](gameDto)).toBe(false);
+      
+      expect(services.gamePlaysManager["areTwoSistersPlayableForNight"](gameDto)).toBe(false);
     });
 
     it("should return true when two sisters are in the game dto and options specify that they are called every other night.", () => {
@@ -719,7 +775,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 2 } }) });
       const gameDto = createFakeCreateGameDto({ players, options });
-      expect(service["areTwoSistersPlayableForNight"](gameDto)).toBe(true);
+      
+      expect(services.gamePlaysManager["areTwoSistersPlayableForNight"](gameDto)).toBe(true);
     });
 
     it("should return false when two sisters are not in the game.", () => {
@@ -731,7 +788,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areTwoSistersPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areTwoSistersPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when two sisters is in the game but options specify that they are never called.", () => {
@@ -743,7 +801,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 0 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areTwoSistersPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areTwoSistersPlayableForNight"](game)).toBe(false);
     });
 
     it("should return true when two sisters are alive.", () => {
@@ -755,7 +814,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areTwoSistersPlayableForNight"](game)).toBe(true);
+      
+      expect(services.gamePlaysManager["areTwoSistersPlayableForNight"](game)).toBe(true);
     });
 
     it("should return false when one sister is alive.", () => {
@@ -767,7 +827,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areTwoSistersPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areTwoSistersPlayableForNight"](game)).toBe(false);
     });
 
     it("should return false when all sisters are dead.", () => {
@@ -779,7 +840,8 @@ describe("Game Plays Manager Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
-      expect(service["areTwoSistersPlayableForNight"](game)).toBe(false);
+      
+      expect(services.gamePlaysManager["areTwoSistersPlayableForNight"](game)).toBe(false);
     });
   });
 
@@ -792,7 +854,8 @@ describe("Game Plays Manager Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isRolePlayableForNight"](game, ROLE_NAMES.SEER)).toBe(false);
+      
+      expect(services.gamePlaysManager["isRolePlayableForNight"](game, ROLE_NAMES.SEER)).toBe(false);
     });
 
     it("should call two sisters method when role is two sisters.", () => {
@@ -803,8 +866,9 @@ describe("Game Plays Manager Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const areTwoSistersPlayableForNightSpy = jest.spyOn(service as unknown as { areTwoSistersPlayableForNight }, "areTwoSistersPlayableForNight");
-      service["isRolePlayableForNight"](game, ROLE_NAMES.TWO_SISTERS);
+      const areTwoSistersPlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { areTwoSistersPlayableForNight }, "areTwoSistersPlayableForNight");
+      services.gamePlaysManager["isRolePlayableForNight"](game, ROLE_NAMES.TWO_SISTERS);
+      
       expect(areTwoSistersPlayableForNightSpy).toHaveBeenCalledWith(game);
     });
 
@@ -816,8 +880,9 @@ describe("Game Plays Manager Service", () => {
         createFakeThreeBrothersAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const areThreeBrothersPlayableForNightSpy = jest.spyOn(service as unknown as { areThreeBrothersPlayableForNight }, "areThreeBrothersPlayableForNight");
-      service["isRolePlayableForNight"](game, ROLE_NAMES.THREE_BROTHERS);
+      const areThreeBrothersPlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { areThreeBrothersPlayableForNight }, "areThreeBrothersPlayableForNight");
+      services.gamePlaysManager["isRolePlayableForNight"](game, ROLE_NAMES.THREE_BROTHERS);
+      
       expect(areThreeBrothersPlayableForNightSpy).toHaveBeenCalledWith(game);
     });
 
@@ -829,8 +894,9 @@ describe("Game Plays Manager Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const isBigBadWolfPlayableForNightSpy = jest.spyOn(service as unknown as { isBigBadWolfPlayableForNight }, "isBigBadWolfPlayableForNight");
-      service["isRolePlayableForNight"](game, ROLE_NAMES.BIG_BAD_WOLF);
+      const isBigBadWolfPlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { isBigBadWolfPlayableForNight }, "isBigBadWolfPlayableForNight");
+      services.gamePlaysManager["isRolePlayableForNight"](game, ROLE_NAMES.BIG_BAD_WOLF);
+      
       expect(isBigBadWolfPlayableForNightSpy).toHaveBeenCalledWith(game);
     });
 
@@ -842,9 +908,11 @@ describe("Game Plays Manager Service", () => {
         createFakePiedPiperAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const isPiedPiperPlayableForNightSpy = jest.spyOn(service as unknown as { isPiedPiperPlayableForNight }, "isPiedPiperPlayableForNight").mockReturnValue(true);
-      const isPlayable = service["isRolePlayableForNight"](game, ROLE_NAMES.PIED_PIPER);
+      const isPiedPiperPlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { isPiedPiperPlayableForNight }, "isPiedPiperPlayableForNight").mockReturnValue(true);
+      const isPlayable = services.gamePlaysManager["isRolePlayableForNight"](game, ROLE_NAMES.PIED_PIPER);
+      
       expect(isPiedPiperPlayableForNightSpy).toHaveBeenCalledWith(game);
+      
       expect(isPlayable).toBe(true);
     });
 
@@ -856,8 +924,9 @@ describe("Game Plays Manager Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const isWhiteWerewolfPlayableForNightSpy = jest.spyOn(service as unknown as { isWhiteWerewolfPlayableForNight }, "isWhiteWerewolfPlayableForNight");
-      service["isRolePlayableForNight"](game, ROLE_NAMES.WHITE_WEREWOLF);
+      const isWhiteWerewolfPlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { isWhiteWerewolfPlayableForNight }, "isWhiteWerewolfPlayableForNight");
+      services.gamePlaysManager["isRolePlayableForNight"](game, ROLE_NAMES.WHITE_WEREWOLF);
+      
       expect(isWhiteWerewolfPlayableForNightSpy).toHaveBeenCalledWith(game);
     });
 
@@ -869,7 +938,8 @@ describe("Game Plays Manager Service", () => {
         { role: { name: ROLE_NAMES.LITTLE_GIRL } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      expect(service["isRolePlayableForNight"](gameDto, ROLE_NAMES.SEER)).toBe(true);
+      
+      expect(services.gamePlaysManager["isRolePlayableForNight"](gameDto, ROLE_NAMES.SEER)).toBe(true);
     });
 
     it("should return false when player is dead.", () => {
@@ -880,7 +950,8 @@ describe("Game Plays Manager Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isRolePlayableForNight"](game, ROLE_NAMES.SEER)).toBe(false);
+      
+      expect(services.gamePlaysManager["isRolePlayableForNight"](game, ROLE_NAMES.SEER)).toBe(false);
     });
 
     it("should return false when player is powerless.", () => {
@@ -891,7 +962,8 @@ describe("Game Plays Manager Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isRolePlayableForNight"](game, ROLE_NAMES.SEER)).toBe(false);
+      
+      expect(services.gamePlaysManager["isRolePlayableForNight"](game, ROLE_NAMES.SEER)).toBe(false);
     });
 
     it("should return true when player is alive and powerful.", () => {
@@ -902,27 +974,31 @@ describe("Game Plays Manager Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      expect(service["isRolePlayableForNight"](game, ROLE_NAMES.SEER)).toBe(true);
+      
+      expect(services.gamePlaysManager["isRolePlayableForNight"](game, ROLE_NAMES.SEER)).toBe(true);
     });
   });
 
   describe("isSourcePlayableForNight", () => {
     it("should return false when source is not a role or a group.", () => {
       const game = createFakeGame();
-      expect(service["isSourcePlayableForNight"](game, PLAYER_ATTRIBUTE_NAMES.SHERIFF)).toBe(false);
+      
+      expect(services.gamePlaysManager["isSourcePlayableForNight"](game, PLAYER_ATTRIBUTE_NAMES.SHERIFF)).toBe(false);
     });
 
     it("should call isRolePlayableForNight when source is a role.", () => {
       const game = createFakeGame();
-      const isRolePlayableForNightSpy = jest.spyOn(service as unknown as { isRolePlayableForNight }, "isRolePlayableForNight");
-      service["isSourcePlayableForNight"](game, ROLE_NAMES.SEER);
+      const isRolePlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { isRolePlayableForNight }, "isRolePlayableForNight");
+      services.gamePlaysManager["isSourcePlayableForNight"](game, ROLE_NAMES.SEER);
+      
       expect(isRolePlayableForNightSpy).toHaveBeenCalledWith(game, ROLE_NAMES.SEER);
     });
 
     it("should call isGroupPlayableForNight when source is a group.", () => {
       const game = createFakeGame();
-      const isGroupPlayableForNightSpy = jest.spyOn(service as unknown as { isGroupPlayableForNight }, "isGroupPlayableForNight");
-      service["isSourcePlayableForNight"](game, PLAYER_GROUPS.ALL);
+      const isGroupPlayableForNightSpy = jest.spyOn(services.gamePlaysManager as unknown as { isGroupPlayableForNight }, "isGroupPlayableForNight");
+      services.gamePlaysManager["isSourcePlayableForNight"](game, PLAYER_GROUPS.ALL);
+      
       expect(isGroupPlayableForNightSpy).toHaveBeenCalledWith(game, PLAYER_GROUPS.ALL);
     });
   });

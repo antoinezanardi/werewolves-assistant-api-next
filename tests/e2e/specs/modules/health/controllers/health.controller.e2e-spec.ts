@@ -25,13 +25,14 @@ describe("Health Controller", () => {
   describe("GET /health", () => {
     it("should return app health when route is called.", async() => {
       const response = await app.inject({ method: "GET", url: "/health" });
-      expect(response.statusCode).toBe(200);
       const expectedHealthCheckResult: HealthCheckResult = {
         status: "ok",
         details: { mongoose: { status: "up" } },
         error: {},
         info: { mongoose: { status: "up" } },
       };
+
+      expect(response.statusCode).toBe(200);
       expect(response.json<HealthCheckResult>()).toStrictEqual(expectedHealthCheckResult);
     });
   });

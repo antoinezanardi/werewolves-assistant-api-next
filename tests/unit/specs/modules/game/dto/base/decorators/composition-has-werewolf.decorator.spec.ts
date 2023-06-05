@@ -22,6 +22,7 @@ describe("Composition Has Werewolf Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(doesCompositionHaveAtLeastOneWerewolf([...players, "toto"])).toBe(false);
     });
 
@@ -32,6 +33,7 @@ describe("Composition Has Werewolf Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(doesCompositionHaveAtLeastOneWerewolf([...players, { name: "bad", role: { titi: "toto" } }])).toBe(false);
     });
 
@@ -42,6 +44,7 @@ describe("Composition Has Werewolf Decorator", () => {
         { role: { name: ROLE_NAMES.SEER } },
         { role: { name: ROLE_NAMES.HUNTER } },
       ]);
+
       expect(doesCompositionHaveAtLeastOneWerewolf(players)).toBe(false);
     });
 
@@ -56,6 +59,7 @@ describe("Composition Has Werewolf Decorator", () => {
         { role: { name: ROLE_NAMES.HUNTER } },
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
+
       expect(doesCompositionHaveAtLeastOneWerewolf(players)).toBe(true);
     });
   });

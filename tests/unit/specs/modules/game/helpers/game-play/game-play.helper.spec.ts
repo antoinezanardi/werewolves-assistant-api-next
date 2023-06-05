@@ -22,6 +22,7 @@ describe("Game Play Helper", () => {
     it("should return undefined when votes are undefined.", () => {
       const game = createFakeGame();
       const makeGamePlayDto = createFakeMakeGamePlayDto();
+
       expect(getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toBeUndefined();
     });
 
@@ -34,6 +35,7 @@ describe("Game Play Helper", () => {
           { sourceId: fakePlayerId, targetId: game.players[0]._id },
         ],
       });
+
       expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
       expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.source` is not in the game players");
     });
@@ -47,6 +49,7 @@ describe("Game Play Helper", () => {
           { sourceId: game.players[1]._id, targetId: fakePlayerId },
         ],
       });
+
       expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
       expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.target` is not in the game players");
     });
@@ -64,6 +67,7 @@ describe("Game Play Helper", () => {
         createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[1], target: game.players[0] }),
       ];
+
       expect(votes).toStrictEqual<MakeGamePlayVoteWithRelationsDto[]>(expectedVotes);
     });
   });
@@ -72,6 +76,7 @@ describe("Game Play Helper", () => {
     it("should return undefined when targets are undefined.", () => {
       const game = createFakeGame();
       const makeGamePlayDto = createFakeMakeGamePlayDto();
+
       expect(getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toBeUndefined();
     });
 
@@ -85,6 +90,7 @@ describe("Game Play Helper", () => {
           { playerId: fakePlayerId },
         ],
       });
+
       expect(() => getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
       expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `targets.player` is not in the game players");
     });
@@ -103,6 +109,7 @@ describe("Game Play Helper", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2], drankPotion: WITCH_POTIONS.DEATH }),
       ];
+
       expect(getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayTargetWithRelationsDto[]>(expectedTargets);
     });
   });
@@ -111,6 +118,7 @@ describe("Game Play Helper", () => {
     it("should return undefined when chosenCardId is undefined.", () => {
       const game = createFakeGame();
       const makeGamePlayDto = createFakeMakeGamePlayDto();
+
       expect(getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toBeUndefined();
     });
 
@@ -118,6 +126,7 @@ describe("Game Play Helper", () => {
       const game = createFakeGame({ additionalCards: bulkCreateFakeGameAdditionalCards(4) });
       const fakeCardId = createFakeObjectId();
       const makeGamePlayDto = createFakeMakeGamePlayDto({ chosenCardId: fakeCardId });
+
       expect(() => getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
       expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAME_ADDITIONAL_CARDS, fakeCardId.toString(), "Game Play - Chosen card is not in the game additional cards");
     });
@@ -125,6 +134,7 @@ describe("Game Play Helper", () => {
     it("should return chosen card when called.", () => {
       const game = createFakeGame({ additionalCards: bulkCreateFakeGameAdditionalCards(4) });
       const makeGamePlayDto = createFakeMakeGamePlayDto({ chosenCardId: game.additionalCards?.[3]._id });
+
       expect(getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toStrictEqual(game.additionalCards?.[3]);
     });
   });
@@ -160,6 +170,7 @@ describe("Game Play Helper", () => {
         doesJudgeRequestAnotherVote: true,
         chosenSide: ROLE_SIDES.WEREWOLVES,
       });
+
       expect(createMakeGamePlayDtoWithRelations(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayWithRelationsDto>(expectedMakeGamePlayDtoWithRelationsDto);
     });
   });
