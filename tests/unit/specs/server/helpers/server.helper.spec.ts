@@ -3,15 +3,15 @@ import { queryStringParser } from "../../../../../src/server/helpers/server.help
 
 describe("Server Helper", () => {
   describe("queryStringParser", () => {
-    let parseMock: jest.SpyInstance;
+    let mocks: { qs: { parse: jest.SpyInstance } };
 
     beforeEach(() => {
-      parseMock = jest.spyOn(qs, "parse").mockImplementation();
+      mocks = { qs: { parse: jest.spyOn(qs, "parse").mockImplementation() } };
     });
 
     it("should call qs parse method with specific options when called.", () => {
       queryStringParser("test");
-      expect(parseMock).toHaveBeenCalledWith("test", {
+      expect(mocks.qs.parse).toHaveBeenCalledWith("test", {
         arrayLimit: 100,
         parameterLimit: 3000,
       });

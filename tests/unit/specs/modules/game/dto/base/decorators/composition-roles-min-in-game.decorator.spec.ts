@@ -22,6 +22,7 @@ describe("Composition Roles Min In Game Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(areCompositionRolesMinInGameRespected([...players, "toto"])).toBe(false);
     });
 
@@ -32,6 +33,7 @@ describe("Composition Roles Min In Game Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(areCompositionRolesMinInGameRespected([...players, { name: "bad", role: { toto: "tata" } }])).toBe(false);
     });
 
@@ -42,6 +44,7 @@ describe("Composition Roles Min In Game Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(areCompositionRolesMinInGameRespected(players)).toBe(false);
     });
 
@@ -61,6 +64,7 @@ describe("Composition Roles Min In Game Decorator", () => {
         { role: { name: ROLE_NAMES.TWO_SISTERS } },
         { role: { name: ROLE_NAMES.TWO_SISTERS } },
       ]);
+
       expect(areCompositionRolesMinInGameRespected(players)).toBe(true);
     });
   });

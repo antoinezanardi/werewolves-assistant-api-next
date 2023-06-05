@@ -12,6 +12,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.RUSTY_SWORD_KNIGHT,
         remainingPhases: 2,
       });
+      
       expect(createContaminatedByRustySwordKnightPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -23,6 +24,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.BEAR_TAMER,
         remainingPhases: 1,
       });
+      
       expect(createGrowledByBearTamerPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -33,6 +35,7 @@ describe("Player Attribute Factory", () => {
         name: PLAYER_ATTRIBUTE_NAMES.CHARMED,
         source: ROLE_NAMES.PIED_PIPER,
       });
+      
       expect(createCharmedByPiedPiperPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -43,6 +46,7 @@ describe("Player Attribute Factory", () => {
         name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
         source: PLAYER_GROUPS.ALL,
       });
+      
       expect(createCantVoteByAllPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -54,6 +58,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.SCAPEGOAT,
         remainingPhases: 2,
       });
+      
       expect(createCantVoteByScapegoatPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -64,6 +69,7 @@ describe("Player Attribute Factory", () => {
         name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
         source: ROLE_NAMES.FOX,
       });
+      
       expect(createPowerlessByFoxPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -74,6 +80,7 @@ describe("Player Attribute Factory", () => {
         name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
         source: ROLE_NAMES.ANCIENT,
       });
+      
       expect(createPowerlessByAncientPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -84,6 +91,7 @@ describe("Player Attribute Factory", () => {
         name: PLAYER_ATTRIBUTE_NAMES.WORSHIPED,
         source: ROLE_NAMES.WILD_CHILD,
       });
+      
       expect(createWorshipedByWildChildPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -94,6 +102,7 @@ describe("Player Attribute Factory", () => {
         name: PLAYER_ATTRIBUTE_NAMES.IN_LOVE,
         source: ROLE_NAMES.CUPID,
       });
+      
       expect(createInLoveByCupidPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -105,6 +114,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.RAVEN,
         remainingPhases: 2,
       });
+      
       expect(createRavenMarkByRavenPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -116,6 +126,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.GUARD,
         remainingPhases: 1,
       });
+      
       expect(createProtectedByGuardPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -127,6 +138,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.WITCH,
         remainingPhases: 1,
       });
+      
       expect(createDrankDeathPotionByWitchPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -138,6 +150,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.WITCH,
         remainingPhases: 1,
       });
+      
       expect(createDrankLifePotionByWitchPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -149,6 +162,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.BIG_BAD_WOLF,
         remainingPhases: 1,
       });
+      
       expect(createEatenByBigBadWolfPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -160,6 +174,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.WHITE_WEREWOLF,
         remainingPhases: 1,
       });
+      
       expect(createEatenByWhiteWerewolfPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -171,6 +186,7 @@ describe("Player Attribute Factory", () => {
         source: PLAYER_GROUPS.WEREWOLVES,
         remainingPhases: 1,
       });
+      
       expect(createEatenByWerewolvesPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -182,6 +198,7 @@ describe("Player Attribute Factory", () => {
         source: ROLE_NAMES.SEER,
         remainingPhases: 1,
       });
+      
       expect(createSeenBySeerPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -192,6 +209,7 @@ describe("Player Attribute Factory", () => {
         name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
         source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
       });
+      
       expect(createSheriffBySheriffPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -202,6 +220,7 @@ describe("Player Attribute Factory", () => {
         name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
         source: PLAYER_GROUPS.ALL,
       });
+      
       expect(createSheriffByAllPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -212,6 +231,7 @@ describe("Player Attribute Factory", () => {
         name: PLAYER_ATTRIBUTE_NAMES.GROWLED,
         source: ROLE_NAMES.BEAR_TAMER,
       };
+      
       expect(createPlayerAttribute(playerAttribute)).toStrictEqual<PlayerAttribute>(createFakePlayerAttribute({
         name: PLAYER_ATTRIBUTE_NAMES.GROWLED,
         source: ROLE_NAMES.BEAR_TAMER,

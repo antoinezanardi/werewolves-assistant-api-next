@@ -6,6 +6,7 @@ describe("Bad game play payload exception type", () => {
   describe("getResponse", () => {
     it("should get response when called.", () => {
       const exception = new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.TOO_MUCH_TARGETS);
+
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 400,
         message: `Bad game play payload`,

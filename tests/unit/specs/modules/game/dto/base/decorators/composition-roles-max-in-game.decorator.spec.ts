@@ -22,6 +22,7 @@ describe("Composition Roles Max In Game Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(areCompositionRolesMaxInGameRespected([...players, "toto"])).toBe(false);
     });
 
@@ -32,6 +33,7 @@ describe("Composition Roles Max In Game Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(areCompositionRolesMaxInGameRespected([...players, { name: "bad", role: { toto: "tata" } }])).toBe(false);
     });
 
@@ -42,6 +44,7 @@ describe("Composition Roles Max In Game Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(areCompositionRolesMaxInGameRespected(players)).toBe(false);
     });
 
@@ -60,6 +63,7 @@ describe("Composition Roles Max In Game Decorator", () => {
         { role: { name: ROLE_NAMES.VILLAGER } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(areCompositionRolesMaxInGameRespected(players)).toBe(true);
     });
   });

@@ -16,6 +16,7 @@ describe("Game History Record Helper", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
       ];
+
       expect(getLastGamePlayFromHistory(gameHistoryRecords, ROLE_NAMES.WITCH, GAME_PLAY_ACTIONS.EAT)).toBeUndefined();
     });
 
@@ -24,6 +25,7 @@ describe("Game History Record Helper", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
       ];
+
       expect(getLastGamePlayFromHistory(gameHistoryRecords, ROLE_NAMES.WITCH, GAME_PLAY_ACTIONS.USE_POTIONS)).toStrictEqual(gameHistoryRecords[1]);
     });
 
@@ -33,6 +35,7 @@ describe("Game History Record Helper", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay(), tick: 1 }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay(), tick: 2 }),
       ];
+
       expect(getLastGamePlayFromHistory(gameHistoryRecords, ROLE_NAMES.WITCH, GAME_PLAY_ACTIONS.USE_POTIONS)).toStrictEqual(gameHistoryRecords[2]);
     });
   });
@@ -48,6 +51,7 @@ describe("Game History Record Helper", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay(), tick: 1 }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay(), tick: 2 }),
       ];
+
       expect(getLastGamePlayTieInVotesFromHistory(gameHistoryRecords)).toBeUndefined();
     });
 
@@ -57,6 +61,7 @@ describe("Game History Record Helper", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }), tick: 1 }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH }), tick: 2 }),
       ];
+
       expect(getLastGamePlayTieInVotesFromHistory(gameHistoryRecords)).toStrictEqual(gameHistoryRecords[1]);
     });
 
@@ -66,6 +71,7 @@ describe("Game History Record Helper", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }), tick: 1 }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }), tick: 2 }),
       ];
+
       expect(getLastGamePlayTieInVotesFromHistory(gameHistoryRecords)).toStrictEqual(gameHistoryRecords[2]);
     });
   });

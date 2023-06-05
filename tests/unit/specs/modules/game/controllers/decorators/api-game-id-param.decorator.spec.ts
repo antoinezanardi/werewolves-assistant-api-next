@@ -2,6 +2,12 @@ import * as NestSwagger from "@nestjs/swagger";
 import { ApiGameIdParam } from "../../../../../../../src/modules/game/controllers/decorators/api-game-id-param.decorator";
 
 describe("Api Game Id Param Decorator", () => {
+  let mocks: { nestSwagger: { ApiParam: jest.SpyInstance } };
+
+  beforeEach(() => {
+    mocks = { nestSwagger: { ApiParam: jest.spyOn(NestSwagger, "ApiParam").mockImplementation() } };
+  });
+
   describe("ApiGameIdParam", () => {
     const defaultOptions: NestSwagger.ApiParamOptions = {
       name: "id",
@@ -10,17 +16,17 @@ describe("Api Game Id Param Decorator", () => {
     };
 
     it("should call api param function with default values when called without specific options.", () => {
-      const ApiParamMock = jest.spyOn(NestSwagger, "ApiParam").mockImplementation();
-
       ApiGameIdParam();
-      expect(ApiParamMock).toHaveBeenCalledOnceWith(defaultOptions);
+
+      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledTimes(1);
+      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledWith(defaultOptions);
     });
 
     it("should call api param function with other values when called with specific options.", () => {
-      const ApiParamMock = jest.spyOn(NestSwagger, "ApiParam").mockImplementation();
-
       ApiGameIdParam({ name: "lol" });
-      expect(ApiParamMock).toHaveBeenCalledOnceWith({ ...defaultOptions, name: "lol" });
+
+      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledTimes(1);
+      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledWith({ ...defaultOptions, name: "lol" });
     });
   });
 });

@@ -21,59 +21,75 @@ jest.mock("../../../../../../../src/shared/exception/types/bad-resource-mutation
 jest.mock("../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game Service", () => {
-  let service: GameService;
-  let repository: GameRepository;
-
-  const gameRepositoryMock = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    create: jest.fn(),
-    updateOne: jest.fn(),
+  let mocks: {
+    gameRepository: {
+      find: jest.SpyInstance;
+      findOne: jest.SpyInstance;
+      create: jest.SpyInstance;
+      updateOne: jest.SpyInstance;
+    };
+    gameHistoryRecordRepository: {
+      find: jest.SpyInstance;
+      create: jest.SpyInstance;
+    };
+    gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.SpyInstance };
   };
-
-  const gameHistoryRecordRepositoryMock = {
-    find: jest.fn(),
-    create: jest.fn(),
-  };
-  
-  const gamePlaysValidatorServiceMock = { validateGamePlayWithRelationsDtoData: jest.fn() };
+  let services: { game: GameService };
+  let repositories: { game: GameRepository };
 
   beforeEach(async() => {
+    mocks = {
+      gameRepository: {
+        find: jest.fn(),
+        findOne: jest.fn(),
+        create: jest.fn(),
+        updateOne: jest.fn(),
+      },
+      gameHistoryRecordRepository: {
+        find: jest.fn(),
+        create: jest.fn(),
+      },
+      gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.fn() },
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
           provide: GameRepository,
-          useValue: gameRepositoryMock,
+          useValue: mocks.gameRepository,
         },
         {
           provide: GameHistoryRecordRepository,
-          useValue: gameHistoryRecordRepositoryMock,
+          useValue: mocks.gameHistoryRecordRepository,
         },
         GamePlaysManagerService,
         {
           provide: GamePlaysValidatorService,
-          useValue: gamePlaysValidatorServiceMock,
+          useValue: mocks.gamePlaysValidatorService,
         },
         GameHistoryRecordService,
         GameService,
       ],
     }).compile();
-    service = module.get<GameService>(GameService);
-    repository = module.get<GameRepository>(GameRepository);
+
+    services = { game: module.get<GameService>(GameService) };
+    repositories = { game: module.get<GameRepository>(GameRepository) };
   });
 
   describe("getGames", () => {
     it("should get all games when called.", async() => {
-      await service.getGames();
-      expect(repository.find).toHaveBeenCalledWith();
+      await services.game.getGames();
+
+      expect(repositories.game.find).toHaveBeenCalledWith();
     });
   });
 
   describe("createGame", () => {
     it("should create game when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
-      await service.createGame(toCreateGame);
-      expect(repository.create).toHaveBeenCalledOnce();
+      await services.game.createGame(toCreateGame);
+
+      expect(repositories.game.create).toHaveBeenCalledOnce();
     });
   });
 
@@ -82,18 +98,21 @@ describe("Game Service", () => {
 
     it("should throw error when game is not playing.", async() => {
       const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
-      await expect(service.cancelGame(canceledGame)).toReject();
+
+      await expect(services.game.cancelGame(canceledGame)).toReject();
       expect(BadResourceMutationException).toHaveBeenCalledWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
     });
     
     it("should call update method from repository when game can be canceled.", async() => {
-      await service.cancelGame(existingPlayingGame);
-      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ _id: existingPlayingGame._id }, { status: GAME_STATUSES.CANCELED });
+      await services.game.cancelGame(existingPlayingGame);
+
+      expect(mocks.gameRepository.updateOne).toHaveBeenCalledWith({ _id: existingPlayingGame._id }, { status: GAME_STATUSES.CANCELED });
     });
 
-    it("should throw an error when game not found by update repository method.", async() => {
-      gameRepositoryMock.updateOne.mockResolvedValue(null);
-      await expect(service.cancelGame(existingPlayingGame)).toReject();
+    it("should throw an error when game not found by update repositories.game method.", async() => {
+      mocks.gameRepository.updateOne.mockResolvedValue(null);
+
+      await expect(services.game.cancelGame(existingPlayingGame)).toReject();
       expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, existingPlayingGame._id.toString());
     });
   });
@@ -115,26 +134,29 @@ describe("Game Service", () => {
     const soonToBeOverGame = createFakeGame({ status: GAME_STATUSES.PLAYING, players: nearlyAllDeadPlayers });
 
     beforeEach(() => {
-      gameRepositoryMock.updateOne.mockResolvedValue(game);
+      mocks.gameRepository.updateOne.mockResolvedValue(game);
     });
 
     it("should throw an error when game is not playing.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
-      await expect(service.makeGamePlay(canceledGame, makeGamePlayDto)).toReject();
+
+      await expect(services.game.makeGamePlay(canceledGame, makeGamePlayDto)).toReject();
       expect(BadResourceMutationException).toHaveBeenCalledWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
     });
 
     it("should call play validator when called.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
-      await expect(service.makeGamePlay(game, makeGamePlayDto)).resolves.toStrictEqual(game);
-      expect(gamePlaysValidatorServiceMock.validateGamePlayWithRelationsDtoData).toHaveBeenCalledOnce();
+
+      await expect(services.game.makeGamePlay(game, makeGamePlayDto)).resolves.toStrictEqual(game);
+      expect(mocks.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData).toHaveBeenCalledOnce();
     });
 
     it("should throw an error when game not found by update repository method.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
-      gameRepositoryMock.updateOne.mockResolvedValue(null);
-      await expect(service.makeGamePlay(game, makeGamePlayDto)).toReject();
+      mocks.gameRepository.updateOne.mockResolvedValue(null);
+
+      await expect(services.game.makeGamePlay(game, makeGamePlayDto)).toReject();
       expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, game._id.toString());
     });
 
@@ -142,8 +164,9 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const gameVictoryData = createFakeGameVictory();
       jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
-      await service.makeGamePlay(soonToBeOverGame, makeGamePlayDto);
-      expect(gameRepositoryMock.updateOne).toHaveBeenCalledWith({ _id: soonToBeOverGame._id }, { status: GAME_STATUSES.OVER, victory: gameVictoryData });
+
+      await services.game.makeGamePlay(soonToBeOverGame, makeGamePlayDto);
+      expect(mocks.gameRepository.updateOne).toHaveBeenCalledWith({ _id: soonToBeOverGame._id }, { status: GAME_STATUSES.OVER, victory: gameVictoryData });
     });
   });
 });

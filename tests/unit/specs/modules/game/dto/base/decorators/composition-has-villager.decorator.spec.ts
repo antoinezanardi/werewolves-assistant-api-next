@@ -22,6 +22,7 @@ describe("Composition Has Villager Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(doesCompositionHaveAtLeastOneVillager([...players, "toto"])).toBe(false);
     });
 
@@ -32,6 +33,7 @@ describe("Composition Has Villager Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(doesCompositionHaveAtLeastOneVillager([...players, { name: "bad", role: { titi: "toto" } }])).toBe(false);
     });
 
@@ -42,6 +44,7 @@ describe("Composition Has Villager Decorator", () => {
         { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
         { role: { name: ROLE_NAMES.VILE_FATHER_OF_WOLVES } },
       ]);
+
       expect(doesCompositionHaveAtLeastOneVillager(players)).toBe(false);
     });
 
@@ -56,6 +59,7 @@ describe("Composition Has Villager Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
+
       expect(doesCompositionHaveAtLeastOneVillager(players)).toBe(true);
     });
   });

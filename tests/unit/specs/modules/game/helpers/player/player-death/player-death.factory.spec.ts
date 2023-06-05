@@ -11,6 +11,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.DISEASE,
         source: ROLE_NAMES.RUSTY_SWORD_KNIGHT,
       });
+      
       expect(createPlayerDiseaseByRustySwordKnightDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -21,6 +22,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.BROKEN_HEART,
         source: ROLE_NAMES.CUPID,
       });
+      
       expect(createPlayerBrokenHeartByCupidDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -31,6 +33,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.RECONSIDER_PARDON,
         source: PLAYER_GROUPS.ALL,
       });
+      
       expect(createPlayerReconsiderPardonByAllDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -41,6 +44,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.VOTE_SCAPEGOATED,
         source: PLAYER_GROUPS.ALL,
       });
+      
       expect(createPlayerVoteScapegoatedByAllDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -51,6 +55,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.VOTE,
         source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
       });
+      
       expect(createPlayerVoteBySheriffDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -61,6 +66,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.VOTE,
         source: PLAYER_GROUPS.ALL,
       });
+      
       expect(createPlayerVoteByAllDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -71,6 +77,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.SHOT,
         source: ROLE_NAMES.HUNTER,
       });
+      
       expect(createPlayerShotByHunterDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -81,6 +88,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.EATEN,
         source: ROLE_NAMES.WHITE_WEREWOLF,
       });
+      
       expect(createPlayerEatenByWhiteWerewolfDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -91,6 +99,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.EATEN,
         source: ROLE_NAMES.BIG_BAD_WOLF,
       });
+      
       expect(createPlayerEatenByBigBadWolfDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -101,6 +110,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.EATEN,
         source: PLAYER_GROUPS.WEREWOLVES,
       });
+      
       expect(createPlayerEatenByWerewolvesDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -111,6 +121,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.DEATH_POTION,
         source: ROLE_NAMES.WITCH,
       });
+      
       expect(createPlayerDeathPotionByWitchDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
@@ -121,6 +132,7 @@ describe("Player Death Factory", () => {
         cause: PLAYER_DEATH_CAUSES.DEATH_POTION,
         source: ROLE_NAMES.WITCH,
       };
+      
       expect(createPlayerDeath(playerDeath)).toStrictEqual<PlayerDeath>(createFakePlayerDeath({
         cause: PLAYER_DEATH_CAUSES.DEATH_POTION,
         source: ROLE_NAMES.WITCH,

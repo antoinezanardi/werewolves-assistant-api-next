@@ -7,6 +7,7 @@ describe("Unexpected Exception Factory", () => {
     it("should create player is dead unexpected exception when called.", () => {
       const interpolations = { gameId: createFakeObjectId(), playerId: createFakeObjectId() };
       const exception = createCantFindPlayerUnexpectedException("werewolvesEat", interpolations);
+
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 500,
         message: "Unexpected exception in werewolvesEat",
@@ -19,6 +20,7 @@ describe("Unexpected Exception Factory", () => {
     it("should create player is dead unexpected exception when called.", () => {
       const interpolations = { gameId: createFakeObjectId(), playerId: createFakeObjectId() };
       const exception = createPlayerIsDeadUnexpectedException("killPlayer", interpolations);
+
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 500,
         message: "Unexpected exception in killPlayer",

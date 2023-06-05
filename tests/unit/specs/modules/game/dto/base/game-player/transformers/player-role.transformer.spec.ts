@@ -23,6 +23,7 @@ describe("Player Role Transformer", () => {
 
     it("should fill player role (seer) fields when called.", () => {
       const createPlayerRoleDto: CreateGamePlayerRoleDto = { name: ROLE_NAMES.SEER };
+
       expect(playerRoleTransformer({ value: createPlayerRoleDto } as TransformFnParams)).toStrictEqual<CreateGamePlayerRoleDto>({
         name: ROLE_NAMES.SEER,
         original: ROLE_NAMES.SEER,
@@ -33,6 +34,7 @@ describe("Player Role Transformer", () => {
 
     it("should fill player role (white-werewolf) fields when called.", () => {
       const createPlayerRoleDto: CreateGamePlayerRoleDto = { name: ROLE_NAMES.WHITE_WEREWOLF };
+
       expect(playerRoleTransformer({ value: createPlayerRoleDto } as TransformFnParams)).toStrictEqual<CreateGamePlayerRoleDto>({
         name: ROLE_NAMES.WHITE_WEREWOLF,
         original: ROLE_NAMES.WHITE_WEREWOLF,
@@ -43,6 +45,7 @@ describe("Player Role Transformer", () => {
 
     it("should fill player role fields with isRevealed true when role is villager villager.", () => {
       const createPlayerRoleDto: CreateGamePlayerRoleDto = { name: ROLE_NAMES.VILLAGER_VILLAGER };
+
       expect(playerRoleTransformer({ value: createPlayerRoleDto } as TransformFnParams)).toStrictEqual<CreateGamePlayerRoleDto>({
         name: ROLE_NAMES.VILLAGER_VILLAGER,
         original: ROLE_NAMES.VILLAGER_VILLAGER,
