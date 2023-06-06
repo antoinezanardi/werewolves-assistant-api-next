@@ -52,6 +52,7 @@ export class GameService {
     const gameDataToUpdate: Partial<Game> = {};
     const makeGamePlayWithRelationsDto = createMakeGamePlayDtoWithRelations(makeGamePlayDto, game);
     await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(makeGamePlayWithRelationsDto, game);
+
     if (isGameOver(game)) {
       gameDataToUpdate.status = GAME_STATUSES.OVER;
       gameDataToUpdate.victory = generateGameVictoryData(game);

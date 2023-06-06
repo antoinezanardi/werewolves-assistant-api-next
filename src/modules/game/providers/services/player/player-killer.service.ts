@@ -30,6 +30,14 @@ export class PlayerKillerService {
     return clonedGame;
   }
 
+  public isAncientKillable(game: Game, cause: PLAYER_DEATH_CAUSES, gameHistoryRecords: GameHistoryRecord[]): boolean {
+    if (cause !== PLAYER_DEATH_CAUSES.EATEN) {
+      return true;
+    }
+    const ancientLivesCountAgainstWerewolves = this.getAncientLivesCountAgainstWerewolves(game, gameHistoryRecords);
+    return ancientLivesCountAgainstWerewolves - 1 <= 0;
+  }
+
   private applyPlayerRoleRevelationOutcomes(revealedPlayer: Player, game: Game): Game {
     const clonedGame = cloneDeep(game);
     if (revealedPlayer.role.current === ROLE_NAMES.IDIOT) {
@@ -71,14 +79,6 @@ export class PlayerKillerService {
       }
       return acc;
     }, livesCountAgainstWerewolves);
-  }
-
-  private isAncientKillable(game: Game, cause: PLAYER_DEATH_CAUSES, gameHistoryRecords: GameHistoryRecord[]): boolean {
-    if (cause !== PLAYER_DEATH_CAUSES.EATEN) {
-      return true;
-    }
-    const ancientLivesCountAgainstWerewolves = this.getAncientLivesCountAgainstWerewolves(game, gameHistoryRecords);
-    return ancientLivesCountAgainstWerewolves - 1 <= 0;
   }
 
   private isIdiotKillable(idiotPlayer: Player, cause: PLAYER_DEATH_CAUSES): boolean {
