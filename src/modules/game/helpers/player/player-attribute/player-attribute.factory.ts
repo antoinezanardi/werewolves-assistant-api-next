@@ -1,7 +1,9 @@
 import { plainToInstance } from "class-transformer";
 import { plainToInstanceDefaultOptions } from "../../../../../shared/validation/constants/validation.constant";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
+import { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
+import { Game } from "../../../schemas/game.schema";
 import { PlayerAttribute } from "../../../schemas/player/player-attribute/player-attribute.schema";
 
 function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
@@ -38,11 +40,15 @@ function createCantVoteByAllPlayerAttribute(playerAttribute: Partial<PlayerAttri
   });
 }
 
-function createCantVoteByScapegoatPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createCantVoteByScapegoatPlayerAttribute(game: Game, playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
     source: ROLE_NAMES.SCAPEGOAT,
     remainingPhases: 2,
+    activeAt: {
+      turn: game.turn + 1,
+      phase: GAME_PHASES.DAY,
+    },
     ...playerAttribute,
   });
 }
