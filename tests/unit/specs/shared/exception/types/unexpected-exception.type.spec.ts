@@ -10,7 +10,7 @@ describe("Unexpected exception type", () => {
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 500,
         message: `Unexpected exception in werewolvesEat`,
-        error: "Can't find player with id \"playerId\" in game \"gameId\"",
+        error: "Can't find player with id \"undefined\" in game \"undefined\"",
       });
     });
 

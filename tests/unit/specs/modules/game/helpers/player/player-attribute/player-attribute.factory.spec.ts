@@ -1,7 +1,9 @@
+import { GAME_PHASES } from "../../../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
 import { createCantVoteByAllPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createGrowledByBearTamerPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByAncientPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "../../../../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import type { PlayerAttribute } from "../../../../../../../../src/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
+import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakePlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 
 describe("Player Attribute Factory", () => {
@@ -53,13 +55,18 @@ describe("Player Attribute Factory", () => {
 
   describe("createCantVoteByScapegoatPlayerAttribute", () => {
     it("should create can't vote attribute by scapegoat when called.", () => {
+      const game = createFakeGame({ turn: 2, phase: GAME_PHASES.NIGHT });
       const expectedAttribute = createFakePlayerAttribute({
         name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
         source: ROLE_NAMES.SCAPEGOAT,
         remainingPhases: 2,
+        activeAt: {
+          turn: 3,
+          phase: GAME_PHASES.DAY,
+        },
       });
       
-      expect(createCantVoteByScapegoatPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
+      expect(createCantVoteByScapegoatPlayerAttribute(game)).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
 

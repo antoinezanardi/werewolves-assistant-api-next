@@ -3,7 +3,7 @@ import { plainToInstanceDefaultOptions } from "../../../../../shared/validation/
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import { Game } from "../../../schemas/game.schema";
+import type { Game } from "../../../schemas/game.schema";
 import { PlayerAttribute } from "../../../schemas/player/player-attribute/player-attribute.schema";
 
 function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
