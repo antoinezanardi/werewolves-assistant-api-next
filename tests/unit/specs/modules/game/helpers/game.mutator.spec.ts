@@ -149,14 +149,14 @@ describe("Game Mutator", () => {
       expect(removePlayerAttributeByNameInGame(createFakeObjectId(), game, PLAYER_ATTRIBUTE_NAMES.SHERIFF)).toStrictEqual<Game>(game);
     });
 
-    it("should return game with player without his attribute when called.", () => {
-      const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffByAllPlayerAttribute()] }]);
+    it("should return game with player without his sheriff attribute when called.", () => {
+      const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffByAllPlayerAttribute(), createFakeCharmedByPiedPiperPlayerAttribute()] }]);
       const game = createFakeGame({ players });
       const expectedGame = createFakeGame({
         ...game,
         players: [
           game.players[0],
-          createFakePlayer({ ...players[1], attributes: [] }),
+          createFakePlayer({ ...players[1], attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
           game.players[2],
           game.players[3],
         ],

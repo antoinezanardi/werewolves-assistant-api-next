@@ -133,7 +133,13 @@ function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Play
   const sniffedTarget = getPlayerWithIdOrThrow(sniffedTargetId, game, cantFindPlayerException);
   const leftAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "left" });
   const rightAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "right" });
-  return [leftAliveNeighbor, sniffedTarget, rightAliveNeighbor].filter((player): player is Player => !!player);
+  const sniffedTargets = [leftAliveNeighbor, sniffedTarget, rightAliveNeighbor].filter((player): player is Player => !!player);
+  return sniffedTargets.reduce<Player[]>((acc, target) => {
+    if (!acc.some(uniqueTarget => uniqueTarget._id.toString() === target._id.toString())) {
+      return [...acc, target];
+    }
+    return acc;
+  }, []);
 }
 
 function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: GetNearestPlayerOptions): Player | undefined {
