@@ -63,7 +63,7 @@
   "dependencies": {
     "@fastify/static": "^6.10.2",
     "@nestjs/common": "^9.4.2",
-    "@nestjs/config": "^2.3.2",
+    "@nestjs/config": "^2.3.3",
     "@nestjs/core": "^9.4.2",
     "@nestjs/mongoose": "^9.2.2",
     "@nestjs/platform-express": "^9.4.2",
