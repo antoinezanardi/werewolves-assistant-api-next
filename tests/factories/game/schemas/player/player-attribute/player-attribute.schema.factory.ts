@@ -9,6 +9,14 @@ import { ROLE_NAMES } from "../../../../../../src/modules/role/enums/role.enum";
 import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
 import { bulkCreate } from "../../../../shared/bulk-create.factory";
 
+function createFakeSheriffBySheriffPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+  return createFakePlayerAttribute({
+    name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+    source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+    ...attribute,
+  }, override);
+}
+
 function createFakeSheriffByAllPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
@@ -170,6 +178,7 @@ function bulkCreateFakePlayerAttributes(length: number, attributes: Partial<Play
 }
 
 export {
+  createFakeSheriffBySheriffPlayerAttribute,
   createFakeSheriffByAllPlayerAttribute,
   createFakeSeenBySeerPlayerAttribute,
   createFakeEatenByWerewolvesPlayerAttribute,

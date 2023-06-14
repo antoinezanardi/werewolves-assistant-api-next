@@ -119,7 +119,7 @@ export class GamePlaysMakerService {
       ravenMarkedPlayerVoteCount[1] += markPenalty;
       return playerVoteCounts;
     }
-    return [...playerVoteCounts, [ravenPlayer, markPenalty]];
+    return [...playerVoteCounts, [ravenMarkedPlayer, markPenalty]];
   }
 
   private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[], game: Game): PlayerVoteCount[] {
