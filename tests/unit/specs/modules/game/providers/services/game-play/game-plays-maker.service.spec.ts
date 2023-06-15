@@ -1,7 +1,10 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import type { MakeGamePlayVoteWithRelationsDto } from "../../../../../../../../src/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../../src/modules/game/enums/game-history-record.enum";
+import { GAME_PLAY_CAUSES } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
+import * as GameMutator from "../../../../../../../../src/modules/game/helpers/game.mutator";
 import { GamePlaysMakerService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-plays-maker.service";
 import { PlayerKillerService } from "../../../../../../../../src/modules/game/providers/services/player/player-killer.service";
 import type { GameHistoryRecord } from "../../../../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -12,12 +15,13 @@ import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeRavenGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakePowerlessByAncientPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSheriffByAllPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePlayerVoteBySheriffDeath } from "../../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakePlayerVoteByAllDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteScapegoatedByAllDeath } from "../../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAncientAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
@@ -680,21 +684,404 @@ describe("Game Plays Maker Service", () => {
 
       expect(services.gamePlaysMaker["getNominatedPlayers"](votes, game)).toContainAllValues<Player>(expectedNominatedPlayers);
     });
+  });
 
-    describe("handleTieInVotes", () => {
-      it("should not kill scapegoat when he's not the game.", () => {
-        const players: Player[] = [
-          createFakeSeerAlivePlayer(),
-          createFakeRavenAlivePlayer(),
-          createFakeWerewolfAlivePlayer(),
-          createFakeWerewolfAlivePlayer(),
-        ];
-        const game = createFakeGame({ players });
-        const gameHistoryRecords: GameHistoryRecord[] = [];
-        services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+  describe("handleTieInVotes", () => {
+    let localMocks: { gameMutator: { prependUpcomingPlayInGame: jest.SpyInstance } };
 
-        expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalledOnce();
+    beforeEach(() => {
+      localMocks = { gameMutator: { prependUpcomingPlayInGame: jest.spyOn(GameMutator, "prependUpcomingPlayInGame") } };
+    });
+
+    it("should not kill scapegoat when he's not the game.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalledOnce();
+    });
+
+    it("should not kill scapegoat when he's dead.", () => {
+      const players: Player[] = [
+        createFakeScapegoatAlivePlayer({ isAlive: false }),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalledOnce();
+    });
+
+    it("should not kill scapegoat when he's powerless.", () => {
+      const players: Player[] = [
+        createFakeScapegoatAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalledOnce();
+    });
+
+    it("should kill scapegoat when he's in the game and alive.", () => {
+      const players: Player[] = [
+        createFakeScapegoatAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const playerDeath = createFakePlayerVoteScapegoatedByAllDeath();
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledWith(players[0]._id, game, playerDeath, gameHistoryRecords);
+    });
+
+    it("should not prepend sheriff delegation game play when sheriff is not in the game.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).not.toHaveBeenCalledWith(gamePlaySheriffSettlesVotes, game);
+    });
+
+    it("should not prepend sheriff delegation game play when sheriff is dead.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer({ isAlive: false, attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).not.toHaveBeenCalledWith(gamePlaySheriffSettlesVotes, game);
+    });
+
+    it("should prepend sheriff delegation game play when sheriff is in the game.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledWith(gamePlaySheriffSettlesVotes, game);
+    });
+
+    it("should prepend vote game play when previous play is not a tie.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay() })];
+      const gamePlayAllVote = createFakeGamePlayAllVote();
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledWith(gamePlayAllVote, game);
+    });
+
+    it("should prepend vote game play when there is no game history records.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const gamePlayAllVote = createFakeGamePlayAllVote();
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledWith(gamePlayAllVote, game);
+    });
+
+    it("should not prepend vote game play when previous play is a tie.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }) })];
+      const gamePlayAllVote = createFakeGamePlayAllVote();
+      services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
+
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).not.toHaveBeenCalledWith(gamePlayAllVote, game);
+    });
+  });
+  
+  describe("allVote", () => {
+    let localMocks: {
+      gamePlaysMakerService: {
+        handleTieInVotes: jest.SpyInstance;
+        getNominatedPlayers: jest.SpyInstance;
+      };
+    };
+      
+    beforeEach(() => {
+      localMocks = {
+        gamePlaysMakerService: {
+          handleTieInVotes: jest.spyOn(services.gamePlaysMaker as unknown as { handleTieInVotes }, "handleTieInVotes").mockImplementation(),
+          getNominatedPlayers: jest.spyOn(services.gamePlaysMaker as unknown as { getNominatedPlayers }, "getNominatedPlayers").mockImplementation(),
+        },
+      };
+    });
+      
+    it("should return game as is when there is no vote.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["allVote"](play, game, gameHistoryRecords)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when there is no nominated players.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
+      const nominatedPlayers = [];
+      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+
+      expect(services.gamePlaysMaker["allVote"](play, game, gameHistoryRecords)).toStrictEqual<Game>(game);
+    });
+      
+    it("should call handleTieInVotes method when there are several nominated players.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
+      const nominatedPlayers = [players[1], players[2]];
+      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      services.gamePlaysMaker["allVote"](play, game, gameHistoryRecords);
+
+      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledOnce();
+      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledWith(game, gameHistoryRecords);
+    });
+
+    it("should call handleTieInVotes method with prepended all vote game play from judge when there are several nominated players and judge requested it.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: true });
+      const nominatedPlayers = [players[1], players[2]];
+      const expectedGame = createFakeGame({
+        ...game,
+        upcomingPlays: [createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.STUTTERING_JUDGE_REQUEST })],
       });
+      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      services.gamePlaysMaker["allVote"](play, game, gameHistoryRecords);
+
+      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledOnce();
+      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledWith(expectedGame, gameHistoryRecords);
+    });
+
+    it("should call killOrRevealPlayer method when there is one nominated player.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecords: GameHistoryRecord[] = [];
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
+      const nominatedPlayers = [players[1]];
+      const playerVoteByAllDeath = createFakePlayerVoteByAllDeath();
+      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      services.gamePlaysMaker["allVote"](play, game, gameHistoryRecords);
+
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledWith(players[1]._id, game, playerVoteByAllDeath, gameHistoryRecords);
+    });
+  });
+  
+  describe("allElectSheriff", () => {
+    let localMocks: {
+      gamePlaysMakerService: {
+        getNominatedPlayers: jest.SpyInstance;
+      };
+    };
+      
+    beforeEach(() => {
+      localMocks = { gamePlaysMakerService: { getNominatedPlayers: jest.spyOn(services.gamePlaysMaker as unknown as { getNominatedPlayers }, "getNominatedPlayers").mockImplementation() } };
+    });
+      
+    it("should return game as is when there is no vote.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when there is no nominated players.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes });
+      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue([]);
+
+      expect(services.gamePlaysMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add sheriff attribute to nominated player when called.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes });
+      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue([players[1]]);
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          createFakePlayer({ ...players[1], attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("allPlay", () => {
+    let localMocks: {
+      gamePlaysMakerService: {
+        allElectSheriff: jest.SpyInstance;
+        allVote: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = {
+        gamePlaysMakerService: {
+          allElectSheriff: jest.spyOn(services.gamePlaysMaker as unknown as { allElectSheriff }, "allElectSheriff").mockImplementation(),
+          allVote: jest.spyOn(services.gamePlaysMaker as unknown as { allVote }, "allVote").mockImplementation(),
+        },
+      };
+    });
+
+    it("should return game as is when there is no upcoming play.", () => {
+      const game = createFakeGame();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["allPlay"](play, game, [])).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when upcoming play is not for all.", () => {
+      const game = createFakeGame({ upcomingPlays: [createFakeGamePlayFoxSniffs()] });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["allPlay"](play, game, [])).toStrictEqual<Game>(game);
+    });
+
+    it("should call allElectSheriff method when upcoming play is sheriff role delegation.", () => {
+      const game = createFakeGame({ upcomingPlays: [createFakeGamePlayAllElectSheriff()] });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      services.gamePlaysMaker["allPlay"](play, game, []);
+
+      expect(localMocks.gamePlaysMakerService.allElectSheriff).toHaveBeenCalledOnce();
+      expect(localMocks.gamePlaysMakerService.allElectSheriff).toHaveBeenCalledWith(play, game, []);
+    });
+
+    it("should call allVote method when upcoming play is sheriff settling vote.", () => {
+      const game = createFakeGame({ upcomingPlays: [createFakeGamePlayAllVote()] });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      services.gamePlaysMaker["allPlay"](play, game, []);
+
+      expect(localMocks.gamePlaysMakerService.allVote).toHaveBeenCalledOnce();
+      expect(localMocks.gamePlaysMakerService.allVote).toHaveBeenCalledWith(play, game, []);
     });
   });
 });

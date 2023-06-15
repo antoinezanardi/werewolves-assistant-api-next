@@ -193,7 +193,7 @@ export class GamePlaysMakerService {
       return clonedGame;
     }
     const nominatedPlayers = this.getNominatedPlayers(votes, clonedGame);
-    if (!nominatedPlayers.length) {
+    if (nominatedPlayers.length !== 1) {
       return clonedGame;
     }
     const sheriffByAllPlayerAttribute = createSheriffByAllPlayerAttribute();
