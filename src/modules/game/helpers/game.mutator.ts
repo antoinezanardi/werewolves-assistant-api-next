@@ -13,8 +13,8 @@ function updatePlayerInGame(playerId: Types.ObjectId, playerDataToUpdate: Partia
   const clonedGame = cloneDeep(game);
   const playerIdx = clonedGame.players.findIndex(player => player._id.toString() === playerId.toString());
   if (playerIdx !== -1) {
-    const player = clonedGame.players[playerIdx];
-    clonedGame.players.splice(playerIdx, 1, createPlayer({ ...player, ...playerDataToUpdate }));
+    const clonedPlayer = cloneDeep(clonedGame.players[playerIdx]);
+    clonedGame.players.splice(playerIdx, 1, createPlayer(Object.assign(clonedPlayer, playerDataToUpdate)));
   }
   return clonedGame;
 }
@@ -50,7 +50,6 @@ function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game,
   return updatePlayerInGame(playerId, player, clonedGame);
 }
 
-// TODO: Must be right after the first element, not first
 function prependUpcomingPlayInGame(gamePlay: GamePlay, game: Game): Game {
   const clonedGame = cloneDeep(game);
   clonedGame.upcomingPlays.unshift(gamePlay);

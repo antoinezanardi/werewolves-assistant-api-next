@@ -28,9 +28,11 @@ import { createFakeGameOptionsDto } from "../../../../../factories/game/dto/crea
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeGamePlayAllVote } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
+import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers } from "../../../../../factories/game/schemas/player/player.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
 import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
 import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
 import { initNestApp } from "../../../../helpers/nest-app.helper";
@@ -665,6 +667,13 @@ describe("Game Controller", () => {
           { sourceId: players[1]._id, targetId: players[0]._id },
         ],
       });
+      const expectedGame = createFakeGame({
+        ...game,
+        upcomingPlays: [
+          createFakeGamePlayAllVote(),
+          createFakeGamePlayAllVote(),
+        ],
+      });
       const response = await app.inject({
         method: "POST",
         url: `/games/${game._id.toString()}/play`,
@@ -673,7 +682,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
+        ...instanceToPlain(expectedGame, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -693,6 +702,15 @@ describe("Game Controller", () => {
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }),
+          players[1],
+          players[2],
+          players[3],
+        ],
+      });
       const response = await app.inject({
         method: "POST",
         url: `/games/${game._id.toString()}/play`,
@@ -701,7 +719,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
+        ...instanceToPlain(expectedGame, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });

@@ -5,6 +5,7 @@ import * as GameVictoryHelper from "../../../../../../../src/modules/game/helper
 import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
+import { GamePlaysMakerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-maker.service";
 import { GamePlaysManagerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-manager.service";
 import { GamePlaysValidatorService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-validator.service";
 import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
@@ -33,6 +34,7 @@ describe("Game Service", () => {
       create: jest.SpyInstance;
     };
     gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.SpyInstance };
+    gamePlaysMakerService: { makeGamePlay: jest.SpyInstance };
   };
   let services: { game: GameService };
   let repositories: { game: GameRepository };
@@ -50,6 +52,7 @@ describe("Game Service", () => {
         create: jest.fn(),
       },
       gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.fn() },
+      gamePlaysMakerService: { makeGamePlay: jest.fn() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -66,6 +69,10 @@ describe("Game Service", () => {
         {
           provide: GamePlaysValidatorService,
           useValue: mocks.gamePlaysValidatorService,
+        },
+        {
+          provide: GamePlaysMakerService,
+          useValue: mocks.gamePlaysMakerService,
         },
         GameHistoryRecordService,
         GameService,
@@ -135,6 +142,7 @@ describe("Game Service", () => {
 
     beforeEach(() => {
       mocks.gameRepository.updateOne.mockResolvedValue(game);
+      mocks.gamePlaysMakerService.makeGamePlay.mockResolvedValue(game);
     });
 
     it("should throw an error when game is not playing.", async() => {
@@ -145,11 +153,18 @@ describe("Game Service", () => {
       expect(BadResourceMutationException).toHaveBeenCalledWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
     });
 
-    it("should call play validator when called.", async() => {
+    it("should call play validator method when called.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
+      await services.game.makeGamePlay(game, makeGamePlayDto);
 
-      await expect(services.game.makeGamePlay(game, makeGamePlayDto)).resolves.toStrictEqual(game);
       expect(mocks.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData).toHaveBeenCalledOnce();
+    });
+
+    it("should call play maker method when called.", async() => {
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      await services.game.makeGamePlay(game, makeGamePlayDto);
+
+      expect(mocks.gamePlaysMakerService.makeGamePlay).toHaveBeenCalledOnce();
     });
 
     it("should throw an error when game not found by update repository method.", async() => {
@@ -164,9 +179,10 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const gameVictoryData = createFakeGameVictory();
       jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
-
+      mocks.gamePlaysMakerService.makeGamePlay.mockReturnValue(soonToBeOverGame);
       await services.game.makeGamePlay(soonToBeOverGame, makeGamePlayDto);
-      expect(mocks.gameRepository.updateOne).toHaveBeenCalledWith({ _id: soonToBeOverGame._id }, { status: GAME_STATUSES.OVER, victory: gameVictoryData });
+
+      expect(mocks.gameRepository.updateOne).toHaveBeenCalledWith({ _id: soonToBeOverGame._id }, { ...soonToBeOverGame, status: GAME_STATUSES.OVER, victory: gameVictoryData });
     });
   });
 });

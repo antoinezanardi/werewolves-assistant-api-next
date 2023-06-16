@@ -44,6 +44,15 @@ function createFakeEatenByWerewolvesPlayerAttribute(attribute: Partial<PlayerAtt
   }, override);
 }
 
+function createFakeEatenByWhiteWerewolfPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+  return createFakePlayerAttribute({
+    name: PLAYER_ATTRIBUTE_NAMES.EATEN,
+    source: ROLE_NAMES.WHITE_WEREWOLF,
+    remainingPhases: 1,
+    ...attribute,
+  }, override);
+}
+
 function createFakeEatenByBigBadWolfPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.EATEN,
@@ -195,6 +204,7 @@ export {
   createFakeSheriffByAllPlayerAttribute,
   createFakeSeenBySeerPlayerAttribute,
   createFakeEatenByWerewolvesPlayerAttribute,
+  createFakeEatenByWhiteWerewolfPlayerAttribute,
   createFakeEatenByBigBadWolfPlayerAttribute,
   createFakeDrankLifePotionByWitchPlayerAttribute,
   createFakeDrankDeathPotionByWitchPlayerAttribute,

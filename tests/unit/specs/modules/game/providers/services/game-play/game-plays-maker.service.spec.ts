@@ -2,7 +2,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import type { MakeGamePlayVoteWithRelationsDto } from "../../../../../../../../src/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../../src/modules/game/enums/game-history-record.enum";
-import { GAME_PLAY_CAUSES } from "../../../../../../../../src/modules/game/enums/game-play.enum";
+import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
 import * as GameMutator from "../../../../../../../../src/modules/game/helpers/game.mutator";
 import { GamePlaysMakerService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-plays-maker.service";
@@ -21,8 +21,8 @@ import { createFakeGameOptions } from "../../../../../../../factories/game/schem
 import { createFakeFoxGameOptions, createFakeRavenGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteByScapegoatPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSheriffByAllPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePlayerVoteByAllDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteScapegoatedByAllDeath } from "../../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffByAllPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerShotByHunterDeath, createFakePlayerVoteByAllDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteScapegoatedByAllDeath } from "../../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAncientAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
@@ -31,11 +31,17 @@ describe("Game Plays Maker Service", () => {
   let mocks: {
     playerKillerService: {
       killOrRevealPlayer: jest.SpyInstance;
+      isAncientKillable: jest.SpyInstance;
     };
   };
 
   beforeEach(async() => {
-    mocks = { playerKillerService: { killOrRevealPlayer: jest.fn() } };
+    mocks = {
+      playerKillerService: {
+        killOrRevealPlayer: jest.fn(),
+        isAncientKillable: jest.fn(),
+      },
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -418,7 +424,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker["sheriffPlays"](play, game, []);
 
       expect(localMocks.gamePlaysMakerService.sheriffDelegates).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.sheriffDelegates).toHaveBeenCalledWith(play, game, []);
+      expect(localMocks.gamePlaysMakerService.sheriffDelegates).toHaveBeenCalledWith(play, game);
     });
 
     it("should call sheriffSettlesVotes method when upcoming play is sheriff settling vote.", () => {
@@ -1073,7 +1079,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker["allPlay"](play, game, []);
 
       expect(localMocks.gamePlaysMakerService.allElectSheriff).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.allElectSheriff).toHaveBeenCalledWith(play, game, []);
+      expect(localMocks.gamePlaysMakerService.allElectSheriff).toHaveBeenCalledWith(play, game);
     });
 
     it("should call allVote method when upcoming play is sheriff settling vote.", () => {
@@ -1421,6 +1427,507 @@ describe("Game Plays Maker Service", () => {
       });
 
       expect(services.gamePlaysMaker["ravenMarks"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("guardProtects", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["guardProtects"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add protected attribute to target when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeProtectedByGuardPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["guardProtects"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("hunterShoots", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["hunterShoots"](play, game, [])).toStrictEqual<Game>(game);
+    });
+
+    it("should call killOrRevealPlayer method when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const playerDeath = createFakePlayerShotByHunterDeath();
+      services.gamePlaysMaker["hunterShoots"](play, game, []);
+
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledWith(players[1]._id, game, playerDeath, []);
+    });
+  });
+
+  describe("witchUsesPotions", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["witchUsesPotions"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add only one potion attributes to targets when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], drankPotion: WITCH_POTIONS.LIFE })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeDrankLifePotionByWitchPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["witchUsesPotions"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+    
+    it("should add both potion attributes to targets when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], drankPotion: WITCH_POTIONS.LIFE }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[2], drankPotion: WITCH_POTIONS.DEATH }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedFirstTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeDrankLifePotionByWitchPlayerAttribute()],
+      });
+      const expectedSecondTargetedPlayer = createFakePlayer({
+        ...players[2],
+        attributes: [createFakeDrankDeathPotionByWitchPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedFirstTargetedPlayer,
+          expectedSecondTargetedPlayer,
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["witchUsesPotions"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("piedPiperCharms", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["piedPiperCharms"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add pied piper charmed attributes to targets when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[2] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedFirstTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeCharmedByPiedPiperPlayerAttribute()],
+      });
+      const expectedSecondTargetedPlayer = createFakePlayer({
+        ...players[2],
+        attributes: [createFakeCharmedByPiedPiperPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedFirstTargetedPlayer,
+          expectedSecondTargetedPlayer,
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["piedPiperCharms"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("cupidCharms", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["cupidCharms"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add in-love attribute to targets when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[2] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedFirstTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeInLoveByCupidPlayerAttribute()],
+      });
+      const expectedSecondTargetedPlayer = createFakePlayer({
+        ...players[2],
+        attributes: [createFakeInLoveByCupidPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedFirstTargetedPlayer,
+          expectedSecondTargetedPlayer,
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["cupidCharms"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("seerLooks", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["seerLooks"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add seen attribute to target when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeSeenBySeerPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["seerLooks"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("whiteWerewolfEats", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["whiteWerewolfEats"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add eaten attribute by white werewolf to target when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeEatenByWhiteWerewolfPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["whiteWerewolfEats"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("bigBadWolfEats", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["bigBadWolfEats"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add eaten attribute by big bad wolf to target when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeEatenByBigBadWolfPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["bigBadWolfEats"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("werewolvesEat", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["werewolvesEat"](play, game, [])).toStrictEqual<Game>(game);
+    });
+
+    it("should add eaten attribute by werewolves to target when target is not infected.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: false })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      mocks.playerKillerService.isAncientKillable.mockReturnValue(false);
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeEatenByWerewolvesPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["werewolvesEat"](play, game, [])).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should add eaten attribute by werewolves to target when target is infected but not killable ancient.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeAncientAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      mocks.playerKillerService.isAncientKillable.mockReturnValue(false);
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeEatenByWerewolvesPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["werewolvesEat"](play, game, [])).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should change target side to werewolves when he's infected and not the ancient.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      mocks.playerKillerService.isAncientKillable.mockReturnValue(false);
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        side: { ...players[1].side, current: ROLE_SIDES.WEREWOLVES },
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["werewolvesEat"](play, game, [])).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should change target side to werewolves when he's infected and killable as ancient.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeAncientAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      mocks.playerKillerService.isAncientKillable.mockReturnValue(true);
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        side: { ...players[1].side, current: ROLE_SIDES.WEREWOLVES },
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["werewolvesEat"](play, game, [])).toStrictEqual<Game>(expectedGame);
     });
   });
 });

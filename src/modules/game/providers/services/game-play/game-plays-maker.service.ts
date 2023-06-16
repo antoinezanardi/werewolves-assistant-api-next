@@ -8,7 +8,7 @@ import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlayAllVote, createGamePlaySheriffSettlesVotes } from "../../../helpers/game-play/game-play.factory";
-import { getFoxSniffedPlayers, getLeftToCharmByPiedPiperPlayers, getPlayerWithAttribute, getPlayerWithCurrentRole, getUpcomingGamePlayAction, getUpcomingGamePlaySource } from "../../../helpers/game.helper";
+import { getFoxSniffedPlayers, getPlayerWithAttribute, getPlayerWithCurrentRole, getUpcomingGamePlayAction, getUpcomingGamePlaySource } from "../../../helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "../../../helpers/game.mutator";
 import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "../../../helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteByAllDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedByAllDeath } from "../../../helpers/player/player-death/player-death.factory";
@@ -24,24 +24,24 @@ import { PlayerKillerService } from "../player/player-killer.service";
 
 @Injectable()
 export class GamePlaysMakerService {
-  private readonly gameSourcePlayMethods: Partial<Record<GameSource, (play: MakeGamePlayWithRelationsDto, game: Game, gameHistoryRecords?: GameHistoryRecord[]) => Game>> = {
-    [PLAYER_GROUPS.WEREWOLVES]: this.werewolvesEat,
-    [ROLE_NAMES.BIG_BAD_WOLF]: this.bigBadWolfEats,
-    [ROLE_NAMES.WHITE_WEREWOLF]: this.whiteWerewolfEats,
-    [ROLE_NAMES.SEER]: this.seerLooks,
-    [ROLE_NAMES.CUPID]: this.cupidCharms,
-    [ROLE_NAMES.PIED_PIPER]: this.piedPiperCharms,
-    [ROLE_NAMES.WITCH]: this.witchUsesPotions,
-    [ROLE_NAMES.HUNTER]: this.hunterShoots,
-    [ROLE_NAMES.GUARD]: this.guardProtects,
-    [ROLE_NAMES.FOX]: this.foxSniffs,
-    [ROLE_NAMES.WILD_CHILD]: this.wildChildChoosesModel,
-    [ROLE_NAMES.DOG_WOLF]: this.dogWolfChoosesSide,
-    [ROLE_NAMES.SCAPEGOAT]: this.scapegoatBansVoting,
-    [ROLE_NAMES.THIEF]: this.thiefChoosesCard,
-    [PLAYER_GROUPS.ALL]: this.allPlay,
-    [ROLE_NAMES.RAVEN]: this.ravenMarks,
-    [PLAYER_ATTRIBUTE_NAMES.SHERIFF]: this.sheriffPlays,
+  private readonly gameSourcePlayMethods: Partial<Record<GameSource, (play: MakeGamePlayWithRelationsDto, game: Game, gameHistoryRecords: GameHistoryRecord[]) => Game>> = {
+    [PLAYER_GROUPS.WEREWOLVES]: (play, game, gameHistoryRecords) => this.werewolvesEat(play, game, gameHistoryRecords),
+    [ROLE_NAMES.BIG_BAD_WOLF]: (play, game) => this.bigBadWolfEats(play, game),
+    [ROLE_NAMES.WHITE_WEREWOLF]: (play, game) => this.whiteWerewolfEats(play, game),
+    [ROLE_NAMES.SEER]: (play, game) => this.seerLooks(play, game),
+    [ROLE_NAMES.CUPID]: (play, game) => this.cupidCharms(play, game),
+    [ROLE_NAMES.PIED_PIPER]: (play, game) => this.piedPiperCharms(play, game),
+    [ROLE_NAMES.WITCH]: (play, game) => this.witchUsesPotions(play, game),
+    [ROLE_NAMES.HUNTER]: (play, game, gameHistoryRecords) => this.hunterShoots(play, game, gameHistoryRecords),
+    [ROLE_NAMES.GUARD]: (play, game) => this.guardProtects(play, game),
+    [ROLE_NAMES.FOX]: (play, game) => this.foxSniffs(play, game),
+    [ROLE_NAMES.WILD_CHILD]: (play, game) => this.wildChildChoosesModel(play, game),
+    [ROLE_NAMES.DOG_WOLF]: (play, game) => this.dogWolfChoosesSide(play, game),
+    [ROLE_NAMES.SCAPEGOAT]: (play, game) => this.scapegoatBansVoting(play, game),
+    [ROLE_NAMES.THIEF]: (play, game) => this.thiefChoosesCard(play, game),
+    [PLAYER_GROUPS.ALL]: (play, game, gameHistoryRecords) => this.allPlay(play, game, gameHistoryRecords),
+    [ROLE_NAMES.RAVEN]: (play, game) => this.ravenMarks(play, game),
+    [PLAYER_ATTRIBUTE_NAMES.SHERIFF]: (play, game, gameHistoryRecords) => this.sheriffPlays(play, game, gameHistoryRecords),
   };
 
   public constructor(private readonly playerKillerService: PlayerKillerService) {}
@@ -56,7 +56,7 @@ export class GamePlaysMakerService {
     if (gameSourcePlayMethod === undefined) {
       return clonedGame;
     }
-    return gameSourcePlayMethod(play, game, gameHistoryRecords);
+    return gameSourcePlayMethod(play, clonedGame, gameHistoryRecords);
   }
 
   private sheriffSettlesVotes({ targets }: MakeGamePlayWithRelationsDto, game: Game, gameHistoryRecords: GameHistoryRecord[]): Game {
@@ -91,15 +91,15 @@ export class GamePlaysMakerService {
     if (!upcomingGamePlayAction) {
       return clonedGame;
     }
-    const sheriffPlayMethods: Partial<Record<GAME_PLAY_ACTIONS, (play: MakeGamePlayWithRelationsDto, game: Game, gameHistoryRecords?: GameHistoryRecord[]) => Game>> = {
-      [GAME_PLAY_ACTIONS.DELEGATE]: this.sheriffDelegates,
-      [GAME_PLAY_ACTIONS.SETTLE_VOTES]: this.sheriffSettlesVotes,
+    const sheriffPlayMethods: Partial<Record<GAME_PLAY_ACTIONS, () => Game>> = {
+      [GAME_PLAY_ACTIONS.DELEGATE]: () => this.sheriffDelegates(play, clonedGame),
+      [GAME_PLAY_ACTIONS.SETTLE_VOTES]: () => this.sheriffSettlesVotes(play, clonedGame, gameHistoryRecords),
     };
     const sheriffPlayMethod = sheriffPlayMethods[upcomingGamePlayAction];
     if (sheriffPlayMethod === undefined) {
       return clonedGame;
     }
-    return sheriffPlayMethod(play, game, gameHistoryRecords);
+    return sheriffPlayMethod();
   }
 
   private addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: Game): PlayerVoteCount[] {
@@ -206,15 +206,15 @@ export class GamePlaysMakerService {
     if (!upcomingGamePlayAction) {
       return clonedGame;
     }
-    const allPlayMethods: Partial<Record<GAME_PLAY_ACTIONS, (play: MakeGamePlayWithRelationsDto, game: Game, gameHistoryRecords?: GameHistoryRecord[]) => Game>> = {
-      [GAME_PLAY_ACTIONS.ELECT_SHERIFF]: this.allElectSheriff,
-      [GAME_PLAY_ACTIONS.VOTE]: this.allVote,
+    const allPlayMethods: Partial<Record<GAME_PLAY_ACTIONS, () => Game>> = {
+      [GAME_PLAY_ACTIONS.ELECT_SHERIFF]: () => this.allElectSheriff(play, clonedGame),
+      [GAME_PLAY_ACTIONS.VOTE]: () => this.allVote(play, clonedGame, gameHistoryRecords),
     };
     const allPlayMethod = allPlayMethods[upcomingGamePlayAction];
     if (allPlayMethod === undefined) {
       return clonedGame;
     }
-    return allPlayMethod(play, game, gameHistoryRecords);
+    return allPlayMethod();
   }
   
   private thiefChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: Game): Game {
@@ -319,23 +319,19 @@ export class GamePlaysMakerService {
     if (!targets) {
       return clonedGame;
     }
+    const lifePotionAttribute = createDrankLifePotionByWitchPlayerAttribute();
+    const deathPotionAttribute = createDrankDeathPotionByWitchPlayerAttribute();
     for (const target of targets) {
       const { player: targetedPlayer } = target;
-      if (target.drankPotion === WITCH_POTIONS.LIFE) {
-        const drankLifePotionByWitchPlayerAttribute = createDrankLifePotionByWitchPlayerAttribute();
-        clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, drankLifePotionByWitchPlayerAttribute);
-      } else if (target.drankPotion === WITCH_POTIONS.DEATH) {
-        const drankDeathPotionByWitchPlayerAttribute = createDrankDeathPotionByWitchPlayerAttribute();
-        clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, drankDeathPotionByWitchPlayerAttribute);
-      }
+      const drankPotionAttribute = target.drankPotion === WITCH_POTIONS.LIFE ? lifePotionAttribute : deathPotionAttribute;
+      clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, drankPotionAttribute);
     }
     return clonedGame;
   }
 
   private piedPiperCharms({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
     const clonedGame = cloneDeep(game);
-    const expectedTargetCount = getLeftToCharmByPiedPiperPlayers(game.players).length;
-    if (targets?.length !== expectedTargetCount) {
+    if (targets === undefined || !targets.length) {
       return clonedGame;
     }
     const charmedByPiedPiperPlayerAttribute = createCharmedByPiedPiperPlayerAttribute();
