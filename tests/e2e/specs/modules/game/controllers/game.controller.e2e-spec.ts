@@ -375,12 +375,12 @@ describe("Game Controller", () => {
     it(`should create game when called.`, async() => {
       const payload = createFakeCreateGameDto({
         players: bulkCreateFakeCreateGamePlayerDto(6, [
-          { role: { name: ROLE_NAMES.VILLAGER } },
-          { role: { name: ROLE_NAMES.WEREWOLF } },
-          { role: { name: ROLE_NAMES.VILLAGER_VILLAGER } },
-          { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
-          { role: { name: ROLE_NAMES.CUPID } },
-          { role: { name: ROLE_NAMES.SEER } },
+          { role: { name: ROLE_NAMES.VILLAGER }, name: "Antoine" },
+          { role: { name: ROLE_NAMES.WEREWOLF }, name: "Mathis" },
+          { role: { name: ROLE_NAMES.VILLAGER_VILLAGER }, name: "Virgil" },
+          { role: { name: ROLE_NAMES.WHITE_WEREWOLF }, name: "JB" },
+          { role: { name: ROLE_NAMES.CUPID }, name: "Doudou" },
+          { role: { name: ROLE_NAMES.SEER }, name: "Juju" },
         ]),
       }, { options: undefined });
       const response = await app.inject({

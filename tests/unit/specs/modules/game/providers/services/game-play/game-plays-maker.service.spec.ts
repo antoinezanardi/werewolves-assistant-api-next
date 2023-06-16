@@ -90,44 +90,24 @@ describe("Game Plays Maker Service", () => {
     beforeEach(() => {
       localMocks = {
         gamePlaysMakerService: {
-          werewolvesEat: jest.fn(),
-          bigBadWolfEats: jest.fn(),
-          whiteWerewolfEats: jest.fn(),
-          seerLooks: jest.fn(),
-          cupidCharms: jest.fn(),
-          piedPiperCharms: jest.fn(),
-          witchUsesPotions: jest.fn(),
-          hunterShoots: jest.fn(),
-          guardProtects: jest.fn(),
-          foxSniffs: jest.fn(),
-          wildChildChoosesModel: jest.fn(),
-          dogWolfChoosesSide: jest.fn(),
-          scapegoatBansVoting: jest.fn(),
-          thiefChoosesCard: jest.fn(),
-          allPlay: jest.fn(),
-          ravenMarks: jest.fn(),
-          sheriffPlays: jest.fn(),
+          werewolvesEat: jest.spyOn(services.gamePlaysMaker as unknown as { werewolvesEat }, "werewolvesEat").mockImplementation(),
+          bigBadWolfEats: jest.spyOn(services.gamePlaysMaker as unknown as { bigBadWolfEats }, "bigBadWolfEats").mockImplementation(),
+          whiteWerewolfEats: jest.spyOn(services.gamePlaysMaker as unknown as { whiteWerewolfEats }, "whiteWerewolfEats").mockImplementation(),
+          seerLooks: jest.spyOn(services.gamePlaysMaker as unknown as { seerLooks }, "seerLooks").mockImplementation(),
+          cupidCharms: jest.spyOn(services.gamePlaysMaker as unknown as { cupidCharms }, "cupidCharms").mockImplementation(),
+          piedPiperCharms: jest.spyOn(services.gamePlaysMaker as unknown as { piedPiperCharms }, "piedPiperCharms").mockImplementation(),
+          witchUsesPotions: jest.spyOn(services.gamePlaysMaker as unknown as { witchUsesPotions }, "witchUsesPotions").mockImplementation(),
+          hunterShoots: jest.spyOn(services.gamePlaysMaker as unknown as { hunterShoots }, "hunterShoots").mockImplementation(),
+          guardProtects: jest.spyOn(services.gamePlaysMaker as unknown as { guardProtects }, "guardProtects").mockImplementation(),
+          foxSniffs: jest.spyOn(services.gamePlaysMaker as unknown as { foxSniffs }, "foxSniffs").mockImplementation(),
+          wildChildChoosesModel: jest.spyOn(services.gamePlaysMaker as unknown as { wildChildChoosesModel }, "wildChildChoosesModel").mockImplementation(),
+          dogWolfChoosesSide: jest.spyOn(services.gamePlaysMaker as unknown as { dogWolfChoosesSide }, "dogWolfChoosesSide").mockImplementation(),
+          scapegoatBansVoting: jest.spyOn(services.gamePlaysMaker as unknown as { scapegoatBansVoting }, "scapegoatBansVoting").mockImplementation(),
+          thiefChoosesCard: jest.spyOn(services.gamePlaysMaker as unknown as { thiefChoosesCard }, "thiefChoosesCard").mockImplementation(),
+          allPlay: jest.spyOn(services.gamePlaysMaker as unknown as { allPlay }, "allPlay").mockImplementation(),
+          ravenMarks: jest.spyOn(services.gamePlaysMaker as unknown as { ravenMarks }, "ravenMarks").mockImplementation(),
+          sheriffPlays: jest.spyOn(services.gamePlaysMaker as unknown as { sheriffPlays }, "sheriffPlays").mockImplementation(),
         },
-      };
-
-      (services.gamePlaysMaker as unknown as { gameSourcePlayMethods }).gameSourcePlayMethods = {
-        [PLAYER_GROUPS.WEREWOLVES]: localMocks.gamePlaysMakerService.werewolvesEat,
-        [ROLE_NAMES.BIG_BAD_WOLF]: localMocks.gamePlaysMakerService.bigBadWolfEats,
-        [ROLE_NAMES.WHITE_WEREWOLF]: localMocks.gamePlaysMakerService.whiteWerewolfEats,
-        [ROLE_NAMES.SEER]: localMocks.gamePlaysMakerService.seerLooks,
-        [ROLE_NAMES.CUPID]: localMocks.gamePlaysMakerService.cupidCharms,
-        [ROLE_NAMES.PIED_PIPER]: localMocks.gamePlaysMakerService.piedPiperCharms,
-        [ROLE_NAMES.WITCH]: localMocks.gamePlaysMakerService.witchUsesPotions,
-        [ROLE_NAMES.HUNTER]: localMocks.gamePlaysMakerService.hunterShoots,
-        [ROLE_NAMES.GUARD]: localMocks.gamePlaysMakerService.guardProtects,
-        [ROLE_NAMES.FOX]: localMocks.gamePlaysMakerService.foxSniffs,
-        [ROLE_NAMES.WILD_CHILD]: localMocks.gamePlaysMakerService.wildChildChoosesModel,
-        [ROLE_NAMES.DOG_WOLF]: localMocks.gamePlaysMakerService.dogWolfChoosesSide,
-        [ROLE_NAMES.SCAPEGOAT]: localMocks.gamePlaysMakerService.scapegoatBansVoting,
-        [ROLE_NAMES.THIEF]: localMocks.gamePlaysMakerService.thiefChoosesCard,
-        [PLAYER_GROUPS.ALL]: localMocks.gamePlaysMakerService.allPlay,
-        [ROLE_NAMES.RAVEN]: localMocks.gamePlaysMakerService.ravenMarks,
-        [PLAYER_ATTRIBUTE_NAMES.SHERIFF]: localMocks.gamePlaysMakerService.sheriffPlays,
       };
     });
 
@@ -188,7 +168,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.bigBadWolfEats).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.bigBadWolfEats).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.bigBadWolfEats).toHaveBeenCalledWith(play, game);
     });
 
     it("should call whiteWerewolfEats method when it's white werewolf's turn.", () => {
@@ -198,7 +178,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.whiteWerewolfEats).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.whiteWerewolfEats).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.whiteWerewolfEats).toHaveBeenCalledWith(play, game);
     });
 
     it("should call seerLooks method when it's seer's turn.", () => {
@@ -208,7 +188,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.seerLooks).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.seerLooks).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.seerLooks).toHaveBeenCalledWith(play, game);
     });
 
     it("should call cupidCharms method when it's cupid's turn.", () => {
@@ -218,7 +198,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.cupidCharms).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.cupidCharms).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.cupidCharms).toHaveBeenCalledWith(play, game);
     });
 
     it("should call piedPiperCharms method when it's pied piper's turn.", () => {
@@ -228,7 +208,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.piedPiperCharms).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.piedPiperCharms).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.piedPiperCharms).toHaveBeenCalledWith(play, game);
     });
 
     it("should call witchUsesPotions method when it's witch's turn.", () => {
@@ -238,7 +218,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.witchUsesPotions).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.witchUsesPotions).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.witchUsesPotions).toHaveBeenCalledWith(play, game);
     });
 
     it("should call hunterShoots method when it's hunter's turn.", () => {
@@ -258,7 +238,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.guardProtects).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.guardProtects).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.guardProtects).toHaveBeenCalledWith(play, game);
     });
 
     it("should call foxSniffs method when it's fox's turn.", () => {
@@ -268,7 +248,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.foxSniffs).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.foxSniffs).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.foxSniffs).toHaveBeenCalledWith(play, game);
     });
 
     it("should call wildChildChoosesModel method when it's wild child's turn.", () => {
@@ -278,7 +258,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.wildChildChoosesModel).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.wildChildChoosesModel).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.wildChildChoosesModel).toHaveBeenCalledWith(play, game);
     });
 
     it("should call dogWolfChoosesSide method when it's dog wolf's turn.", () => {
@@ -288,7 +268,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.dogWolfChoosesSide).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.dogWolfChoosesSide).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.dogWolfChoosesSide).toHaveBeenCalledWith(play, game);
     });
 
     it("should call scapegoatBansVoting method when it's scapegoat's turn.", () => {
@@ -298,7 +278,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.scapegoatBansVoting).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.scapegoatBansVoting).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.scapegoatBansVoting).toHaveBeenCalledWith(play, game);
     });
 
     it("should call thiefChoosesCard method when it's thief's turn.", () => {
@@ -308,7 +288,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.thiefChoosesCard).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.thiefChoosesCard).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.thiefChoosesCard).toHaveBeenCalledWith(play, game);
     });
 
     it("should call allPlay method when it's all's turn.", () => {
@@ -328,7 +308,7 @@ describe("Game Plays Maker Service", () => {
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
       expect(localMocks.gamePlaysMakerService.ravenMarks).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.ravenMarks).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.ravenMarks).toHaveBeenCalledWith(play, game);
     });
 
     it("should call sheriffPlays method when it's sheriff's turn.", () => {
