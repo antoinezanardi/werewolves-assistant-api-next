@@ -25,7 +25,9 @@ function getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayD
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, vote.targetId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
     }
     const plainToInstanceOptions = { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true };
-    const voteWithRelations = plainToInstance(MakeGamePlayVoteWithRelationsDto, { ...vote, source, target }, plainToInstanceOptions);
+    const voteWithRelations = plainToInstance(MakeGamePlayVoteWithRelationsDto, vote, plainToInstanceOptions);
+    voteWithRelations.source = source;
+    voteWithRelations.target = target;
     return [...acc, voteWithRelations];
   }, []);
 }
@@ -39,8 +41,9 @@ function getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePla
     if (player === undefined) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, target.playerId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
     }
-    const plainToInstanceOptions = { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true };
-    const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, { ...target, player }, plainToInstanceOptions);
+    const plainToInstanceOptions = { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true, enableCircularCheck: true };
+    const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, target, plainToInstanceOptions);
+    targetWithRelations.player = player;
     return [...acc, targetWithRelations];
   }, []);
 }
@@ -60,12 +63,11 @@ function createMakeGamePlayDtoWithRelations(makeGamePlayDto: MakeGamePlayDto, ga
   const chosenCard = getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game);
   const targets = getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game);
   const votes = getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game);
-  return plainToInstance(MakeGamePlayWithRelationsDto, {
-    ...makeGamePlayDto,
-    chosenCard,
-    targets,
-    votes,
-  }, { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true });
+  const makeGamePlayWithRelationsDto = plainToInstance(MakeGamePlayWithRelationsDto, makeGamePlayDto, { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true });
+  makeGamePlayWithRelationsDto.chosenCard = chosenCard;
+  makeGamePlayWithRelationsDto.targets = targets;
+  makeGamePlayWithRelationsDto.votes = votes;
+  return makeGamePlayWithRelationsDto;
 }
 
 export {

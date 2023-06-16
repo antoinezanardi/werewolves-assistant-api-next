@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getUpcomingGamePlay, getUpcomingGamePlayAction, getUpcomingGamePlaySource, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithAttribute, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getUpcomingGamePlay, getUpcomingGamePlayAction, getUpcomingGamePlaySource, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
 import type { GetNearestPlayerOptions } from "../../../../../../src/modules/game/types/game.type";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
@@ -219,6 +219,30 @@ describe("Game Helper", () => {
     });
   });
 
+  describe("getPlayerWithAttribute", () => {
+    it("should return first player with attribute when called.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        { attributes: [] },
+        { attributes: [createFakeEatenByWerewolvesPlayerAttribute()] },
+        { attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] },
+        { attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] },
+      ]);
+
+      expect(getPlayerWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.CHARMED)).toStrictEqual<Player>(players[2]);
+    });
+
+    it("should return undefined when player with attribute is not found.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        { attributes: [] },
+        { attributes: [createFakeEatenByWerewolvesPlayerAttribute()] },
+        { attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] },
+        { attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] },
+      ]);
+
+      expect(getPlayerWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.SEEN)).toBeUndefined();
+    });
+  });
+
   describe("getPlayersWithAttribute", () => {
     const players = bulkCreateFakePlayers(4, [
       { attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] },
@@ -403,6 +427,86 @@ describe("Game Helper", () => {
       const upcomingGamePlays = bulkCreateFakeGamePlays(4);
       
       expect(getUpcomingGamePlaySource(upcomingGamePlays)).toStrictEqual(upcomingGamePlays[0].source);
+    });
+  });
+
+  describe("getFoxSniffedPlayers", () => {
+    it("should get 3 targets with left and right neighbors when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ position: 0 }),
+        createFakeVillagerAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeVillagerAlivePlayer({ position: 3 }),
+      ];
+      const game = createFakeGame({ players });
+      const expectedPlayers = [
+        createFakePlayer(players[2]),
+        createFakePlayer(players[3]),
+        createFakePlayer(players[0]),
+      ];
+
+      expect(getFoxSniffedPlayers(players[3]._id, game)).toStrictEqual<Player[]>(expectedPlayers);
+    });
+
+    it("should get 3 targets with left neighbor when right is dead.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ position: 0, isAlive: false }),
+        createFakeVillagerAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeVillagerAlivePlayer({ position: 3 }),
+      ];
+      const game = createFakeGame({ players });
+      const expectedPlayers = [
+        createFakePlayer(players[2]),
+        createFakePlayer(players[3]),
+        createFakePlayer(players[1]),
+      ];
+
+      expect(getFoxSniffedPlayers(players[3]._id, game)).toStrictEqual<Player[]>(expectedPlayers);
+    });
+
+    it("should get 2 targets with left neighbor when all rights are dead.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ position: 0, isAlive: false }),
+        createFakeVillagerAlivePlayer({ position: 1, isAlive: false }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeVillagerAlivePlayer({ position: 3 }),
+      ];
+      const game = createFakeGame({ players });
+      const expectedPlayers = [
+        createFakePlayer(players[2]),
+        createFakePlayer(players[3]),
+      ];
+
+      expect(getFoxSniffedPlayers(players[3]._id, game)).toStrictEqual<Player[]>(expectedPlayers);
+    });
+    
+    it("should get only 1 target when all neighbors.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ position: 0, isAlive: false }),
+        createFakeVillagerAlivePlayer({ position: 1, isAlive: false }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeVillagerAlivePlayer({ position: 3, isAlive: false }),
+      ];
+      const game = createFakeGame({ players });
+      const expectedPlayers = [createFakePlayer(players[2])];
+
+      expect(getFoxSniffedPlayers(players[2]._id, game)).toStrictEqual<Player[]>(expectedPlayers);
+    });
+
+    it("should throw error when player is not found in game.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ position: 0 }),
+        createFakeVillagerAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeVillagerAlivePlayer({ position: 3 }),
+      ];
+      const game = createFakeGame({ players });
+      const unknownPlayerId = createFakeObjectId();
+      const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: unknownPlayerId.toString() };
+      const exception = new UnexpectedException("getFoxSniffedTargets", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+
+      expect(() => getFoxSniffedPlayers(unknownPlayerId, game)).toThrow(exception);
     });
   });
 

@@ -173,6 +173,36 @@ describe("Player Killer Service", () => {
       expect(services.playerKiller["applyPlayerRoleRevelationOutcomes"](game.players[1], game)).toStrictEqual<Game>(game);
     });
   });
+  
+  describe("isAncientKillable", () => {
+    it("should return true when cause is not EATEN.", () => {
+      const game = createFakeGame();
+      jest.spyOn(services.playerKiller as unknown as { getAncientLivesCountAgainstWerewolves }, "getAncientLivesCountAgainstWerewolves").mockReturnValue(2);
+
+      expect(services.playerKiller.isAncientKillable(game, PLAYER_DEATH_CAUSES.VOTE, [])).toBe(true);
+    });
+
+    it("should return false when cause is EATEN but ancient still have at least one life left.", () => {
+      const game = createFakeGame();
+      jest.spyOn(services.playerKiller as unknown as { getAncientLivesCountAgainstWerewolves }, "getAncientLivesCountAgainstWerewolves").mockReturnValue(2);
+
+      expect(services.playerKiller.isAncientKillable(game, PLAYER_DEATH_CAUSES.EATEN, [])).toBe(false);
+    });
+
+    it("should return true when cause is EATEN but ancient has only one life left.", () => {
+      const game = createFakeGame();
+      jest.spyOn(services.playerKiller as unknown as { getAncientLivesCountAgainstWerewolves }, "getAncientLivesCountAgainstWerewolves").mockReturnValue(1);
+
+      expect(services.playerKiller.isAncientKillable(game, PLAYER_DEATH_CAUSES.EATEN, [])).toBe(true);
+    });
+
+    it("should return true when cause is EATEN but ancient has 0 life left.", () => {
+      const game = createFakeGame();
+      jest.spyOn(services.playerKiller as unknown as { getAncientLivesCountAgainstWerewolves }, "getAncientLivesCountAgainstWerewolves").mockReturnValue(0);
+
+      expect(services.playerKiller.isAncientKillable(game, PLAYER_DEATH_CAUSES.EATEN, [])).toBe(true);
+    });
+  });
 
   describe("revealPlayerRole", () => {
     it("should throw error when player to reveal is not found among players.", () => {
@@ -334,36 +364,6 @@ describe("Player Killer Service", () => {
       ];
 
       expect(services.playerKiller["getAncientLivesCountAgainstWerewolves"](game, gameHistoryRecords)).toBe(2);
-    });
-  });
-
-  describe("isAncientKillable", () => {
-    it("should return true when cause is not EATEN.", () => {
-      const game = createFakeGame();
-      jest.spyOn(services.playerKiller as unknown as { getAncientLivesCountAgainstWerewolves }, "getAncientLivesCountAgainstWerewolves").mockReturnValue(2);
-
-      expect(services.playerKiller["isAncientKillable"](game, PLAYER_DEATH_CAUSES.VOTE, [])).toBe(true);
-    });
-
-    it("should return false when cause is EATEN but ancient still have at least one life left.", () => {
-      const game = createFakeGame();
-      jest.spyOn(services.playerKiller as unknown as { getAncientLivesCountAgainstWerewolves }, "getAncientLivesCountAgainstWerewolves").mockReturnValue(2);
-
-      expect(services.playerKiller["isAncientKillable"](game, PLAYER_DEATH_CAUSES.EATEN, [])).toBe(false);
-    });
-
-    it("should return true when cause is EATEN but ancient has only one life left.", () => {
-      const game = createFakeGame();
-      jest.spyOn(services.playerKiller as unknown as { getAncientLivesCountAgainstWerewolves }, "getAncientLivesCountAgainstWerewolves").mockReturnValue(1);
-
-      expect(services.playerKiller["isAncientKillable"](game, PLAYER_DEATH_CAUSES.EATEN, [])).toBe(true);
-    });
-
-    it("should return true when cause is EATEN but ancient has 0 life left.", () => {
-      const game = createFakeGame();
-      jest.spyOn(services.playerKiller as unknown as { getAncientLivesCountAgainstWerewolves }, "getAncientLivesCountAgainstWerewolves").mockReturnValue(0);
-
-      expect(services.playerKiller["isAncientKillable"](game, PLAYER_DEATH_CAUSES.EATEN, [])).toBe(true);
     });
   });
 

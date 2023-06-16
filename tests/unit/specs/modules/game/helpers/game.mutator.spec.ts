@@ -1,9 +1,10 @@
 import { cloneDeep } from "lodash";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "../../../../../../src/modules/game/helpers/game.mutator";
+import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../src/modules/game/enums/player.enum";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "../../../../../../src/modules/game/helpers/game.mutator";
 import type { Game } from "../../../../../../src/modules/game/schemas/game.schema";
 import { createFakeGamePlayCupidCharms, createFakeGamePlayHunterShoots } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
@@ -137,6 +138,39 @@ describe("Game Mutator", () => {
       const clonedGame = cloneDeep(game);
       addPlayersAttributeInGame([players[1]._id, players[2]._id], game, attributeToAdd);
       
+      expect(game).toStrictEqual<Game>(clonedGame);
+    });
+  });
+
+  describe("removePlayerAttributeByNameInGame", () => {
+    it("should return game as is when player is not found in game.", () => {
+      const game = createFakeGame();
+
+      expect(removePlayerAttributeByNameInGame(createFakeObjectId(), game, PLAYER_ATTRIBUTE_NAMES.SHERIFF)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game with player without his sheriff attribute when called.", () => {
+      const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffByAllPlayerAttribute(), createFakeCharmedByPiedPiperPlayerAttribute()] }]);
+      const game = createFakeGame({ players });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          game.players[0],
+          createFakePlayer({ ...players[1], attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+          game.players[2],
+          game.players[3],
+        ],
+      });
+
+      expect(removePlayerAttributeByNameInGame(game.players[1]._id, game, PLAYER_ATTRIBUTE_NAMES.SHERIFF)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should not mutate the original game when called.", () => {
+      const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffByAllPlayerAttribute()] }]);
+      const game = createFakeGame({ players });
+      const clonedGame = cloneDeep(game);
+      removePlayerAttributeByNameInGame(game.players[1]._id, game, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+
       expect(game).toStrictEqual<Game>(clonedGame);
     });
   });

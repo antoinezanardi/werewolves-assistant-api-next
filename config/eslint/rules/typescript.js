@@ -58,6 +58,7 @@ const typescriptRules = Object.freeze({
     ERROR, {
       allowLiterals: "always",
       allowGenerics: "always",
+      allowTupleTypes: "always",
       allowAliases: "in-unions",
     },
   ],

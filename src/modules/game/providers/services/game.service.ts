@@ -11,6 +11,7 @@ import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play/game
 import { generateGameVictoryData, isGameOver } from "../../helpers/game-victory/game-victory.helper";
 import type { Game } from "../../schemas/game.schema";
 import { GameRepository } from "../repositories/game.repository";
+import { GamePlaysMakerService } from "./game-play/game-plays-maker.service";
 import { GamePlaysManagerService } from "./game-play/game-plays-manager.service";
 import { GamePlaysValidatorService } from "./game-play/game-plays-validator.service";
 
@@ -19,6 +20,7 @@ export class GameService {
   public constructor(
     private readonly gamePlaysManagerService: GamePlaysManagerService,
     private readonly gamePlaysValidatorService: GamePlaysValidatorService,
+    private readonly gamePlaysMakerService: GamePlaysMakerService,
     private readonly gameRepository: GameRepository,
   ) {}
 
@@ -49,9 +51,11 @@ export class GameService {
     if (game.status !== GAME_STATUSES.PLAYING) {
       throw new BadResourceMutationException(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
     }
-    const gameDataToUpdate: Partial<Game> = {};
-    const makeGamePlayWithRelationsDto = createMakeGamePlayDtoWithRelations(makeGamePlayDto, game);
-    await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(makeGamePlayWithRelationsDto, game);
+
+    const play = createMakeGamePlayDtoWithRelations(makeGamePlayDto, game);
+    await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(play, game);
+    const gameDataToUpdate = this.gamePlaysMakerService.makeGamePlay(play, game, []);
+
     if (isGameOver(game)) {
       gameDataToUpdate.status = GAME_STATUSES.OVER;
       gameDataToUpdate.victory = generateGameVictoryData(game);

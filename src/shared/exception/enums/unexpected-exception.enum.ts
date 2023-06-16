@@ -1,6 +1,5 @@
 enum UNEXPECTED_EXCEPTION_REASONS {
-  MALFORMED_GAME_PLAY_PAYLOAD = "Expected game play payload is malformed or has invalid data",
-  TOO_LESS_TARGETED_PLAYERS = "Too less targeted players for this game play",
+  BAD_PLAY_TARGETS_COUNT = `Play must have "{{expected}}" target(s) but "{{actual}}" target(s) was/were provided`,
   CANT_FIND_PLAYER_WITH_ID_IN_GAME = `Can't find player with id "{{playerId}}" in game "{{gameId}}"`,
   PLAYER_IS_DEAD = `Player with id "{{playerId}}" is dead in game "{{gameId}}"`,
 }
