@@ -266,14 +266,15 @@ export class GamePlaysMakerService {
   private foxSniffs({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
-    if (targets?.length !== expectedTargetCount) {
-      return clonedGame;
-    }
     const foxPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.FOX);
     const { isPowerlessIfMissesWerewolf: isFoxPowerlessIfMissesWerewolf } = clonedGame.options.roles.fox;
+    if (targets?.length !== expectedTargetCount || !foxPlayer) {
+      return clonedGame;
+    }
     const { player: targetedPlayer } = targets[0];
     const foxSniffedPlayers = getFoxSniffedPlayers(targetedPlayer._id, clonedGame);
-    if (foxPlayer && isFoxPowerlessIfMissesWerewolf && foxSniffedPlayers.some(player => player.side.current === ROLE_SIDES.WEREWOLVES)) {
+    const areEveryFoxSniffedPlayersVillagerSided = foxSniffedPlayers.every(player => player.side.current === ROLE_SIDES.VILLAGERS);
+    if (isFoxPowerlessIfMissesWerewolf && areEveryFoxSniffedPlayersVillagerSided) {
       const powerlessByFoxPlayerAttribute = createPowerlessByFoxPlayerAttribute();
       return addPlayerAttributeInGame(foxPlayer._id, clonedGame, powerlessByFoxPlayerAttribute);
     }

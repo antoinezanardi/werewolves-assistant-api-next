@@ -3,6 +3,7 @@ import { plainToInstance } from "class-transformer";
 import { gameSourceValues } from "../../../../../../src/modules/game/constants/game.constant";
 import { GAME_PHASES } from "../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
+import type { Game } from "../../../../../../src/modules/game/schemas/game.schema";
 import { PlayerAttributeActivation } from "../../../../../../src/modules/game/schemas/player/player-attribute/player-attribute-activation.schema";
 import { PlayerAttribute } from "../../../../../../src/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { ROLE_NAMES } from "../../../../../../src/modules/role/enums/role.enum";
@@ -83,7 +84,7 @@ function createFakeRavenMarkedByRavenPlayerAttribute(attribute: Partial<PlayerAt
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.RAVEN_MARKED,
     source: ROLE_NAMES.RAVEN,
-    remainingPhases: 1,
+    remainingPhases: 2,
     ...attribute,
   }, override);
 }
@@ -104,6 +105,14 @@ function createFakeWorshipedByWildChildPlayerAttribute(attribute: Partial<Player
   }, override);
 }
 
+function createFakePowerlessByFoxPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+  return createFakePlayerAttribute({
+    name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
+    source: ROLE_NAMES.FOX,
+    ...attribute,
+  }, override);
+}
+
 function createFakePowerlessByAncientPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
@@ -120,11 +129,15 @@ function createFakeCantVoteByAllPlayerAttribute(attribute: Partial<PlayerAttribu
   }, override);
 }
 
-function createFakeCantVoteByScapegoatPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeCantVoteByScapegoatPlayerAttribute(game: Game, attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
     source: ROLE_NAMES.SCAPEGOAT,
     remainingPhases: 2,
+    activeAt: {
+      turn: game.turn + 1,
+      phase: GAME_PHASES.DAY,
+    },
     ...attribute,
   }, override);
 }
@@ -189,6 +202,7 @@ export {
   createFakeRavenMarkedByRavenPlayerAttribute,
   createFakeInLoveByCupidPlayerAttribute,
   createFakeWorshipedByWildChildPlayerAttribute,
+  createFakePowerlessByFoxPlayerAttribute,
   createFakePowerlessByAncientPlayerAttribute,
   createFakeCantVoteByAllPlayerAttribute,
   createFakeCantVoteByScapegoatPlayerAttribute,

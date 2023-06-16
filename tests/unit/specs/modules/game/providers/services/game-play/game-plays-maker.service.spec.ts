@@ -11,18 +11,19 @@ import type { GameHistoryRecord } from "../../../../../../../../src/modules/game
 import type { Game } from "../../../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../../../src/modules/game/schemas/player/player.schema";
 import type { PlayerVoteCount } from "../../../../../../../../src/modules/game/types/game-play.type";
-import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
+import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../../../src/modules/role/enums/role.enum";
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
+import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeRavenGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeFoxGameOptions, createFakeRavenGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePowerlessByAncientPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSheriffByAllPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteByScapegoatPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSheriffByAllPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerVoteByAllDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteScapegoatedByAllDeath } from "../../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeAncientAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeAncientAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Game Plays Maker Service", () => {
@@ -1082,6 +1083,344 @@ describe("Game Plays Maker Service", () => {
 
       expect(localMocks.gamePlaysMakerService.allVote).toHaveBeenCalledOnce();
       expect(localMocks.gamePlaysMakerService.allVote).toHaveBeenCalledWith(play, game, []);
+    });
+  });
+
+  describe("thiefChoosesCard", () => {
+    it("should return game as is when there is no thief player in game.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const additionalCards = bulkCreateFakeGameAdditionalCards(4);
+      const game = createFakeGame({ players, additionalCards });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenCard: additionalCards[0] });
+
+      expect(services.gamePlaysMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when there is no chosen card.", () => {
+      const players: Player[] = [
+        createFakeThiefAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const additionalCards = bulkCreateFakeGameAdditionalCards(4);
+      const game = createFakeGame({ players, additionalCards });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when chosen card role is unknown.", () => {
+      const players: Player[] = [
+        createFakeThiefAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const additionalCards = bulkCreateFakeGameAdditionalCards(4);
+      const game = createFakeGame({ players, additionalCards });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenCard: createFakeGameAdditionalCard({}, { roleName: "Toto" }) });
+
+      expect(services.gamePlaysMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should update thief role and side when called.", () => {
+      const players: Player[] = [
+        createFakeThiefAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const additionalCards = bulkCreateFakeGameAdditionalCards(4, [createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF })]);
+      const game = createFakeGame({ players, additionalCards });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenCard: additionalCards[0] });
+      const expectedThiefPlayer = createFakePlayer({
+        ...players[0],
+        role: { ...players[0].role, current: ROLE_NAMES.WEREWOLF },
+        side: { ...players[0].side, current: ROLE_SIDES.WEREWOLVES },
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          expectedThiefPlayer,
+          players[1],
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("scapegoatBansVoting", () => {
+    it("should return game as is when there are no targets.", () => {
+      const players: Player[] = [
+        createFakeThiefAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["scapegoatBansVoting"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add scapegoat ban voting attributes to targets when called.", () => {
+      const players: Player[] = [
+        createFakeThiefAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[2] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          createFakePlayer({ ...players[1], attributes: [createFakeCantVoteByScapegoatPlayerAttribute(game)] }),
+          createFakePlayer({ ...players[2], attributes: [createFakeCantVoteByScapegoatPlayerAttribute(game)] }),
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["scapegoatBansVoting"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("dogWolfChoosesSide", () => {
+    it("should return game as is when chosen side is not set.", () => {
+      const players: Player[] = [
+        createFakeDogWolfAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when there is no dog wolf in the game.", () => {
+      const players: Player[] = [
+        createFakeThiefAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: ROLE_SIDES.WEREWOLVES });
+
+      expect(services.gamePlaysMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return dog wolf on the werewolves side when called.", () => {
+      const players: Player[] = [
+        createFakeRavenAlivePlayer(),
+        createFakeDogWolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: ROLE_SIDES.WEREWOLVES });
+      const expectedDogWolfPlayer = createFakePlayer({
+        ...players[1],
+        side: { ...players[1].side, current: ROLE_SIDES.WEREWOLVES },
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedDogWolfPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+      
+      expect(services.gamePlaysMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("wildChildChoosesModel", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeDogWolfAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["wildChildChoosesModel"](play, game)).toStrictEqual<Game>(game);
+    });
+    
+    it("should add worshiped attribute to target when called.", () => {
+      const players: Player[] = [
+        createFakeDogWolfAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeWorshipedByWildChildPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["wildChildChoosesModel"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("foxSniffs", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer({ position: 0 }),
+        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeWerewolfAlivePlayer({ position: 3 }),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when there is no fox in the game.", () => {
+      const players: Player[] = [
+        createFakeSeerAlivePlayer({ position: 0 }),
+        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeWerewolfAlivePlayer({ position: 3 }),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+
+      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when fox is not powerless if misses werewolves by game options.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer({ position: 0 }),
+        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeWerewolfAlivePlayer({ position: 3 }),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ fox: createFakeFoxGameOptions({ isPowerlessIfMissesWerewolf: false }) }) });
+      const game = createFakeGame({ players, options });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+
+      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when fox sniffes a werewolf in the group.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer({ position: 0 }),
+        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeWerewolfAlivePlayer({ position: 3 }),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ fox: createFakeFoxGameOptions({ isPowerlessIfMissesWerewolf: true }) }) });
+      const game = createFakeGame({ players, options });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+
+      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should make fox powerless when there is no werewolf in the group.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer({ position: 0 }),
+        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeVillagerAlivePlayer({ position: 2 }),
+        createFakeWerewolfAlivePlayer({ position: 3 }),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ fox: createFakeFoxGameOptions({ isPowerlessIfMissesWerewolf: true }) }) });
+      const game = createFakeGame({ players, options });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[0],
+        attributes: [createFakePowerlessByFoxPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          expectedTargetedPlayer,
+          players[1],
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("ravenMarks", () => {
+    it("should return game as is when expected target count is not reached.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlaysMaker["ravenMarks"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should add raven marked attribute to target when called.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        attributes: [createFakeRavenMarkedByRavenPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlaysMaker["ravenMarks"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 });
