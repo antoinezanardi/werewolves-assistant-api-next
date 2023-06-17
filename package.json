@@ -78,7 +78,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^7.3.0",
     "qs": "^6.11.2",
-    "radash": "^10.8.1",
+    "radash": "^10.9.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
   },
