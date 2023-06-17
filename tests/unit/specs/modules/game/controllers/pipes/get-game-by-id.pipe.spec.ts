@@ -52,7 +52,7 @@ describe("Get Game By Id Pipe", () => {
       mocks.gameRepository.findOne.mockResolvedValue(game);
       
       await expect(getGameByIdPipe.transform(gameId)).resolves.toStrictEqual(game);
-      expect(mocks.gameRepository.findOne).toHaveBeenCalledOnceWith({ _id: createObjectIdFromString(gameId) });
+      expect(mocks.gameRepository.findOne).toHaveBeenCalledExactlyOnceWith({ _id: createObjectIdFromString(gameId) });
     });
   });
 });

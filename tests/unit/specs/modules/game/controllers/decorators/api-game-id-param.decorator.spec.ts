@@ -18,15 +18,13 @@ describe("Api Game Id Param Decorator", () => {
     it("should call api param function with default values when called without specific options.", () => {
       ApiGameIdParam();
 
-      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledTimes(1);
-      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledWith(defaultOptions);
+      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledExactlyOnceWith(defaultOptions);
     });
 
     it("should call api param function with other values when called with specific options.", () => {
       ApiGameIdParam({ name: "lol" });
 
-      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledTimes(1);
-      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledWith({ ...defaultOptions, name: "lol" });
+      expect(mocks.nestSwagger.ApiParam).toHaveBeenCalledExactlyOnceWith({ ...defaultOptions, name: "lol" });
     });
   });
 });

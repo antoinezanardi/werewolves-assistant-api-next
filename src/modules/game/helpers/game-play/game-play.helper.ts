@@ -41,7 +41,7 @@ function getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePla
     if (player === undefined) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, target.playerId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
     }
-    const plainToInstanceOptions = { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true, enableCircularCheck: true };
+    const plainToInstanceOptions = { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true };
     const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, target, plainToInstanceOptions);
     targetWithRelations.player = player;
     return [...acc, targetWithRelations];

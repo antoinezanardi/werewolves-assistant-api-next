@@ -73,8 +73,7 @@ describe("Server Swagger", () => {
       createSwaggerDocument(path, app as INestApplication);
 
       expect(mocks.SwaggerModule.createDocument).toHaveBeenCalledTimes(1);
-      expect(mocks.SwaggerModule.setup).toHaveBeenCalledTimes(1);
-      expect(mocks.SwaggerModule.setup).toHaveBeenCalledWith(path, app as INestApplication, undefined, options);
+      expect(mocks.SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith(path, app as INestApplication, undefined, options);
     });
   });
 });

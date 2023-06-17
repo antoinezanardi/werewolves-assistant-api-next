@@ -15,15 +15,13 @@ describe("Api Game Not Found Response Decorator", () => {
     it("should call api not found response function with default values when called without specific options.", () => {
       ApiGameNotFoundResponse();
 
-      expect(mocks.nestSwagger.ApiNotFoundResponse).toHaveBeenCalledTimes(1);
-      expect(mocks.nestSwagger.ApiNotFoundResponse).toHaveBeenCalledOnceWith(defaultOptions);
+      expect(mocks.nestSwagger.ApiNotFoundResponse).toHaveBeenCalledExactlyOnceWith(defaultOptions);
     });
 
     it("should call api not found response function with other values when called with specific options.", () => {
       ApiGameNotFoundResponse({ description: "lol" });
 
-      expect(mocks.nestSwagger.ApiNotFoundResponse).toHaveBeenCalledTimes(1);
-      expect(mocks.nestSwagger.ApiNotFoundResponse).toHaveBeenCalledWith({ ...defaultOptions, description: "lol" });
+      expect(mocks.nestSwagger.ApiNotFoundResponse).toHaveBeenCalledExactlyOnceWith({ ...defaultOptions, description: "lol" });
     });
   });
 });

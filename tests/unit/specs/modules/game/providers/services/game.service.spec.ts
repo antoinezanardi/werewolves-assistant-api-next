@@ -1,6 +1,7 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.enum";
+import * as GamePlayerHelper from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
 import * as GameVictoryHelper from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
 import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
@@ -13,6 +14,7 @@ import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enu
 import { BadResourceMutationException } from "../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type";
 import { ResourceNotFoundException } from "../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
 import { createFakeCreateGameDto } from "../../../../../../factories/game/dto/create-game/create-game.dto.factory";
+import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
@@ -35,6 +37,7 @@ describe("Game Service", () => {
     };
     gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.SpyInstance };
     gamePlaysMakerService: { makeGamePlay: jest.SpyInstance };
+    gamePlayerHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
   };
   let services: { game: GameService };
   let repositories: { game: GameRepository };
@@ -53,6 +56,7 @@ describe("Game Service", () => {
       },
       gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.fn() },
       gamePlaysMakerService: { makeGamePlay: jest.fn() },
+      gamePlayerHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayerHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -139,10 +143,12 @@ describe("Game Service", () => {
       createFakeVillagerAlivePlayer({ isAlive: false }),
     ];
     const soonToBeOverGame = createFakeGame({ status: GAME_STATUSES.PLAYING, players: nearlyAllDeadPlayers });
+    const play = createFakeMakeGamePlayWithRelationsDto();
 
     beforeEach(() => {
       mocks.gameRepository.updateOne.mockResolvedValue(game);
       mocks.gamePlaysMakerService.makeGamePlay.mockResolvedValue(game);
+      mocks.gamePlayerHelper.createMakeGamePlayDtoWithRelations.mockReturnValue(play);
     });
 
     it("should throw an error when game is not playing.", async() => {
@@ -157,14 +163,14 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
-      expect(mocks.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData).toHaveBeenCalledOnce();
+      expect(mocks.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call play maker method when called.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
-      expect(mocks.gamePlaysMakerService.makeGamePlay).toHaveBeenCalledOnce();
+      expect(mocks.gamePlaysMakerService.makeGamePlay).toHaveBeenCalledExactlyOnceWith(play, game, []);
     });
 
     it("should throw an error when game not found by update repository method.", async() => {

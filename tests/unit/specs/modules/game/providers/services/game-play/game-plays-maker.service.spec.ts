@@ -119,7 +119,7 @@ describe("Game Plays Maker Service", () => {
 
       const gamePlaysMakerServiceMockKeys = Object.keys(localMocks.gamePlaysMakerService);
       for (const gamePlaysMakerServiceMockKey of gamePlaysMakerServiceMockKeys) {
-        expect(localMocks.gamePlaysMakerService[gamePlaysMakerServiceMockKey]).not.toHaveBeenCalledOnce();
+        expect(localMocks.gamePlaysMakerService[gamePlaysMakerServiceMockKey]).not.toHaveBeenCalled();
       }
     });
 
@@ -139,7 +139,7 @@ describe("Game Plays Maker Service", () => {
 
       const gamePlaysMakerServiceMockKeys = Object.keys(localMocks.gamePlaysMakerService);
       for (const gamePlaysMakerServiceMockKey of gamePlaysMakerServiceMockKeys) {
-        expect(localMocks.gamePlaysMakerService[gamePlaysMakerServiceMockKey]).not.toHaveBeenCalledOnce();
+        expect(localMocks.gamePlaysMakerService[gamePlaysMakerServiceMockKey]).not.toHaveBeenCalled();
       }
     });
 
@@ -157,8 +157,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
       
-      expect(localMocks.gamePlaysMakerService.werewolvesEat).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.werewolvesEat).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.werewolvesEat).toHaveBeenCalledExactlyOnceWith(play, game, gameHistoryRecords);
     });
 
     it("should call bigBadWolfEats method when it's big bad wolf's turn.", () => {
@@ -167,8 +166,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.bigBadWolfEats).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.bigBadWolfEats).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.bigBadWolfEats).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call whiteWerewolfEats method when it's white werewolf's turn.", () => {
@@ -177,8 +175,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.whiteWerewolfEats).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.whiteWerewolfEats).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.whiteWerewolfEats).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call seerLooks method when it's seer's turn.", () => {
@@ -187,8 +184,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.seerLooks).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.seerLooks).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.seerLooks).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call cupidCharms method when it's cupid's turn.", () => {
@@ -197,8 +193,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.cupidCharms).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.cupidCharms).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.cupidCharms).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call piedPiperCharms method when it's pied piper's turn.", () => {
@@ -207,8 +202,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.piedPiperCharms).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.piedPiperCharms).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.piedPiperCharms).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call witchUsesPotions method when it's witch's turn.", () => {
@@ -217,8 +211,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.witchUsesPotions).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.witchUsesPotions).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.witchUsesPotions).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call hunterShoots method when it's hunter's turn.", () => {
@@ -227,8 +220,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.hunterShoots).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.hunterShoots).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.hunterShoots).toHaveBeenCalledExactlyOnceWith(play, game, gameHistoryRecords);
     });
 
     it("should call guardProtects method when it's guard's turn.", () => {
@@ -237,8 +229,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.guardProtects).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.guardProtects).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.guardProtects).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call foxSniffs method when it's fox's turn.", () => {
@@ -247,8 +238,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.foxSniffs).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.foxSniffs).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.foxSniffs).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call wildChildChoosesModel method when it's wild child's turn.", () => {
@@ -257,8 +247,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.wildChildChoosesModel).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.wildChildChoosesModel).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.wildChildChoosesModel).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call dogWolfChoosesSide method when it's dog wolf's turn.", () => {
@@ -267,8 +256,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.dogWolfChoosesSide).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.dogWolfChoosesSide).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.dogWolfChoosesSide).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call scapegoatBansVoting method when it's scapegoat's turn.", () => {
@@ -277,8 +265,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.scapegoatBansVoting).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.scapegoatBansVoting).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.scapegoatBansVoting).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call thiefChoosesCard method when it's thief's turn.", () => {
@@ -287,8 +274,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.thiefChoosesCard).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.thiefChoosesCard).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.thiefChoosesCard).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call allPlay method when it's all's turn.", () => {
@@ -297,8 +283,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.allPlay).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.allPlay).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.allPlay).toHaveBeenCalledExactlyOnceWith(play, game, gameHistoryRecords);
     });
 
     it("should call ravenMarks method when it's raven's turn.", () => {
@@ -307,8 +292,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.ravenMarks).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.ravenMarks).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.ravenMarks).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call sheriffPlays method when it's sheriff's turn.", () => {
@@ -317,8 +301,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker.makeGamePlay(play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.sheriffPlays).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.sheriffPlays).toHaveBeenCalledWith(play, game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.sheriffPlays).toHaveBeenCalledExactlyOnceWith(play, game, gameHistoryRecords);
     });
   });
 
@@ -336,8 +319,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ upcomingPlays: [createFakeGamePlaySheriffDelegates()] });
       services.gamePlaysMaker["sheriffSettlesVotes"](play, game, []);
 
-      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledWith(targetedPlayer._id, game, createFakePlayerVoteBySheriffDeath(), []);
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(targetedPlayer._id, game, createFakePlayerVoteBySheriffDeath(), []);
     });
   });
 
@@ -403,8 +385,7 @@ describe("Game Plays Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       services.gamePlaysMaker["sheriffPlays"](play, game, []);
 
-      expect(localMocks.gamePlaysMakerService.sheriffDelegates).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.sheriffDelegates).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.sheriffDelegates).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call sheriffSettlesVotes method when upcoming play is sheriff settling vote.", () => {
@@ -412,8 +393,7 @@ describe("Game Plays Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       services.gamePlaysMaker["sheriffPlays"](play, game, []);
 
-      expect(localMocks.gamePlaysMakerService.sheriffSettlesVotes).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.sheriffSettlesVotes).toHaveBeenCalledWith(play, game, []);
+      expect(localMocks.gamePlaysMakerService.sheriffSettlesVotes).toHaveBeenCalledExactlyOnceWith(play, game, []);
     });
   });
 
@@ -691,7 +671,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
 
-      expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalled();
     });
 
     it("should not kill scapegoat when he's dead.", () => {
@@ -705,7 +685,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
 
-      expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalled();
     });
 
     it("should not kill scapegoat when he's powerless.", () => {
@@ -719,7 +699,7 @@ describe("Game Plays Maker Service", () => {
       const gameHistoryRecords: GameHistoryRecord[] = [];
       services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
 
-      expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalled();
     });
 
     it("should kill scapegoat when he's in the game and alive.", () => {
@@ -734,8 +714,7 @@ describe("Game Plays Maker Service", () => {
       const playerDeath = createFakePlayerVoteScapegoatedByAllDeath();
       services.gamePlaysMaker["handleTieInVotes"](game, gameHistoryRecords);
 
-      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledWith(players[0]._id, game, playerDeath, gameHistoryRecords);
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[0]._id, game, playerDeath, gameHistoryRecords);
     });
 
     it("should not prepend sheriff delegation game play when sheriff is not in the game.", () => {
@@ -898,8 +877,7 @@ describe("Game Plays Maker Service", () => {
       localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
       services.gamePlaysMaker["allVote"](play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledWith(game, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(game, gameHistoryRecords);
     });
 
     it("should call handleTieInVotes method with prepended all vote game play from judge when there are several nominated players and judge requested it.", () => {
@@ -924,8 +902,7 @@ describe("Game Plays Maker Service", () => {
       localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
       services.gamePlaysMaker["allVote"](play, game, gameHistoryRecords);
 
-      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledWith(expectedGame, gameHistoryRecords);
+      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(expectedGame, gameHistoryRecords);
     });
 
     it("should call killOrRevealPlayer method when there is one nominated player.", () => {
@@ -947,8 +924,7 @@ describe("Game Plays Maker Service", () => {
       localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
       services.gamePlaysMaker["allVote"](play, game, gameHistoryRecords);
 
-      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledWith(players[1]._id, game, playerVoteByAllDeath, gameHistoryRecords);
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[1]._id, game, playerVoteByAllDeath, gameHistoryRecords);
     });
   });
   
@@ -1058,8 +1034,7 @@ describe("Game Plays Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       services.gamePlaysMaker["allPlay"](play, game, []);
 
-      expect(localMocks.gamePlaysMakerService.allElectSheriff).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.allElectSheriff).toHaveBeenCalledWith(play, game);
+      expect(localMocks.gamePlaysMakerService.allElectSheriff).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call allVote method when upcoming play is sheriff settling vote.", () => {
@@ -1067,8 +1042,7 @@ describe("Game Plays Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       services.gamePlaysMaker["allPlay"](play, game, []);
 
-      expect(localMocks.gamePlaysMakerService.allVote).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlaysMakerService.allVote).toHaveBeenCalledWith(play, game, []);
+      expect(localMocks.gamePlaysMakerService.allVote).toHaveBeenCalledExactlyOnceWith(play, game, []);
     });
   });
 
@@ -1479,8 +1453,7 @@ describe("Game Plays Maker Service", () => {
       const playerDeath = createFakePlayerShotByHunterDeath();
       services.gamePlaysMaker["hunterShoots"](play, game, []);
 
-      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledWith(players[1]._id, game, playerDeath, []);
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[1]._id, game, playerDeath, []);
     });
   });
 
