@@ -1,16 +1,14 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 import { ROLE_SIDES } from "../../../../role/enums/role.enum";
 import { gameHistoryRecordPlayApiProperties, gameHistoryRecordPlayFieldsSpecs } from "../../../constants/game-history-record/game-history-record-play/game-history-record-play.constant";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-record.enum";
 import { GAME_PLAY_ACTIONS } from "../../../enums/game-play.enum";
 import { GameAdditionalCardSchema, GameAdditionalCard } from "../../game-additional-card/game-additional-card.schema";
 import { GameHistoryRecordPlaySource, GameHistoryRecordPlaySourceSchema } from "./game-history-record-play-source.schema";
-import { GameHistoryRecordPlayTargetSchema } from "./game-history-record-play-target.schema";
-import type { GameHistoryRecordPlayTarget } from "./game-history-record-play-target.schema";
-import { GameHistoryRecordPlayVoteSchema } from "./game-history-record-play-vote.schema";
-import type { GameHistoryRecordPlayVote } from "./game-history-record-play-vote.schema";
+import { GameHistoryRecordPlayTargetSchema, GameHistoryRecordPlayTarget } from "./game-history-record-play-target.schema";
+import { GameHistoryRecordPlayVoteSchema, GameHistoryRecordPlayVote } from "./game-history-record-play-vote.schema";
 
 @Schema({
   versionKey: false,
@@ -31,6 +29,7 @@ class GameHistoryRecordPlay {
     required: gameHistoryRecordPlayFieldsSpecs.source.required,
     type: GameHistoryRecordPlaySourceSchema,
   })
+  @Type(() => GameHistoryRecordPlaySource)
   @Expose()
   public source: GameHistoryRecordPlaySource;
 
@@ -40,6 +39,7 @@ class GameHistoryRecordPlay {
     type: [GameHistoryRecordPlayTargetSchema],
     default: undefined,
   })
+  @Type(() => GameHistoryRecordPlayTarget)
   @Expose()
   public targets?: GameHistoryRecordPlayTarget[];
 
@@ -49,6 +49,7 @@ class GameHistoryRecordPlay {
     type: [GameHistoryRecordPlayVoteSchema],
     default: undefined,
   })
+  @Type(() => GameHistoryRecordPlayVote)
   @Expose()
   public votes?: GameHistoryRecordPlayVote[];
 
@@ -70,6 +71,7 @@ class GameHistoryRecordPlay {
     required: gameHistoryRecordPlayFieldsSpecs.chosenCard.required,
     type: GameAdditionalCardSchema,
   })
+  @Type(() => GameAdditionalCard)
   @Expose()
   public chosenCard?: GameAdditionalCard;
 

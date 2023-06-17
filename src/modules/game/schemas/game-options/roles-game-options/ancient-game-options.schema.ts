@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/ancient-game-options.constant";
 
 @Schema({
@@ -14,10 +15,12 @@ class AncientGameOptions {
     min: ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.minimum,
     max: ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.maximum,
   })
+  @Expose()
   public livesCountAgainstWerewolves: number;
 
   @ApiProperty(ancientGameOptionsApiProperties.doesTakeHisRevenge)
   @Prop({ default: ancientGameOptionsFieldsSpecs.doesTakeHisRevenge.default })
+  @Expose()
   public doesTakeHisRevenge: boolean;
 }
 

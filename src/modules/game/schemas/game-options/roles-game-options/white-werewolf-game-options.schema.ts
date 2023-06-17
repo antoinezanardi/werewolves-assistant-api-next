@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 import { whiteWerewolfGameOptionsApiProperties, whiteWerewolfGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/white-werewolf-game-options.constant";
 
 @Schema({
@@ -14,6 +15,7 @@ class WhiteWerewolfGameOptions {
     min: whiteWerewolfGameOptionsFieldsSpecs.wakingUpInterval.minimum,
     max: whiteWerewolfGameOptionsFieldsSpecs.wakingUpInterval.maximum,
   })
+  @Expose()
   public wakingUpInterval: number;
 }
 

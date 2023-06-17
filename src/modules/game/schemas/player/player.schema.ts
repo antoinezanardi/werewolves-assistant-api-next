@@ -67,6 +67,7 @@ class Player {
 
   @ApiProperty(playerApiProperties.death)
   @Prop({ type: PlayerDeathSchema })
+  @Type(() => PlayerDeath)
   @Expose()
   public death?: PlayerDeath;
 }
