@@ -95,8 +95,8 @@ describe("Player Killer Service", () => {
       mocks.playerKillerService.doesPlayerRoleMustBeRevealed.mockReturnValue(false);
 
       expect(services.playerKiller.killOrRevealPlayer(players[0]._id, game, death, [])).toStrictEqual<Game>(game);
-      expect(mocks.playerKillerService.killPlayer).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.revealPlayerRole).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.killPlayer).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.revealPlayerRole).not.toHaveBeenCalled();
     });
 
     it("should call kill method when player is killable.", () => {
@@ -113,8 +113,8 @@ describe("Player Killer Service", () => {
       mocks.playerKillerService.doesPlayerRoleMustBeRevealed.mockReturnValue(true);
 
       services.playerKiller.killOrRevealPlayer(players[0]._id, game, death, []);
-      expect(mocks.playerKillerService.killPlayer).toHaveBeenCalledOnceWith(players[0], game, death);
-      expect(mocks.playerKillerService.revealPlayerRole).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.killPlayer).toHaveBeenCalledExactlyOnceWith(players[0], game, death);
+      expect(mocks.playerKillerService.revealPlayerRole).not.toHaveBeenCalled();
     });
 
     it("should call reveal role method when player role must be revealed.", () => {
@@ -131,8 +131,8 @@ describe("Player Killer Service", () => {
       mocks.playerKillerService.doesPlayerRoleMustBeRevealed.mockReturnValue(true);
 
       services.playerKiller.killOrRevealPlayer(players[0]._id, game, death, []);
-      expect(mocks.playerKillerService.killPlayer).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.revealPlayerRole).toHaveBeenCalledOnceWith(players[0], game);
+      expect(mocks.playerKillerService.killPlayer).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.revealPlayerRole).toHaveBeenCalledExactlyOnceWith(players[0], game);
     });
   });
 
@@ -220,7 +220,7 @@ describe("Player Killer Service", () => {
       mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException = jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerUnexpectedException").mockReturnValue(exception);
 
       expect(() => services.playerKiller["revealPlayerRole"](unknownPlayer, game)).toThrow(exception);
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledOnceWith("revealPlayerRole", interpolations);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("revealPlayerRole", interpolations);
     });
 
     it("should reveal player role when called.", () => {
@@ -449,7 +449,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame();
       services.playerKiller["isPlayerKillable"](player, game, PLAYER_DEATH_CAUSES.VOTE, []);
 
-      expect(canPlayerBeEatenMock).not.toHaveBeenCalledOnce();
+      expect(canPlayerBeEatenMock).not.toHaveBeenCalled();
     });
 
     it("should call is idiot killable when player is an idiot.", () => {
@@ -467,7 +467,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame();
       services.playerKiller["isPlayerKillable"](player, game, PLAYER_DEATH_CAUSES.VOTE, []);
 
-      expect(isIdiotKillableMock).not.toHaveBeenCalledOnce();
+      expect(isIdiotKillableMock).not.toHaveBeenCalled();
     });
 
     it("should call is ancient killable when player is an ancient.", () => {
@@ -485,7 +485,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame();
       services.playerKiller["isPlayerKillable"](player, game, PLAYER_DEATH_CAUSES.VOTE, []);
 
-      expect(isAncientKillableMock).not.toHaveBeenCalledOnce();
+      expect(isAncientKillableMock).not.toHaveBeenCalled();
     });
 
     it("should return true when there are no contraindications.", () => {
@@ -698,10 +698,10 @@ describe("Player Killer Service", () => {
       ];
       const game = createFakeGame({ players });
       services.playerKiller["applyPlayerAttributesDeathOutcomes"](game.players[0], game);
-      expect(mocks.playerKillerService.applySheriffPlayerDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyInLovePlayerDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyWorshipedPlayerDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.gameHelper.getPlayerWithIdOrThrow).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.applySheriffPlayerDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyInLovePlayerDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyWorshipedPlayerDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.gameHelper.getPlayerWithIdOrThrow).not.toHaveBeenCalled();
     });
 
     it("should call all methods when player have all attributes.", () => {
@@ -722,7 +722,7 @@ describe("Player Killer Service", () => {
       mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException.mockReturnValue(exception);
       services.playerKiller["applyPlayerAttributesDeathOutcomes"](game.players[2], game);
 
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledOnceWith("applyPlayerAttributesDeathOutcomes", interpolations);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyPlayerAttributesDeathOutcomes", interpolations);
       expect(mocks.playerKillerService.applySheriffPlayerDeathOutcomes).toHaveBeenCalledWith(game.players[2], game);
       expect(mocks.playerKillerService.applyInLovePlayerDeathOutcomes).toHaveBeenCalledWith(game.players[2], game);
       expect(mocks.playerKillerService.applyWorshipedPlayerDeathOutcomes).toHaveBeenCalledWith(game.players[2], game);
@@ -967,7 +967,7 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerDeathPotionByWitchDeath();
 
       expect(services.playerKiller["applyAncientDeathOutcomes"](players[0], game, death)).toStrictEqual<Game>(game);
-      expect(mocks.playerKillerService.killPlayer).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.killPlayer).not.toHaveBeenCalled();
     });
 
     it("should return game with killed idiot when idiot was revealed before.", () => {
@@ -1052,10 +1052,10 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerDeathPotionByWitchDeath();
 
       expect(services.playerKiller["applyPlayerRoleDeathOutcomes"](players[0], game, death)).toStrictEqual<Game>(game);
-      expect(mocks.playerKillerService.applyHunterDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyAncientDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.applyHunterDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyAncientDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).not.toHaveBeenCalled();
     });
 
     it("should call killed hunter outcomes method when killed player is hunter.", () => {
@@ -1069,10 +1069,10 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerDeathPotionByWitchDeath();
       services.playerKiller["applyPlayerRoleDeathOutcomes"](players[0], game, death);
 
-      expect(mocks.playerKillerService.applyHunterDeathOutcomes).toHaveBeenCalledOnceWith(players[0], game);
-      expect(mocks.playerKillerService.applyAncientDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.applyHunterDeathOutcomes).toHaveBeenCalledExactlyOnceWith(players[0], game);
+      expect(mocks.playerKillerService.applyAncientDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).not.toHaveBeenCalled();
     });
 
     it("should call killed ancient outcomes method when killed player is ancient.", () => {
@@ -1085,10 +1085,10 @@ describe("Player Killer Service", () => {
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
       services.playerKiller["applyPlayerRoleDeathOutcomes"](players[0], game, death);
-      expect(mocks.playerKillerService.applyHunterDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyAncientDeathOutcomes).toHaveBeenCalledOnceWith(players[0], game, death);
-      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.applyAncientDeathOutcomes).toHaveBeenCalledExactlyOnceWith(players[0], game, death);
+      expect(mocks.playerKillerService.applyHunterDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).not.toHaveBeenCalled();
     });
 
     it("should call killed scapegoat outcomes method when killed player is scapegoat.", () => {
@@ -1102,10 +1102,10 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerDeathPotionByWitchDeath();
       services.playerKiller["applyPlayerRoleDeathOutcomes"](players[0], game, death);
 
-      expect(mocks.playerKillerService.applyHunterDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyAncientDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).toHaveBeenCalledOnceWith(players[0], game, death);
-      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).not.toHaveBeenCalledOnce();
+      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).toHaveBeenCalledExactlyOnceWith(players[0], game, death);
+      expect(mocks.playerKillerService.applyHunterDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyAncientDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).not.toHaveBeenCalled();
     });
 
     it("should call killed rusty sword knight outcomes method when killed player is rusty sword knight.", () => {
@@ -1119,10 +1119,10 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerDeathPotionByWitchDeath();
       services.playerKiller["applyPlayerRoleDeathOutcomes"](players[0], game, death);
 
-      expect(mocks.playerKillerService.applyHunterDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyAncientDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).not.toHaveBeenCalledOnce();
-      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).toHaveBeenCalledOnceWith(players[0], game, death);
+      expect(mocks.playerKillerService.applyRustySwordKnightDeathOutcomes).toHaveBeenCalledExactlyOnceWith(players[0], game, death);
+      expect(mocks.playerKillerService.applyHunterDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyAncientDeathOutcomes).not.toHaveBeenCalled();
+      expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).not.toHaveBeenCalled();
     });
   });
 
@@ -1144,10 +1144,10 @@ describe("Player Killer Service", () => {
       const applyPlayerAttributesDeathOutcomesMock = jest.spyOn(services.playerKiller as unknown as { applyPlayerAttributesDeathOutcomes }, "applyPlayerAttributesDeathOutcomes").mockImplementation();
       services.playerKiller["applyPlayerDeathOutcomes"](players[0], game, death);
 
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledOnceWith("applyPlayerDeathOutcomes", { gameId: game._id, playerId: players[0]._id });
-      expect(applyPlayerRoleDeathOutcomesMock).toHaveBeenCalledOnceWith(players[0], game, death);
-      expect(mocks.gameHelper.getPlayerWithIdOrThrow).toHaveBeenCalledOnceWith(players[0]._id, game, exception);
-      expect(applyPlayerAttributesDeathOutcomesMock).toHaveBeenCalledOnceWith(players[0], game);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyPlayerDeathOutcomes", { gameId: game._id, playerId: players[0]._id });
+      expect(applyPlayerRoleDeathOutcomesMock).toHaveBeenCalledExactlyOnceWith(players[0], game, death);
+      expect(mocks.gameHelper.getPlayerWithIdOrThrow).toHaveBeenCalledExactlyOnceWith(players[0]._id, game, exception);
+      expect(applyPlayerAttributesDeathOutcomesMock).toHaveBeenCalledExactlyOnceWith(players[0], game);
     });
   });
 
@@ -1170,10 +1170,10 @@ describe("Player Killer Service", () => {
       const applyPlayerDeathOutcomesMock = jest.spyOn(services.playerKiller as unknown as { applyPlayerDeathOutcomes }, "applyPlayerDeathOutcomes").mockReturnValue(game);
       services.playerKiller["killPlayer"](players[0], game, death);
 
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledOnceWith("killPlayer", { gameId: game._id, playerId: players[0]._id });
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("killPlayer", { gameId: game._id, playerId: players[0]._id });
       expect(updatePlayerInGameMock).toHaveBeenNthCalledWith(1, players[0]._id, expectedKilledPlayer, game);
       expect(mocks.gameHelper.getPlayerWithIdOrThrow).toHaveBeenNthCalledWith(1, expectedKilledPlayer._id, game, exception);
-      expect(applyPlayerDeathOutcomesMock).toHaveBeenCalledOnceWith(expectedKilledPlayer, game, death);
+      expect(applyPlayerDeathOutcomesMock).toHaveBeenCalledExactlyOnceWith(expectedKilledPlayer, game, death);
       expect(mocks.gameHelper.getPlayerWithIdOrThrow).toHaveBeenNthCalledWith(2, expectedKilledPlayer._id, game, exception);
       expect(updatePlayerInGameMock).toHaveBeenNthCalledWith(2, players[0]._id, { attributes: [] }, game);
     });
