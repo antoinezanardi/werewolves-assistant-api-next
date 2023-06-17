@@ -58,6 +58,10 @@ function areAllPlayersDead(players: Player[]): boolean {
   return players.length > 0 && players.every(({ isAlive }) => !isAlive);
 }
 
+function getPlayerWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player | undefined {
+  return cloneDeep(players.find(player => doesPlayerHaveAttribute(player, attribute)));
+}
+
 function getPlayersWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player[] {
   return cloneDeep(players.filter(player => doesPlayerHaveAttribute(player, attribute)));
 }
@@ -124,6 +128,20 @@ function getUpcomingGamePlaySource(upcomingActions: GamePlay[]): GameSource | un
   return upcomingGamePlay?.source;
 }
 
+function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Player[] {
+  const cantFindPlayerException = createCantFindPlayerUnexpectedException("getFoxSniffedTargets", { gameId: game._id, playerId: sniffedTargetId });
+  const sniffedTarget = getPlayerWithIdOrThrow(sniffedTargetId, game, cantFindPlayerException);
+  const leftAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "left" });
+  const rightAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "right" });
+  const sniffedTargets = [leftAliveNeighbor, sniffedTarget, rightAliveNeighbor].filter((player): player is Player => !!player);
+  return sniffedTargets.reduce<Player[]>((acc, target) => {
+    if (!acc.some(uniqueTarget => uniqueTarget._id.toString() === target._id.toString())) {
+      return [...acc, target];
+    }
+    return acc;
+  }, []);
+}
+
 function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: GetNearestPlayerOptions): Player | undefined {
   const alivePlayers = getAlivePlayers(game.players);
   alivePlayers.sort((a, b) => a.position - b.position);
@@ -158,6 +176,7 @@ export {
   areAllWerewolvesAlive,
   areAllVillagersAlive,
   areAllPlayersDead,
+  getPlayerWithAttribute,
   getPlayersWithAttribute,
   getAlivePlayers,
   getAliveVillagerSidedPlayers,
@@ -171,5 +190,6 @@ export {
   getUpcomingGamePlay,
   getUpcomingGamePlayAction,
   getUpcomingGamePlaySource,
+  getFoxSniffedPlayers,
   getNearestAliveNeighbor,
 };

@@ -5,8 +5,8 @@ import { PlayerSide } from "../../../../../src/modules/game/schemas/player/playe
 import { Player } from "../../../../../src/modules/game/schemas/player/player.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
 import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { createObjectIdFromString } from "../../../../helpers/mongoose/mongoose.helper";
 import { bulkCreate } from "../../../shared/bulk-create.factory";
+import { createFakeObjectId } from "../../../shared/mongoose/mongoose.factory";
 import { createFakePlayerDeath } from "./player-death/player-death.schema.factory";
 
 function createFakePlayerSide(playerSide: Partial<PlayerSide> = {}, override: object = {}): PlayerSide {
@@ -28,7 +28,7 @@ function createFakePlayerRole(playerRole: Partial<PlayerRole> = {}, override: ob
 
 function createFakePlayer(player: Partial<Player> = {}, override: object = {}): Player {
   return plainToInstance(Player, {
-    _id: player._id ?? createObjectIdFromString(faker.database.mongodbObjectId()),
+    _id: player._id ?? createFakeObjectId(),
     name: player.name ?? faker.person.firstName(),
     role: createFakePlayerRole(player.role, (override as Player).role),
     side: createFakePlayerSide(player.side, (override as Player).side),

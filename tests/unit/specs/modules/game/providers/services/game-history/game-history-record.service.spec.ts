@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
@@ -15,48 +14,71 @@ import { createFakeGameHistoryRecordPlay } from "../../../../../../../factories/
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
-import { createObjectIdFromString } from "../../../../../../../helpers/mongoose/mongoose.helper";
+import { createFakeObjectId } from "../../../../../../../factories/shared/mongoose/mongoose.factory";
 
 jest.mock("../../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game History Record Service", () => {
-  let service: GameHistoryRecordService;
-  let repository: GameHistoryRecordRepository;
-
-  const gameHistoryRecordRepositoryMock = {
-    find: jest.fn(),
-    create: jest.fn(),
+  let mocks: {
+    gameHistoryRecordRepository: {
+      find: jest.SpyInstance;
+      create: jest.SpyInstance;
+    };
+    gameRepository: { findOne: jest.SpyInstance };
   };
-  
-  const gameRepositoryMock = { findOne: jest.fn() };
+  let services: { gameHistoryRecord: GameHistoryRecordService };
+  let repositories: { gameHistoryRecord: GameHistoryRecordRepository };
 
   beforeEach(async() => {
+    mocks = {
+      gameHistoryRecordRepository: {
+        find: jest.fn(),
+        create: jest.fn(),
+      },
+      gameRepository: { findOne: jest.fn() },
+    };
+    
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
           provide: GameHistoryRecordRepository,
-          useValue: gameHistoryRecordRepositoryMock,
+          useValue: mocks.gameHistoryRecordRepository,
         },
         {
           provide: GameRepository,
-          useValue: gameRepositoryMock,
+          useValue: mocks.gameRepository,
         },
         GameHistoryRecordService,
       ],
     }).compile();
-    service = module.get<GameHistoryRecordService>(GameHistoryRecordService);
-    repository = module.get<GameHistoryRecordRepository>(GameHistoryRecordRepository);
+
+    services = { gameHistoryRecord: module.get<GameHistoryRecordService>(GameHistoryRecordService) };
+    repositories = { gameHistoryRecord: module.get<GameHistoryRecordRepository>(GameHistoryRecordRepository) };
   });
 
   describe("getGameHistoryRecordsByGameId", () => {
     it("should get all game history records when called with specific id.", async() => {
-      const gameId = createObjectIdFromString(faker.database.mongodbObjectId());
-      await service.getGameHistoryRecordsByGameId(gameId);
-      expect(repository.find).toHaveBeenCalledWith({ gameId });
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryRecordsByGameId(gameId);
+
+      expect(repositories.gameHistoryRecord.find).toHaveBeenCalledWith({ gameId });
     });
   });
 
-  describe("checkGameHistoryRecordToInsertPlayData", () => {
+  describe("createGameHistoryRecord", () => {
+    it("should create game history record when called with valid data.", async() => {
+      jest.spyOn(services.gameHistoryRecord as unknown as { validateGameHistoryRecordToInsertData }, "validateGameHistoryRecordToInsertData").mockImplementation();
+      const validPlay = createFakeGameHistoryRecordToInsert({
+        gameId: createFakeObjectId(),
+        play: createFakeGameHistoryRecordPlay(),
+      });
+      await services.gameHistoryRecord.createGameHistoryRecord(validPlay);
+
+      expect(repositories.gameHistoryRecord.create).toHaveBeenCalledWith(validPlay);
+    });
+  });
+
+  describe("validateGameHistoryRecordToInsertPlayData", () => {
     const fakeGameAdditionalCards = bulkCreateFakeGameAdditionalCards(3);
     const fakeGame = createFakeGame({ players: bulkCreateFakePlayers(4), additionalCards: fakeGameAdditionalCards });
     const fakePlayer = createFakePlayer();
@@ -113,7 +135,7 @@ describe("Game History Record Service", () => {
         errorParameters: [API_RESOURCES.GAME_ADDITIONAL_CARDS, fakeCard._id.toString(), "Game Play - Chosen card is not in the game additional cards"],
       },
     ])("should throw resource not found error when $test [#$#].", ({ play, errorParameters }) => {
-      expect(() => service.checkGameHistoryRecordToInsertPlayData(play, fakeGame)).toThrow(ResourceNotFoundException);
+      expect(() => services.gameHistoryRecord["validateGameHistoryRecordToInsertPlayData"](play, fakeGame)).toThrow(ResourceNotFoundException);
       expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
     });
 
@@ -127,19 +149,20 @@ describe("Game History Record Service", () => {
         votes: [{ target: fakeGame.players[1], source: fakeGame.players[0] }],
         chosenCard: fakeGameAdditionalCards[1],
       });
-      expect(() => service.checkGameHistoryRecordToInsertPlayData(validPlay, fakeGame)).not.toThrow();
+
+      expect(() => services.gameHistoryRecord["validateGameHistoryRecordToInsertPlayData"](validPlay, fakeGame)).not.toThrow();
     });
   });
 
-  describe("checkGameHistoryRecordToInsertData", () => {
-    const existingId = createObjectIdFromString(faker.database.mongodbObjectId());
+  describe("validateGameHistoryRecordToInsertData", () => {
+    const existingId = createFakeObjectId();
     const existingGame = createFakeGame();
     const fakePlayer = createFakePlayer();
-    const unknownId = createObjectIdFromString(faker.database.mongodbObjectId());
+    const unknownId = createFakeObjectId();
 
     beforeEach(() => {
-      when(gameRepositoryMock.findOne).calledWith({ _id: unknownId.toJSON() }).mockResolvedValue(null);
-      when(gameRepositoryMock.findOne).calledWith({ _id: existingId.toJSON() }).mockResolvedValue(existingGame);
+      when(mocks.gameRepository.findOne).calledWith({ _id: unknownId.toJSON() }).mockResolvedValue(null);
+      when(mocks.gameRepository.findOne).calledWith({ _id: existingId.toJSON() }).mockResolvedValue(existingGame);
     });
 
     it.each<{ gameHistoryRecord: GameHistoryRecordToInsert; test: string; errorParameters: [API_RESOURCES, string, string] }>([
@@ -159,7 +182,7 @@ describe("Game History Record Service", () => {
         errorParameters: [API_RESOURCES.PLAYERS, fakePlayer._id.toString(), "Game Play - Player in `deadPlayers` is not in the game players"],
       },
     ])("should throw resource not found error when $test [#$#].", async({ gameHistoryRecord, errorParameters }) => {
-      await expect(service.checkGameHistoryRecordToInsertData(gameHistoryRecord)).toReject();
+      await expect(services.gameHistoryRecord["validateGameHistoryRecordToInsertData"](gameHistoryRecord)).toReject();
       expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
     });
 
@@ -170,19 +193,8 @@ describe("Game History Record Service", () => {
         revealedPlayers: existingGame.players,
         deadPlayers: existingGame.players,
       });
-      await expect(service.checkGameHistoryRecordToInsertData(validPlay)).resolves.not.toThrow();
-    });
-  });
 
-  describe("createGameHistoryRecord", () => {
-    it("should create game history record when called with valid data.", async() => {
-      jest.spyOn(service, "checkGameHistoryRecordToInsertData").mockImplementation();
-      const validPlay = createFakeGameHistoryRecordToInsert({
-        gameId: createObjectIdFromString(faker.database.mongodbObjectId()),
-        play: createFakeGameHistoryRecordPlay(),
-      });
-      await service.createGameHistoryRecord(validPlay);
-      expect(repository.create).toHaveBeenCalledWith(validPlay);
+      await expect(services.gameHistoryRecord["validateGameHistoryRecordToInsertData"](validPlay)).resolves.not.toThrow();
     });
   });
 });

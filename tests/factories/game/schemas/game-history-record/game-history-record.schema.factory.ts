@@ -10,8 +10,8 @@ import { GameHistoryRecordPlay } from "../../../../../src/modules/game/schemas/g
 import { GameHistoryRecord } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
 import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { createObjectIdFromString } from "../../../../helpers/mongoose/mongoose.helper";
 import { bulkCreate } from "../../../shared/bulk-create.factory";
+import { createFakeObjectId } from "../../../shared/mongoose/mongoose.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../player/player-attribute/player-attribute.schema.factory";
 import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../player/player-with-role.schema.factory";
 import { createFakePlayer } from "../player/player.schema.factory";
@@ -306,8 +306,8 @@ function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHist
 
 function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecord> = {}, override: object = {}): GameHistoryRecord {
   return plainToInstance(GameHistoryRecord, {
-    _id: gameHistoryRecord._id ?? createObjectIdFromString(faker.database.mongodbObjectId()),
-    gameId: gameHistoryRecord.gameId ?? createObjectIdFromString(faker.database.mongodbObjectId()),
+    _id: gameHistoryRecord._id ?? createFakeObjectId(),
+    gameId: gameHistoryRecord.gameId ?? createFakeObjectId(),
     tick: gameHistoryRecord.tick ?? faker.number.int({ min: 1 }),
     turn: gameHistoryRecord.turn ?? faker.number.int({ min: 1 }),
     phase: gameHistoryRecord.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),

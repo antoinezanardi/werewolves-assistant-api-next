@@ -19,7 +19,7 @@ while true; do
     echo "You must provide a branch name."
     continue
   fi
-  if ! [[ "$FEATURE_NAME" =~ ^[a-z]+(-[a-z]+)*$ ]]; then
+  if ! [[ "$FEATURE_NAME" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
     echo "❌  Your branch name must be in kebab-case."
     continue
   fi

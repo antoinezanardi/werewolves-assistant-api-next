@@ -23,6 +23,7 @@ describe("App Controller", () => {
   describe("GET /", () => {
     it("should return status code 204 when route is called.", async() => {
       const response = await app.inject({ method: "GET", url: "/" });
+
       expect(response.statusCode).toBe(204);
     });
   });

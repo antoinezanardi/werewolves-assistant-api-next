@@ -28,16 +28,18 @@ import { createFakeGameOptionsDto } from "../../../../../factories/game/dto/crea
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeGamePlayAllVote } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
+import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers } from "../../../../../factories/game/schemas/player/player.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
 import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
 import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
 import { initNestApp } from "../../../../helpers/nest-app.helper";
 
 describe("Game Controller", () => {
   let app: NestFastifyApplication;
-  let model: Model<Game>;
+  let models: { game: Model<Game> };
 
   beforeAll(async() => {
     const module: TestingModule = await Test.createTestingModule({
@@ -47,13 +49,13 @@ describe("Game Controller", () => {
       ],
     }).compile();
     app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(fastifyServerDefaultOptions));
-    model = module.get<Model<Game>>(getModelToken(Game.name));
+    models = { game: module.get<Model<Game>>(getModelToken(Game.name)) };
 
     await initNestApp(app);
   });
 
   afterEach(async() => {
-    await model.deleteMany();
+    await models.game.deleteMany();
   });
 
   afterAll(async() => {
@@ -66,16 +68,18 @@ describe("Game Controller", () => {
         method: "GET",
         url: "/games",
       });
+
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game[]>()).toStrictEqual<Game[]>([]);
     });
 
     it("should get 3 games when 3 games were created.", async() => {
-      await model.create(bulkCreateFakeGames(3));
+      await models.game.create(bulkCreateFakeGames(3));
       const response = await app.inject({
         method: "GET",
         url: "/games",
       });
+
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game[]>()).toHaveLength(3);
     });
@@ -151,6 +155,7 @@ describe("Game Controller", () => {
         url: "/games/random-composition",
         query: stringify(query),
       });
+
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
       expect(response.json<BadRequestException>().message).toContainEqual(errorMessage);
     });
@@ -205,8 +210,9 @@ describe("Game Controller", () => {
         url: "/games/random-composition",
         query: stringify(query),
       });
-      expect(response.statusCode).toBe(HttpStatus.OK);
       const players = response.json<CreateGamePlayerDto[]>();
+
+      expect(response.statusCode).toBe(HttpStatus.OK);
       expect(players).toSatisfyAll<CreateGamePlayerDto>(({ role, side }) =>
         role.current !== undefined && role.current === role.original &&
         side.current !== undefined && side.current === side.original);
@@ -219,6 +225,7 @@ describe("Game Controller", () => {
         method: "GET",
         url: "/games/123",
       });
+
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
       expect(response.json<BadRequestException>().message).toBe("Validation failed (Mongo ObjectId is expected)");
     });
@@ -229,17 +236,19 @@ describe("Game Controller", () => {
         method: "GET",
         url: `/games/${unknownId}`,
       });
+
       expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
       expect(response.json<NotFoundException>().message).toBe(`Game with id "${unknownId}" not found`);
     });
 
     it("should get a game when id exists in base.", async() => {
       const game = createFakeGame();
-      await model.create(game);
+      await models.game.create(game);
       const response = await app.inject({
         method: "GET",
         url: `/games/${game._id.toString()}`,
       });
+
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
         ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
@@ -358,6 +367,7 @@ describe("Game Controller", () => {
         url: "/games",
         payload,
       });
+
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
       expect(response.json<BadRequestException>().message).toContainEqual(errorMessage);
     });
@@ -365,12 +375,12 @@ describe("Game Controller", () => {
     it(`should create game when called.`, async() => {
       const payload = createFakeCreateGameDto({
         players: bulkCreateFakeCreateGamePlayerDto(6, [
-          { role: { name: ROLE_NAMES.VILLAGER } },
-          { role: { name: ROLE_NAMES.WEREWOLF } },
-          { role: { name: ROLE_NAMES.VILLAGER_VILLAGER } },
-          { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
-          { role: { name: ROLE_NAMES.CUPID } },
-          { role: { name: ROLE_NAMES.SEER } },
+          { role: { name: ROLE_NAMES.VILLAGER }, name: "Antoine" },
+          { role: { name: ROLE_NAMES.WEREWOLF }, name: "Mathis" },
+          { role: { name: ROLE_NAMES.VILLAGER_VILLAGER }, name: "Virgil" },
+          { role: { name: ROLE_NAMES.WHITE_WEREWOLF }, name: "JB" },
+          { role: { name: ROLE_NAMES.CUPID }, name: "Doudou" },
+          { role: { name: ROLE_NAMES.SEER }, name: "Juju" },
         ]),
       }, { options: undefined });
       const response = await app.inject({
@@ -394,6 +404,7 @@ describe("Game Controller", () => {
         position: index,
         isAlive: true,
       }));
+
       expect(response.statusCode).toBe(HttpStatus.CREATED);
       expect(response.json()).toStrictEqual<Game>({
         _id: expect.any(String) as Types.ObjectId,
@@ -466,6 +477,7 @@ describe("Game Controller", () => {
         url: "/games",
         payload,
       });
+
       expect(response.statusCode).toBe(HttpStatus.CREATED);
       expect(response.json<Game>().options).toStrictEqual<GameOptions>(instanceToPlain(expectedOptions) as GameOptions);
     });
@@ -477,6 +489,7 @@ describe("Game Controller", () => {
         method: "DELETE",
         url: "/games/123",
       });
+
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
       expect(response.json<BadRequestException>().message).toBe("Validation failed (Mongo ObjectId is expected)");
     });
@@ -487,17 +500,19 @@ describe("Game Controller", () => {
         method: "DELETE",
         url: `/games/${unknownId}`,
       });
+
       expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
       expect(response.json<NotFoundException>().message).toBe(`Game with id "${unknownId}" not found`);
     });
 
     it("should get a bad request error when game doesn't have playing status.", async() => {
       const game = createFakeGame({ status: GAME_STATUSES.CANCELED });
-      await model.create(game);
+      await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
         url: `/games/${game._id.toString()}`,
       });
+
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
       expect(response.json<ExceptionResponse>()).toStrictEqual<ExceptionResponse>({
         statusCode: HttpStatus.BAD_REQUEST,
@@ -508,11 +523,12 @@ describe("Game Controller", () => {
 
     it("should update game status to canceled when called.", async() => {
       const game = createFakeGame({ status: GAME_STATUSES.PLAYING });
-      await model.create(game);
+      await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
         url: `/games/${game._id.toString()}`,
       });
+
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
         ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
@@ -529,6 +545,7 @@ describe("Game Controller", () => {
         method: "POST",
         url: `/games/123/play`,
       });
+
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
       expect(response.json<BadRequestException>().message).toBe("Validation failed (Mongo ObjectId is expected)");
     });
@@ -558,6 +575,7 @@ describe("Game Controller", () => {
         url: `/games/${faker.database.mongodbObjectId()}/play`,
         payload,
       });
+
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
       expect(response.json<BadRequestException>().message).toContainEqual(errorMessage);
     });
@@ -568,6 +586,7 @@ describe("Game Controller", () => {
         method: "POST",
         url: `/games/${unknownId}/play`,
       });
+
       expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
       expect(response.json<BadRequestException>().message).toBe(`Game with id "${unknownId}" not found`);
     });
@@ -584,7 +603,7 @@ describe("Game Controller", () => {
         upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
         players,
       });
-      await model.create(game);
+      await models.game.create(game);
       const unknownPlayerId = faker.database.mongodbObjectId();
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: createObjectIdFromString(unknownPlayerId) }] });
       const response = await app.inject({
@@ -592,6 +611,7 @@ describe("Game Controller", () => {
         url: `/games/${game._id.toString()}/play`,
         payload,
       });
+
       expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
       expect(response.json<ExceptionResponse>()).toStrictEqual<ExceptionResponse>({
         statusCode: HttpStatus.NOT_FOUND,
@@ -612,13 +632,14 @@ describe("Game Controller", () => {
         upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
         players,
       });
-      await model.create(game);
+      await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
       const response = await app.inject({
         method: "POST",
         url: `/games/${game._id.toString()}/play`,
         payload,
       });
+
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
       expect(response.json<ExceptionResponse>()).toStrictEqual<ExceptionResponse>({
         statusCode: HttpStatus.BAD_REQUEST,
@@ -639,11 +660,18 @@ describe("Game Controller", () => {
         upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
         players,
       });
-      await model.create(game);
+      await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({
         votes: [
           { sourceId: players[0]._id, targetId: players[1]._id },
           { sourceId: players[1]._id, targetId: players[0]._id },
+        ],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        upcomingPlays: [
+          createFakeGamePlayAllVote(),
+          createFakeGamePlayAllVote(),
         ],
       });
       const response = await app.inject({
@@ -651,9 +679,10 @@ describe("Game Controller", () => {
         url: `/games/${game._id.toString()}/play`,
         payload,
       });
+
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
+        ...instanceToPlain(expectedGame, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -671,16 +700,26 @@ describe("Game Controller", () => {
         upcomingPlays: [{ source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK }],
         players,
       });
-      await model.create(game);
+      await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }),
+          players[1],
+          players[2],
+          players[3],
+        ],
+      });
       const response = await app.inject({
         method: "POST",
         url: `/games/${game._id.toString()}/play`,
         payload,
       });
+
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
+        ...instanceToPlain(expectedGame, { exposeUnsetFields: false }) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });

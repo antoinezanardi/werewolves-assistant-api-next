@@ -7,5 +7,5 @@ export class AppController {
   @Get("/")
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
-  public root(): void {}
+  private root(): void {}
 }

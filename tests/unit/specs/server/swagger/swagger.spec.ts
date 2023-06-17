@@ -5,19 +5,34 @@ import { createSwaggerDocument } from "../../../../../src/server/swagger/swagger
 
 describe("Server Swagger", () => {
   describe("createSwaggerDocument", () => {
-    const env = process.env;
-    let documentBuilderSpy: { setTitle: jest.SpyInstance; setDescription: jest.SpyInstance; setVersion: jest.SpyInstance; build: jest.SpyInstance };
-    let setupMock: jest.SpyInstance;
-    let createDocumentMock: jest.SpyInstance;
-    beforeEach(() => {
-      documentBuilderSpy = {
-        setTitle: jest.spyOn(DocumentBuilder.prototype, "setTitle"),
-        setDescription: jest.spyOn(DocumentBuilder.prototype, "setDescription"),
-        setVersion: jest.spyOn(DocumentBuilder.prototype, "setVersion"),
-        build: jest.spyOn(DocumentBuilder.prototype, "build"),
+    let mocks: {
+      DocumentBuilder: {
+        setTitle: jest.SpyInstance;
+        setDescription: jest.SpyInstance;
+        setVersion: jest.SpyInstance;
+        build: jest.SpyInstance;
       };
-      createDocumentMock = jest.spyOn(SwaggerModule, "createDocument").mockImplementation();
-      setupMock = jest.spyOn(SwaggerModule, "setup").mockImplementation();
+      SwaggerModule: {
+        createDocument: jest.SpyInstance;
+        setup: jest.SpyInstance;
+      };
+    };
+
+    const env = process.env;
+    
+    beforeEach(() => {
+      mocks = {
+        DocumentBuilder: {
+          setTitle: jest.spyOn(DocumentBuilder.prototype, "setTitle"),
+          setDescription: jest.spyOn(DocumentBuilder.prototype, "setDescription"),
+          setVersion: jest.spyOn(DocumentBuilder.prototype, "setVersion"),
+          build: jest.spyOn(DocumentBuilder.prototype, "build"),
+        },
+        SwaggerModule: {
+          createDocument: jest.spyOn(SwaggerModule, "createDocument").mockImplementation(),
+          setup: jest.spyOn(SwaggerModule, "setup").mockImplementation(),
+        },
+      };
       process.env = { ...env };
     });
 
@@ -29,20 +44,22 @@ describe("Server Swagger", () => {
       process.env.npm_package_version = "1.2.3";
       createSwaggerDocument("docs", {} as INestApplication);
       const expectedDescription = "Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.";
-      expect(documentBuilderSpy.setTitle).toHaveBeenCalledWith("Werewolves Assistant API Reference 🐺");
-      expect(documentBuilderSpy.setDescription).toHaveBeenCalledWith(expectedDescription);
-      expect(documentBuilderSpy.setVersion).toHaveBeenCalledWith("1.2.3");
-      expect(documentBuilderSpy.build).toHaveBeenCalledWith();
+
+      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledWith("Werewolves Assistant API Reference 🐺");
+      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledWith(expectedDescription);
+      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledWith("1.2.3");
+      expect(mocks.DocumentBuilder.build).toHaveBeenCalledWith();
     });
 
     it("should call document builder methods when function is called with unknown version.", () => {
       process.env.npm_package_version = undefined;
       createSwaggerDocument("docs", {} as INestApplication);
       const expectedDescription = "Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.";
-      expect(documentBuilderSpy.setTitle).toHaveBeenCalledWith("Werewolves Assistant API Reference 🐺");
-      expect(documentBuilderSpy.setDescription).toHaveBeenCalledWith(expectedDescription);
-      expect(documentBuilderSpy.setVersion).toHaveBeenCalledWith("?");
-      expect(documentBuilderSpy.build).toHaveBeenCalledWith();
+
+      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledWith("Werewolves Assistant API Reference 🐺");
+      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledWith(expectedDescription);
+      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledWith("?");
+      expect(mocks.DocumentBuilder.build).toHaveBeenCalledWith();
     });
 
     it("should call createDocument and setup functions when function is called.", () => {
@@ -54,9 +71,9 @@ describe("Server Swagger", () => {
         customCssUrl: "public/assets/css/custom-swagger.css",
       };
       createSwaggerDocument(path, app as INestApplication);
-      expect(createDocumentMock).toHaveBeenCalledTimes(1);
-      expect(setupMock).toHaveBeenCalledTimes(1);
-      expect(setupMock).toHaveBeenCalledWith(path, app as INestApplication, undefined, options);
+
+      expect(mocks.SwaggerModule.createDocument).toHaveBeenCalledTimes(1);
+      expect(mocks.SwaggerModule.setup).toHaveBeenCalledExactlyOnceWith(path, app as INestApplication, undefined, options);
     });
   });
 });

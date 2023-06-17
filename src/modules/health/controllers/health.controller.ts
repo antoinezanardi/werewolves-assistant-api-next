@@ -18,7 +18,7 @@ export class HealthController {
     description: "The health will be defined against the MongoDB connection instance",
   })
   @HealthCheck()
-  public async check(): Promise<HealthCheckResult> {
+  private async check(): Promise<HealthCheckResult> {
     return this.health.check([async(): Promise<HealthIndicatorResult> => this.mongoose.pingCheck("mongoose")]);
   }
 }

@@ -8,6 +8,7 @@ describe("Resource not found exception type", () => {
     it("should get response without description when called without reason.", () => {
       const id = "123";
       const exception = new ResourceNotFoundException(API_RESOURCES.PLAYERS, id);
+
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 404,
         message: `Player with id "${id}" not found`,
@@ -18,6 +19,7 @@ describe("Resource not found exception type", () => {
     it("should get response with description when called with reason.", () => {
       const id = "123";
       const exception = new ResourceNotFoundException(API_RESOURCES.PLAYERS, id, RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
+
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 404,
         message: `Player with id "${id}" not found`,

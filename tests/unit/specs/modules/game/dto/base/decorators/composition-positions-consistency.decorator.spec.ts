@@ -22,6 +22,7 @@ describe("Composition Positions Consistency Decorator", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
         { role: { name: ROLE_NAMES.VILLAGER } },
       ]);
+
       expect(doesCompositionHaveConsistentPositions([...players, "toto"])).toBe(false);
     });
 
@@ -32,6 +33,7 @@ describe("Composition Positions Consistency Decorator", () => {
         { role: { name: ROLE_NAMES.SEER } },
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
+
       expect(doesCompositionHaveConsistentPositions(players)).toBe(true);
     });
 
@@ -42,6 +44,7 @@ describe("Composition Positions Consistency Decorator", () => {
         { role: { name: ROLE_NAMES.SEER } },
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
+
       expect(doesCompositionHaveConsistentPositions(players)).toBe(false);
     });
 
@@ -52,6 +55,7 @@ describe("Composition Positions Consistency Decorator", () => {
         { role: { name: ROLE_NAMES.SEER }, position: 3 },
         { role: { name: ROLE_NAMES.WEREWOLF }, position: 3 },
       ]);
+
       expect(doesCompositionHaveConsistentPositions(players)).toBe(false);
     });
 
@@ -62,6 +66,7 @@ describe("Composition Positions Consistency Decorator", () => {
         { role: { name: ROLE_NAMES.SEER }, position: 3 },
         { role: { name: ROLE_NAMES.WEREWOLF }, position: 4 },
       ]);
+
       expect(doesCompositionHaveConsistentPositions(players)).toBe(false);
     });
 
@@ -72,6 +77,7 @@ describe("Composition Positions Consistency Decorator", () => {
         { role: { name: ROLE_NAMES.SEER }, position: 2 },
         { role: { name: ROLE_NAMES.WEREWOLF }, position: 666 },
       ]);
+
       expect(doesCompositionHaveConsistentPositions(players)).toBe(false);
     });
 
@@ -82,6 +88,7 @@ describe("Composition Positions Consistency Decorator", () => {
         { role: { name: ROLE_NAMES.SEER }, position: 2 },
         { role: { name: ROLE_NAMES.WEREWOLF }, position: 3 },
       ]);
+
       expect(doesCompositionHaveConsistentPositions(players)).toBe(true);
     });
   });

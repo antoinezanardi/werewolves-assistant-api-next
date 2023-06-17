@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { getModelToken } from "@nestjs/mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
@@ -21,22 +20,23 @@ import { fastifyServerDefaultOptions } from "../../../../../../../src/server/con
 import { bulkCreateFakeGameHistoryRecords, createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
-import { createObjectIdFromString } from "../../../../../../helpers/mongoose/mongoose.helper";
+import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
 
 describe("Game History Record Repository", () => {
   let app: NestFastifyApplication;
-  let model: Model<GameHistoryRecord>;
-  let repository: GameHistoryRecordRepository;
+  let models: { gameHistoryRecord: Model<GameHistoryRecord> };
+  let repositories: { gameHistoryRecord: GameHistoryRecordRepository };
 
   beforeAll(async() => {
     const module: TestingModule = await Test.createTestingModule({ imports: [E2eTestModule, GameModule] }).compile();
     app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(fastifyServerDefaultOptions));
-    repository = app.get<GameHistoryRecordRepository>(GameHistoryRecordRepository);
-    model = module.get<Model<GameHistoryRecord>>(getModelToken(GameHistoryRecord.name));
+
+    repositories = { gameHistoryRecord: app.get<GameHistoryRecordRepository>(GameHistoryRecordRepository) };
+    models = { gameHistoryRecord: module.get<Model<GameHistoryRecord>>(getModelToken(GameHistoryRecord.name)) };
   });
 
   afterEach(async() => {
-    await model.deleteMany();
+    await models.gameHistoryRecord.deleteMany();
   });
 
   afterAll(async() => {
@@ -44,12 +44,12 @@ describe("Game History Record Repository", () => {
   });
 
   async function populate(length: number, gameHistoryRecords: Partial<GameHistoryRecord>[] = []): Promise<void> {
-    await model.insertMany(bulkCreateFakeGameHistoryRecords(length, gameHistoryRecords));
+    await models.gameHistoryRecord.insertMany(bulkCreateFakeGameHistoryRecords(length, gameHistoryRecords));
   }
 
   describe("find", () => {
     it("should get empty array when there is no game history records.", async() => {
-      await expect(repository.find()).resolves.toStrictEqual([]);
+      await expect(repositories.gameHistoryRecord.find()).resolves.toStrictEqual([]);
     });
 
     it("should get 10 game history records when called.", async() => {
@@ -66,11 +66,12 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
         createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
       ]);
-      await expect(repository.find()).resolves.toHaveLength(10);
+
+      await expect(repositories.gameHistoryRecord.find()).resolves.toHaveLength(10);
     });
 
     it("should get 3 game history records when called with a specific gameId.", async() => {
-      const gameId = createObjectIdFromString(faker.database.mongodbObjectId());
+      const gameId = createFakeObjectId();
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
       await populate(5, [
         createFakeGameHistoryRecord({ gameId, play: gameHistoryRecordPlay }),
@@ -79,7 +80,8 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
         createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
       ]);
-      await expect(repository.find({ gameId })).resolves.toHaveLength(3);
+
+      await expect(repositories.gameHistoryRecord.find({ gameId })).resolves.toHaveLength(3);
     });
   });
   
@@ -127,13 +129,15 @@ describe("Game History Record Repository", () => {
       },
     ])("should not create history record when $test [#$#].", async({ toInsert, errorMessage }) => {
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert(toInsert);
-      await expect(repository.create(gameHistoryRecordToInsert)).rejects.toThrow(errorMessage);
+
+      await expect(repositories.gameHistoryRecord.create(gameHistoryRecordToInsert)).rejects.toThrow(errorMessage);
     });
 
     it("should create history record when called.", async() => {
       const gameHistoryRecordPlayToInsert = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlayToInsert });
-      const gameHistoryRecord = await repository.create(gameHistoryRecordToInsert);
+      const gameHistoryRecord = await repositories.gameHistoryRecord.create(gameHistoryRecordToInsert);
+
       expect(JSON.parse(JSON.stringify(gameHistoryRecord))).toStrictEqual<GameHistoryRecord>({
         ...instanceToPlain(gameHistoryRecordToInsert, { exposeUnsetFields: false }) as GameHistoryRecordToInsert,
         _id: expect.any(String) as Types.ObjectId,
