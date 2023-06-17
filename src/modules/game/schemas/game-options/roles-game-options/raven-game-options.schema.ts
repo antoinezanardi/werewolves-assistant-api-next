@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 import { ravenGameOptionsApiProperties, ravenGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/raven-game-options.constant";
 
 @Schema({
@@ -14,6 +15,7 @@ class RavenGameOptions {
     min: ravenGameOptionsFieldsSpecs.markPenalty.minimum,
     max: ravenGameOptionsFieldsSpecs.markPenalty.maximum,
   })
+  @Expose()
   public markPenalty: number;
 }
 

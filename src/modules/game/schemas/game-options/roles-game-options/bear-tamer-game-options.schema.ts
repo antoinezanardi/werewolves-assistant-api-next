@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 import { bearTamerGameOptionsApiProperties, bearTamerGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/bear-tamer-game-options.constant";
 
 @Schema({
@@ -10,6 +11,7 @@ import { bearTamerGameOptionsApiProperties, bearTamerGameOptionsFieldsSpecs } fr
 class BearTamerGameOptions {
   @ApiProperty(bearTamerGameOptionsApiProperties.doesGrowlIfInfected)
   @Prop({ default: bearTamerGameOptionsFieldsSpecs.doesGrowlIfInfected.default })
+  @Expose()
   public doesGrowlIfInfected: boolean;
 }
 

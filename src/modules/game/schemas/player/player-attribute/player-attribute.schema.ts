@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 import { playerAttributeApiProperties, playerAttributeFieldsSpecs } from "../../../constants/player/player-attribute/player-attribute.constant";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../enums/player.enum";
 import { GameSource } from "../../../types/game.type";
@@ -29,6 +29,7 @@ class PlayerAttribute {
 
   @ApiProperty(playerAttributeApiProperties.activeAt)
   @Prop({ type: PlayerAttributeActivationSchema })
+  @Type(() => PlayerAttributeActivation)
   @Expose()
   public activeAt?: PlayerAttributeActivation;
 }

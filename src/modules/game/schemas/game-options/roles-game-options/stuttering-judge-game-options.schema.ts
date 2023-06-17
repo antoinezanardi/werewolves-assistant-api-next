@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 import { stutteringJudgeGameOptionsApiProperties, stutteringJudgeGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/stuttering-judge-game-options.constant";
 
 @Schema({
@@ -14,6 +15,7 @@ class StutteringJudgeGameOptions {
     min: stutteringJudgeGameOptionsFieldsSpecs.voteRequestsCount.minimum,
     max: stutteringJudgeGameOptionsFieldsSpecs.voteRequestsCount.maximum,
   })
+  @Expose()
   public voteRequestsCount: number;
 }
 

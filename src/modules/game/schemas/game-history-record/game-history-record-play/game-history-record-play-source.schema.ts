@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose, Type } from "class-transformer";
 import { doesArrayRespectBounds } from "../../../../../shared/validation/helpers/validation.helper";
 import { gameHistoryRecordPlaySourceApiProperties, gameHistoryRecordPlaySourceFieldsSpecs } from "../../../constants/game-history-record/game-history-record-play/game-history-record-play-source.constant";
 import { GameSource } from "../../../types/game.type";
-import type { Player } from "../../player/player.schema";
-import { PlayerSchema } from "../../player/player.schema";
+import { PlayerSchema, Player } from "../../player/player.schema";
 
 @Schema({
   versionKey: false,
@@ -17,6 +17,7 @@ class GameHistoryRecordPlaySource {
     required: gameHistoryRecordPlaySourceFieldsSpecs.name.required,
     enum: gameHistoryRecordPlaySourceFieldsSpecs.name.enum,
   })
+  @Expose()
   public name: GameSource;
 
   @ApiProperty(gameHistoryRecordPlaySourceApiProperties.players)
@@ -25,6 +26,8 @@ class GameHistoryRecordPlaySource {
     validate: [(players: Player[]): boolean => doesArrayRespectBounds(players, { minItems: gameHistoryRecordPlaySourceFieldsSpecs.players.minItems }), "Path `play.source.players` length is less than minimum allowed value (1)."],
     type: [PlayerSchema],
   })
+  @Type(() => Player)
+  @Expose()
   public players: Player[];
 }
 

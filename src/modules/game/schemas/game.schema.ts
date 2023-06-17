@@ -5,14 +5,11 @@ import { Types } from "mongoose";
 import type { HydratedDocument } from "mongoose";
 import { gameApiProperties, gameFieldsSpecs } from "../constants/game.constant";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
-import type { GameAdditionalCard } from "./game-additional-card/game-additional-card.schema";
-import { GameAdditionalCardSchema } from "./game-additional-card/game-additional-card.schema";
+import { GameAdditionalCardSchema, GameAdditionalCard } from "./game-additional-card/game-additional-card.schema";
 import { GameOptions, GameOptionsSchema } from "./game-options/game-options.schema";
-import type { GamePlay } from "./game-play.schema";
-import { GamePlaySchema } from "./game-play.schema";
+import { GamePlaySchema, GamePlay } from "./game-play.schema";
 import { GameVictory, GameVictorySchema } from "./game-victory/game-victory.schema";
-import { PlayerSchema } from "./player/player.schema";
-import type { Player } from "./player/player.schema";
+import { PlayerSchema, Player } from "./player/player.schema";
 
 @Schema({
   timestamps: true,
@@ -49,6 +46,7 @@ class Game {
     required: true,
     type: [PlayerSchema],
   })
+  @Type(() => Player)
   @Expose()
   public players: Player[];
 
@@ -57,6 +55,7 @@ class Game {
     required: true,
     type: [GamePlaySchema],
   })
+  @Type(() => GamePlay)
   @Expose()
   public upcomingPlays: GamePlay[];
 
@@ -65,16 +64,19 @@ class Game {
     type: GameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => GameOptions)
   @Expose()
   public options: GameOptions;
 
   @ApiProperty(gameApiProperties.additionalCards)
   @Prop({ type: [GameAdditionalCardSchema], default: undefined })
+  @Type(() => GameAdditionalCard)
   @Expose()
   public additionalCards?: GameAdditionalCard[];
 
   @ApiProperty(gameApiProperties.victory)
   @Prop({ type: [GameVictorySchema], default: undefined })
+  @Type(() => GameVictory)
   @Expose()
   public victory?: GameVictory;
 
