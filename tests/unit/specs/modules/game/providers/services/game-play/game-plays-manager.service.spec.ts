@@ -14,7 +14,7 @@ import { createFakeGameOptionsDto } from "../../../../../../../factories/game/dt
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGamePlay } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlay, createFakeGamePlayAllVote, createFakeGamePlayFoxSniffs } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakePowerlessByAncientPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
@@ -27,6 +27,25 @@ describe("Game Plays Manager Service", () => {
     const module: TestingModule = await Test.createTestingModule({ providers: [GamePlaysManagerService] }).compile();
     
     services = { gamePlaysManager: module.get<GamePlaysManagerService>(GamePlaysManagerService) };
+  });
+
+  describe("proceedToNextGamePlay", () => {
+    it("should return game as is when there is no upcoming plays.", () => {
+      const game = createFakeGame();
+
+      expect(services.gamePlaysManager.proceedToNextGamePlay(game)).toStrictEqual<Game>(game);
+    });
+
+    it("should make proceed to next game play when called.", () => {
+      const game = createFakeGame({ upcomingPlays: [createFakeGamePlayAllVote()], currentPlay: createFakeGamePlayFoxSniffs() });
+      const expectedGame = createFakeGame({
+        ...game,
+        upcomingPlays: [],
+        currentPlay: game.upcomingPlays[0],
+      });
+
+      expect(services.gamePlaysManager.proceedToNextGamePlay(game)).toStrictEqual<Game>(expectedGame);
+    });
   });
 
   describe("getUpcomingNightPlays", () => {

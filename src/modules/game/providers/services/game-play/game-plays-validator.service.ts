@@ -9,7 +9,7 @@ import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/m
 import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { getLastGamePlayFromHistory, getLastGamePlayTieInVotesFromHistory } from "../../../helpers/game-history-record/game-history-record.helper";
-import { getLeftToCharmByPiedPiperPlayers, getPlayerWithCurrentRole, getUpcomingGamePlay, getUpcomingGamePlayAction, getUpcomingGamePlaySource } from "../../../helpers/game.helper";
+import { getLeftToCharmByPiedPiperPlayers, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
 import { doesPlayerHaveAttribute, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "../../../helpers/player/player.helper";
 import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
 import type { Game } from "../../../schemas/game.schema";
@@ -21,10 +21,6 @@ export class GamePlaysValidatorService {
 
   public async validateGamePlayWithRelationsDtoData(makeGamePlayWithRelationsDto: MakeGamePlayWithRelationsDto, game: Game): Promise<void> {
     const { votes, targets } = makeGamePlayWithRelationsDto;
-    const upcomingGamePlay = getUpcomingGamePlay(game.upcomingPlays);
-    if (!upcomingGamePlay) {
-      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.NO_UPCOMING_GAME_PLAY);
-    }
     const gameHistoryRecords = await this.gameHistoryRecordService.getGameHistoryRecordsByGameId(game._id);
     this.validateGamePlayWithRelationsDtoJudgeRequestData(makeGamePlayWithRelationsDto, game, gameHistoryRecords);
     this.validateGamePlayWithRelationsDtoChosenSideData(makeGamePlayWithRelationsDto, game);
@@ -35,14 +31,13 @@ export class GamePlaysValidatorService {
 
   private validateGamePlayWithRelationsDtoChosenCardData(makeGamePlayWithRelationsDto: MakeGamePlayWithRelationsDto, game: Game): void {
     const { chosenCard } = makeGamePlayWithRelationsDto;
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
     if (!chosenCard) {
-      if (upcomingGamePlayAction === GAME_PLAY_ACTIONS.CHOOSE_CARD) {
+      if (game.currentPlay.action === GAME_PLAY_ACTIONS.CHOOSE_CARD) {
         throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_CHOSEN_CARD);
       }
       return;
     }
-    if (upcomingGamePlayAction !== GAME_PLAY_ACTIONS.CHOOSE_CARD) {
+    if (game.currentPlay.action !== GAME_PLAY_ACTIONS.CHOOSE_CARD) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_CHOSEN_CARD);
     }
   }
@@ -66,14 +61,12 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayWitchTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game, gameHistoryRecords: GameHistoryRecord[]): void {
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
     const drankPotionTargets = makeGamePlayTargetsWithRelationsDto.filter(({ drankPotion }) => drankPotion !== undefined);
     const hasWitchUsedLifePotion = gameHistoryRecords.some(record => record.play.targets?.some(({ drankPotion }) => drankPotion === WITCH_POTIONS.LIFE));
     const drankLifePotionTargets = drankPotionTargets.filter(({ drankPotion }) => drankPotion === WITCH_POTIONS.LIFE);
     const hasWitchUsedDeathPotion = gameHistoryRecords.some(record => record.play.targets?.some(({ drankPotion }) => drankPotion === WITCH_POTIONS.DEATH));
     const drankDeathPotionTargets = drankPotionTargets.filter(({ drankPotion }) => drankPotion === WITCH_POTIONS.DEATH);
-    if ((upcomingGamePlayAction !== GAME_PLAY_ACTIONS.USE_POTIONS || upcomingGamePlaySource !== ROLE_NAMES.WITCH) && drankPotionTargets.length ||
+    if ((game.currentPlay.action !== GAME_PLAY_ACTIONS.USE_POTIONS || game.currentPlay.source !== ROLE_NAMES.WITCH) && drankPotionTargets.length ||
         hasWitchUsedLifePotion && drankLifePotionTargets.length || hasWitchUsedDeathPotion && drankDeathPotionTargets.length) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_DRANK_POTION_TARGET);
     }
@@ -82,13 +75,11 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayInfectedTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game, gameHistoryRecords: GameHistoryRecord[]): void {
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
     const infectedTargets = makeGamePlayTargetsWithRelationsDto.filter(({ isInfected }) => isInfected === true);
     const hasVileFatherOfWolvesInfected = gameHistoryRecords.some(record => record.play.targets?.some(({ isInfected }) => isInfected));
     const vileFatherOfWolvesPlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.VILE_FATHER_OF_WOLVES);
     if (infectedTargets.length) {
-      if (upcomingGamePlayAction !== GAME_PLAY_ACTIONS.EAT || upcomingGamePlaySource !== PLAYER_GROUPS.WEREWOLVES || !vileFatherOfWolvesPlayer ||
+      if (game.currentPlay.action !== GAME_PLAY_ACTIONS.EAT || game.currentPlay.source !== PLAYER_GROUPS.WEREWOLVES || !vileFatherOfWolvesPlayer ||
         !isPlayerAliveAndPowerful(vileFatherOfWolvesPlayer) || hasVileFatherOfWolvesInfected) {
         throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_INFECTED_TARGET);
       }
@@ -97,31 +88,27 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayWerewolvesTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    if (upcomingGamePlayAction !== GAME_PLAY_ACTIONS.EAT) {
+    if (game.currentPlay.action !== GAME_PLAY_ACTIONS.EAT) {
       return;
     }
     this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 1, max: 1 });
     const targetedPlayer = makeGamePlayTargetsWithRelationsDto[0].player;
-    if (upcomingGamePlaySource === PLAYER_GROUPS.WEREWOLVES && (!targetedPlayer.isAlive || !isPlayerOnVillagersSide(targetedPlayer))) {
+    if (game.currentPlay.source === PLAYER_GROUPS.WEREWOLVES && (!targetedPlayer.isAlive || !isPlayerOnVillagersSide(targetedPlayer))) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_WEREWOLVES_TARGET);
     }
-    if (upcomingGamePlaySource === ROLE_NAMES.BIG_BAD_WOLF &&
+    if (game.currentPlay.source === ROLE_NAMES.BIG_BAD_WOLF &&
       (!targetedPlayer.isAlive || !isPlayerOnVillagersSide(targetedPlayer) || doesPlayerHaveAttribute(targetedPlayer, PLAYER_ATTRIBUTE_NAMES.EATEN))) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_BIG_BAD_WOLF_TARGET);
     }
     const whiteWerewolfPlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.WHITE_WEREWOLF);
-    if (upcomingGamePlaySource === ROLE_NAMES.WHITE_WEREWOLF && (!targetedPlayer.isAlive || !isPlayerOnWerewolvesSide(targetedPlayer) ||
+    if (game.currentPlay.source === ROLE_NAMES.WHITE_WEREWOLF && (!targetedPlayer.isAlive || !isPlayerOnWerewolvesSide(targetedPlayer) ||
       whiteWerewolfPlayer?._id === targetedPlayer._id)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_WHITE_WEREWOLF_TARGET);
     }
   }
 
   private validateGamePlayHunterTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    if (upcomingGamePlayAction !== GAME_PLAY_ACTIONS.SHOOT || upcomingGamePlaySource !== ROLE_NAMES.HUNTER) {
+    if (game.currentPlay.action !== GAME_PLAY_ACTIONS.SHOOT || game.currentPlay.source !== ROLE_NAMES.HUNTER) {
       return;
     }
     this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 1, max: 1 });
@@ -132,9 +119,7 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayScapegoatTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    if (upcomingGamePlayAction !== GAME_PLAY_ACTIONS.BAN_VOTING || upcomingGamePlaySource !== ROLE_NAMES.SCAPEGOAT) {
+    if (game.currentPlay.action !== GAME_PLAY_ACTIONS.BAN_VOTING || game.currentPlay.source !== ROLE_NAMES.SCAPEGOAT) {
       return;
     }
     this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 0, max: game.players.length });
@@ -144,9 +129,7 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayCupidTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (upcomingGamePlaySource !== ROLE_NAMES.CUPID || upcomingGamePlayAction !== GAME_PLAY_ACTIONS.CHARM) {
+    if (game.currentPlay.source !== ROLE_NAMES.CUPID || game.currentPlay.action !== GAME_PLAY_ACTIONS.CHARM) {
       return;
     }
     this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 2, max: 2 });
@@ -156,9 +139,7 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayFoxTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (upcomingGamePlaySource !== ROLE_NAMES.FOX || upcomingGamePlayAction !== GAME_PLAY_ACTIONS.SNIFF) {
+    if (game.currentPlay.source !== ROLE_NAMES.FOX || game.currentPlay.action !== GAME_PLAY_ACTIONS.SNIFF) {
       return;
     }
     this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 0, max: 1 });
@@ -169,9 +150,7 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlaySeerTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (upcomingGamePlaySource !== ROLE_NAMES.SEER || upcomingGamePlayAction !== GAME_PLAY_ACTIONS.LOOK) {
+    if (game.currentPlay.source !== ROLE_NAMES.SEER || game.currentPlay.action !== GAME_PLAY_ACTIONS.LOOK) {
       return;
     }
     this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 1, max: 1 });
@@ -183,9 +162,7 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayRavenTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (upcomingGamePlaySource !== ROLE_NAMES.RAVEN || upcomingGamePlayAction !== GAME_PLAY_ACTIONS.MARK) {
+    if (game.currentPlay.source !== ROLE_NAMES.RAVEN || game.currentPlay.action !== GAME_PLAY_ACTIONS.MARK) {
       return;
     }
     this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 0, max: 1 });
@@ -195,9 +172,7 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayWildChildTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (upcomingGamePlaySource !== ROLE_NAMES.WILD_CHILD || upcomingGamePlayAction !== GAME_PLAY_ACTIONS.CHOOSE_MODEL) {
+    if (game.currentPlay.source !== ROLE_NAMES.WILD_CHILD || game.currentPlay.action !== GAME_PLAY_ACTIONS.CHOOSE_MODEL) {
       return;
     }
     this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 1, max: 1 });
@@ -209,9 +184,7 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayPiedPiperTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (upcomingGamePlaySource !== ROLE_NAMES.PIED_PIPER || upcomingGamePlayAction !== GAME_PLAY_ACTIONS.CHARM) {
+    if (game.currentPlay.source !== ROLE_NAMES.PIED_PIPER || game.currentPlay.action !== GAME_PLAY_ACTIONS.CHARM) {
       return;
     }
     const { charmedPeopleCountPerNight } = game.options.roles.piedPiper;
@@ -225,9 +198,7 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlayGuardTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game, gameHistoryRecords: GameHistoryRecord[]): void {
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (upcomingGamePlaySource !== ROLE_NAMES.GUARD || upcomingGamePlayAction !== GAME_PLAY_ACTIONS.PROTECT) {
+    if (game.currentPlay.source !== ROLE_NAMES.GUARD || game.currentPlay.action !== GAME_PLAY_ACTIONS.PROTECT) {
       return;
     }
     const { canProtectTwice } = game.options.roles.guard;
@@ -241,20 +212,17 @@ export class GamePlaysValidatorService {
   }
 
   private validateGamePlaySheriffTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game, gameHistoryRecords: GameHistoryRecord[]): void {
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(game.upcomingPlays);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (upcomingGamePlaySource !== PLAYER_ATTRIBUTE_NAMES.SHERIFF || !upcomingGamePlayAction ||
-      ![GAME_PLAY_ACTIONS.DELEGATE, GAME_PLAY_ACTIONS.SETTLE_VOTES].includes(upcomingGamePlayAction)) {
+    if (game.currentPlay.source !== PLAYER_ATTRIBUTE_NAMES.SHERIFF || ![GAME_PLAY_ACTIONS.DELEGATE, GAME_PLAY_ACTIONS.SETTLE_VOTES].includes(game.currentPlay.action)) {
       return;
     }
     this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 1, max: 1 });
     const targetedPlayer = makeGamePlayTargetsWithRelationsDto[0].player;
     const lastTieInVotesHistoryRecord = getLastGamePlayTieInVotesFromHistory(gameHistoryRecords);
     const lastTieInVotesTargets = lastTieInVotesHistoryRecord?.play.targets ?? [];
-    if (upcomingGamePlayAction === GAME_PLAY_ACTIONS.DELEGATE && !targetedPlayer.isAlive) {
+    if (game.currentPlay.action === GAME_PLAY_ACTIONS.DELEGATE && !targetedPlayer.isAlive) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_SHERIFF_DELEGATE_TARGET);
     }
-    if (upcomingGamePlayAction === GAME_PLAY_ACTIONS.SETTLE_VOTES && !lastTieInVotesTargets.find(({ player }) => player._id === targetedPlayer._id)) {
+    if (game.currentPlay.action === GAME_PLAY_ACTIONS.SETTLE_VOTES && !lastTieInVotesTargets.find(({ player }) => player._id === targetedPlayer._id)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_SHERIFF_SETTLE_VOTES_TARGET);
     }
   }
@@ -289,34 +257,26 @@ export class GamePlaysValidatorService {
     game: Game,
     gameHistoryRecords: GameHistoryRecord[],
   ): void {
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (!upcomingGamePlayAction) {
-      return;
-    }
     if (makeGamePlayTargetsWithRelationsDto === undefined || !makeGamePlayTargetsWithRelationsDto.length) {
-      if (requiredTargetsActions.includes(upcomingGamePlayAction)) {
+      if (requiredTargetsActions.includes(game.currentPlay.action)) {
         throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_TARGETS);
       }
       return;
     }
-    if (![...requiredTargetsActions, ...optionalTargetsActions].includes(upcomingGamePlayAction)) {
+    if (![...requiredTargetsActions, ...optionalTargetsActions].includes(game.currentPlay.action)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_TARGETS);
     }
     this.validateGamePlayRoleTargets(makeGamePlayTargetsWithRelationsDto, game, gameHistoryRecords);
   }
 
   private validateGamePlayVotesWithRelationsDtoData(makeGamePlayVotesWithRelationsDto: MakeGamePlayVoteWithRelationsDto[] | undefined, game: Game): void {
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (!upcomingGamePlayAction) {
-      return;
-    }
     if (makeGamePlayVotesWithRelationsDto === undefined || !makeGamePlayVotesWithRelationsDto.length) {
-      if (requiredVotesActions.includes(upcomingGamePlayAction)) {
+      if (requiredVotesActions.includes(game.currentPlay.action)) {
         throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_VOTES);
       }
       return;
     }
-    if (!requiredVotesActions.includes(upcomingGamePlayAction)) {
+    if (!requiredVotesActions.includes(game.currentPlay.action)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_VOTES);
     }
     if (makeGamePlayVotesWithRelationsDto.some(({ source, target }) => source._id === target._id)) {
@@ -326,25 +286,23 @@ export class GamePlaysValidatorService {
 
   private validateGamePlayWithRelationsDtoChosenSideData(makeGamePlayWithRelationsDto: MakeGamePlayWithRelationsDto, game: Game): void {
     const { chosenSide } = makeGamePlayWithRelationsDto;
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (chosenSide && upcomingGamePlayAction !== GAME_PLAY_ACTIONS.CHOOSE_SIDE) {
+    if (chosenSide && game.currentPlay.action !== GAME_PLAY_ACTIONS.CHOOSE_SIDE) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_CHOSEN_SIDE);
     }
-    if (!chosenSide && upcomingGamePlayAction === GAME_PLAY_ACTIONS.CHOOSE_SIDE) {
+    if (!chosenSide && game.currentPlay.action === GAME_PLAY_ACTIONS.CHOOSE_SIDE) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_CHOSEN_SIDE);
     }
   }
 
   private validateGamePlayWithRelationsDtoJudgeRequestData(makeGamePlayWithRelationsDto: MakeGamePlayWithRelationsDto, game: Game, gameHistoryRecords: GameHistoryRecord[]): void {
     const { doesJudgeRequestAnotherVote } = makeGamePlayWithRelationsDto;
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
-    if (!upcomingGamePlayAction || doesJudgeRequestAnotherVote === undefined) {
+    if (doesJudgeRequestAnotherVote === undefined) {
       return;
     }
     const { voteRequestsCount } = game.options.roles.stutteringJudge;
     const gameHistoryJudgeRequestRecords = gameHistoryRecords.filter(record => record.play.didJudgeRequestAnotherVote);
     const stutteringJudgePlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.STUTTERING_JUDGE);
-    if (!stutteringJudgeRequestOpportunityActions.includes(upcomingGamePlayAction) ||
+    if (!stutteringJudgeRequestOpportunityActions.includes(game.currentPlay.action) ||
         !stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer) ||
         gameHistoryJudgeRequestRecords.length >= voteRequestsCount) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
