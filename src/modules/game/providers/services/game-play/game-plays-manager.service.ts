@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
+import { cloneDeep } from "lodash";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { gamePlaysNightOrder } from "../../../constants/game.constant";
 import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
@@ -16,6 +17,16 @@ import type { GameSource } from "../../../types/game.type";
 
 @Injectable()
 export class GamePlaysManagerService {
+  public proceedToNextGamePlay(game: Game): Game {
+    const clonedGame = cloneDeep(game);
+    if (!clonedGame.upcomingPlays.length) {
+      return clonedGame;
+    }
+    clonedGame.currentPlay = clonedGame.upcomingPlays[0];
+    clonedGame.upcomingPlays.shift();
+    return clonedGame;
+  }
+
   public getUpcomingNightPlays(game: CreateGameDto | Game): GamePlay[] {
     const isFirstNight = game.turn === 1;
     const eligibleNightPlays = gamePlaysNightOrder.filter(play => isFirstNight || play.isFirstNightOnly !== true);

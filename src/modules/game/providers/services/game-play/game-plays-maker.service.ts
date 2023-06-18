@@ -8,7 +8,7 @@ import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlayAllVote, createGamePlaySheriffSettlesVotes } from "../../../helpers/game-play/game-play.factory";
-import { getFoxSniffedPlayers, getPlayerWithAttribute, getPlayerWithCurrentRole, getUpcomingGamePlayAction, getUpcomingGamePlaySource } from "../../../helpers/game.helper";
+import { getFoxSniffedPlayers, getPlayerWithAttribute, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "../../../helpers/game.mutator";
 import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "../../../helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteByAllDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedByAllDeath } from "../../../helpers/player/player-death/player-death.factory";
@@ -48,11 +48,7 @@ export class GamePlaysMakerService {
 
   public makeGamePlay(play: MakeGamePlayWithRelationsDto, game: Game, gameHistoryRecords: GameHistoryRecord[]): Game {
     const clonedGame = cloneDeep(game);
-    const upcomingGamePlaySource = getUpcomingGamePlaySource(clonedGame.upcomingPlays);
-    if (!upcomingGamePlaySource) {
-      return clonedGame;
-    }
-    const gameSourcePlayMethod = this.gameSourcePlayMethods[upcomingGamePlaySource];
+    const gameSourcePlayMethod = this.gameSourcePlayMethods[clonedGame.currentPlay.source];
     if (gameSourcePlayMethod === undefined) {
       return clonedGame;
     }
@@ -87,15 +83,11 @@ export class GamePlaysMakerService {
 
   private sheriffPlays(play: MakeGamePlayWithRelationsDto, game: Game, gameHistoryRecords: GameHistoryRecord[]): Game {
     const clonedGame = cloneDeep(game);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(clonedGame.upcomingPlays);
-    if (!upcomingGamePlayAction) {
-      return clonedGame;
-    }
     const sheriffPlayMethods: Partial<Record<GAME_PLAY_ACTIONS, () => Game>> = {
       [GAME_PLAY_ACTIONS.DELEGATE]: () => this.sheriffDelegates(play, clonedGame),
       [GAME_PLAY_ACTIONS.SETTLE_VOTES]: () => this.sheriffSettlesVotes(play, clonedGame, gameHistoryRecords),
     };
-    const sheriffPlayMethod = sheriffPlayMethods[upcomingGamePlayAction];
+    const sheriffPlayMethod = sheriffPlayMethods[clonedGame.currentPlay.action];
     if (sheriffPlayMethod === undefined) {
       return clonedGame;
     }
@@ -105,10 +97,9 @@ export class GamePlaysMakerService {
   private addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: Game): PlayerVoteCount[] {
     const clonedGame = cloneDeep(game);
     const clonedPlayerVoteCounts = cloneDeep(playerVoteCounts);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
     const ravenPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.RAVEN);
     const ravenMarkedPlayer = getPlayerWithAttribute(clonedGame.players, PLAYER_ATTRIBUTE_NAMES.RAVEN_MARKED);
-    if (upcomingGamePlayAction !== GAME_PLAY_ACTIONS.VOTE ||
+    if (clonedGame.currentPlay.action !== GAME_PLAY_ACTIONS.VOTE ||
       ravenPlayer?.isAlive !== true || doesPlayerHaveAttribute(ravenPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) ||
       ravenMarkedPlayer?.isAlive !== true) {
       return clonedPlayerVoteCounts;
@@ -125,11 +116,10 @@ export class GamePlaysMakerService {
   private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[], game: Game): PlayerVoteCount[] {
     const { hasDoubledVote: doesSheriffHaveDoubledVote } = game.options.roles.sheriff;
     const sheriffPlayer = getPlayerWithAttribute(game.players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(game.upcomingPlays);
     return votes.reduce<PlayerVoteCount[]>((acc, vote) => {
       const doubledVoteValue = 2;
       const isVoteSourceSheriff = vote.source._id.toString() === sheriffPlayer?._id.toString();
-      const voteValue = upcomingGamePlayAction === GAME_PLAY_ACTIONS.VOTE && isVoteSourceSheriff && doesSheriffHaveDoubledVote ? doubledVoteValue : 1;
+      const voteValue = game.currentPlay.action === GAME_PLAY_ACTIONS.VOTE && isVoteSourceSheriff && doesSheriffHaveDoubledVote ? doubledVoteValue : 1;
       const existingPlayerVoteCount = acc.find(value => value[0]._id.toString() === vote.target._id.toString());
       if (existingPlayerVoteCount) {
         existingPlayerVoteCount[1] += voteValue;
@@ -202,15 +192,11 @@ export class GamePlaysMakerService {
 
   private allPlay(play: MakeGamePlayWithRelationsDto, game: Game, gameHistoryRecords: GameHistoryRecord[]): Game {
     const clonedGame = cloneDeep(game);
-    const upcomingGamePlayAction = getUpcomingGamePlayAction(clonedGame.upcomingPlays);
-    if (!upcomingGamePlayAction) {
-      return clonedGame;
-    }
     const allPlayMethods: Partial<Record<GAME_PLAY_ACTIONS, () => Game>> = {
       [GAME_PLAY_ACTIONS.ELECT_SHERIFF]: () => this.allElectSheriff(play, clonedGame),
       [GAME_PLAY_ACTIONS.VOTE]: () => this.allVote(play, clonedGame, gameHistoryRecords),
     };
-    const allPlayMethod = allPlayMethods[upcomingGamePlayAction];
+    const allPlayMethod = allPlayMethods[clonedGame.currentPlay.action];
     if (allPlayMethod === undefined) {
       return clonedGame;
     }

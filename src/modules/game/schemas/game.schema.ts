@@ -50,6 +50,15 @@ class Game {
   @Expose()
   public players: Player[];
 
+  @ApiProperty(gameApiProperties.currentPlay)
+  @Prop({
+    required: true,
+    type: GamePlaySchema,
+  })
+  @Type(() => GamePlay)
+  @Expose()
+  public currentPlay: GamePlay;
+
   @ApiProperty(gameApiProperties.upcomingPlays)
   @Prop({
     required: true,

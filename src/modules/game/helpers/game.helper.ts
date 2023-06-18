@@ -3,10 +3,8 @@ import type { Types } from "mongoose";
 import { createCantFindPlayerUnexpectedException } from "../../../shared/exception/helpers/unexpected-exception.factory";
 import { ROLE_NAMES, ROLE_SIDES } from "../../role/enums/role.enum";
 import type { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
-import type { GAME_PLAY_ACTIONS } from "../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../enums/player.enum";
 import type { GameAdditionalCard } from "../schemas/game-additional-card/game-additional-card.schema";
-import type { GamePlay } from "../schemas/game-play.schema";
 import type { Game } from "../schemas/game.schema";
 import type { Player } from "../schemas/player/player.schema";
 import type { GameSource, GetNearestPlayerOptions } from "../types/game.type";
@@ -114,20 +112,6 @@ function getNonexistentPlayer(players: Player[], candidatePlayers?: Player[]): P
   return cloneDeep(candidatePlayers?.find(candidatePlayer => !getPlayerWithId(players, candidatePlayer._id)));
 }
 
-function getUpcomingGamePlay(upcomingActions: GamePlay[]): GamePlay | undefined {
-  return upcomingActions.length ? upcomingActions[0] : undefined;
-}
-
-function getUpcomingGamePlayAction(upcomingActions: GamePlay[]): GAME_PLAY_ACTIONS | undefined {
-  const upcomingGamePlay = getUpcomingGamePlay(upcomingActions);
-  return upcomingGamePlay?.action;
-}
-
-function getUpcomingGamePlaySource(upcomingActions: GamePlay[]): GameSource | undefined {
-  const upcomingGamePlay = getUpcomingGamePlay(upcomingActions);
-  return upcomingGamePlay?.source;
-}
-
 function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Player[] {
   const cantFindPlayerException = createCantFindPlayerUnexpectedException("getFoxSniffedTargets", { gameId: game._id, playerId: sniffedTargetId });
   const sniffedTarget = getPlayerWithIdOrThrow(sniffedTargetId, game, cantFindPlayerException);
@@ -187,9 +171,6 @@ export {
   isGameSourceGroup,
   getNonexistentPlayerId,
   getNonexistentPlayer,
-  getUpcomingGamePlay,
-  getUpcomingGamePlayAction,
-  getUpcomingGamePlaySource,
   getFoxSniffedPlayers,
   getNearestAliveNeighbor,
 };

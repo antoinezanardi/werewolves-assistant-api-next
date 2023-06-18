@@ -1,4 +1,4 @@
-import { createCantFindPlayerUnexpectedException, createPlayerIsDeadUnexpectedException } from "../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createPlayerIsDeadUnexpectedException } from "../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
 import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
 import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
 
@@ -25,6 +25,18 @@ describe("Unexpected Exception Factory", () => {
         statusCode: 500,
         message: "Unexpected exception in killPlayer",
         error: `Player with id "${interpolations.playerId.toString()}" is dead in game "${interpolations.gameId.toString()}"`,
+      });
+    });
+  });
+
+  describe("createCantGenerateGamePlaysUnexpectedException", () => {
+    it("should create can't generate game plays unexpected exception when called.", () => {
+      const exception = createCantGenerateGamePlaysUnexpectedException("createGame");
+
+      expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
+        statusCode: 500,
+        message: "Unexpected exception in createGame",
+        error: `Can't generate game plays`,
       });
     });
   });

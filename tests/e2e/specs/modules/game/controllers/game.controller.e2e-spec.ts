@@ -28,7 +28,7 @@ import { createFakeGameOptionsDto } from "../../../../../factories/game/dto/crea
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
-import { createFakeGamePlayAllVote } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayAllVote, createFakeGamePlayCupidCharms, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
@@ -413,8 +413,8 @@ describe("Game Controller", () => {
         turn: 1,
         tick: 1,
         players: expectedPlayers,
+        currentPlay: { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF },
         upcomingPlays: [
-          { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF },
           { source: ROLE_NAMES.CUPID, action: GAME_PLAY_ACTIONS.CHARM },
           { source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK },
           { source: PLAYER_GROUPS.LOVERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER },
@@ -629,7 +629,7 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
+        currentPlay: createFakeGamePlayAllVote(),
         players,
       });
       await models.game.create(game);
@@ -657,7 +657,8 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
+        currentPlay: { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE },
+        upcomingPlays: [createFakeGamePlayCupidCharms()],
         players,
       });
       await models.game.create(game);
@@ -667,13 +668,7 @@ describe("Game Controller", () => {
           { sourceId: players[1]._id, targetId: players[0]._id },
         ],
       });
-      const expectedGame = createFakeGame({
-        ...game,
-        upcomingPlays: [
-          createFakeGamePlayAllVote(),
-          createFakeGamePlayAllVote(),
-        ],
-      });
+      const expectedGame = createFakeGame(game);
       const response = await app.inject({
         method: "POST",
         url: `/games/${game._id.toString()}/play`,
@@ -697,13 +692,16 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        upcomingPlays: [{ source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK }],
+        currentPlay: createFakeGamePlaySeerLooks(),
+        upcomingPlays: [createFakeGamePlayWerewolvesEat()],
         players,
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
       const expectedGame = createFakeGame({
         ...game,
+        currentPlay: createFakeGamePlayWerewolvesEat(),
+        upcomingPlays: [],
         players: [
           createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }),
           players[1],
