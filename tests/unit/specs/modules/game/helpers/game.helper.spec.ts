@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithAttribute, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithAttribute, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
 import type { GetNearestPlayerOptions } from "../../../../../../src/modules/game/types/game.type";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
@@ -308,7 +308,35 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer(),
       ]);
       
-      expect(getLeftToCharmByPiedPiperPlayers(players)).toStrictEqual([players[2], players[4]]);
+      expect(getLeftToCharmByPiedPiperPlayers(players)).toStrictEqual<Player[]>([players[2], players[4]]);
+    });
+  });
+
+  describe("getLeftToEatByWerewolvesPlayers", () => {
+    it("should return left to eat by werewolves players when called.", () => {
+      const players = bulkCreateFakePlayers(5, [
+        createFakeWerewolfAlivePlayer(),
+        createFakePiedPiperAlivePlayer(),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeWerewolfAlivePlayer(),
+      ]);
+
+      expect(getLeftToEatByWerewolvesPlayers(players)).toStrictEqual<Player[]>([players[1]]);
+    });
+  });
+
+  describe("getLeftToEatByWhiteWerewolfPlayers", () => {
+    it("should return left to eat by white werewolf players when called.", () => {
+      const players = bulkCreateFakePlayers(5, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ isAlive: false }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ]);
+
+      expect(getLeftToEatByWhiteWerewolfPlayers(players)).toStrictEqual<Player[]>([players[4]]);
     });
   });
 

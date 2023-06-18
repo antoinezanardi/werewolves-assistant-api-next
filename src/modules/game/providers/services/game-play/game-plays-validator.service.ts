@@ -9,10 +9,11 @@ import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/m
 import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { getLastGamePlayFromHistory, getLastGamePlayTieInVotesFromHistory } from "../../../helpers/game-history-record/game-history-record.helper";
-import { getLeftToCharmByPiedPiperPlayers, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
+import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
 import { doesPlayerHaveAttribute, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "../../../helpers/player/player.helper";
 import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
 import type { Game } from "../../../schemas/game.schema";
+import type { GameSource } from "../../../types/game.type";
 import { GameHistoryRecordService } from "../game-history/game-history-record.service";
 
 @Injectable()
@@ -86,12 +87,32 @@ export class GamePlaysValidatorService {
       this.validateGamePlayTargetsBoundaries(infectedTargets, { min: 1, max: 1 });
     }
   }
+  
+  private validateWerewolvesTargetsBoundaries(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
+    const leftToEatByWerewolvesPlayers = getLeftToEatByWerewolvesPlayers(game.players);
+    const leftToEatByWhiteWerewolfPlayers = getLeftToEatByWhiteWerewolfPlayers(game.players);
+    const bigBadWolfExpectedTargetsCount = leftToEatByWerewolvesPlayers.length ? 1 : 0;
+    const whiteWerewolfMaxTargetsCount = leftToEatByWhiteWerewolfPlayers.length ? 1 : 0;
+    const werewolvesSourceTargetsBoundaries: Partial<Record<GameSource, { min: number; max: number }>> = {
+      [PLAYER_GROUPS.WEREWOLVES]: { min: 1, max: 1 },
+      [ROLE_NAMES.BIG_BAD_WOLF]: { min: bigBadWolfExpectedTargetsCount, max: bigBadWolfExpectedTargetsCount },
+      [ROLE_NAMES.WHITE_WEREWOLF]: { min: 0, max: whiteWerewolfMaxTargetsCount },
+    };
+    const targetsBoundaries = werewolvesSourceTargetsBoundaries[game.currentPlay.source];
+    if (!targetsBoundaries) {
+      return;
+    }
+    this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, targetsBoundaries);
+  }
 
   private validateGamePlayWerewolvesTargets(makeGamePlayTargetsWithRelationsDto: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
     if (game.currentPlay.action !== GAME_PLAY_ACTIONS.EAT) {
       return;
     }
-    this.validateGamePlayTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, { min: 1, max: 1 });
+    this.validateWerewolvesTargetsBoundaries(makeGamePlayTargetsWithRelationsDto, game);
+    if (!makeGamePlayTargetsWithRelationsDto.length) {
+      return;
+    }
     const targetedPlayer = makeGamePlayTargetsWithRelationsDto[0].player;
     if (game.currentPlay.source === PLAYER_GROUPS.WEREWOLVES && (!targetedPlayer.isAlive || !isPlayerOnVillagersSide(targetedPlayer))) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_WEREWOLVES_TARGET);

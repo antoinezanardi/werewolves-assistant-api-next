@@ -469,11 +469,83 @@ describe("Game Plays Validator Service", () => {
     });
   });
 
-  describe("validateGamePlayWerewolvesTargets", () => {
-    let validateGamePlayTargetsBoundariesMock: jest.SpyInstance;
+  describe("validateWerewolvesTargetsBoundaries", () => {
+    let localMocks: {
+      gamePlaysValidatorService: { validateGamePlayTargetsBoundaries: jest.SpyInstance };
+      gameHelper: {
+        getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
+        getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
+      };
+    };
 
     beforeEach(() => {
-      validateGamePlayTargetsBoundariesMock = jest.spyOn(services.gamePlaysValidator as unknown as { validateGamePlayTargetsBoundaries }, "validateGamePlayTargetsBoundaries").mockImplementation();
+      localMocks = {
+        gamePlaysValidatorService: { validateGamePlayTargetsBoundaries: jest.spyOn(services.gamePlaysValidator as unknown as { validateGamePlayTargetsBoundaries }, "validateGamePlayTargetsBoundaries").mockImplementation() },
+        gameHelper: {
+          getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers").mockReturnValue([]),
+          getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers").mockReturnValue([]),
+        },
+      };
+    });
+
+    it("should do nothing when game play source is not from available methods.", () => {
+      const game = createFakeGame({ currentPlay: createFakeGamePlayThiefChoosesCard() });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
+      services.gamePlaysValidator["validateWerewolvesTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, game);
+      
+      expect(localMocks.gamePlaysValidatorService.validateGamePlayTargetsBoundaries).not.toHaveBeenCalled();
+    });
+
+    it("should validate targets boundaries when game play source are werewolves.", () => {
+      const game = createFakeGame({ currentPlay: createFakeGamePlayWerewolvesEat() });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
+      services.gamePlaysValidator["validateWerewolvesTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, game);
+
+      expect(localMocks.gamePlaysValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, { min: 1, max: 1 });
+    });
+
+    it("should validate targets boundaries when game play source is big bad wolf and targets are available.", () => {
+      const game = createFakeGame({ currentPlay: createFakeGamePlayBigBadWolfEats() });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
+      localMocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([createFakeVillagerAlivePlayer(), createFakeVillagerAlivePlayer()]);
+      services.gamePlaysValidator["validateWerewolvesTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, game);
+
+      expect(localMocks.gamePlaysValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, { min: 1, max: 1 });
+    });
+
+    it("should validate targets boundaries when game play source is big bad wolf but targets are not available.", () => {
+      const game = createFakeGame({ currentPlay: createFakeGamePlayBigBadWolfEats() });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
+      localMocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([]);
+      services.gamePlaysValidator["validateWerewolvesTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, game);
+
+      expect(localMocks.gamePlaysValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, { min: 0, max: 0 });
+    });
+
+    it("should validate targets boundaries when game play source is white werewolf and targets are available.", () => {
+      const game = createFakeGame({ currentPlay: createFakeGamePlayWhiteWerewolfEats() });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
+      localMocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([createFakeVillagerAlivePlayer(), createFakeVillagerAlivePlayer()]);
+      services.gamePlaysValidator["validateWerewolvesTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, game);
+
+      expect(localMocks.gamePlaysValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, { min: 0, max: 1 });
+    });
+
+    it("should validate targets boundaries when game play source is white werewolf but targets are not available.", () => {
+      const game = createFakeGame({ currentPlay: createFakeGamePlayWhiteWerewolfEats() });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
+      localMocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([]);
+      services.gamePlaysValidator["validateWerewolvesTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, game);
+
+      expect(localMocks.gamePlaysValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, { min: 0, max: 0 });
+    });
+  });
+
+  describe("validateGamePlayWerewolvesTargets", () => {
+    let validateWerewolvesTargetsBoundaries: jest.SpyInstance;
+
+    beforeEach(() => {
+      validateWerewolvesTargetsBoundaries = jest.spyOn(services.gamePlaysValidator as unknown as { validateWerewolvesTargetsBoundaries }, "validateWerewolvesTargetsBoundaries").mockImplementation();
     });
 
     it("should do nothing when game play action is not EAT.", () => {
@@ -481,7 +553,13 @@ describe("Game Plays Validator Service", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
       services.gamePlaysValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game);
       
-      expect(validateGamePlayTargetsBoundariesMock).not.toHaveBeenCalled();
+      expect(validateWerewolvesTargetsBoundaries).not.toHaveBeenCalled();
+    });
+
+    it("should do nothing when there is no target.", () => {
+      const game = createFakeGame({ currentPlay: createFakeGamePlayWerewolvesEat() });
+      const makeGamePlayTargetsWithRelationsDto = [];
+      expect(() => services.gamePlaysValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).not.toThrow();
     });
 
     it("should throw error when source is WEREWOLVES and targeted player is dead.", () => {

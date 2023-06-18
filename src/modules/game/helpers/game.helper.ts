@@ -80,6 +80,14 @@ function getLeftToCharmByPiedPiperPlayers(players: Player[]): Player[] {
   return cloneDeep(players.filter(player => player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.CHARMED) && player.role.current !== ROLE_NAMES.PIED_PIPER));
 }
 
+function getLeftToEatByWerewolvesPlayers(players: Player[]): Player[] {
+  return cloneDeep(players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.EATEN)));
+}
+
+function getLeftToEatByWhiteWerewolfPlayers(players: Player[]): Player[] {
+  return cloneDeep(players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES && player.role.current !== ROLE_NAMES.WHITE_WEREWOLF));
+}
+
 function getGroupOfPlayers(players: Player[], group: PLAYER_GROUPS): Player[] {
   if (group === PLAYER_GROUPS.ALL) {
     return cloneDeep(players);
@@ -166,6 +174,8 @@ export {
   getAliveVillagerSidedPlayers,
   getAliveWerewolfSidedPlayers,
   getLeftToCharmByPiedPiperPlayers,
+  getLeftToEatByWerewolvesPlayers,
+  getLeftToEatByWhiteWerewolfPlayers,
   getGroupOfPlayers,
   isGameSourceRole,
   isGameSourceGroup,
