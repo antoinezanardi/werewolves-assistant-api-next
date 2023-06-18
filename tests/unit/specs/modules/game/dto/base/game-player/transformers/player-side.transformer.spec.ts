@@ -8,11 +8,13 @@ describe("Player Side Transformer", () => {
   describe("playerSideTransformer", () => {
     it("should return null when value is null.", () => {
       const player = createFakeCreateGamePlayerDto({ role: { name: ROLE_NAMES.WHITE_WEREWOLF } });
+
       expect(playerSideTransformer({ value: null, obj: player } as TransformFnParams)).toBeNull();
     });
 
     it("should return same value when value is not an object.", () => {
       const player = createFakeCreateGamePlayerDto({ role: { name: ROLE_NAMES.WHITE_WEREWOLF } });
+
       expect(playerSideTransformer({ value: "toto", obj: player } as TransformFnParams)).toBe("toto");
     });
 
@@ -30,6 +32,7 @@ describe("Player Side Transformer", () => {
 
     it("should fill player side with werewolf data when role is white werewolf.", () => {
       const player = createFakeCreateGamePlayerDto({ role: { name: ROLE_NAMES.WHITE_WEREWOLF } });
+
       expect(playerSideTransformer({ value: {}, obj: player } as TransformFnParams)).toStrictEqual<CreateGamePlayerSideDto>({
         current: ROLE_SIDES.WEREWOLVES,
         original: ROLE_SIDES.WEREWOLVES,
@@ -38,6 +41,7 @@ describe("Player Side Transformer", () => {
 
     it("should fill player side with villager data when role is witch.", () => {
       const player = createFakeCreateGamePlayerDto({ role: { name: ROLE_NAMES.WITCH } });
+
       expect(playerSideTransformer({ value: {}, obj: player } as TransformFnParams)).toStrictEqual<CreateGamePlayerSideDto>({
         current: ROLE_SIDES.VILLAGERS,
         original: ROLE_SIDES.VILLAGERS,

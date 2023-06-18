@@ -14,11 +14,13 @@ describe("Config Env Helper", () => {
         DATABASE_PASSWORD: "doe",
       };
       const validatedEnvVariables = plainToInstance(EnvironmentVariables, brutEnvVariables, { enableImplicitConversion: true });
+
       expect(validate(brutEnvVariables)).toStrictEqual(validatedEnvVariables);
     });
 
     it("should throw error when env variables is not valid.", () => {
       const brutEnvVariables: Record<string, unknown> = { ENVIRONMENT: "test" };
+
       expect(() => validate(brutEnvVariables)).toThrow("An instance of EnvironmentVariables has failed the validation");
     });
   });
@@ -36,6 +38,7 @@ describe("Config Env Helper", () => {
 
     it("should return default development env path when NODE_ENV is undefined.", () => {
       process.env.NODE_ENV = undefined;
+
       expect(getEnvPath()).toBe("env/.env.development");
     });
 

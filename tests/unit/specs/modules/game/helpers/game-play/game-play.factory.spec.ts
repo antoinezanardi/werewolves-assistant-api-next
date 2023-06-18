@@ -13,6 +13,7 @@ describe("Game Play Factory", () => {
         source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
         action: GAME_PLAY_ACTIONS.SETTLE_VOTES,
       });
+
       expect(createGamePlaySheriffSettlesVotes()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -23,6 +24,7 @@ describe("Game Play Factory", () => {
         source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
         action: GAME_PLAY_ACTIONS.DELEGATE,
       });
+
       expect(createGamePlaySheriffDelegates()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -33,6 +35,7 @@ describe("Game Play Factory", () => {
         source: PLAYER_GROUPS.ALL,
         action: GAME_PLAY_ACTIONS.VOTE,
       });
+
       expect(createGamePlayAllVote()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -43,6 +46,7 @@ describe("Game Play Factory", () => {
         source: PLAYER_GROUPS.ALL,
         action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
       });
+
       expect(createGamePlayAllElectSheriff()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -53,6 +57,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.THIEF,
         action: GAME_PLAY_ACTIONS.CHOOSE_CARD,
       });
+
       expect(createGamePlayThiefChoosesCard()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -63,6 +68,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.STUTTERING_JUDGE,
         action: GAME_PLAY_ACTIONS.CHOOSE_SIGN,
       });
+
       expect(createGamePlayStutteringJudgeChoosesSign()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -73,6 +79,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.SCAPEGOAT,
         action: GAME_PLAY_ACTIONS.BAN_VOTING,
       });
+
       expect(createGamePlayScapegoatBansVoting()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -83,6 +90,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.DOG_WOLF,
         action: GAME_PLAY_ACTIONS.CHOOSE_SIDE,
       });
+
       expect(createGamePlayDogWolfChoosesSide()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -93,6 +101,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.WILD_CHILD,
         action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,
       });
+
       expect(createGamePlayWildChildChoosesModel()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -103,6 +112,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.FOX,
         action: GAME_PLAY_ACTIONS.SNIFF,
       });
+
       expect(createGamePlayFoxSniffs()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -113,6 +123,7 @@ describe("Game Play Factory", () => {
         source: PLAYER_GROUPS.CHARMED,
         action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
       });
+
       expect(createGamePlayCharmedMeetEachOther()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -123,6 +134,7 @@ describe("Game Play Factory", () => {
         source: PLAYER_GROUPS.LOVERS,
         action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
       });
+
       expect(createGamePlayLoversMeetEachOther()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -133,6 +145,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.THREE_BROTHERS,
         action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
       });
+
       expect(createGamePlayThreeBrothersMeetEachOther()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -143,6 +156,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.TWO_SISTERS,
         action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
       });
+
       expect(createGamePlayTwoSistersMeetEachOther()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -153,6 +167,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.RAVEN,
         action: GAME_PLAY_ACTIONS.MARK,
       });
+
       expect(createGamePlayRavenMarks()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -163,6 +178,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.GUARD,
         action: GAME_PLAY_ACTIONS.PROTECT,
       });
+
       expect(createGamePlayGuardProtects()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -173,6 +189,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.HUNTER,
         action: GAME_PLAY_ACTIONS.SHOOT,
       });
+
       expect(createGamePlayHunterShoots()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -183,6 +200,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.WITCH,
         action: GAME_PLAY_ACTIONS.USE_POTIONS,
       });
+
       expect(createGamePlayWitchUsesPotions()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -193,6 +211,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.PIED_PIPER,
         action: GAME_PLAY_ACTIONS.CHARM,
       });
+
       expect(createGamePlayPiedPiperCharms()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -203,6 +222,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.CUPID,
         action: GAME_PLAY_ACTIONS.CHARM,
       });
+
       expect(createGamePlayCupidCharms()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -213,6 +233,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.SEER,
         action: GAME_PLAY_ACTIONS.LOOK,
       });
+
       expect(createGamePlaySeerLooks()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -223,6 +244,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.WHITE_WEREWOLF,
         action: GAME_PLAY_ACTIONS.EAT,
       });
+
       expect(createGamePlayWhiteWerewolfEats()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -233,6 +255,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.BIG_BAD_WOLF,
         action: GAME_PLAY_ACTIONS.EAT,
       });
+
       expect(createGamePlayBigBadWolfEats()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -243,6 +266,7 @@ describe("Game Play Factory", () => {
         source: PLAYER_GROUPS.WEREWOLVES,
         action: GAME_PLAY_ACTIONS.EAT,
       });
+
       expect(createGamePlayWerewolvesEat()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
@@ -253,6 +277,7 @@ describe("Game Play Factory", () => {
         source: ROLE_NAMES.WILD_CHILD,
         action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,
       };
+
       expect(createGamePlay(gamePlay)).toStrictEqual<GamePlay>(plainToInstance(GamePlay, {
         source: ROLE_NAMES.WILD_CHILD,
         action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,

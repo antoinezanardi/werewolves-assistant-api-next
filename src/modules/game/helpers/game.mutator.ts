@@ -1,5 +1,6 @@
 import { cloneDeep } from "lodash";
 import type { Types } from "mongoose";
+import type { PLAYER_ATTRIBUTE_NAMES } from "../enums/player.enum";
 import type { GamePlay } from "../schemas/game-play.schema";
 import type { Game } from "../schemas/game.schema";
 import type { PlayerAttribute } from "../schemas/player/player-attribute/player-attribute.schema";
@@ -12,8 +13,8 @@ function updatePlayerInGame(playerId: Types.ObjectId, playerDataToUpdate: Partia
   const clonedGame = cloneDeep(game);
   const playerIdx = clonedGame.players.findIndex(player => player._id.toString() === playerId.toString());
   if (playerIdx !== -1) {
-    const player = clonedGame.players[playerIdx];
-    clonedGame.players.splice(playerIdx, 1, createPlayer({ ...player, ...playerDataToUpdate }));
+    const clonedPlayer = cloneDeep(clonedGame.players[playerIdx]);
+    clonedGame.players.splice(playerIdx, 1, createPlayer(Object.assign(clonedPlayer, playerDataToUpdate)));
   }
   return clonedGame;
 }
@@ -39,6 +40,16 @@ function addPlayersAttributeInGame(playerIds: Types.ObjectId[], game: Game, attr
   return clonedGame;
 }
 
+function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game, attributeName: PLAYER_ATTRIBUTE_NAMES): Game {
+  const clonedGame = cloneDeep(game);
+  const player = getPlayerWithId(clonedGame.players, playerId);
+  if (!player) {
+    return clonedGame;
+  }
+  player.attributes = player.attributes.filter(({ name }) => name !== attributeName);
+  return updatePlayerInGame(playerId, player, clonedGame);
+}
+
 function prependUpcomingPlayInGame(gamePlay: GamePlay, game: Game): Game {
   const clonedGame = cloneDeep(game);
   clonedGame.upcomingPlays.unshift(gamePlay);
@@ -55,6 +66,7 @@ export {
   updatePlayerInGame,
   addPlayerAttributeInGame,
   addPlayersAttributeInGame,
+  removePlayerAttributeByNameInGame,
   prependUpcomingPlayInGame,
   appendUpcomingPlayInGame,
 };

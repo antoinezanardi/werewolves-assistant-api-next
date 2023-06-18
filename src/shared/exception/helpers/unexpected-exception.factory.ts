@@ -12,7 +12,12 @@ function createPlayerIsDeadUnexpectedException(scope: string, interpolations: { 
   return new UnexpectedException(scope, UNEXPECTED_EXCEPTION_REASONS.PLAYER_IS_DEAD, { gameId: gameId.toString(), playerId: playerId.toString() });
 }
 
+function createCantGenerateGamePlaysUnexpectedException(scope: string): UnexpectedException {
+  return new UnexpectedException(scope, UNEXPECTED_EXCEPTION_REASONS.CANT_GENERATE_GAME_PLAYS);
+}
+
 export {
   createCantFindPlayerUnexpectedException,
   createPlayerIsDeadUnexpectedException,
+  createCantGenerateGamePlaysUnexpectedException,
 };

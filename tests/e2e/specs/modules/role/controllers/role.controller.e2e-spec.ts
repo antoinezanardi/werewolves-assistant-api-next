@@ -27,6 +27,7 @@ describe("Role Controller", () => {
     it("should return roles when route is called.", async() => {
       const response = await app.inject({ method: "GET", url: "/roles" });
       const respondedRoles = response.json<Role[]>();
+
       expect(response.statusCode).toBe(200);
       expect(bulkCreateFakeRoles(respondedRoles.length, respondedRoles)).toStrictEqual(roles);
     });

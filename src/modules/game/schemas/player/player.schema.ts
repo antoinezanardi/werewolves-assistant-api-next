@@ -3,8 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { Types } from "mongoose";
 import { playerApiProperties, playersFieldsSpecs } from "../../constants/player/player.constant";
-import type { PlayerAttribute } from "./player-attribute/player-attribute.schema";
-import { PlayerAttributeSchema } from "./player-attribute/player-attribute.schema";
+import { PlayerAttribute, PlayerAttributeSchema } from "./player-attribute/player-attribute.schema";
 import { PlayerDeath, PlayerDeathSchema } from "./player-death.schema";
 import { PlayerRole, PlayerRoleSchema } from "./player-role.schema";
 import { PlayerSide, PlayerSideSchema } from "./player-side.schema";
@@ -30,6 +29,7 @@ class Player {
     required: true,
     type: PlayerRoleSchema,
   })
+  @Type(() => PlayerRole)
   @Expose()
   public role: PlayerRole;
 
@@ -38,6 +38,7 @@ class Player {
     required: true,
     type: PlayerSideSchema,
   })
+  @Type(() => PlayerSide)
   @Expose()
   public side: PlayerSide;
 
@@ -47,6 +48,7 @@ class Player {
     type: [PlayerAttributeSchema],
     default: playersFieldsSpecs.attributes.default,
   })
+  @Type(() => PlayerAttribute)
   @Expose()
   public attributes: PlayerAttribute[];
 
@@ -65,6 +67,7 @@ class Player {
 
   @ApiProperty(playerApiProperties.death)
   @Prop({ type: PlayerDeathSchema })
+  @Type(() => PlayerDeath)
   @Expose()
   public death?: PlayerDeath;
 }
