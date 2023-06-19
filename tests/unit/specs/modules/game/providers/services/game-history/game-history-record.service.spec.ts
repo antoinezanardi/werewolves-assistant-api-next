@@ -23,6 +23,11 @@ describe("Game History Record Service", () => {
     gameHistoryRecordRepository: {
       find: jest.SpyInstance;
       create: jest.SpyInstance;
+      getLastGamePlayRecord: jest.SpyInstance;
+      getGameHistoryWitchUsesLifePotionRecords: jest.SpyInstance;
+      getGameHistoryWitchUsesDeathPotionRecords: jest.SpyInstance;
+      getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
+      getGameHistoryJudgeRequestRecords: jest.SpyInstance;
     };
     gameRepository: { findOne: jest.SpyInstance };
   };
@@ -34,6 +39,11 @@ describe("Game History Record Service", () => {
       gameHistoryRecordRepository: {
         find: jest.fn(),
         create: jest.fn(),
+        getLastGamePlayRecord: jest.fn(),
+        getGameHistoryWitchUsesLifePotionRecords: jest.fn(),
+        getGameHistoryWitchUsesDeathPotionRecords: jest.fn(),
+        getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
+        getGameHistoryJudgeRequestRecords: jest.fn(),
       },
       gameRepository: { findOne: jest.fn() },
     };
@@ -56,15 +66,6 @@ describe("Game History Record Service", () => {
     repositories = { gameHistoryRecord: module.get<GameHistoryRecordRepository>(GameHistoryRecordRepository) };
   });
 
-  describe("getGameHistoryRecordsByGameId", () => {
-    it("should get all game history records when called with specific id.", async() => {
-      const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryRecordsByGameId(gameId);
-
-      expect(repositories.gameHistoryRecord.find).toHaveBeenCalledWith({ gameId });
-    });
-  });
-
   describe("createGameHistoryRecord", () => {
     it("should create game history record when called with valid data.", async() => {
       jest.spyOn(services.gameHistoryRecord as unknown as { validateGameHistoryRecordToInsertData }, "validateGameHistoryRecordToInsertData").mockImplementation();
@@ -75,6 +76,42 @@ describe("Game History Record Service", () => {
       await services.gameHistoryRecord.createGameHistoryRecord(validPlay);
 
       expect(repositories.gameHistoryRecord.create).toHaveBeenCalledWith(validPlay);
+    });
+  });
+
+  describe("getGameHistoryWitchUsesLifePotionRecords", () => {
+    it("should get game history records when witch used life potion when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryWitchUsesLifePotionRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesLifePotionRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getGameHistoryWitchUsesDeathPotionRecords", () => {
+    it("should get game history records when witch used death potion when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryWitchUsesDeathPotionRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesDeathPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getGameHistoryVileFatherOfWolvesInfectedRecords", () => {
+    it("should get game history records when vile father of wolves infected a player when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getGameHistoryJudgeRequestRecords", () => {
+    it("should get game history records when stuttering judge requested another vote when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryJudgeRequestRecords).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 

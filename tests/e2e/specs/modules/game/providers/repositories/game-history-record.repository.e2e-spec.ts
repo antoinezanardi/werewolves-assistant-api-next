@@ -3,8 +3,7 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { instanceToPlain } from "class-transformer";
-import type { Types, Model } from "mongoose";
+import type { Model, Types } from "mongoose";
 import type { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../src/modules/game/enums/game-history-record.enum";
 import type { WITCH_POTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
 import type { GAME_PHASES } from "../../../../../../../src/modules/game/enums/game.enum";
@@ -17,10 +16,11 @@ import type { GameSource } from "../../../../../../../src/modules/game/types/gam
 import type { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
 import { E2eTestModule } from "../../../../../../../src/modules/test/e2e-test.module";
 import { fastifyServerDefaultOptions } from "../../../../../../../src/server/constants/server.constant";
-import { bulkCreateFakeGameHistoryRecords, createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
+import { toJSON } from "../../../../../../helpers/object/object.helper";
 
 describe("Game History Record Repository", () => {
   let app: NestFastifyApplication;
@@ -43,48 +43,10 @@ describe("Game History Record Repository", () => {
     await app.close();
   });
 
-  async function populate(length: number, gameHistoryRecords: Partial<GameHistoryRecord>[] = []): Promise<void> {
-    await models.gameHistoryRecord.insertMany(bulkCreateFakeGameHistoryRecords(length, gameHistoryRecords));
+  async function populate(gameHistoryRecords: GameHistoryRecord[]): Promise<void> {
+    await models.gameHistoryRecord.insertMany(gameHistoryRecords);
   }
 
-  describe("find", () => {
-    it("should get empty array when there is no game history records.", async() => {
-      await expect(repositories.gameHistoryRecord.find()).resolves.toStrictEqual([]);
-    });
-
-    it("should get 10 game history records when called.", async() => {
-      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
-      await populate(10, [
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-      ]);
-
-      await expect(repositories.gameHistoryRecord.find()).resolves.toHaveLength(10);
-    });
-
-    it("should get 3 game history records when called with a specific gameId.", async() => {
-      const gameId = createFakeObjectId();
-      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
-      await populate(5, [
-        createFakeGameHistoryRecord({ gameId, play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ gameId, play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ gameId, play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-        createFakeGameHistoryRecord({ play: gameHistoryRecordPlay }),
-      ]);
-
-      await expect(repositories.gameHistoryRecord.find({ gameId })).resolves.toHaveLength(3);
-    });
-  });
-  
   describe("create", () => {
     it.each<{ toInsert: GameHistoryRecordToInsert; errorMessage: string; test: string }>([
       {
@@ -138,12 +100,49 @@ describe("Game History Record Repository", () => {
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlayToInsert });
       const gameHistoryRecord = await repositories.gameHistoryRecord.create(gameHistoryRecordToInsert);
 
-      expect(JSON.parse(JSON.stringify(gameHistoryRecord))).toStrictEqual<GameHistoryRecord>({
-        ...instanceToPlain(gameHistoryRecordToInsert, { exposeUnsetFields: false }) as GameHistoryRecordToInsert,
+      expect(toJSON(gameHistoryRecord)).toStrictEqual<GameHistoryRecord>({
+        ...(toJSON(gameHistoryRecordToInsert) as GameHistoryRecordToInsert),
         _id: expect.any(String) as Types.ObjectId,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
+    });
+  });
+
+  describe("getLastGameHistoryGuardProtectsRecord", () => {
+    it("should return no record when there is no guard play in the history.", async() => {
+      const gameId = createFakeObjectId();
+      await models.gameHistoryRecord.insertMany([
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
+      ]);
+      
+      await expect(repositories.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord(gameId)).resolves.toBeNull();
+    });
+
+    it("should return no record when there gameId is not the good one.", async() => {
+      const gameId = createFakeObjectId();
+      const otherGameId = createFakeObjectId();
+      await models.gameHistoryRecord.insertMany([
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
+      ]);
+
+      await expect(repositories.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord(otherGameId)).resolves.toBeNull();
+    });
+
+    it("should return the last guard game history play record when called.", async() => {
+      const gameId = createFakeObjectId();
+      const gameHistoryRecords = [
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay(), createdAt: new Date("2020-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2021-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay(), createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2023-01-01") }),
+      ];
+      await populate(gameHistoryRecords);
+      const record = await repositories.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord(gameId);
+
+      expect(toJSON(record)).toStrictEqual<GameHistoryRecord>(toJSON(gameHistoryRecords[2]) as GameHistoryRecord);
     });
   });
 });

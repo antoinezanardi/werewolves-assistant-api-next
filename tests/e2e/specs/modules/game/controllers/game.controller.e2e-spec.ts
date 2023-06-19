@@ -6,7 +6,6 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { instanceToPlain } from "class-transformer";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 import { defaultGameOptions } from "../../../../../../src/modules/game/constants/game-options/game-options.constant";
@@ -34,6 +33,7 @@ import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/ga
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
 import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
+import { toJSON } from "../../../../../helpers/object/object.helper";
 import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
 import { initNestApp } from "../../../../helpers/nest-app.helper";
 
@@ -251,7 +251,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
+        ...toJSON(game) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -479,7 +479,7 @@ describe("Game Controller", () => {
       });
 
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json<Game>().options).toStrictEqual<GameOptions>(instanceToPlain(expectedOptions) as GameOptions);
+      expect(response.json<Game>().options).toStrictEqual<GameOptions>(toJSON(expectedOptions) as GameOptions);
     });
   });
 
@@ -531,7 +531,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
+        ...toJSON(game) as Game,
         status: GAME_STATUSES.CANCELED,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
@@ -677,7 +677,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(expectedGame, { exposeUnsetFields: false }) as Game,
+        ...toJSON(expectedGame) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -717,7 +717,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(expectedGame, { exposeUnsetFields: false }) as Game,
+        ...toJSON(expectedGame) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
