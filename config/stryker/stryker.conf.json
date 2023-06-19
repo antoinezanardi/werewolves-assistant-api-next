@@ -30,5 +30,10 @@
     "low": 100,
     "break": 100
   },
-  "disableTypeChecks": "{test,src,lib}/**/*.{js,ts,jsx,tsx,html,vue}"
+  "disableTypeChecks": "{test,src,lib}/**/*.{js,ts,jsx,tsx,html,vue}",
+  "dashboard": {
+    "project": "github.com/antoinezanardi/werewolves-assistant-api-next",
+    "baseUrl": "https://dashboard.stryker-mutator.io/api/reports",
+    "reportType": "full"
+  }
 }
