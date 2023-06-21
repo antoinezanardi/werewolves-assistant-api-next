@@ -3,6 +3,7 @@ import type { Types } from "mongoose";
 import { API_RESOURCES } from "../../../../../shared/api/enums/api.enum";
 import { RESOURCE_NOT_FOUND_REASONS } from "../../../../../shared/exception/enums/resource-not-found-error.enum";
 import { ResourceNotFoundException } from "../../../../../shared/exception/types/resource-not-found-exception.type";
+import type { WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { getAdditionalCardWithId, getNonexistentPlayer } from "../../../helpers/game.helper";
 import type { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
@@ -31,12 +32,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord(gameId);
   }
 
-  public async getGameHistoryWitchUsesLifePotionRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryWitchUsesLifePotionRecords(gameId);
-  }
-
-  public async getGameHistoryWitchUsesDeathPotionRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryWitchUsesDeathPotionRecords(gameId);
+  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WITCH_POTIONS): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, potion);
   }
 
   public async getGameHistoryVileFatherOfWolvesInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
@@ -45,6 +42,18 @@ export class GameHistoryRecordService {
 
   public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords(gameId);
+  }
+
+  public async getGameHistoryWerewolvesEatAncientRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryWerewolvesEatAncientRecords(gameId);
+  }
+
+  public async getGameHistoryAncientProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
+  }
+
+  public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    return this.gameHistoryRecordRepository.getPreviousGameHistoryRecord(gameId);
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {

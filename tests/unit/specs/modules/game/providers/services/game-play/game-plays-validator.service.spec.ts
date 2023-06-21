@@ -1,5 +1,6 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+import { when } from "jest-when";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../../src/modules/game/enums/game-history-record.enum";
 import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
@@ -38,9 +39,9 @@ describe("Game Plays Validator Service", () => {
       create: jest.SpyInstance;
     };
     gameHistoryRecordService: {
-      getLastGamePlayRecord: jest.SpyInstance;
-      getGameHistoryWitchUsesLifePotionRecords: jest.SpyInstance;
-      getGameHistoryWitchUsesDeathPotionRecords: jest.SpyInstance;
+      getLastGameHistoryGuardProtectsRecord: jest.SpyInstance;
+      getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
+      getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
     };
@@ -60,9 +61,9 @@ describe("Game Plays Validator Service", () => {
         create: jest.fn(),
       },
       gameHistoryRecordService: {
-        getLastGamePlayRecord: jest.fn(),
-        getGameHistoryWitchUsesLifePotionRecords: jest.fn(),
-        getGameHistoryWitchUsesDeathPotionRecords: jest.fn(),
+        getLastGameHistoryGuardProtectsRecord: jest.fn(),
+        getLastGameHistoryTieInVotesRecord: jest.fn(),
+        getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
       },
@@ -227,8 +228,8 @@ describe("Game Plays Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto(),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
       
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
     });
@@ -240,8 +241,8 @@ describe("Game Plays Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.DEATH }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`targets.drankPotion` can't be set on this current game's state");
@@ -254,8 +255,8 @@ describe("Game Plays Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.DEATH }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`targets.drankPotion` can't be set on this current game's state");
@@ -275,8 +276,8 @@ describe("Game Plays Validator Service", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) }),
       ];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue(gameHistoryRecords);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue(gameHistoryRecords);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`targets.drankPotion` can't be set on this current game's state");
@@ -293,8 +294,8 @@ describe("Game Plays Validator Service", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) }),
       ];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue(gameHistoryRecords);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`targets.drankPotion` can't be set on this current game's state");
@@ -314,8 +315,8 @@ describe("Game Plays Validator Service", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) }),
       ];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue(gameHistoryRecords);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue(gameHistoryRecords);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`targets.drankPotion` can't be set on this current game's state");
@@ -332,8 +333,8 @@ describe("Game Plays Validator Service", () => {
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) }),
       ];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue(gameHistoryRecords);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`targets.drankPotion` can't be set on this current game's state");
@@ -344,8 +345,8 @@ describe("Game Plays Validator Service", () => {
       const validateDrankDeathPotionTargetsSpy = jest.spyOn(services.gamePlaysValidator as unknown as { validateDrankDeathPotionTargets }, "validateDrankDeathPotionTargets").mockImplementation();
       const game = createFakeGame({ currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayTargetsWithRelationsDto = [];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
       expect(validateDrankLifePotionTargetsSpy).toHaveBeenCalledWith([]);
@@ -360,8 +361,8 @@ describe("Game Plays Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.LIFE }),
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.DEATH }),
       ];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
       expect(validateDrankLifePotionTargetsSpy).toHaveBeenCalledWith([makeGamePlayTargetsWithRelationsDto[0]]);
@@ -375,8 +376,8 @@ describe("Game Plays Validator Service", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.LIFE })];
       const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.DEATH })];
       const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) })];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockReturnValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue(gameHistoryRecords);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
       expect(validateDrankLifePotionTargetsSpy).toHaveBeenCalledWith([makeGamePlayTargetsWithRelationsDto[0]]);
@@ -390,8 +391,8 @@ describe("Game Plays Validator Service", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.DEATH })];
       const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.LIFE })];
       const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) })];
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesLifePotionRecords.mockResolvedValue(gameHistoryRecords);
-      mocks.gameHistoryRecordService.getGameHistoryWitchUsesDeathPotionRecords.mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlaysValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
       expect(validateDrankLifePotionTargetsSpy).toHaveBeenCalledWith([]);
@@ -1110,7 +1111,7 @@ describe("Game Plays Validator Service", () => {
       const game = createFakeGame({ currentPlay: createFakeGamePlayGuardProtects(), options });
       const targetedPlayer = createFakeVillagerAlivePlayer();
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer })];
-      mocks.gameHistoryRecordService.getLastGamePlayRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [{ player: targetedPlayer }] }) }));
+      mocks.gameHistoryRecordService.getLastGameHistoryGuardProtectsRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [{ player: targetedPlayer }] }) }));
 
       await expect(services.gamePlaysValidator["validateGamePlayGuardTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("Guard can't protect this target");
@@ -1121,7 +1122,7 @@ describe("Game Plays Validator Service", () => {
       const game = createFakeGame({ currentPlay: createFakeGamePlayGuardProtects(), options });
       const targetedPlayer = createFakeVillagerAlivePlayer();
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer })];
-      mocks.gameHistoryRecordService.getLastGamePlayRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [{ player: targetedPlayer }] }) }));
+      mocks.gameHistoryRecordService.getLastGameHistoryGuardProtectsRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [{ player: targetedPlayer }] }) }));
 
       await expect(services.gamePlaysValidator["validateGamePlayGuardTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
     });
@@ -1131,7 +1132,7 @@ describe("Game Plays Validator Service", () => {
       const game = createFakeGame({ currentPlay: createFakeGamePlayGuardProtects(), options });
       const targetedPlayer = createFakeVillagerAlivePlayer();
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer })];
-      mocks.gameHistoryRecordService.getLastGamePlayRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [{ player: createFakeSeerAlivePlayer() }] }) }));
+      mocks.gameHistoryRecordService.getLastGameHistoryGuardProtectsRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [{ player: createFakeSeerAlivePlayer() }] }) }));
 
       await expect(services.gamePlaysValidator["validateGamePlayGuardTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
     });
@@ -1178,7 +1179,7 @@ describe("Game Plays Validator Service", () => {
     it("should throw error when targeted player is not in last tie in votes and upcoming action is SETTLE_VOTES.", async() => {
       const game = createFakeGame({ currentPlay: createFakeGamePlaySheriffSettlesVotes() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
-      mocks.gameHistoryRecordService.getLastGamePlayRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE, targets: [{ player: createFakeSeerAlivePlayer() }] }) }));
+      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE, targets: [{ player: createFakeSeerAlivePlayer() }] }) }));
 
       await expect(services.gamePlaysValidator["validateGamePlaySheriffTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("Sheriff can't break the tie in votes with this target");
@@ -1187,7 +1188,7 @@ describe("Game Plays Validator Service", () => {
     it("should do nothing when targeted player for sheriff settling votes is valid.", async() => {
       const game = createFakeGame({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlaySheriffSettlesVotes() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] })];
-      mocks.gameHistoryRecordService.getLastGamePlayRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE, targets: [{ player: game.players[0] }] }) }));
+      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE, targets: [{ player: game.players[0] }] }) }));
 
       await expect(services.gamePlaysValidator["validateGamePlaySheriffTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
     });

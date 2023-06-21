@@ -30,24 +30,73 @@ export class GameHistoryRecordRepository {
     const filter: Record<string, unknown> = {
       gameId,
       "play.action": GAME_PLAY_ACTIONS.VOTE,
-      "votingResult": GAME_HISTORY_RECORD_VOTING_RESULTS.TIE,
+      "play.votingResult": GAME_HISTORY_RECORD_VOTING_RESULTS.TIE,
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
-  public async getGameHistoryWitchUsesLifePotionRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordModel.find({ gameId, targets: { $elemMatch: { drankPotion: WITCH_POTIONS.LIFE } } });
-  }
-
-  public async getGameHistoryWitchUsesDeathPotionRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordModel.find({ gameId, targets: { $elemMatch: { drankPotion: WITCH_POTIONS.DEATH } } });
+  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WITCH_POTIONS): Promise<GameHistoryRecord[]> {
+    const filter: Record<string, unknown> = {
+      gameId,
+      "play.source.name": ROLE_NAMES.WITCH,
+      "play.action": GAME_PLAY_ACTIONS.USE_POTIONS,
+      "play.targets.drankPotion": potion,
+    };
+    return this.gameHistoryRecordModel.find(filter);
   }
 
   public async getGameHistoryVileFatherOfWolvesInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordModel.find({ gameId, targets: { $elemMatch: { isInfected: true } } });
+    const filter: Record<string, unknown> = {
+      gameId,
+      "play.action": GAME_PLAY_ACTIONS.EAT,
+      "play.targets.isInfected": true,
+    };
+    return this.gameHistoryRecordModel.find(filter);
   }
 
   public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordModel.find({ gameId, play: { didJudgeRequestAnotherVote: true } });
+    const filter: Record<string, unknown> = {
+      gameId,
+      "play.didJudgeRequestAnotherVote": true,
+    };
+    return this.gameHistoryRecordModel.find(filter);
+  }
+  
+  public async getGameHistoryWerewolvesEatAncientRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    const filter: Record<string, unknown> = {
+      gameId,
+      "play.action": GAME_PLAY_ACTIONS.EAT,
+      "play.targets.player.role.current": ROLE_NAMES.ANCIENT,
+    };
+    return this.gameHistoryRecordModel.find(filter);
+  }
+
+  public async getGameHistoryAncientProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    const filter: Record<string, unknown> = {
+      gameId,
+      $or: [
+        {
+          "play.source.name": ROLE_NAMES.GUARD,
+          "play.action": GAME_PLAY_ACTIONS.PROTECT,
+          "play.targets.player.role.current": ROLE_NAMES.ANCIENT,
+        },
+        {
+          "play.source.name": ROLE_NAMES.WITCH,
+          "play.action": GAME_PLAY_ACTIONS.USE_POTIONS,
+          "play.targets": {
+            $elemMatch: {
+              "player.role.current": ROLE_NAMES.ANCIENT,
+              "drankPotion": WITCH_POTIONS.LIFE,
+            },
+          },
+        },
+      ],
+    };
+    return this.gameHistoryRecordModel.find(filter);
+  }
+  
+  public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    const filter: Record<string, unknown> = { gameId };
+    return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 }

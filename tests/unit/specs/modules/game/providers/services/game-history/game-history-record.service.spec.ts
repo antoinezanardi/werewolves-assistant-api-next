@@ -1,6 +1,7 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
+import { WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../../src/modules/game/enums/player.enum";
 import { GameHistoryRecordRepository } from "../../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../../src/modules/game/providers/repositories/game.repository";
@@ -21,11 +22,10 @@ jest.mock("../../../../../../../../src/shared/exception/types/resource-not-found
 describe("Game History Record Service", () => {
   let mocks: {
     gameHistoryRecordRepository: {
-      find: jest.SpyInstance;
       create: jest.SpyInstance;
-      getLastGamePlayRecord: jest.SpyInstance;
-      getGameHistoryWitchUsesLifePotionRecords: jest.SpyInstance;
-      getGameHistoryWitchUsesDeathPotionRecords: jest.SpyInstance;
+      getLastGameHistoryGuardProtectsRecord: jest.SpyInstance;
+      getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
+      getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
     };
@@ -37,11 +37,10 @@ describe("Game History Record Service", () => {
   beforeEach(async() => {
     mocks = {
       gameHistoryRecordRepository: {
-        find: jest.fn(),
         create: jest.fn(),
-        getLastGamePlayRecord: jest.fn(),
-        getGameHistoryWitchUsesLifePotionRecords: jest.fn(),
-        getGameHistoryWitchUsesDeathPotionRecords: jest.fn(),
+        getLastGameHistoryGuardProtectsRecord: jest.fn(),
+        getLastGameHistoryTieInVotesRecord: jest.fn(),
+        getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
       },
@@ -79,21 +78,37 @@ describe("Game History Record Service", () => {
     });
   });
 
-  describe("getGameHistoryWitchUsesLifePotionRecords", () => {
-    it("should get game history records when witch used life potion when called.", async() => {
+  describe("getLastGameHistoryGuardProtectsRecord", () => {
+    it("should get game history when guard protected when called.", async() => {
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryWitchUsesLifePotionRecords(gameId);
+      await services.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord(gameId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesLifePotionRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 
-  describe("getGameHistoryWitchUsesDeathPotionRecords", () => {
+  describe("getLastGameHistoryTieInVotesRecord", () => {
+    it("should get game history when all voted and there was a tie when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId);
+
+      expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getGameHistoryWitchUsesSpecificPotionRecords", () => {
+    it("should get game history records when witch used life potion when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, WITCH_POTIONS.LIFE);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, WITCH_POTIONS.LIFE);
+    });
+
     it("should get game history records when witch used death potion when called.", async() => {
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryWitchUsesDeathPotionRecords(gameId);
+      await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, WITCH_POTIONS.DEATH);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesDeathPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, WITCH_POTIONS.DEATH);
     });
   });
 
