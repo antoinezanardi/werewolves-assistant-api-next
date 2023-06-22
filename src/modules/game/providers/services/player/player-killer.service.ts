@@ -3,7 +3,6 @@ import { cloneDeep } from "lodash";
 import type { Types } from "mongoose";
 import { createCantFindPlayerUnexpectedException, createPlayerIsDeadUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../role/enums/role.enum";
-import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "../../../enums/player.enum";
 import { createGamePlayHunterShoots, createGamePlayScapegoatBansVoting, createGamePlaySheriffDelegates } from "../../../helpers/game-play/game-play.factory";
 import { getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "../../../helpers/game.helper";
@@ -11,17 +10,19 @@ import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPla
 import { createCantVoteByAllPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByAncientPlayerAttribute } from "../../../helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerReconsiderPardonByAllDeath } from "../../../helpers/player/player-death/player-death.factory";
 import { doesPlayerHaveAttribute } from "../../../helpers/player/player.helper";
-import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
 import type { Game } from "../../../schemas/game.schema";
 import type { PlayerDeath } from "../../../schemas/player/player-death.schema";
 import type { Player } from "../../../schemas/player/player.schema";
+import { GameHistoryRecordService } from "../game-history/game-history-record.service";
 
 @Injectable()
 export class PlayerKillerService {
-  public killOrRevealPlayer(playerId: Types.ObjectId, game: Game, death: PlayerDeath, gameHistoryRecords: GameHistoryRecord[]): Game {
+  public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
+  
+  public async killOrRevealPlayer(playerId: Types.ObjectId, game: Game, death: PlayerDeath): Promise<Game> {
     const clonedGame = cloneDeep(game);
     const playerToKill = this.getPlayerToKillInGame(playerId, clonedGame);
-    if (this.isPlayerKillable(playerToKill, clonedGame, death.cause, gameHistoryRecords)) {
+    if (await this.isPlayerKillable(playerToKill, clonedGame, death.cause)) {
       return this.killPlayer(playerToKill, clonedGame, death);
     }
     if (this.doesPlayerRoleMustBeRevealed(playerToKill, death)) {
@@ -30,11 +31,11 @@ export class PlayerKillerService {
     return clonedGame;
   }
 
-  public isAncientKillable(game: Game, cause: PLAYER_DEATH_CAUSES, gameHistoryRecords: GameHistoryRecord[]): boolean {
+  public async isAncientKillable(game: Game, cause: PLAYER_DEATH_CAUSES): Promise<boolean> {
     if (cause !== PLAYER_DEATH_CAUSES.EATEN) {
       return true;
     }
-    const ancientLivesCountAgainstWerewolves = this.getAncientLivesCountAgainstWerewolves(game, gameHistoryRecords);
+    const ancientLivesCountAgainstWerewolves = await this.getAncientLivesCountAgainstWerewolves(game);
     return ancientLivesCountAgainstWerewolves - 1 <= 0;
   }
 
@@ -61,17 +62,10 @@ export class PlayerKillerService {
       death.cause === PLAYER_DEATH_CAUSES.VOTE;
   }
 
-  private getAncientLivesCountAgainstWerewolves(game: Game, gameHistoryRecords: GameHistoryRecord[]): number {
+  private async getAncientLivesCountAgainstWerewolves(game: Game): Promise<number> {
     const { livesCountAgainstWerewolves } = game.options.roles.ancient;
-    const werewolvesEatAncientRecords = gameHistoryRecords.filter(({ play }) => {
-      const { action, targets } = play;
-      return action === GAME_PLAY_ACTIONS.EAT && targets?.find(({ player }) => player.role.current === ROLE_NAMES.ANCIENT);
-    });
-    const ancientProtectedFromWerewolvesRecords = gameHistoryRecords.filter(({ play }) => {
-      const { action, targets } = play;
-      const ancientTarget = targets?.find(({ player }) => player.role.current === ROLE_NAMES.ANCIENT);
-      return action === GAME_PLAY_ACTIONS.PROTECT && ancientTarget || ancientTarget?.drankPotion === WITCH_POTIONS.LIFE;
-    });
+    const werewolvesEatAncientRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords(game._id);
+    const ancientProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords(game._id);
     return werewolvesEatAncientRecords.reduce((acc, werewolvesEatAncientRecord) => {
       const wasAncientProtectedFromWerewolves = !!ancientProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatAncientRecord.turn);
       if (!wasAncientProtectedFromWerewolves) {
@@ -93,7 +87,7 @@ export class PlayerKillerService {
     return !isPlayerSavedByWitch && (!isPlayerProtectedByGuard || eatenPlayer.role.current === ROLE_NAMES.LITTLE_GIRL && !isLittleGirlProtectedByGuard);
   }
 
-  private isPlayerKillable(player: Player, game: Game, cause: PLAYER_DEATH_CAUSES, gameHistoryRecords: GameHistoryRecord[]): boolean {
+  private async isPlayerKillable(player: Player, game: Game, cause: PLAYER_DEATH_CAUSES): Promise<boolean> {
     if (cause === PLAYER_DEATH_CAUSES.EATEN && !this.canPlayerBeEaten(player, game)) {
       return false;
     }
@@ -101,7 +95,7 @@ export class PlayerKillerService {
       return this.isIdiotKillable(player, cause);
     }
     if (player.role.current === ROLE_NAMES.ANCIENT) {
-      return this.isAncientKillable(game, cause, gameHistoryRecords);
+      return this.isAncientKillable(game, cause);
     }
     return true;
   }
