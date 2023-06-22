@@ -200,7 +200,7 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
-      expect(mocks.gamePlaysMakerService.makeGamePlay).toHaveBeenCalledExactlyOnceWith(play, game, []);
+      expect(mocks.gamePlaysMakerService.makeGamePlay).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call update method when game can be canceled.", async() => {

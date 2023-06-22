@@ -28,6 +28,9 @@ describe("Game History Record Service", () => {
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
+      getGameHistoryWerewolvesEatAncientRecords: jest.SpyInstance;
+      getGameHistoryAncientProtectedFromWerewolvesRecords: jest.SpyInstance;
+      getPreviousGameHistoryRecord: jest.SpyInstance;
     };
     gameRepository: { findOne: jest.SpyInstance };
   };
@@ -43,6 +46,9 @@ describe("Game History Record Service", () => {
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
+        getGameHistoryWerewolvesEatAncientRecords: jest.fn(),
+        getGameHistoryAncientProtectedFromWerewolvesRecords: jest.fn(),
+        getPreviousGameHistoryRecord: jest.fn(),
       },
       gameRepository: { findOne: jest.fn() },
     };
@@ -127,6 +133,33 @@ describe("Game History Record Service", () => {
       await services.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId);
 
       expect(repositories.gameHistoryRecord.getGameHistoryJudgeRequestRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+  
+  describe("getGameHistoryWerewolvesEatAncientRecords", () => {
+    it("should get game history records when any kind of werewolves eat ancient when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryWerewolvesEatAncientRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryWerewolvesEatAncientRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getGameHistoryAncientProtectedFromWerewolvesRecords", () => {
+    it("should get game history records when ancient is protected from werewolves when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryAncientProtectedFromWerewolvesRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getPreviousGameHistoryRecord", () => {
+    it("should previous game history record when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getPreviousGameHistoryRecord(gameId);
+
+      expect(repositories.gameHistoryRecord.getPreviousGameHistoryRecord).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 

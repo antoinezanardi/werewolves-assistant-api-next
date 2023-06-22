@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import type { Types } from "mongoose";
+import type { FilterQuery, Types } from "mongoose";
 import { Model } from "mongoose";
 import { ROLE_NAMES } from "../../../role/enums/role.enum";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../enums/game-history-record.enum";
@@ -18,7 +18,7 @@ export class GameHistoryRecordRepository {
   }
 
   public async getLastGameHistoryGuardProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
-    const filter: Record<string, unknown> = {
+    const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GAME_PLAY_ACTIONS.PROTECT,
       "play.source.name": ROLE_NAMES.GUARD,
@@ -27,7 +27,7 @@ export class GameHistoryRecordRepository {
   }
   
   public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
-    const filter: Record<string, unknown> = {
+    const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GAME_PLAY_ACTIONS.VOTE,
       "play.votingResult": GAME_HISTORY_RECORD_VOTING_RESULTS.TIE,
@@ -36,7 +36,7 @@ export class GameHistoryRecordRepository {
   }
 
   public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WITCH_POTIONS): Promise<GameHistoryRecord[]> {
-    const filter: Record<string, unknown> = {
+    const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.source.name": ROLE_NAMES.WITCH,
       "play.action": GAME_PLAY_ACTIONS.USE_POTIONS,
@@ -46,7 +46,7 @@ export class GameHistoryRecordRepository {
   }
 
   public async getGameHistoryVileFatherOfWolvesInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    const filter: Record<string, unknown> = {
+    const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GAME_PLAY_ACTIONS.EAT,
       "play.targets.isInfected": true,
@@ -55,7 +55,7 @@ export class GameHistoryRecordRepository {
   }
 
   public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    const filter: Record<string, unknown> = {
+    const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.didJudgeRequestAnotherVote": true,
     };
@@ -63,7 +63,7 @@ export class GameHistoryRecordRepository {
   }
   
   public async getGameHistoryWerewolvesEatAncientRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    const filter: Record<string, unknown> = {
+    const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GAME_PLAY_ACTIONS.EAT,
       "play.targets.player.role.current": ROLE_NAMES.ANCIENT,
@@ -72,7 +72,7 @@ export class GameHistoryRecordRepository {
   }
 
   public async getGameHistoryAncientProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    const filter: Record<string, unknown> = {
+    const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       $or: [
         {
@@ -96,7 +96,7 @@ export class GameHistoryRecordRepository {
   }
   
   public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
-    const filter: Record<string, unknown> = { gameId };
+    const filter: FilterQuery<GameHistoryRecord> = { gameId };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 }
