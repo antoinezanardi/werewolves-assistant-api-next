@@ -152,15 +152,15 @@ jobs:
       - name: Set Jest Results Environment Variables
         id: outputs
         run: |
-          echo "JEST_TEST_COUNT=$JEST_TESTS_COUNT" >> "$GITHUB_OUTPUT"
-          echo "JEST_STATEMENTS_COUNT=$JEST_STATEMENTS_COUNT" >> "$GITHUB_OUTPUT"
-          echo "JEST_BRANCHES_COUNT=$JEST_BRANCHES_COUNT" >> "$GITHUB_OUTPUT"
-          echo "JEST_FUNCTIONS_COUNT=$JEST_FUNCTIONS_COUNT" >> "$GITHUB_OUTPUT"
-          echo "JEST_LINES_COUNT=$JEST_LINES_COUNT" >> "$GITHUB_OUTPUT"
-          echo "JEST_STATEMENTS_PERCENT=$JEST_STATEMENTS_PERCENT" >> "$GITHUB_OUTPUT"
-          echo "JEST_BRANCHES_PERCENT=$JEST_BRANCHES_PERCENT" >> "$GITHUB_OUTPUT"
-          echo "JEST_FUNCTIONS_PERCENT=$JEST_FUNCTIONS_PERCENT" >> "$GITHUB_OUTPUT"
-          echo "JEST_LINES_PERCENT=$JEST_LINES_PERCENT" >> "$GITHUB_OUTPUT"
+          echo "JEST_TEST_COUNT=${{ env.JEST_TESTS_COUNT }}" >> "$GITHUB_OUTPUT"
+          echo "JEST_STATEMENTS_COUNT=${{ env.JEST_STATEMENTS_COUNT }}" >> "$GITHUB_OUTPUT"
+          echo "JEST_BRANCHES_COUNT=${{ env.JEST_BRANCHES_COUNT }}" >> "$GITHUB_OUTPUT"
+          echo "JEST_FUNCTIONS_COUNT=${{ env.JEST_FUNCTIONS_COUNT }}" >> "$GITHUB_OUTPUT"
+          echo "JEST_LINES_COUNT=${{ env.JEST_LINES_COUNT }}" >> "$GITHUB_OUTPUT"
+          echo "JEST_STATEMENTS_PERCENT=${{ env.JEST_STATEMENTS_PERCENT }}" >> "$GITHUB_OUTPUT"
+          echo "JEST_BRANCHES_PERCENT=${{ env.JEST_BRANCHES_PERCENT }}" >> "$GITHUB_OUTPUT"
+          echo "JEST_FUNCTIONS_PERCENT=${{ env.JEST_FUNCTIONS_PERCENT }}" >> "$GITHUB_OUTPUT"
+          echo "JEST_LINES_PERCENT=${{ env.JEST_LINES_PERCENT }}" >> "$GITHUB_OUTPUT"
       - name: Save tests coverage in cache 🥡
         uses: actions/cache/save@v3
         id: cache-tests-coverage
