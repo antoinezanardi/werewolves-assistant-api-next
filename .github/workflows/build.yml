@@ -148,7 +148,7 @@ jobs:
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
       - name: All tests 🧬
-        run: npm run test:cov:results-as-env >> "$GITHUB_ENV"
+        run: npm run test:cov 2>&1 | ./scripts/transform-jest-results-as-env-variables.sh >> "$GITHUB_ENV"
       - name: Set Jest Results Environment Variables
         id: outputs
         run: |
