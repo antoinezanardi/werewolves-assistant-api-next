@@ -10,8 +10,12 @@ function canPiedPiperCharm(piedPiperPlayer: Player, isPowerlessIfInfected: boole
   return isPlayerAliveAndPowerful(piedPiperPlayer) && (!isPowerlessIfInfected || piedPiperPlayer.side.current === ROLE_SIDES.VILLAGERS);
 }
 
+function isPlayerPowerful(player: Player): boolean {
+  return !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS);
+}
+
 function isPlayerAliveAndPowerful(player: Player): boolean {
-  return player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS);
+  return player.isAlive && isPlayerPowerful(player);
 }
 
 function isPlayerOnWerewolvesSide(player: Player): boolean {
@@ -25,6 +29,7 @@ function isPlayerOnVillagersSide(player: Player): boolean {
 export {
   doesPlayerHaveAttribute,
   canPiedPiperCharm,
+  isPlayerPowerful,
   isPlayerAliveAndPowerful,
   isPlayerOnWerewolvesSide,
   isPlayerOnVillagersSide,

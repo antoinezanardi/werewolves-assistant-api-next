@@ -464,7 +464,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame();
       await services.playerKiller["isPlayerKillable"](player, game, PLAYER_DEATH_CAUSES.VOTE);
 
-      expect(isIdiotKillableMock).toHaveBeenCalledWith(player, PLAYER_DEATH_CAUSES.VOTE);
+      expect(isIdiotKillableMock).toHaveBeenCalledExactlyOnceWith(player, PLAYER_DEATH_CAUSES.VOTE);
     });
 
     it("should not call is idiot killable when player is not an idiot.", async() => {
@@ -482,7 +482,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame();
       await services.playerKiller["isPlayerKillable"](player, game, PLAYER_DEATH_CAUSES.VOTE);
 
-      expect(isAncientKillableMock).toHaveBeenCalledWith(game, PLAYER_DEATH_CAUSES.VOTE);
+      expect(isAncientKillableMock).toHaveBeenCalledExactlyOnceWith(game, PLAYER_DEATH_CAUSES.VOTE);
     });
 
     it("should not call is ancient killable when player is not an ancient.", async() => {
@@ -624,7 +624,7 @@ describe("Player Killer Service", () => {
       mocks.playerKillerService.killPlayer = jest.spyOn(services.playerKiller as unknown as { killPlayer }, "killPlayer").mockImplementation();
       services.playerKiller["applyInLovePlayerDeathOutcomes"](players[1], game);
 
-      expect(mocks.playerKillerService.killPlayer).toHaveBeenCalledWith(players[0], game, createFakePlayerBrokenHeartByCupidDeath());
+      expect(mocks.playerKillerService.killPlayer).toHaveBeenCalledExactlyOnceWith(players[0], game, createFakePlayerBrokenHeartByCupidDeath());
     });
   });
 
@@ -729,9 +729,9 @@ describe("Player Killer Service", () => {
       services.playerKiller["applyPlayerAttributesDeathOutcomes"](game.players[2], game);
 
       expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyPlayerAttributesDeathOutcomes", interpolations);
-      expect(mocks.playerKillerService.applySheriffPlayerDeathOutcomes).toHaveBeenCalledWith(game.players[2], game);
-      expect(mocks.playerKillerService.applyInLovePlayerDeathOutcomes).toHaveBeenCalledWith(game.players[2], game);
-      expect(mocks.playerKillerService.applyWorshipedPlayerDeathOutcomes).toHaveBeenCalledWith(game.players[2], game);
+      expect(mocks.playerKillerService.applySheriffPlayerDeathOutcomes).toHaveBeenCalledExactlyOnceWith(game.players[2], game);
+      expect(mocks.playerKillerService.applyInLovePlayerDeathOutcomes).toHaveBeenCalledExactlyOnceWith(game.players[2], game);
+      expect(mocks.playerKillerService.applyWorshipedPlayerDeathOutcomes).toHaveBeenCalledExactlyOnceWith(game.players[2], game);
       expect(mocks.gameHelper.getPlayerWithIdOrThrow).toHaveBeenNthCalledWith(1, game.players[2]._id, game, exception);
       expect(mocks.gameHelper.getPlayerWithIdOrThrow).toHaveBeenNthCalledWith(2, game.players[2]._id, game, exception);
     });
@@ -992,7 +992,7 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerDeathPotionByWitchDeath();
       services.playerKiller["applyAncientDeathOutcomes"](players[0], game, death);
 
-      expect(mocks.playerKillerService.killPlayer).toHaveBeenCalledWith(players[1], game, createFakePlayerReconsiderPardonByAllDeath());
+      expect(mocks.playerKillerService.killPlayer).toHaveBeenCalledExactlyOnceWith(players[1], game, createFakePlayerReconsiderPardonByAllDeath());
     });
   });
 
@@ -1201,8 +1201,8 @@ describe("Player Killer Service", () => {
       const createPlayerIsDeadUnexpectedExceptionMock = jest.spyOn(UnexpectedExceptionFactory, "createPlayerIsDeadUnexpectedException").mockReturnValue(playerIsDeadException);
 
       expect(() => services.playerKiller["getPlayerToKillInGame"](players[1]._id, game)).toThrow(playerIsDeadException);
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledWith("getPlayerToKillInGame", exceptionInterpolations);
-      expect(createPlayerIsDeadUnexpectedExceptionMock).toHaveBeenCalledWith("getPlayerToKillInGame", exceptionInterpolations);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("getPlayerToKillInGame", exceptionInterpolations);
+      expect(createPlayerIsDeadUnexpectedExceptionMock).toHaveBeenCalledExactlyOnceWith("getPlayerToKillInGame", exceptionInterpolations);
     });
 
     it("should get player to kill when called.", () => {

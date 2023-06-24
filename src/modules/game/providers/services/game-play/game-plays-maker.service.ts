@@ -154,7 +154,7 @@ export class GamePlaysMakerService {
     }
     const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(clonedGame._id);
     if (previousGameHistoryRecord?.play.votingResult !== GAME_HISTORY_RECORD_VOTING_RESULTS.TIE) {
-      const gamePlayAllVote = createGamePlayAllVote();
+      const gamePlayAllVote = createGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES });
       return prependUpcomingPlayInGame(gamePlayAllVote, clonedGame);
     }
     return clonedGame;

@@ -80,7 +80,7 @@ describe("Game History Record Service", () => {
       });
       await services.gameHistoryRecord.createGameHistoryRecord(validPlay);
 
-      expect(repositories.gameHistoryRecord.create).toHaveBeenCalledWith(validPlay);
+      expect(repositories.gameHistoryRecord.create).toHaveBeenCalledExactlyOnceWith(validPlay);
     });
   });
 
@@ -221,7 +221,7 @@ describe("Game History Record Service", () => {
       },
     ])("should throw resource not found error when $test [#$#].", ({ play, errorParameters }) => {
       expect(() => services.gameHistoryRecord["validateGameHistoryRecordToInsertPlayData"](play, fakeGame)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(...errorParameters);
     });
 
     it("should not throw any errors when called with valid play data.", () => {
@@ -268,7 +268,7 @@ describe("Game History Record Service", () => {
       },
     ])("should throw resource not found error when $test [#$#].", async({ gameHistoryRecord, errorParameters }) => {
       await expect(services.gameHistoryRecord["validateGameHistoryRecordToInsertData"](gameHistoryRecord)).toReject();
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(...errorParameters);
     });
 
     it("should not throw any errors when called with valid data.", async() => {

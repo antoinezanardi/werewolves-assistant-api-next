@@ -13,7 +13,7 @@ import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto
 import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import type { MakeGamePlayDto } from "../../../../../../src/modules/game/dto/make-game-play/make-game-play.dto";
-import { GAME_PLAY_ACTIONS } from "../../../../../../src/modules/game/enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
 import { GameModule } from "../../../../../../src/modules/game/game.module";
@@ -27,7 +27,7 @@ import { createFakeGameOptionsDto } from "../../../../../factories/game/dto/crea
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
-import { createFakeGamePlayAllVote, createFakeGamePlayCupidCharms, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayAllVote, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
@@ -600,7 +600,7 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
+        upcomingPlays: [createFakeGamePlayAllVote()],
         players,
       });
       await models.game.create(game);
@@ -657,8 +657,8 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        currentPlay: { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE },
-        upcomingPlays: [createFakeGamePlayCupidCharms()],
+        currentPlay: createFakeGamePlayAllVote(),
+        upcomingPlays: [createFakeGamePlaySeerLooks()],
         players,
       });
       await models.game.create(game);
@@ -668,7 +668,10 @@ describe("Game Controller", () => {
           { sourceId: players[1]._id, targetId: players[0]._id },
         ],
       });
-      const expectedGame = createFakeGame(game);
+      const expectedGame = createFakeGame({
+        ...game,
+        currentPlay: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+      });
       const response = await app.inject({
         method: "POST",
         url: `/games/${game._id.toString()}/play`,

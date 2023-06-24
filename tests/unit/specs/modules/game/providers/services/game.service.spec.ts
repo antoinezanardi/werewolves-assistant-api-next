@@ -19,7 +19,7 @@ import { UnexpectedException } from "../../../../../../../src/shared/exception/t
 import { createFakeCreateGameDto } from "../../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
-import { createFakeGamePlayAllVote } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayAllVote, createFakeGamePlayWerewolvesEat } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
@@ -43,6 +43,7 @@ describe("Game Service", () => {
     gamePlaysManagerService: {
       getUpcomingNightPlays: jest.SpyInstance;
       proceedToNextGamePlay: jest.SpyInstance;
+      removeObsoleteUpcomingPlays: jest.SpyInstance;
     };
     gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.SpyInstance };
     gamePlaysMakerService: { makeGamePlay: jest.SpyInstance };
@@ -66,6 +67,7 @@ describe("Game Service", () => {
       gamePlaysManagerService: {
         getUpcomingNightPlays: jest.fn(),
         proceedToNextGamePlay: jest.fn(),
+        removeObsoleteUpcomingPlays: jest.fn(),
       },
       gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.fn() },
       gamePlaysMakerService: { makeGamePlay: jest.fn() },
@@ -107,7 +109,7 @@ describe("Game Service", () => {
     it("should get all games when called.", async() => {
       await services.game.getGames();
 
-      expect(repositories.game.find).toHaveBeenCalledWith();
+      expect(repositories.game.find).toHaveBeenCalledExactlyOnceWith();
     });
   });
 
@@ -141,13 +143,13 @@ describe("Game Service", () => {
       const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
 
       await expect(services.game.cancelGame(canceledGame)).toReject();
-      expect(BadResourceMutationException).toHaveBeenCalledWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
+      expect(BadResourceMutationException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
     });
 
     it("should call update method when game can be canceled.", async() => {
       await services.game.cancelGame(existingPlayingGame);
       
-      expect(localMocks.gameService.updateGame).toHaveBeenCalledWith(existingPlayingGame._id, { status: GAME_STATUSES.CANCELED });
+      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(existingPlayingGame._id, { status: GAME_STATUSES.CANCELED });
     });
   });
 
@@ -166,12 +168,13 @@ describe("Game Service", () => {
       createFakeVillagerAlivePlayer({ isAlive: false }),
       createFakeVillagerAlivePlayer({ isAlive: false }),
     ];
-    const soonToBeOverGame = createFakeGame({ status: GAME_STATUSES.PLAYING, players: nearlyAllDeadPlayers });
+    const soonToBeOverGame = createFakeGame({ status: GAME_STATUSES.PLAYING, players: nearlyAllDeadPlayers, currentPlay: createFakeGamePlayWerewolvesEat() });
     const play = createFakeMakeGamePlayWithRelationsDto();
 
     beforeEach(() => {
       mocks.gamePlaysMakerService.makeGamePlay.mockReturnValue(game);
       mocks.gamePlaysManagerService.proceedToNextGamePlay.mockReturnValue(game);
+      mocks.gamePlaysManagerService.removeObsoleteUpcomingPlays.mockReturnValue(game.upcomingPlays);
       mocks.gamePlayerHelper.createMakeGamePlayDtoWithRelations.mockReturnValue(play);
       localMocks = {
         gameService: {
@@ -186,7 +189,7 @@ describe("Game Service", () => {
       const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
 
       await expect(services.game.makeGamePlay(canceledGame, makeGamePlayDto)).toReject();
-      expect(BadResourceMutationException).toHaveBeenCalledWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
+      expect(BadResourceMutationException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
     });
 
     it("should call play validator method when called.", async() => {
@@ -216,9 +219,10 @@ describe("Game Service", () => {
       jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
       mocks.gamePlaysMakerService.makeGamePlay.mockReturnValue(soonToBeOverGame);
       mocks.gamePlaysManagerService.proceedToNextGamePlay.mockReturnValue(soonToBeOverGame);
+      mocks.gamePlaysManagerService.removeObsoleteUpcomingPlays.mockReturnValue(soonToBeOverGame.upcomingPlays);
       await services.game.makeGamePlay(soonToBeOverGame, makeGamePlayDto);
 
-      expect(localMocks.gameService.setGameAsOver).toHaveBeenCalledWith(soonToBeOverGame);
+      expect(localMocks.gameService.setGameAsOver).toHaveBeenCalledExactlyOnceWith(soonToBeOverGame);
     });
   });
 
@@ -228,7 +232,7 @@ describe("Game Service", () => {
       mocks.gameRepository.updateOne.mockResolvedValue(null);
 
       await expect(services.game["updateGame"](unknownObjectId, { status: GAME_STATUSES.OVER })).toReject();
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAMES, unknownObjectId.toString());
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.GAMES, unknownObjectId.toString());
     });
 
     it("should return updated game when called.", async() => {
@@ -237,7 +241,7 @@ describe("Game Service", () => {
       mocks.gameRepository.updateOne.mockResolvedValue(game);
 
       await expect(services.game["updateGame"](game._id, gameDataToUpdate)).resolves.toStrictEqual<Game>(game);
-      expect(mocks.gameRepository.updateOne).toHaveBeenCalledWith({ _id: game._id }, gameDataToUpdate);
+      expect(mocks.gameRepository.updateOne).toHaveBeenCalledExactlyOnceWith({ _id: game._id }, gameDataToUpdate);
     });
   });
 
