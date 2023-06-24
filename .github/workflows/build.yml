@@ -150,6 +150,9 @@ jobs:
   mutant-tests:
     name: Mutant Tests 👽
     runs-on: ubuntu-latest
+    env:
+      STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+      VERSION: ${{ github.head_ref }}
     needs:
       - install
     steps:

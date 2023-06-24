@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import type { Types, FilterQuery } from "mongoose";
+import type { Types } from "mongoose";
 import { API_RESOURCES } from "../../../../../shared/api/enums/api.enum";
 import { RESOURCE_NOT_FOUND_REASONS } from "../../../../../shared/exception/enums/resource-not-found-error.enum";
 import { ResourceNotFoundException } from "../../../../../shared/exception/types/resource-not-found-exception.type";
+import type { WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { getAdditionalCardWithId, getNonexistentPlayer } from "../../../helpers/game.helper";
 import type { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import type { GameHistoryRecord, GameHistoryRecordDocument } from "../../../schemas/game-history-record/game-history-record.schema";
+import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
 import type { Game } from "../../../schemas/game.schema";
 import type { GameHistoryRecordToInsert } from "../../../types/game-history-record.type";
 import { GameHistoryRecordRepository } from "../../repositories/game-history-record.repository";
@@ -18,13 +19,41 @@ export class GameHistoryRecordService {
     private readonly gameRepository: GameRepository,
   ) {}
 
-  public async getGameHistoryRecordsByGameId(gameId: Types.ObjectId, filter: FilterQuery<GameHistoryRecordDocument> = {}): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.find({ gameId, ...filter });
-  }
-
   public async createGameHistoryRecord(gameHistoryRecordToInsert: GameHistoryRecordToInsert): Promise<GameHistoryRecord> {
     await this.validateGameHistoryRecordToInsertData(gameHistoryRecordToInsert);
     return this.gameHistoryRecordRepository.create(gameHistoryRecordToInsert);
+  }
+
+  public async getLastGameHistoryGuardProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    return this.gameHistoryRecordRepository.getLastGameHistoryGuardProtectsRecord(gameId);
+  }
+
+  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    return this.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord(gameId);
+  }
+
+  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WITCH_POTIONS): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, potion);
+  }
+
+  public async getGameHistoryVileFatherOfWolvesInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryVileFatherOfWolvesInfectedRecords(gameId);
+  }
+
+  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords(gameId);
+  }
+
+  public async getGameHistoryWerewolvesEatAncientRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryWerewolvesEatAncientRecords(gameId);
+  }
+
+  public async getGameHistoryAncientProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
+  }
+
+  public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    return this.gameHistoryRecordRepository.getPreviousGameHistoryRecord(gameId);
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {

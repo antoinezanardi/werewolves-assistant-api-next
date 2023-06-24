@@ -6,11 +6,13 @@ import { plainToInstanceDefaultOptions } from "../../../../src/shared/validation
 import { bulkCreate } from "../../shared/bulk-create.factory";
 import { createFakeObjectId } from "../../shared/mongoose/mongoose.factory";
 import { createFakeGameOptions } from "./game-options/game-options.schema.factory";
+import { createFakeGamePlay } from "./game-play/game-play.schema.factory";
 
 function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
   return plainToInstance(Game, {
     _id: game._id ?? createFakeObjectId(),
     players: game.players ?? [],
+    currentPlay: game.currentPlay ?? createFakeGamePlay(),
     upcomingPlays: game.upcomingPlays ?? [],
     phase: game.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
     status: game.status ?? faker.helpers.arrayElement(Object.values(GAME_STATUSES)),

@@ -45,10 +45,10 @@ describe("Server Swagger", () => {
       createSwaggerDocument("docs", {} as INestApplication);
       const expectedDescription = "Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.";
 
-      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledWith("Werewolves Assistant API Reference 🐺");
-      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledWith(expectedDescription);
-      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledWith("1.2.3");
-      expect(mocks.DocumentBuilder.build).toHaveBeenCalledWith();
+      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledExactlyOnceWith("Werewolves Assistant API Reference 🐺");
+      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledExactlyOnceWith(expectedDescription);
+      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledExactlyOnceWith("1.2.3");
+      expect(mocks.DocumentBuilder.build).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should call document builder methods when function is called with unknown version.", () => {
@@ -56,10 +56,10 @@ describe("Server Swagger", () => {
       createSwaggerDocument("docs", {} as INestApplication);
       const expectedDescription = "Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.";
 
-      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledWith("Werewolves Assistant API Reference 🐺");
-      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledWith(expectedDescription);
-      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledWith("?");
-      expect(mocks.DocumentBuilder.build).toHaveBeenCalledWith();
+      expect(mocks.DocumentBuilder.setTitle).toHaveBeenCalledExactlyOnceWith("Werewolves Assistant API Reference 🐺");
+      expect(mocks.DocumentBuilder.setDescription).toHaveBeenCalledExactlyOnceWith(expectedDescription);
+      expect(mocks.DocumentBuilder.setVersion).toHaveBeenCalledExactlyOnceWith("?");
+      expect(mocks.DocumentBuilder.build).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should call createDocument and setup functions when function is called.", () => {

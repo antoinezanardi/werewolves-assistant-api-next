@@ -15,6 +15,7 @@ class MakeGamePlayWithRelationsDto extends OmitType(MakeGamePlayDto, ["targets",
   public votes?: MakeGamePlayVoteWithRelationsDto[];
 
   @Expose()
+  @Type(() => GameAdditionalCard)
   public chosenCard?: GameAdditionalCard;
 }
 

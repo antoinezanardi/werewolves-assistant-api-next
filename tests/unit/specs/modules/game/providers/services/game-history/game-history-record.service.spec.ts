@@ -1,6 +1,7 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
+import { WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../../src/modules/game/enums/player.enum";
 import { GameHistoryRecordRepository } from "../../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../../src/modules/game/providers/repositories/game.repository";
@@ -21,8 +22,15 @@ jest.mock("../../../../../../../../src/shared/exception/types/resource-not-found
 describe("Game History Record Service", () => {
   let mocks: {
     gameHistoryRecordRepository: {
-      find: jest.SpyInstance;
       create: jest.SpyInstance;
+      getLastGameHistoryGuardProtectsRecord: jest.SpyInstance;
+      getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
+      getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
+      getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
+      getGameHistoryJudgeRequestRecords: jest.SpyInstance;
+      getGameHistoryWerewolvesEatAncientRecords: jest.SpyInstance;
+      getGameHistoryAncientProtectedFromWerewolvesRecords: jest.SpyInstance;
+      getPreviousGameHistoryRecord: jest.SpyInstance;
     };
     gameRepository: { findOne: jest.SpyInstance };
   };
@@ -32,8 +40,15 @@ describe("Game History Record Service", () => {
   beforeEach(async() => {
     mocks = {
       gameHistoryRecordRepository: {
-        find: jest.fn(),
         create: jest.fn(),
+        getLastGameHistoryGuardProtectsRecord: jest.fn(),
+        getLastGameHistoryTieInVotesRecord: jest.fn(),
+        getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
+        getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
+        getGameHistoryJudgeRequestRecords: jest.fn(),
+        getGameHistoryWerewolvesEatAncientRecords: jest.fn(),
+        getGameHistoryAncientProtectedFromWerewolvesRecords: jest.fn(),
+        getPreviousGameHistoryRecord: jest.fn(),
       },
       gameRepository: { findOne: jest.fn() },
     };
@@ -56,15 +71,6 @@ describe("Game History Record Service", () => {
     repositories = { gameHistoryRecord: module.get<GameHistoryRecordRepository>(GameHistoryRecordRepository) };
   });
 
-  describe("getGameHistoryRecordsByGameId", () => {
-    it("should get all game history records when called with specific id.", async() => {
-      const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryRecordsByGameId(gameId);
-
-      expect(repositories.gameHistoryRecord.find).toHaveBeenCalledWith({ gameId });
-    });
-  });
-
   describe("createGameHistoryRecord", () => {
     it("should create game history record when called with valid data.", async() => {
       jest.spyOn(services.gameHistoryRecord as unknown as { validateGameHistoryRecordToInsertData }, "validateGameHistoryRecordToInsertData").mockImplementation();
@@ -74,7 +80,86 @@ describe("Game History Record Service", () => {
       });
       await services.gameHistoryRecord.createGameHistoryRecord(validPlay);
 
-      expect(repositories.gameHistoryRecord.create).toHaveBeenCalledWith(validPlay);
+      expect(repositories.gameHistoryRecord.create).toHaveBeenCalledExactlyOnceWith(validPlay);
+    });
+  });
+
+  describe("getLastGameHistoryGuardProtectsRecord", () => {
+    it("should get game history when guard protected when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord(gameId);
+
+      expect(repositories.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getLastGameHistoryTieInVotesRecord", () => {
+    it("should get game history when all voted and there was a tie when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId);
+
+      expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getGameHistoryWitchUsesSpecificPotionRecords", () => {
+    it("should get game history records when witch used life potion when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, WITCH_POTIONS.LIFE);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, WITCH_POTIONS.LIFE);
+    });
+
+    it("should get game history records when witch used death potion when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, WITCH_POTIONS.DEATH);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, WITCH_POTIONS.DEATH);
+    });
+  });
+
+  describe("getGameHistoryVileFatherOfWolvesInfectedRecords", () => {
+    it("should get game history records when vile father of wolves infected a player when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getGameHistoryJudgeRequestRecords", () => {
+    it("should get game history records when stuttering judge requested another vote when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryJudgeRequestRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+  
+  describe("getGameHistoryWerewolvesEatAncientRecords", () => {
+    it("should get game history records when any kind of werewolves eat ancient when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryWerewolvesEatAncientRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryWerewolvesEatAncientRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getGameHistoryAncientProtectedFromWerewolvesRecords", () => {
+    it("should get game history records when ancient is protected from werewolves when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
+
+      expect(repositories.gameHistoryRecord.getGameHistoryAncientProtectedFromWerewolvesRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("getPreviousGameHistoryRecord", () => {
+    it("should previous game history record when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getPreviousGameHistoryRecord(gameId);
+
+      expect(repositories.gameHistoryRecord.getPreviousGameHistoryRecord).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 
@@ -136,7 +221,7 @@ describe("Game History Record Service", () => {
       },
     ])("should throw resource not found error when $test [#$#].", ({ play, errorParameters }) => {
       expect(() => services.gameHistoryRecord["validateGameHistoryRecordToInsertPlayData"](play, fakeGame)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(...errorParameters);
     });
 
     it("should not throw any errors when called with valid play data.", () => {
@@ -183,7 +268,7 @@ describe("Game History Record Service", () => {
       },
     ])("should throw resource not found error when $test [#$#].", async({ gameHistoryRecord, errorParameters }) => {
       await expect(services.gameHistoryRecord["validateGameHistoryRecordToInsertData"](gameHistoryRecord)).toReject();
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(...errorParameters);
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(...errorParameters);
     });
 
     it("should not throw any errors when called with valid data.", async() => {

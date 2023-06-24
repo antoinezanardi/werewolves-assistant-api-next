@@ -198,7 +198,7 @@ function createGamePlayWerewolvesEat(gamePlay: Partial<GamePlay> = {}): GamePlay
 }
 
 function createGamePlay(gamePlay: GamePlay): GamePlay {
-  return plainToInstance(GamePlay, gamePlay, plainToInstanceDefaultOptions);
+  return plainToInstance(GamePlay, gamePlay, { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true });
 }
 
 export {

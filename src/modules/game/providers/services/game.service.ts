@@ -1,7 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
+import { cloneDeep } from "lodash";
+import type { Types } from "mongoose";
 import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
 import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../shared/exception/enums/bad-resource-mutation-error.enum";
+import { createCantGenerateGamePlaysUnexpectedException } from "../../../../shared/exception/helpers/unexpected-exception.factory";
 import { BadResourceMutationException } from "../../../../shared/exception/types/bad-resource-mutation-exception.type";
 import { ResourceNotFoundException } from "../../../../shared/exception/types/resource-not-found-exception.type";
 import { CreateGameDto } from "../../dto/create-game/create-game.dto";
@@ -29,9 +32,15 @@ export class GameService {
   }
 
   public async createGame(game: CreateGameDto): Promise<Game> {
+    const upcomingPlays = this.gamePlaysManagerService.getUpcomingNightPlays(game);
+    if (!upcomingPlays.length) {
+      throw createCantGenerateGamePlaysUnexpectedException("createGame");
+    }
+    const currentPlay = upcomingPlays.shift();
     const gameToCreate = plainToInstance(CreateGameDto, {
       ...game,
-      upcomingPlays: this.gamePlaysManagerService.getUpcomingNightPlays(game),
+      upcomingPlays,
+      currentPlay,
     });
     return this.gameRepository.create(gameToCreate);
   }
@@ -40,30 +49,37 @@ export class GameService {
     if (game.status !== GAME_STATUSES.PLAYING) {
       throw new BadResourceMutationException(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
     }
-    const updatedGame = await this.gameRepository.updateOne({ _id: game._id }, { status: GAME_STATUSES.CANCELED });
+    return this.updateGame(game._id, { status: GAME_STATUSES.CANCELED });
+  }
+
+  public async makeGamePlay(game: Game, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
+    let clonedGame = cloneDeep(game);
+    if (clonedGame.status !== GAME_STATUSES.PLAYING) {
+      throw new BadResourceMutationException(API_RESOURCES.GAMES, clonedGame._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
+    }
+    const play = createMakeGamePlayDtoWithRelations(makeGamePlayDto, clonedGame);
+    await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(play, clonedGame);
+    clonedGame = await this.gamePlaysMakerService.makeGamePlay(play, clonedGame);
+    clonedGame = this.gamePlaysManagerService.removeObsoleteUpcomingPlays(clonedGame);
+    clonedGame = this.gamePlaysManagerService.proceedToNextGamePlay(clonedGame);
+    if (isGameOver(clonedGame)) {
+      clonedGame = this.setGameAsOver(clonedGame);
+    }
+    return this.updateGame(clonedGame._id, clonedGame);
+  }
+
+  private async updateGame(gameId: Types.ObjectId, gameDataToUpdate: Partial<Game>): Promise<Game> {
+    const updatedGame = await this.gameRepository.updateOne({ _id: gameId }, gameDataToUpdate);
     if (updatedGame === null) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAMES, game._id.toString());
+      throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString());
     }
     return updatedGame;
   }
 
-  public async makeGamePlay(game: Game, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
-    if (game.status !== GAME_STATUSES.PLAYING) {
-      throw new BadResourceMutationException(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
-    }
-
-    const play = createMakeGamePlayDtoWithRelations(makeGamePlayDto, game);
-    await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(play, game);
-    const gameDataToUpdate = this.gamePlaysMakerService.makeGamePlay(play, game, []);
-
-    if (isGameOver(game)) {
-      gameDataToUpdate.status = GAME_STATUSES.OVER;
-      gameDataToUpdate.victory = generateGameVictoryData(game);
-    }
-    const updatedGame = await this.gameRepository.updateOne({ _id: game._id }, gameDataToUpdate);
-    if (updatedGame === null) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAMES, game._id.toString());
-    }
-    return updatedGame;
+  private setGameAsOver(game: Game): Game {
+    const clonedGame = cloneDeep(game);
+    clonedGame.status = GAME_STATUSES.OVER;
+    clonedGame.victory = generateGameVictoryData(clonedGame);
+    return clonedGame;
   }
 }

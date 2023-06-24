@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose, Type } from "class-transformer";
 import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/roles-game-options.constant";
 import { AncientGameOptions, AncientGameOptionsSchema } from "./ancient-game-options.schema";
 import { BearTamerGameOptions, BearTamerGameOptionsSchema } from "./bear-tamer-game-options.schema";
@@ -28,6 +29,7 @@ import { WildChildGameOptions, WildChildGameOptionsSchema } from "./wild-child-g
 class RolesGameOptions {
   @ApiProperty(rolesGameOptionsApiProperties.areRevealedOnDeath)
   @Prop({ default: rolesGameOptionsFieldsSpecs.areRevealedOnDeath.default })
+  @Expose()
   public areRevealedOnDeath: boolean;
 
   @ApiProperty(rolesGameOptionsApiProperties.sheriff)
@@ -35,6 +37,8 @@ class RolesGameOptions {
     type: SheriffGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => SheriffGameOptions)
+  @Expose()
   public sheriff: SheriffGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.bigBadWolf)
@@ -42,6 +46,8 @@ class RolesGameOptions {
     type: BigBadWolfGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => BigBadWolfGameOptions)
+  @Expose()
   public bigBadWolf: BigBadWolfGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.whiteWerewolf)
@@ -49,6 +55,8 @@ class RolesGameOptions {
     type: WhiteWerewolfGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => WhiteWerewolfGameOptions)
+  @Expose()
   public whiteWerewolf: WhiteWerewolfGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.seer)
@@ -56,6 +64,8 @@ class RolesGameOptions {
     type: SeerGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => SeerGameOptions)
+  @Expose()
   public seer: SeerGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.littleGirl)
@@ -63,6 +73,8 @@ class RolesGameOptions {
     type: LittleGirlGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => LittleGirlGameOptions)
+  @Expose()
   public littleGirl: LittleGirlGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.guard)
@@ -70,6 +82,8 @@ class RolesGameOptions {
     type: GuardGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => GuardGameOptions)
+  @Expose()
   public guard: GuardGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.ancient)
@@ -77,6 +91,8 @@ class RolesGameOptions {
     type: AncientGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => AncientGameOptions)
+  @Expose()
   public ancient: AncientGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.idiot)
@@ -84,6 +100,8 @@ class RolesGameOptions {
     type: IdiotGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => IdiotGameOptions)
+  @Expose()
   public idiot: IdiotGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.twoSisters)
@@ -91,6 +109,8 @@ class RolesGameOptions {
     type: TwoSistersGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => TwoSistersGameOptions)
+  @Expose()
   public twoSisters: TwoSistersGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.threeBrothers)
@@ -98,6 +118,8 @@ class RolesGameOptions {
     type: ThreeBrothersGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => ThreeBrothersGameOptions)
+  @Expose()
   public threeBrothers: ThreeBrothersGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.fox)
@@ -105,6 +127,8 @@ class RolesGameOptions {
     type: FoxGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => FoxGameOptions)
+  @Expose()
   public fox: FoxGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.bearTamer)
@@ -112,6 +136,8 @@ class RolesGameOptions {
     type: BearTamerGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => BearTamerGameOptions)
+  @Expose()
   public bearTamer: BearTamerGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.stutteringJudge)
@@ -119,6 +145,8 @@ class RolesGameOptions {
     type: StutteringJudgeGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => StutteringJudgeGameOptions)
+  @Expose()
   public stutteringJudge: StutteringJudgeGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.wildChild)
@@ -126,6 +154,8 @@ class RolesGameOptions {
     type: WildChildGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => WildChildGameOptions)
+  @Expose()
   public wildChild: WildChildGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.dogWolf)
@@ -133,6 +163,8 @@ class RolesGameOptions {
     type: DogWolfGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => DogWolfGameOptions)
+  @Expose()
   public dogWolf: DogWolfGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.thief)
@@ -140,6 +172,8 @@ class RolesGameOptions {
     type: ThiefGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => ThiefGameOptions)
+  @Expose()
   public thief: ThiefGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.piedPiper)
@@ -147,6 +181,8 @@ class RolesGameOptions {
     type: PiedPiperGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => PiedPiperGameOptions)
+  @Expose()
   public piedPiper: PiedPiperGameOptions;
 
   @ApiProperty(rolesGameOptionsApiProperties.raven)
@@ -154,6 +190,8 @@ class RolesGameOptions {
     type: RavenGameOptionsSchema,
     default: () => ({}),
   })
+  @Type(() => RavenGameOptions)
+  @Expose()
   public raven: RavenGameOptions;
 }
 

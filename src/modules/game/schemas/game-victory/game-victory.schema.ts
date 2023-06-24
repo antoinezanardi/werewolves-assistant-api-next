@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Type } from "class-transformer";
 import { gameVictoryApiProperties } from "../../constants/game-victory/game-victory.constant";
 import { GAME_VICTORY_TYPES } from "../../enums/game-victory.enum";
-import type { Player } from "../player/player.schema";
-import { PlayerSchema } from "../player/player.schema";
+import { PlayerSchema, Player } from "../player/player.schema";
 
 @Schema({
   versionKey: false,
@@ -17,6 +17,7 @@ class GameVictory {
 
   @ApiProperty(gameVictoryApiProperties.winners)
   @Prop({ type: [PlayerSchema], default: undefined })
+  @Type(() => Player)
   public winners?: Player[];
 }
 

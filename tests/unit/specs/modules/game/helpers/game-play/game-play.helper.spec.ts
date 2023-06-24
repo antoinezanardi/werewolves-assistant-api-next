@@ -37,7 +37,7 @@ describe("Game Play Helper", () => {
       });
 
       expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.source` is not in the game players");
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.source` is not in the game players");
     });
 
     it("should throw error when votes contains one unknown target.", () => {
@@ -51,7 +51,7 @@ describe("Game Play Helper", () => {
       });
 
       expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.target` is not in the game players");
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.target` is not in the game players");
     });
 
     it("should fill votes with game players when called.", () => {
@@ -92,7 +92,7 @@ describe("Game Play Helper", () => {
       });
 
       expect(() => getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `targets.player` is not in the game players");
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `targets.player` is not in the game players");
     });
 
     it("should fill targets with game players when called.", () => {
@@ -128,7 +128,7 @@ describe("Game Play Helper", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto({ chosenCardId: fakeCardId });
 
       expect(() => getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledWith(API_RESOURCES.GAME_ADDITIONAL_CARDS, fakeCardId.toString(), "Game Play - Chosen card is not in the game additional cards");
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.GAME_ADDITIONAL_CARDS, fakeCardId.toString(), "Game Play - Chosen card is not in the game additional cards");
     });
 
     it("should return chosen card when called.", () => {

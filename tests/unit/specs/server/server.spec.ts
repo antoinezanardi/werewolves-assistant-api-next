@@ -63,25 +63,25 @@ describe("Server", () => {
     it("should create FastifyAdapter with default fastify server options when called.", async() => {
       app = await bootstrap();
       
-      expect(FastifyAdapter).toHaveBeenCalledWith(fastifyServerDefaultOptions);
+      expect(FastifyAdapter).toHaveBeenCalledExactlyOnceWith(fastifyServerDefaultOptions);
     });
 
     it("should call listen with the default port when no port is provided.", async() => {
       app = await bootstrap();
       
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledWith(3000, "127.0.0.1");
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith(3000, "127.0.0.1");
     });
 
     it("should call listen with 4000 when port 4000 is provided.", async() => {
       app = await bootstrap(4000);
       
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledWith(4000, "127.0.0.1");
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith(4000, "127.0.0.1");
     });
 
     it("should add validation pipe with transform when Validation Pipe constructor is called.", async() => {
       app = await bootstrap();
       
-      expect(NestCommon.ValidationPipe).toHaveBeenCalledWith({
+      expect(NestCommon.ValidationPipe).toHaveBeenCalledExactlyOnceWith({
         transform: true,
         whitelist: true,
         transformOptions: {
@@ -94,7 +94,7 @@ describe("Server", () => {
     it("should serve public directory when called.", async() => {
       app = await bootstrap();
       
-      expect(mocks.NestFactory.create.resolvedValue.useStaticAssets).toHaveBeenCalledWith({
+      expect(mocks.NestFactory.create.resolvedValue.useStaticAssets).toHaveBeenCalledExactlyOnceWith({
         root: `${process.cwd()}/public`,
         prefix: "/public/",
       });

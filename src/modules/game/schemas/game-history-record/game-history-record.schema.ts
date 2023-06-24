@@ -5,8 +5,7 @@ import { SchemaTypes, Types } from "mongoose";
 import type { HydratedDocument } from "mongoose";
 import { gameHistoryRecordApiProperties, gameHistoryRecordFieldsSpecs } from "../../constants/game-history-record/game-history-record.constant";
 import { GAME_PHASES } from "../../enums/game.enum";
-import type { Player } from "../player/player.schema";
-import { PlayerSchema } from "../player/player.schema";
+import { PlayerSchema, Player } from "../player/player.schema";
 import { GameHistoryRecordPlay, GameHistoryRecordPlaySchema } from "./game-history-record-play/game-history-record-play.schema";
 
 @Schema({
@@ -54,6 +53,7 @@ class GameHistoryRecord {
     required: gameHistoryRecordFieldsSpecs.play.required,
     type: GameHistoryRecordPlaySchema,
   })
+  @Type(() => GameHistoryRecordPlay)
   @Expose()
   public play: GameHistoryRecordPlay;
 
@@ -63,6 +63,7 @@ class GameHistoryRecord {
     type: [PlayerSchema],
     default: undefined,
   })
+  @Type(() => Player)
   @Expose()
   public revealedPlayers?: Player[];
 
@@ -72,6 +73,7 @@ class GameHistoryRecord {
     type: [PlayerSchema],
     default: undefined,
   })
+  @Type(() => Player)
   @Expose()
   public deadPlayers?: Player[];
 

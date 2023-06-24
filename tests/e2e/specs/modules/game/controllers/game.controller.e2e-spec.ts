@@ -6,7 +6,6 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { instanceToPlain } from "class-transformer";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 import { defaultGameOptions } from "../../../../../../src/modules/game/constants/game-options/game-options.constant";
@@ -14,7 +13,7 @@ import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto
 import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import type { MakeGamePlayDto } from "../../../../../../src/modules/game/dto/make-game-play/make-game-play.dto";
-import { GAME_PLAY_ACTIONS } from "../../../../../../src/modules/game/enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
 import { GameModule } from "../../../../../../src/modules/game/game.module";
@@ -28,12 +27,13 @@ import { createFakeGameOptionsDto } from "../../../../../factories/game/dto/crea
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
-import { createFakeGamePlayAllVote } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayAllVote, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
 import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
+import { toJSON } from "../../../../../helpers/object/object.helper";
 import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
 import { initNestApp } from "../../../../helpers/nest-app.helper";
 
@@ -251,7 +251,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
+        ...toJSON(game) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -413,8 +413,8 @@ describe("Game Controller", () => {
         turn: 1,
         tick: 1,
         players: expectedPlayers,
+        currentPlay: { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF },
         upcomingPlays: [
-          { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF },
           { source: ROLE_NAMES.CUPID, action: GAME_PLAY_ACTIONS.CHARM },
           { source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK },
           { source: PLAYER_GROUPS.LOVERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER },
@@ -479,7 +479,7 @@ describe("Game Controller", () => {
       });
 
       expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json<Game>().options).toStrictEqual<GameOptions>(instanceToPlain(expectedOptions) as GameOptions);
+      expect(response.json<Game>().options).toStrictEqual<GameOptions>(toJSON(expectedOptions) as GameOptions);
     });
   });
 
@@ -531,7 +531,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(game, { exposeUnsetFields: false }) as Game,
+        ...toJSON(game) as Game,
         status: GAME_STATUSES.CANCELED,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
@@ -600,7 +600,7 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
+        upcomingPlays: [createFakeGamePlayAllVote()],
         players,
       });
       await models.game.create(game);
@@ -629,7 +629,7 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
+        currentPlay: createFakeGamePlayAllVote(),
         players,
       });
       await models.game.create(game);
@@ -657,7 +657,8 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        upcomingPlays: [{ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE }],
+        currentPlay: createFakeGamePlayAllVote(),
+        upcomingPlays: [createFakeGamePlaySeerLooks()],
         players,
       });
       await models.game.create(game);
@@ -669,10 +670,7 @@ describe("Game Controller", () => {
       });
       const expectedGame = createFakeGame({
         ...game,
-        upcomingPlays: [
-          createFakeGamePlayAllVote(),
-          createFakeGamePlayAllVote(),
-        ],
+        currentPlay: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
       });
       const response = await app.inject({
         method: "POST",
@@ -682,7 +680,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(expectedGame, { exposeUnsetFields: false }) as Game,
+        ...toJSON(expectedGame) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -697,13 +695,16 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        upcomingPlays: [{ source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK }],
+        currentPlay: createFakeGamePlaySeerLooks(),
+        upcomingPlays: [createFakeGamePlayWerewolvesEat()],
         players,
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
       const expectedGame = createFakeGame({
         ...game,
+        currentPlay: createFakeGamePlayWerewolvesEat(),
+        upcomingPlays: [],
         players: [
           createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }),
           players[1],
@@ -719,7 +720,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
-        ...instanceToPlain(expectedGame, { exposeUnsetFields: false }) as Game,
+        ...toJSON(expectedGame) as Game,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });

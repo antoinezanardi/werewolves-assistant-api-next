@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithAttribute, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getUpcomingGamePlay, getUpcomingGamePlayAction, getUpcomingGamePlaySource, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithAttribute, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
 import type { GetNearestPlayerOptions } from "../../../../../../src/modules/game/types/game.type";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
@@ -9,7 +9,6 @@ import type { ExceptionInterpolations } from "../../../../../../src/shared/excep
 import { UnexpectedException } from "../../../../../../src/shared/exception/types/unexpected-exception.type";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { bulkCreateFakeGamePlays } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
@@ -309,7 +308,35 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer(),
       ]);
       
-      expect(getLeftToCharmByPiedPiperPlayers(players)).toStrictEqual([players[2], players[4]]);
+      expect(getLeftToCharmByPiedPiperPlayers(players)).toStrictEqual<Player[]>([players[2], players[4]]);
+    });
+  });
+
+  describe("getLeftToEatByWerewolvesPlayers", () => {
+    it("should return left to eat by werewolves players when called.", () => {
+      const players = bulkCreateFakePlayers(5, [
+        createFakeWerewolfAlivePlayer(),
+        createFakePiedPiperAlivePlayer(),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeWerewolfAlivePlayer(),
+      ]);
+
+      expect(getLeftToEatByWerewolvesPlayers(players)).toStrictEqual<Player[]>([players[1]]);
+    });
+  });
+
+  describe("getLeftToEatByWhiteWerewolfPlayers", () => {
+    it("should return left to eat by white werewolf players when called.", () => {
+      const players = bulkCreateFakePlayers(5, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ isAlive: false }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ]);
+
+      expect(getLeftToEatByWhiteWerewolfPlayers(players)).toStrictEqual<Player[]>([players[4]]);
     });
   });
 
@@ -391,42 +418,6 @@ describe("Game Helper", () => {
       const otherPlayer = createFakePlayer();
       
       expect(getNonexistentPlayer(players, [...players, otherPlayer])).toStrictEqual(otherPlayer);
-    });
-  });
-
-  describe("getUpcomingGamePlay", () => {
-    it("should return undefined when upcoming game plays are empty.", () => {
-      expect(getUpcomingGamePlay([])).toBeUndefined();
-    });
-
-    it("should return upcoming game play when called.", () => {
-      const upcomingGamePlays = bulkCreateFakeGamePlays(4);
-      
-      expect(getUpcomingGamePlay(upcomingGamePlays)).toStrictEqual(upcomingGamePlays[0]);
-    });
-  });
-
-  describe("getUpcomingGamePlayAction", () => {
-    it("should return undefined when upcoming game plays are empty.", () => {
-      expect(getUpcomingGamePlayAction([])).toBeUndefined();
-    });
-
-    it("should return upcoming game play action when called.", () => {
-      const upcomingGamePlays = bulkCreateFakeGamePlays(4);
-      
-      expect(getUpcomingGamePlayAction(upcomingGamePlays)).toStrictEqual(upcomingGamePlays[0].action);
-    });
-  });
-
-  describe("getUpcomingGamePlaySource", () => {
-    it("should return undefined when upcoming game plays are empty.", () => {
-      expect(getUpcomingGamePlaySource([])).toBeUndefined();
-    });
-
-    it("should return upcoming game play action when called.", () => {
-      const upcomingGamePlays = bulkCreateFakeGamePlays(4);
-      
-      expect(getUpcomingGamePlaySource(upcomingGamePlays)).toStrictEqual(upcomingGamePlays[0].source);
     });
   });
 

@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
 import { twoSistersGameOptionsApiProperties, twoSistersGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/two-sisters-game-options.constant";
 
 @Schema({
@@ -14,6 +15,7 @@ class TwoSistersGameOptions {
     min: twoSistersGameOptionsFieldsSpecs.wakingUpInterval.minimum,
     max: twoSistersGameOptionsFieldsSpecs.wakingUpInterval.maximum,
   })
+  @Expose()
   public wakingUpInterval: number;
 }
 

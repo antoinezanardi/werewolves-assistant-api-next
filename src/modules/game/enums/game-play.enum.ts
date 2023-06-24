@@ -21,6 +21,8 @@ enum GAME_PLAY_ACTIONS {
 
 enum GAME_PLAY_CAUSES {
   STUTTERING_JUDGE_REQUEST = "stuttering-judge-request",
+  PREVIOUS_VOTES_WERE_IN_TIES = "previous-votes-were-in-ties",
+  ANGEL_PRESENCE = "angel-presence",
 }
 
 enum WITCH_POTIONS {
