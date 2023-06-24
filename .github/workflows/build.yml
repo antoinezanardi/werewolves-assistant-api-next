@@ -121,6 +121,16 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - install
+    outputs:
+      JEST_TEST_COUNT: ${{ steps.outputs.outputs.JEST_TEST_COUNT }}
+      JEST_STATEMENTS_COUNT: ${{ steps.outputs.outputs.JEST_STATEMENTS_COUNT }}
+      JEST_BRANCHES_COUNT: ${{ steps.outputs.outputs.JEST_BRANCHES_COUNT }}
+      JEST_FUNCTIONS_COUNT: ${{ steps.outputs.outputs.JEST_FUNCTIONS_COUNT }}
+      JEST_LINES_COUNT: ${{ steps.outputs.outputs.JEST_LINES_COUNT }}
+      JEST_STATEMENTS_PERCENT: ${{ steps.outputs.outputs.JEST_STATEMENTS_PERCENT }}
+      JEST_BRANCHES_PERCENT: ${{ steps.outputs.outputs.JEST_BRANCHES_PERCENT }}
+      JEST_FUNCTIONS_PERCENT: ${{ steps.outputs.outputs.JEST_FUNCTIONS_PERCENT }}
+      JEST_LINES_PERCENT: ${{ steps.outputs.outputs.JEST_LINES_PERCENT }}
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
@@ -138,18 +148,19 @@ jobs:
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
       - name: All tests 🧬
-        run: source ./scripts/set-jest-results-in-env.sh <<< "$(npm run test:cov 2>&1)"
+        run: npm run test:cov:export-results
       - name: Set Jest Results Environment Variables
+        id: outputs
         run: |
-          echo "JEST_TEST_COUNT=$JEST_TESTS_COUNT" >> $GITHUB_ENV
-          echo "JEST_STATEMENTS_COUNT=$JEST_STATEMENTS_COUNT" >> $GITHUB_ENV
-          echo "JEST_BRANCHES_COUNT=$JEST_BRANCHES_COUNT" >> $GITHUB_ENV
-          echo "JEST_FUNCTIONS_COUNT=$JEST_FUNCTIONS_COUNT" >> $GITHUB_ENV
-          echo "JEST_LINES_COUNT=$JEST_LINES_COUNT" >> $GITHUB_ENV
-          echo "JEST_STATEMENTS_PERCENT=$JEST_STATEMENTS_PERCENT" >> $GITHUB_ENV
-          echo "JEST_BRANCHES_PERCENT=$JEST_BRANCHES_PERCENT" >> $GITHUB_ENV
-          echo "JEST_FUNCTIONS_PERCENT=$JEST_FUNCTIONS_PERCENT" >> $GITHUB_ENV
-          echo "JEST_LINES_PERCENT=$JEST_LINES_PERCENT" >> $GITHUB_ENV
+          echo "JEST_TEST_COUNT=$JEST_TESTS_COUNT" >> "$GITHUB_OUTPUT"
+          echo "JEST_STATEMENTS_COUNT=$JEST_STATEMENTS_COUNT" >> "$GITHUB_OUTPUT"
+          echo "JEST_BRANCHES_COUNT=$JEST_BRANCHES_COUNT" >> "$GITHUB_OUTPUT"
+          echo "JEST_FUNCTIONS_COUNT=$JEST_FUNCTIONS_COUNT" >> "$GITHUB_OUTPUT"
+          echo "JEST_LINES_COUNT=$JEST_LINES_COUNT" >> "$GITHUB_OUTPUT"
+          echo "JEST_STATEMENTS_PERCENT=$JEST_STATEMENTS_PERCENT" >> "$GITHUB_OUTPUT"
+          echo "JEST_BRANCHES_PERCENT=$JEST_BRANCHES_PERCENT" >> "$GITHUB_OUTPUT"
+          echo "JEST_FUNCTIONS_PERCENT=$JEST_FUNCTIONS_PERCENT" >> "$GITHUB_OUTPUT"
+          echo "JEST_LINES_PERCENT=$JEST_LINES_PERCENT" >> "$GITHUB_OUTPUT"
       - name: Save tests coverage in cache 🥡
         uses: actions/cache/save@v3
         id: cache-tests-coverage
@@ -161,8 +172,6 @@ jobs:
   tests-badges:
     name: Generate Tests Badges 💯
     runs-on: ubuntu-latest
-    env:
-      BADGES_FILE_PATH: "tests/badges/shields.json"
     needs:
       - all-tests
     steps:
@@ -171,22 +180,19 @@ jobs:
         with:
           NAME: tests-count
           LABEL: Tests
-          STATUS: ${{ env.JEST_TESTS_COUNT }}
+          STATUS: ${{ needs.all-tests.outputs.JEST_TESTS_COUNT }}
           ICON: jest
-          PATH: ${{ env.BADGES_FILE_PATH }}
           COLOR: 109B08
-          BRANCH: ${{ github.head_ref }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Statements Badge
         uses: RubbaBoy/BYOB@v1.3.0
         with:
           NAME: statements
           LABEL: Statements
-          STATUS: ${{ env.JEST_STATEMENTS_COUNT }} (${{env.JEST_STATEMENTS_PERCENT}})
+          STATUS: ${{ needs.all-tests.outputs.JEST_STATEMENTS_COUNT }} (${{needs.all-tests.outputs.JEST_STATEMENTS_PERCENT}})
           ICON: jest
-          PATH: ${{ env.BADGES_FILE_PATH }}
           COLOR: 109B08
-          BRANCH: ${{ github.head_ref }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   mutant-tests:
     name: Mutant Tests 👽
