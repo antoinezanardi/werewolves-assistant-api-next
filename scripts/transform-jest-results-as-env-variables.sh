@@ -13,16 +13,14 @@ branches_percent=$(echo "$output" | awk '/Branches/{print $3}')
 functions_percent=$(echo "$output" | awk '/Functions/{print $3}')
 lines_percent=$(echo "$output" | awk '/Lines/{print $3}' | tr -d '\nLine')
 
-export JEST_TEST_COUNT=$tests_count
+echo "JEST_TEST_COUNT=$tests_count"
 
-export JEST_STATEMENTS_COUNT=$statements_count
-export JEST_BRANCHES_COUNT=$branches_count
-export JEST_FUNCTIONS_COUNT=$functions_count
-export JEST_LINES_COUNT=$lines_count
+echo "JEST_STATEMENTS_COUNT=$statements_count"
+echo "JEST_BRANCHES_COUNT=$branches_count"
+echo "JEST_FUNCTIONS_COUNT=$functions_count"
+echo "JEST_LINES_COUNT=$lines_count"
 
-export JEST_STATEMENTS_PERCENT=$statements_percent
-export JEST_BRANCHES_PERCENT=$branches_percent
-export JEST_FUNCTIONS_PERCENT=$functions_percent
-export JEST_LINES_PERCENT="${lines_percent:1}"
-
-echo "$output"
+echo "JEST_STATEMENTS_PERCENT=$statements_percent"
+echo "JEST_BRANCHES_PERCENT=$branches_percent"
+echo "JEST_FUNCTIONS_PERCENT=$functions_percent"
+echo "JEST_LINES_PERCENT=\"${lines_percent:1}\""
