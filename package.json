@@ -27,7 +27,6 @@
     "test": "NODE_ENV=test jest --config config/jest/jest-global.ts",
     "test:watch": "NODE_ENV=test jest --watch --config config/jest/jest-global.ts",
     "test:cov": "NODE_ENV=test jest --coverage --config config/jest/jest-global.ts",
-    "test:cov:export-results": "source ./scripts/set-jest-results-in-env.sh <<< \"$(NODE_ENV=test jest --coverage --config config/jest/jest-global.ts 2>&1)\"",
     "test:stryker": "NODE_ENV=test rimraf tests/stryker/coverage && stryker run config/stryker/stryker.conf.js",
     "test:stryker:force": "NODE_ENV=test rimraf tests/stryker/incremental.json tests/stryker/coverage && stryker run config/stryker/stryker.conf.js --force",
     "test:unit": "NODE_ENV=test jest --config config/jest/jest-unit.ts",
