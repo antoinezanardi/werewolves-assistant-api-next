@@ -711,11 +711,11 @@ describe("Game Plays Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      // const gameHistoryRecords: GameHistoryRecord[] = [];
       const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValue(null);
       await services.gamePlaysMaker["handleTieInVotes"](game);
 
-      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledWith(gamePlaySheriffSettlesVotes, game);
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlaySheriffSettlesVotes, game);
     });
 
     it("should prepend vote game play when previous play is not a tie.", async() => {
@@ -726,11 +726,11 @@ describe("Game Plays Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      // const gameHistoryRecords: GameHistoryRecord[] = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay() })];
-      const gamePlayAllVote = createFakeGamePlayAllVote();
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay() }));
+      const gamePlayAllVote = createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES });
       await services.gamePlaysMaker["handleTieInVotes"](game);
 
-      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledWith(gamePlayAllVote, game);
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayAllVote, game);
     });
 
     it("should prepend vote game play when there is no game history records.", async() => {
@@ -741,10 +741,11 @@ describe("Game Plays Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gamePlayAllVote = createFakeGamePlayAllVote();
+      const gamePlayAllVote = createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValue(null);
       await services.gamePlaysMaker["handleTieInVotes"](game);
 
-      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledWith(gamePlayAllVote, game);
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayAllVote, game);
     });
 
     it("should not prepend vote game play when previous play is a tie.", async() => {
@@ -757,10 +758,8 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const previousGameHistoryRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }) });
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValue(previousGameHistoryRecord);
-      const gamePlayAllVote = createFakeGamePlayAllVote();
-      await services.gamePlaysMaker["handleTieInVotes"](game);
 
-      expect(localMocks.gameMutator.prependUpcomingPlayInGame).not.toHaveBeenCalledWith(gamePlayAllVote, game);
+      await expect(services.gamePlaysMaker["handleTieInVotes"](game)).resolves.toStrictEqual<Game>(game);
     });
   });
   

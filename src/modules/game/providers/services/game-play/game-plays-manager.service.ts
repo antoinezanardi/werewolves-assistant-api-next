@@ -1,18 +1,17 @@
 import { Injectable } from "@nestjs/common";
-import { plainToInstance } from "class-transformer";
 import { cloneDeep } from "lodash";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { gamePlaysNightOrder } from "../../../constants/game.constant";
 import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "../../../dto/create-game/create-game.dto";
-import { GAME_PLAY_ACTIONS } from "../../../enums/game-play.enum";
-import { GAME_PHASES } from "../../../enums/game.enum";
+import { GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
+import type { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import { createGamePlayAllElectSheriff } from "../../../helpers/game-play/game-play.factory";
+import { createGamePlay, createGamePlayAllElectSheriff } from "../../../helpers/game-play/game-play.factory";
 import { areAllWerewolvesAlive, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayerWithAttribute, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "../../../helpers/player/player.helper";
 import type { SheriffGameOptions } from "../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
-import { GamePlay } from "../../../schemas/game-play.schema";
+import type { GamePlay } from "../../../schemas/game-play.schema";
 import type { Game } from "../../../schemas/game.schema";
 
 @Injectable()
@@ -38,10 +37,12 @@ export class GamePlaysManagerService {
     const eligibleNightPlays = gamePlaysNightOrder.filter(play => isFirstNight || play.isFirstNightOnly !== true);
     const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase);
     const upcomingNightPlays: GamePlay[] = isSheriffElectionTime ? [createGamePlayAllElectSheriff()] : [];
-    return plainToInstance(GamePlay, eligibleNightPlays.reduce((acc: GamePlay[], gamePlay) => {
-      const { source, action } = gamePlay;
-      return this.isGamePlaySuitableForCurrentPhase(game, gamePlay) ? [...acc, { source, action }] : acc;
-    }, upcomingNightPlays));
+    return eligibleNightPlays.reduce((acc: GamePlay[], gamePlay) => {
+      if (this.isGamePlaySuitableForCurrentPhase(game, gamePlay)) {
+        return [...acc, createGamePlay(gamePlay)];
+      }
+      return acc;
+    }, upcomingNightPlays);
   }
 
   private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GAME_PHASES): boolean {
@@ -58,11 +59,11 @@ export class GamePlaysManagerService {
       return false;
     }
     const inLovePlayers = getPlayersWithAttribute(game.players, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
-    return !inLovePlayers.length && isPlayerAliveAndPowerful(cupidPlayer) || inLovePlayers.every(player => player.isAlive);
+    return !inLovePlayers.length && isPlayerAliveAndPowerful(cupidPlayer) || inLovePlayers.length > 0 && inLovePlayers.every(player => player.isAlive);
   }
 
   private isAllGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): boolean {
-    if (game.turn !== 1 || game.phase === GAME_PHASES.DAY || gamePlay.action === GAME_PLAY_ACTIONS.ELECT_SHERIFF) {
+    if (gamePlay.cause !== GAME_PLAY_CAUSES.ANGEL_PRESENCE) {
       return true;
     }
     if (game instanceof CreateGameDto) {

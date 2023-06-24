@@ -381,20 +381,6 @@ describe("Game Victory Helper", () => {
   });
 
   describe("isGameOver", () => {
-    it("should return false when there is a incoming shoot by hunter play.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeSeerAlivePlayer({ isAlive: false }),
-      ];
-      const upcomingPlays = [
-        createFakeGamePlayHunterShoots(),
-        createFakeGamePlayWerewolvesEat(),
-      ];
-      const game = createFakeGame({ players, upcomingPlays });
-
-      expect(isGameOver(game)).toBe(false);
-    });
-
     it("should return true when all players are dead.", () => {
       const players = [
         createFakeWerewolfAlivePlayer({ isAlive: false }),
@@ -404,9 +390,40 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayHunterShoots({ source: ROLE_NAMES.THIEF }),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const game = createFakeGame({ players, upcomingPlays });
+      const currentPlay = createFakeGamePlayAllVote();
+      const game = createFakeGame({ players, upcomingPlays, currentPlay });
 
       expect(isGameOver(game)).toBe(true);
+    });
+
+    it("should return false when there is a incoming shoot by hunter play.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer({ isAlive: false }),
+      ];
+      const upcomingPlays = [
+        createFakeGamePlayHunterShoots(),
+        createFakeGamePlayWerewolvesEat(),
+      ];
+      const currentPlay = createFakeGamePlayAllVote();
+      const game = createFakeGame({ players, upcomingPlays, currentPlay });
+
+      expect(isGameOver(game)).toBe(false);
+    });
+
+    it("should return false when current play is shoot by hunter play.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer({ isAlive: false }),
+      ];
+      const upcomingPlays = [
+        createFakeGamePlayAllVote(),
+        createFakeGamePlayWerewolvesEat(),
+      ];
+      const currentPlay = createFakeGamePlayHunterShoots();
+      const game = createFakeGame({ players, upcomingPlays, currentPlay });
+
+      expect(isGameOver(game)).toBe(false);
     });
 
     it("should return true when werewolves win.", () => {
@@ -420,7 +437,8 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayHunterShoots({ action: GAME_PLAY_ACTIONS.LOOK }),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const game = createFakeGame({ players, upcomingPlays });
+      const currentPlay = createFakeGamePlayAllVote();
+      const game = createFakeGame({ players, currentPlay, upcomingPlays });
 
       expect(isGameOver(game)).toBe(true);
     });
@@ -436,7 +454,8 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayAllVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const game = createFakeGame({ players, upcomingPlays });
+      const currentPlay = createFakeGamePlayAllVote();
+      const game = createFakeGame({ players, currentPlay, upcomingPlays });
 
       expect(isGameOver(game)).toBe(true);
     });
@@ -452,7 +471,8 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayAllVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const game = createFakeGame({ players, upcomingPlays });
+      const currentPlay = createFakeGamePlayAllVote();
+      const game = createFakeGame({ players, upcomingPlays, currentPlay });
 
       expect(isGameOver(game)).toBe(true);
     });
@@ -467,7 +487,8 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayAllVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const game = createFakeGame({ players, upcomingPlays });
+      const currentPlay = createFakeGamePlayAllVote();
+      const game = createFakeGame({ players, upcomingPlays, currentPlay });
 
       expect(isGameOver(game)).toBe(true);
     });
@@ -484,7 +505,8 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayWerewolvesEat(),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
-      const game = createFakeGame({ players, upcomingPlays, options });
+      const currentPlay = createFakeGamePlayAllVote();
+      const game = createFakeGame({ players, upcomingPlays, currentPlay, options });
 
       expect(isGameOver(game)).toBe(true);
     });
@@ -501,7 +523,8 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayWerewolvesEat(),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
-      const game = createFakeGame({ players, upcomingPlays, options, turn: 1 });
+      const currentPlay = createFakeGamePlayAllVote();
+      const game = createFakeGame({ players, upcomingPlays, currentPlay, options, turn: 1 });
 
       expect(isGameOver(game)).toBe(true);
     });

@@ -1,6 +1,6 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ROLE_NAMES } from "../../role/enums/role.enum";
-import { GAME_PLAY_ACTIONS } from "../enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../enums/game-play.enum";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../enums/player.enum";
 import type { GamePlay } from "../schemas/game-play.schema";
@@ -58,6 +58,7 @@ const gamePlaysNightOrder: Readonly<(GamePlay & { isFirstNightOnly?: boolean })[
   {
     source: PLAYER_GROUPS.ALL,
     action: GAME_PLAY_ACTIONS.VOTE,
+    cause: GAME_PLAY_CAUSES.ANGEL_PRESENCE,
     isFirstNightOnly: true,
   },
   {

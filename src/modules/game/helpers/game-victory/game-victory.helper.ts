@@ -53,8 +53,8 @@ function doesAngelWin(game: Game): boolean {
 function isGameOver(game: Game): boolean {
   const { players, upcomingPlays } = game;
   const isShootPlayIncoming = !!upcomingPlays.find(({ action, source }) => action === GAME_PLAY_ACTIONS.SHOOT && source === ROLE_NAMES.HUNTER);
-  return game.currentPlay.action !== GAME_PLAY_ACTIONS.SHOOT && !isShootPlayIncoming &&
-    (areAllPlayersDead(players) || doWerewolvesWin(players) || doVillagersWin(players) ||
+  return areAllPlayersDead(players) || game.currentPlay.action !== GAME_PLAY_ACTIONS.SHOOT && !isShootPlayIncoming &&
+    (doWerewolvesWin(players) || doVillagersWin(players) ||
     doLoversWin(players) || doesWhiteWerewolfWin(players) || doesPiedPiperWin(game) || doesAngelWin(game));
 }
 
