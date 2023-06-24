@@ -122,7 +122,7 @@ jobs:
     needs:
       - install
     outputs:
-      JEST_TEST_COUNT: ${{ steps.outputs.outputs.JEST_TEST_COUNT }}
+      JEST_TESTS_COUNT: ${{ steps.outputs.outputs.JEST_TESTS_COUNT }}
       JEST_STATEMENTS_COUNT: ${{ steps.outputs.outputs.JEST_STATEMENTS_COUNT }}
       JEST_BRANCHES_COUNT: ${{ steps.outputs.outputs.JEST_BRANCHES_COUNT }}
       JEST_FUNCTIONS_COUNT: ${{ steps.outputs.outputs.JEST_FUNCTIONS_COUNT }}
@@ -153,7 +153,7 @@ jobs:
         id: outputs
         run: |
           env
-          echo "JEST_TEST_COUNT=${{ env.JEST_TESTS_COUNT }}" >> "$GITHUB_OUTPUT"
+          echo "JEST_TESTS_COUNT=${{ env.JEST_TESTS_COUNT }}" >> "$GITHUB_OUTPUT"
           echo "JEST_STATEMENTS_COUNT=${{ env.JEST_STATEMENTS_COUNT }}" >> "$GITHUB_OUTPUT"
           echo "JEST_BRANCHES_COUNT=${{ env.JEST_BRANCHES_COUNT }}" >> "$GITHUB_OUTPUT"
           echo "JEST_FUNCTIONS_COUNT=${{ env.JEST_FUNCTIONS_COUNT }}" >> "$GITHUB_OUTPUT"
@@ -182,7 +182,7 @@ jobs:
           NAME: tests-count
           LABEL: Tests
           STATUS: ${{ needs.all-tests.outputs.JEST_TESTS_COUNT }}
-          ICON: jest
+          ICON: https://cdn.simpleicons.org/jest/white
           COLOR: 109B08
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -192,9 +192,40 @@ jobs:
           NAME: statements
           LABEL: Statements
           STATUS: ${{ needs.all-tests.outputs.JEST_STATEMENTS_COUNT }} (${{needs.all-tests.outputs.JEST_STATEMENTS_PERCENT}})
-          ICON: jest
+          ICON: https://cdn.simpleicons.org/jest/white
           COLOR: 109B08
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Branches Badge
+        uses: RubbaBoy/BYOB@v1.3.0
+        with:
+          NAME: branches
+          LABEL: Branches
+          STATUS: ${{ needs.all-tests.outputs.JEST_BRANCHES_COUNT }} (${{needs.all-tests.outputs.JEST_BRANCHES_PERCENT}})
+          ICON: https://cdn.simpleicons.org/jest/white
+          COLOR: 109B08
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Functions Badge
+        uses: RubbaBoy/BYOB@v1.3.0
+        with:
+          NAME: functions
+          LABEL: Functions
+          STATUS: ${{ needs.all-tests.outputs.JEST_FUNCTIONS_COUNT }} (${{needs.all-tests.outputs.JEST_FUNCTIONS_PERCENT}})
+          ICON: https://cdn.simpleicons.org/jest/white
+          COLOR: 109B08
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lines Badge
+        uses: RubbaBoy/BYOB@v1.3.0
+        with:
+          NAME: lines
+          LABEL: Lines
+          STATUS: ${{ needs.all-tests.outputs.JEST_LINES_COUNT }} (${{needs.all-tests.outputs.JEST_LINES_PERCENT}})
+          ICON: https://cdn.simpleicons.org/jest/white
+          COLOR: 109B08
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   mutant-tests:
     name: Mutant Tests 👽
     runs-on: ubuntu-latest
