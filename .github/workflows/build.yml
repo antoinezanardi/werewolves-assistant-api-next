@@ -138,7 +138,18 @@ jobs:
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
       - name: All tests 🧬
-        run: npm run test:cov
+        run: source ./scripts/set-jest-results-in-env.sh <<< "$(npm run test:cov 2>&1)"
+      - name: Set Jest Results Environment Variables
+        run: |
+          echo "JEST_TEST_COUNT=$JEST_TESTS_COUNT" >> $GITHUB_ENV
+          echo "JEST_STATEMENTS_COUNT=$JEST_STATEMENTS_COUNT" >> $GITHUB_ENV
+          echo "JEST_BRANCHES_COUNT=$JEST_BRANCHES_COUNT" >> $GITHUB_ENV
+          echo "JEST_FUNCTIONS_COUNT=$JEST_FUNCTIONS_COUNT" >> $GITHUB_ENV
+          echo "JEST_LINES_COUNT=$JEST_LINES_COUNT" >> $GITHUB_ENV
+          echo "JEST_STATEMENTS_PERCENT=$JEST_STATEMENTS_PERCENT" >> $GITHUB_ENV
+          echo "JEST_BRANCHES_PERCENT=$JEST_BRANCHES_PERCENT" >> $GITHUB_ENV
+          echo "JEST_FUNCTIONS_PERCENT=$JEST_FUNCTIONS_PERCENT" >> $GITHUB_ENV
+          echo "JEST_LINES_PERCENT=$JEST_LINES_PERCENT" >> $GITHUB_ENV
       - name: Save tests coverage in cache 🥡
         uses: actions/cache/save@v3
         id: cache-tests-coverage
@@ -147,6 +158,36 @@ jobs:
           key: ${{ runner.os }}-tests-coverage-v3-${{hashFiles('tests/coverage/lcov.info')}}
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+  tests-badges:
+    name: Generate Tests Badges 💯
+    runs-on: ubuntu-latest
+    env:
+      BADGES_FILE_PATH: "tests/badges/shields.json"
+    needs:
+      - all-tests
+    steps:
+      - name: Tests Count Badge
+        uses: RubbaBoy/BYOB@v1.3.0
+        with:
+          NAME: tests-count
+          LABEL: Tests
+          STATUS: ${{ env.JEST_TESTS_COUNT }}
+          ICON: jest
+          PATH: ${{ env.BADGES_FILE_PATH }}
+          COLOR: 109B08
+          BRANCH: ${{ github.head_ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Statements Badge
+        uses: RubbaBoy/BYOB@v1.3.0
+        with:
+          NAME: statements
+          LABEL: Statements
+          STATUS: ${{ env.JEST_STATEMENTS_COUNT }} (${{env.JEST_STATEMENTS_PERCENT}})
+          ICON: jest
+          PATH: ${{ env.BADGES_FILE_PATH }}
+          COLOR: 109B08
+          BRANCH: ${{ github.head_ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   mutant-tests:
     name: Mutant Tests 👽
     runs-on: ubuntu-latest
