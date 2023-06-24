@@ -152,6 +152,7 @@ jobs:
       - name: Set Jest Results Environment Variables
         id: outputs
         run: |
+          env
           echo "JEST_TEST_COUNT=${{ env.JEST_TESTS_COUNT }}" >> "$GITHUB_OUTPUT"
           echo "JEST_STATEMENTS_COUNT=${{ env.JEST_STATEMENTS_COUNT }}" >> "$GITHUB_OUTPUT"
           echo "JEST_BRANCHES_COUNT=${{ env.JEST_BRANCHES_COUNT }}" >> "$GITHUB_OUTPUT"
