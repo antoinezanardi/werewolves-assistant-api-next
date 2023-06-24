@@ -184,47 +184,47 @@ jobs:
           STATUS: ${{ needs.all-tests.outputs.JEST_TESTS_COUNT }}
           ICON: https://cdn.simpleicons.org/jest/white
           COLOR: 109B08
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BYOB_TOKEN }}
 
       - name: Statements Badge
         uses: RubbaBoy/BYOB@v1.3.0
         with:
           NAME: statements
           LABEL: Statements
-          STATUS: ${{ needs.all-tests.outputs.JEST_STATEMENTS_COUNT }} (${{needs.all-tests.outputs.JEST_STATEMENTS_PERCENT}})
+          STATUS: ${{ needs.all-tests.outputs.JEST_STATEMENTS_COUNT }} covered (${{needs.all-tests.outputs.JEST_STATEMENTS_PERCENT}})
           ICON: https://cdn.simpleicons.org/jest/white
           COLOR: 109B08
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BYOB_TOKEN }}
 
       - name: Branches Badge
         uses: RubbaBoy/BYOB@v1.3.0
         with:
           NAME: branches
           LABEL: Branches
-          STATUS: ${{ needs.all-tests.outputs.JEST_BRANCHES_COUNT }} (${{needs.all-tests.outputs.JEST_BRANCHES_PERCENT}})
+          STATUS: ${{ needs.all-tests.outputs.JEST_BRANCHES_COUNT }} covered (${{needs.all-tests.outputs.JEST_BRANCHES_PERCENT}})
           ICON: https://cdn.simpleicons.org/jest/white
           COLOR: 109B08
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BYOB_TOKEN }}
 
       - name: Functions Badge
         uses: RubbaBoy/BYOB@v1.3.0
         with:
           NAME: functions
           LABEL: Functions
-          STATUS: ${{ needs.all-tests.outputs.JEST_FUNCTIONS_COUNT }} (${{needs.all-tests.outputs.JEST_FUNCTIONS_PERCENT}})
+          STATUS: ${{ needs.all-tests.outputs.JEST_FUNCTIONS_COUNT }} covered (${{needs.all-tests.outputs.JEST_FUNCTIONS_PERCENT}})
           ICON: https://cdn.simpleicons.org/jest/white
           COLOR: 109B08
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BYOB_TOKEN }}
 
       - name: Lines Badge
         uses: RubbaBoy/BYOB@v1.3.0
         with:
           NAME: lines
           LABEL: Lines
-          STATUS: ${{ needs.all-tests.outputs.JEST_LINES_COUNT }} (${{needs.all-tests.outputs.JEST_LINES_PERCENT}})
+          STATUS: ${{ needs.all-tests.outputs.JEST_LINES_COUNT }} covered (${{needs.all-tests.outputs.JEST_LINES_PERCENT}})
           ICON: https://cdn.simpleicons.org/jest/white
           COLOR: 109B08
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BYOB_TOKEN }}
 
   mutant-tests:
     name: Mutant Tests 👽
