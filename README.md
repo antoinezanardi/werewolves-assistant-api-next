@@ -104,11 +104,17 @@ npm run docker:test:start
 Unit and E2E tests are orchestrated with :
 
 ![Jest](https://img.shields.io/badge/-Jest-black?style=for-the-badge&logoColor=white&logo=jest&color=BF3B14)
+
 [![Tests count](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/tests-count)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/tests-count)
+[![Covered Statements](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-statements)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-statements)
+[![Covered Branches](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-branches)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-branches)
+[![Covered Functions](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-functions)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-functions)
+[![Covered Lines](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-lines)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-lines)
 
 Mutant testing is also available with :
 
 ![Stryker](https://img.shields.io/badge/-Stryker-black?style=for-the-badge&logoColor=white&logo=stripe&color=7F1B10) 
+
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fantoinezanardi%2Fwerewolves-assistant-api-next%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/antoinezanardi/werewolves-assistant-api-next/main)
 
 
