@@ -11,7 +11,7 @@ const config: Config = {
   clearMocks: true,
   setupFiles: ["<rootDir>/tests/global-setup.ts"],
   setupFilesAfterEnv: ["jest-extended/all"],
-  coverageReporters: ["clover", "json", "lcov", "text", "text-summary"],
+  coverageReporters: ["clover", "json-summary", "lcov", "text", "text-summary"],
   collectCoverageFrom: [
     "src/**/*.ts",
     "!src/main.ts",
