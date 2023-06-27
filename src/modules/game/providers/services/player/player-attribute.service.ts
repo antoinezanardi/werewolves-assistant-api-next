@@ -1,15 +1,30 @@
+import { Injectable } from "@nestjs/common";
 import { cloneDeep } from "lodash";
 import { isPlayerAttributeActive } from "../../../helpers/player/player-attribute/player-attribute.helper";
+import { createPlayerDiseaseByRustySwordKnightDeath, createPlayerDeathPotionByWitchDeath, createPlayerEatenByWerewolvesDeath } from "../../../helpers/player/player-death/player-death.factory";
 import type { Game } from "../../../schemas/game.schema";
 import type { PlayerAttribute } from "../../../schemas/player/player-attribute/player-attribute.schema";
 import type { Player } from "../../../schemas/player/player.schema";
+import { PlayerKillerService } from "./player-killer.service";
 
+@Injectable()
 export class PlayerAttributeService {
-  // public applyEatenAttributeOutcomes(player: Player, game: Game): Game
+  public constructor(private readonly playerKillerService: PlayerKillerService) {}
 
-  // public applyDrankDeathPotionAttributeOutcomes(player: Player, game: Game): Game
+  public async applyEatenAttributeOutcomes(player: Player, game: Game, attribute: PlayerAttribute): Promise<Game> {
+    const death = createPlayerEatenByWerewolvesDeath({ source: attribute.source });
+    return this.playerKillerService.killOrRevealPlayer(player._id, game, death);
+  }
 
-  // public applyContaminatedAttributeOutcomes(player: Player, game: Game): Game
+  public async applyDrankDeathPotionAttributeOutcomes(player: Player, game: Game): Promise<Game> {
+    const death = createPlayerDeathPotionByWitchDeath();
+    return this.playerKillerService.killOrRevealPlayer(player._id, game, death);
+  }
+
+  public async applyContaminatedAttributeOutcomes(player: Player, game: Game): Promise<Game> {
+    const death = createPlayerDiseaseByRustySwordKnightDeath();
+    return this.playerKillerService.killOrRevealPlayer(player._id, game, death);
+  }
 
   public decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(game: Game): Game {
     const clonedGame = cloneDeep(game);
