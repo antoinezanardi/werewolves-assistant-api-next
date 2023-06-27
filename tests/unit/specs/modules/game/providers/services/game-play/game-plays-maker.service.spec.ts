@@ -1269,7 +1269,7 @@ describe("Game Plays Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[0],
-        attributes: [createFakePowerlessByFoxPlayerAttribute()],
+        attributes: [createFakePowerlessByFoxPlayerAttribute({ doesRemainAfterDeath: true })],
       });
       const expectedGame = createFakeGame({
         ...game,

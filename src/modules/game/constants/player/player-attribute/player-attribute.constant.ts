@@ -2,7 +2,10 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { PlayerAttribute } from "../../../schemas/player/player-attribute/player-attribute.schema";
 import { gameSourceValues } from "../../game.constant";
 
-const playerAttributeFieldsSpecs = Object.freeze({ remainingPhases: { minimum: 1 } });
+const playerAttributeFieldsSpecs = Object.freeze({
+  remainingPhases: { minimum: 1 },
+  doesRemainAfterDeath: { default: false },
+});
 
 const playerAttributeApiProperties: Record<keyof PlayerAttribute, ApiPropertyOptions> = Object.freeze({
   name: { description: "Attribute's name on the player." },
@@ -15,6 +18,7 @@ const playerAttributeApiProperties: Record<keyof PlayerAttribute, ApiPropertyOpt
     ...playerAttributeFieldsSpecs.remainingPhases,
   },
   activeAt: { description: "When the attribute will become active and will have consequences on players. Used for attributes with delay. If not set, the attribute is immediately active." },
+  doesRemainAfterDeath: { description: "If the attribute is removed on player's death" },
 });
 
 export { playerAttributeApiProperties, playerAttributeFieldsSpecs };

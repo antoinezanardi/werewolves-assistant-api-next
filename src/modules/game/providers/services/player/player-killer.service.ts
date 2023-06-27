@@ -62,6 +62,12 @@ export class PlayerKillerService {
       death.cause === PLAYER_DEATH_CAUSES.VOTE;
   }
 
+  private removePlayerAttributesAfterDeath(player: Player): Player {
+    const clonedPlayer = cloneDeep(player);
+    clonedPlayer.attributes = clonedPlayer.attributes.filter(({ doesRemainAfterDeath }) => doesRemainAfterDeath === true);
+    return clonedPlayer;
+  }
+
   private async getAncientLivesCountAgainstWerewolves(game: Game): Promise<number> {
     const { livesCountAgainstWerewolves } = game.options.roles.ancient;
     const werewolvesEatAncientRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords(game._id);
@@ -230,7 +236,7 @@ export class PlayerKillerService {
     clonedPlayerToKill = getPlayerWithIdOrThrow(clonedPlayerToKill._id, clonedGame, cantFindPlayerException);
     clonedGame = this.applyPlayerDeathOutcomes(clonedPlayerToKill, clonedGame, death);
     clonedPlayerToKill = getPlayerWithIdOrThrow(clonedPlayerToKill._id, clonedGame, cantFindPlayerException);
-    return updatePlayerInGame(clonedPlayerToKill._id, { attributes: [] }, clonedGame);
+    return updatePlayerInGame(clonedPlayerToKill._id, this.removePlayerAttributesAfterDeath(clonedPlayerToKill), clonedGame);
   }
 
   private getPlayerToKillInGame(playerId: Types.ObjectId, game: Game): Player {

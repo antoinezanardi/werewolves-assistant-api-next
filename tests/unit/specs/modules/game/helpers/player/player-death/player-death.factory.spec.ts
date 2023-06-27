@@ -6,7 +6,7 @@ import { createFakePlayerDeath } from "../../../../../../../factories/game/schem
 
 describe("Player Death Factory", () => {
   describe("createPlayerDiseaseByRustySwordKnightDeath", () => {
-    it("should create player disease by rusty sword knight when called.", () => {
+    it("should create player contaminated by rusty sword knight when called.", () => {
       const expectedDeath = createFakePlayerDeath({
         cause: PLAYER_DEATH_CAUSES.DISEASE,
         source: ROLE_NAMES.RUSTY_SWORD_KNIGHT,

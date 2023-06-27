@@ -32,6 +32,10 @@ class PlayerAttribute {
   @Type(() => PlayerAttributeActivation)
   @Expose()
   public activeAt?: PlayerAttributeActivation;
+
+  @ApiProperty(playerAttributeApiProperties.doesRemainAfterDeath)
+  @Expose()
+  public doesRemainAfterDeath?: boolean;
 }
 
 const PlayerAttributeSchema = SchemaFactory.createForClass(PlayerAttribute);

@@ -29,6 +29,7 @@ describe("Player Killer Service", () => {
       getPlayerToKillInGame: jest.SpyInstance;
       isPlayerKillable: jest.SpyInstance;
       doesPlayerRoleMustBeRevealed: jest.SpyInstance;
+      removePlayerAttributesAfterDeath: jest.SpyInstance;
       revealPlayerRole: jest.SpyInstance;
       killPlayer: jest.SpyInstance;
       applySheriffPlayerDeathOutcomes: jest.SpyInstance;
@@ -58,6 +59,7 @@ describe("Player Killer Service", () => {
         getPlayerToKillInGame: jest.fn(),
         isPlayerKillable: jest.fn(),
         doesPlayerRoleMustBeRevealed: jest.fn(),
+        removePlayerAttributesAfterDeath: jest.fn(),
         revealPlayerRole: jest.fn(),
         killPlayer: jest.fn(),
         applySheriffPlayerDeathOutcomes: jest.fn(),
@@ -298,6 +300,28 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerVoteByAllDeath();
 
       expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death)).toBe(true);
+    });
+  });
+
+  describe("removePlayerAttributesAfterDeath", () => {
+    it("should remove player attributes which need to be removed after death when called.", () => {
+      const player = createFakePlayer({
+        isAlive: false,
+        attributes: [
+          createFakeCantVoteByAllPlayerAttribute({ doesRemainAfterDeath: false }),
+          createFakePowerlessByAncientPlayerAttribute(),
+          createFakeSheriffByAllPlayerAttribute({ doesRemainAfterDeath: true }),
+        ],
+      });
+      const expectedPlayer = createFakePlayer({
+        ...player,
+        attributes: [
+          player.attributes[1],
+          player.attributes[2],
+        ],
+      });
+      
+      expect(services.playerKiller["removePlayerAttributesAfterDeath"](player)).toStrictEqual<Player>(expectedPlayer);
     });
   });
 
@@ -1173,6 +1197,7 @@ describe("Player Killer Service", () => {
       mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException = jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerUnexpectedException").mockReturnValue(exception);
       const updatePlayerInGameMock = jest.spyOn(GameMutator, "updatePlayerInGame").mockReturnValue(game);
       mocks.gameHelper.getPlayerWithIdOrThrow = jest.spyOn(GameHelper, "getPlayerWithIdOrThrow").mockReturnValue(expectedKilledPlayer);
+      const removePlayerAttributesAfterDeathMock = jest.spyOn(services.playerKiller as unknown as { removePlayerAttributesAfterDeath }, "removePlayerAttributesAfterDeath").mockReturnValue(expectedKilledPlayer);
       const applyPlayerDeathOutcomesMock = jest.spyOn(services.playerKiller as unknown as { applyPlayerDeathOutcomes }, "applyPlayerDeathOutcomes").mockReturnValue(game);
       services.playerKiller["killPlayer"](players[0], game, death);
 
@@ -1181,7 +1206,8 @@ describe("Player Killer Service", () => {
       expect(mocks.gameHelper.getPlayerWithIdOrThrow).toHaveBeenNthCalledWith(1, expectedKilledPlayer._id, game, exception);
       expect(applyPlayerDeathOutcomesMock).toHaveBeenCalledExactlyOnceWith(expectedKilledPlayer, game, death);
       expect(mocks.gameHelper.getPlayerWithIdOrThrow).toHaveBeenNthCalledWith(2, expectedKilledPlayer._id, game, exception);
-      expect(updatePlayerInGameMock).toHaveBeenNthCalledWith(2, players[0]._id, { attributes: [] }, game);
+      expect(removePlayerAttributesAfterDeathMock).toHaveBeenCalledWith(expectedKilledPlayer);
+      expect(updatePlayerInGameMock).toHaveBeenNthCalledWith(2, players[0]._id, expectedKilledPlayer, game);
     });
   });
 
