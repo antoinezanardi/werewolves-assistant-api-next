@@ -14,6 +14,7 @@ function createFakeSheriffBySheriffPlayerAttribute(attribute: Partial<PlayerAttr
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
     source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+    doesRemainAfterDeath: true,
     ...attribute,
   }, override);
 }
@@ -22,6 +23,7 @@ function createFakeSheriffByAllPlayerAttribute(attribute: Partial<PlayerAttribut
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
     source: PLAYER_GROUPS.ALL,
+    doesRemainAfterDeath: true,
     ...attribute,
   }, override);
 }
@@ -118,6 +120,7 @@ function createFakePowerlessByFoxPlayerAttribute(attribute: Partial<PlayerAttrib
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
     source: ROLE_NAMES.FOX,
+    doesRemainAfterDeath: true,
     ...attribute,
   }, override);
 }
@@ -126,6 +129,7 @@ function createFakePowerlessByAncientPlayerAttribute(attribute: Partial<PlayerAt
   return createFakePlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
     source: ROLE_NAMES.ANCIENT,
+    doesRemainAfterDeath: true,
     ...attribute,
   }, override);
 }
@@ -191,6 +195,7 @@ function createFakePlayerAttribute(attribute: Partial<PlayerAttribute> = {}, ove
     source: attribute.source ?? faker.helpers.arrayElement(gameSourceValues),
     remainingPhases: attribute.remainingPhases ?? undefined,
     activeAt: attribute.activeAt ?? undefined,
+    doesRemainAfterDeath: attribute.doesRemainAfterDeath ?? undefined,
     ...override,
   }, plainToInstanceDefaultOptions);
 }
