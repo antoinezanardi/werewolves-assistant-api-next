@@ -6,7 +6,7 @@ import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/mod
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
 import * as GameMutator from "../../../../../../../../src/modules/game/helpers/game.mutator";
 import { GameHistoryRecordService } from "../../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
-import { GamePlaysMakerService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-plays-maker.service";
+import { GamePlayMakerService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-play-maker.service";
 import { PlayerKillerService } from "../../../../../../../../src/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "../../../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../../../src/modules/game/schemas/player/player.schema";
@@ -26,8 +26,8 @@ import { createFakePlayerShotByHunterDeath, createFakePlayerVoteByAllDeath, crea
 import { createFakeAncientAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
-describe("Game Plays Maker Service", () => {
-  let services: { gamePlaysMaker: GamePlaysMakerService };
+describe("Game Play Maker Service", () => {
+  let services: { gamePlayMaker: GamePlayMakerService };
   let mocks: {
     playerKillerService: {
       killOrRevealPlayer: jest.SpyInstance;
@@ -49,7 +49,7 @@ describe("Game Plays Maker Service", () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        GamePlaysMakerService,
+        GamePlayMakerService,
         {
           provide: PlayerKillerService,
           useValue: mocks.playerKillerService,
@@ -61,20 +61,20 @@ describe("Game Plays Maker Service", () => {
       ],
     }).compile();
 
-    services = { gamePlaysMaker: module.get<GamePlaysMakerService>(GamePlaysMakerService) };
+    services = { gamePlayMaker: module.get<GamePlayMakerService>(GamePlayMakerService) };
   });
 
   describe("gameSourcePlayMethods", () => {
     it("should contain play methods from game play sources when accessed.", () => {
-      expect(services.gamePlaysMaker["gameSourcePlayMethods"][PLAYER_GROUPS.WEREWOLVES]).toStrictEqual(expect.any(Function));
-      expect(services.gamePlaysMaker["gameSourcePlayMethods"][ROLE_NAMES.FOX]).toStrictEqual(expect.any(Function));
-      expect(services.gamePlaysMaker["gameSourcePlayMethods"][PLAYER_ATTRIBUTE_NAMES.SHERIFF]).toStrictEqual(expect.any(Function));
+      expect(services.gamePlayMaker["gameSourcePlayMethods"][PLAYER_GROUPS.WEREWOLVES]).toStrictEqual(expect.any(Function));
+      expect(services.gamePlayMaker["gameSourcePlayMethods"][ROLE_NAMES.FOX]).toStrictEqual(expect.any(Function));
+      expect(services.gamePlayMaker["gameSourcePlayMethods"][PLAYER_ATTRIBUTE_NAMES.SHERIFF]).toStrictEqual(expect.any(Function));
     });
   });
 
   describe("makeGamePlay", () => {
     let localMocks: {
-      gamePlaysMakerService: {
+      gamePlayMakerService: {
         werewolvesEat: jest.SpyInstance;
         bigBadWolfEats: jest.SpyInstance;
         whiteWerewolfEats: jest.SpyInstance;
@@ -97,24 +97,24 @@ describe("Game Plays Maker Service", () => {
     
     beforeEach(() => {
       localMocks = {
-        gamePlaysMakerService: {
-          werewolvesEat: jest.spyOn(services.gamePlaysMaker as unknown as { werewolvesEat }, "werewolvesEat").mockImplementation(),
-          bigBadWolfEats: jest.spyOn(services.gamePlaysMaker as unknown as { bigBadWolfEats }, "bigBadWolfEats").mockImplementation(),
-          whiteWerewolfEats: jest.spyOn(services.gamePlaysMaker as unknown as { whiteWerewolfEats }, "whiteWerewolfEats").mockImplementation(),
-          seerLooks: jest.spyOn(services.gamePlaysMaker as unknown as { seerLooks }, "seerLooks").mockImplementation(),
-          cupidCharms: jest.spyOn(services.gamePlaysMaker as unknown as { cupidCharms }, "cupidCharms").mockImplementation(),
-          piedPiperCharms: jest.spyOn(services.gamePlaysMaker as unknown as { piedPiperCharms }, "piedPiperCharms").mockImplementation(),
-          witchUsesPotions: jest.spyOn(services.gamePlaysMaker as unknown as { witchUsesPotions }, "witchUsesPotions").mockImplementation(),
-          hunterShoots: jest.spyOn(services.gamePlaysMaker as unknown as { hunterShoots }, "hunterShoots").mockImplementation(),
-          guardProtects: jest.spyOn(services.gamePlaysMaker as unknown as { guardProtects }, "guardProtects").mockImplementation(),
-          foxSniffs: jest.spyOn(services.gamePlaysMaker as unknown as { foxSniffs }, "foxSniffs").mockImplementation(),
-          wildChildChoosesModel: jest.spyOn(services.gamePlaysMaker as unknown as { wildChildChoosesModel }, "wildChildChoosesModel").mockImplementation(),
-          dogWolfChoosesSide: jest.spyOn(services.gamePlaysMaker as unknown as { dogWolfChoosesSide }, "dogWolfChoosesSide").mockImplementation(),
-          scapegoatBansVoting: jest.spyOn(services.gamePlaysMaker as unknown as { scapegoatBansVoting }, "scapegoatBansVoting").mockImplementation(),
-          thiefChoosesCard: jest.spyOn(services.gamePlaysMaker as unknown as { thiefChoosesCard }, "thiefChoosesCard").mockImplementation(),
-          allPlay: jest.spyOn(services.gamePlaysMaker as unknown as { allPlay }, "allPlay").mockImplementation(),
-          ravenMarks: jest.spyOn(services.gamePlaysMaker as unknown as { ravenMarks }, "ravenMarks").mockImplementation(),
-          sheriffPlays: jest.spyOn(services.gamePlaysMaker as unknown as { sheriffPlays }, "sheriffPlays").mockImplementation(),
+        gamePlayMakerService: {
+          werewolvesEat: jest.spyOn(services.gamePlayMaker as unknown as { werewolvesEat }, "werewolvesEat").mockImplementation(),
+          bigBadWolfEats: jest.spyOn(services.gamePlayMaker as unknown as { bigBadWolfEats }, "bigBadWolfEats").mockImplementation(),
+          whiteWerewolfEats: jest.spyOn(services.gamePlayMaker as unknown as { whiteWerewolfEats }, "whiteWerewolfEats").mockImplementation(),
+          seerLooks: jest.spyOn(services.gamePlayMaker as unknown as { seerLooks }, "seerLooks").mockImplementation(),
+          cupidCharms: jest.spyOn(services.gamePlayMaker as unknown as { cupidCharms }, "cupidCharms").mockImplementation(),
+          piedPiperCharms: jest.spyOn(services.gamePlayMaker as unknown as { piedPiperCharms }, "piedPiperCharms").mockImplementation(),
+          witchUsesPotions: jest.spyOn(services.gamePlayMaker as unknown as { witchUsesPotions }, "witchUsesPotions").mockImplementation(),
+          hunterShoots: jest.spyOn(services.gamePlayMaker as unknown as { hunterShoots }, "hunterShoots").mockImplementation(),
+          guardProtects: jest.spyOn(services.gamePlayMaker as unknown as { guardProtects }, "guardProtects").mockImplementation(),
+          foxSniffs: jest.spyOn(services.gamePlayMaker as unknown as { foxSniffs }, "foxSniffs").mockImplementation(),
+          wildChildChoosesModel: jest.spyOn(services.gamePlayMaker as unknown as { wildChildChoosesModel }, "wildChildChoosesModel").mockImplementation(),
+          dogWolfChoosesSide: jest.spyOn(services.gamePlayMaker as unknown as { dogWolfChoosesSide }, "dogWolfChoosesSide").mockImplementation(),
+          scapegoatBansVoting: jest.spyOn(services.gamePlayMaker as unknown as { scapegoatBansVoting }, "scapegoatBansVoting").mockImplementation(),
+          thiefChoosesCard: jest.spyOn(services.gamePlayMaker as unknown as { thiefChoosesCard }, "thiefChoosesCard").mockImplementation(),
+          allPlay: jest.spyOn(services.gamePlayMaker as unknown as { allPlay }, "allPlay").mockImplementation(),
+          ravenMarks: jest.spyOn(services.gamePlayMaker as unknown as { ravenMarks }, "ravenMarks").mockImplementation(),
+          sheriffPlays: jest.spyOn(services.gamePlayMaker as unknown as { sheriffPlays }, "sheriffPlays").mockImplementation(),
         },
       };
     });
@@ -122,11 +122,11 @@ describe("Game Plays Maker Service", () => {
     it("should call no play method when source is not in available methods.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayTwoSistersMeetEachOther() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      const gamePlaysMakerServiceMockKeys = Object.keys(localMocks.gamePlaysMakerService);
-      for (const gamePlaysMakerServiceMockKey of gamePlaysMakerServiceMockKeys) {
-        expect(localMocks.gamePlaysMakerService[gamePlaysMakerServiceMockKey]).not.toHaveBeenCalled();
+      const gamePlayMakerServiceMockKeys = Object.keys(localMocks.gamePlayMakerService);
+      for (const gamePlayMakerServiceMockKey of gamePlayMakerServiceMockKeys) {
+        expect(localMocks.gamePlayMakerService[gamePlayMakerServiceMockKey]).not.toHaveBeenCalled();
       }
     });
 
@@ -134,143 +134,143 @@ describe("Game Plays Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayTwoSistersMeetEachOther() });
 
-      await expect(services.gamePlaysMaker.makeGamePlay(play, game)).resolves.toStrictEqual<Game>(game);
+      await expect(services.gamePlayMaker.makeGamePlay(play, game)).resolves.toStrictEqual<Game>(game);
     });
 
     it("should call werewolvesEat method when it's werewolves turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayWerewolvesEat() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
       
-      expect(localMocks.gamePlaysMakerService.werewolvesEat).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.werewolvesEat).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call bigBadWolfEats method when it's big bad wolf's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayBigBadWolfEats() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.bigBadWolfEats).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.bigBadWolfEats).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call whiteWerewolfEats method when it's white werewolf's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayWhiteWerewolfEats() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.whiteWerewolfEats).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.whiteWerewolfEats).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call seerLooks method when it's seer's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlaySeerLooks() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.seerLooks).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.seerLooks).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call cupidCharms method when it's cupid's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayCupidCharms() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.cupidCharms).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.cupidCharms).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call piedPiperCharms method when it's pied piper's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayPiedPiperCharms() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.piedPiperCharms).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.piedPiperCharms).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call witchUsesPotions method when it's witch's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayWitchUsesPotions() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.witchUsesPotions).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.witchUsesPotions).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call hunterShoots method when it's hunter's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayHunterShoots() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.hunterShoots).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.hunterShoots).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call guardProtects method when it's guard's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayGuardProtects() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.guardProtects).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.guardProtects).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call foxSniffs method when it's fox's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayFoxSniffs() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.foxSniffs).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.foxSniffs).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call wildChildChoosesModel method when it's wild child's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayWildChildChoosesModel() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.wildChildChoosesModel).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.wildChildChoosesModel).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call dogWolfChoosesSide method when it's dog wolf's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.dogWolfChoosesSide).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.dogWolfChoosesSide).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call scapegoatBansVoting method when it's scapegoat's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayScapegoatBansVoting() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.scapegoatBansVoting).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.scapegoatBansVoting).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call thiefChoosesCard method when it's thief's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayThiefChoosesCard() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.thiefChoosesCard).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.thiefChoosesCard).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call allPlay method when it's all's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayAllVote() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.allPlay).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.allPlay).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call ravenMarks method when it's raven's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlayRavenMarks() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.ravenMarks).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.ravenMarks).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call sheriffPlays method when it's sheriff's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame({ currentPlay: createFakeGamePlaySheriffDelegates() });
-      await services.gamePlaysMaker.makeGamePlay(play, game);
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlaysMakerService.sheriffPlays).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.sheriffPlays).toHaveBeenCalledExactlyOnceWith(play, game);
     });
   });
 
@@ -279,14 +279,14 @@ describe("Game Plays Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame();
 
-      await expect(services.gamePlaysMaker["sheriffSettlesVotes"](play, game)).resolves.toStrictEqual<Game>(game);
+      await expect(services.gamePlayMaker["sheriffSettlesVotes"](play, game)).resolves.toStrictEqual<Game>(game);
     });
 
     it("should call killOrRevealPlayer method when sheriff delegates to a target.", async() => {
       const targetedPlayer = createFakePlayer();
       const play = createFakeMakeGamePlayWithRelationsDto({ targets: [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer })] });
       const game = createFakeGame({ currentPlay: createFakeGamePlaySheriffDelegates() });
-      await services.gamePlaysMaker["sheriffSettlesVotes"](play, game);
+      await services.gamePlayMaker["sheriffSettlesVotes"](play, game);
 
       expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(targetedPlayer._id, game, createFakePlayerVoteBySheriffDeath());
     });
@@ -297,7 +297,7 @@ describe("Game Plays Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const game = createFakeGame();
 
-      expect(services.gamePlaysMaker["sheriffDelegates"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["sheriffDelegates"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should remove previous sheriff attribute and add it to the target when called.", () => {
@@ -314,13 +314,13 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["sheriffDelegates"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["sheriffDelegates"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
   describe("sheriffPlays", () => {
     let localMocks: {
-      gamePlaysMakerService: {
+      gamePlayMakerService: {
         sheriffDelegates: jest.SpyInstance;
         sheriffSettlesVotes: jest.SpyInstance;
       };
@@ -328,9 +328,9 @@ describe("Game Plays Maker Service", () => {
     
     beforeEach(() => {
       localMocks = {
-        gamePlaysMakerService: {
-          sheriffDelegates: jest.spyOn(services.gamePlaysMaker as unknown as { sheriffDelegates }, "sheriffDelegates").mockImplementation(),
-          sheriffSettlesVotes: jest.spyOn(services.gamePlaysMaker as unknown as { sheriffSettlesVotes }, "sheriffSettlesVotes").mockImplementation(),
+        gamePlayMakerService: {
+          sheriffDelegates: jest.spyOn(services.gamePlayMaker as unknown as { sheriffDelegates }, "sheriffDelegates").mockImplementation(),
+          sheriffSettlesVotes: jest.spyOn(services.gamePlayMaker as unknown as { sheriffSettlesVotes }, "sheriffSettlesVotes").mockImplementation(),
         },
       };
     });
@@ -339,23 +339,23 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ currentPlay: createFakeGamePlayFoxSniffs() });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      await expect(services.gamePlaysMaker["sheriffPlays"](play, game)).resolves.toStrictEqual<Game>(game);
+      await expect(services.gamePlayMaker["sheriffPlays"](play, game)).resolves.toStrictEqual<Game>(game);
     });
 
     it("should call sheriffDelegates method when upcoming play is sheriff role delegation.", async() => {
       const game = createFakeGame({ currentPlay: createFakeGamePlaySheriffDelegates() });
       const play = createFakeMakeGamePlayWithRelationsDto();
-      await services.gamePlaysMaker["sheriffPlays"](play, game);
+      await services.gamePlayMaker["sheriffPlays"](play, game);
 
-      expect(localMocks.gamePlaysMakerService.sheriffDelegates).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.sheriffDelegates).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call sheriffSettlesVotes method when upcoming play is sheriff settling vote.", async() => {
       const game = createFakeGame({ currentPlay: createFakeGamePlaySheriffSettlesVotes() });
       const play = createFakeMakeGamePlayWithRelationsDto();
-      await services.gamePlaysMaker["sheriffPlays"](play, game);
+      await services.gamePlayMaker["sheriffPlays"](play, game);
 
-      expect(localMocks.gamePlaysMakerService.sheriffSettlesVotes).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.sheriffSettlesVotes).toHaveBeenCalledExactlyOnceWith(play, game);
     });
   });
 
@@ -373,7 +373,7 @@ describe("Game Plays Maker Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlaysMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
     it("should return player vote counts as is when there is no raven player in the game.", () => {
@@ -389,7 +389,7 @@ describe("Game Plays Maker Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlaysMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
     it("should return player vote counts as is when raven player is not alive.", () => {
@@ -405,7 +405,7 @@ describe("Game Plays Maker Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlaysMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
     it("should return player vote counts as is when raven player is powerless.", () => {
@@ -421,7 +421,7 @@ describe("Game Plays Maker Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlaysMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
     it("should return player vote counts as is when there are no raven mark.", () => {
@@ -437,7 +437,7 @@ describe("Game Plays Maker Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlaysMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
     it("should return player vote counts as is when the raven target is dead.", () => {
@@ -453,7 +453,7 @@ describe("Game Plays Maker Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlaysMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
     it("should return player vote counts with new player vote entry when raven target doesn't have vote.", () => {
@@ -475,7 +475,7 @@ describe("Game Plays Maker Service", () => {
         [players[2], 2],
       ];
 
-      expect(services.gamePlaysMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
+      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
     });
 
     it("should return player vote counts with updated player vote entry when raven target already has votes.", () => {
@@ -496,7 +496,7 @@ describe("Game Plays Maker Service", () => {
         [players[1], 7],
       ];
 
-      expect(services.gamePlaysMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
+      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
     });
   });
 
@@ -520,7 +520,7 @@ describe("Game Plays Maker Service", () => {
         [players[1], 1],
       ];
 
-      expect(services.gamePlaysMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
+      expect(services.gamePlayMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
     });
 
     it("should get player vote counts with only simple votes when sheriff doesn't have double vote.", () => {
@@ -542,7 +542,7 @@ describe("Game Plays Maker Service", () => {
         [players[0], 2],
       ];
 
-      expect(services.gamePlaysMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
+      expect(services.gamePlayMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
     });
 
     it("should get player vote counts with simple only votes when game play is not vote.", () => {
@@ -564,7 +564,7 @@ describe("Game Plays Maker Service", () => {
         [players[0], 2],
       ];
 
-      expect(services.gamePlaysMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
+      expect(services.gamePlayMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
     });
 
     it("should get player vote counts with simple votes and one doubled vote when sheriff has double vote.", () => {
@@ -586,7 +586,7 @@ describe("Game Plays Maker Service", () => {
         [players[0], 2],
       ];
 
-      expect(services.gamePlaysMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
+      expect(services.gamePlayMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
     });
   });
 
@@ -611,7 +611,7 @@ describe("Game Plays Maker Service", () => {
         players[2],
       ];
 
-      expect(services.gamePlaysMaker["getNominatedPlayers"](votes, game)).toContainAllValues<Player>(expectedNominatedPlayers);
+      expect(services.gamePlayMaker["getNominatedPlayers"](votes, game)).toContainAllValues<Player>(expectedNominatedPlayers);
     });
   });
 
@@ -630,7 +630,7 @@ describe("Game Plays Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      await services.gamePlaysMaker["handleTieInVotes"](game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalled();
     });
@@ -643,7 +643,7 @@ describe("Game Plays Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      await services.gamePlaysMaker["handleTieInVotes"](game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalled();
     });
@@ -656,7 +656,7 @@ describe("Game Plays Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      await services.gamePlaysMaker["handleTieInVotes"](game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(mocks.playerKillerService.killOrRevealPlayer).not.toHaveBeenCalled();
     });
@@ -670,7 +670,7 @@ describe("Game Plays Maker Service", () => {
       ];
       const game = createFakeGame({ players });
       const playerDeath = createFakePlayerVoteScapegoatedByAllDeath();
-      await services.gamePlaysMaker["handleTieInVotes"](game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[0]._id, game, playerDeath);
     });
@@ -684,7 +684,7 @@ describe("Game Plays Maker Service", () => {
       ];
       const game = createFakeGame({ players });
       const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
-      await services.gamePlaysMaker["handleTieInVotes"](game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(localMocks.gameMutator.prependUpcomingPlayInGame).not.toHaveBeenCalledWith(gamePlaySheriffSettlesVotes, game);
     });
@@ -698,7 +698,7 @@ describe("Game Plays Maker Service", () => {
       ];
       const game = createFakeGame({ players });
       const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
-      await services.gamePlaysMaker["handleTieInVotes"](game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(localMocks.gameMutator.prependUpcomingPlayInGame).not.toHaveBeenCalledWith(gamePlaySheriffSettlesVotes, game);
     });
@@ -713,7 +713,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValue(null);
-      await services.gamePlaysMaker["handleTieInVotes"](game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlaySheriffSettlesVotes, game);
     });
@@ -728,7 +728,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay() }));
       const gamePlayAllVote = createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES });
-      await services.gamePlaysMaker["handleTieInVotes"](game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayAllVote, game);
     });
@@ -743,7 +743,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const gamePlayAllVote = createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES });
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValue(null);
-      await services.gamePlaysMaker["handleTieInVotes"](game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayAllVote, game);
     });
@@ -759,13 +759,13 @@ describe("Game Plays Maker Service", () => {
       const previousGameHistoryRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }) });
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValue(previousGameHistoryRecord);
 
-      await expect(services.gamePlaysMaker["handleTieInVotes"](game)).resolves.toStrictEqual<Game>(game);
+      await expect(services.gamePlayMaker["handleTieInVotes"](game)).resolves.toStrictEqual<Game>(game);
     });
   });
   
   describe("allVote", () => {
     let localMocks: {
-      gamePlaysMakerService: {
+      gamePlayMakerService: {
         handleTieInVotes: jest.SpyInstance;
         getNominatedPlayers: jest.SpyInstance;
       };
@@ -773,9 +773,9 @@ describe("Game Plays Maker Service", () => {
       
     beforeEach(() => {
       localMocks = {
-        gamePlaysMakerService: {
-          handleTieInVotes: jest.spyOn(services.gamePlaysMaker as unknown as { handleTieInVotes }, "handleTieInVotes").mockImplementation(),
-          getNominatedPlayers: jest.spyOn(services.gamePlaysMaker as unknown as { getNominatedPlayers }, "getNominatedPlayers").mockImplementation(),
+        gamePlayMakerService: {
+          handleTieInVotes: jest.spyOn(services.gamePlayMaker as unknown as { handleTieInVotes }, "handleTieInVotes").mockImplementation(),
+          getNominatedPlayers: jest.spyOn(services.gamePlayMaker as unknown as { getNominatedPlayers }, "getNominatedPlayers").mockImplementation(),
         },
       };
     });
@@ -790,7 +790,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      await expect(services.gamePlaysMaker["allVote"](play, game)).resolves.toStrictEqual<Game>(game);
+      await expect(services.gamePlayMaker["allVote"](play, game)).resolves.toStrictEqual<Game>(game);
     });
 
     it("should return game as is when there is no nominated players.", async() => {
@@ -807,9 +807,9 @@ describe("Game Plays Maker Service", () => {
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
       const nominatedPlayers = [];
-      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
 
-      await expect(services.gamePlaysMaker["allVote"](play, game)).resolves.toStrictEqual<Game>(game);
+      await expect(services.gamePlayMaker["allVote"](play, game)).resolves.toStrictEqual<Game>(game);
     });
       
     it("should call handleTieInVotes method when there are several nominated players.", async() => {
@@ -826,10 +826,10 @@ describe("Game Plays Maker Service", () => {
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
       const nominatedPlayers = [players[1], players[2]];
-      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      await services.gamePlaysMaker["allVote"](play, game);
+      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      await services.gamePlayMaker["allVote"](play, game);
 
-      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(game);
+      expect(localMocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call handleTieInVotes method with prepended all vote game play from judge when there are several nominated players and judge requested it.", async() => {
@@ -850,10 +850,10 @@ describe("Game Plays Maker Service", () => {
         ...game,
         upcomingPlays: [createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.STUTTERING_JUDGE_REQUEST })],
       });
-      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      await services.gamePlaysMaker["allVote"](play, game);
+      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      await services.gamePlayMaker["allVote"](play, game);
 
-      expect(localMocks.gamePlaysMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(expectedGame);
+      expect(localMocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(expectedGame);
     });
 
     it("should call killOrRevealPlayer method when there is one nominated player.", async() => {
@@ -871,8 +871,8 @@ describe("Game Plays Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
       const nominatedPlayers = [players[1]];
       const playerVoteByAllDeath = createFakePlayerVoteByAllDeath();
-      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      await services.gamePlaysMaker["allVote"](play, game);
+      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      await services.gamePlayMaker["allVote"](play, game);
 
       expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[1]._id, game, playerVoteByAllDeath);
     });
@@ -880,13 +880,13 @@ describe("Game Plays Maker Service", () => {
   
   describe("allElectSheriff", () => {
     let localMocks: {
-      gamePlaysMakerService: {
+      gamePlayMakerService: {
         getNominatedPlayers: jest.SpyInstance;
       };
     };
       
     beforeEach(() => {
-      localMocks = { gamePlaysMakerService: { getNominatedPlayers: jest.spyOn(services.gamePlaysMaker as unknown as { getNominatedPlayers }, "getNominatedPlayers").mockImplementation() } };
+      localMocks = { gamePlayMakerService: { getNominatedPlayers: jest.spyOn(services.gamePlayMaker as unknown as { getNominatedPlayers }, "getNominatedPlayers").mockImplementation() } };
     });
       
     it("should return game as is when there is no vote.", () => {
@@ -899,7 +899,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should return game as is when there is no nominated players.", () => {
@@ -915,9 +915,9 @@ describe("Game Plays Maker Service", () => {
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes });
-      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue([]);
+      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue([]);
 
-      expect(services.gamePlaysMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add sheriff attribute to nominated player when called.", () => {
@@ -933,7 +933,7 @@ describe("Game Plays Maker Service", () => {
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes });
-      localMocks.gamePlaysMakerService.getNominatedPlayers.mockReturnValue([players[1]]);
+      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue([players[1]]);
       const expectedGame = createFakeGame({
         ...game,
         players: [
@@ -944,13 +944,13 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
   describe("allPlay", () => {
     let localMocks: {
-      gamePlaysMakerService: {
+      gamePlayMakerService: {
         allElectSheriff: jest.SpyInstance;
         allVote: jest.SpyInstance;
       };
@@ -958,9 +958,9 @@ describe("Game Plays Maker Service", () => {
 
     beforeEach(() => {
       localMocks = {
-        gamePlaysMakerService: {
-          allElectSheriff: jest.spyOn(services.gamePlaysMaker as unknown as { allElectSheriff }, "allElectSheriff").mockImplementation(),
-          allVote: jest.spyOn(services.gamePlaysMaker as unknown as { allVote }, "allVote").mockImplementation(),
+        gamePlayMakerService: {
+          allElectSheriff: jest.spyOn(services.gamePlayMaker as unknown as { allElectSheriff }, "allElectSheriff").mockImplementation(),
+          allVote: jest.spyOn(services.gamePlayMaker as unknown as { allVote }, "allVote").mockImplementation(),
         },
       };
     });
@@ -969,23 +969,23 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ currentPlay: createFakeGamePlayFoxSniffs() });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      await expect(services.gamePlaysMaker["allPlay"](play, game)).resolves.toStrictEqual<Game>(game);
+      await expect(services.gamePlayMaker["allPlay"](play, game)).resolves.toStrictEqual<Game>(game);
     });
 
     it("should call allElectSheriff method when upcoming play is sheriff role delegation.", async() => {
       const game = createFakeGame({ currentPlay: createFakeGamePlayAllElectSheriff() });
       const play = createFakeMakeGamePlayWithRelationsDto();
-      await services.gamePlaysMaker["allPlay"](play, game);
+      await services.gamePlayMaker["allPlay"](play, game);
 
-      expect(localMocks.gamePlaysMakerService.allElectSheriff).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.allElectSheriff).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call allVote method when upcoming play is sheriff settling vote.", async() => {
       const game = createFakeGame({ currentPlay: createFakeGamePlayAllVote() });
       const play = createFakeMakeGamePlayWithRelationsDto();
-      await services.gamePlaysMaker["allPlay"](play, game);
+      await services.gamePlayMaker["allPlay"](play, game);
 
-      expect(localMocks.gamePlaysMakerService.allVote).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.allVote).toHaveBeenCalledExactlyOnceWith(play, game);
     });
   });
 
@@ -1001,7 +1001,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players, additionalCards });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenCard: additionalCards[0] });
 
-      expect(services.gamePlaysMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should return game as is when there is no chosen card.", () => {
@@ -1015,7 +1015,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players, additionalCards });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should return game as is when chosen card role is unknown.", () => {
@@ -1029,7 +1029,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players, additionalCards });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenCard: createFakeGameAdditionalCard({}, { roleName: "Toto" }) });
 
-      expect(services.gamePlaysMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should update thief role and side when called.", () => {
@@ -1057,7 +1057,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1072,7 +1072,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["scapegoatBansVoting"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["scapegoatBansVoting"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add scapegoat ban voting attributes to targets when called.", () => {
@@ -1098,7 +1098,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["scapegoatBansVoting"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["scapegoatBansVoting"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1113,7 +1113,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should return game as is when there is no dog wolf in the game.", () => {
@@ -1126,7 +1126,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: ROLE_SIDES.WEREWOLVES });
 
-      expect(services.gamePlaysMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should return dog wolf on the werewolves side when called.", () => {
@@ -1152,7 +1152,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
       
-      expect(services.gamePlaysMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1167,7 +1167,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["wildChildChoosesModel"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["wildChildChoosesModel"](play, game)).toStrictEqual<Game>(game);
     });
     
     it("should add worshiped attribute to target when called.", () => {
@@ -1194,7 +1194,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["wildChildChoosesModel"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["wildChildChoosesModel"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1209,7 +1209,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should return game as is when there is no fox in the game.", () => {
@@ -1223,7 +1223,7 @@ describe("Game Plays Maker Service", () => {
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
 
-      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should return game as is when fox is not powerless if misses werewolves by game options.", () => {
@@ -1238,7 +1238,7 @@ describe("Game Plays Maker Service", () => {
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
 
-      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should return game as is when fox sniffes a werewolf in the group.", () => {
@@ -1253,7 +1253,7 @@ describe("Game Plays Maker Service", () => {
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
 
-      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["foxSniffs"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should make fox powerless when there is no werewolf in the group.", () => {
@@ -1281,7 +1281,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["foxSniffs"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["foxSniffs"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1296,7 +1296,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["ravenMarks"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["ravenMarks"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add raven marked attribute to target when called.", () => {
@@ -1323,7 +1323,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["ravenMarks"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["ravenMarks"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1338,7 +1338,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["guardProtects"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["guardProtects"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add protected attribute to target when called.", () => {
@@ -1365,7 +1365,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["guardProtects"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["guardProtects"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1380,7 +1380,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      await expect(services.gamePlaysMaker["hunterShoots"](play, game)).resolves.toStrictEqual<Game>(game);
+      await expect(services.gamePlayMaker["hunterShoots"](play, game)).resolves.toStrictEqual<Game>(game);
     });
 
     it("should call killOrRevealPlayer method when called.", async() => {
@@ -1394,7 +1394,7 @@ describe("Game Plays Maker Service", () => {
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const playerDeath = createFakePlayerShotByHunterDeath();
-      await services.gamePlaysMaker["hunterShoots"](play, game);
+      await services.gamePlayMaker["hunterShoots"](play, game);
 
       expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[1]._id, game, playerDeath);
     });
@@ -1411,7 +1411,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["witchUsesPotions"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["witchUsesPotions"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add only one potion attributes to targets when called.", () => {
@@ -1438,7 +1438,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["witchUsesPotions"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["witchUsesPotions"](play, game)).toStrictEqual<Game>(expectedGame);
     });
     
     it("should add both potion attributes to targets when called.", () => {
@@ -1472,7 +1472,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["witchUsesPotions"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["witchUsesPotions"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1487,7 +1487,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["piedPiperCharms"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["piedPiperCharms"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add pied piper charmed attributes to targets when called.", () => {
@@ -1521,7 +1521,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["piedPiperCharms"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["piedPiperCharms"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1536,7 +1536,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["cupidCharms"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["cupidCharms"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add in-love attribute to targets when called.", () => {
@@ -1570,7 +1570,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["cupidCharms"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["cupidCharms"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1585,7 +1585,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["seerLooks"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["seerLooks"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add seen attribute to target when called.", () => {
@@ -1612,7 +1612,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["seerLooks"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["seerLooks"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1627,7 +1627,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["whiteWerewolfEats"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["whiteWerewolfEats"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add eaten attribute by white werewolf to target when called.", () => {
@@ -1654,7 +1654,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["whiteWerewolfEats"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["whiteWerewolfEats"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1669,7 +1669,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      expect(services.gamePlaysMaker["bigBadWolfEats"](play, game)).toStrictEqual<Game>(game);
+      expect(services.gamePlayMaker["bigBadWolfEats"](play, game)).toStrictEqual<Game>(game);
     });
 
     it("should add eaten attribute by big bad wolf to target when called.", () => {
@@ -1696,7 +1696,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlaysMaker["bigBadWolfEats"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["bigBadWolfEats"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1711,7 +1711,7 @@ describe("Game Plays Maker Service", () => {
       const game = createFakeGame({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
 
-      await expect(services.gamePlaysMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(game);
+      await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(game);
     });
 
     it("should add eaten attribute by werewolves to target when target is not infected.", async() => {
@@ -1739,7 +1739,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      await expect(services.gamePlaysMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
     it("should add eaten attribute by werewolves to target when target is infected but not killable ancient.", async() => {
@@ -1767,7 +1767,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      await expect(services.gamePlaysMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
     it("should change target side to werewolves when he's infected and not the ancient.", async() => {
@@ -1795,7 +1795,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      await expect(services.gamePlaysMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
     it("should change target side to werewolves when he's infected and killable as ancient.", async() => {
@@ -1823,7 +1823,7 @@ describe("Game Plays Maker Service", () => {
         ],
       });
 
-      await expect(services.gamePlaysMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
   });
 });

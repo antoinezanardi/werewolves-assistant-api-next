@@ -15,7 +15,7 @@ import type { GameSource } from "../../../types/game.type";
 import { GameHistoryRecordService } from "../game-history/game-history-record.service";
 
 @Injectable()
-export class GamePlaysValidatorService {
+export class GamePlayValidatorService {
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
 
   public async validateGamePlayWithRelationsDtoData(play: MakeGamePlayWithRelationsDto, game: Game): Promise<void> {

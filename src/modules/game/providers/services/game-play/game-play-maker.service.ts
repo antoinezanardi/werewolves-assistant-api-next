@@ -23,7 +23,7 @@ import { GameHistoryRecordService } from "../game-history/game-history-record.se
 import { PlayerKillerService } from "../player/player-killer.service";
 
 @Injectable()
-export class GamePlaysMakerService {
+export class GamePlayMakerService {
   private readonly gameSourcePlayMethods: Partial<Record<GameSource, (play: MakeGamePlayWithRelationsDto, game: Game) => Game | Promise<Game>>> = {
     [PLAYER_GROUPS.WEREWOLVES]: async(play, game) => this.werewolvesEat(play, game),
     [ROLE_NAMES.BIG_BAD_WOLF]: (play, game) => this.bigBadWolfEats(play, game),
