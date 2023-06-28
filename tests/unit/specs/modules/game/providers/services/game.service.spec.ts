@@ -6,9 +6,9 @@ import * as GameVictoryHelper from "../../../../../../../src/modules/game/helper
 import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
-import { GamePlaysMakerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-maker.service";
-import { GamePlaysManagerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-manager.service";
-import { GamePlaysValidatorService } from "../../../../../../../src/modules/game/providers/services/game-play/game-plays-validator.service";
+import { GamePlayMakerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-maker.service";
+import { GamePlayValidatorService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-validator.service";
+import { GamePlayService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play.service";
 import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
 import type { Game } from "../../../../../../../src/modules/game/schemas/game.schema";
 import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enum";
@@ -40,13 +40,13 @@ describe("Game Service", () => {
       find: jest.SpyInstance;
       create: jest.SpyInstance;
     };
-    gamePlaysManagerService: {
+    gamePlayService: {
       getUpcomingNightPlays: jest.SpyInstance;
       proceedToNextGamePlay: jest.SpyInstance;
       removeObsoleteUpcomingPlays: jest.SpyInstance;
     };
-    gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.SpyInstance };
-    gamePlaysMakerService: { makeGamePlay: jest.SpyInstance };
+    gamePlayValidatorService: { validateGamePlayWithRelationsDtoData: jest.SpyInstance };
+    gamePlayMakerService: { makeGamePlay: jest.SpyInstance };
     gamePlayerHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
   };
   let services: { game: GameService };
@@ -64,13 +64,13 @@ describe("Game Service", () => {
         find: jest.fn(),
         create: jest.fn(),
       },
-      gamePlaysManagerService: {
+      gamePlayService: {
         getUpcomingNightPlays: jest.fn(),
         proceedToNextGamePlay: jest.fn(),
         removeObsoleteUpcomingPlays: jest.fn(),
       },
-      gamePlaysValidatorService: { validateGamePlayWithRelationsDtoData: jest.fn() },
-      gamePlaysMakerService: { makeGamePlay: jest.fn() },
+      gamePlayValidatorService: { validateGamePlayWithRelationsDtoData: jest.fn() },
+      gamePlayMakerService: { makeGamePlay: jest.fn() },
       gamePlayerHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayerHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
     };
 
@@ -85,16 +85,16 @@ describe("Game Service", () => {
           useValue: mocks.gameHistoryRecordRepository,
         },
         {
-          provide: GamePlaysManagerService,
-          useValue: mocks.gamePlaysManagerService,
+          provide: GamePlayService,
+          useValue: mocks.gamePlayService,
         },
         {
-          provide: GamePlaysValidatorService,
-          useValue: mocks.gamePlaysValidatorService,
+          provide: GamePlayValidatorService,
+          useValue: mocks.gamePlayValidatorService,
         },
         {
-          provide: GamePlaysMakerService,
-          useValue: mocks.gamePlaysMakerService,
+          provide: GamePlayMakerService,
+          useValue: mocks.gamePlayMakerService,
         },
         GameHistoryRecordService,
         GameService,
@@ -115,7 +115,7 @@ describe("Game Service", () => {
 
   describe("createGame", () => {
     it("should throw error when can't generate upcoming plays.", async() => {
-      mocks.gamePlaysManagerService.getUpcomingNightPlays.mockReturnValue([]);
+      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([]);
       const toCreateGame = createFakeCreateGameDto();
       const exception = new UnexpectedException("createGame", UNEXPECTED_EXCEPTION_REASONS.CANT_GENERATE_GAME_PLAYS);
 
@@ -124,7 +124,7 @@ describe("Game Service", () => {
 
     it("should create game when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
-      mocks.gamePlaysManagerService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlayAllVote()]);
+      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlayAllVote()]);
       await services.game.createGame(toCreateGame);
 
       expect(repositories.game.create).toHaveBeenCalledOnce();
@@ -172,9 +172,9 @@ describe("Game Service", () => {
     const play = createFakeMakeGamePlayWithRelationsDto();
 
     beforeEach(() => {
-      mocks.gamePlaysMakerService.makeGamePlay.mockReturnValue(game);
-      mocks.gamePlaysManagerService.proceedToNextGamePlay.mockReturnValue(game);
-      mocks.gamePlaysManagerService.removeObsoleteUpcomingPlays.mockReturnValue(game.upcomingPlays);
+      mocks.gamePlayMakerService.makeGamePlay.mockReturnValue(game);
+      mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
+      mocks.gamePlayService.removeObsoleteUpcomingPlays.mockReturnValue(game.upcomingPlays);
       mocks.gamePlayerHelper.createMakeGamePlayDtoWithRelations.mockReturnValue(play);
       localMocks = {
         gameService: {
@@ -196,14 +196,14 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
-      expect(mocks.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoData).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call play maker method when called.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
-      expect(mocks.gamePlaysMakerService.makeGamePlay).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(mocks.gamePlayMakerService.makeGamePlay).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call update method when game can be canceled.", async() => {
@@ -217,9 +217,9 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const gameVictoryData = createFakeGameVictory();
       jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
-      mocks.gamePlaysMakerService.makeGamePlay.mockReturnValue(soonToBeOverGame);
-      mocks.gamePlaysManagerService.proceedToNextGamePlay.mockReturnValue(soonToBeOverGame);
-      mocks.gamePlaysManagerService.removeObsoleteUpcomingPlays.mockReturnValue(soonToBeOverGame.upcomingPlays);
+      mocks.gamePlayMakerService.makeGamePlay.mockReturnValue(soonToBeOverGame);
+      mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(soonToBeOverGame);
+      mocks.gamePlayService.removeObsoleteUpcomingPlays.mockReturnValue(soonToBeOverGame.upcomingPlays);
       await services.game.makeGamePlay(soonToBeOverGame, makeGamePlayDto);
 
       expect(localMocks.gameService.setGameAsOver).toHaveBeenCalledExactlyOnceWith(soonToBeOverGame);

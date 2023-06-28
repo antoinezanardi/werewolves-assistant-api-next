@@ -15,7 +15,7 @@ import type { GamePlay } from "../../../schemas/game-play.schema";
 import type { Game } from "../../../schemas/game.schema";
 
 @Injectable()
-export class GamePlaysManagerService {
+export class GamePlayService {
   public removeObsoleteUpcomingPlays(game: Game): Game {
     const clonedGame = cloneDeep(game);
     clonedGame.upcomingPlays = clonedGame.upcomingPlays.filter(upcomingPlay => this.isGamePlaySuitableForCurrentPhase(clonedGame, upcomingPlay));
