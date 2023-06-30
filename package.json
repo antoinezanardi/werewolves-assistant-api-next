@@ -94,7 +94,7 @@
     "@semantic-release/git": "^10.0.1",
     "@stryker-mutator/core": "^7.0.2",
     "@stryker-mutator/jest-runner": "^7.0.2",
-    "@stryker-mutator/typescript-checker": "^7.0.2",
+    "@stryker-mutator/typescript-checker": "^7.1.0",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.2",
     "@types/jest-when": "^3.5.2",
