@@ -58,7 +58,7 @@ export class GameService {
       throw new BadResourceMutationException(API_RESOURCES.GAMES, clonedGame._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
     }
     const play = createMakeGamePlayDtoWithRelations(makeGamePlayDto, clonedGame);
-    await this.gamePlayValidatorService.validateGamePlayWithRelationsDtoData(play, clonedGame);
+    await this.gamePlayValidatorService.validateGamePlayWithRelationsDto(play, clonedGame);
     clonedGame = await this.gamePlayMakerService.makeGamePlay(play, clonedGame);
     clonedGame = this.gamePlayService.removeObsoleteUpcomingPlays(clonedGame);
     clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);

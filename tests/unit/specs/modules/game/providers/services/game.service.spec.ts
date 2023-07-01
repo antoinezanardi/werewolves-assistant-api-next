@@ -45,7 +45,7 @@ describe("Game Service", () => {
       proceedToNextGamePlay: jest.SpyInstance;
       removeObsoleteUpcomingPlays: jest.SpyInstance;
     };
-    gamePlayValidatorService: { validateGamePlayWithRelationsDtoData: jest.SpyInstance };
+    gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.SpyInstance };
     gamePlayMakerService: { makeGamePlay: jest.SpyInstance };
     gamePlayerHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
   };
@@ -69,7 +69,7 @@ describe("Game Service", () => {
         proceedToNextGamePlay: jest.fn(),
         removeObsoleteUpcomingPlays: jest.fn(),
       },
-      gamePlayValidatorService: { validateGamePlayWithRelationsDtoData: jest.fn() },
+      gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.fn() },
       gamePlayMakerService: { makeGamePlay: jest.fn() },
       gamePlayerHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayerHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
     };
@@ -196,7 +196,7 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoData).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDto).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call play maker method when called.", async() => {
