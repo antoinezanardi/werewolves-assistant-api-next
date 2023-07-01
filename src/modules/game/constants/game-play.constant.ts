@@ -1,6 +1,5 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { GAME_PLAY_ACTIONS } from "../enums/game-play.enum";
-import { PLAYER_GROUPS } from "../enums/player.enum";
 import type { GamePlay } from "../schemas/game-play.schema";
 import { gameSourceValues } from "./game.constant";
 
@@ -14,11 +13,6 @@ const gamePlayApiProperties: Readonly<Record<keyof GamePlay, ApiPropertyOptions>
     example: GAME_PLAY_ACTIONS.VOTE,
   },
   cause: { description: "Why this play needs to be performed" },
-});
-
-const sheriffElectionPlay: Readonly<GamePlay> = Object.freeze({
-  source: PLAYER_GROUPS.ALL,
-  action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
 });
 
 const requiredTargetsActions: Readonly<GAME_PLAY_ACTIONS[]> = Object.freeze([
@@ -51,7 +45,6 @@ const stutteringJudgeRequestOpportunityActions: Readonly<GAME_PLAY_ACTIONS[]> = 
 
 export {
   gamePlayApiProperties,
-  sheriffElectionPlay,
   requiredTargetsActions,
   optionalTargetsActions,
   requiredVotesActions,
