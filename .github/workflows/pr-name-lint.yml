@@ -11,7 +11,7 @@ on:
       - synchronize
 jobs:
   pr-lint:
-    name: Lint Pull Request 🔃
+    name: Lint Pull Request Name 🔃
     runs-on: ubuntu-latest
     steps:
       - name: Lint Pull Request Name 🔃
