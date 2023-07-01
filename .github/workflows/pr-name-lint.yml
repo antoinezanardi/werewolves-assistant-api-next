@@ -11,10 +11,10 @@ on:
       - synchronize
 jobs:
   pr-lint:
-    name: Lint Pull Request
-    runs-on: [self-hosted, Linux, standard]
+    name: Lint Pull Request 🔃
+    runs-on: ubuntu-latest
     steps:
-      - name: Lint Pull Request Name
+      - name: Lint Pull Request Name 🔃
         uses: morrisoncole/pr-lint-action@v1.7.0
         with:
           repo-token: ${{ env.GITHUB_TOKEN }}
