@@ -2,7 +2,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../../src/modules/game/enums/game-history-record.enum";
-import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
 import * as GameHelper from "../../../../../../../../src/modules/game/helpers/game.helper";
 import { GameHistoryRecordRepository } from "../../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
@@ -15,7 +15,7 @@ import { createFakeMakeGamePlayTargetWithRelationsDto } from "../../../../../../
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
@@ -892,7 +892,8 @@ describe("Game Play Validator Service", () => {
     it("should throw error when targeted player is not in last tie in votes and upcoming action is SETTLE_VOTES.", async() => {
       const game = createFakeGame({ currentPlay: createFakeGamePlaySheriffSettlesVotes() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
-      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE, targets: [{ player: createFakeSeerAlivePlayer() }] }) }));
+      const gameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ result: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE, nominatedPlayers: [createFakeSeerAlivePlayer()] });
+      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ voting: gameHistoryRecordPlayVoting }) }));
 
       await expect(services.gamePlayValidator["validateGamePlaySheriffTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Sheriff can't break the tie in votes with this target");
@@ -901,7 +902,8 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when targeted player for sheriff settling votes is valid.", async() => {
       const game = createFakeGame({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlaySheriffSettlesVotes() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] })];
-      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE, targets: [{ player: game.players[0] }] }) }));
+      const gameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ result: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE, nominatedPlayers: [game.players[0]] });
+      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordAllVotePlay({ voting: gameHistoryRecordPlayVoting }) }));
 
       await expect(services.gamePlayValidator["validateGamePlaySheriffTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
     });
@@ -1390,50 +1392,115 @@ describe("Game Play Validator Service", () => {
     });
   });
 
+  describe("validateGamePlayVotesTieBreakerWithRelationsDto", () => {
+    it("should throw error when there is no previous tie in votes record.", async() => {
+      const players = bulkCreateFakePlayers(4);
+      const game = createFakeGame({ players });
+      const makeGamePlayVotesWithRelationsDto = [
+        createFakeMakeGamePlayVoteWithRelationsDto(),
+        createFakeMakeGamePlayVoteWithRelationsDto(),
+        createFakeMakeGamePlayVoteWithRelationsDto(),
+      ];
+
+      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValue(null);
+
+      await expect(services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toReject();
+      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("One vote's target is not in the previous tie in votes");
+    });
+
+    it("should throw error when one voted player is not in the previous tie.", async() => {
+      const players = bulkCreateFakePlayers(4);
+      const game = createFakeGame({ players });
+      const makeGamePlayVotesWithRelationsDto = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[2] }),
+      ];
+
+      const lastTieInVotesRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [players[0], players[1]] });
+      const lastTieInVotesRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: lastTieInVotesRecordPlayVoting }) });
+      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValue(lastTieInVotesRecord);
+
+      await expect(services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toReject();
+      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("One vote's target is not in the previous tie in votes");
+    });
+
+    it("should do nothing when all voted players were in previous tie.", async() => {
+      const players = bulkCreateFakePlayers(4);
+      const game = createFakeGame({ players });
+      const makeGamePlayVotesWithRelationsDto = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[1] }),
+      ];
+
+      const lastTieInVotesRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [players[0], players[1]] });
+      const lastTieInVotesRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: lastTieInVotesRecordPlayVoting }) });
+      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValue(lastTieInVotesRecord);
+
+      await expect(services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toResolve();
+    });
+  });
+
   describe("validateGamePlayVotesWithRelationsDto", () => {
-    it("should do nothing when there are no votes defined and upcoming action doesn't require votes anyway.", () => {
-      const game = createFakeGame({ currentPlay: createFakeGamePlayWerewolvesEat() });
+    let localMocks: {
+      gamePlayValidatorService: { validateGamePlayVotesTieBreakerWithRelationsDto: jest.SpyInstance };
+    };
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](undefined, game)).not.toThrow();
+    beforeEach(() => {
+      localMocks = { gamePlayValidatorService: { validateGamePlayVotesTieBreakerWithRelationsDto: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayVotesTieBreakerWithRelationsDto }, "validateGamePlayVotesTieBreakerWithRelationsDto").mockImplementation() } };
     });
 
-    it("should do nothing when there are no votes (empty array) and upcoming action doesn't require votes anyway.", () => {
+    it("should do nothing when there are no votes defined and upcoming action doesn't require votes anyway.", async() => {
       const game = createFakeGame({ currentPlay: createFakeGamePlayWerewolvesEat() });
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"]([], game)).not.toThrow();
+      await expect(services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](undefined, game)).toResolve();
     });
 
-    it("should throw error when there is no votes but they are required.", () => {
+    it("should do nothing when there are no votes (empty array) and upcoming action doesn't require votes anyway.", async() => {
+      const game = createFakeGame({ currentPlay: createFakeGamePlayWerewolvesEat() });
+
+      await expect(services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"]([], game)).toResolve();
+    });
+
+    it("should throw error when there is no votes but they are required.", async() => {
       const game = createFakeGame({ currentPlay: createFakeGamePlayAllVote() });
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"]([], game)).toThrow(BadGamePlayPayloadException);
+      await expect(services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"]([], game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`votes` is required on this current game's state");
     });
 
-    it("should throw error when there are votes but they are expected.", () => {
+    it("should throw error when there are votes but they are expected.", async() => {
       const game = createFakeGame({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlayWerewolvesEat() });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto()];
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
+      await expect(services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`votes` can't be set on this current game's state");
     });
 
-    it("should throw error when there are votes with the same source and target.", () => {
+    it("should throw error when there are votes with the same source and target.", async() => {
       const game = createFakeGame({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlayAllVote() });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[0] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[2], target: game.players[1] }),
       ];
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
+      await expect(services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("One vote has the same source and target");
     });
 
-    it("should do nothing when votes are valid.", () => {
+    it("should call validateGamePlayVotesTieBreakerWithRelationsDto when current play is because of previous votes were in ties.", async() => {
+      const game = createFakeGame({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }) });
+      const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] })];
+
+      await expect(services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toResolve();
+      expect(localMocks.gamePlayValidatorService.validateGamePlayVotesTieBreakerWithRelationsDto).toHaveBeenCalledExactlyOnceWith(makeGamePlayVotesWithRelationsDto, game);
+    });
+
+    it("should do nothing when votes are valid.", async() => {
       const game = createFakeGame({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlayAllVote() });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] })];
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).not.toThrow();
+      await expect(services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toResolve();
     });
   });
 

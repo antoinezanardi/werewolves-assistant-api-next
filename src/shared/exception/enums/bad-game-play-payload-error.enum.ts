@@ -1,5 +1,4 @@
 enum BAD_GAME_PLAY_PAYLOAD_REASONS {
-  NO_UPCOMING_GAME_PLAY = "Game doesn't have upcoming plays",
   UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST = "`doesJudgeRequestAnotherVote` can't be set on this current game's state",
   UNEXPECTED_CHOSEN_SIDE = "`chosenSide` can't be set on this current game's state",
   REQUIRED_CHOSEN_SIDE = "`chosenSide` is required on this current game's state",
@@ -8,6 +7,7 @@ enum BAD_GAME_PLAY_PAYLOAD_REASONS {
   UNEXPECTED_VOTES = "`votes` can't be set on this current game's state",
   REQUIRED_VOTES = "`votes` is required on this current game's state",
   SAME_SOURCE_AND_TARGET_VOTE = "One vote has the same source and target",
+  BAD_VOTE_TARGET_FOR_TIE_BREAKER = "One vote's target is not in the previous tie in votes",
   UNEXPECTED_TARGETS = "`targets` can't be set on this current game's state",
   REQUIRED_TARGETS = "`targets` is required on this current game's state",
   TOO_LESS_TARGETS = "There are too less targets for this current game's state",

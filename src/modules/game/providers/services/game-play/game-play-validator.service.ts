@@ -6,7 +6,7 @@ import { optionalTargetsActions, requiredTargetsActions, requiredVotesActions, s
 import type { MakeGamePlayTargetWithRelationsDto } from "../../../dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "../../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
-import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
 import { doesPlayerHaveAttribute, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "../../../helpers/player/player.helper";
@@ -22,7 +22,7 @@ export class GamePlayValidatorService {
     const { votes, targets } = play;
     await this.validateGamePlayWithRelationsDtoJudgeRequest(play, game);
     this.validateGamePlayWithRelationsDtoChosenSide(play, game);
-    this.validateGamePlayVotesWithRelationsDto(votes, game);
+    await this.validateGamePlayVotesWithRelationsDto(votes, game);
     await this.validateGamePlayTargetsWithRelationsDto(targets, game);
     this.validateGamePlayWithRelationsDtoChosenCard(play, game);
   }
@@ -204,8 +204,9 @@ export class GamePlayValidatorService {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_SHERIFF_DELEGATE_TARGET);
     }
     const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id);
-    const lastTieInVotesRecordTargets = lastTieInVotesRecord?.play.targets ?? [];
-    if (game.currentPlay.action === GAME_PLAY_ACTIONS.SETTLE_VOTES && !lastTieInVotesRecordTargets.find(({ player }) => player._id === targetedPlayer._id)) {
+    const lastTieInVotesRecordNominatedPlayers = lastTieInVotesRecord?.play.voting?.nominatedPlayers ?? [];
+    const isSheriffTargetInLastNominatedPlayers = lastTieInVotesRecordNominatedPlayers.find(({ _id }) => _id === targetedPlayer._id);
+    if (game.currentPlay.action === GAME_PLAY_ACTIONS.SETTLE_VOTES && !isSheriffTargetInLastNominatedPlayers) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_SHERIFF_SETTLE_VOTES_TARGET);
     }
   }
@@ -268,7 +269,15 @@ export class GamePlayValidatorService {
     await this.validateGamePlaySourceTargets(playTargets, game);
   }
 
-  private validateGamePlayVotesWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: Game): void {
+  private async validateGamePlayVotesTieBreakerWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[], game: Game): Promise<void> {
+    const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id);
+    const lastTieInVotesRecordNominatedPlayers = lastTieInVotesRecord?.play.voting?.nominatedPlayers ?? [];
+    if (playVotes.some(vote => !lastTieInVotesRecordNominatedPlayers.find(player => vote.target._id === player._id))) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_VOTE_TARGET_FOR_TIE_BREAKER);
+    }
+  }
+
+  private async validateGamePlayVotesWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: Game): Promise<void> {
     if (playVotes === undefined || !playVotes.length) {
       if (requiredVotesActions.includes(game.currentPlay.action)) {
         throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_VOTES);
@@ -280,6 +289,9 @@ export class GamePlayValidatorService {
     }
     if (playVotes.some(({ source, target }) => source._id === target._id)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.SAME_SOURCE_AND_TARGET_VOTE);
+    }
+    if (game.currentPlay.cause === GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES) {
+      await this.validateGamePlayVotesTieBreakerWithRelationsDto(playVotes, game);
     }
   }
 

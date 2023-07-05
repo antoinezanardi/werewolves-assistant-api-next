@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { cloneDeep } from "lodash";
+import { cloneDeep, sample } from "lodash";
+import { createFakeGamePlayAllElectSheriff } from "../../../../../../tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { roles } from "../../../../role/constants/role.constant";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../role/enums/role.enum";
 import type { MakeGamePlayVoteWithRelationsDto } from "../../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-record.enum";
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlayAllVote, createGamePlaySheriffSettlesVotes } from "../../../helpers/game-play/game-play.factory";
@@ -19,7 +19,6 @@ import type { PlayerSide } from "../../../schemas/player/player-side.schema";
 import type { Player } from "../../../schemas/player/player.schema";
 import type { PlayerVoteCount } from "../../../types/game-play.type";
 import type { GameSource } from "../../../types/game.type";
-import { GameHistoryRecordService } from "../game-history/game-history-record.service";
 import { PlayerKillerService } from "../player/player-killer.service";
 
 @Injectable()
@@ -44,10 +43,7 @@ export class GamePlayMakerService {
     [PLAYER_ATTRIBUTE_NAMES.SHERIFF]: async(play, game) => this.sheriffPlays(play, game),
   };
 
-  public constructor(
-    private readonly playerKillerService: PlayerKillerService,
-    private readonly gameHistoryRecordService: GameHistoryRecordService,
-  ) {}
+  public constructor(private readonly playerKillerService: PlayerKillerService) {}
 
   public async makeGamePlay(play: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
     const clonedGame = cloneDeep(game);
@@ -152,8 +148,7 @@ export class GamePlayMakerService {
       const gamePlaySheriffSettlesVotes = createGamePlaySheriffSettlesVotes();
       return prependUpcomingPlayInGame(gamePlaySheriffSettlesVotes, clonedGame);
     }
-    const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(clonedGame._id);
-    if (previousGameHistoryRecord?.play.votingResult !== GAME_HISTORY_RECORD_VOTING_RESULTS.TIE) {
+    if (clonedGame.currentPlay.cause !== GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES) {
       const gamePlayAllVote = createGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES });
       return prependUpcomingPlayInGame(gamePlayAllVote, clonedGame);
     }
@@ -179,15 +174,33 @@ export class GamePlayMakerService {
     }
     return clonedGame;
   }
-  
-  private allElectSheriff({ votes }: MakeGamePlayWithRelationsDto, game: Game): Game {
+
+  private handleTieInSheriffElection(nominatedPlayers: Player[], game: Game): Game {
     const clonedGame = cloneDeep(game);
+    if (clonedGame.currentPlay.cause !== GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES) {
+      const gamePlayAllElectSheriff = createFakeGamePlayAllElectSheriff({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES });
+      return prependUpcomingPlayInGame(gamePlayAllElectSheriff, clonedGame);
+    }
+    const randomNominatedPlayer = sample(nominatedPlayers);
+    if (randomNominatedPlayer) {
+      const sheriffByAllPlayerAttribute = createSheriffByAllPlayerAttribute();
+      return addPlayerAttributeInGame(randomNominatedPlayer._id, clonedGame, sheriffByAllPlayerAttribute);
+    }
+    return clonedGame;
+  }
+
+  private allElectSheriff(play: MakeGamePlayWithRelationsDto, game: Game): Game {
+    const clonedGame = cloneDeep(game);
+    const { votes } = play;
     if (!votes) {
       return clonedGame;
     }
     const nominatedPlayers = this.getNominatedPlayers(votes, clonedGame);
-    if (nominatedPlayers.length !== 1) {
+    if (!nominatedPlayers.length) {
       return clonedGame;
+    }
+    if (nominatedPlayers.length !== 1) {
+      return this.handleTieInSheriffElection(nominatedPlayers, clonedGame);
     }
     const sheriffByAllPlayerAttribute = createSheriffByAllPlayerAttribute();
     return addPlayerAttributeInGame(nominatedPlayers[0]._id, clonedGame, sheriffByAllPlayerAttribute);
