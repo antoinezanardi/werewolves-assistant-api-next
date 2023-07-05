@@ -3,12 +3,12 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { ROLE_SIDES } from "../../../../role/enums/role.enum";
 import { gameHistoryRecordPlayApiProperties, gameHistoryRecordPlayFieldsSpecs } from "../../../constants/game-history-record/game-history-record-play/game-history-record-play.constant";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-record.enum";
 import { GAME_PLAY_ACTIONS } from "../../../enums/game-play.enum";
 import { GameAdditionalCardSchema, GameAdditionalCard } from "../../game-additional-card/game-additional-card.schema";
 import { GameHistoryRecordPlaySource, GameHistoryRecordPlaySourceSchema } from "./game-history-record-play-source.schema";
 import { GameHistoryRecordPlayTargetSchema, GameHistoryRecordPlayTarget } from "./game-history-record-play-target.schema";
 import { GameHistoryRecordPlayVoteSchema, GameHistoryRecordPlayVote } from "./game-history-record-play-vote.schema";
+import { GameHistoryRecordPlayVoting, GameHistoryRecordPlayVotingSchema } from "./game-history-record-play-voting.schema";
 
 @Schema({
   versionKey: false,
@@ -53,13 +53,14 @@ class GameHistoryRecordPlay {
   @Expose()
   public votes?: GameHistoryRecordPlayVote[];
 
-  @ApiProperty(gameHistoryRecordPlayApiProperties.votingResult)
+  @ApiProperty(gameHistoryRecordPlayApiProperties.voting)
   @Prop({
-    required: gameHistoryRecordPlayFieldsSpecs.votingResult.required,
-    enum: gameHistoryRecordPlayFieldsSpecs.votingResult.enum,
+    required: gameHistoryRecordPlayFieldsSpecs.voting.required,
+    type: GameHistoryRecordPlayVotingSchema,
   })
+  @Type(() => GameHistoryRecordPlayVoting)
   @Expose()
-  public votingResult?: GAME_HISTORY_RECORD_VOTING_RESULTS;
+  public voting?: GameHistoryRecordPlayVoting;
 
   @ApiProperty(gameHistoryRecordPlayApiProperties.didJudgeRequestAnotherVote)
   @Prop({ required: gameHistoryRecordPlayFieldsSpecs.didJudgeRequestAnotherVote.required })
