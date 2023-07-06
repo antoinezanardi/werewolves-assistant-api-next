@@ -28,3 +28,26 @@ updates:
       prefix: "chore(deps)"
     target-branch: "develop"
     open-pull-requests-limit: 20
+    groups:
+      nest:
+        patterns:
+          - "nestjs*"
+      types:
+        patterns:
+          - "@types*"
+      commitlint:
+        patterns:
+          - "@commitlint*"
+      stryker:
+        patterns:
+          - "@stryker-mutator*"
+      eslint:
+        patterns:
+          - "eslint*"
+          - "@typescript-eslint*"
+      jest:
+        patterns:
+          - "jest*"
+      semantic-release:
+        patterns:
+          - "@semantic-release*"
