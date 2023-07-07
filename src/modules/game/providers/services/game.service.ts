@@ -14,16 +14,16 @@ import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play/game
 import { generateGameVictoryData, isGameOver } from "../../helpers/game-victory/game-victory.helper";
 import type { Game } from "../../schemas/game.schema";
 import { GameRepository } from "../repositories/game.repository";
-import { GamePlaysMakerService } from "./game-play/game-plays-maker.service";
-import { GamePlaysManagerService } from "./game-play/game-plays-manager.service";
-import { GamePlaysValidatorService } from "./game-play/game-plays-validator.service";
+import { GamePlayMakerService } from "./game-play/game-play-maker.service";
+import { GamePlayValidatorService } from "./game-play/game-play-validator.service";
+import { GamePlayService } from "./game-play/game-play.service";
 
 @Injectable()
 export class GameService {
   public constructor(
-    private readonly gamePlaysManagerService: GamePlaysManagerService,
-    private readonly gamePlaysValidatorService: GamePlaysValidatorService,
-    private readonly gamePlaysMakerService: GamePlaysMakerService,
+    private readonly gamePlayService: GamePlayService,
+    private readonly gamePlayValidatorService: GamePlayValidatorService,
+    private readonly gamePlayMakerService: GamePlayMakerService,
     private readonly gameRepository: GameRepository,
   ) {}
 
@@ -32,7 +32,7 @@ export class GameService {
   }
 
   public async createGame(game: CreateGameDto): Promise<Game> {
-    const upcomingPlays = this.gamePlaysManagerService.getUpcomingNightPlays(game);
+    const upcomingPlays = this.gamePlayService.getUpcomingNightPlays(game);
     if (!upcomingPlays.length) {
       throw createCantGenerateGamePlaysUnexpectedException("createGame");
     }
@@ -58,10 +58,10 @@ export class GameService {
       throw new BadResourceMutationException(API_RESOURCES.GAMES, clonedGame._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
     }
     const play = createMakeGamePlayDtoWithRelations(makeGamePlayDto, clonedGame);
-    await this.gamePlaysValidatorService.validateGamePlayWithRelationsDtoData(play, clonedGame);
-    clonedGame = await this.gamePlaysMakerService.makeGamePlay(play, clonedGame);
-    clonedGame = this.gamePlaysManagerService.removeObsoleteUpcomingPlays(clonedGame);
-    clonedGame = this.gamePlaysManagerService.proceedToNextGamePlay(clonedGame);
+    await this.gamePlayValidatorService.validateGamePlayWithRelationsDto(play, clonedGame);
+    clonedGame = await this.gamePlayMakerService.makeGamePlay(play, clonedGame);
+    clonedGame = this.gamePlayService.removeObsoleteUpcomingPlays(clonedGame);
+    clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
     if (isGameOver(clonedGame)) {
       clonedGame = this.setGameAsOver(clonedGame);
     }

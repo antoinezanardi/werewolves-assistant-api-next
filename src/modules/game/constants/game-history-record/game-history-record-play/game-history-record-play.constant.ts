@@ -1,6 +1,5 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ROLE_SIDES } from "../../../../role/enums/role.enum";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-record.enum";
 import { GAME_PLAY_ACTIONS } from "../../../enums/game-play.enum";
 import type { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 
@@ -12,10 +11,7 @@ const gameHistoryRecordPlayFieldsSpecs = Object.freeze<Record<keyof GameHistoryR
   source: { required: true },
   targets: { required: false },
   votes: { required: false },
-  votingResult: {
-    required: false,
-    enum: GAME_HISTORY_RECORD_VOTING_RESULTS,
-  },
+  voting: { required: false },
   didJudgeRequestAnotherVote: { required: false },
   chosenCard: { required: false },
   chosenSide: {
@@ -34,16 +30,16 @@ const gameHistoryRecordPlayApiProperties = Object.freeze<Record<keyof GameHistor
     ...gameHistoryRecordPlayFieldsSpecs.source,
   },
   targets: {
-    description: "Players affected by the play. When `votes` are set, `targets` are the players nominated from the vote",
+    description: "Players affected by the play.",
     ...gameHistoryRecordPlayFieldsSpecs.targets,
   },
   votes: {
     description: "Play's votes",
     ...gameHistoryRecordPlayFieldsSpecs.targets,
   },
-  votingResult: {
-    description: "Only if `votes` are set, define the results and their consequences",
-    ...gameHistoryRecordPlayFieldsSpecs.votingResult,
+  voting: {
+    description: "Only if `votes` are set, voting summary and nominated players if applicable",
+    ...gameHistoryRecordPlayFieldsSpecs.voting,
   },
   didJudgeRequestAnotherVote: {
     description: "Only if there is the `stuttering judge` in the game and `action` is either `vote` or `settle-votes`. If set to `true`, there is another vote planned after this play",

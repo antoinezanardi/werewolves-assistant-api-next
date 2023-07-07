@@ -1,11 +1,13 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 import { gameSourceValues } from "../../../../../src/modules/game/constants/game.constant";
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../src/modules/game/enums/game-history-record.enum";
 import { GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../src/modules/game/enums/player.enum";
 import { GameHistoryRecordPlaySource } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
 import { GameHistoryRecordPlayTarget } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
+import { GameHistoryRecordPlayVoting } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
 import { GameHistoryRecordPlay } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { GameHistoryRecord } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
@@ -290,13 +292,21 @@ function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Part
   }, plainToInstanceDefaultOptions);
 }
 
+function createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlayVoting: Partial<GameHistoryRecordPlayVoting> = {}, override: object = {}): GameHistoryRecordPlayVoting {
+  return plainToInstance(GameHistoryRecordPlayVoting, {
+    result: gameHistoryRecordPlayVoting.result ?? faker.helpers.arrayElement(Object.values(GAME_HISTORY_RECORD_VOTING_RESULTS)),
+    nominatedPlayers: gameHistoryRecordPlayVoting.nominatedPlayers ?? undefined,
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
 function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return plainToInstance(GameHistoryRecordPlay, {
     source: createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlay.source),
     action: gameHistoryRecordPlay.action ?? faker.helpers.arrayElement(Object.values(GAME_PLAY_ACTIONS)),
     targets: gameHistoryRecordPlay.targets ?? undefined,
     votes: gameHistoryRecordPlay.votes ?? undefined,
-    votingResult: gameHistoryRecordPlay.votingResult ?? undefined,
+    voting: gameHistoryRecordPlay.voting ? createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlay.voting, override) : undefined,
     didJudgeRequestAnotherVote: gameHistoryRecordPlay.didJudgeRequestAnotherVote ?? undefined,
     chosenSide: gameHistoryRecordPlay.chosenSide ?? undefined,
     chosenCard: gameHistoryRecordPlay.chosenCard ?? undefined,
@@ -350,6 +360,7 @@ export {
   createFakeGameHistoryRecordSheriffSettleVotesPlay,
   createFakeGameHistoryRecordPlaySource,
   createFakeGameHistoryRecordPlayTarget,
+  createFakeGameHistoryRecordPlayVoting,
   createFakeGameHistoryRecordPlay,
   createFakeGameHistoryRecord,
   bulkCreateFakeGameHistoryRecords,

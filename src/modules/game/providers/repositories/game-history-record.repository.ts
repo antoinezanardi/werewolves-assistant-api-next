@@ -30,7 +30,7 @@ export class GameHistoryRecordRepository {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GAME_PLAY_ACTIONS.VOTE,
-      "play.votingResult": GAME_HISTORY_RECORD_VOTING_RESULTS.TIE,
+      "play.voting.result": GAME_HISTORY_RECORD_VOTING_RESULTS.TIE,
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }

@@ -75,6 +75,7 @@ describe("Player Attribute Factory", () => {
       const expectedAttribute = createFakePlayerAttribute({
         name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
         source: ROLE_NAMES.FOX,
+        doesRemainAfterDeath: true,
       });
       
       expect(createPowerlessByFoxPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
@@ -86,6 +87,7 @@ describe("Player Attribute Factory", () => {
       const expectedAttribute = createFakePlayerAttribute({
         name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
         source: ROLE_NAMES.ANCIENT,
+        doesRemainAfterDeath: true,
       });
       
       expect(createPowerlessByAncientPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
@@ -215,6 +217,7 @@ describe("Player Attribute Factory", () => {
       const expectedAttribute = createFakePlayerAttribute({
         name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
         source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+        doesRemainAfterDeath: true,
       });
       
       expect(createSheriffBySheriffPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
@@ -226,6 +229,7 @@ describe("Player Attribute Factory", () => {
       const expectedAttribute = createFakePlayerAttribute({
         name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
         source: PLAYER_GROUPS.ALL,
+        doesRemainAfterDeath: true,
       });
       
       expect(createSheriffByAllPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);

@@ -16,7 +16,7 @@ import type { GameSource } from "../../../../../../../src/modules/game/types/gam
 import type { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
 import { E2eTestModule } from "../../../../../../../src/modules/test/e2e-test.module";
 import { fastifyServerDefaultOptions } from "../../../../../../../src/server/constants/server.constant";
-import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
@@ -44,8 +44,8 @@ describe("Game History Record Repository", () => {
     await app.close();
   });
 
-  async function populate(gameHistoryRecords: GameHistoryRecord[]): Promise<void> {
-    await models.gameHistoryRecord.insertMany(gameHistoryRecords);
+  async function populate(gameHistoryRecords: GameHistoryRecord[]): Promise<GameHistoryRecord[]> {
+    return models.gameHistoryRecord.insertMany(gameHistoryRecords);
   }
 
   describe("create", () => {
@@ -81,8 +81,8 @@ describe("Game History Record Repository", () => {
         test: "potion in play's target is not in enum",
       },
       {
-        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ votingResult: "President election" as GAME_HISTORY_RECORD_VOTING_RESULTS }) }),
-        errorMessage: "GameHistoryRecord validation failed: play.votingResult: `President election` is not a valid enum value for path `votingResult`.",
+        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: createFakeGameHistoryRecordPlayVoting({ result: "President election" as GAME_HISTORY_RECORD_VOTING_RESULTS }) }) }),
+        errorMessage: "GameHistoryRecord validation failed: play.voting.result: `President election` is not a valid enum value for path `result`.",
         test: "voting result is not in enum",
       },
       {
@@ -160,8 +160,9 @@ describe("Game History Record Repository", () => {
 
     it("should return no record when there is no tie in vote play in the history.", async() => {
       const gameId = createFakeObjectId();
+      const gameHistoryRecordPlayTieVoting = createFakeGameHistoryRecordPlayVoting({ result: GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH });
       await models.gameHistoryRecord.insertMany([
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH }) }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay() }),
       ]);
 
@@ -171,9 +172,10 @@ describe("Game History Record Repository", () => {
     it("should return no record when there gameId is not the good one.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
+      const gameHistoryRecordPlayTieVoting = createFakeGameHistoryRecordPlayVoting({ result: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE });
       await models.gameHistoryRecord.insertMany([
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }) }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
       ]);
 
       await expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(otherGameId)).resolves.toBeNull();
@@ -181,11 +183,12 @@ describe("Game History Record Repository", () => {
 
     it("should return the last tie in vote game history play record when called.", async() => {
       const gameId = createFakeObjectId();
+      const gameHistoryRecordPlayTieVoting = createFakeGameHistoryRecordPlayVoting({ result: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE });
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }), createdAt: new Date("2020-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ voting: gameHistoryRecordPlayTieVoting }), createdAt: new Date("2020-01-01") }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2021-01-01") }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay(), createdAt: new Date("2022-01-01") }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }), createdAt: new Date("2024-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ voting: gameHistoryRecordPlayTieVoting }), createdAt: new Date("2024-01-01") }),
       ];
       await populate(gameHistoryRecords);
       const record = await repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId);
@@ -197,11 +200,12 @@ describe("Game History Record Repository", () => {
   describe("getGameHistoryWitchUsesSpecificPotionRecords", () => {
     it("should get no record when there are no witch play.", async() => {
       const gameId = createFakeObjectId();
+      const gameHistoryRecordPlayTieVoting = createFakeGameHistoryRecordPlayVoting({ result: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE });
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }) }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ votingResult: GAME_HISTORY_RECORD_VOTING_RESULTS.TIE }) }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordAllVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
       ];
       await populate(gameHistoryRecords);
       const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, WITCH_POTIONS.LIFE);

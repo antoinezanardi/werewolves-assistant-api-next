@@ -57,6 +57,7 @@ function createPowerlessByFoxPlayerAttribute(playerAttribute: Partial<PlayerAttr
   return createPlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
     source: ROLE_NAMES.FOX,
+    doesRemainAfterDeath: true,
     ...playerAttribute,
   });
 }
@@ -65,6 +66,7 @@ function createPowerlessByAncientPlayerAttribute(playerAttribute: Partial<Player
   return createPlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
     source: ROLE_NAMES.ANCIENT,
+    doesRemainAfterDeath: true,
     ...playerAttribute,
   });
 }
@@ -161,6 +163,7 @@ function createSheriffBySheriffPlayerAttribute(playerAttribute: Partial<PlayerAt
   return createPlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
     source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+    doesRemainAfterDeath: true,
     ...playerAttribute,
   });
 }
@@ -169,6 +172,7 @@ function createSheriffByAllPlayerAttribute(playerAttribute: Partial<PlayerAttrib
   return createPlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
     source: PLAYER_GROUPS.ALL,
+    doesRemainAfterDeath: true,
     ...playerAttribute,
   });
 }
