@@ -1,5 +1,60 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.12.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.11.0...v1.12.0) (2023-07-07)
+
+
+### 🚀 Features
+
+* **dependabot:** group some deps together ([#317](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/317)) ([a3d7377](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a3d73775e6a39ca30bec5f8d67b74584ccb366c3))
+* **game-play:** handle sheriff election tie in votes ([#314](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/314)) ([09c8606](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/09c8606b7c886ba06460af0488554e307a0b2915))
+* **player-attribute:** decreasing and outcomes ([#279](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/279)) ([a5c8b6b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a5c8b6b85afb61c9706454fcf1469b9bf317626d))
+
+
+### 🔩 Refactor
+
+* **game-play-validator:** use game source methods for validations ([#300](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/300)) ([98b2f53](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/98b2f538a3dd1547053c617f648ba85b0ca7aa14))
+* **game-play:** rename some services ([#293](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/293)) ([01df850](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/01df8505d7a79b0309bc7c1e5b647e77206af713))
+
+
+### 🔁 CI
+
+* **pr-names:** linter for pull requests name ([#302](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/302)) ([2c2a8e5](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/2c2a8e58c6b95f613b10982ef267e76bc49891cd))
+
+
+### 🧹 Chore
+
+* **deps:** bump @commitlint/cli from 17.6.5 to 17.6.6 ([d45513b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d45513b8ef87b452adce10b87bc38934c81cf22d))
+* **deps:** bump @commitlint/config-conventional from 17.6.5 to 17.6.6 ([01b2fe6](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/01b2fe6458b72445ac514cacdc53ac99fca5e577))
+* **deps:** bump @nestjs/cli from 10.0.3 to 10.0.5 ([ee48eef](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ee48eef824f36ee9a8ed1459523af22fa7f7dec8))
+* **deps:** bump @nestjs/cli from 10.0.5 to 10.1.1 ([#307](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/307)) ([ebb0341](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ebb03414ce73924ee209b6439569e38f6825d0c6))
+* **deps:** bump @nestjs/cli from 10.1.1 to 10.1.4 ([#313](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/313)) ([30164b1](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/30164b164c669aad1cc01a19174b4bfa463d589c))
+* **deps:** bump @nestjs/cli from 10.1.4 to 10.1.7 ([#315](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/315)) ([1866459](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1866459bffd528ef89fa0e1e1c5803f97b186bbc))
+* **deps:** bump @nestjs/swagger from 7.0.10 to 7.0.11 ([#294](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/294)) ([924734b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/924734b87b871a8ad21da58878739ebf889861bf))
+* **deps:** bump @nestjs/swagger from 7.0.11 to 7.0.12 ([#299](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/299)) ([f26d21a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f26d21a1b872d2163f9d33a2179a97745f482a8d))
+* **deps:** bump @nestjs/swagger from 7.0.12 to 7.1.1 ([#310](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/310)) ([460e242](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/460e242338cfd4d567151d8e270d9807423f5fcb))
+* **deps:** bump @nestjs/swagger from 7.0.4 to 7.0.6 ([f7a1f9f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f7a1f9fe8f4303841e79edcb4c8c7995ea922ef1))
+* **deps:** bump @nestjs/swagger from 7.0.6 to 7.0.10 ([#291](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/291)) ([7afad8c](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/7afad8c230db2b1c61c7bc61df49995ad7507993))
+* **deps:** bump @types/node from 20.3.1 to 20.3.2 ([63f6f58](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/63f6f58d7a9ebe9cb9cd0636d0a277ed7fd40017))
+* **deps:** bump @types/node from 20.3.2 to 20.3.3 ([#303](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/303)) ([350c05a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/350c05a2a93579d0a960d2ee302d180c7beb8755))
+* **deps:** bump @types/node from 20.3.3 to 20.4.0 ([#316](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/316)) ([bc6c2a1](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/bc6c2a1252315a4a30643c41607abc4996833e8e))
+* **deps:** bump @typescript-eslint/eslint-plugin from 5.60.0 to 5.60.1 ([9930d12](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/9930d120334ca42cf1667999d7589ab325f3cd7f))
+* **deps:** bump @typescript-eslint/eslint-plugin from 5.60.1 to 5.61.0 ([#308](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/308)) ([1711d9d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1711d9dc5bf0c12581ca9eb88cae7f5def388060))
+* **deps:** bump @typescript-eslint/parser from 5.60.0 to 5.60.1 ([c7d8388](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/c7d83883bd3a6f0129b4d05236d92f3fa6adeeea))
+* **deps:** bump @typescript-eslint/parser from 5.60.1 to 5.61.0 ([#309](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/309)) ([1ee5d86](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1ee5d861da7c402a83fd8b3ece0daf34c2f7a161))
+* **deps:** bump eslint from 8.43.0 to 8.44.0 ([#306](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/306)) ([f7269d9](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f7269d9e5ea298d26e4711834cf8f20b69444d0b))
+* **deps:** bump jest from 29.5.0 to 29.6.0 ([#312](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/312)) ([6c4cf4d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/6c4cf4d75cc1af93d1a914b3f6f49116ad756532))
+* **deps:** bump jest from 29.6.0 to 29.6.1 ([#319](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/319)) ([c705ae1](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/c705ae100e49005602f0c919b4165dc70ee2246f))
+* **deps:** bump lint-staged from 13.2.2 to 13.2.3 ([#298](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/298)) ([6ff0285](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/6ff0285d66cb48722630b2b5804993d901755f0d))
+* **deps:** bump mongoose from 7.3.1 to 7.3.2 ([#318](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/318)) ([910878a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/910878acb0c5e001cd55f098a0389cb3aa629aba))
+* **deps:** bump radash from 10.9.0 to 11.0.0 ([#290](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/290)) ([ed28c3e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ed28c3e72823525ba3a4ec9e3035ee75b71ffcc1))
+* **deps:** bump semantic-release from 21.0.5 to 21.0.6 ([#296](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/296)) ([525208f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/525208f6c56011fccdc43242289b3bbb7b8bade1))
+* **deps:** bump semantic-release from 21.0.6 to 21.0.7 ([#311](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/311)) ([fef3c53](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/fef3c53e82f55266174275d638c79af473e9189e))
+* **deps:** bump ts-jest from 29.1.0 to 29.1.1 ([#304](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/304)) ([234f87c](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/234f87c2ca09f3bc1b1e0e68cdcaed0fe91141c9))
+* **deps:** bump ts-loader from 9.4.3 to 9.4.4 ([#295](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/295)) ([c8d0e98](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/c8d0e985d99f1ecbb152f6e1832b506f5c65b193))
+* **deps:** bump typescript from 5.1.3 to 5.1.5 ([#292](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/292)) ([c5fd6e0](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/c5fd6e072d2620635b042a337e1e11ddcf1970d3))
+* **deps:** bump typescript from 5.1.5 to 5.1.6 ([#297](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/297)) ([17f745d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/17f745d106844714ea225d733931f3117ab2e1b1))
+* **stryker:** update to stryker 7.1 ([#301](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/301)) ([32a2e33](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/32a2e332e42969ca9e1fbbe4817de85c9f2ae593))
+
 ## [1.11.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.10.0...v1.11.0) (2023-06-24)
 
 
