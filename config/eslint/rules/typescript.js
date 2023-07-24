@@ -98,7 +98,9 @@ const typescriptRules = Object.freeze({
   "@typescript-eslint/require-array-sort-compare": ERROR,
   "@typescript-eslint/restrict-plus-operands": ERROR,
   "@typescript-eslint/restrict-template-expressions": ERROR,
-  "@typescript-eslint/sort-type-union-intersection-members": ERROR,
+  "@typescript-eslint/sort-type-constituents": ERROR,
+  // rule below is deprecated and replaced by sort-type-constituents
+  "@typescript-eslint/sort-type-union-intersection-members": OFF,
   "@typescript-eslint/strict-boolean-expressions": ERROR,
   "@typescript-eslint/switch-exhaustiveness-check": ERROR,
   "@typescript-eslint/triple-slash-reference": ERROR,
