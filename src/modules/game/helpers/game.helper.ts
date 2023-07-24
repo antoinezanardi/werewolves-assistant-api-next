@@ -149,7 +149,7 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
       currentIndex = 0;
     }
     const checkingNeighbor = alivePlayers[currentIndex];
-    if (checkingNeighbor.position !== player.position && (!options.playerSide || checkingNeighbor.side.current === options.playerSide)) {
+    if (checkingNeighbor.position !== player.position && (options.playerSide === undefined || checkingNeighbor.side.current === options.playerSide)) {
       return cloneDeep(checkingNeighbor);
     }
     currentIndex += indexHeading;

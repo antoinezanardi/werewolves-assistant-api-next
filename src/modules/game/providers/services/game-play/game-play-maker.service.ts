@@ -247,7 +247,7 @@ export class GamePlayMakerService {
   private dogWolfChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: Game): Game {
     const clonedGame = cloneDeep(game);
     const dogWolfPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.DOG_WOLF);
-    if (!chosenSide || !dogWolfPlayer) {
+    if (chosenSide === undefined || !dogWolfPlayer) {
       return clonedGame;
     }
     const playerDataToUpdate: Partial<Player> = { side: { ...dogWolfPlayer.side, current: chosenSide } };
@@ -333,7 +333,7 @@ export class GamePlayMakerService {
 
   private piedPiperCharms({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
     const clonedGame = cloneDeep(game);
-    if (targets === undefined || !targets.length) {
+    if (targets === undefined || targets.length === 0) {
       return clonedGame;
     }
     const charmedByPiedPiperPlayerAttribute = createCharmedByPiedPiperPlayerAttribute();

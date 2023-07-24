@@ -256,7 +256,7 @@ export class GamePlayValidatorService {
   }
 
   private async validateGamePlayTargetsWithRelationsDto(playTargets: MakeGamePlayTargetWithRelationsDto[] | undefined, game: Game): Promise<void> {
-    if (playTargets === undefined || !playTargets.length) {
+    if (playTargets === undefined || playTargets.length === 0) {
       if (requiredTargetsActions.includes(game.currentPlay.action)) {
         throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_TARGETS);
       }
@@ -278,7 +278,7 @@ export class GamePlayValidatorService {
   }
 
   private async validateGamePlayVotesWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: Game): Promise<void> {
-    if (playVotes === undefined || !playVotes.length) {
+    if (playVotes === undefined || playVotes.length === 0) {
       if (requiredVotesActions.includes(game.currentPlay.action)) {
         throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_VOTES);
       }
@@ -296,10 +296,10 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayWithRelationsDtoChosenSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: Game): void {
-    if (chosenSide && game.currentPlay.action !== GAME_PLAY_ACTIONS.CHOOSE_SIDE) {
+    if (chosenSide !== undefined && game.currentPlay.action !== GAME_PLAY_ACTIONS.CHOOSE_SIDE) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_CHOSEN_SIDE);
     }
-    if (!chosenSide && game.currentPlay.action === GAME_PLAY_ACTIONS.CHOOSE_SIDE) {
+    if (chosenSide === undefined && game.currentPlay.action === GAME_PLAY_ACTIONS.CHOOSE_SIDE) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_CHOSEN_SIDE);
     }
   }
