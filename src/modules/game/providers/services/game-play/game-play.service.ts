@@ -25,6 +25,7 @@ export class GamePlayService {
   public proceedToNextGamePlay(game: Game): Game {
     const clonedGame = cloneDeep(game);
     if (!clonedGame.upcomingPlays.length) {
+      clonedGame.currentPlay = null;
       return clonedGame;
     }
     clonedGame.currentPlay = clonedGame.upcomingPlays[0];
