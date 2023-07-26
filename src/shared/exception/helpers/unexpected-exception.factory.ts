@@ -16,8 +16,14 @@ function createCantGenerateGamePlaysUnexpectedException(scope: string): Unexpect
   return new UnexpectedException(scope, UNEXPECTED_EXCEPTION_REASONS.CANT_GENERATE_GAME_PLAYS);
 }
 
+function createNoCurrentGamePlayUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId }): UnexpectedException {
+  const { gameId } = interpolations;
+  return new UnexpectedException(scope, UNEXPECTED_EXCEPTION_REASONS.NO_CURRENT_GAME_PLAY, { gameId: gameId.toString() });
+}
+
 export {
   createCantFindPlayerUnexpectedException,
   createPlayerIsDeadUnexpectedException,
   createCantGenerateGamePlaysUnexpectedException,
+  createNoCurrentGamePlayUnexpectedException,
 };

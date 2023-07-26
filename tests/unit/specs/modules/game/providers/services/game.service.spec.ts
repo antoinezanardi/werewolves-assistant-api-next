@@ -1,15 +1,18 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+import { cloneDeep } from "lodash";
 import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.enum";
-import * as GamePlayerHelper from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
+import * as GamePlayHelper from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
 import * as GameVictoryHelper from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
 import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
+import { GamePhaseService } from "../../../../../../../src/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayMakerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-maker.service";
 import { GamePlayValidatorService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-validator.service";
 import { GamePlayService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play.service";
 import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
+import { PlayerAttributeService } from "../../../../../../../src/modules/game/providers/services/player/player-attribute.service";
 import type { Game } from "../../../../../../../src/modules/game/schemas/game.schema";
 import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enum";
 import { UNEXPECTED_EXCEPTION_REASONS } from "../../../../../../../src/shared/exception/enums/unexpected-exception.enum";
@@ -47,7 +50,15 @@ describe("Game Service", () => {
     };
     gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.SpyInstance };
     gamePlayMakerService: { makeGamePlay: jest.SpyInstance };
-    gamePlayerHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
+    gamePhaseService: {
+      applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.SpyInstance;
+      switchPhaseAndGenerateGamePhasePlays: jest.SpyInstance;
+    };
+    gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
+    gameVictoryHelper: { isGameOver: jest.SpyInstance };
+    playerAttributeService: {
+      decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.SpyInstance;
+    };
   };
   let services: { game: GameService };
   let repositories: { game: GameRepository };
@@ -71,7 +82,13 @@ describe("Game Service", () => {
       },
       gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.fn() },
       gamePlayMakerService: { makeGamePlay: jest.fn() },
-      gamePlayerHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayerHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
+      gamePhaseService: {
+        applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.fn(),
+        switchPhaseAndGenerateGamePhasePlays: jest.fn(),
+      },
+      gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
+      gameVictoryHelper: { isGameOver: jest.spyOn(GameVictoryHelper, "isGameOver").mockImplementation() },
+      playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -95,6 +112,14 @@ describe("Game Service", () => {
         {
           provide: GamePlayMakerService,
           useValue: mocks.gamePlayMakerService,
+        },
+        {
+          provide: GamePhaseService,
+          useValue: mocks.gamePhaseService,
+        },
+        {
+          provide: PlayerAttributeService,
+          useValue: mocks.playerAttributeService,
         },
         GameHistoryRecordService,
         GameService,
@@ -138,7 +163,7 @@ describe("Game Service", () => {
     beforeEach(() => {
       localMocks = { gameService: { updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockReturnValue(existingPlayingGame) } };
     });
-    
+
     it("should throw error when game is not playing.", async() => {
       const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
 
@@ -148,7 +173,7 @@ describe("Game Service", () => {
 
     it("should call update method when game can be canceled.", async() => {
       await services.game.cancelGame(existingPlayingGame);
-      
+
       expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(existingPlayingGame._id, { status: GAME_STATUSES.CANCELED });
     });
   });
@@ -161,7 +186,7 @@ describe("Game Service", () => {
       createFakeVillagerAlivePlayer(),
       createFakeVillagerAlivePlayer(),
     ];
-    const game = createFakeGame({ status: GAME_STATUSES.PLAYING, players });
+    const game = createFakeGame({ status: GAME_STATUSES.PLAYING, players, currentPlay: createFakeGamePlayAllVote() });
     const nearlyAllDeadPlayers = [
       createFakeWerewolfAlivePlayer(),
       createFakeWerewolfAlivePlayer({ isAlive: false }),
@@ -172,10 +197,14 @@ describe("Game Service", () => {
     const play = createFakeMakeGamePlayWithRelationsDto();
 
     beforeEach(() => {
+      mocks.gamePlayHelper.createMakeGamePlayDtoWithRelations.mockReturnValue(play);
       mocks.gamePlayMakerService.makeGamePlay.mockReturnValue(game);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
+      mocks.gamePhaseService.switchPhaseAndGenerateGamePhasePlays.mockReturnValue(game);
+      mocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers.mockResolvedValue(game);
+      mocks.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes.mockReturnValue(game);
       mocks.gamePlayService.removeObsoleteUpcomingPlays.mockReturnValue(game.upcomingPlays);
-      mocks.gamePlayerHelper.createMakeGamePlayDtoWithRelations.mockReturnValue(play);
+      mocks.gameVictoryHelper.isGameOver.mockReturnValue(false);
       localMocks = {
         gameService: {
           updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockReturnValue(game),
@@ -193,17 +222,19 @@ describe("Game Service", () => {
     });
 
     it("should call play validator method when called.", async() => {
+      const clonedGame = cloneDeep(game);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
-      await services.game.makeGamePlay(game, makeGamePlayDto);
+      await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDto).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDto).toHaveBeenCalledExactlyOnceWith(play, clonedGame);
     });
 
     it("should call play maker method when called.", async() => {
+      const clonedGame = cloneDeep(game);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
-      await services.game.makeGamePlay(game, makeGamePlayDto);
+      await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
-      expect(mocks.gamePlayMakerService.makeGamePlay).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(mocks.gamePlayMakerService.makeGamePlay).toHaveBeenCalledExactlyOnceWith(play, clonedGame);
     });
 
     it("should call update method when game can be canceled.", async() => {
@@ -217,6 +248,7 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const gameVictoryData = createFakeGameVictory();
       jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
+      mocks.gameVictoryHelper.isGameOver.mockReturnValue(true);
       mocks.gamePlayMakerService.makeGamePlay.mockReturnValue(soonToBeOverGame);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(soonToBeOverGame);
       mocks.gamePlayService.removeObsoleteUpcomingPlays.mockReturnValue(soonToBeOverGame.upcomingPlays);

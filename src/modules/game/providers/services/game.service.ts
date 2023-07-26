@@ -68,7 +68,7 @@ export class GameService {
     clonedGame = this.gamePlayService.removeObsoleteUpcomingPlays(clonedGame);
     clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
     if (isGamePhaseOver(clonedGame)) {
-      clonedGame = this.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(clonedGame);
+      clonedGame = await this.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(clonedGame);
       clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
       clonedGame = this.gamePhaseService.switchPhaseAndGenerateGamePhasePlays(clonedGame);
     }

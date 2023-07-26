@@ -40,4 +40,8 @@ describe("Unexpected Exception Factory", () => {
       });
     });
   });
+  
+  describe("createCantGenerateGamePlaysUnexpectedException", () => {
+    it.todo("should  when .");
+  });
 });
