@@ -67,16 +67,22 @@ export class GameService {
     clonedGame = await this.gamePlayMakerService.makeGamePlay(play, clonedGame);
     clonedGame = this.gamePlayService.removeObsoleteUpcomingPlays(clonedGame);
     clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
+    clonedGame.tick++;
     if (isGamePhaseOver(clonedGame)) {
-      clonedGame = await this.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(clonedGame);
-      clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
-      clonedGame = this.gamePhaseService.switchPhaseAndGenerateGamePhasePlays(clonedGame);
+      clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }
     if (isGameOver(clonedGame)) {
       clonedGame = this.setGameAsOver(clonedGame);
     }
-    clonedGame.tick++;
     return this.updateGame(clonedGame._id, clonedGame);
+  }
+
+  private async handleGamePhaseCompletion(game: Game): Promise<Game> {
+    let clonedGame = cloneDeep(game);
+    clonedGame = await this.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(clonedGame);
+    clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
+    clonedGame = this.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays(clonedGame);
+    return this.gamePlayService.proceedToNextGamePlay(clonedGame);
   }
 
   private async updateGame(gameId: Types.ObjectId, gameDataToUpdate: Partial<Game>): Promise<Game> {

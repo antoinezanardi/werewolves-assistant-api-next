@@ -1,7 +1,9 @@
 import { GAME_PHASES } from "../../../../../../../../src/modules/game/enums/game.enum";
-import { isPlayerAttributeActive } from "../../../../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../../src/modules/game/enums/player.enum";
+import { getPlayerAttribute, isPlayerAttributeActive } from "../../../../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Player Attribute Helper", () => {
   describe("isPlayerAttributeActive", () => {
@@ -49,6 +51,24 @@ describe("Player Attribute Helper", () => {
   });
   
   describe("getPlayerAttribute", () => {
-    it.todo("should  when .");
+    it("should get attribute when player has this attribute.", () => {
+      const attributes = [
+        createFakeSheriffByAllPlayerAttribute(),
+        createFakePowerlessByAncientPlayerAttribute(),
+      ];
+      const player = createFakePlayer({ attributes });
+
+      expect(getPlayerAttribute(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS)).toStrictEqual(attributes[1]);
+    });
+    
+    it("should return undefined when player doesn't have the attribute.", () => {
+      const attributes = [
+        createFakeSheriffByAllPlayerAttribute(),
+        createFakePowerlessByAncientPlayerAttribute(),
+      ];
+      const player = createFakePlayer({ attributes });
+
+      expect(getPlayerAttribute(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE)).toBeUndefined();
+    });
   });
 });

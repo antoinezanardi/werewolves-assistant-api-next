@@ -7,7 +7,7 @@ import { CreateGameDto } from "../../../dto/create-game/create-game.dto";
 import { GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
 import type { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import { createGamePlay, createGamePlayAllElectSheriff } from "../../../helpers/game-play/game-play.factory";
+import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "../../../helpers/game-play/game-play.factory";
 import { areAllWerewolvesAlive, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayerWithAttribute, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "../../../helpers/player/player.helper";
 import type { SheriffGameOptions } from "../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
@@ -31,6 +31,10 @@ export class GamePlayService {
     clonedGame.currentPlay = clonedGame.upcomingPlays[0];
     clonedGame.upcomingPlays.shift();
     return clonedGame;
+  }
+
+  public getUpcomingDayPlays(): GamePlay[] {
+    return [createGamePlayAllVote()];
   }
 
   public getUpcomingNightPlays(game: CreateGameDto | Game): GamePlay[] {

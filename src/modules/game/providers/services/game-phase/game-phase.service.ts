@@ -6,11 +6,15 @@ import { getPlayerAttribute } from "../../../helpers/player/player-attribute/pla
 import { doesPlayerHaveAttribute } from "../../../helpers/player/player.helper";
 import type { Game } from "../../../schemas/game.schema";
 import type { Player } from "../../../schemas/player/player.schema";
+import { GamePlayService } from "../game-play/game-play.service";
 import { PlayerAttributeService } from "../player/player-attribute.service";
 
 @Injectable()
 export class GamePhaseService {
-  public constructor(private readonly playerAttributeService: PlayerAttributeService) {}
+  public constructor(
+    private readonly playerAttributeService: PlayerAttributeService,
+    private readonly gamePlayService: GamePlayService,
+  ) {}
 
   public async applyEndingGamePhasePlayerAttributesOutcomesToPlayers(game: Game): Promise<Game> {
     let clonedGame = cloneDeep(game);
@@ -20,8 +24,11 @@ export class GamePhaseService {
     return clonedGame;
   }
 
-  public switchPhaseAndGenerateGamePhasePlays(game: Game): Game {
+  public switchPhaseAndAppendGamePhaseUpcomingPlays(game: Game): Game {
     const clonedGame = cloneDeep(game);
+    clonedGame.phase = clonedGame.phase === GAME_PHASES.NIGHT ? GAME_PHASES.DAY : GAME_PHASES.NIGHT;
+    const phaseUpcomingPlays = clonedGame.phase === GAME_PHASES.NIGHT ? this.gamePlayService.getUpcomingNightPlays(clonedGame) : this.gamePlayService.getUpcomingDayPlays();
+    clonedGame.upcomingPlays = [...clonedGame.upcomingPlays, ...phaseUpcomingPlays];
     return clonedGame;
   }
 

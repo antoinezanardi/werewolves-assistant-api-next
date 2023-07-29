@@ -11,6 +11,7 @@ import type { Game } from "../../../../../../../../src/modules/game/schemas/game
 import type { Player } from "../../../../../../../../src/modules/game/schemas/player/player.schema";
 import type { PlayerVoteCount } from "../../../../../../../../src/modules/game/types/game-play.type";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../../../src/modules/role/enums/role.enum";
+import * as UnexpectedExceptionFactory from "../../../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
@@ -31,6 +32,9 @@ describe("Game Play Maker Service", () => {
       killOrRevealPlayer: jest.SpyInstance;
       isAncientKillable: jest.SpyInstance;
     };
+    unexpectedExceptionFactory: {
+      createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
+    };
   };
 
   beforeEach(async() => {
@@ -39,6 +43,7 @@ describe("Game Play Maker Service", () => {
         killOrRevealPlayer: jest.fn(),
         isAncientKillable: jest.fn(),
       },
+      unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -107,6 +112,15 @@ describe("Game Play Maker Service", () => {
           sheriffPlays: jest.spyOn(services.gamePlayMaker as unknown as { sheriffPlays }, "sheriffPlays").mockImplementation(),
         },
       };
+    });
+
+    it("should throw error when game's current play is not set.", async() => {
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const game = createFakeGame();
+      const interpolations = { gameId: game._id };
+
+      await expect(services.gamePlayMaker.makeGamePlay(play, game)).toReject();
+      expect(mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("makeGamePlay", interpolations);
     });
 
     it("should call no play method when source is not in available methods.", async() => {
@@ -1560,7 +1574,7 @@ describe("Game Play Maker Service", () => {
   });
 
   describe("piedPiperCharms", () => {
-    it("should return game as is when expected target count is not reached.", () => {
+    it("should return game as is when targets are undefined.", () => {
       const players: Player[] = [
         createFakeFoxAlivePlayer(),
         createFakeRavenAlivePlayer(),
@@ -1569,6 +1583,19 @@ describe("Game Play Maker Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gamePlayMaker["piedPiperCharms"](play, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when targets are empty.", () => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets: [] });
 
       expect(services.gamePlayMaker["piedPiperCharms"](play, game)).toStrictEqual<Game>(game);
     });

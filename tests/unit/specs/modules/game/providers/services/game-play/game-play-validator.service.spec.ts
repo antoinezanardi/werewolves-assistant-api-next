@@ -10,6 +10,7 @@ import { GameRepository } from "../../../../../../../../src/modules/game/provide
 import { GameHistoryRecordService } from "../../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayValidatorService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-play-validator.service";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../../../src/modules/role/enums/role.enum";
+import * as UnexpectedExceptionFactory from "../../../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
 import { BadGamePlayPayloadException } from "../../../../../../../../src/shared/exception/types/bad-game-play-payload-exception.type";
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
@@ -96,6 +97,7 @@ describe("Game Play Validator Service", () => {
     let validateGamePlayVotesWithRelationsDtoSpy: jest.SpyInstance;
     let validateGamePlayTargetsWithRelationsDtoSpy: jest.SpyInstance;
     let validateGamePlayWithRelationsDtoChosenCardSpy: jest.SpyInstance;
+    let createNoCurrentGamePlayUnexpectedExceptionSpy: jest.SpyInstance;
 
     beforeEach(() => {
       validateGamePlayWithRelationsDtoJudgeRequestSpy = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoJudgeRequest }, "validateGamePlayWithRelationsDtoJudgeRequest").mockImplementation();
@@ -103,6 +105,16 @@ describe("Game Play Validator Service", () => {
       validateGamePlayVotesWithRelationsDtoSpy = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayVotesWithRelationsDto }, "validateGamePlayVotesWithRelationsDto").mockImplementation();
       validateGamePlayTargetsWithRelationsDtoSpy = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayTargetsWithRelationsDto }, "validateGamePlayTargetsWithRelationsDto").mockImplementation();
       validateGamePlayWithRelationsDtoChosenCardSpy = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoChosenCard }, "validateGamePlayWithRelationsDtoChosenCard").mockImplementation();
+      createNoCurrentGamePlayUnexpectedExceptionSpy = jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation();
+    });
+    
+    it("should throw error when game's current play is not set.", async() => {
+      const game = createFakeGame();
+      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
+      const interpolations = { gameId: game._id };
+      
+      await expect(services.gamePlayValidator.validateGamePlayWithRelationsDto(makeGamePlayWithRelationsDto, game)).toReject();
+      expect(createNoCurrentGamePlayUnexpectedExceptionSpy).toHaveBeenCalledExactlyOnceWith("validateGamePlayWithRelationsDto", interpolations);
     });
 
     it("should call validators when called.", async() => {
