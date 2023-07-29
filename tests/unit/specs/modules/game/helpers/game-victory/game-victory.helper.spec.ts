@@ -3,6 +3,7 @@ import { GAME_VICTORY_TYPES } from "../../../../../../../src/modules/game/enums/
 import { doesAngelWin, doesPiedPiperWin, doesWhiteWerewolfWin, doLoversWin, doVillagersWin, doWerewolvesWin, generateGameVictoryData, isGameOver } from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
 import type { GameVictory } from "../../../../../../../src/modules/game/schemas/game-victory/game-victory.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
+import * as UnexpectedExceptionFactory from "../../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
 import { createFakeGameOptions } from "../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
@@ -14,6 +15,16 @@ import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeS
 import { createFakePlayerSide } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Game Victory Helper", () => {
+  let mocks: {
+    unexpectedExceptionFactory: {
+      createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
+    };
+  };
+  
+  beforeEach(() => {
+    mocks = { unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() } };
+  });
+  
   describe("doWerewolvesWin", () => {
     it("should return false when there are no players provided.", () => {
       expect(doWerewolvesWin([])).toBe(false);
@@ -381,6 +392,14 @@ describe("Game Victory Helper", () => {
   });
 
   describe("isGameOver", () => {
+    it("should throw error when game's current play is not set.", () => {
+      const game = createFakeGame();
+      const interpolations = { gameId: game._id };
+
+      expect(() => isGameOver(game)).toThrow("");
+      expect(mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("isGameOver", interpolations);
+    });
+
     it("should return true when all players are dead.", () => {
       const players = [
         createFakeWerewolfAlivePlayer({ isAlive: false }),
@@ -451,6 +470,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
+        createFakeGamePlayHunterShoots({ source: ROLE_NAMES.THIEF }),
         createFakeGamePlayAllVote(),
         createFakeGamePlayWerewolvesEat(),
       ];

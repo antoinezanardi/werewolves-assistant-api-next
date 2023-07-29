@@ -2,17 +2,26 @@ import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../src/modules/game/enums/game.enum";
 import { Game } from "../../../../src/modules/game/schemas/game.schema";
+import { GameWithCurrentPlay } from "../../../../src/modules/game/types/game-with-current-play";
 import { plainToInstanceDefaultOptions } from "../../../../src/shared/validation/constants/validation.constant";
 import { bulkCreate } from "../../shared/bulk-create.factory";
 import { createFakeObjectId } from "../../shared/mongoose/mongoose.factory";
 import { createFakeGameOptions } from "./game-options/game-options.schema.factory";
 import { createFakeGamePlay } from "./game-play/game-play.schema.factory";
 
+function createFakeGameWithCurrentPlay(game: Partial<GameWithCurrentPlay> = {}, override: object = {}): GameWithCurrentPlay {
+  return plainToInstance(GameWithCurrentPlay, {
+    ...createFakeGame(game, override),
+    currentPlay: game.currentPlay ?? createFakeGamePlay(),
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
 function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
   return plainToInstance(Game, {
     _id: game._id ?? createFakeObjectId(),
     players: game.players ?? [],
-    currentPlay: game.currentPlay ?? createFakeGamePlay(),
+    currentPlay: game.currentPlay ?? null,
     upcomingPlays: game.upcomingPlays ?? [],
     phase: game.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
     status: game.status ?? faker.helpers.arrayElement(Object.values(GAME_STATUSES)),
@@ -31,4 +40,8 @@ function bulkCreateFakeGames(length: number, games: Partial<Game>[] = [], overri
   return bulkCreate(length, createFakeGame, games, overrides);
 }
 
-export { createFakeGame, bulkCreateFakeGames };
+export {
+  createFakeGameWithCurrentPlay,
+  createFakeGame,
+  bulkCreateFakeGames,
+};

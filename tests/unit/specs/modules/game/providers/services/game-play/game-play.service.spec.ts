@@ -94,6 +94,12 @@ describe("Game Play Service", () => {
     });
   });
 
+  describe("getUpcomingDayPlays", () => {
+    it("should get upcoming day plays when called.", () => {
+      expect(services.gamePlay.getUpcomingDayPlays()).toStrictEqual<GamePlay[]>([createFakeGamePlayAllVote()]);
+    });
+  });
+
   describe("getUpcomingNightPlays", () => {
     it.each<{ game: Game; output: GamePlay[]; test: string }>([
       {

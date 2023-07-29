@@ -1,4 +1,4 @@
-import { createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createPlayerIsDeadUnexpectedException } from "../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createNoCurrentGamePlayUnexpectedException, createPlayerIsDeadUnexpectedException } from "../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
 import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
 import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
 
@@ -37,6 +37,19 @@ describe("Unexpected Exception Factory", () => {
         statusCode: 500,
         message: "Unexpected exception in createGame",
         error: `Can't generate game plays`,
+      });
+    });
+  });
+  
+  describe("createNoCurrentGamePlayUnexpectedException", () => {
+    it("should create no current game play unexpected exception when called.", () => {
+      const interpolations = { gameId: createFakeObjectId() };
+      const exception = createNoCurrentGamePlayUnexpectedException("makePlay", interpolations);
+
+      expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
+        statusCode: 500,
+        message: "Unexpected exception in makePlay",
+        error: `Game with id "${interpolations.gameId.toString()}" doesn't have a current game play to deal with`,
       });
     });
   });
