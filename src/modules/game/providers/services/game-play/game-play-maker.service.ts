@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { cloneDeep, sample } from "lodash";
 import { createFakeGamePlayAllElectSheriff } from "../../../../../../tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
 import { roles } from "../../../../role/constants/role.constant";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../role/enums/role.enum";
 import type { MakeGamePlayVoteWithRelationsDto } from "../../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
@@ -18,12 +19,13 @@ import type { PlayerRole } from "../../../schemas/player/player-role.schema";
 import type { PlayerSide } from "../../../schemas/player/player-side.schema";
 import type { Player } from "../../../schemas/player/player.schema";
 import type { PlayerVoteCount } from "../../../types/game-play.type";
+import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
 import type { GameSource } from "../../../types/game.type";
 import { PlayerKillerService } from "../player/player-killer.service";
 
 @Injectable()
 export class GamePlayMakerService {
-  private readonly gameSourcePlayMethods: Partial<Record<GameSource, (play: MakeGamePlayWithRelationsDto, game: Game) => Game | Promise<Game>>> = {
+  private readonly gameSourcePlayMethods: Partial<Record<GameSource, (play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay) => Game | Promise<Game>>> = {
     [PLAYER_GROUPS.WEREWOLVES]: async(play, game) => this.werewolvesEat(play, game),
     [ROLE_NAMES.BIG_BAD_WOLF]: (play, game) => this.bigBadWolfEats(play, game),
     [ROLE_NAMES.WHITE_WEREWOLF]: (play, game) => this.whiteWerewolfEats(play, game),
@@ -46,7 +48,10 @@ export class GamePlayMakerService {
   public constructor(private readonly playerKillerService: PlayerKillerService) {}
 
   public async makeGamePlay(play: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
-    const clonedGame = cloneDeep(game);
+    if (!game.currentPlay) {
+      throw createNoCurrentGamePlayUnexpectedException("makeGamePlay", { gameId: game._id });
+    }
+    const clonedGame = cloneDeep(game) as GameWithCurrentPlay;
     const gameSourcePlayMethod = this.gameSourcePlayMethods[clonedGame.currentPlay.source];
     if (gameSourcePlayMethod === undefined) {
       return clonedGame;
@@ -54,7 +59,7 @@ export class GamePlayMakerService {
     return gameSourcePlayMethod(play, clonedGame);
   }
 
-  private async sheriffSettlesVotes({ targets }: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
+  private async sheriffSettlesVotes({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
@@ -65,7 +70,7 @@ export class GamePlayMakerService {
     return this.playerKillerService.killOrRevealPlayer(targetedPlayer._id, clonedGame, voteBySheriffDeath);
   }
 
-  private sheriffDelegates({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private sheriffDelegates({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     let clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
@@ -74,13 +79,13 @@ export class GamePlayMakerService {
     const targetedPlayer = targets[0].player;
     const sheriffPlayer = getPlayerWithAttribute(clonedGame.players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
     if (sheriffPlayer) {
-      clonedGame = removePlayerAttributeByNameInGame(sheriffPlayer._id, clonedGame, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+      clonedGame = removePlayerAttributeByNameInGame(sheriffPlayer._id, clonedGame, PLAYER_ATTRIBUTE_NAMES.SHERIFF) as GameWithCurrentPlay;
     }
     const sheriffBySheriffPlayerAttribute = createSheriffBySheriffPlayerAttribute();
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, sheriffBySheriffPlayerAttribute);
   }
 
-  private async sheriffPlays(play: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
+  private async sheriffPlays(play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = cloneDeep(game);
     const sheriffPlayMethods: Partial<Record<GAME_PLAY_ACTIONS, () => Game | Promise<Game>>> = {
       [GAME_PLAY_ACTIONS.DELEGATE]: () => this.sheriffDelegates(play, clonedGame),
@@ -93,7 +98,7 @@ export class GamePlayMakerService {
     return sheriffPlayMethod();
   }
 
-  private addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: Game): PlayerVoteCount[] {
+  private addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: GameWithCurrentPlay): PlayerVoteCount[] {
     const clonedGame = cloneDeep(game);
     const clonedPlayerVoteCounts = cloneDeep(playerVoteCounts);
     const ravenPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.RAVEN);
@@ -112,7 +117,7 @@ export class GamePlayMakerService {
     return [...playerVoteCounts, [ravenMarkedPlayer, markPenalty]];
   }
 
-  private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[], game: Game): PlayerVoteCount[] {
+  private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): PlayerVoteCount[] {
     const { hasDoubledVote: doesSheriffHaveDoubledVote } = game.options.roles.sheriff;
     const sheriffPlayer = getPlayerWithAttribute(game.players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
     return votes.reduce<PlayerVoteCount[]>((acc, vote) => {
@@ -128,7 +133,7 @@ export class GamePlayMakerService {
     }, []);
   }
 
-  private getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[], game: Game): Player[] {
+  private getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): Player[] {
     const clonedGame = cloneDeep(game);
     let playerVoteCounts = this.getPlayerVoteCounts(votes, clonedGame);
     playerVoteCounts = this.addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
@@ -136,7 +141,7 @@ export class GamePlayMakerService {
     return playerVoteCounts.filter(playerVoteCount => playerVoteCount[1] === maxVotes).map(playerVoteCount => playerVoteCount[0]);
   }
 
-  private async handleTieInVotes(game: Game): Promise<Game> {
+  private async handleTieInVotes(game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = cloneDeep(game);
     const scapegoatPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.SCAPEGOAT);
     if (scapegoatPlayer && isPlayerAliveAndPowerful(scapegoatPlayer)) {
@@ -155,7 +160,7 @@ export class GamePlayMakerService {
     return clonedGame;
   }
 
-  private async allVote({ votes, doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
+  private async allVote({ votes, doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     let clonedGame = cloneDeep(game);
     if (!votes) {
       return clonedGame;
@@ -163,7 +168,7 @@ export class GamePlayMakerService {
     const nominatedPlayers = this.getNominatedPlayers(votes, clonedGame);
     if (doesJudgeRequestAnotherVote === true) {
       const gamePlayAllVote = createGamePlayAllVote({ cause: GAME_PLAY_CAUSES.STUTTERING_JUDGE_REQUEST });
-      clonedGame = appendUpcomingPlayInGame(gamePlayAllVote, clonedGame);
+      clonedGame = appendUpcomingPlayInGame(gamePlayAllVote, clonedGame) as GameWithCurrentPlay;
     }
     if (nominatedPlayers.length > 1) {
       return this.handleTieInVotes(clonedGame);
@@ -175,7 +180,7 @@ export class GamePlayMakerService {
     return clonedGame;
   }
 
-  private handleTieInSheriffElection(nominatedPlayers: Player[], game: Game): Game {
+  private handleTieInSheriffElection(nominatedPlayers: Player[], game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     if (clonedGame.currentPlay.cause !== GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES) {
       const gamePlayAllElectSheriff = createFakeGamePlayAllElectSheriff({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES });
@@ -189,7 +194,7 @@ export class GamePlayMakerService {
     return clonedGame;
   }
 
-  private allElectSheriff(play: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private allElectSheriff(play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const { votes } = play;
     if (!votes) {
@@ -206,7 +211,7 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(nominatedPlayers[0]._id, clonedGame, sheriffByAllPlayerAttribute);
   }
 
-  private async allPlay(play: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
+  private async allPlay(play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = cloneDeep(game);
     const allPlayMethods: Partial<Record<GAME_PLAY_ACTIONS, () => Game | Promise<Game>>> = {
       [GAME_PLAY_ACTIONS.ELECT_SHERIFF]: () => this.allElectSheriff(play, clonedGame),
@@ -219,7 +224,7 @@ export class GamePlayMakerService {
     return allPlayMethod();
   }
   
-  private thiefChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private thiefChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const thiefPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.THIEF);
     if (!thiefPlayer || !chosenCard) {
@@ -235,7 +240,7 @@ export class GamePlayMakerService {
     return updatePlayerInGame(thiefPlayer._id, playerDataToUpdate, clonedGame);
   }
   
-  private scapegoatBansVoting({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private scapegoatBansVoting({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     if (!targets) {
       return clonedGame;
@@ -244,17 +249,17 @@ export class GamePlayMakerService {
     return addPlayersAttributeInGame(targets.map(({ player }) => player._id), clonedGame, cantVoteByScapegoatPlayerAttribute);
   }
   
-  private dogWolfChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private dogWolfChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const dogWolfPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.DOG_WOLF);
-    if (!chosenSide || !dogWolfPlayer) {
+    if (chosenSide === undefined || !dogWolfPlayer) {
       return clonedGame;
     }
     const playerDataToUpdate: Partial<Player> = { side: { ...dogWolfPlayer.side, current: chosenSide } };
     return updatePlayerInGame(dogWolfPlayer._id, playerDataToUpdate, clonedGame);
   }
   
-  private wildChildChoosesModel({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private wildChildChoosesModel({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
@@ -265,7 +270,7 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, worshipedByWildChildPlayerAttribute);
   }
 
-  private foxSniffs({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private foxSniffs({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     const foxPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.FOX);
@@ -283,7 +288,7 @@ export class GamePlayMakerService {
     return clonedGame;
   }
   
-  private ravenMarks({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private ravenMarks({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
@@ -294,7 +299,7 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, ravenMarkByRavenPlayerAttribute);
   }
   
-  private guardProtects({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private guardProtects({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
@@ -305,7 +310,7 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, protectedByGuardPlayerAttribute);
   }
 
-  private async hunterShoots({ targets }: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
+  private async hunterShoots({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
@@ -316,7 +321,7 @@ export class GamePlayMakerService {
     return this.playerKillerService.killOrRevealPlayer(targetedPlayer._id, clonedGame, shotByHunterDeath);
   }
 
-  private witchUsesPotions({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private witchUsesPotions({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     let clonedGame = cloneDeep(game);
     if (!targets) {
       return clonedGame;
@@ -326,21 +331,21 @@ export class GamePlayMakerService {
     for (const target of targets) {
       const { player: targetedPlayer } = target;
       const drankPotionAttribute = target.drankPotion === WITCH_POTIONS.LIFE ? lifePotionAttribute : deathPotionAttribute;
-      clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, drankPotionAttribute);
+      clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, drankPotionAttribute) as GameWithCurrentPlay;
     }
     return clonedGame;
   }
 
-  private piedPiperCharms({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private piedPiperCharms({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
-    if (targets === undefined || !targets.length) {
+    if (targets === undefined || targets.length === 0) {
       return clonedGame;
     }
     const charmedByPiedPiperPlayerAttribute = createCharmedByPiedPiperPlayerAttribute();
     return addPlayersAttributeInGame(targets.map(({ player }) => player._id), clonedGame, charmedByPiedPiperPlayerAttribute);
   }
 
-  private cupidCharms({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private cupidCharms({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 2;
     if (targets?.length !== expectedTargetCount) {
@@ -350,7 +355,7 @@ export class GamePlayMakerService {
     return addPlayersAttributeInGame(targets.map(({ player }) => player._id), clonedGame, inLoveByCupidPlayerAttribute);
   }
 
-  private seerLooks({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private seerLooks({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
@@ -361,7 +366,7 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, seenBySeerPlayerAttribute);
   }
 
-  private whiteWerewolfEats({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private whiteWerewolfEats({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
@@ -372,7 +377,7 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, eatenByWhiteWerewolfPlayerAttribute);
   }
 
-  private bigBadWolfEats({ targets }: MakeGamePlayWithRelationsDto, game: Game): Game {
+  private bigBadWolfEats({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
@@ -383,7 +388,7 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, eatenByBigBadWolfPlayerAttribute);
   }
 
-  private async werewolvesEat({ targets }: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
+  private async werewolvesEat({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {

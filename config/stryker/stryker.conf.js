@@ -37,6 +37,6 @@ module.exports = {
     low: 100,
     break: 100,
   },
-  disableTypeChecks: "{test,src,lib}/**/*.{js,ts,jsx,tsx,html,vue}",
+  disableTypeChecks: "{tests,src,lib}/**/*.{js,ts,jsx,tsx,html,vue}",
   dashboard,
 };

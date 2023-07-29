@@ -28,7 +28,7 @@ import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeGamePlayAllVote, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { bulkCreateFakeGames, createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
+import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
@@ -74,7 +74,12 @@ describe("Game Controller", () => {
     });
 
     it("should get 3 games when 3 games were created.", async() => {
-      await models.game.create(bulkCreateFakeGames(3));
+      const games = [
+        createFakeGameWithCurrentPlay(),
+        createFakeGameWithCurrentPlay(),
+        createFakeGameWithCurrentPlay(),
+      ];
+      await models.game.create(games);
       const response = await app.inject({
         method: "GET",
         url: "/games",
@@ -242,7 +247,7 @@ describe("Game Controller", () => {
     });
 
     it("should get a game when id exists in base.", async() => {
-      const game = createFakeGame();
+      const game = createFakeGameWithCurrentPlay();
       await models.game.create(game);
       const response = await app.inject({
         method: "GET",
@@ -506,7 +511,7 @@ describe("Game Controller", () => {
     });
 
     it("should get a bad request error when game doesn't have playing status.", async() => {
-      const game = createFakeGame({ status: GAME_STATUSES.CANCELED });
+      const game = createFakeGameWithCurrentPlay({ status: GAME_STATUSES.CANCELED });
       await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
@@ -522,7 +527,7 @@ describe("Game Controller", () => {
     });
 
     it("should update game status to canceled when called.", async() => {
-      const game = createFakeGame({ status: GAME_STATUSES.PLAYING });
+      const game = createFakeGameWithCurrentPlay({ status: GAME_STATUSES.PLAYING });
       await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
@@ -598,7 +603,7 @@ describe("Game Controller", () => {
         createFakeVillagerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ]);
-      const game = createFakeGame({
+      const game = createFakeGameWithCurrentPlay({
         status: GAME_STATUSES.PLAYING,
         upcomingPlays: [createFakeGamePlayAllVote()],
         players,
@@ -670,6 +675,7 @@ describe("Game Controller", () => {
       });
       const expectedGame = createFakeGame({
         ...game,
+        tick: game.tick + 1,
         currentPlay: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
       });
       const response = await app.inject({
@@ -703,6 +709,7 @@ describe("Game Controller", () => {
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
       const expectedGame = createFakeGame({
         ...game,
+        tick: game.tick + 1,
         currentPlay: createFakeGamePlayWerewolvesEat(),
         upcomingPlays: [],
         players: [

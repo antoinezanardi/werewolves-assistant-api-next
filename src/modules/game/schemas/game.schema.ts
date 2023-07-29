@@ -57,7 +57,7 @@ class Game {
   })
   @Type(() => GamePlay)
   @Expose()
-  public currentPlay: GamePlay;
+  public currentPlay: GamePlay | null;
 
   @ApiProperty(gameApiProperties.upcomingPlays)
   @Prop({
