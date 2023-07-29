@@ -1,4 +1,5 @@
 import { plainToInstance } from "class-transformer";
+import { createNoCurrentGamePlayUnexpectedException } from "../../../../shared/exception/helpers/unexpected-exception.factory";
 import { plainToInstanceDefaultOptions } from "../../../../shared/validation/constants/validation.constant";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../role/enums/role.enum";
 import { GAME_PLAY_ACTIONS } from "../../enums/game-play.enum";
@@ -51,9 +52,12 @@ function doesAngelWin(game: Game): boolean {
 }
 
 function isGameOver(game: Game): boolean {
-  const { players, upcomingPlays } = game;
+  const { players, upcomingPlays, currentPlay } = game;
+  if (!currentPlay) {
+    throw createNoCurrentGamePlayUnexpectedException("isGameOver", { gameId: game._id });
+  }
   const isShootPlayIncoming = !!upcomingPlays.find(({ action, source }) => action === GAME_PLAY_ACTIONS.SHOOT && source === ROLE_NAMES.HUNTER);
-  return areAllPlayersDead(players) || game.currentPlay.action !== GAME_PLAY_ACTIONS.SHOOT && !isShootPlayIncoming &&
+  return areAllPlayersDead(players) || currentPlay.action !== GAME_PLAY_ACTIONS.SHOOT && !isShootPlayIncoming &&
     (doWerewolvesWin(players) || doVillagersWin(players) ||
     doLoversWin(players) || doesWhiteWerewolfWin(players) || doesPiedPiperWin(game) || doesAngelWin(game));
 }
