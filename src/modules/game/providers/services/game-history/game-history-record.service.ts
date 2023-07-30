@@ -7,19 +7,27 @@ import { createNoCurrentGamePlayUnexpectedException } from "../../../../../share
 import { ResourceNotFoundException } from "../../../../../shared/exception/types/resource-not-found-exception.type";
 import { plainToInstanceDefaultOptions } from "../../../../../shared/validation/constants/validation.constant";
 import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-record.enum";
 import type { WITCH_POTIONS } from "../../../enums/game-play.enum";
-import { getAdditionalCardWithId, getExpectedPlayersToPlay, getNonexistentPlayer, getPlayerWithId } from "../../../helpers/game.helper";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "../../../enums/player.enum";
+import { getAdditionalCardWithId, getExpectedPlayersToPlay, getNonexistentPlayer, getPlayerWithAttribute, getPlayerWithId } from "../../../helpers/game.helper";
+import { GameHistoryRecordPlaySource } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
+import { GameHistoryRecordPlayVoting } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
 import { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
 import type { Game } from "../../../schemas/game.schema";
 import type { Player } from "../../../schemas/player/player.schema";
 import { GameHistoryRecordToInsert } from "../../../types/game-history-record.type";
+import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
 import { GameHistoryRecordRepository } from "../../repositories/game-history-record.repository";
 import { GameRepository } from "../../repositories/game.repository";
+import { GamePlayMakerService } from "../game-play/game-play-maker.service";
 
 @Injectable()
 export class GameHistoryRecordService {
   public constructor(
+    private readonly gamePlayMakerService: GamePlayMakerService,
     private readonly gameHistoryRecordRepository: GameHistoryRecordRepository,
     private readonly gameRepository: GameRepository,
   ) {}
@@ -62,16 +70,21 @@ export class GameHistoryRecordService {
   }
   
   public generateCurrentGameHistoryRecordToInsert(baseGame: Game, newGame: Game, play: MakeGamePlayWithRelationsDto): GameHistoryRecordToInsert {
+    if (baseGame.currentPlay === null) {
+      throw createNoCurrentGamePlayUnexpectedException("generateCurrentGameHistoryRecordToInsert", { gameId: baseGame._id });
+    }
     const gameHistoryRecordToInsert: GameHistoryRecordToInsert = {
       gameId: baseGame._id,
       turn: baseGame.turn,
       phase: baseGame.phase,
       tick: baseGame.tick,
-      play: this.generateCurrentGameHistoryRecordPlayToInsert(baseGame, play),
+      play: this.generateCurrentGameHistoryRecordPlayToInsert(baseGame as GameWithCurrentPlay, play),
       revealedPlayers: this.generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame, newGame),
       deadPlayers: this.generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame, newGame),
     };
-    // TODO: add play.voting
+    if (gameHistoryRecordToInsert.play.votes) {
+      gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
+    }
     return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, plainToInstanceDefaultOptions);
   }
 
@@ -95,15 +108,9 @@ export class GameHistoryRecordService {
     return currentRevealedPlayers.length ? currentRevealedPlayers : undefined;
   }
   
-  private generateCurrentGameHistoryRecordPlayToInsert(baseGame: Game, play: MakeGamePlayWithRelationsDto): GameHistoryRecordPlay {
-    if (baseGame.currentPlay === null) {
-      throw createNoCurrentGamePlayUnexpectedException("generateCurrentGameHistoryRecordPlayToInsert", { gameId: baseGame._id });
-    }
+  private generateCurrentGameHistoryRecordPlayToInsert(baseGame: GameWithCurrentPlay, play: MakeGamePlayWithRelationsDto): GameHistoryRecordPlay {
     const gameHistoryRecordPlayToInsert: GameHistoryRecordPlay = {
-      source: {
-        name: baseGame.currentPlay.source,
-        players: getExpectedPlayersToPlay(baseGame),
-      },
+      source: this.generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame),
       action: baseGame.currentPlay.action,
       didJudgeRequestAnotherVote: play.doesJudgeRequestAnotherVote,
       targets: play.targets,
@@ -112,6 +119,50 @@ export class GameHistoryRecordService {
       chosenSide: play.chosenSide,
     };
     return plainToInstance(GameHistoryRecordPlay, gameHistoryRecordPlayToInsert, plainToInstanceDefaultOptions);
+  }
+  
+  private generateCurrentGameHistoryRecordPlayVotingResultToInsert(
+    baseGame: GameWithCurrentPlay,
+    newGame: Game,
+    gameHistoryRecordToInsert: GameHistoryRecordToInsert,
+  ): GAME_HISTORY_RECORD_VOTING_RESULTS {
+    const sheriffPlayer = getPlayerWithAttribute(newGame.players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+    const areSomePlayersDeadFromCurrentVotes = gameHistoryRecordToInsert.deadPlayers?.some(({ death }) => {
+      const deathFromVoteCauses = [PLAYER_DEATH_CAUSES.VOTE, PLAYER_DEATH_CAUSES.VOTE_SCAPEGOATED];
+      return death?.cause !== undefined && deathFromVoteCauses.includes(death.cause);
+    }) === true;
+    if (baseGame.currentPlay.action === GAME_PLAY_ACTIONS.ELECT_SHERIFF) {
+      return sheriffPlayer ? GAME_HISTORY_RECORD_VOTING_RESULTS.SHERIFF_ELECTION : GAME_HISTORY_RECORD_VOTING_RESULTS.TIE;
+    }
+    if (areSomePlayersDeadFromCurrentVotes) {
+      return GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH;
+    }
+    if (baseGame.currentPlay.cause === GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES) {
+      return GAME_HISTORY_RECORD_VOTING_RESULTS.INCONSEQUENTIAL;
+    }
+    return GAME_HISTORY_RECORD_VOTING_RESULTS.TIE;
+  }
+
+  private generateCurrentGameHistoryRecordPlayVotingToInsert(
+    baseGame: GameWithCurrentPlay,
+    newGame: Game,
+    gameHistoryRecordToInsert: GameHistoryRecordToInsert,
+  ): GameHistoryRecordPlayVoting {
+    const votes = gameHistoryRecordToInsert.play.votes ?? [];
+    const nominatedPlayers = this.gamePlayMakerService.getNominatedPlayers(votes, baseGame);
+    const gameHistoryRecordPlayVoting: GameHistoryRecordPlayVoting = {
+      result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, gameHistoryRecordToInsert),
+      nominatedPlayers,
+    };
+    return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, plainToInstanceDefaultOptions);
+  }
+  
+  private generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame: GameWithCurrentPlay): GameHistoryRecordPlaySource {
+    const gameHistoryRecordPlaySource: GameHistoryRecordPlaySource = {
+      name: baseGame.currentPlay.source,
+      players: getExpectedPlayersToPlay(baseGame),
+    };
+    return plainToInstance(GameHistoryRecordPlaySource, gameHistoryRecordPlaySource, plainToInstanceDefaultOptions);
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {

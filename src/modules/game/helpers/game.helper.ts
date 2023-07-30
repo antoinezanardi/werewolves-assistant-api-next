@@ -1,6 +1,6 @@
 import { cloneDeep } from "lodash";
 import type { Types } from "mongoose";
-import { createCantFindPlayerUnexpectedException } from "../../../shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "../../../shared/exception/helpers/unexpected-exception.factory";
 import { ROLE_NAMES, ROLE_SIDES } from "../../role/enums/role.enum";
 import type { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
 import { GAME_PLAY_ACTIONS } from "../enums/game-play.enum";
@@ -160,10 +160,10 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
 
 function getExpectedPlayersToPlay(game: Game): Player[] {
   const { players, currentPlay } = game;
-  const mustIncludeDeadPlayersGamePlayActions = [GAME_PLAY_ACTIONS.SHOOT, GAME_PLAY_ACTIONS.BAN_VOTING];
+  const mustIncludeDeadPlayersGamePlayActions = [GAME_PLAY_ACTIONS.SHOOT, GAME_PLAY_ACTIONS.BAN_VOTING, GAME_PLAY_ACTIONS.DELEGATE];
   let expectedPlayersToPlay: Player[] = [];
   if (currentPlay === null) {
-    return expectedPlayersToPlay;
+    throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
   }
   if (isGameSourceGroup(currentPlay.source)) {
     expectedPlayersToPlay = getGroupOfPlayers(players, currentPlay.source);

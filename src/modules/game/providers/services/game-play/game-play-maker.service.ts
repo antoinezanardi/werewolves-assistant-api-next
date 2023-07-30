@@ -59,6 +59,14 @@ export class GamePlayMakerService {
     return gameSourcePlayMethod(play, clonedGame);
   }
 
+  public getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): Player[] {
+    const clonedGame = cloneDeep(game);
+    let playerVoteCounts = this.getPlayerVoteCounts(votes, clonedGame);
+    playerVoteCounts = this.addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
+    const maxVotes = Math.max(...playerVoteCounts.map(playerVoteCount => playerVoteCount[1]));
+    return playerVoteCounts.filter(playerVoteCount => playerVoteCount[1] === maxVotes).map(playerVoteCount => playerVoteCount[0]);
+  }
+
   private async sheriffSettlesVotes({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = cloneDeep(game);
     const expectedTargetCount = 1;
@@ -131,14 +139,6 @@ export class GamePlayMakerService {
       }
       return [...acc, [vote.target, voteValue]];
     }, []);
-  }
-
-  private getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): Player[] {
-    const clonedGame = cloneDeep(game);
-    let playerVoteCounts = this.getPlayerVoteCounts(votes, clonedGame);
-    playerVoteCounts = this.addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
-    const maxVotes = Math.max(...playerVoteCounts.map(playerVoteCount => playerVoteCount[1]));
-    return playerVoteCounts.filter(playerVoteCount => playerVoteCount[1] === maxVotes).map(playerVoteCount => playerVoteCount[0]);
   }
 
   private async handleTieInVotes(game: GameWithCurrentPlay): Promise<Game> {

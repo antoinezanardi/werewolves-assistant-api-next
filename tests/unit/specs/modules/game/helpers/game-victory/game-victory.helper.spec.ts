@@ -396,7 +396,7 @@ describe("Game Victory Helper", () => {
       const game = createFakeGame();
       const interpolations = { gameId: game._id };
 
-      expect(() => isGameOver(game)).toThrow("");
+      expect(() => isGameOver(game)).toThrow(undefined);
       expect(mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("isGameOver", interpolations);
     });
 

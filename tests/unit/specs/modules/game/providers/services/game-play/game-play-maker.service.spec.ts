@@ -277,6 +277,31 @@ describe("Game Play Maker Service", () => {
       expect(localMocks.gamePlayMakerService.sheriffPlays).toHaveBeenCalledExactlyOnceWith(play, game);
     });
   });
+  
+  describe("getNominatedPlayers", () => {
+    it("should get nominated players when called.", () => {
+      const players: Player[] = [
+        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const sheriffOptions = createFakeSheriffGameOptions({ hasDoubledVote: true });
+      const ravenOptions = createFakeRavenGameOptions({ markPenalty: 2 });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: sheriffOptions, raven: ravenOptions }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote(), options });
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
+      ];
+      const expectedNominatedPlayers = [
+        players[1],
+        players[2],
+      ];
+
+      expect(services.gamePlayMaker.getNominatedPlayers(votes, game)).toContainAllValues<Player>(expectedNominatedPlayers);
+    });
+  });
 
   describe("sheriffSettlesVotes", () => {
     it("should return game as is when target count is not the one expected.", async() => {
@@ -591,31 +616,6 @@ describe("Game Play Maker Service", () => {
       ];
 
       expect(services.gamePlayMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
-    });
-  });
-
-  describe("getNominatedPlayers", () => {
-    it("should get nominated players when called.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const sheriffOptions = createFakeSheriffGameOptions({ hasDoubledVote: true });
-      const ravenOptions = createFakeRavenGameOptions({ markPenalty: 2 });
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: sheriffOptions, raven: ravenOptions }) });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote(), options });
-      const votes: MakeGamePlayVoteWithRelationsDto[] = [
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
-      ];
-      const expectedNominatedPlayers = [
-        players[1],
-        players[2],
-      ];
-
-      expect(services.gamePlayMaker["getNominatedPlayers"](votes, game)).toContainAllValues<Player>(expectedNominatedPlayers);
     });
   });
 
