@@ -1,14 +1,19 @@
 import { Injectable } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 import { API_RESOURCES } from "../../../../../shared/api/enums/api.enum";
 import { RESOURCE_NOT_FOUND_REASONS } from "../../../../../shared/exception/enums/resource-not-found-error.enum";
+import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
 import { ResourceNotFoundException } from "../../../../../shared/exception/types/resource-not-found-exception.type";
+import { plainToInstanceDefaultOptions } from "../../../../../shared/validation/constants/validation.constant";
+import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
 import type { WITCH_POTIONS } from "../../../enums/game-play.enum";
-import { getAdditionalCardWithId, getNonexistentPlayer } from "../../../helpers/game.helper";
-import type { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import { getAdditionalCardWithId, getExpectedPlayersToPlay, getNonexistentPlayer, getPlayerWithId } from "../../../helpers/game.helper";
+import { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
 import type { Game } from "../../../schemas/game.schema";
-import type { GameHistoryRecordToInsert } from "../../../types/game-history-record.type";
+import type { Player } from "../../../schemas/player/player.schema";
+import { GameHistoryRecordToInsert } from "../../../types/game-history-record.type";
 import { GameHistoryRecordRepository } from "../../repositories/game-history-record.repository";
 import { GameRepository } from "../../repositories/game.repository";
 
@@ -18,7 +23,7 @@ export class GameHistoryRecordService {
     private readonly gameHistoryRecordRepository: GameHistoryRecordRepository,
     private readonly gameRepository: GameRepository,
   ) {}
-
+  
   public async createGameHistoryRecord(gameHistoryRecordToInsert: GameHistoryRecordToInsert): Promise<GameHistoryRecord> {
     await this.validateGameHistoryRecordToInsertData(gameHistoryRecordToInsert);
     return this.gameHistoryRecordRepository.create(gameHistoryRecordToInsert);
@@ -54,6 +59,59 @@ export class GameHistoryRecordService {
 
   public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     return this.gameHistoryRecordRepository.getPreviousGameHistoryRecord(gameId);
+  }
+  
+  public generateCurrentGameHistoryRecordToInsert(baseGame: Game, newGame: Game, play: MakeGamePlayWithRelationsDto): GameHistoryRecordToInsert {
+    const gameHistoryRecordToInsert: GameHistoryRecordToInsert = {
+      gameId: baseGame._id,
+      turn: baseGame.turn,
+      phase: baseGame.phase,
+      tick: baseGame.tick,
+      play: this.generateCurrentGameHistoryRecordPlayToInsert(baseGame, play),
+      revealedPlayers: this.generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame, newGame),
+      deadPlayers: this.generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame, newGame),
+    };
+    // TODO: add play.voting
+    return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, plainToInstanceDefaultOptions);
+  }
+
+  private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
+    const { players: basePlayers } = baseGame;
+    const { players: newPlayers } = newGame;
+    const currentDeadPlayers = newPlayers.filter(player => {
+      const matchingBasePlayer = getPlayerWithId(basePlayers, player._id);
+      return matchingBasePlayer?.isAlive === true && !player.isAlive;
+    });
+    return currentDeadPlayers.length ? currentDeadPlayers : undefined;
+  }
+
+  private generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
+    const { players: basePlayers } = baseGame;
+    const { players: newPlayers } = newGame;
+    const currentRevealedPlayers = newPlayers.filter(player => {
+      const matchingBasePlayer = getPlayerWithId(basePlayers, player._id);
+      return matchingBasePlayer?.role.isRevealed === false && player.role.isRevealed && player.isAlive;
+    });
+    return currentRevealedPlayers.length ? currentRevealedPlayers : undefined;
+  }
+  
+  private generateCurrentGameHistoryRecordPlayToInsert(baseGame: Game, play: MakeGamePlayWithRelationsDto): GameHistoryRecordPlay {
+    if (baseGame.currentPlay === null) {
+      throw createNoCurrentGamePlayUnexpectedException("generateCurrentGameHistoryRecordPlayToInsert", { gameId: baseGame._id });
+    }
+    const gameHistoryRecordPlayToInsert: GameHistoryRecordPlay = {
+      source: {
+        name: baseGame.currentPlay.source,
+        players: getExpectedPlayersToPlay(baseGame),
+      },
+      action: baseGame.currentPlay.action,
+      didJudgeRequestAnotherVote: play.doesJudgeRequestAnotherVote,
+      targets: play.targets,
+      votes: play.votes,
+      chosenCard: play.chosenCard,
+      chosenSide: play.chosenSide,
+    };
+    return plainToInstance(GameHistoryRecordPlay, gameHistoryRecordPlayToInsert, plainToInstanceDefaultOptions);
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {
