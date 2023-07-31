@@ -1,13 +1,15 @@
 import { cloneDeep } from "lodash";
 import type { Types } from "mongoose";
-import { createCantFindPlayerUnexpectedException } from "../../../shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "../../../shared/exception/helpers/unexpected-exception.factory";
 import { ROLE_NAMES, ROLE_SIDES } from "../../role/enums/role.enum";
 import type { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
+import { GAME_PLAY_ACTIONS } from "../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../enums/player.enum";
 import type { GameAdditionalCard } from "../schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "../schemas/game.schema";
 import type { Player } from "../schemas/player/player.schema";
 import type { GameSource, GetNearestPlayerOptions } from "../types/game.type";
+import { createPlayer } from "./player/player.factory";
 import { doesPlayerHaveAttribute } from "./player/player.helper";
 
 function getPlayerDtoWithRole(players: CreateGamePlayerDto[], role: ROLE_NAMES): CreateGamePlayerDto | undefined {
@@ -157,6 +159,26 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
   }
 }
 
+function getExpectedPlayersToPlay(game: Game): Player[] {
+  const { players, currentPlay } = game;
+  const mustIncludeDeadPlayersGamePlayActions = [GAME_PLAY_ACTIONS.SHOOT, GAME_PLAY_ACTIONS.BAN_VOTING, GAME_PLAY_ACTIONS.DELEGATE];
+  let expectedPlayersToPlay: Player[] = [];
+  if (currentPlay === null) {
+    throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
+  }
+  if (isGameSourceGroup(currentPlay.source)) {
+    expectedPlayersToPlay = getGroupOfPlayers(players, currentPlay.source);
+  } else if (isGameSourceRole(currentPlay.source)) {
+    expectedPlayersToPlay = getPlayersWithCurrentRole(players, currentPlay.source);
+  } else {
+    expectedPlayersToPlay = getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+  }
+  if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
+    expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);
+  }
+  return expectedPlayersToPlay.map(player => createPlayer(player));
+}
+
 export {
   getPlayerDtoWithRole,
   getPlayerWithCurrentRole,
@@ -183,4 +205,5 @@ export {
   getNonexistentPlayer,
   getFoxSniffedPlayers,
   getNearestAliveNeighbor,
+  getExpectedPlayersToPlay,
 };

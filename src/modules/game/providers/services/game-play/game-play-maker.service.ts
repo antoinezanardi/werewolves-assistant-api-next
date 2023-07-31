@@ -4,7 +4,6 @@ import { createFakeGamePlayAllElectSheriff } from "../../../../../../tests/facto
 import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
 import { roles } from "../../../../role/constants/role.constant";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../role/enums/role.enum";
-import type { MakeGamePlayVoteWithRelationsDto } from "../../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "../../../enums/player.enum";
@@ -13,15 +12,15 @@ import { getFoxSniffedPlayers, getPlayerWithAttribute, getPlayerWithCurrentRole 
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "../../../helpers/game.mutator";
 import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "../../../helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteByAllDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedByAllDeath } from "../../../helpers/player/player-death/player-death.factory";
-import { doesPlayerHaveAttribute, isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
+import { isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
 import type { Game } from "../../../schemas/game.schema";
 import type { PlayerRole } from "../../../schemas/player/player-role.schema";
 import type { PlayerSide } from "../../../schemas/player/player-side.schema";
 import type { Player } from "../../../schemas/player/player.schema";
-import type { PlayerVoteCount } from "../../../types/game-play.type";
 import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
 import type { GameSource } from "../../../types/game.type";
 import { PlayerKillerService } from "../player/player-killer.service";
+import { GamePlayVoteService } from "./game-play-vote/game-play-vote.service";
 
 @Injectable()
 export class GamePlayMakerService {
@@ -45,7 +44,10 @@ export class GamePlayMakerService {
     [PLAYER_ATTRIBUTE_NAMES.SHERIFF]: async(play, game) => this.sheriffPlays(play, game),
   };
 
-  public constructor(private readonly playerKillerService: PlayerKillerService) {}
+  public constructor(
+    private readonly playerKillerService: PlayerKillerService,
+    private readonly gamePlayVoteService: GamePlayVoteService,
+  ) {}
 
   public async makeGamePlay(play: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
     if (!game.currentPlay) {
@@ -98,49 +100,6 @@ export class GamePlayMakerService {
     return sheriffPlayMethod();
   }
 
-  private addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: GameWithCurrentPlay): PlayerVoteCount[] {
-    const clonedGame = cloneDeep(game);
-    const clonedPlayerVoteCounts = cloneDeep(playerVoteCounts);
-    const ravenPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.RAVEN);
-    const ravenMarkedPlayer = getPlayerWithAttribute(clonedGame.players, PLAYER_ATTRIBUTE_NAMES.RAVEN_MARKED);
-    if (clonedGame.currentPlay.action !== GAME_PLAY_ACTIONS.VOTE ||
-      ravenPlayer?.isAlive !== true || doesPlayerHaveAttribute(ravenPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) ||
-      ravenMarkedPlayer?.isAlive !== true) {
-      return clonedPlayerVoteCounts;
-    }
-    const ravenMarkedPlayerVoteCount = playerVoteCounts.find(playerVoteCount => playerVoteCount[0]._id.toString() === ravenMarkedPlayer._id.toString());
-    const { markPenalty } = clonedGame.options.roles.raven;
-    if (ravenMarkedPlayerVoteCount) {
-      ravenMarkedPlayerVoteCount[1] += markPenalty;
-      return playerVoteCounts;
-    }
-    return [...playerVoteCounts, [ravenMarkedPlayer, markPenalty]];
-  }
-
-  private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): PlayerVoteCount[] {
-    const { hasDoubledVote: doesSheriffHaveDoubledVote } = game.options.roles.sheriff;
-    const sheriffPlayer = getPlayerWithAttribute(game.players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
-    return votes.reduce<PlayerVoteCount[]>((acc, vote) => {
-      const doubledVoteValue = 2;
-      const isVoteSourceSheriff = vote.source._id.toString() === sheriffPlayer?._id.toString();
-      const voteValue = game.currentPlay.action === GAME_PLAY_ACTIONS.VOTE && isVoteSourceSheriff && doesSheriffHaveDoubledVote ? doubledVoteValue : 1;
-      const existingPlayerVoteCount = acc.find(value => value[0]._id.toString() === vote.target._id.toString());
-      if (existingPlayerVoteCount) {
-        existingPlayerVoteCount[1] += voteValue;
-        return acc;
-      }
-      return [...acc, [vote.target, voteValue]];
-    }, []);
-  }
-
-  private getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): Player[] {
-    const clonedGame = cloneDeep(game);
-    let playerVoteCounts = this.getPlayerVoteCounts(votes, clonedGame);
-    playerVoteCounts = this.addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
-    const maxVotes = Math.max(...playerVoteCounts.map(playerVoteCount => playerVoteCount[1]));
-    return playerVoteCounts.filter(playerVoteCount => playerVoteCount[1] === maxVotes).map(playerVoteCount => playerVoteCount[0]);
-  }
-
   private async handleTieInVotes(game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = cloneDeep(game);
     const scapegoatPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.SCAPEGOAT);
@@ -165,7 +124,7 @@ export class GamePlayMakerService {
     if (!votes) {
       return clonedGame;
     }
-    const nominatedPlayers = this.getNominatedPlayers(votes, clonedGame);
+    const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
     if (doesJudgeRequestAnotherVote === true) {
       const gamePlayAllVote = createGamePlayAllVote({ cause: GAME_PLAY_CAUSES.STUTTERING_JUDGE_REQUEST });
       clonedGame = appendUpcomingPlayInGame(gamePlayAllVote, clonedGame) as GameWithCurrentPlay;
@@ -200,7 +159,7 @@ export class GamePlayMakerService {
     if (!votes) {
       return clonedGame;
     }
-    const nominatedPlayers = this.getNominatedPlayers(votes, clonedGame);
+    const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
     if (!nominatedPlayers.length) {
       return clonedGame;
     }

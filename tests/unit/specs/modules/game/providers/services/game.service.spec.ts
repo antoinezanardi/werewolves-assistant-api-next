@@ -11,6 +11,7 @@ import { GameHistoryRecordService } from "../../../../../../../src/modules/game/
 import { GamePhaseService } from "../../../../../../../src/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayMakerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-maker.service";
 import { GamePlayValidatorService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-validator.service";
+import { GamePlayVoteService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { GamePlayService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play.service";
 import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
 import { PlayerAttributeService } from "../../../../../../../src/modules/game/providers/services/player/player-attribute.service";
@@ -27,6 +28,7 @@ import { createFakeGamePlayAllVote } from "../../../../../../factories/game/sche
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
 
 jest.mock("../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type");
@@ -40,9 +42,9 @@ describe("Game Service", () => {
       create: jest.SpyInstance;
       updateOne: jest.SpyInstance;
     };
-    gameHistoryRecordRepository: {
-      find: jest.SpyInstance;
-      create: jest.SpyInstance;
+    gameHistoryRecordService: {
+      generateCurrentGameHistoryRecordToInsert: jest.SpyInstance;
+      createGameHistoryRecord: jest.SpyInstance;
     };
     gamePlayService: {
       getUpcomingNightPlays: jest.SpyInstance;
@@ -73,9 +75,9 @@ describe("Game Service", () => {
         create: jest.fn(),
         updateOne: jest.fn(),
       },
-      gameHistoryRecordRepository: {
-        find: jest.fn(),
-        create: jest.fn(),
+      gameHistoryRecordService: {
+        generateCurrentGameHistoryRecordToInsert: jest.fn(),
+        createGameHistoryRecord: jest.fn(),
       },
       gamePlayService: {
         getUpcomingNightPlays: jest.fn(),
@@ -101,8 +103,8 @@ describe("Game Service", () => {
           useValue: mocks.gameRepository,
         },
         {
-          provide: GameHistoryRecordRepository,
-          useValue: mocks.gameHistoryRecordRepository,
+          provide: GameHistoryRecordService,
+          useValue: mocks.gameHistoryRecordService,
         },
         {
           provide: GamePlayService,
@@ -124,7 +126,11 @@ describe("Game Service", () => {
           provide: PlayerAttributeService,
           useValue: mocks.playerAttributeService,
         },
-        GameHistoryRecordService,
+        {
+          provide: GameHistoryRecordRepository,
+          useValue: {},
+        },
+        GamePlayVoteService,
         GameService,
       ],
     }).compile();
@@ -260,6 +266,24 @@ describe("Game Service", () => {
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
       expect(localMocks.gameService.handleGamePhaseCompletion).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call generate current game history record method when called.", async() => {
+      const clonedGame = cloneDeep(game);
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
+
+      expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert).toHaveBeenCalledExactlyOnceWith(clonedGame, game, play);
+    });
+
+    it("should call createGameHistoryRecord method when called.", async() => {
+      const clonedGame = cloneDeep(game);
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      const currentGameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
+      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert.mockReturnValue(currentGameHistoryRecordToInsert);
+      await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
+
+      expect(mocks.gameHistoryRecordService.createGameHistoryRecord).toHaveBeenCalledExactlyOnceWith(currentGameHistoryRecordToInsert);
     });
 
     it("should call update method when called.", async() => {
