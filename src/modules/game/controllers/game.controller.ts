@@ -6,8 +6,10 @@ import { GetGameRandomCompositionPlayerResponseDto } from "../dto/get-game-rando
 import { GetGameRandomCompositionDto } from "../dto/get-game-random-composition/get-game-random-composition.dto";
 import { MakeGamePlayDto } from "../dto/make-game-play/make-game-play.dto";
 import { GAME_STATUSES } from "../enums/game.enum";
+import { GameHistoryRecordService } from "../providers/services/game-history/game-history-record.service";
 import { GameRandomCompositionService } from "../providers/services/game-random-composition.service";
 import { GameService } from "../providers/services/game.service";
+import { GameHistoryRecord } from "../schemas/game-history-record/game-history-record.schema";
 import { Game } from "../schemas/game.schema";
 import { ApiGameIdParam } from "./decorators/api-game-id-param.decorator";
 import { ApiGameNotFoundResponse } from "./decorators/api-game-not-found-response.decorator";
@@ -19,6 +21,7 @@ export class GameController {
   public constructor(
     private readonly gameService: GameService,
     private readonly gameRandomCompositionService: GameRandomCompositionService,
+    private readonly gameHistoryRecordService: GameHistoryRecordService,
   ) {}
 
   @Get()
@@ -64,5 +67,14 @@ export class GameController {
   @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the \`${GAME_STATUSES.PLAYING}\` status. Body parameters fields are required or optional based on the upcoming game play.` })
   private async makeGamePlay(@Param("id", GetGameByIdPipe) game: Game, @Body() makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
     return this.gameService.makeGamePlay(game, makeGamePlayDto);
+  }
+
+  @Get(":id/history")
+  @ApiOperation({ summary: "Get a game full history by id" })
+  @ApiGameIdParam()
+  @ApiResponse({ status: HttpStatus.OK, type: [GameHistoryRecord] })
+  @ApiGameNotFoundResponse()
+  private async getGameHistory(@Param("id", GetGameByIdPipe) game: Game): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordService.getGameHistory(game._id);
   }
 }
