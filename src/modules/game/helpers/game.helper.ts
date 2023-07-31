@@ -9,6 +9,7 @@ import type { GameAdditionalCard } from "../schemas/game-additional-card/game-ad
 import type { Game } from "../schemas/game.schema";
 import type { Player } from "../schemas/player/player.schema";
 import type { GameSource, GetNearestPlayerOptions } from "../types/game.type";
+import { createPlayer } from "./player/player.factory";
 import { doesPlayerHaveAttribute } from "./player/player.helper";
 
 function getPlayerDtoWithRole(players: CreateGamePlayerDto[], role: ROLE_NAMES): CreateGamePlayerDto | undefined {
@@ -175,7 +176,7 @@ function getExpectedPlayersToPlay(game: Game): Player[] {
   if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
     expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);
   }
-  return expectedPlayersToPlay;
+  return expectedPlayersToPlay.map(player => createPlayer(player));
 }
 
 export {

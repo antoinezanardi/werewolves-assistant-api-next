@@ -1,25 +1,29 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
-import { WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../../src/modules/game/enums/game-history-record.enum";
+import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../../src/modules/game/enums/player.enum";
 import { createGamePlayAllElectSheriff } from "../../../../../../../../src/modules/game/helpers/game-play/game-play.factory";
 import { GameHistoryRecordRepository } from "../../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../../src/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "../../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
+import { GamePlayVoteService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import type { GameHistoryRecordPlay } from "../../../../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { Player } from "../../../../../../../../src/modules/game/schemas/player/player.schema";
 import type { GameHistoryRecordToInsert } from "../../../../../../../../src/modules/game/types/game-history-record.type";
-import { GameWithCurrentPlay } from "../../../../../../../../src/modules/game/types/game-with-current-play";
 import { ROLE_SIDES } from "../../../../../../../../src/modules/role/enums/role.enum";
 import { API_RESOURCES } from "../../../../../../../../src/shared/api/enums/api.enum";
 import * as UnexpectedExceptionFactory from "../../../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
 import { ResourceNotFoundException } from "../../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote, createFakeGameHistoryRecordPlayVoting } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteByAllDeath, createFakePlayerVoteScapegoatedByAllDeath } from "../../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer, createFakePlayerRole } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "../../../../../../../factories/shared/mongoose/mongoose.factory";
@@ -40,6 +44,7 @@ describe("Game History Record Service", () => {
       getPreviousGameHistoryRecord: jest.SpyInstance;
     };
     gameRepository: { findOne: jest.SpyInstance };
+    gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
     unexpectedExceptionFactory: {
       createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
     };
@@ -61,6 +66,7 @@ describe("Game History Record Service", () => {
         getPreviousGameHistoryRecord: jest.fn(),
       },
       gameRepository: { findOne: jest.fn() },
+      gamePlayVoteService: { getNominatedPlayers: jest.fn() },
       unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
     };
     
@@ -73,6 +79,10 @@ describe("Game History Record Service", () => {
         {
           provide: GameRepository,
           useValue: mocks.gameRepository,
+        },
+        {
+          provide: GamePlayVoteService,
+          useValue: mocks.gamePlayVoteService,
         },
         GameHistoryRecordService,
       ],
@@ -175,6 +185,26 @@ describe("Game History Record Service", () => {
   });
 
   describe("generateCurrentGameHistoryRecordToInsert", () => {
+    let localMocks: {
+      gameHistoryRecordService: {
+        generateCurrentGameHistoryRecordPlayToInsert: jest.SpyInstance;
+        generateCurrentGameHistoryRecordRevealedPlayersToInsert: jest.SpyInstance;
+        generateCurrentGameHistoryRecordDeadPlayersToInsert: jest.SpyInstance;
+        generateCurrentGameHistoryRecordPlayVotingToInsert: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = {
+        gameHistoryRecordService: {
+          generateCurrentGameHistoryRecordPlayToInsert: jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordPlayToInsert }, "generateCurrentGameHistoryRecordPlayToInsert").mockImplementation(),
+          generateCurrentGameHistoryRecordRevealedPlayersToInsert: jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordRevealedPlayersToInsert }, "generateCurrentGameHistoryRecordRevealedPlayersToInsert").mockImplementation(),
+          generateCurrentGameHistoryRecordDeadPlayersToInsert: jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordDeadPlayersToInsert }, "generateCurrentGameHistoryRecordDeadPlayersToInsert").mockImplementation(),
+          generateCurrentGameHistoryRecordPlayVotingToInsert: jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordPlayVotingToInsert }, "generateCurrentGameHistoryRecordPlayVotingToInsert").mockImplementation(),
+        },
+      };
+    });
+    
     it("should throw error when there is no current play for the game.", () => {
       const baseGame = createFakeGame();
       const newGame = createFakeGame();
@@ -182,7 +212,86 @@ describe("Game History Record Service", () => {
       const interpolations = { gameId: baseGame._id };
 
       expect(() => services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play)).toThrow(undefined);
-      expect(mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("generateCurrentGameHistoryRecordPlayToInsert", interpolations);
+      expect(mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("generateCurrentGameHistoryRecordToInsert", interpolations);
+    });
+    
+    it("should generate current game history to insert when called.", () => {
+      const baseGame = createFakeGameWithCurrentPlay();
+      const newGame = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
+      const expectedCurrentGameHistoryToInsert = createFakeGameHistoryRecordToInsert({
+        gameId: baseGame._id,
+        turn: baseGame.turn,
+        phase: baseGame.phase,
+        tick: baseGame.tick,
+        play: expectedCurrentGameHistoryPlayToInsert,
+      });
+      
+      expect(services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play)).toStrictEqual(expectedCurrentGameHistoryToInsert);
+    });
+
+    it("should call generateCurrentGameHistoryRecordPlayToInsert method when called.", () => {
+      const baseGame = createFakeGameWithCurrentPlay();
+      const newGame = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
+      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
+
+      expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, play);
+    });
+
+    it("should call generateCurrentGameHistoryRecordRevealedPlayersToInsert method when called.", () => {
+      const baseGame = createFakeGameWithCurrentPlay();
+      const newGame = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
+      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
+
+      expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordRevealedPlayersToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame);
+    });
+
+    it("should call generateCurrentGameHistoryRecordDeadPlayersToInsert method when called.", () => {
+      const baseGame = createFakeGameWithCurrentPlay();
+      const newGame = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
+      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
+
+      expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordDeadPlayersToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame);
+    });
+    
+    it("should call generateCurrentGameHistoryRecordPlayVotingToInsert method when called with votes.", () => {
+      const baseGame = createFakeGameWithCurrentPlay();
+      const newGame = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay({ votes: [] });
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({
+        gameId: baseGame._id,
+        turn: baseGame.turn,
+        phase: baseGame.phase,
+        tick: baseGame.tick,
+        play: expectedCurrentGameHistoryPlayToInsert,
+      });
+      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
+
+      expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame, gameHistoryRecordToInsert);
+    });
+
+    it("should not call generateCurrentGameHistoryRecordPlayVotingToInsert method when called without votes.", () => {
+      const baseGame = createFakeGameWithCurrentPlay();
+      const newGame = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
+      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
+
+      expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).not.toHaveBeenCalled();
     });
   });
 
@@ -324,6 +433,223 @@ describe("Game History Record Service", () => {
       }, { source: expectedGameHistoryRecordPlaySource });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayToInsert"](game, play)).toStrictEqual(expectedGameHistoryRecordPlay);
+    });
+  });
+
+  describe("generateCurrentGameHistoryRecordPlayVotingResultToInsert", () => {
+    it("should return sheriff election when there is a sheriff in the game.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllElectSheriff() });
+      const newGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer(players[0]),
+          createFakePlayer({ ...players[1], attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+          createFakePlayer(players[2]),
+          createFakePlayer(players[3]),
+        ],
+      });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.SHERIFF_ELECTION);
+    });
+
+    it("should return tie when there is no sheriff in the game after election.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllElectSheriff() });
+      const newGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer(players[0]),
+          createFakePlayer(players[1]),
+          createFakePlayer(players[2]),
+          createFakePlayer(players[3]),
+        ],
+      });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.TIE);
+    });
+
+    it("should return death when there is at least one dead player from votes.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
+      const newGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer(players[0]),
+          createFakePlayer(players[1]),
+          createFakePlayer(players[2]),
+          createFakePlayer(players[3]),
+        ],
+      });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteByAllDeath() })] });
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH);
+    });
+
+    it("should return death when there is at least one dead player from scapegoat votes.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
+      const newGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer(players[0]),
+          createFakePlayer(players[1]),
+          createFakePlayer(players[2]),
+          createFakePlayer(players[3]),
+        ],
+      });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteScapegoatedByAllDeath() })] });
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH);
+    });
+
+    it("should return inconsequential when there is no death from votes and current play was already after a tie.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }) });
+      const newGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer(players[0]),
+          createFakePlayer(players[1]),
+          createFakePlayer(players[2]),
+          createFakePlayer(players[3]),
+        ],
+      });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.INCONSEQUENTIAL);
+    });
+
+    it("should return tie when there is no death from votes and current play was not after a tie.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.STUTTERING_JUDGE_REQUEST }) });
+      const newGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer(players[0]),
+          createFakePlayer(players[1]),
+          createFakePlayer(players[2]),
+          createFakePlayer(players[3]),
+        ],
+      });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.TIE);
+    });
+  });
+
+  describe("generateCurrentGameHistoryRecordPlayVotingToInsert", () => {
+    let localMocks: {
+      gameHistoryRecordService: {
+        generateCurrentGameHistoryRecordPlayVotingResultToInsert: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = { gameHistoryRecordService: { generateCurrentGameHistoryRecordPlayVotingResultToInsert: jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordPlayVotingResultToInsert }, "generateCurrentGameHistoryRecordPlayVotingResultToInsert").mockImplementation() } };
+    });
+    
+    it("should generate current game history record play voting when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const newGame = createFakeGameWithCurrentPlay(game);
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
+      const nominatedPlayers = [players[2]];
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue(GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH);
+      const expectedCurrentGameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({
+        result: GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH,
+        nominatedPlayers,
+      });
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert)).toStrictEqual(expectedCurrentGameHistoryRecordPlayVoting);
+    });
+
+    it("should call getNominatedPlayers method with empty votes when called without votes.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const newGame = createFakeGameWithCurrentPlay(game);
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
+      const nominatedPlayers = [players[2]];
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue(GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH);
+      services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert);
+
+      expect(mocks.gamePlayVoteService.getNominatedPlayers).toHaveBeenCalledExactlyOnceWith([], game);
+    });
+
+    it("should call getNominatedPlayers method with votes when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const newGame = createFakeGameWithCurrentPlay(game);
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] }) });
+      const nominatedPlayers = [players[2]];
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue(GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH);
+      services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert);
+
+      expect(mocks.gamePlayVoteService.getNominatedPlayers).toHaveBeenCalledExactlyOnceWith(gameHistoryRecordToInsert.play.votes, game);
+    });
+
+    it("should call generateCurrentGameHistoryRecordPlayVotingResultToInsert method when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const newGame = createFakeGameWithCurrentPlay(game);
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] }) });
+      const nominatedPlayers = [players[2]];
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue(GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH);
+      services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert);
+
+      expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert).toHaveBeenCalledExactlyOnceWith(game, newGame, gameHistoryRecordToInsert);
     });
   });
 

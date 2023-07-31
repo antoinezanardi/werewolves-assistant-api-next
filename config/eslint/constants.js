@@ -1,6 +1,6 @@
 const MAX_LENGTH = 180;
 const MAX_NESTED_CALLBACK = 5;
-const MAX_PARAMS = 6;
+const MAX_PARAMS = 8;
 const INDENT_SPACE_COUNT = 2;
 const ERROR = "error";
 const WARNING = "warn";

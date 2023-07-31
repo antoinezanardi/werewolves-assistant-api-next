@@ -3,7 +3,7 @@ import { plainToInstanceDefaultOptions } from "../../../../shared/validation/con
 import { Player } from "../../schemas/player/player.schema";
 
 function createPlayer(player: Player): Player {
-  return plainToInstance(Player, JSON.parse(JSON.stringify(player)), plainToInstanceDefaultOptions);
+  return plainToInstance(Player, JSON.parse(JSON.stringify(player)), { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true });
 }
 
 export { createPlayer };

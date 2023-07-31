@@ -22,12 +22,12 @@ import { GameHistoryRecordToInsert } from "../../../types/game-history-record.ty
 import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
 import { GameHistoryRecordRepository } from "../../repositories/game-history-record.repository";
 import { GameRepository } from "../../repositories/game.repository";
-import { GamePlayMakerService } from "../game-play/game-play-maker.service";
+import { GamePlayVoteService } from "../game-play/game-play-vote/game-play-vote.service";
 
 @Injectable()
 export class GameHistoryRecordService {
   public constructor(
-    private readonly gamePlayMakerService: GamePlayMakerService,
+    private readonly gamePlayVoteService: GamePlayVoteService,
     private readonly gameHistoryRecordRepository: GameHistoryRecordRepository,
     private readonly gameRepository: GameRepository,
   ) {}
@@ -85,7 +85,7 @@ export class GameHistoryRecordService {
     if (gameHistoryRecordToInsert.play.votes) {
       gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
     }
-    return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, plainToInstanceDefaultOptions);
+    return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
   }
 
   private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
@@ -118,7 +118,7 @@ export class GameHistoryRecordService {
       chosenCard: play.chosenCard,
       chosenSide: play.chosenSide,
     };
-    return plainToInstance(GameHistoryRecordPlay, gameHistoryRecordPlayToInsert, plainToInstanceDefaultOptions);
+    return plainToInstance(GameHistoryRecordPlay, gameHistoryRecordPlayToInsert, { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
   }
   
   private generateCurrentGameHistoryRecordPlayVotingResultToInsert(
@@ -149,12 +149,12 @@ export class GameHistoryRecordService {
     gameHistoryRecordToInsert: GameHistoryRecordToInsert,
   ): GameHistoryRecordPlayVoting {
     const votes = gameHistoryRecordToInsert.play.votes ?? [];
-    const nominatedPlayers = this.gamePlayMakerService.getNominatedPlayers(votes, baseGame);
+    const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, baseGame);
     const gameHistoryRecordPlayVoting: GameHistoryRecordPlayVoting = {
       result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, gameHistoryRecordToInsert),
       nominatedPlayers,
     };
-    return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, plainToInstanceDefaultOptions);
+    return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
   }
   
   private generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame: GameWithCurrentPlay): GameHistoryRecordPlaySource {
@@ -162,7 +162,7 @@ export class GameHistoryRecordService {
       name: baseGame.currentPlay.source,
       players: getExpectedPlayersToPlay(baseGame),
     };
-    return plainToInstance(GameHistoryRecordPlaySource, gameHistoryRecordPlaySource, plainToInstanceDefaultOptions);
+    return plainToInstance(GameHistoryRecordPlaySource, gameHistoryRecordPlaySource, { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {

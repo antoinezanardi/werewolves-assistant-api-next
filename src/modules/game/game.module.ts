@@ -8,6 +8,7 @@ import { GameHistoryRecordService } from "./providers/services/game-history/game
 import { GamePhaseService } from "./providers/services/game-phase/game-phase.service";
 import { GamePlayMakerService } from "./providers/services/game-play/game-play-maker.service";
 import { GamePlayValidatorService } from "./providers/services/game-play/game-play-validator.service";
+import { GamePlayVoteService } from "./providers/services/game-play/game-play-vote/game-play-vote.service";
 import { GamePlayService } from "./providers/services/game-play/game-play.service";
 import { GameRandomCompositionService } from "./providers/services/game-random-composition.service";
 import { GameService } from "./providers/services/game.service";
@@ -31,6 +32,7 @@ import { Game, GameSchema } from "./schemas/game.schema";
     GamePlayService,
     GamePlayValidatorService,
     GamePlayMakerService,
+    GamePlayVoteService,
     GamePhaseService,
     GameRepository,
     GameHistoryRecordService,
