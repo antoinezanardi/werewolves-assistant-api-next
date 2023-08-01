@@ -1,7 +1,7 @@
 import { InternalServerErrorException } from "@nestjs/common";
 import { template } from "radash";
-import { UNEXPECTED_EXCEPTION_REASONS } from "../enums/unexpected-exception.enum";
-import { ExceptionInterpolations } from "./exception.type";
+import type { UNEXPECTED_EXCEPTION_REASONS } from "../enums/unexpected-exception.enum";
+import type { ExceptionInterpolations } from "./exception.type";
 
 class UnexpectedException extends InternalServerErrorException {
   public constructor(scope: string, reason: UNEXPECTED_EXCEPTION_REASONS, interpolations: ExceptionInterpolations = {}) {
