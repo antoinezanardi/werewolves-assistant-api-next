@@ -125,7 +125,6 @@ describe("Game History Record Repository", () => {
         ...(toJSON(gameHistoryRecordToInsert) as GameHistoryRecordToInsert),
         _id: expect.any(String) as Types.ObjectId,
         createdAt: expect.any(String) as Date,
-        updatedAt: expect.any(String) as Date,
       });
     });
   });
