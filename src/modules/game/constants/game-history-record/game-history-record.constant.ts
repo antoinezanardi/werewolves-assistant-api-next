@@ -21,7 +21,6 @@ const gameHistoryRecordFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecor
   revealedPlayers: { required: false },
   deadPlayers: { required: false },
   createdAt: { required: true },
-  updatedAt: { required: true },
 });
 
 const gameHistoryRecordApiProperties = Object.freeze<Record<keyof GameHistoryRecord, ApiPropertyOptions>>({
@@ -63,10 +62,9 @@ const gameHistoryRecordApiProperties = Object.freeze<Record<keyof GameHistoryRec
     description: "When the game history record was created",
     ...gameHistoryRecordFieldsSpecs.createdAt,
   },
-  updatedAt: {
-    description: "When the game history record was updated",
-    ...gameHistoryRecordFieldsSpecs.updatedAt,
-  },
 });
 
-export { gameHistoryRecordFieldsSpecs, gameHistoryRecordApiProperties };
+export {
+  gameHistoryRecordFieldsSpecs,
+  gameHistoryRecordApiProperties,
+};

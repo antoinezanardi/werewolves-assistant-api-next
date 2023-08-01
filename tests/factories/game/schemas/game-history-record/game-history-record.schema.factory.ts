@@ -334,7 +334,6 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
     revealedPlayers: gameHistoryRecord.revealedPlayers ?? undefined,
     deadPlayers: gameHistoryRecord.deadPlayers ?? undefined,
     createdAt: gameHistoryRecord.createdAt ?? faker.date.recent(),
-    updatedAt: gameHistoryRecord.updatedAt ?? faker.date.recent(),
     ...override,
   }, plainToInstanceDefaultOptions);
 }

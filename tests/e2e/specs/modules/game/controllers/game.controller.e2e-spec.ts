@@ -809,17 +809,14 @@ describe("Game Controller", () => {
         {
           ...toJSON(gameHistoryRecords[0]),
           createdAt: expect.any(String) as Date,
-          updatedAt: expect.any(String) as Date,
         },
         {
           ...toJSON(gameHistoryRecords[1]),
           createdAt: expect.any(String) as Date,
-          updatedAt: expect.any(String) as Date,
         },
         {
           ...toJSON(gameHistoryRecords[2]),
           createdAt: expect.any(String) as Date,
-          updatedAt: expect.any(String) as Date,
         },
       ] as GameHistoryRecord[]);
     });
