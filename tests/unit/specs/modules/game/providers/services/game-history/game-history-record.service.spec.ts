@@ -42,6 +42,7 @@ describe("Game History Record Service", () => {
       getGameHistoryWerewolvesEatAncientRecords: jest.SpyInstance;
       getGameHistoryAncientProtectedFromWerewolvesRecords: jest.SpyInstance;
       getPreviousGameHistoryRecord: jest.SpyInstance;
+      getGameHistory: jest.SpyInstance;
     };
     gameRepository: { findOne: jest.SpyInstance };
     gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
@@ -64,6 +65,7 @@ describe("Game History Record Service", () => {
         getGameHistoryWerewolvesEatAncientRecords: jest.fn(),
         getGameHistoryAncientProtectedFromWerewolvesRecords: jest.fn(),
         getPreviousGameHistoryRecord: jest.fn(),
+        getGameHistory: jest.fn(),
       },
       gameRepository: { findOne: jest.fn() },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
@@ -292,6 +294,15 @@ describe("Game History Record Service", () => {
       services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
 
       expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("getGameHistory", () => {
+    it("should call getGameHistory repository method when called.", async() => {
+      const game = createFakeGame();
+      await services.gameHistoryRecord.getGameHistory(game._id);
+
+      expect(mocks.gameHistoryRecordRepository.getGameHistory).toHaveBeenCalledExactlyOnceWith(game._id);
     });
   });
 

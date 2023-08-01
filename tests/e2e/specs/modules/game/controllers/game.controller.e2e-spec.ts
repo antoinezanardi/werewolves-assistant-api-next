@@ -17,6 +17,7 @@ import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../../../../src/modul
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
 import { GameModule } from "../../../../../../src/modules/game/game.module";
+import { GameHistoryRecord } from "../../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/game-options.schema";
 import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
@@ -27,6 +28,7 @@ import { createFakeGameOptionsDto } from "../../../../../factories/game/dto/crea
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeGameHistoryRecord } from "../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGamePlayAllVote, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -39,7 +41,10 @@ import { initNestApp } from "../../../../helpers/nest-app.helper";
 
 describe("Game Controller", () => {
   let app: NestFastifyApplication;
-  let models: { game: Model<Game> };
+  let models: {
+    game: Model<Game>;
+    gameHistoryRecord: Model<GameHistoryRecord>;
+  };
 
   beforeAll(async() => {
     const module: TestingModule = await Test.createTestingModule({
@@ -49,7 +54,10 @@ describe("Game Controller", () => {
       ],
     }).compile();
     app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(fastifyServerDefaultOptions));
-    models = { game: module.get<Model<Game>>(getModelToken(Game.name)) };
+    models = {
+      game: module.get<Model<Game>>(getModelToken(Game.name)),
+      gameHistoryRecord: module.get<Model<GameHistoryRecord>>(getModelToken(GameHistoryRecord.name)),
+    };
 
     await initNestApp(app);
   });
@@ -731,6 +739,89 @@ describe("Game Controller", () => {
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
+    });
+  });
+
+  describe("GET /games/:id/history", () => {
+    afterEach(async() => {
+      await models.gameHistoryRecord.deleteMany();
+    });
+
+    it("should get a bad request error when id is not mongoId.", async() => {
+      const response = await app.inject({
+        method: "GET",
+        url: "/games/123/history",
+      });
+
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.json<BadRequestException>().message).toBe("Validation failed (Mongo ObjectId is expected)");
+    });
+
+    it("should get a not found error when id doesn't exist in base.", async() => {
+      const unknownId = faker.database.mongodbObjectId();
+      const response = await app.inject({
+        method: "GET",
+        url: `/games/${unknownId}/history`,
+      });
+
+      expect(response.statusCode).toBe(HttpStatus.NOT_FOUND);
+      expect(response.json<NotFoundException>().message).toBe(`Game with id "${unknownId}" not found`);
+    });
+
+    it("should return no game history records when game doesn't have any.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const secondGame = createFakeGameWithCurrentPlay();
+      const gameHistoryRecords = [
+        createFakeGameHistoryRecord({ gameId: game._id }),
+        createFakeGameHistoryRecord({ gameId: game._id }),
+        createFakeGameHistoryRecord({ gameId: game._id }),
+      ];
+      await models.game.insertMany([game, secondGame]);
+      await models.gameHistoryRecord.insertMany(gameHistoryRecords);
+
+      const response = await app.inject({
+        method: "GET",
+        url: `/games/${secondGame._id.toString()}/history`,
+      });
+
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      expect(response.json<GameHistoryRecord[]>()).toStrictEqual([]);
+    });
+
+    it("should return 3 game history records when game have 3 records.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const secondGame = createFakeGameWithCurrentPlay();
+      const gameHistoryRecords = [
+        createFakeGameHistoryRecord({ gameId: game._id }),
+        createFakeGameHistoryRecord({ gameId: game._id }),
+        createFakeGameHistoryRecord({ gameId: game._id }),
+      ];
+      await models.game.insertMany([game, secondGame]);
+      await models.gameHistoryRecord.insertMany(gameHistoryRecords);
+
+      const response = await app.inject({
+        method: "GET",
+        url: `/games/${game._id.toString()}/history`,
+      });
+
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      expect(response.json<GameHistoryRecord[]>()).toStrictEqual<GameHistoryRecord[]>([
+        {
+          ...toJSON(gameHistoryRecords[0]),
+          createdAt: expect.any(String) as Date,
+          updatedAt: expect.any(String) as Date,
+        },
+        {
+          ...toJSON(gameHistoryRecords[1]),
+          createdAt: expect.any(String) as Date,
+          updatedAt: expect.any(String) as Date,
+        },
+        {
+          ...toJSON(gameHistoryRecords[2]),
+          createdAt: expect.any(String) as Date,
+          updatedAt: expect.any(String) as Date,
+        },
+      ] as GameHistoryRecord[]);
     });
   });
 });

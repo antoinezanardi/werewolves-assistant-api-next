@@ -279,7 +279,7 @@ function createFakeGameHistoryRecordSheriffSettleVotesPlay(gameHistoryRecordPlay
 function createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlaySource: Partial<GameHistoryRecordPlaySource> = {}, override: object = {}): GameHistoryRecordPlaySource {
   return plainToInstance(GameHistoryRecordPlaySource, {
     name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(gameSourceValues),
-    players: gameHistoryRecordPlaySource.players ?? [],
+    players: gameHistoryRecordPlaySource.players ?? [createFakePlayer()],
     ...override,
   }, plainToInstanceDefaultOptions);
 }

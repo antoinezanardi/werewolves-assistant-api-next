@@ -13,6 +13,10 @@ import type { GameHistoryRecordToInsert } from "../../types/game-history-record.
 export class GameHistoryRecordRepository {
   public constructor(@InjectModel(GameHistoryRecord.name) private readonly gameHistoryRecordModel: Model<GameHistoryRecordDocument>) {}
 
+  public async getGameHistory(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordModel.find({ gameId });
+  }
+
   public async create(gameHistoryRecord: GameHistoryRecordToInsert): Promise<GameHistoryRecord> {
     return this.gameHistoryRecordModel.create(gameHistoryRecord);
   }

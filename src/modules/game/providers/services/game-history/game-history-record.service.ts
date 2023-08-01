@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
+import { toJSON } from "../../../../../../tests/helpers/object/object.helper";
 import { API_RESOURCES } from "../../../../../shared/api/enums/api.enum";
 import { RESOURCE_NOT_FOUND_REASONS } from "../../../../../shared/exception/enums/resource-not-found-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
@@ -85,7 +86,11 @@ export class GameHistoryRecordService {
     if (gameHistoryRecordToInsert.play.votes) {
       gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
     }
-    return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
+    return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, plainToInstanceDefaultOptions);
+  }
+
+  public async getGameHistory(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistory(gameId);
   }
 
   private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
@@ -118,7 +123,7 @@ export class GameHistoryRecordService {
       chosenCard: play.chosenCard,
       chosenSide: play.chosenSide,
     };
-    return plainToInstance(GameHistoryRecordPlay, gameHistoryRecordPlayToInsert, { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
+    return plainToInstance(GameHistoryRecordPlay, toJSON(gameHistoryRecordPlayToInsert), plainToInstanceDefaultOptions);
   }
   
   private generateCurrentGameHistoryRecordPlayVotingResultToInsert(
