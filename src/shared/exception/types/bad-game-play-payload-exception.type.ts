@@ -1,5 +1,5 @@
 import { BadRequestException } from "@nestjs/common";
-import { BAD_GAME_PLAY_PAYLOAD_REASONS } from "../enums/bad-game-play-payload-error.enum";
+import type { BAD_GAME_PLAY_PAYLOAD_REASONS } from "../enums/bad-game-play-payload-error.enum";
 
 class BadGamePlayPayloadException extends BadRequestException {
   public constructor(reason: BAD_GAME_PLAY_PAYLOAD_REASONS) {
