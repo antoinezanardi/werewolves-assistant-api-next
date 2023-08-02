@@ -444,6 +444,7 @@ describe("Game Controller", () => {
       const options: Partial<GameOptions> = {
         roles: {
           areRevealedOnDeath: false,
+          doSkipCallIfNoTarget: true,
           sheriff: {
             isEnabled: false,
             electedAt: {

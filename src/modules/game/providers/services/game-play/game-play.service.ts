@@ -21,8 +21,13 @@ export class GamePlayService {
   
   public async removeObsoleteUpcomingPlays(game: Game): Promise<Game> {
     const clonedGame = cloneDeep(game);
-    const gamePlaySuitabilities = await Promise.all(clonedGame.upcomingPlays.map(async upcomingPlay => this.isGamePlaySuitableForCurrentPhase(clonedGame, upcomingPlay)));
-    clonedGame.upcomingPlays = clonedGame.upcomingPlays.filter((upcomingPlay, idx) => gamePlaySuitabilities[idx]);
+    const validUpcomingPlays: GamePlay[] = [];
+    for (const upcomingPlay of clonedGame.upcomingPlays) {
+      if (await this.isGamePlaySuitableForCurrentPhase(clonedGame, upcomingPlay)) {
+        validUpcomingPlays.push(upcomingPlay);
+      }
+    }
+    clonedGame.upcomingPlays = validUpcomingPlays;
     return clonedGame;
   }
 
@@ -102,7 +107,7 @@ export class GamePlayService {
     const hasWitchUsedDeathPotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WITCH_POTIONS.DEATH)).length > 0;
     const { doSkipCallIfNoTarget } = game.options.roles;
     const witchPlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.WITCH);
-    return !!witchPlayer && isPlayerAliveAndPowerful(witchPlayer) && (!doSkipCallIfNoTarget || hasWitchUsedLifePotion && hasWitchUsedDeathPotion);
+    return !!witchPlayer && isPlayerAliveAndPowerful(witchPlayer) && (!doSkipCallIfNoTarget || !hasWitchUsedLifePotion || !hasWitchUsedDeathPotion);
   }
 
   private isWhiteWerewolfGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {

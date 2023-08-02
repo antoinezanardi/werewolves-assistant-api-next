@@ -1,7 +1,8 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+import { when } from "jest-when";
 import { defaultGameOptions } from "../../../../../../../../src/modules/game/constants/game-options/game-options.constant";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../../../../../../src/modules/game/enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES } from "../../../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
 import * as GameHelper from "../../../../../../../../src/modules/game/helpers/game.helper";
@@ -14,6 +15,7 @@ import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.
 import { createFakeGameOptionsDto } from "../../../../../../../factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../../../../../factories/game/dto/create-game/create-game.dto.factory";
+import { createFakeGameHistoryRecord } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
@@ -28,10 +30,20 @@ describe("Game Play Service", () => {
     gameHistoryRecordService: {
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
     };
+    gameHelper: {
+      getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
+      getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
+    };
   };
 
   beforeEach(async() => {
-    mocks = { gameHistoryRecordService: { getGameHistoryWitchUsesSpecificPotionRecords: jest.fn().mockResolvedValue([]) } };
+    mocks = {
+      gameHistoryRecordService: { getGameHistoryWitchUsesSpecificPotionRecords: jest.fn().mockResolvedValue([]) },
+      gameHelper: {
+        getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers").mockReturnValue([]),
+        getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers").mockReturnValue([]),
+      },
+    };
     
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -526,6 +538,114 @@ describe("Game Play Service", () => {
     });
   });
 
+  describe("isWitchGamePlaySuitableForCurrentPhase", () => {
+    it("should return false when witch is not in the game dto.", async() => {
+      const players = bulkCreateFakeCreateGamePlayerDto(4, [
+        { role: { name: ROLE_NAMES.SEER } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.SEER } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+      ]);
+      const gameDto = createFakeCreateGameDto({ players });
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](gameDto)).resolves.toBe(false);
+    });
+
+    it("should return false when witch is not in the game.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(false);
+    });
+
+    it("should return false when witch is in the game but dead.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer({ isAlive: false }),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(false);
+    });
+
+    it("should return false when witch is in the game but powerless.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(false);
+    });
+
+    it("should return false when witch is in the game but options specify that her turn must be skipped if no more potions.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValue([createFakeGameHistoryRecord()]);
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(false);
+    });
+
+    it("should return true when witch is in the game but options specify that her turn must not be skipped even with no more potions.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValue([createFakeGameHistoryRecord()]);
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(true);
+    });
+
+    it("should return true when witch is in the game but options specify that her turn must be skipped with no more potions but has still death potion.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) });
+      const game = createFakeGame({ players, options });
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([createFakeGameHistoryRecord()]);
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(true);
+    });
+
+    it("should return true when witch is in the game but options specify that her turn must be skipped with no more potions but has still life potion.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) });
+      const game = createFakeGame({ players, options });
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([createFakeGameHistoryRecord()]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(true);
+    });
+  });
+
   describe("isWhiteWerewolfGamePlaySuitableForCurrentPhase", () => {
     it("should return false when white werewolf is not in the game dto.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
@@ -584,7 +704,7 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 0 } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 0 } }) });
       const game = createFakeGame({ players, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
@@ -597,7 +717,7 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 1 } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 1 } }) });
       const game = createFakeGame({ players, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
@@ -610,9 +730,23 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 1 } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 1 } }) });
       const game = createFakeGame({ players, options });
       
+      expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should return false when white werewolf is in the game, alive, powerful, has no targets and options say skip if no targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, whiteWerewolf: { wakingUpInterval: 2 } }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([]);
+
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
 
@@ -623,9 +757,23 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 2 } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
       
+      expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
+    });
+
+    it("should return true when white werewolf is in the game, alive, powerful, has targets and options say skip if no targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, whiteWerewolf: { wakingUpInterval: 2 } }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([players[3]]);
+
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
   });
@@ -750,11 +898,37 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
-      jest.spyOn(GameHelper, "areAllWerewolvesAlive").mockReturnValue(false);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
       
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should return false when big bad wolf is in the game, all werewolves are alive and his turn is skipped if no targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
+      const game = createFakeGame({ players, options });
+
+      expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should return true when big bad wolf is in the game, all werewolves are alive and his turn is skipped if no targets but there are targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[1]]);
+
+      expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
 
     it("should return true when big bad wolf is in the game, one werewolf is dead but classic rules are not followed.", () => {
@@ -764,8 +938,7 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
       ]);
-      jest.spyOn(GameHelper, "areAllWerewolvesAlive").mockReturnValue(false);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ bigBadWolf: { isPowerlessIfWerewolfDies: false } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: false } }) });
       const game = createFakeGame({ players, options });
       
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
@@ -778,10 +951,22 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
       ]);
-      jest.spyOn(GameHelper, "areAllWerewolvesAlive").mockReturnValue(true);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
       
+      expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
+    });
+
+    it("should return true when big bad wolf is in the game, all werewolves are alive and his turn is no skipped if no targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
+      const game = createFakeGame({ players, options });
+
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
   });
