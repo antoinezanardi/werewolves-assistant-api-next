@@ -6,6 +6,7 @@ const defaultGameOptions: GameOptions = Object.freeze({
   composition: { isHidden: false },
   roles: {
     areRevealedOnDeath: true,
+    doSkipCallIfNoTarget: false,
     sheriff: {
       isEnabled: true,
       electedAt: {

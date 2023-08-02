@@ -84,10 +84,10 @@ describe("Game Phase Service", () => {
 
     beforeEach(() => {
       mocks.gamePlayService.getUpcomingDayPlays.mockReturnValue(upcomingDayPlays);
-      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue(upcomingNightPlays);
+      mocks.gamePlayService.getUpcomingNightPlays.mockResolvedValue(upcomingNightPlays);
     });
 
-    it("should switch to night and append upcoming night plays when game's current phase is DAY.", () => {
+    it("should switch to night and append upcoming night plays when game's current phase is DAY.", async() => {
       const game = createFakeGame({ phase: GAME_PHASES.DAY, upcomingPlays: [createFakeGamePlayHunterShoots()] });
       const expectedGame = createFakeGame({
         ...game,
@@ -95,10 +95,10 @@ describe("Game Phase Service", () => {
         upcomingPlays: [...game.upcomingPlays, ...upcomingNightPlays],
       });
 
-      expect(services.gamePhase.switchPhaseAndAppendGamePhaseUpcomingPlays(game)).toStrictEqual(expectedGame);
+      await expect(services.gamePhase.switchPhaseAndAppendGamePhaseUpcomingPlays(game)).resolves.toStrictEqual(expectedGame);
     });
 
-    it("should switch to day and append upcoming day plays when game's current phase is NIGHT.", () => {
+    it("should switch to day and append upcoming day plays when game's current phase is NIGHT.", async() => {
       const game = createFakeGame({ phase: GAME_PHASES.NIGHT, upcomingPlays: [createFakeGamePlayHunterShoots()] });
       const expectedGame = createFakeGame({
         ...game,
@@ -106,7 +106,7 @@ describe("Game Phase Service", () => {
         upcomingPlays: [...game.upcomingPlays, ...upcomingDayPlays],
       });
 
-      expect(services.gamePhase.switchPhaseAndAppendGamePhaseUpcomingPlays(game)).toStrictEqual(expectedGame);
+      await expect(services.gamePhase.switchPhaseAndAppendGamePhaseUpcomingPlays(game)).resolves.toStrictEqual(expectedGame);
     });
   });
 

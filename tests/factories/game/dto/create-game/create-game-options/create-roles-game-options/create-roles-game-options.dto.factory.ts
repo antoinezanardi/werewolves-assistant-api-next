@@ -177,6 +177,7 @@ function createFakeCreateSheriffGameOptionsDto(sheriffGameOptions: Partial<Creat
 
 function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGameOptionsDto> = {}, override: object = {}): CreateRolesGameOptionsDto {
   return plainToInstance(CreateRolesGameOptionsDto, {
+    doSkipCallIfNoTarget: rolesGameOptions.doSkipCallIfNoTarget ?? faker.datatype.boolean(),
     areRevealedOnDeath: rolesGameOptions.areRevealedOnDeath ?? faker.datatype.boolean(),
     sheriff: createFakeCreateSheriffGameOptionsDto(rolesGameOptions.sheriff),
     bigBadWolf: createFakeCreateBigBadWolfGameOptionsDto(rolesGameOptions.bigBadWolf),
