@@ -492,6 +492,52 @@ describe("Game History Record Service", () => {
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.TIE);
     });
 
+    it("should return skipped when there are no vote set.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
+      const newGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer(players[0]),
+          createFakePlayer(players[1]),
+          createFakePlayer(players[2]),
+          createFakePlayer(players[3]),
+        ],
+      });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: undefined });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteByAllDeath() })] });
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.SKIPPED);
+    });
+
+    it("should return skipped when votes are empty.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
+      const newGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer(players[0]),
+          createFakePlayer(players[1]),
+          createFakePlayer(players[2]),
+          createFakePlayer(players[3]),
+        ],
+      });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteByAllDeath() })] });
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.SKIPPED);
+    });
+
     it("should return death when there is at least one dead player from votes.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
@@ -509,7 +555,12 @@ describe("Game History Record Service", () => {
           createFakePlayer(players[3]),
         ],
       });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteByAllDeath() })] });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
+      const deadPlayers = [
+        createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteByAllDeath() }),
+        createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() }),
+      ];
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH);
     });
@@ -531,7 +582,8 @@ describe("Game History Record Service", () => {
           createFakePlayer(players[3]),
         ],
       });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteScapegoatedByAllDeath() })] });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteScapegoatedByAllDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH);
     });
@@ -553,7 +605,8 @@ describe("Game History Record Service", () => {
           createFakePlayer(players[3]),
         ],
       });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.INCONSEQUENTIAL);
     });
@@ -575,7 +628,8 @@ describe("Game History Record Service", () => {
           createFakePlayer(players[3]),
         ],
       });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GAME_HISTORY_RECORD_VOTING_RESULTS.TIE);
     });

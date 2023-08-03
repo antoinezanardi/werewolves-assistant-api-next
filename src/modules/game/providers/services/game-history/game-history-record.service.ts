@@ -139,6 +139,9 @@ export class GameHistoryRecordService {
     if (baseGame.currentPlay.action === GAME_PLAY_ACTIONS.ELECT_SHERIFF) {
       return sheriffPlayer ? GAME_HISTORY_RECORD_VOTING_RESULTS.SHERIFF_ELECTION : GAME_HISTORY_RECORD_VOTING_RESULTS.TIE;
     }
+    if (!gameHistoryRecordToInsert.play.votes || gameHistoryRecordToInsert.play.votes.length === 0) {
+      return GAME_HISTORY_RECORD_VOTING_RESULTS.SKIPPED;
+    }
     if (areSomePlayersDeadFromCurrentVotes) {
       return GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH;
     }
