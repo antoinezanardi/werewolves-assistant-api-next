@@ -9,6 +9,8 @@ const config: Config = {
   resetMocks: true,
   restoreMocks: true,
   clearMocks: true,
+  maxConcurrency: 1,
+  maxWorkers: 1,
   setupFilesAfterEnv: ["jest-extended/all"],
   coverageReporters: ["clover", "json", "lcov", "text", "text-summary"],
   collectCoverageFrom: [

@@ -23,6 +23,14 @@ import { CreateWildChildGameOptionsDto } from "./create-wild-child-game-options.
 
 class CreateRolesGameOptionsDto {
   @ApiProperty({
+    ...rolesGameOptionsApiProperties.doSkipCallIfNoTarget,
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  public doSkipCallIfNoTarget: boolean = rolesGameOptionsFieldsSpecs.doSkipCallIfNoTarget.default;
+  
+  @ApiProperty({
     ...rolesGameOptionsApiProperties.areRevealedOnDeath,
     required: false,
   })

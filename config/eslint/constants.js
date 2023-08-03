@@ -1,6 +1,6 @@
 const MAX_LENGTH = 180;
 const MAX_NESTED_CALLBACK = 5;
-const MAX_PARAMS = 6;
+const MAX_PARAMS = 8;
 const INDENT_SPACE_COUNT = 2;
 const ERROR = "error";
 const WARNING = "warn";
@@ -10,7 +10,7 @@ const MAX_LENGTH_DEFAULT_CONFIG = {
   ignoreTemplateLiterals: true,
   ignorePattern: "^import\\s.+\\sfrom\\s.+;$",
 };
-const BOOLEAN_PREFIXES = ["is", "was", "are", "were", "should", "has", "can", "does", "did", "must"];
+const BOOLEAN_PREFIXES = ["is", "was", "are", "were", "should", "has", "can", "does", "do", "did", "must"];
 const NAMING_CONVENTION_DEFAULT_CONFIG = [
   {
     selector: ["enum", "enumMember"],

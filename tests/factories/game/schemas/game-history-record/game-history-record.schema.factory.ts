@@ -7,6 +7,7 @@ import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../src/modules/game/enums/player.enum";
 import { GameHistoryRecordPlaySource } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
 import { GameHistoryRecordPlayTarget } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
+import { GameHistoryRecordPlayVote } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote.schema";
 import { GameHistoryRecordPlayVoting } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
 import { GameHistoryRecordPlay } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { GameHistoryRecord } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -278,7 +279,15 @@ function createFakeGameHistoryRecordSheriffSettleVotesPlay(gameHistoryRecordPlay
 function createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlaySource: Partial<GameHistoryRecordPlaySource> = {}, override: object = {}): GameHistoryRecordPlaySource {
   return plainToInstance(GameHistoryRecordPlaySource, {
     name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(gameSourceValues),
-    players: gameHistoryRecordPlaySource.players ?? [],
+    players: gameHistoryRecordPlaySource.players ?? [createFakePlayer()],
+    ...override,
+  }, plainToInstanceDefaultOptions);
+}
+
+function createFakeGameHistoryRecordPlayVote(gameHistoryRecordPlayVote: Partial<GameHistoryRecordPlayVote> = {}, override: object = {}): GameHistoryRecordPlayVote {
+  return plainToInstance(GameHistoryRecordPlayVote, {
+    source: gameHistoryRecordPlayVote.source ?? createFakePlayer(),
+    target: gameHistoryRecordPlayVote.target ?? createFakePlayer(),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -325,7 +334,6 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
     revealedPlayers: gameHistoryRecord.revealedPlayers ?? undefined,
     deadPlayers: gameHistoryRecord.deadPlayers ?? undefined,
     createdAt: gameHistoryRecord.createdAt ?? faker.date.recent(),
-    updatedAt: gameHistoryRecord.updatedAt ?? faker.date.recent(),
     ...override,
   }, plainToInstanceDefaultOptions);
 }
@@ -359,6 +367,7 @@ export {
   createFakeGameHistoryRecordSheriffDelegatePlay,
   createFakeGameHistoryRecordSheriffSettleVotesPlay,
   createFakeGameHistoryRecordPlaySource,
+  createFakeGameHistoryRecordPlayVote,
   createFakeGameHistoryRecordPlayTarget,
   createFakeGameHistoryRecordPlayVoting,
   createFakeGameHistoryRecordPlay,

@@ -3,6 +3,7 @@ enum GAME_HISTORY_RECORD_VOTING_RESULTS {
   TIE = "tie",
   DEATH = "death",
   INCONSEQUENTIAL = "inconsequential",
+  SKIPPED = "skipped",
 }
 
 export { GAME_HISTORY_RECORD_VOTING_RESULTS };

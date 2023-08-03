@@ -27,6 +27,11 @@ import { WildChildGameOptions, WildChildGameOptionsSchema } from "./wild-child-g
   _id: false,
 })
 class RolesGameOptions {
+  @ApiProperty(rolesGameOptionsApiProperties.doSkipCallIfNoTarget)
+  @Prop({ default: rolesGameOptionsFieldsSpecs.doSkipCallIfNoTarget.default })
+  @Expose()
+  public doSkipCallIfNoTarget: boolean;
+
   @ApiProperty(rolesGameOptionsApiProperties.areRevealedOnDeath)
   @Prop({ default: rolesGameOptionsFieldsSpecs.areRevealedOnDeath.default })
   @Expose()

@@ -9,7 +9,7 @@ import { PlayerSchema, Player } from "../player/player.schema";
 import { GameHistoryRecordPlay, GameHistoryRecordPlaySchema } from "./game-history-record-play/game-history-record-play.schema";
 
 @Schema({
-  timestamps: true,
+  timestamps: { createdAt: true, updatedAt: false },
   versionKey: false,
 })
 class GameHistoryRecord {
@@ -80,10 +80,6 @@ class GameHistoryRecord {
   @ApiProperty(gameHistoryRecordApiProperties.createdAt)
   @Expose()
   public createdAt: Date;
-
-  @ApiProperty(gameHistoryRecordApiProperties.updatedAt)
-  @Expose()
-  public updatedAt: Date;
 }
 
 const GameHistoryRecordSchema = SchemaFactory.createForClass(GameHistoryRecord);

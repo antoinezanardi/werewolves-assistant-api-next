@@ -15,6 +15,7 @@ import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play/game
 import { generateGameVictoryData, isGameOver } from "../../helpers/game-victory/game-victory.helper";
 import type { Game } from "../../schemas/game.schema";
 import { GameRepository } from "../repositories/game.repository";
+import { GameHistoryRecordService } from "./game-history/game-history-record.service";
 import { GamePhaseService } from "./game-phase/game-phase.service";
 import { GamePlayMakerService } from "./game-play/game-play-maker.service";
 import { GamePlayValidatorService } from "./game-play/game-play-validator.service";
@@ -30,6 +31,7 @@ export class GameService {
     private readonly gamePhaseService: GamePhaseService,
     private readonly gameRepository: GameRepository,
     private readonly playerAttributeService: PlayerAttributeService,
+    private readonly gameHistoryRecordService: GameHistoryRecordService,
   ) {}
 
   public async getGames(): Promise<Game[]> {
@@ -37,7 +39,7 @@ export class GameService {
   }
 
   public async createGame(game: CreateGameDto): Promise<Game> {
-    const upcomingPlays = this.gamePlayService.getUpcomingNightPlays(game);
+    const upcomingPlays = await this.gamePlayService.getUpcomingNightPlays(game);
     if (!upcomingPlays.length) {
       throw createCantGenerateGamePlaysUnexpectedException("createGame");
     }
@@ -65,12 +67,14 @@ export class GameService {
     const play = createMakeGamePlayDtoWithRelations(makeGamePlayDto, clonedGame);
     await this.gamePlayValidatorService.validateGamePlayWithRelationsDto(play, clonedGame);
     clonedGame = await this.gamePlayMakerService.makeGamePlay(play, clonedGame);
-    clonedGame = this.gamePlayService.removeObsoleteUpcomingPlays(clonedGame);
+    clonedGame = await this.gamePlayService.removeObsoleteUpcomingPlays(clonedGame);
     clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
     clonedGame.tick++;
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }
+    const gameHistoryRecordToInsert = this.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert(game, clonedGame, play);
+    await this.gameHistoryRecordService.createGameHistoryRecord(gameHistoryRecordToInsert);
     if (isGameOver(clonedGame)) {
       clonedGame = this.setGameAsOver(clonedGame);
     }
@@ -81,7 +85,7 @@ export class GameService {
     let clonedGame = cloneDeep(game);
     clonedGame = await this.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(clonedGame);
     clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
-    clonedGame = this.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays(clonedGame);
+    clonedGame = await this.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays(clonedGame);
     return this.gamePlayService.proceedToNextGamePlay(clonedGame);
   }
 

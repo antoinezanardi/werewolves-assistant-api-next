@@ -1,11 +1,13 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+import { when } from "jest-when";
 import { defaultGameOptions } from "../../../../../../../../src/modules/game/constants/game-options/game-options.constant";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../../../../../../src/modules/game/enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES } from "../../../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
 import * as GameHelper from "../../../../../../../../src/modules/game/helpers/game.helper";
 import * as PlayerHelper from "../../../../../../../../src/modules/game/helpers/player/player.helper";
+import { GameHistoryRecordService } from "../../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-play.service";
 import type { GamePlay } from "../../../../../../../../src/modules/game/schemas/game-play.schema";
 import type { Game } from "../../../../../../../../src/modules/game/schemas/game.schema";
@@ -13,6 +15,7 @@ import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.
 import { createFakeGameOptionsDto } from "../../../../../../../factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../../../../../factories/game/dto/create-game/create-game.dto.factory";
+import { createFakeGameHistoryRecord } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
@@ -23,15 +26,40 @@ import { bulkCreateFakePlayers } from "../../../../../../../factories/game/schem
 
 describe("Game Play Service", () => {
   let services: { gamePlay: GamePlayService };
+  let mocks: {
+    gameHistoryRecordService: {
+      getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
+    };
+    gameHelper: {
+      getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
+      getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
+    };
+  };
 
   beforeEach(async() => {
-    const module: TestingModule = await Test.createTestingModule({ providers: [GamePlayService] }).compile();
+    mocks = {
+      gameHistoryRecordService: { getGameHistoryWitchUsesSpecificPotionRecords: jest.fn().mockResolvedValue([]) },
+      gameHelper: {
+        getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers").mockReturnValue([]),
+        getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers").mockReturnValue([]),
+      },
+    };
+    
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        {
+          provide: GameHistoryRecordService,
+          useValue: mocks.gameHistoryRecordService,
+        },
+        GamePlayService,
+      ],
+    }).compile();
     
     services = { gamePlay: module.get<GamePlayService>(GamePlayService) };
   });
 
   describe("removeObsoleteUpcomingPlays", () => {
-    it("should return game as is when no game play needs to be removed.", () => {
+    it("should return game as is when no game play needs to be removed.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -46,10 +74,10 @@ describe("Game Play Service", () => {
       ];
       const game = createFakeGame({ players, upcomingPlays });
 
-      expect(services.gamePlay.removeObsoleteUpcomingPlays(game)).toStrictEqual<Game>(game);
+      await expect(services.gamePlay.removeObsoleteUpcomingPlays(game)).resolves.toStrictEqual<Game>(game);
     });
 
-    it("should remove some game plays when players became powerless or died.", () => {
+    it("should remove some game plays when players became powerless or died.", async() => {
       const players = [
         createFakeSeerAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
@@ -71,7 +99,7 @@ describe("Game Play Service", () => {
         ],
       });
 
-      expect(services.gamePlay.removeObsoleteUpcomingPlays(game)).toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlay.removeObsoleteUpcomingPlays(game)).resolves.toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -191,8 +219,8 @@ describe("Game Play Service", () => {
         }),
         output: [createFakeGamePlay({ source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT })],
       },
-    ])("should get upcoming night plays when $test [#$#].", ({ game, output }) => {
-      expect(services.gamePlay.getUpcomingNightPlays(game)).toStrictEqual<GamePlay[]>(output);
+    ])("should get upcoming night plays when $test [#$#].", async({ game, output }) => {
+      await expect(services.gamePlay.getUpcomingNightPlays(game)).resolves.toStrictEqual<GamePlay[]>(output);
     });
   });
 
@@ -427,31 +455,46 @@ describe("Game Play Service", () => {
   });
 
   describe("isGroupGamePlaySuitableForCurrentPhase", () => {
+    let localMocks: {
+      gamePlayService: {
+        isAllGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+        isLoversGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+        isPiedPiperGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = {
+        gamePlayService: {
+          isAllGamePlaySuitableForCurrentPhase: jest.spyOn(services.gamePlay as unknown as { isAllGamePlaySuitableForCurrentPhase }, "isAllGamePlaySuitableForCurrentPhase").mockImplementation(),
+          isLoversGamePlaySuitableForCurrentPhase: jest.spyOn(services.gamePlay as unknown as { isLoversGamePlaySuitableForCurrentPhase }, "isLoversGamePlaySuitableForCurrentPhase").mockImplementation(),
+          isPiedPiperGamePlaySuitableForCurrentPhase: jest.spyOn(services.gamePlay as unknown as { isPiedPiperGamePlaySuitableForCurrentPhase }, "isPiedPiperGamePlaySuitableForCurrentPhase").mockImplementation(),
+        },
+      };
+    });
+
     it("should call all playable method when game plays source group is all.", () => {
-      const isAllGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isAllGamePlaySuitableForCurrentPhase }, "isAllGamePlaySuitableForCurrentPhase").mockReturnValue(true);
       const game = createFakeGame();
       const gamePlay = createFakeGamePlayAllVote();
       services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(isAllGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(localMocks.gamePlayService.isAllGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
     it("should call lovers playable method when game plays source group is lovers.", () => {
-      const isLoversGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isLoversGamePlaySuitableForCurrentPhase }, "isLoversGamePlaySuitableForCurrentPhase");
       const game = createFakeGame();
       const gamePlay = createFakeGamePlayLoversMeetEachOther();
       services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(isLoversGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(localMocks.gamePlayService.isLoversGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
     it("should call charmed playable method when game plays source group is charmed people.", () => {
-      const isPiedPiperGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isPiedPiperGamePlaySuitableForCurrentPhase }, "isPiedPiperGamePlaySuitableForCurrentPhase");
       const game = createFakeGame();
       const gamePlay = createFakeGamePlayCharmedMeetEachOther();
       services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(isPiedPiperGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(localMocks.gamePlayService.isPiedPiperGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
     it("should return true when game plays source group is werewolves and game is dto.", () => {
@@ -492,6 +535,114 @@ describe("Game Play Service", () => {
       const gamePlay = createFakeGamePlayWerewolvesEat();
 
       expect(services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(true);
+    });
+  });
+
+  describe("isWitchGamePlaySuitableForCurrentPhase", () => {
+    it("should return false when witch is not in the game dto.", async() => {
+      const players = bulkCreateFakeCreateGamePlayerDto(4, [
+        { role: { name: ROLE_NAMES.SEER } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: ROLE_NAMES.SEER } },
+        { role: { name: ROLE_NAMES.WEREWOLF } },
+      ]);
+      const gameDto = createFakeCreateGameDto({ players });
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](gameDto)).resolves.toBe(false);
+    });
+
+    it("should return false when witch is not in the game.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(false);
+    });
+
+    it("should return false when witch is in the game but dead.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer({ isAlive: false }),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(false);
+    });
+
+    it("should return false when witch is in the game but powerless.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(false);
+    });
+
+    it("should return false when witch is in the game but options specify that her turn must be skipped if no more potions.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValue([createFakeGameHistoryRecord()]);
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(false);
+    });
+
+    it("should return true when witch is in the game but options specify that her turn must not be skipped even with no more potions.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValue([createFakeGameHistoryRecord()]);
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(true);
+    });
+
+    it("should return true when witch is in the game but options specify that her turn must be skipped with no more potions but has still death potion.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) });
+      const game = createFakeGame({ players, options });
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([createFakeGameHistoryRecord()]);
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(true);
+    });
+
+    it("should return true when witch is in the game but options specify that her turn must be skipped with no more potions but has still life potion.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) });
+      const game = createFakeGame({ players, options });
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.LIFE).mockResolvedValue([createFakeGameHistoryRecord()]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
+
+      await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(true);
     });
   });
 
@@ -553,7 +704,7 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 0 } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 0 } }) });
       const game = createFakeGame({ players, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
@@ -566,7 +717,7 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 1 } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 1 } }) });
       const game = createFakeGame({ players, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
@@ -579,9 +730,23 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 1 } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 1 } }) });
       const game = createFakeGame({ players, options });
       
+      expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should return false when white werewolf is in the game, alive, powerful, has no targets and options say skip if no targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, whiteWerewolf: { wakingUpInterval: 2 } }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([]);
+
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
 
@@ -592,9 +757,23 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ whiteWerewolf: { wakingUpInterval: 2 } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 2 } }) });
       const game = createFakeGame({ players, options });
       
+      expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
+    });
+
+    it("should return true when white werewolf is in the game, alive, powerful, has targets and options say skip if no targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, whiteWerewolf: { wakingUpInterval: 2 } }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([players[3]]);
+
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
   });
@@ -719,11 +898,37 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
       ]);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
-      jest.spyOn(GameHelper, "areAllWerewolvesAlive").mockReturnValue(false);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
       
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should return false when big bad wolf is in the game, all werewolves are alive and his turn is skipped if no targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
+      const game = createFakeGame({ players, options });
+
+      expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should return true when big bad wolf is in the game, all werewolves are alive and his turn is skipped if no targets but there are targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
+      const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[1]]);
+
+      expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
 
     it("should return true when big bad wolf is in the game, one werewolf is dead but classic rules are not followed.", () => {
@@ -733,8 +938,7 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
       ]);
-      jest.spyOn(GameHelper, "areAllWerewolvesAlive").mockReturnValue(false);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ bigBadWolf: { isPowerlessIfWerewolfDies: false } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: false } }) });
       const game = createFakeGame({ players, options });
       
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
@@ -747,10 +951,22 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
       ]);
-      jest.spyOn(GameHelper, "areAllWerewolvesAlive").mockReturnValue(true);
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
       
+      expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
+    });
+
+    it("should return true when big bad wolf is in the game, all werewolves are alive and his turn is no skipped if no targets.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
+      const game = createFakeGame({ players, options });
+
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
   });
@@ -978,7 +1194,31 @@ describe("Game Play Service", () => {
   });
 
   describe("isRoleGamePlaySuitableForCurrentPhase", () => {
-    it("should return false when player is not in game.", () => {
+    let localMocks: {
+      gamePlayService: {
+        isTwoSistersGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+        isThreeBrothersGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+        isBigBadWolfGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+        isPiedPiperGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+        isWhiteWerewolfGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+        isWitchGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+      };
+    };
+    
+    beforeEach(() => {
+      localMocks = {
+        gamePlayService: {
+          isTwoSistersGamePlaySuitableForCurrentPhase: jest.spyOn(services.gamePlay as unknown as { isTwoSistersGamePlaySuitableForCurrentPhase }, "isTwoSistersGamePlaySuitableForCurrentPhase").mockImplementation(),
+          isThreeBrothersGamePlaySuitableForCurrentPhase: jest.spyOn(services.gamePlay as unknown as { isThreeBrothersGamePlaySuitableForCurrentPhase }, "isThreeBrothersGamePlaySuitableForCurrentPhase").mockImplementation(),
+          isBigBadWolfGamePlaySuitableForCurrentPhase: jest.spyOn(services.gamePlay as unknown as { isBigBadWolfGamePlaySuitableForCurrentPhase }, "isBigBadWolfGamePlaySuitableForCurrentPhase").mockImplementation(),
+          isPiedPiperGamePlaySuitableForCurrentPhase: jest.spyOn(services.gamePlay as unknown as { isPiedPiperGamePlaySuitableForCurrentPhase }, "isPiedPiperGamePlaySuitableForCurrentPhase").mockImplementation(),
+          isWhiteWerewolfGamePlaySuitableForCurrentPhase: jest.spyOn(services.gamePlay as unknown as { isWhiteWerewolfGamePlaySuitableForCurrentPhase }, "isWhiteWerewolfGamePlaySuitableForCurrentPhase").mockImplementation(),
+          isWitchGamePlaySuitableForCurrentPhase: jest.spyOn(services.gamePlay as unknown as { isWitchGamePlaySuitableForCurrentPhase }, "isWitchGamePlaySuitableForCurrentPhase").mockImplementation(),
+        },
+      };
+    });
+    
+    it("should return false when player is not in game.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeTwoSistersAlivePlayer(),
         createFakeWitchAlivePlayer(),
@@ -988,10 +1228,10 @@ describe("Game Play Service", () => {
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlaySeerLooks();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(false);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(false);
     });
 
-    it("should call two sisters method when game play source role is two sisters.", () => {
+    it("should call two sisters method when game play source role is two sisters.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeTwoSistersAlivePlayer(),
         createFakeWitchAlivePlayer(),
@@ -999,14 +1239,13 @@ describe("Game Play Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const isTwoSistersGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isTwoSistersGamePlaySuitableForCurrentPhase }, "isTwoSistersGamePlaySuitableForCurrentPhase");
       const gamePlay = createFakeGamePlayTwoSistersMeetEachOther();
-      services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(isTwoSistersGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(localMocks.gamePlayService.isTwoSistersGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should call three brothers method when game play source role is three brothers.", () => {
+    it("should call three brothers method when game play source role is three brothers.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeThreeBrothersAlivePlayer(),
         createFakeWitchAlivePlayer(),
@@ -1014,14 +1253,13 @@ describe("Game Play Service", () => {
         createFakeThreeBrothersAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const isThreeBrothersGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isThreeBrothersGamePlaySuitableForCurrentPhase }, "isThreeBrothersGamePlaySuitableForCurrentPhase");
       const gamePlay = createFakeGamePlayThreeBrothersMeetEachOther();
-      services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(isThreeBrothersGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(localMocks.gamePlayService.isThreeBrothersGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should call big bad wolf method when game plays source role is big bad wolf.", () => {
+    it("should call big bad wolf method when game plays source role is big bad wolf.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeTwoSistersAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
@@ -1029,14 +1267,13 @@ describe("Game Play Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const isBigBadWolfGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isBigBadWolfGamePlaySuitableForCurrentPhase }, "isBigBadWolfGamePlaySuitableForCurrentPhase");
       const gamePlay = createFakeGamePlayBigBadWolfEats();
-      services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(isBigBadWolfGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(localMocks.gamePlayService.isBigBadWolfGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should call pied piper method when game plays source role is pied piper.", () => {
+    it("should call pied piper method when game plays source role is pied piper.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeTwoSistersAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
@@ -1044,14 +1281,13 @@ describe("Game Play Service", () => {
         createFakePiedPiperAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const isPiedPiperGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isPiedPiperGamePlaySuitableForCurrentPhase }, "isPiedPiperGamePlaySuitableForCurrentPhase").mockReturnValue(true);
       const gamePlay = createFakeGamePlayPiedPiperCharms();
-      services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(isPiedPiperGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(localMocks.gamePlayService.isPiedPiperGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should call white werewolf method when game plays source role is white werewolf.", () => {
+    it("should call white werewolf method when game plays source role is white werewolf.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
@@ -1059,14 +1295,27 @@ describe("Game Play Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
-      const isWhiteWerewolfGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isWhiteWerewolfGamePlaySuitableForCurrentPhase }, "isWhiteWerewolfGamePlaySuitableForCurrentPhase");
       const gamePlay = createFakeGamePlayWhiteWerewolfEats();
-      services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(isWhiteWerewolfGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(localMocks.gamePlayService.isWhiteWerewolfGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should return true when game plays source role is hunter and player is dto.", () => {
+    it("should call witch method when game plays source role is witch.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+        createFakeTwoSistersAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+      ]);
+      const game = createFakeGame({ players });
+      const gamePlay = createFakeGamePlayWitchUsesPotions();
+      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
+
+      expect(localMocks.gamePlayService.isWitchGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should return true when game plays source role is hunter and player is dto.", async() => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
         { role: { name: ROLE_NAMES.HUNTER } },
         { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
@@ -1076,10 +1325,10 @@ describe("Game Play Service", () => {
       const gameDto = createFakeCreateGameDto({ players });
       const gamePlay = createFakeGamePlayHunterShoots();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).toBe(true);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).resolves.toBe(true);
     });
 
-    it("should return true when game plays source role is hunter and player is powerful.", () => {
+    it("should return true when game plays source role is hunter and player is powerful.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
@@ -1089,10 +1338,10 @@ describe("Game Play Service", () => {
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlayHunterShoots();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(true);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(true);
     });
 
-    it("should return false when game plays source role is hunter and player is powerless.", () => {
+    it("should return false when game plays source role is hunter and player is powerless.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeHunterAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeSeerAlivePlayer(),
@@ -1102,10 +1351,10 @@ describe("Game Play Service", () => {
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlayHunterShoots();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(false);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(false);
     });
 
-    it("should return true when game plays source role is scapegoat and player is dto.", () => {
+    it("should return true when game plays source role is scapegoat and player is dto.", async() => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
         { role: { name: ROLE_NAMES.SCAPEGOAT } },
         { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
@@ -1115,10 +1364,10 @@ describe("Game Play Service", () => {
       const gameDto = createFakeCreateGameDto({ players });
       const gamePlay = createFakeGamePlayScapegoatBansVoting();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).toBe(true);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).resolves.toBe(true);
     });
 
-    it("should return true when game plays source role is scapegoat and player is powerful.", () => {
+    it("should return true when game plays source role is scapegoat and player is powerful.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeScapegoatAlivePlayer(),
         createFakeSeerAlivePlayer(),
@@ -1128,10 +1377,10 @@ describe("Game Play Service", () => {
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlayScapegoatBansVoting();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(true);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(true);
     });
 
-    it("should return false when game plays source role is scapegoat and player is powerless.", () => {
+    it("should return false when game plays source role is scapegoat and player is powerless.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeScapegoatAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeSeerAlivePlayer(),
@@ -1141,10 +1390,10 @@ describe("Game Play Service", () => {
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlayScapegoatBansVoting();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(false);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(false);
     });
 
-    it("should return true when player is dto.", () => {
+    it("should return true when player is dto.", async() => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
         { role: { name: ROLE_NAMES.SEER } },
         { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
@@ -1154,10 +1403,10 @@ describe("Game Play Service", () => {
       const gameDto = createFakeCreateGameDto({ players });
       const gamePlay = createFakeGamePlaySeerLooks();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).toBe(true);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).resolves.toBe(true);
     });
 
-    it("should return false when player is dead.", () => {
+    it("should return false when player is dead.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeTwoSistersAlivePlayer(),
         createFakeSeerAlivePlayer({ isAlive: false }),
@@ -1167,10 +1416,10 @@ describe("Game Play Service", () => {
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlaySeerLooks();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(false);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(false);
     });
 
-    it("should return false when player is powerless.", () => {
+    it("should return false when player is powerless.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeTwoSistersAlivePlayer(),
         createFakeSeerAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
@@ -1180,10 +1429,10 @@ describe("Game Play Service", () => {
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlaySeerLooks();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(false);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(false);
     });
 
-    it("should return true when player is alive and powerful.", () => {
+    it("should return true when player is alive and powerful.", async() => {
       const players = bulkCreateFakePlayers(4, [
         createFakeTwoSistersAlivePlayer(),
         createFakeSeerAlivePlayer(),
@@ -1193,7 +1442,7 @@ describe("Game Play Service", () => {
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlaySeerLooks();
 
-      expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(true);
+      await expect(services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(true);
     });
   });
 
@@ -1240,29 +1489,29 @@ describe("Game Play Service", () => {
   });
 
   describe("isGamePlaySuitableForCurrentPhase", () => {
-    it("should call isRoleGamePlaySuitableForCurrentPhase when source is a sheriff.", () => {
+    it("should call isRoleGamePlaySuitableForCurrentPhase when source is a sheriff.", async() => {
       const game = createFakeGame();
       const isSheriffGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isSheriffGamePlaySuitableForCurrentPhase }, "isSheriffGamePlaySuitableForCurrentPhase");
       const gamePlay = createFakeGamePlaySheriffDelegates();
-      services.gamePlay["isGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
       expect(isSheriffGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should call isRoleGamePlaySuitableForCurrentPhase when source is a role.", () => {
+    it("should call isRoleGamePlaySuitableForCurrentPhase when source is a role.", async() => {
       const game = createFakeGame();
       const isRoleGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isRoleGamePlaySuitableForCurrentPhase }, "isRoleGamePlaySuitableForCurrentPhase");
       const gamePlay = createFakeGamePlaySeerLooks();
-      services.gamePlay["isGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
       expect(isRoleGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
-    it("should call isGroupGamePlaySuitableForCurrentPhase when source is a group.", () => {
+    it("should call isGroupGamePlaySuitableForCurrentPhase when source is a group.", async() => {
       const game = createFakeGame();
       const isGroupGamePlaySuitableForCurrentPhaseSpy = jest.spyOn(services.gamePlay as unknown as { isGroupGamePlaySuitableForCurrentPhase }, "isGroupGamePlaySuitableForCurrentPhase");
       const gamePlay = createFakeGamePlayAllVote();
-      services.gamePlay["isGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isGamePlaySuitableForCurrentPhase"](game, gamePlay);
       
       expect(isGroupGamePlaySuitableForCurrentPhaseSpy).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });

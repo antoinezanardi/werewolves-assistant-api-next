@@ -10,8 +10,8 @@ import type { MakeGamePlayVoteWithRelationsDto } from "../../../dto/make-game-pl
 import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
-import { doesPlayerHaveAttribute, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "../../../helpers/player/player.helper";
+import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole, getPlayerWithId } from "../../../helpers/game.helper";
+import { doesPlayerHaveAttribute, isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
 import type { Game } from "../../../schemas/game.schema";
 import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
 import type { GameSource } from "../../../types/game.type";
@@ -112,16 +112,15 @@ export class GamePlayValidatorService {
       return;
     }
     const targetedPlayer = playTargets[0].player;
-    if (game.currentPlay.source === PLAYER_GROUPS.WEREWOLVES && (!targetedPlayer.isAlive || !isPlayerOnVillagersSide(targetedPlayer))) {
+    const pureWolvesAvailableTargets = getLeftToEatByWerewolvesPlayers(game.players);
+    if (game.currentPlay.source === PLAYER_GROUPS.WEREWOLVES && !getPlayerWithId(pureWolvesAvailableTargets, targetedPlayer._id)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_WEREWOLVES_TARGET);
     }
-    if (game.currentPlay.source === ROLE_NAMES.BIG_BAD_WOLF &&
-      (!targetedPlayer.isAlive || !isPlayerOnVillagersSide(targetedPlayer) || doesPlayerHaveAttribute(targetedPlayer, PLAYER_ATTRIBUTE_NAMES.EATEN))) {
+    if (game.currentPlay.source === ROLE_NAMES.BIG_BAD_WOLF && !getPlayerWithId(pureWolvesAvailableTargets, targetedPlayer._id)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_BIG_BAD_WOLF_TARGET);
     }
-    const whiteWerewolfPlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.WHITE_WEREWOLF);
-    if (game.currentPlay.source === ROLE_NAMES.WHITE_WEREWOLF && (!targetedPlayer.isAlive || !isPlayerOnWerewolvesSide(targetedPlayer) ||
-      whiteWerewolfPlayer?._id === targetedPlayer._id)) {
+    const whiteWerewolfAvailableTargets = getLeftToEatByWhiteWerewolfPlayers(game.players);
+    if (game.currentPlay.source === ROLE_NAMES.WHITE_WEREWOLF && !getPlayerWithId(whiteWerewolfAvailableTargets, targetedPlayer._id)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_WHITE_WEREWOLF_TARGET);
     }
     await this.validateGamePlayInfectedTargets(playTargets, game);
@@ -283,20 +282,39 @@ export class GamePlayValidatorService {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_VOTE_TARGET_FOR_TIE_BREAKER);
     }
   }
+  
+  private validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes: MakeGamePlayVoteWithRelationsDto[]): void {
+    if (playVotes.some(({ source }) => !source.isAlive || doesPlayerHaveAttribute(source, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE))) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_VOTE_SOURCE);
+    }
+    if (playVotes.some(({ target }) => !target.isAlive)) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_VOTE_TARGET);
+    }
+    if (playVotes.some(({ source, target }) => source._id === target._id)) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.SAME_SOURCE_AND_TARGET_VOTE);
+    }
+  }
 
+  private validateUnsetGamePlayVotesWithRelationsDto(game: GameWithCurrentPlay): void {
+    const { action: currentPlayAction, cause: currentPlayCause } = game.currentPlay;
+    const { canBeSkipped: canVotesBeSkipped } = game.options.votes;
+    const isCurrentPlayVoteCauseOfAngelPresence = currentPlayAction === GAME_PLAY_ACTIONS.VOTE && currentPlayCause === GAME_PLAY_CAUSES.ANGEL_PRESENCE;
+    const isCurrentPlayVoteInevitable = currentPlayAction === GAME_PLAY_ACTIONS.ELECT_SHERIFF || isCurrentPlayVoteCauseOfAngelPresence;
+    const canSomePlayerVote = game.players.some(player => player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE));
+    if (canSomePlayerVote && (!canVotesBeSkipped && requiredVotesActions.includes(currentPlayAction) || canVotesBeSkipped && isCurrentPlayVoteInevitable)) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_VOTES);
+    }
+  }
+  
   private async validateGamePlayVotesWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Promise<void> {
-    if (playVotes === undefined || playVotes.length === 0) {
-      if (requiredVotesActions.includes(game.currentPlay.action)) {
-        throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_VOTES);
-      }
+    if (!playVotes || playVotes.length === 0) {
+      this.validateUnsetGamePlayVotesWithRelationsDto(game);
       return;
     }
     if (!requiredVotesActions.includes(game.currentPlay.action)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_VOTES);
     }
-    if (playVotes.some(({ source, target }) => source._id === target._id)) {
-      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.SAME_SOURCE_AND_TARGET_VOTE);
-    }
+    this.validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes);
     if (game.currentPlay.cause === GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES) {
       await this.validateGamePlayVotesTieBreakerWithRelationsDto(playVotes, game);
     }

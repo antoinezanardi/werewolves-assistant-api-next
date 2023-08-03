@@ -24,10 +24,12 @@ export class GamePhaseService {
     return clonedGame;
   }
 
-  public switchPhaseAndAppendGamePhaseUpcomingPlays(game: Game): Game {
+  public async switchPhaseAndAppendGamePhaseUpcomingPlays(game: Game): Promise<Game> {
     const clonedGame = cloneDeep(game);
     clonedGame.phase = clonedGame.phase === GAME_PHASES.NIGHT ? GAME_PHASES.DAY : GAME_PHASES.NIGHT;
-    const phaseUpcomingPlays = clonedGame.phase === GAME_PHASES.NIGHT ? this.gamePlayService.getUpcomingNightPlays(clonedGame) : this.gamePlayService.getUpcomingDayPlays();
+    const upcomingNightPlays = await this.gamePlayService.getUpcomingNightPlays(clonedGame);
+    const upcomingDayPlays = this.gamePlayService.getUpcomingDayPlays();
+    const phaseUpcomingPlays = clonedGame.phase === GAME_PHASES.NIGHT ? upcomingNightPlays : upcomingDayPlays;
     clonedGame.upcomingPlays = [...clonedGame.upcomingPlays, ...phaseUpcomingPlays];
     return clonedGame;
   }

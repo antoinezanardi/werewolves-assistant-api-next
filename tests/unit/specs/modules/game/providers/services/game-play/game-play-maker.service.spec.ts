@@ -6,10 +6,10 @@ import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/mod
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
 import * as GameMutator from "../../../../../../../../src/modules/game/helpers/game.mutator";
 import { GamePlayMakerService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-play-maker.service";
+import { GamePlayVoteService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { PlayerKillerService } from "../../../../../../../../src/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "../../../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../../../src/modules/game/schemas/player/player.schema";
-import type { PlayerVoteCount } from "../../../../../../../../src/modules/game/types/game-play.type";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../../../src/modules/role/enums/role.enum";
 import * as UnexpectedExceptionFactory from "../../../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
@@ -17,7 +17,7 @@ import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../..
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeFoxGameOptions, createFakeRavenGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeFoxGameOptions, createFakeRolesGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffByAllPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -32,6 +32,7 @@ describe("Game Play Maker Service", () => {
       killOrRevealPlayer: jest.SpyInstance;
       isAncientKillable: jest.SpyInstance;
     };
+    gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
     unexpectedExceptionFactory: {
       createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
     };
@@ -43,12 +44,17 @@ describe("Game Play Maker Service", () => {
         killOrRevealPlayer: jest.fn(),
         isAncientKillable: jest.fn(),
       },
+      gamePlayVoteService: { getNominatedPlayers: jest.fn() },
       unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GamePlayMakerService,
+        {
+          provide: GamePlayVoteService,
+          useValue: mocks.gamePlayVoteService,
+        },
         {
           provide: PlayerKillerService,
           useValue: mocks.playerKillerService,
@@ -363,262 +369,6 @@ describe("Game Play Maker Service", () => {
     });
   });
 
-  describe("addRavenMarkVoteToPlayerVoteCounts", () => {
-    it("should return player vote counts as is when action is not vote.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayFoxSniffs() });
-      const playerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 2],
-      ];
-
-      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
-    });
-
-    it("should return player vote counts as is when there is no raven player in the game.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer(),
-        createFakeFoxAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
-      const playerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 2],
-      ];
-
-      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
-    });
-
-    it("should return player vote counts as is when raven player is not alive.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer({ isAlive: false }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
-      const playerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 2],
-      ];
-
-      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
-    });
-
-    it("should return player vote counts as is when raven player is powerless.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
-      const playerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 2],
-      ];
-
-      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
-    });
-
-    it("should return player vote counts as is when there are no raven mark.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
-      const playerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 2],
-      ];
-
-      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
-    });
-
-    it("should return player vote counts as is when the raven target is dead.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ isAlive: false, attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
-      const playerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 2],
-      ];
-
-      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
-    });
-
-    it("should return player vote counts with new player vote entry when raven target doesn't have vote.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ raven: createFakeRavenGameOptions({ markPenalty: 2 }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote(), options });
-      const playerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 2],
-      ];
-      const expectedPlayerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 2],
-        [players[2], 2],
-      ];
-
-      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
-    });
-
-    it("should return player vote counts with updated player vote entry when raven target already has votes.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ raven: createFakeRavenGameOptions({ markPenalty: 5 }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote(), options });
-      const playerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 2],
-      ];
-      const expectedPlayerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 1],
-        [players[1], 7],
-      ];
-
-      expect(services.gamePlayMaker["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
-    });
-  });
-
-  describe("getPlayerVoteCounts", () => {
-    it("should get player vote counts with only simple votes when there is no sheriff.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ hasDoubledVote: true }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote(), options });
-      const votes: MakeGamePlayVoteWithRelationsDto[] = [
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[1], target: players[0] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
-      ];
-      const expectedPlayerVoteCounts: PlayerVoteCount[] = [
-        [players[0], 2],
-        [players[1], 1],
-      ];
-
-      expect(services.gamePlayMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
-    });
-
-    it("should get player vote counts with only simple votes when sheriff doesn't have double vote.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ hasDoubledVote: false }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote(), options });
-      const votes: MakeGamePlayVoteWithRelationsDto[] = [
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[1], target: players[0] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
-      ];
-      const expectedPlayerVoteCounts: PlayerVoteCount[] = [
-        [players[1], 1],
-        [players[0], 2],
-      ];
-
-      expect(services.gamePlayMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
-    });
-
-    it("should get player vote counts with simple only votes when game play is not vote.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ hasDoubledVote: true }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllElectSheriff(), options });
-      const votes: MakeGamePlayVoteWithRelationsDto[] = [
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[1], target: players[0] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
-      ];
-      const expectedPlayerVoteCounts: PlayerVoteCount[] = [
-        [players[1], 1],
-        [players[0], 2],
-      ];
-
-      expect(services.gamePlayMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
-    });
-
-    it("should get player vote counts with simple votes and one doubled vote when sheriff has double vote.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ hasDoubledVote: true }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote(), options });
-      const votes: MakeGamePlayVoteWithRelationsDto[] = [
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[1], target: players[0] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
-      ];
-      const expectedPlayerVoteCounts: PlayerVoteCount[] = [
-        [players[1], 2],
-        [players[0], 2],
-      ];
-
-      expect(services.gamePlayMaker["getPlayerVoteCounts"](votes, game)).toContainAllValues<PlayerVoteCount>(expectedPlayerVoteCounts);
-    });
-  });
-
-  describe("getNominatedPlayers", () => {
-    it("should get nominated players when called.", () => {
-      const players: Player[] = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const sheriffOptions = createFakeSheriffGameOptions({ hasDoubledVote: true });
-      const ravenOptions = createFakeRavenGameOptions({ markPenalty: 2 });
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: sheriffOptions, raven: ravenOptions }) });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote(), options });
-      const votes: MakeGamePlayVoteWithRelationsDto[] = [
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
-      ];
-      const expectedNominatedPlayers = [
-        players[1],
-        players[2],
-      ];
-
-      expect(services.gamePlayMaker["getNominatedPlayers"](votes, game)).toContainAllValues<Player>(expectedNominatedPlayers);
-    });
-  });
-
   describe("handleTieInVotes", () => {
     let localMocks: { gameMutator: { prependUpcomingPlayInGame: jest.SpyInstance } };
 
@@ -767,17 +517,11 @@ describe("Game Play Maker Service", () => {
     let localMocks: {
       gamePlayMakerService: {
         handleTieInVotes: jest.SpyInstance;
-        getNominatedPlayers: jest.SpyInstance;
       };
     };
       
     beforeEach(() => {
-      localMocks = {
-        gamePlayMakerService: {
-          handleTieInVotes: jest.spyOn(services.gamePlayMaker as unknown as { handleTieInVotes }, "handleTieInVotes").mockImplementation(),
-          getNominatedPlayers: jest.spyOn(services.gamePlayMaker as unknown as { getNominatedPlayers }, "getNominatedPlayers").mockImplementation(),
-        },
-      };
+      localMocks = { gamePlayMakerService: { handleTieInVotes: jest.spyOn(services.gamePlayMaker as unknown as { handleTieInVotes }, "handleTieInVotes").mockImplementation() } };
     });
       
     it("should return game as is when there is no vote.", async() => {
@@ -807,7 +551,7 @@ describe("Game Play Maker Service", () => {
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
       const nominatedPlayers = [];
-      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
 
       await expect(services.gamePlayMaker["allVote"](play, game)).resolves.toStrictEqual<Game>(game);
     });
@@ -826,7 +570,7 @@ describe("Game Play Maker Service", () => {
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
       const nominatedPlayers = [players[1], players[2]];
-      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
       await services.gamePlayMaker["allVote"](play, game);
 
       expect(localMocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(game);
@@ -850,7 +594,7 @@ describe("Game Play Maker Service", () => {
         ...game,
         upcomingPlays: [createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.STUTTERING_JUDGE_REQUEST })],
       });
-      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
       await services.gamePlayMaker["allVote"](play, game);
 
       expect(localMocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(expectedGame);
@@ -871,7 +615,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
       const nominatedPlayers = [players[1]];
       const playerVoteByAllDeath = createFakePlayerVoteByAllDeath();
-      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
       await services.gamePlayMaker["allVote"](play, game);
 
       expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[1]._id, game, playerVoteByAllDeath);
@@ -952,18 +696,12 @@ describe("Game Play Maker Service", () => {
   describe("allElectSheriff", () => {
     let localMocks: {
       gamePlayMakerService: {
-        getNominatedPlayers: jest.SpyInstance;
         handleTieInSheriffElection: jest.SpyInstance;
       };
     };
       
     beforeEach(() => {
-      localMocks = {
-        gamePlayMakerService: {
-          getNominatedPlayers: jest.spyOn(services.gamePlayMaker as unknown as { getNominatedPlayers }, "getNominatedPlayers").mockImplementation(),
-          handleTieInSheriffElection: jest.spyOn(services.gamePlayMaker as unknown as { handleTieInSheriffElection }, "handleTieInSheriffElection").mockImplementation(),
-        },
-      };
+      localMocks = { gamePlayMakerService: { handleTieInSheriffElection: jest.spyOn(services.gamePlayMaker as unknown as { handleTieInSheriffElection }, "handleTieInSheriffElection").mockImplementation() } };
     });
       
     it("should return game as is when there is no vote.", () => {
@@ -992,7 +730,7 @@ describe("Game Play Maker Service", () => {
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes });
-      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue([]);
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue([]);
 
       expect(services.gamePlayMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(game);
     });
@@ -1011,7 +749,7 @@ describe("Game Play Maker Service", () => {
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes });
       const nominatedPlayers = [players[0], players[1]];
-      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
       services.gamePlayMaker["allElectSheriff"](play, game);
 
       expect(localMocks.gamePlayMakerService.handleTieInSheriffElection).toHaveBeenCalledExactlyOnceWith(nominatedPlayers, game);
@@ -1030,7 +768,7 @@ describe("Game Play Maker Service", () => {
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes });
-      localMocks.gamePlayMakerService.getNominatedPlayers.mockReturnValue([players[1]]);
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue([players[1]]);
       const expectedGame = createFakeGameWithCurrentPlay({
         ...game,
         players: [
