@@ -4,6 +4,7 @@ import type { GameOptions } from "../../schemas/game-options/game-options.schema
 
 const defaultGameOptions: GameOptions = Object.freeze({
   composition: { isHidden: false },
+  votes: { canBeSkipped: true },
   roles: {
     areRevealedOnDeath: true,
     doSkipCallIfNoTarget: false,
@@ -49,6 +50,7 @@ const defaultGameOptions: GameOptions = Object.freeze({
 
 const gameOptionsApiProperties: Record<keyof GameOptions, ApiPropertyOptions> = Object.freeze({
   composition: { description: "Game's composition options" },
+  votes: { description: "Game's votes options" },
   roles: { description: "Game's roles options" },
 });
 

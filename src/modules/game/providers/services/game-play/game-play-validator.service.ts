@@ -282,20 +282,39 @@ export class GamePlayValidatorService {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_VOTE_TARGET_FOR_TIE_BREAKER);
     }
   }
+  
+  private validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes: MakeGamePlayVoteWithRelationsDto[]): void {
+    if (playVotes.some(({ source }) => !source.isAlive || doesPlayerHaveAttribute(source, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE))) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_VOTE_SOURCE);
+    }
+    if (playVotes.some(({ target }) => !target.isAlive)) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_VOTE_TARGET);
+    }
+    if (playVotes.some(({ source, target }) => source._id === target._id)) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.SAME_SOURCE_AND_TARGET_VOTE);
+    }
+  }
 
+  private validateUnsetGamePlayVotesWithRelationsDto(game: GameWithCurrentPlay): void {
+    const { action: currentPlayAction, cause: currentPlayCause } = game.currentPlay;
+    const { canBeSkipped: canVotesBeSkipped } = game.options.votes;
+    const isCurrentPlayVoteCauseOfAngelPresence = currentPlayAction === GAME_PLAY_ACTIONS.VOTE && currentPlayCause === GAME_PLAY_CAUSES.ANGEL_PRESENCE;
+    const isCurrentPlayVoteInevitable = currentPlayAction === GAME_PLAY_ACTIONS.ELECT_SHERIFF || isCurrentPlayVoteCauseOfAngelPresence;
+    const canSomePlayerVote = game.players.some(player => player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE));
+    if (canSomePlayerVote && (!canVotesBeSkipped && requiredVotesActions.includes(currentPlayAction) || canVotesBeSkipped && isCurrentPlayVoteInevitable)) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_VOTES);
+    }
+  }
+  
   private async validateGamePlayVotesWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Promise<void> {
-    if (playVotes === undefined || playVotes.length === 0) {
-      if (requiredVotesActions.includes(game.currentPlay.action)) {
-        throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_VOTES);
-      }
+    if (!playVotes || playVotes.length === 0) {
+      this.validateUnsetGamePlayVotesWithRelationsDto(game);
       return;
     }
     if (!requiredVotesActions.includes(game.currentPlay.action)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_VOTES);
     }
-    if (playVotes.some(({ source, target }) => source._id === target._id)) {
-      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.SAME_SOURCE_AND_TARGET_VOTE);
-    }
+    this.validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes);
     if (game.currentPlay.cause === GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES) {
       await this.validateGamePlayVotesTieBreakerWithRelationsDto(playVotes, game);
     }

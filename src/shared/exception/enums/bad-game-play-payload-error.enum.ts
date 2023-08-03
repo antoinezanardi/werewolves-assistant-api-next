@@ -7,6 +7,8 @@ enum BAD_GAME_PLAY_PAYLOAD_REASONS {
   UNEXPECTED_VOTES = "`votes` can't be set on this current game's state",
   REQUIRED_VOTES = "`votes` is required on this current game's state",
   SAME_SOURCE_AND_TARGET_VOTE = "One vote has the same source and target",
+  BAD_VOTE_SOURCE = "One source is not able to vote because he's dead or doesn't have the ability to do so",
+  BAD_VOTE_TARGET = "One target can't be voted because he's dead",
   BAD_VOTE_TARGET_FOR_TIE_BREAKER = "One vote's target is not in the previous tie in votes",
   UNEXPECTED_TARGETS = "`targets` can't be set on this current game's state",
   REQUIRED_TARGETS = "`targets` is required on this current game's state",

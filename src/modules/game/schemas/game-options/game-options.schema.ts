@@ -4,6 +4,7 @@ import { Expose, Type } from "class-transformer";
 import { gameOptionsApiProperties } from "../../constants/game-options/game-options.constant";
 import { CompositionGameOptions, CompositionGameOptionsSchema } from "./composition-game-options.schema";
 import { RolesGameOptions, RolesGameOptionsSchema } from "./roles-game-options/roles-game-options.schema";
+import { VotesGameOptions, VotesGameOptionsSchema } from "./votes-game-options.schema";
 
 @Schema({
   versionKey: false,
@@ -19,6 +20,15 @@ class GameOptions {
   @Type(() => CompositionGameOptions)
   @Expose()
   public composition: CompositionGameOptions;
+
+  @ApiProperty(gameOptionsApiProperties.votes)
+  @Prop({
+    type: VotesGameOptionsSchema,
+    default: () => ({}),
+  })
+  @Type(() => VotesGameOptions)
+  @Expose()
+  public votes: VotesGameOptions;
 
   @ApiProperty(gameOptionsApiProperties.roles)
   @Prop({

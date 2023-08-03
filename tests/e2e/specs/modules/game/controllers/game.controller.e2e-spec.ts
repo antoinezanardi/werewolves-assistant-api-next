@@ -29,6 +29,9 @@ import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeGameHistoryRecord } from "../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeCompositionGameOptions } from "../../../../../factories/game/schemas/game-options/composition-game-options.schema.factory";
+import { createFakeGameOptions } from "../../../../../factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeVotesGameOptions } from "../../../../../factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlayAllVote, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -485,7 +488,11 @@ describe("Game Controller", () => {
         },
       };
       const payload = createFakeCreateGameWithPlayersDto({}, { options });
-      const expectedOptions = createFakeGameOptionsDto({ ...options, composition: { isHidden: defaultGameOptions.composition.isHidden } });
+      const expectedOptions = createFakeGameOptionsDto({
+        ...options,
+        composition: createFakeCompositionGameOptions({ isHidden: defaultGameOptions.composition.isHidden }),
+        votes: createFakeVotesGameOptions({ canBeSkipped: defaultGameOptions.votes.canBeSkipped }),
+      });
       const response = await app.inject({
         method: "POST",
         url: "/games",
@@ -641,13 +648,15 @@ describe("Game Controller", () => {
         createFakeVillagerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ]);
+      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
         currentPlay: createFakeGamePlayAllVote(),
         players,
+        options,
       });
       await models.game.create(game);
-      const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
+      const payload = createFakeMakeGamePlayDto({});
       const response = await app.inject({
         method: "POST",
         url: `/games/${game._id.toString()}/play`,
