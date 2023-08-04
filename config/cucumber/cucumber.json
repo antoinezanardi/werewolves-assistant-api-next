@@ -1,0 +1,9 @@
+{
+  "default": {
+    "paths": ["tests/acceptance/features/**/*.feature"],
+    "requireModule": ["ts-node/register"],
+    "require": ["tests/acceptance/**/*.ts"],
+    "publish": false,
+    "publishQuiet": true
+  }
+}

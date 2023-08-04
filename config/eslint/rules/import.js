@@ -33,7 +33,7 @@ const importRules = Object.freeze({
   "import/unambiguous": OFF,
   "import/no-commonjs": OFF,
   "import/no-amd": ERROR,
-  "import/no-nodejs-modules": ERROR,
+  "import/no-nodejs-modules": OFF,
   "import/no-import-module-exports": ERROR,
   // - Style guide (https://github.com/import-js/eslint-plugin-import#style-guide)
   "import/first": ERROR,
