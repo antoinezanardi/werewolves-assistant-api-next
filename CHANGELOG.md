@@ -1,5 +1,28 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.14.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.13.0...v1.14.0) (2023-08-03)
+
+
+### 🚀 Features
+
+* **game-history:** generate and insert current game history for each play ([#358](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/358)) ([dfd80c8](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/dfd80c8da8e0f8640ed7d549adc08dda0257b3c1))
+* **game-history:** get game history endpoint ([#360](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/360)) ([be65031](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/be650318092f3b50899452a426f538e0f3ba14a8))
+* **game-history:** remove unnecessary updatedAt field ([#366](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/366)) ([b7c1e8e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/b7c1e8e560ef5cf9899e02adcfe83b5f22fea54d))
+* **game-options:** skip turn if no target option ([#367](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/367)) ([c3d7e5c](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/c3d7e5c28e8df80ee2945fc7bfcad13967cd1271))
+* **game-options:** skip votes options ([#370](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/370)) ([9859940](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/9859940d959c6817a4f8c9f7d6ed06a399fb7de2))
+
+
+### 🧹 Chore
+
+* **deps:** bump the eslint group with 2 updates ([#355](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/355)) ([aacaf9b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/aacaf9b127212ee7c572ab08663b5633ae5551c6))
+* **deps:** bump the eslint group with 2 updates ([#363](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/363)) ([5b1cf4a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/5b1cf4aabdbcd518bddba0b4a5db88e15a3186d1))
+* **deps:** bump the nest group with 1 update ([#368](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/368)) ([3d1d57d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/3d1d57d0d0308065b5746c5a0dda4312d2579198))
+* **deps:** bump the nest group with 5 updates ([#354](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/354)) ([ef9e920](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ef9e920f67d4f71d176adfd18438e779c2a600ae))
+* **deps:** bump the nest group with 6 updates ([#361](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/361)) ([06e431f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/06e431fd022058a99b1011deede05e8e39ae0246))
+* **deps:** bump the types group with 1 update ([#365](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/365)) ([1e4106f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1e4106f44fe3d0859aec746faf3842fb0e711ed0))
+* **deps:** bump the types group with 1 update ([#369](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/369)) ([20a1e74](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/20a1e74cb20b11a234ffbbbae73d5c3eefa609de))
+* **deps:** bump type-fest from 4.0.0 to 4.1.0 ([#359](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/359)) ([d96c25e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d96c25e63c8c4e685345634bedc7e49484f1f046))
+
 ## [1.13.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.12.0...v1.13.0) (2023-07-29)
 
 
