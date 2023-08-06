@@ -40,6 +40,18 @@ function getPlayerWithIdOrThrow(playerId: Types.ObjectId, game: Game, exception:
   return cloneDeep(player);
 }
 
+function getPlayerWithName(players: Player[], playerName: string): Player | undefined {
+  return cloneDeep(players.find(({ name }) => name.toString() === playerName.toString()));
+}
+
+function getPlayerWithNameOrThrow(playerName: string, game: Game, exception: Error): Player {
+  const player = getPlayerWithName(game.players, playerName);
+  if (!player) {
+    throw exception;
+  }
+  return cloneDeep(player);
+}
+
 function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Types.ObjectId): GameAdditionalCard | undefined {
   return cloneDeep(cards?.find(({ _id }) => _id.toString() === id.toString()));
 }
@@ -186,6 +198,8 @@ export {
   getPlayersWithCurrentSide,
   getPlayerWithId,
   getPlayerWithIdOrThrow,
+  getPlayerWithName,
+  getPlayerWithNameOrThrow,
   getAdditionalCardWithId,
   areAllWerewolvesAlive,
   areAllVillagersAlive,

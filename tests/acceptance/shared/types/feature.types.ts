@@ -1,3 +1,3 @@
 type FeatureName = "game" | "unknown";
 
-export { FeatureName };
+export type { FeatureName };

@@ -1,9 +1,18 @@
 {
   "default": {
-    "paths": ["tests/acceptance/features/**/*.feature"],
-    "requireModule": ["ts-node/register"],
+    "paths": [
+      "tests/acceptance/features/**/*.feature"
+    ],
+    "requireModule": [
+      "ts-node/register"
+    ],
     "require": ["tests/acceptance/**/*.ts"],
     "publish": false,
-    "publishQuiet": true
+    "publishQuiet": true,
+    "format": [
+      "progress-bar",
+      "html:tests/acceptance/reports/cucumber-report.html",
+      "summary"
+    ]
   }
 }

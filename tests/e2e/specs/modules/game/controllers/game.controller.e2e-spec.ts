@@ -53,7 +53,10 @@ describe("Game Controller", () => {
   });
 
   afterEach(async() => {
-    await models.game.deleteMany();
+    await Promise.all([
+      models.game.deleteMany(),
+      models.gameHistoryRecord.deleteMany(),
+    ]);
   });
 
   afterAll(async() => {
