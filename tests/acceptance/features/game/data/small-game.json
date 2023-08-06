@@ -1,0 +1,35 @@
+{
+  "players": [
+    {
+      "name": "Antoine",
+      "role": {
+        "name": "witch"
+      }
+    },
+    {
+      "name": "JB",
+      "role": {
+        "name": "werewolf"
+      }
+    },
+    {
+      "name": "Olivia",
+      "role": {
+        "name": "hunter"
+      }
+    },
+    {
+      "name": "Thomas",
+      "role": {
+        "name": "seer"
+      }
+    }
+  ],
+  "options": {
+    "roles": {
+      "sheriff": {
+        "isEnabled": false
+      }
+    }
+  }
+}

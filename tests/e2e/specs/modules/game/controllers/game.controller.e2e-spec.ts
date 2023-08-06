@@ -3,9 +3,6 @@ import type { BadRequestException, NotFoundException } from "@nestjs/common";
 import { HttpStatus } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-import { FastifyAdapter } from "@nestjs/platform-fastify";
-import type { TestingModule } from "@nestjs/testing";
-import { Test } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 import { defaultGameOptions } from "../../../../../../src/modules/game/constants/game-options/game-options.constant";
@@ -16,14 +13,11 @@ import type { MakeGamePlayDto } from "../../../../../../src/modules/game/dto/mak
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { GameModule } from "../../../../../../src/modules/game/game.module";
 import { GameHistoryRecord } from "../../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/game-options.schema";
 import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
-import { E2eTestModule } from "../../../../../../src/modules/test/e2e-test.module";
-import { fastifyServerDefaultOptions } from "../../../../../../src/server/constants/server.constant";
 import { createFakeGameOptionsDto } from "../../../../../factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
@@ -50,23 +44,19 @@ describe("Game Controller", () => {
   };
 
   beforeAll(async() => {
-    const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        E2eTestModule,
-        GameModule,
-      ],
-    }).compile();
-    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(fastifyServerDefaultOptions));
+    const { app: server, module } = await initNestApp();
+    app = server;
     models = {
       game: module.get<Model<Game>>(getModelToken(Game.name)),
       gameHistoryRecord: module.get<Model<GameHistoryRecord>>(getModelToken(GameHistoryRecord.name)),
     };
-
-    await initNestApp(app);
   });
 
   afterEach(async() => {
-    await models.game.deleteMany();
+    await Promise.all([
+      models.game.deleteMany(),
+      models.gameHistoryRecord.deleteMany(),
+    ]);
   });
 
   afterAll(async() => {

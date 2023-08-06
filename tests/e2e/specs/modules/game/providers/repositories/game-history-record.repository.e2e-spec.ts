@@ -1,27 +1,22 @@
 import { getModelToken } from "@nestjs/mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-import { FastifyAdapter } from "@nestjs/platform-fastify";
-import type { TestingModule } from "@nestjs/testing";
-import { Test } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../src/modules/game/enums/game-history-record.enum";
 import { WITCH_POTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
 import type { GAME_PHASES } from "../../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../src/modules/game/enums/player.enum";
-import { GameModule } from "../../../../../../../src/modules/game/game.module";
 import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameHistoryRecord } from "../../../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameHistoryRecordToInsert } from "../../../../../../../src/modules/game/types/game-history-record.type";
 import type { GameSource } from "../../../../../../../src/modules/game/types/game.type";
 import type { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
-import { E2eTestModule } from "../../../../../../../src/modules/test/e2e-test.module";
-import { fastifyServerDefaultOptions } from "../../../../../../../src/server/constants/server.constant";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
 import { toJSON } from "../../../../../../helpers/object/object.helper";
+import { initNestApp } from "../../../../../helpers/nest-app.helper";
 
 describe("Game History Record Repository", () => {
   let app: NestFastifyApplication;
@@ -29,8 +24,8 @@ describe("Game History Record Repository", () => {
   let repositories: { gameHistoryRecord: GameHistoryRecordRepository };
 
   beforeAll(async() => {
-    const module: TestingModule = await Test.createTestingModule({ imports: [E2eTestModule, GameModule] }).compile();
-    app = module.createNestApplication<NestFastifyApplication>(new FastifyAdapter(fastifyServerDefaultOptions));
+    const { app: server, module } = await initNestApp();
+    app = server;
 
     repositories = { gameHistoryRecord: app.get<GameHistoryRecordRepository>(GameHistoryRecordRepository) };
     models = { gameHistoryRecord: module.get<Model<GameHistoryRecord>>(getModelToken(GameHistoryRecord.name)) };
