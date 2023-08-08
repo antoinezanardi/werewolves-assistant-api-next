@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
-import { cloneDeep } from "lodash";
 import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
 import type { MakeGamePlayVoteWithRelationsDto } from "../../../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { GAME_PLAY_ACTIONS } from "../../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../../enums/player.enum";
+import { createGame } from "../../../../helpers/game.factory";
 import { getPlayerWithAttribute, getPlayerWithCurrentRole } from "../../../../helpers/game.helper";
+import { doesPlayerHaveAttributeWithName } from "../../../../helpers/player/player-attribute/player-attribute.helper";
 import { createPlayer } from "../../../../helpers/player/player.factory";
-import { doesPlayerHaveAttribute } from "../../../../helpers/player/player.helper";
 import type { Player } from "../../../../schemas/player/player.schema";
 import type { PlayerVoteCount } from "../../../../types/game-play.type";
 import type { GameWithCurrentPlay } from "../../../../types/game-with-current-play";
@@ -14,7 +14,7 @@ import type { GameWithCurrentPlay } from "../../../../types/game-with-current-pl
 @Injectable()
 export class GamePlayVoteService {
   public getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): Player[] {
-    const clonedGame = cloneDeep(game);
+    const clonedGame = createGame(game) as GameWithCurrentPlay;
     let playerVoteCounts = this.getPlayerVoteCounts(votes, clonedGame);
     playerVoteCounts = this.addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
     const maxVotes = Math.max(...playerVoteCounts.map(playerVoteCount => playerVoteCount[1]));
@@ -38,14 +38,13 @@ export class GamePlayVoteService {
   }
   
   private addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: GameWithCurrentPlay): PlayerVoteCount[] {
-    const clonedGame = cloneDeep(game);
-    const clonedPlayerVoteCounts = cloneDeep(playerVoteCounts);
+    const clonedGame = createGame(game) as GameWithCurrentPlay;
     const ravenPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.RAVEN);
     const ravenMarkedPlayer = getPlayerWithAttribute(clonedGame.players, PLAYER_ATTRIBUTE_NAMES.RAVEN_MARKED);
     if (clonedGame.currentPlay.action !== GAME_PLAY_ACTIONS.VOTE ||
-      ravenPlayer?.isAlive !== true || doesPlayerHaveAttribute(ravenPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) ||
+      ravenPlayer?.isAlive !== true || doesPlayerHaveAttributeWithName(ravenPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) ||
       ravenMarkedPlayer?.isAlive !== true) {
-      return clonedPlayerVoteCounts;
+      return playerVoteCounts;
     }
     const ravenMarkedPlayerVoteCount = playerVoteCounts.find(playerVoteCount => playerVoteCount[0]._id.toString() === ravenMarkedPlayer._id.toString());
     const { markPenalty } = clonedGame.options.roles.raven;

@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { cloneDeep } from "lodash";
 import { BAD_GAME_PLAY_PAYLOAD_REASONS } from "../../../../../shared/exception/enums/bad-game-play-payload-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
 import { BadGamePlayPayloadException } from "../../../../../shared/exception/types/bad-game-play-payload-exception.type";
@@ -10,8 +9,10 @@ import type { MakeGamePlayVoteWithRelationsDto } from "../../../dto/make-game-pl
 import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
+import { createGame } from "../../../helpers/game.factory";
 import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole, getPlayerWithId } from "../../../helpers/game.helper";
-import { doesPlayerHaveAttribute, isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
+import { doesPlayerHaveAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
+import { isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
 import type { Game } from "../../../schemas/game.schema";
 import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
 import type { GameSource } from "../../../types/game.type";
@@ -25,7 +26,7 @@ export class GamePlayValidatorService {
     if (!game.currentPlay) {
       throw createNoCurrentGamePlayUnexpectedException("validateGamePlayWithRelationsDto", { gameId: game._id });
     }
-    const clonedGameWithCurrentPlay = cloneDeep(game) as GameWithCurrentPlay;
+    const clonedGameWithCurrentPlay = createGame(game) as GameWithCurrentPlay;
     const { votes, targets } = play;
     await this.validateGamePlayWithRelationsDtoJudgeRequest(play, clonedGameWithCurrentPlay);
     this.validateGamePlayWithRelationsDtoChosenSide(play, clonedGameWithCurrentPlay);
@@ -50,7 +51,8 @@ export class GamePlayValidatorService {
     if (drankLifePotionTargets.length > 1) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.TOO_MUCH_DRANK_LIFE_POTION_TARGETS);
     }
-    if (drankLifePotionTargets.length && (!doesPlayerHaveAttribute(drankLifePotionTargets[0].player, PLAYER_ATTRIBUTE_NAMES.EATEN) || !drankLifePotionTargets[0].player.isAlive)) {
+    if (drankLifePotionTargets.length &&
+      (!doesPlayerHaveAttributeWithName(drankLifePotionTargets[0].player, PLAYER_ATTRIBUTE_NAMES.EATEN) || !drankLifePotionTargets[0].player.isAlive)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_LIFE_POTION_TARGET);
     }
   }
@@ -284,7 +286,7 @@ export class GamePlayValidatorService {
   }
   
   private validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes: MakeGamePlayVoteWithRelationsDto[]): void {
-    if (playVotes.some(({ source }) => !source.isAlive || doesPlayerHaveAttribute(source, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE))) {
+    if (playVotes.some(({ source }) => !source.isAlive || doesPlayerHaveAttributeWithName(source, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE))) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_VOTE_SOURCE);
     }
     if (playVotes.some(({ target }) => !target.isAlive)) {
@@ -300,7 +302,7 @@ export class GamePlayValidatorService {
     const { canBeSkipped: canVotesBeSkipped } = game.options.votes;
     const isCurrentPlayVoteCauseOfAngelPresence = currentPlayAction === GAME_PLAY_ACTIONS.VOTE && currentPlayCause === GAME_PLAY_CAUSES.ANGEL_PRESENCE;
     const isCurrentPlayVoteInevitable = currentPlayAction === GAME_PLAY_ACTIONS.ELECT_SHERIFF || isCurrentPlayVoteCauseOfAngelPresence;
-    const canSomePlayerVote = game.players.some(player => player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE));
+    const canSomePlayerVote = game.players.some(player => player.isAlive && !doesPlayerHaveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE));
     if (canSomePlayerVote && (!canVotesBeSkipped && requiredVotesActions.includes(currentPlayAction) || canVotesBeSkipped && isCurrentPlayVoteInevitable)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_VOTES);
     }

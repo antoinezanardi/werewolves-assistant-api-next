@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { cloneDeep } from "lodash";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { gamePlaysNightOrder } from "../../../constants/game.constant";
 import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
@@ -8,6 +7,7 @@ import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import type { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "../../../helpers/game-play/game-play.factory";
+import { createGame } from "../../../helpers/game.factory";
 import { areAllWerewolvesAlive, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayerWithAttribute, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "../../../helpers/player/player.helper";
 import type { SheriffGameOptions } from "../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
@@ -20,7 +20,7 @@ export class GamePlayService {
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
   
   public async removeObsoleteUpcomingPlays(game: Game): Promise<Game> {
-    const clonedGame = cloneDeep(game);
+    const clonedGame = createGame(game);
     const validUpcomingPlays: GamePlay[] = [];
     for (const upcomingPlay of clonedGame.upcomingPlays) {
       if (await this.isGamePlaySuitableForCurrentPhase(clonedGame, upcomingPlay)) {
@@ -32,7 +32,7 @@ export class GamePlayService {
   }
 
   public proceedToNextGamePlay(game: Game): Game {
-    const clonedGame = cloneDeep(game);
+    const clonedGame = createGame(game);
     if (!clonedGame.upcomingPlays.length) {
       clonedGame.currentPlay = null;
       return clonedGame;

@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
-import { cloneDeep } from "lodash";
 import type { Types } from "mongoose";
 import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
 import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../shared/exception/enums/bad-resource-mutation-error.enum";
@@ -13,6 +12,7 @@ import { GAME_STATUSES } from "../../enums/game.enum";
 import { isGamePhaseOver } from "../../helpers/game-phase/game-phase.helper";
 import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play/game-play.helper";
 import { generateGameVictoryData, isGameOver } from "../../helpers/game-victory/game-victory.helper";
+import { createGame as createGameFromFactory } from "../../helpers/game.factory";
 import type { Game } from "../../schemas/game.schema";
 import { GameRepository } from "../repositories/game.repository";
 import { GameHistoryRecordService } from "./game-history/game-history-record.service";
@@ -60,7 +60,7 @@ export class GameService {
   }
 
   public async makeGamePlay(game: Game, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
-    let clonedGame = cloneDeep(game);
+    let clonedGame = createGameFromFactory(game);
     if (clonedGame.status !== GAME_STATUSES.PLAYING) {
       throw new BadResourceMutationException(API_RESOURCES.GAMES, clonedGame._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
     }
@@ -82,7 +82,7 @@ export class GameService {
   }
 
   private async handleGamePhaseCompletion(game: Game): Promise<Game> {
-    let clonedGame = cloneDeep(game);
+    let clonedGame = createGameFromFactory(game);
     clonedGame = await this.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(clonedGame);
     clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
     clonedGame = await this.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays(clonedGame);
@@ -98,7 +98,7 @@ export class GameService {
   }
 
   private setGameAsOver(game: Game): Game {
-    const clonedGame = cloneDeep(game);
+    const clonedGame = createGameFromFactory(game);
     clonedGame.status = GAME_STATUSES.OVER;
     clonedGame.victory = generateGameVictoryData(clonedGame);
     return clonedGame;

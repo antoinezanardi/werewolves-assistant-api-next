@@ -90,10 +90,12 @@ class Game {
   public victory?: GameVictory;
 
   @ApiProperty(gameApiProperties.createdAt)
+  @Type(() => Date)
   @Expose()
   public createdAt: Date;
 
   @ApiProperty(gameApiProperties.updatedAt)
+  @Type(() => Date)
   @Expose()
   public updatedAt: Date;
 }

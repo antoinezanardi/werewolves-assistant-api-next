@@ -78,6 +78,7 @@ class GameHistoryRecord {
   public deadPlayers?: Player[];
 
   @ApiProperty(gameHistoryRecordApiProperties.createdAt)
+  @Type(() => Date)
   @Expose()
   public createdAt: Date;
 }

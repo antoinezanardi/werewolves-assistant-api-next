@@ -1,4 +1,3 @@
-import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
 import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getExpectedPlayersToPlay, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithAttribute, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
@@ -211,7 +210,7 @@ describe("Game Helper", () => {
     });
 
     it("should return true when at least one werewolf is dead.", () => {
-      const notAllAlivePlayers = cloneDeep(players);
+      const notAllAlivePlayers = players.map(player => createFakePlayer(player));
       notAllAlivePlayers[0].isAlive = false;
       
       expect(areAllWerewolvesAlive(notAllAlivePlayers)).toBe(false);
@@ -235,7 +234,7 @@ describe("Game Helper", () => {
     });
 
     it("should return true when at least one villager is dead.", () => {
-      const notAllAlivePlayers = cloneDeep(players);
+      const notAllAlivePlayers = players.map(player => createFakePlayer(player));
       notAllAlivePlayers[1].isAlive = false;
       
       expect(areAllVillagersAlive(notAllAlivePlayers)).toBe(false);

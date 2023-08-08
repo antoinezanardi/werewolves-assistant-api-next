@@ -36,12 +36,7 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
   }, plainToInstanceDefaultOptions);
 }
 
-function bulkCreateFakeGames(length: number, games: Partial<Game>[] = [], overrides: object[] = []): Game[] {
-  return bulkCreate(length, createFakeGame, games, overrides);
-}
-
 export {
   createFakeGameWithCurrentPlay,
   createFakeGame,
-  bulkCreateFakeGames,
 };

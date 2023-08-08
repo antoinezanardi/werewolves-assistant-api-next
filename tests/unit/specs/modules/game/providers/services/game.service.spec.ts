@@ -1,6 +1,5 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { cloneDeep } from "lodash";
 import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.enum";
 import * as GamePhaseHelper from "../../../../../../../src/modules/game/helpers/game-phase/game-phase.helper";
 import * as GamePlayHelper from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
@@ -228,7 +227,7 @@ describe("Game Service", () => {
     });
 
     it("should call play validator method when called.", async() => {
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
@@ -236,7 +235,7 @@ describe("Game Service", () => {
     });
 
     it("should call play maker method when called.", async() => {
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
@@ -244,7 +243,7 @@ describe("Game Service", () => {
     });
 
     it("should call remove obsolete upcoming plays method when called.", async() => {
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
@@ -252,7 +251,7 @@ describe("Game Service", () => {
     });
 
     it("should call proceed to next game play method when called.", async() => {
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
@@ -260,7 +259,7 @@ describe("Game Service", () => {
     });
 
     it("should call handle game phase completion method when phase is ending.", async() => {
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       mocks.gamePhaseHelper.isGamePhaseOver.mockReturnValue(true);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
@@ -269,7 +268,7 @@ describe("Game Service", () => {
     });
 
     it("should call generate current game history record method when called.", async() => {
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
@@ -277,7 +276,7 @@ describe("Game Service", () => {
     });
 
     it("should call createGameHistoryRecord method when called.", async() => {
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const currentGameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
       mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert.mockReturnValue(currentGameHistoryRecordToInsert);
