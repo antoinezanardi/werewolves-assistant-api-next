@@ -1,12 +1,16 @@
+import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
-import type { GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
-import type { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
-import type { PLAYER_ATTRIBUTE_NAMES } from "../../../../../src/modules/game/enums/player.enum";
+import type { GAME_PLAY_CAUSES, GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
+import type { GAME_VICTORY_TYPES } from "../../../../../src/modules/game/enums/game-victory.enum";
+import type { GAME_STATUSES, GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
+import type { PLAYER_DEATH_CAUSES, PLAYER_ATTRIBUTE_NAMES } from "../../../../../src/modules/game/enums/player.enum";
 import { getPlayerWithNameOrThrow } from "../../../../../src/modules/game/helpers/game.helper";
-import { doesPlayerHaveAttributeWithNameAndSource } from "../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource } from "../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import type { GamePlay } from "../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import type { GameSource } from "../../../../../src/modules/game/types/game.type";
 import type { CustomWorld } from "../../../shared/types/world.types";
+import { convertDatatableToPlayers } from "../helpers/game-datatable.helper";
 
 Then(/^the game's tick should be (?<tick>\d)$/u, function(this: CustomWorld, tick: string): void {
   expect(this.game.tick).toBe(parseInt(tick));
@@ -20,15 +24,77 @@ Then(/^the game's phase should be (?<phase>night|day)$/u, function(this: CustomW
   expect(this.game.phase).toBe(phase);
 });
 
-Then(
-  /^the player named (?<name>.+?) should have the (?<attributeName>\S+) from (?<attributeSource>\S+) attribute$/u,
-  function(this: CustomWorld, playerName: string, attributeName: PLAYER_ATTRIBUTE_NAMES, attributeSource: GameSource): void {
-    const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
+Then(/^the game's status should be (?<phase>playing|over|canceled)$/u, function(this: CustomWorld, status: GAME_STATUSES): void {
+  expect(this.game.status).toBe(status);
+});
 
-    expect(doesPlayerHaveAttributeWithNameAndSource(player, attributeName, attributeSource)).toBe(true);
+Then(
+  /^the game's current play should be (?<source>.+?) to (?<action>.+?)(?: because (?<cause>.+?))?$/u,
+  function(this: CustomWorld, source: GameSource, action: GAME_PLAY_ACTIONS, cause: GAME_PLAY_CAUSES | null): void {
+    const expectedGamePlay: GamePlay = {
+      source,
+      action,
+    };
+    if (cause !== null) {
+      expectedGamePlay.cause = cause;
+    }
+    expect(this.game.currentPlay).toStrictEqual(expectedGamePlay);
   },
 );
 
-Then(/^the game's current play should be (?<source>.+?) to (?<action>.+?)$/u, function(this: CustomWorld, source: GameSource, action: GAME_PLAY_ACTIONS): void {
-  expect(this.game.currentPlay).toStrictEqual({ source, action });
+Then(
+  /^the player named (?<name>.+?) should have the (?<attributeName>\S+)(?: from (?<attributeSource>\S+))? attribute$/u,
+  function(this: CustomWorld, playerName: string, attributeName: PLAYER_ATTRIBUTE_NAMES, attributeSource: GameSource | null): void {
+    const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
+    let doesPlayerHaveAttribute = false;
+    if (attributeSource !== null) {
+      doesPlayerHaveAttribute = doesPlayerHaveAttributeWithNameAndSource(player, attributeName, attributeSource);
+    } else {
+      doesPlayerHaveAttribute = doesPlayerHaveAttributeWithName(player, attributeName);
+    }
+    
+    expect(doesPlayerHaveAttribute).toBe(true);
+  },
+);
+
+Then(
+  /^nobody should have the (?<attributeName>\S+)(?: from (?<attributeSource>\S+))? attribute$/u,
+  function(this: CustomWorld, attributeName: PLAYER_ATTRIBUTE_NAMES, attributeSource: GameSource | null): void {
+    let doSomeHasAttribute = false;
+    if (attributeSource !== null) {
+      doSomeHasAttribute = this.game.players.some(player => doesPlayerHaveAttributeWithNameAndSource(player, attributeName, attributeSource));
+    } else {
+      doSomeHasAttribute = this.game.players.some(player => doesPlayerHaveAttributeWithName(player, attributeName));
+    }
+
+    expect(doSomeHasAttribute).toBe(false);
+  },
+);
+
+Then(/^the player named (?<name>.+?) should be alive$/u, function(this: CustomWorld, playerName: string): void {
+  const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
+
+  expect(player.isAlive).toBe(true);
 });
+
+Then(
+  /^the player named (?<name>.+?) should be murdered by (?<deathSource>.+?) from (?<deathCause>.+?)$/u,
+  function(this: CustomWorld, playerName: string, deathSource: GameSource, deathCause: PLAYER_DEATH_CAUSES): void {
+    const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
+
+    expect(player.isAlive).toBe(false);
+    expect(player.death).toStrictEqual({
+      source: deathSource,
+      cause: deathCause,
+    });
+  },
+);
+
+Then(
+  /^the game's winners should be (?<winners>villagers|werewolves) with the following players$/u,
+  function(this: CustomWorld, victoryType: GAME_VICTORY_TYPES, winnersDatable: DataTable): void {
+    const players = convertDatatableToPlayers(winnersDatable.rows(), this.game);
+    expect(this.game.victory?.type).toBe(victoryType);
+    expect(this.game.victory?.winners).toStrictEqual(players);
+  },
+);

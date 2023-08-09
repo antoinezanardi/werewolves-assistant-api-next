@@ -1,6 +1,6 @@
 import type { Types } from "mongoose";
 import type { PLAYER_ATTRIBUTE_NAMES } from "../enums/player.enum";
-import type { GamePlay } from "../schemas/game-play.schema";
+import type { GamePlay } from "../schemas/game-play/game-play.schema";
 import type { Game } from "../schemas/game.schema";
 import type { PlayerAttribute } from "../schemas/player/player-attribute/player-attribute.schema";
 import type { Player } from "../schemas/player/player.schema";

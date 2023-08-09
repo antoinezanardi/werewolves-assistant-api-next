@@ -13,7 +13,9 @@ import { isGamePhaseOver } from "../../helpers/game-phase/game-phase.helper";
 import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play/game-play.helper";
 import { generateGameVictoryData, isGameOver } from "../../helpers/game-victory/game-victory.helper";
 import { createGame as createGameFromFactory } from "../../helpers/game.factory";
+import { getExpectedPlayersToPlay } from "../../helpers/game.helper";
 import type { Game } from "../../schemas/game.schema";
+import type { GameWithCurrentPlay } from "../../types/game-with-current-play";
 import { GameRepository } from "../repositories/game.repository";
 import { GameHistoryRecordService } from "./game-history/game-history-record.service";
 import { GamePhaseService } from "./game-phase/game-phase.service";
@@ -43,13 +45,16 @@ export class GameService {
     if (!upcomingPlays.length) {
       throw createCantGenerateGamePlaysUnexpectedException("createGame");
     }
-    const currentPlay = upcomingPlays.shift();
+    const currentPlay = upcomingPlays[0];
+    upcomingPlays.shift();
     const gameToCreate = plainToInstance(CreateGameDto, {
       ...game,
-      upcomingPlays,
       currentPlay,
+      upcomingPlays,
     });
-    return this.gameRepository.create(gameToCreate);
+    const createdGame = await this.gameRepository.create(gameToCreate) as GameWithCurrentPlay;
+    createdGame.currentPlay.source.players = getExpectedPlayersToPlay(createdGame);
+    return this.updateGame(createdGame._id, createdGame);
   }
 
   public async cancelGame(game: Game): Promise<Game> {

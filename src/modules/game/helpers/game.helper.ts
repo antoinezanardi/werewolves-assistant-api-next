@@ -179,10 +179,10 @@ function getExpectedPlayersToPlay(game: Game): Player[] {
   if (currentPlay === null) {
     throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
   }
-  if (isGameSourceGroup(currentPlay.source)) {
-    expectedPlayersToPlay = getGroupOfPlayers(players, currentPlay.source);
-  } else if (isGameSourceRole(currentPlay.source)) {
-    expectedPlayersToPlay = getPlayersWithCurrentRole(players, currentPlay.source);
+  if (isGameSourceGroup(currentPlay.source.name)) {
+    expectedPlayersToPlay = getGroupOfPlayers(players, currentPlay.source.name);
+  } else if (isGameSourceRole(currentPlay.source.name)) {
+    expectedPlayersToPlay = getPlayersWithCurrentRole(players, currentPlay.source.name);
   } else {
     expectedPlayersToPlay = getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
   }

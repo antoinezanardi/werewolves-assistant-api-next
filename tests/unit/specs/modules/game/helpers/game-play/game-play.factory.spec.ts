@@ -1,16 +1,17 @@
 import { plainToInstance } from "class-transformer";
 import { GAME_PLAY_ACTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../src/modules/game/enums/player.enum";
-import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "../../../../../../../src/modules/game/helpers/game-play/game-play.factory";
-import { GamePlay } from "../../../../../../../src/modules/game/schemas/game-play.schema";
+import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "../../../../../../../src/modules/game/helpers/game-play/game-play.factory";
+import { GamePlay } from "../../../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import { ROLE_NAMES } from "../../../../../../../src/modules/role/enums/role.enum";
+import { createFakeGamePlaySource } from "../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 
 describe("Game Play Factory", () => {
   describe("createGamePlaySheriffSettlesVotes", () => {
     it("should create game play sheriff settles votes when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+        source: createFakeGamePlaySource({ name: PLAYER_ATTRIBUTE_NAMES.SHERIFF }),
         action: GAME_PLAY_ACTIONS.SETTLE_VOTES,
       });
 
@@ -21,7 +22,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlaySheriffDelegates", () => {
     it("should create game play sheriff delegates when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+        source: createFakeGamePlaySource({ name: PLAYER_ATTRIBUTE_NAMES.SHERIFF }),
         action: GAME_PLAY_ACTIONS.DELEGATE,
       });
 
@@ -32,7 +33,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayAllVote", () => {
     it("should create game play all vote when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: PLAYER_GROUPS.ALL,
+        source: createFakeGamePlaySource({ name: PLAYER_GROUPS.ALL }),
         action: GAME_PLAY_ACTIONS.VOTE,
       });
 
@@ -43,7 +44,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayAllElectSheriff", () => {
     it("should create game play all elect sheriff when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: PLAYER_GROUPS.ALL,
+        source: createFakeGamePlaySource({ name: PLAYER_GROUPS.ALL }),
         action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
       });
 
@@ -54,7 +55,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayThiefChoosesCard", () => {
     it("should create game play thief chooses card when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.THIEF,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.THIEF }),
         action: GAME_PLAY_ACTIONS.CHOOSE_CARD,
       });
 
@@ -65,7 +66,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayStutteringJudgeChoosesSign", () => {
     it("should create game play stuttering judge chooses sign when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.STUTTERING_JUDGE,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.STUTTERING_JUDGE }),
         action: GAME_PLAY_ACTIONS.CHOOSE_SIGN,
       });
 
@@ -76,7 +77,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayScapegoatBansVoting", () => {
     it("should create game play scapegoat bans voting when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.SCAPEGOAT,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.SCAPEGOAT }),
         action: GAME_PLAY_ACTIONS.BAN_VOTING,
       });
 
@@ -87,7 +88,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayDogWolfChoosesSide", () => {
     it("should create game play dog wolf chooses side when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.DOG_WOLF,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.DOG_WOLF }),
         action: GAME_PLAY_ACTIONS.CHOOSE_SIDE,
       });
 
@@ -98,7 +99,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayWildChildChoosesModel", () => {
     it("should create game play wild child chooses model when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.WILD_CHILD,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.WILD_CHILD }),
         action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,
       });
 
@@ -109,7 +110,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayFoxSniffs", () => {
     it("should create game play fox sniffs when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.FOX,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.FOX }),
         action: GAME_PLAY_ACTIONS.SNIFF,
       });
 
@@ -120,7 +121,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayCharmedMeetEachOther", () => {
     it("should create game play charmed players meet each other when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: PLAYER_GROUPS.CHARMED,
+        source: createFakeGamePlaySource({ name: PLAYER_GROUPS.CHARMED }),
         action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
       });
 
@@ -131,7 +132,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayLoversMeetEachOther", () => {
     it("should create game play lovers meet each other when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: PLAYER_GROUPS.LOVERS,
+        source: createFakeGamePlaySource({ name: PLAYER_GROUPS.LOVERS }),
         action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
       });
 
@@ -142,7 +143,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayThreeBrothersMeetEachOther", () => {
     it("should create game play three brothers meet each other when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.THREE_BROTHERS,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.THREE_BROTHERS }),
         action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
       });
 
@@ -153,7 +154,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayTwoSistersMeetEachOther", () => {
     it("should create game play two sisters meet each other when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.TWO_SISTERS,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.TWO_SISTERS }),
         action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
       });
 
@@ -164,7 +165,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayRavenMarks", () => {
     it("should create game play raven marks when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.RAVEN,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.RAVEN }),
         action: GAME_PLAY_ACTIONS.MARK,
       });
 
@@ -175,7 +176,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayGuardProtects", () => {
     it("should create game play guard protects when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.GUARD,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.GUARD }),
         action: GAME_PLAY_ACTIONS.PROTECT,
       });
 
@@ -186,7 +187,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayHunterShoots", () => {
     it("should create game play hunter shoots when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.HUNTER,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.HUNTER }),
         action: GAME_PLAY_ACTIONS.SHOOT,
       });
 
@@ -197,7 +198,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayWitchUsesPotions", () => {
     it("should create game play witch uses potions when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.WITCH,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.WITCH }),
         action: GAME_PLAY_ACTIONS.USE_POTIONS,
       });
 
@@ -208,7 +209,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayPiedPiperCharms", () => {
     it("should create game play pied piper charms when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.PIED_PIPER,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.PIED_PIPER }),
         action: GAME_PLAY_ACTIONS.CHARM,
       });
 
@@ -219,7 +220,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayCupidCharms", () => {
     it("should create game play cupid charms when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.CUPID,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.CUPID }),
         action: GAME_PLAY_ACTIONS.CHARM,
       });
 
@@ -230,7 +231,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlaySeerLooks", () => {
     it("should create game play seer looks when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.SEER,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.SEER }),
         action: GAME_PLAY_ACTIONS.LOOK,
       });
 
@@ -241,7 +242,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayWhiteWerewolfEats", () => {
     it("should create game play white werewolf eats when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.WHITE_WEREWOLF,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.WHITE_WEREWOLF }),
         action: GAME_PLAY_ACTIONS.EAT,
       });
 
@@ -252,7 +253,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayBigBadWolfEats", () => {
     it("should create game play big bad wolf eats when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: ROLE_NAMES.BIG_BAD_WOLF,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.BIG_BAD_WOLF }),
         action: GAME_PLAY_ACTIONS.EAT,
       });
 
@@ -263,7 +264,7 @@ describe("Game Play Factory", () => {
   describe("createGamePlayWerewolvesEat", () => {
     it("should create game play werewolves eat when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: PLAYER_GROUPS.WEREWOLVES,
+        source: createFakeGamePlaySource({ name: PLAYER_GROUPS.WEREWOLVES }),
         action: GAME_PLAY_ACTIONS.EAT,
       });
 
@@ -274,12 +275,12 @@ describe("Game Play Factory", () => {
   describe("createGamePlay", () => {
     it("should create game play when called.", () => {
       const gamePlay: GamePlay = {
-        source: ROLE_NAMES.WILD_CHILD,
+        source: createFakeGamePlaySource({ name: ROLE_NAMES.WILD_CHILD }),
         action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,
       };
 
       expect(createGamePlay(gamePlay)).toStrictEqual<GamePlay>(plainToInstance(GamePlay, {
-        source: ROLE_NAMES.WILD_CHILD,
+        source: createGamePlaySource({ name: ROLE_NAMES.WILD_CHILD }),
         action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,
       }));
     });

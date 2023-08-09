@@ -55,7 +55,7 @@ export class GamePlayMakerService {
       throw createNoCurrentGamePlayUnexpectedException("makeGamePlay", { gameId: game._id });
     }
     const clonedGame = createGame(game) as GameWithCurrentPlay;
-    const gameSourcePlayMethod = this.gameSourcePlayMethods[clonedGame.currentPlay.source];
+    const gameSourcePlayMethod = this.gameSourcePlayMethods[clonedGame.currentPlay.source.name];
     if (gameSourcePlayMethod === undefined) {
       return clonedGame;
     }

@@ -2,8 +2,8 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../../src/modules/game/enums/game-history-record.enum";
-import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../../src/modules/game/enums/player.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
 import { createGamePlayAllElectSheriff } from "../../../../../../../../src/modules/game/helpers/game-play/game-play.factory";
 import { GameHistoryRecordRepository } from "../../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../../src/modules/game/providers/repositories/game.repository";
@@ -19,6 +19,7 @@ import { ResourceNotFoundException } from "../../../../../../../../src/shared/ex
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote, createFakeGameHistoryRecordPlayVoting } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGamePlaySource } from "../../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -119,9 +120,9 @@ describe("Game History Record Service", () => {
   describe("getLastGameHistoryTieInVotesRecord", () => {
     it("should get game history when all voted and there was a tie when called.", async() => {
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId);
+      await services.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId, GAME_PLAY_ACTIONS.VOTE);
 
-      expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord).toHaveBeenCalledExactlyOnceWith(gameId, GAME_PLAY_ACTIONS.VOTE);
     });
   });
 
@@ -726,10 +727,11 @@ describe("Game History Record Service", () => {
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeVillagerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createGamePlayAllElectSheriff(), players });
+      const expectedPlayers = [players[0], players[1], players[3]];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createGamePlayAllElectSheriff({ source: createFakeGamePlaySource({ name: PLAYER_GROUPS.ALL, players: expectedPlayers }) }), players });
       const expectedGameHistoryRecordPlaySource = createFakeGameHistoryRecordPlaySource({
-        name: game.currentPlay.source,
-        players: [players[0], players[1], players[3]],
+        name: game.currentPlay.source.name,
+        players: expectedPlayers,
       });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlaySourceToInsert"](game)).toStrictEqual(expectedGameHistoryRecordPlaySource);

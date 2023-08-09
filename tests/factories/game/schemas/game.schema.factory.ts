@@ -4,7 +4,6 @@ import { GAME_PHASES, GAME_STATUSES } from "../../../../src/modules/game/enums/g
 import { Game } from "../../../../src/modules/game/schemas/game.schema";
 import { GameWithCurrentPlay } from "../../../../src/modules/game/types/game-with-current-play";
 import { plainToInstanceDefaultOptions } from "../../../../src/shared/validation/constants/validation.constant";
-import { bulkCreate } from "../../shared/bulk-create.factory";
 import { createFakeObjectId } from "../../shared/mongoose/mongoose.factory";
 import { createFakeGameOptions } from "./game-options/game-options.schema.factory";
 import { createFakeGamePlay } from "./game-play/game-play.schema.factory";

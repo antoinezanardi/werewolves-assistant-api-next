@@ -12,7 +12,7 @@ import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-
 import type { WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "../../../enums/player.enum";
-import { getAdditionalCardWithId, getExpectedPlayersToPlay, getNonexistentPlayer, getPlayerWithAttribute, getPlayerWithId } from "../../../helpers/game.helper";
+import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithAttribute, getPlayerWithId } from "../../../helpers/game.helper";
 import { GameHistoryRecordPlaySource } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
 import { GameHistoryRecordPlayVoting } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
 import { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
@@ -42,8 +42,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getLastGameHistoryGuardProtectsRecord(gameId);
   }
 
-  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
-    return this.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord(gameId);
+  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GAME_PLAY_ACTIONS): Promise<GameHistoryRecord | null> {
+    return this.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord(gameId, action);
   }
 
   public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WITCH_POTIONS): Promise<GameHistoryRecord[]> {
@@ -166,11 +166,7 @@ export class GameHistoryRecordService {
   }
   
   private generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame: GameWithCurrentPlay): GameHistoryRecordPlaySource {
-    const gameHistoryRecordPlaySource: GameHistoryRecordPlaySource = {
-      name: baseGame.currentPlay.source,
-      players: getExpectedPlayersToPlay(baseGame),
-    };
-    return plainToInstance(GameHistoryRecordPlaySource, gameHistoryRecordPlaySource, { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
+    return plainToInstance(GameHistoryRecordPlaySource, toJSON(baseGame.currentPlay.source), { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {

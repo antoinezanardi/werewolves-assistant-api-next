@@ -57,7 +57,7 @@ function isGameOver(game: Game): boolean {
   if (!currentPlay) {
     throw createNoCurrentGamePlayUnexpectedException("isGameOver", { gameId: game._id });
   }
-  const isShootPlayIncoming = !!upcomingPlays.find(({ action, source }) => action === GAME_PLAY_ACTIONS.SHOOT && source === ROLE_NAMES.HUNTER);
+  const isShootPlayIncoming = !!upcomingPlays.find(({ action, source }) => action === GAME_PLAY_ACTIONS.SHOOT && source.name === ROLE_NAMES.HUNTER);
   return areAllPlayersDead(players) || currentPlay.action !== GAME_PLAY_ACTIONS.SHOOT && !isShootPlayIncoming &&
     (doWerewolvesWin(players) || doVillagersWin(players) ||
     doLoversWin(players) || doesWhiteWerewolfWin(players) || doesPiedPiperWin(game) || doesAngelWin(game));

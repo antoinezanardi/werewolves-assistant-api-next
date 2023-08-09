@@ -1,5 +1,4 @@
 import { plainToInstance } from "class-transformer";
-import { toJS } from "yaml/dist/nodes/toJS";
 import { toJSON } from "../../../../../../tests/helpers/object/object.helper";
 import { plainToInstanceDefaultOptions } from "../../../../../shared/validation/constants/validation.constant";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
