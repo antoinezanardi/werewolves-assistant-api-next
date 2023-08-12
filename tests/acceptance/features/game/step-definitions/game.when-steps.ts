@@ -70,7 +70,7 @@ When(/^the hunter shoots at the player named (?<name>.+)$/u, async function(this
   this.game = this.response.json<Game>();
 });
 
-When(/^the playing player or group skips his turn$/u, async function(this: CustomWorld): Promise<void> {
+When(/^the player or group skips his turn$/u, async function(this: CustomWorld): Promise<void> {
   this.response = await makeGamePlayRequest({}, this.game, this.app);
   this.game = this.response.json<Game>();
 });

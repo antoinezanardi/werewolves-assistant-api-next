@@ -1480,7 +1480,7 @@ describe("Game Play Validator Service", () => {
   });
 
   describe("validateGamePlayVotesWithRelationsDtoSourceAndTarget", () => {
-    it("should throw error when one vote source is not alive.", () => {
+    it("should throw error when one vote source is dead.", () => {
       const players = [
         createFakeSeerAlivePlayer({ isAlive: false }),
         createFakeWerewolfAlivePlayer(),
@@ -1522,6 +1522,7 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[3], target: players[0] }),
       ];
 
       expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto)).toThrow(BadGamePlayPayloadException);
@@ -1572,9 +1573,22 @@ describe("Game Play Validator Service", () => {
       expect(() => services.gamePlayValidator["validateUnsetGamePlayVotesWithRelationsDto"](game)).not.toThrow();
     });
 
-    it("should throw error when there is no vote but they are required.", () => {
+    it("should do nothing when there is no vote when angel presence but it's not a vote action.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeIdiotAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.ANGEL_PRESENCE, action: GAME_PLAY_ACTIONS.CHOOSE_CARD }), options });
+
+      expect(() => services.gamePlayValidator["validateUnsetGamePlayVotesWithRelationsDto"](game)).not.toThrow();
+    });
+
+    it("should throw error when there is no vote but they are required.", () => {
+      const players = [
+        createFakeSeerAlivePlayer({ isAlive: false }),
         createFakeWerewolfAlivePlayer(),
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),

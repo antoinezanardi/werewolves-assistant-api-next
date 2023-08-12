@@ -298,7 +298,7 @@ export class GamePlayMakerService {
 
   private piedPiperCharms({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
-    if (targets === undefined || targets.length === 0) {
+    if (targets === undefined) {
       return clonedGame;
     }
     const charmedByPiedPiperPlayerAttribute = createCharmedByPiedPiperPlayerAttribute();

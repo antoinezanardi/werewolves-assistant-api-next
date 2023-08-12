@@ -27,6 +27,9 @@ export class GamePhaseService {
   public async switchPhaseAndAppendGamePhaseUpcomingPlays(game: Game): Promise<Game> {
     const clonedGame = createGame(game);
     clonedGame.phase = clonedGame.phase === GAME_PHASES.NIGHT ? GAME_PHASES.DAY : GAME_PHASES.NIGHT;
+    if (clonedGame.phase === GAME_PHASES.NIGHT) {
+      clonedGame.turn++;
+    }
     const upcomingNightPlays = await this.gamePlayService.getUpcomingNightPlays(clonedGame);
     const upcomingDayPlays = this.gamePlayService.getUpcomingDayPlays();
     const phaseUpcomingPlays = clonedGame.phase === GAME_PHASES.NIGHT ? upcomingNightPlays : upcomingDayPlays;

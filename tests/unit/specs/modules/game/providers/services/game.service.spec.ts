@@ -4,6 +4,7 @@ import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.
 import * as GamePhaseHelper from "../../../../../../../src/modules/game/helpers/game-phase/game-phase.helper";
 import * as GamePlayHelper from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
 import * as GameVictoryHelper from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
+import * as GameHelper from "../../../../../../../src/modules/game/helpers/game.helper";
 import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
@@ -25,8 +26,8 @@ import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../factor
 import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeGamePlayAllVote } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
-import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../../factories/game/schemas/game.schema.factory";
+import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
 
@@ -56,12 +57,14 @@ describe("Game Service", () => {
       applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.SpyInstance;
       switchPhaseAndAppendGamePhaseUpcomingPlays: jest.SpyInstance;
     };
-    gamePhaseHelper: { isGamePhaseOver: jest.SpyInstance };
-    gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
-    gameVictoryHelper: { isGameOver: jest.SpyInstance };
     playerAttributeService: {
       decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.SpyInstance;
     };
+    gameHelper: { getExpectedPlayersToPlay: jest.SpyInstance };
+    gamePhaseHelper: { isGamePhaseOver: jest.SpyInstance };
+    gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
+    gameVictoryHelper: { isGameOver: jest.SpyInstance };
+
   };
   let services: { game: GameService };
   let repositories: { game: GameRepository };
@@ -89,10 +92,11 @@ describe("Game Service", () => {
         applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.fn(),
         switchPhaseAndAppendGamePhaseUpcomingPlays: jest.fn(),
       },
+      playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
+      gameHelper: { getExpectedPlayersToPlay: jest.spyOn(GameHelper, "getExpectedPlayersToPlay").mockReturnValue([]) },
       gamePhaseHelper: { isGamePhaseOver: jest.spyOn(GamePhaseHelper, "isGamePhaseOver").mockImplementation() },
       gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
       gameVictoryHelper: { isGameOver: jest.spyOn(GameVictoryHelper, "isGameOver").mockImplementation() },
-      playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -147,6 +151,14 @@ describe("Game Service", () => {
   });
 
   describe("createGame", () => {
+    let localMocks: { gameService: { updateGame: jest.SpyInstance } };
+    const createdGame = createFakeGameWithCurrentPlay();
+    
+    beforeEach(() => {
+      mocks.gameRepository.create.mockResolvedValue(createdGame);
+      localMocks = { gameService: { updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockResolvedValue(createdGame) } };
+    });
+
     it("should throw error when can't generate upcoming plays.", async() => {
       mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([]);
       const toCreateGame = createFakeCreateGameDto();
@@ -155,12 +167,32 @@ describe("Game Service", () => {
       await expect(services.game.createGame(toCreateGame)).rejects.toThrow(exception);
     });
 
-    it("should create game when called.", async() => {
+    it("should call createGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
       mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlayAllVote()]);
       await services.game.createGame(toCreateGame);
+      const expectedGame = createFakeCreateGameDto({
+        ...toCreateGame,
+        currentPlay: createFakeGamePlayAllVote(),
+        upcomingPlays: [],
+      });
 
-      expect(repositories.game.create).toHaveBeenCalledOnce();
+      expect(repositories.game.create).toHaveBeenCalledExactlyOnceWith(expectedGame);
+    });
+
+    it("should call updateGame repository method when called.", async() => {
+      const toCreateGame = createFakeCreateGameDto();
+      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlayAllVote()]);
+      const expectedPlayersToPlay = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
+      await services.game.createGame(toCreateGame);
+      const expectedGame = createFakeGameWithCurrentPlay(createdGame);
+      expectedGame.currentPlay.source.players = expectedPlayersToPlay;
+
+      expect(localMocks.gameService.updateGame).toHaveBeenCalledWith(createdGame._id, expectedGame);
     });
   });
 
