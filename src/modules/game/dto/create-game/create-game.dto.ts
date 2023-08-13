@@ -3,7 +3,7 @@ import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, Equals, IsArray, IsOptional, ValidateNested } from "class-validator";
 import { gameApiProperties, gameFieldsSpecs } from "../../constants/game.constant";
 import { GAME_PHASES } from "../../enums/game.enum";
-import { GamePlay } from "../../schemas/game-play.schema";
+import { GamePlay } from "../../schemas/game-play/game-play.schema";
 import { CompositionBounds } from "../base/decorators/composition-bounds.decorator";
 import { CompositionHasVillager } from "../base/decorators/composition-has-villager.decorator";
 import { CompositionHasWerewolf } from "../base/decorators/composition-has-werewolf.decorator";

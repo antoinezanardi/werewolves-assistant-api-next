@@ -1,16 +1,15 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { gameSourceValues } from "../../../../../src/modules/game/constants/game.constant";
 import { GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../src/modules/game/enums/player.enum";
-import { GamePlay } from "../../../../../src/modules/game/schemas/game-play.schema";
+import { GamePlay } from "../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
 import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { bulkCreate } from "../../../shared/bulk-create.factory";
+import { createFakeGamePlaySource } from "./game-play-source.schema.factory";
 
 function createFakeGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+    source: createFakeGamePlaySource({ name: PLAYER_ATTRIBUTE_NAMES.SHERIFF }),
     action: GAME_PLAY_ACTIONS.SETTLE_VOTES,
     ...gamePlay,
   }, override);
@@ -18,7 +17,7 @@ function createFakeGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {},
 
 function createFakeGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+    source: createFakeGamePlaySource({ name: PLAYER_ATTRIBUTE_NAMES.SHERIFF }),
     action: GAME_PLAY_ACTIONS.DELEGATE,
     ...gamePlay,
   }, override);
@@ -26,7 +25,7 @@ function createFakeGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}, ov
 
 function createFakeGamePlayAllVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: PLAYER_GROUPS.ALL,
+    source: createFakeGamePlaySource({ name: PLAYER_GROUPS.ALL }),
     action: GAME_PLAY_ACTIONS.VOTE,
     ...gamePlay,
   }, override);
@@ -34,7 +33,7 @@ function createFakeGamePlayAllVote(gamePlay: Partial<GamePlay> = {}, override: o
 
 function createFakeGamePlayAllElectSheriff(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: PLAYER_GROUPS.ALL,
+    source: createFakeGamePlaySource({ name: PLAYER_GROUPS.ALL }),
     action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
     ...gamePlay,
   }, override);
@@ -42,7 +41,7 @@ function createFakeGamePlayAllElectSheriff(gamePlay: Partial<GamePlay> = {}, ove
 
 function createFakeGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.THIEF,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.THIEF }),
     action: GAME_PLAY_ACTIONS.CHOOSE_CARD,
     ...gamePlay,
   }, override);
@@ -50,7 +49,7 @@ function createFakeGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}, ov
 
 function createFakeGamePlayStutteringJudgeChoosesSign(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.STUTTERING_JUDGE,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.STUTTERING_JUDGE }),
     action: GAME_PLAY_ACTIONS.CHOOSE_SIGN,
     ...gamePlay,
   }, override);
@@ -58,7 +57,7 @@ function createFakeGamePlayStutteringJudgeChoosesSign(gamePlay: Partial<GamePlay
 
 function createFakeGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.SCAPEGOAT,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.SCAPEGOAT }),
     action: GAME_PLAY_ACTIONS.BAN_VOTING,
     ...gamePlay,
   }, override);
@@ -66,7 +65,7 @@ function createFakeGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {},
 
 function createFakeGamePlayDogWolfChoosesSide(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.DOG_WOLF,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.DOG_WOLF }),
     action: GAME_PLAY_ACTIONS.CHOOSE_SIDE,
     ...gamePlay,
   }, override);
@@ -74,7 +73,7 @@ function createFakeGamePlayDogWolfChoosesSide(gamePlay: Partial<GamePlay> = {}, 
 
 function createFakeGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.WILD_CHILD,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.WILD_CHILD }),
     action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,
     ...gamePlay,
   }, override);
@@ -82,7 +81,7 @@ function createFakeGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {
 
 function createFakeGamePlayFoxSniffs(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.FOX,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.FOX }),
     action: GAME_PLAY_ACTIONS.SNIFF,
     ...gamePlay,
   }, override);
@@ -90,7 +89,7 @@ function createFakeGamePlayFoxSniffs(gamePlay: Partial<GamePlay> = {}, override:
 
 function createFakeGamePlayCharmedMeetEachOther(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: PLAYER_GROUPS.CHARMED,
+    source: createFakeGamePlaySource({ name: PLAYER_GROUPS.CHARMED }),
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
     ...gamePlay,
   }, override);
@@ -98,7 +97,7 @@ function createFakeGamePlayCharmedMeetEachOther(gamePlay: Partial<GamePlay> = {}
 
 function createFakeGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: PLAYER_GROUPS.LOVERS,
+    source: createFakeGamePlaySource({ name: PLAYER_GROUPS.LOVERS }),
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
     ...gamePlay,
   }, override);
@@ -106,7 +105,7 @@ function createFakeGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {},
 
 function createFakeGamePlayThreeBrothersMeetEachOther(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.THREE_BROTHERS,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.THREE_BROTHERS }),
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
     ...gamePlay,
   }, override);
@@ -114,7 +113,7 @@ function createFakeGamePlayThreeBrothersMeetEachOther(gamePlay: Partial<GamePlay
 
 function createFakeGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.TWO_SISTERS,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.TWO_SISTERS }),
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
     ...gamePlay,
   }, override);
@@ -122,7 +121,7 @@ function createFakeGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> =
 
 function createFakeGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.RAVEN,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.RAVEN }),
     action: GAME_PLAY_ACTIONS.MARK,
     ...gamePlay,
   }, override);
@@ -130,7 +129,7 @@ function createFakeGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}, override
 
 function createFakeGamePlayGuardProtects(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.GUARD,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.GUARD }),
     action: GAME_PLAY_ACTIONS.PROTECT,
     ...gamePlay,
   }, override);
@@ -138,7 +137,7 @@ function createFakeGamePlayGuardProtects(gamePlay: Partial<GamePlay> = {}, overr
 
 function createFakeGamePlayHunterShoots(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.HUNTER,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.HUNTER }),
     action: GAME_PLAY_ACTIONS.SHOOT,
     ...gamePlay,
   }, override);
@@ -146,7 +145,7 @@ function createFakeGamePlayHunterShoots(gamePlay: Partial<GamePlay> = {}, overri
 
 function createFakeGamePlayWitchUsesPotions(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.WITCH,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.WITCH }),
     action: GAME_PLAY_ACTIONS.USE_POTIONS,
     ...gamePlay,
   }, override);
@@ -154,7 +153,7 @@ function createFakeGamePlayWitchUsesPotions(gamePlay: Partial<GamePlay> = {}, ov
 
 function createFakeGamePlayPiedPiperCharms(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.PIED_PIPER,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.PIED_PIPER }),
     action: GAME_PLAY_ACTIONS.CHARM,
     ...gamePlay,
   }, override);
@@ -162,7 +161,7 @@ function createFakeGamePlayPiedPiperCharms(gamePlay: Partial<GamePlay> = {}, ove
 
 function createFakeGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.CUPID,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.CUPID }),
     action: GAME_PLAY_ACTIONS.CHARM,
     ...gamePlay,
   }, override);
@@ -170,7 +169,7 @@ function createFakeGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}, overrid
 
 function createFakeGamePlaySeerLooks(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.SEER,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.SEER }),
     action: GAME_PLAY_ACTIONS.LOOK,
     ...gamePlay,
   }, override);
@@ -178,7 +177,7 @@ function createFakeGamePlaySeerLooks(gamePlay: Partial<GamePlay> = {}, override:
 
 function createFakeGamePlayWhiteWerewolfEats(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.WHITE_WEREWOLF,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.WHITE_WEREWOLF }),
     action: GAME_PLAY_ACTIONS.EAT,
     ...gamePlay,
   }, override);
@@ -186,7 +185,7 @@ function createFakeGamePlayWhiteWerewolfEats(gamePlay: Partial<GamePlay> = {}, o
 
 function createFakeGamePlayBigBadWolfEats(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: ROLE_NAMES.BIG_BAD_WOLF,
+    source: createFakeGamePlaySource({ name: ROLE_NAMES.BIG_BAD_WOLF }),
     action: GAME_PLAY_ACTIONS.EAT,
     ...gamePlay,
   }, override);
@@ -194,7 +193,7 @@ function createFakeGamePlayBigBadWolfEats(gamePlay: Partial<GamePlay> = {}, over
 
 function createFakeGamePlayWerewolvesEat(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: PLAYER_GROUPS.WEREWOLVES,
+    source: createFakeGamePlaySource({ name: PLAYER_GROUPS.WEREWOLVES }),
     action: GAME_PLAY_ACTIONS.EAT,
     ...gamePlay,
   }, override);
@@ -203,14 +202,10 @@ function createFakeGamePlayWerewolvesEat(gamePlay: Partial<GamePlay> = {}, overr
 function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return plainToInstance(GamePlay, {
     action: gamePlay.action ?? faker.helpers.arrayElement(Object.values(GAME_PLAY_ACTIONS)),
-    source: gamePlay.source ?? faker.helpers.arrayElement(Object.values(gameSourceValues)),
+    source: createFakeGamePlaySource(gamePlay.source),
     cause: gamePlay.cause ?? undefined,
     ...override,
   }, plainToInstanceDefaultOptions);
-}
-
-function bulkCreateFakeGamePlays(length: number, gamePlays: Partial<GamePlay>[] = [], overrides: object[] = []): GamePlay[] {
-  return bulkCreate(length, createFakeGamePlay, gamePlays, overrides);
 }
 
 export {
@@ -239,5 +234,4 @@ export {
   createFakeGamePlayBigBadWolfEats,
   createFakeGamePlayWerewolvesEat,
   createFakeGamePlay,
-  bulkCreateFakeGamePlays,
 };

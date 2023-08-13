@@ -1,4 +1,3 @@
-import { cloneDeep } from "lodash";
 import type { Types } from "mongoose";
 import { createCantFindPlayerUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "../../../shared/exception/helpers/unexpected-exception.factory";
 import { ROLE_NAMES, ROLE_SIDES } from "../../role/enums/role.enum";
@@ -9,27 +8,27 @@ import type { GameAdditionalCard } from "../schemas/game-additional-card/game-ad
 import type { Game } from "../schemas/game.schema";
 import type { Player } from "../schemas/player/player.schema";
 import type { GameSource, GetNearestPlayerOptions } from "../types/game.type";
+import { doesPlayerHaveAttributeWithName } from "./player/player-attribute/player-attribute.helper";
 import { createPlayer } from "./player/player.factory";
-import { doesPlayerHaveAttribute } from "./player/player.helper";
 
 function getPlayerDtoWithRole(players: CreateGamePlayerDto[], role: ROLE_NAMES): CreateGamePlayerDto | undefined {
-  return cloneDeep(players.find(player => player.role.name === role));
+  return players.find(player => player.role.name === role);
 }
 
 function getPlayerWithCurrentRole(players: Player[], role: ROLE_NAMES): Player | undefined {
-  return cloneDeep(players.find(player => player.role.current === role));
+  return players.find(player => player.role.current === role);
 }
 
 function getPlayersWithCurrentRole(players: Player[], role: ROLE_NAMES): Player[] {
-  return cloneDeep(players.filter(player => player.role.current === role));
+  return players.filter(player => player.role.current === role);
 }
 
 function getPlayersWithCurrentSide(players: Player[], side: ROLE_SIDES): Player[] {
-  return cloneDeep(players.filter(player => player.side.current === side));
+  return players.filter(player => player.side.current === side);
 }
 
 function getPlayerWithId(players: Player[], id: Types.ObjectId): Player | undefined {
-  return cloneDeep(players.find(({ _id }) => _id.toString() === id.toString()));
+  return players.find(({ _id }) => _id.toString() === id.toString());
 }
 
 function getPlayerWithIdOrThrow(playerId: Types.ObjectId, game: Game, exception: Error): Player {
@@ -37,11 +36,11 @@ function getPlayerWithIdOrThrow(playerId: Types.ObjectId, game: Game, exception:
   if (!player) {
     throw exception;
   }
-  return cloneDeep(player);
+  return player;
 }
 
 function getPlayerWithName(players: Player[], playerName: string): Player | undefined {
-  return cloneDeep(players.find(({ name }) => name.toString() === playerName.toString()));
+  return players.find(({ name }) => name.toString() === playerName.toString());
 }
 
 function getPlayerWithNameOrThrow(playerName: string, game: Game, exception: Error): Player {
@@ -49,11 +48,11 @@ function getPlayerWithNameOrThrow(playerName: string, game: Game, exception: Err
   if (!player) {
     throw exception;
   }
-  return cloneDeep(player);
+  return player;
 }
 
 function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Types.ObjectId): GameAdditionalCard | undefined {
-  return cloneDeep(cards?.find(({ _id }) => _id.toString() === id.toString()));
+  return cards?.find(({ _id }) => _id.toString() === id.toString());
 }
 
 function areAllWerewolvesAlive(players: Player[]): boolean {
@@ -71,51 +70,53 @@ function areAllPlayersDead(players: Player[]): boolean {
 }
 
 function getPlayerWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player | undefined {
-  return cloneDeep(players.find(player => doesPlayerHaveAttribute(player, attribute)));
+  return players.find(player => doesPlayerHaveAttributeWithName(player, attribute));
 }
 
 function getPlayersWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player[] {
-  return cloneDeep(players.filter(player => doesPlayerHaveAttribute(player, attribute)));
+  return players.filter(player => doesPlayerHaveAttributeWithName(player, attribute));
 }
 
 function getAlivePlayers(players: Player[]): Player[] {
-  return cloneDeep(players.filter(player => player.isAlive));
+  return players.filter(player => player.isAlive);
 }
 
 function getAliveVillagerSidedPlayers(players: Player[]): Player[] {
-  return cloneDeep(players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS));
+  return players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS);
 }
 
 function getAliveWerewolfSidedPlayers(players: Player[]): Player[] {
-  return cloneDeep(players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES));
+  return players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES);
 }
 
 function getLeftToCharmByPiedPiperPlayers(players: Player[]): Player[] {
-  return cloneDeep(players.filter(player => player.isAlive && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.CHARMED) && player.role.current !== ROLE_NAMES.PIED_PIPER));
+  return players.filter(player => player.isAlive && !doesPlayerHaveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.CHARMED) &&
+    player.role.current !== ROLE_NAMES.PIED_PIPER);
 }
 
 function getLeftToEatByWerewolvesPlayers(players: Player[]): Player[] {
-  return cloneDeep(players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS && !doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.EATEN)));
+  return players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS &&
+    !doesPlayerHaveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.EATEN));
 }
 
 function getLeftToEatByWhiteWerewolfPlayers(players: Player[]): Player[] {
-  return cloneDeep(players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES && player.role.current !== ROLE_NAMES.WHITE_WEREWOLF));
+  return players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES && player.role.current !== ROLE_NAMES.WHITE_WEREWOLF);
 }
 
 function getGroupOfPlayers(players: Player[], group: PLAYER_GROUPS): Player[] {
   if (group === PLAYER_GROUPS.ALL) {
-    return cloneDeep(players);
+    return players;
   }
   if (group === PLAYER_GROUPS.LOVERS) {
-    return cloneDeep(getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.IN_LOVE));
+    return getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
   }
   if (group === PLAYER_GROUPS.CHARMED) {
-    return cloneDeep(getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.CHARMED));
+    return getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.CHARMED);
   }
   if (group === PLAYER_GROUPS.VILLAGERS) {
-    return cloneDeep(getPlayersWithCurrentSide(players, ROLE_SIDES.VILLAGERS));
+    return getPlayersWithCurrentSide(players, ROLE_SIDES.VILLAGERS);
   }
-  return cloneDeep(getPlayersWithCurrentSide(players, ROLE_SIDES.WEREWOLVES));
+  return getPlayersWithCurrentSide(players, ROLE_SIDES.WEREWOLVES);
 }
 
 function isGameSourceRole(source: GameSource): source is ROLE_NAMES {
@@ -131,7 +132,7 @@ function getNonexistentPlayerId(players: Player[], candidateIds?: Types.ObjectId
 }
 
 function getNonexistentPlayer(players: Player[], candidatePlayers?: Player[]): Player | undefined {
-  return cloneDeep(candidatePlayers?.find(candidatePlayer => !getPlayerWithId(players, candidatePlayer._id)));
+  return candidatePlayers?.find(candidatePlayer => !getPlayerWithId(players, candidatePlayer._id));
 }
 
 function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Player[] {
@@ -164,7 +165,7 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
     }
     const checkingNeighbor = alivePlayers[currentIndex];
     if (checkingNeighbor.position !== player.position && (options.playerSide === undefined || checkingNeighbor.side.current === options.playerSide)) {
-      return cloneDeep(checkingNeighbor);
+      return checkingNeighbor;
     }
     currentIndex += indexHeading;
     count++;
@@ -178,10 +179,10 @@ function getExpectedPlayersToPlay(game: Game): Player[] {
   if (currentPlay === null) {
     throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
   }
-  if (isGameSourceGroup(currentPlay.source)) {
-    expectedPlayersToPlay = getGroupOfPlayers(players, currentPlay.source);
-  } else if (isGameSourceRole(currentPlay.source)) {
-    expectedPlayersToPlay = getPlayersWithCurrentRole(players, currentPlay.source);
+  if (isGameSourceGroup(currentPlay.source.name)) {
+    expectedPlayersToPlay = getGroupOfPlayers(players, currentPlay.source.name);
+  } else if (isGameSourceRole(currentPlay.source.name)) {
+    expectedPlayersToPlay = getPlayersWithCurrentRole(players, currentPlay.source.name);
   } else {
     expectedPlayersToPlay = getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
   }

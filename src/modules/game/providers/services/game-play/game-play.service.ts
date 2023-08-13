@@ -1,5 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { cloneDeep } from "lodash";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { gamePlaysNightOrder } from "../../../constants/game.constant";
 import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
@@ -8,10 +7,11 @@ import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import type { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "../../../helpers/game-play/game-play.factory";
-import { areAllWerewolvesAlive, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayerWithAttribute, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
+import { createGame } from "../../../helpers/game.factory";
+import { areAllWerewolvesAlive, getExpectedPlayersToPlay, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayerWithAttribute, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "../../../helpers/player/player.helper";
 import type { SheriffGameOptions } from "../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
-import type { GamePlay } from "../../../schemas/game-play.schema";
+import type { GamePlay } from "../../../schemas/game-play/game-play.schema";
 import type { Game } from "../../../schemas/game.schema";
 import { GameHistoryRecordService } from "../game-history/game-history-record.service";
 
@@ -20,7 +20,7 @@ export class GamePlayService {
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
   
   public async removeObsoleteUpcomingPlays(game: Game): Promise<Game> {
-    const clonedGame = cloneDeep(game);
+    const clonedGame = createGame(game);
     const validUpcomingPlays: GamePlay[] = [];
     for (const upcomingPlay of clonedGame.upcomingPlays) {
       if (await this.isGamePlaySuitableForCurrentPhase(clonedGame, upcomingPlay)) {
@@ -32,12 +32,13 @@ export class GamePlayService {
   }
 
   public proceedToNextGamePlay(game: Game): Game {
-    const clonedGame = cloneDeep(game);
+    const clonedGame = createGame(game);
     if (!clonedGame.upcomingPlays.length) {
       clonedGame.currentPlay = null;
       return clonedGame;
     }
     clonedGame.currentPlay = clonedGame.upcomingPlays[0];
+    clonedGame.currentPlay.source.players = getExpectedPlayersToPlay(clonedGame);
     clonedGame.upcomingPlays.shift();
     return clonedGame;
   }
@@ -88,7 +89,7 @@ export class GamePlayService {
   }
 
   private isGroupGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): boolean {
-    const source = gamePlay.source as PLAYER_GROUPS;
+    const source = gamePlay.source.name as PLAYER_GROUPS;
     const specificGroupMethods: Record<PLAYER_GROUPS, (game: CreateGameDto | Game, gamePlay: GamePlay) => boolean> = {
       [PLAYER_GROUPS.ALL]: this.isAllGamePlaySuitableForCurrentPhase,
       [PLAYER_GROUPS.LOVERS]: this.isLoversGamePlaySuitableForCurrentPhase,
@@ -165,7 +166,7 @@ export class GamePlayService {
   }
 
   private async isRoleGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
-    const source = gamePlay.source as ROLE_NAMES;
+    const source = gamePlay.source.name as ROLE_NAMES;
     const player = game instanceof CreateGameDto ? getPlayerDtoWithRole(game.players, source) : getPlayerWithCurrentRole(game.players, source);
     if (!player) {
       return false;
@@ -198,9 +199,9 @@ export class GamePlayService {
   }
 
   private async isGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
-    if (isGameSourceRole(gamePlay.source)) {
+    if (isGameSourceRole(gamePlay.source.name)) {
       return this.isRoleGamePlaySuitableForCurrentPhase(game, gamePlay);
-    } else if (isGameSourceGroup(gamePlay.source)) {
+    } else if (isGameSourceGroup(gamePlay.source.name)) {
       return this.isGroupGamePlaySuitableForCurrentPhase(game, gamePlay);
     }
     return this.isSheriffGamePlaySuitableForCurrentPhase(game);

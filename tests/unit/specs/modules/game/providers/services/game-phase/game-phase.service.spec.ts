@@ -92,6 +92,7 @@ describe("Game Phase Service", () => {
       const expectedGame = createFakeGame({
         ...game,
         phase: GAME_PHASES.NIGHT,
+        turn: game.turn + 1,
         upcomingPlays: [...game.upcomingPlays, ...upcomingNightPlays],
       });
 

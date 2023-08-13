@@ -30,10 +30,10 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
   
-  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GAME_PLAY_ACTIONS): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
-      "play.action": GAME_PLAY_ACTIONS.VOTE,
+      "play.action": action,
       "play.voting.result": GAME_HISTORY_RECORD_VOTING_RESULTS.TIE,
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });

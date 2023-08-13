@@ -7,7 +7,7 @@ import { gameApiProperties, gameFieldsSpecs } from "../constants/game.constant";
 import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
 import { GameAdditionalCardSchema, GameAdditionalCard } from "./game-additional-card/game-additional-card.schema";
 import { GameOptions, GameOptionsSchema } from "./game-options/game-options.schema";
-import { GamePlaySchema, GamePlay } from "./game-play.schema";
+import { GamePlaySchema, GamePlay } from "./game-play/game-play.schema";
 import { GameVictory, GameVictorySchema } from "./game-victory/game-victory.schema";
 import { PlayerSchema, Player } from "./player/player.schema";
 
@@ -84,16 +84,18 @@ class Game {
   public additionalCards?: GameAdditionalCard[];
 
   @ApiProperty(gameApiProperties.victory)
-  @Prop({ type: [GameVictorySchema], default: undefined })
+  @Prop({ type: GameVictorySchema, default: undefined })
   @Type(() => GameVictory)
   @Expose()
   public victory?: GameVictory;
 
   @ApiProperty(gameApiProperties.createdAt)
+  @Type(() => Date)
   @Expose()
   public createdAt: Date;
 
   @ApiProperty(gameApiProperties.updatedAt)
+  @Type(() => Date)
   @Expose()
   public updatedAt: Date;
 }

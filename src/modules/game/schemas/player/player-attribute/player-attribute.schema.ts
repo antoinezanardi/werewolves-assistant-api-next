@@ -34,6 +34,7 @@ class PlayerAttribute {
   public activeAt?: PlayerAttributeActivation;
 
   @ApiProperty(playerAttributeApiProperties.doesRemainAfterDeath)
+  @Prop({ required: false })
   @Expose()
   public doesRemainAfterDeath?: boolean;
 }

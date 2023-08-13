@@ -15,6 +15,7 @@ import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/e
 import { PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
 import { GameHistoryRecord } from "../../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/game-options.schema";
+import type { GamePlay } from "../../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
@@ -26,7 +27,8 @@ import { createFakeGameHistoryRecord } from "../../../../../factories/game/schem
 import { createFakeCompositionGameOptions } from "../../../../../factories/game/schemas/game-options/composition-game-options.schema.factory";
 import { createFakeGameOptions } from "../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeVotesGameOptions } from "../../../../../factories/game/schemas/game-options/votes-game-options.schema.factory";
-import { createFakeGamePlayAllVote, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySource } from "../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
+import { createFakeGamePlayAllVote, createFakeGamePlayCupidCharms, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
@@ -410,27 +412,31 @@ describe("Game Controller", () => {
         position: index,
         isAlive: true,
       }));
-
-      expect(response.statusCode).toBe(HttpStatus.CREATED);
-      expect(response.json()).toStrictEqual<Game>({
+      const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
         phase: GAME_PHASES.NIGHT,
         status: GAME_STATUSES.PLAYING,
         turn: 1,
         tick: 1,
         players: expectedPlayers,
-        currentPlay: { source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF },
-        upcomingPlays: [
-          { source: ROLE_NAMES.CUPID, action: GAME_PLAY_ACTIONS.CHARM },
-          { source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK },
-          { source: PLAYER_GROUPS.LOVERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER },
-          { source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT },
-          { source: ROLE_NAMES.WHITE_WEREWOLF, action: GAME_PLAY_ACTIONS.EAT },
-        ],
+        currentPlay: {
+          action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
+          source: { name: PLAYER_GROUPS.ALL, players: expectedPlayers },
+        },
+        upcomingPlays: toJSON([
+          createFakeGamePlayCupidCharms(),
+          createFakeGamePlaySeerLooks(),
+          createFakeGamePlayLoversMeetEachOther(),
+          createFakeGamePlayWerewolvesEat(),
+          createFakeGamePlayWhiteWerewolfEats(),
+        ]) as GamePlay[],
         options: defaultGameOptions,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
-      });
+      };
+
+      expect(response.statusCode).toBe(HttpStatus.CREATED);
+      expect(response.json()).toStrictEqual<Game>(expectedGame);
     });
 
     it(`should create game with different options when called with options specified and some omitted.`, async() => {
@@ -670,7 +676,7 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        currentPlay: createFakeGamePlayAllVote(),
+        currentPlay: createFakeGamePlayAllVote({ source: createFakeGamePlaySource({ name: PLAYER_GROUPS.ALL, players }) }),
         upcomingPlays: [createFakeGamePlaySeerLooks()],
         players,
       });
@@ -681,10 +687,14 @@ describe("Game Controller", () => {
           { sourceId: players[1]._id, targetId: players[0]._id },
         ],
       });
+      const expectedCurrentPlay = createFakeGamePlayAllVote({
+        cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES,
+        source: createFakeGamePlaySource({ name: PLAYER_GROUPS.ALL, players }),
+      });
       const expectedGame = createFakeGame({
         ...game,
         tick: game.tick + 1,
-        currentPlay: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+        currentPlay: expectedCurrentPlay,
       });
       const response = await app.inject({
         method: "POST",
@@ -709,16 +719,22 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
-        currentPlay: createFakeGamePlaySeerLooks(),
+        currentPlay: createFakeGamePlaySeerLooks({ source: createFakeGamePlaySource({ name: ROLE_NAMES.SEER, players: [players[1]] }) }),
         upcomingPlays: [createFakeGamePlayWerewolvesEat()],
         players,
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
+      const expectedCurrentPlay = createFakeGamePlayWerewolvesEat({
+        source: createFakeGamePlaySource({
+          name: PLAYER_GROUPS.WEREWOLVES,
+          players: [createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }), players[3]],
+        }),
+      });
       const expectedGame = createFakeGame({
         ...game,
         tick: game.tick + 1,
-        currentPlay: createFakeGamePlayWerewolvesEat(),
+        currentPlay: expectedCurrentPlay,
         upcomingPlays: [],
         players: [
           createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }),

@@ -24,12 +24,5 @@
         "name": "seer"
       }
     }
-  ],
-  "options": {
-    "roles": {
-      "sheriff": {
-        "isEnabled": false
-      }
-    }
-  }
+  ]
 }

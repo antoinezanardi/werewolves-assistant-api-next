@@ -6,6 +6,7 @@ import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../../src/modules/role/en
 import * as UnexpectedExceptionFactory from "../../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
 import { createFakeGameOptions } from "../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeGamePlaySource } from "../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
@@ -406,7 +407,7 @@ describe("Game Victory Helper", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: ROLE_NAMES.THIEF }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: ROLE_NAMES.HUNTER }) }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const currentPlay = createFakeGamePlayAllVote();
@@ -470,7 +471,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: ROLE_NAMES.THIEF }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: ROLE_NAMES.THIEF }) }),
         createFakeGamePlayAllVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
@@ -557,7 +558,7 @@ describe("Game Victory Helper", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: ROLE_NAMES.THIEF }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: ROLE_NAMES.HUNTER }) }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const game = createFakeGame({ players, upcomingPlays });
