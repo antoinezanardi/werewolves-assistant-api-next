@@ -162,11 +162,11 @@ export class GameHistoryRecordService {
       result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, gameHistoryRecordToInsert),
       nominatedPlayers,
     };
-    return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
+    return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, plainToInstanceDefaultOptions);
   }
   
   private generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame: GameWithCurrentPlay): GameHistoryRecordPlaySource {
-    return plainToInstance(GameHistoryRecordPlaySource, toJSON(baseGame.currentPlay.source), { ...plainToInstanceDefaultOptions, enableCircularCheck: true });
+    return plainToInstance(GameHistoryRecordPlaySource, toJSON(baseGame.currentPlay.source), plainToInstanceDefaultOptions);
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {

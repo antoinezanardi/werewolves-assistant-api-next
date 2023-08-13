@@ -2,10 +2,12 @@ import { plainToInstance } from "class-transformer";
 import { GAME_PLAY_ACTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../src/modules/game/enums/player.enum";
 import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "../../../../../../../src/modules/game/helpers/game-play/game-play.factory";
+import { GamePlaySource } from "../../../../../../../src/modules/game/schemas/game-play/game-play-source.schema";
 import { GamePlay } from "../../../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import { ROLE_NAMES } from "../../../../../../../src/modules/role/enums/role.enum";
 import { createFakeGamePlaySource } from "../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Factory", () => {
   describe("createGamePlaySheriffSettlesVotes", () => {
@@ -269,6 +271,21 @@ describe("Game Play Factory", () => {
       });
 
       expect(createGamePlayWerewolvesEat()).toStrictEqual<GamePlay>(expectedGamePlay);
+    });
+  });
+
+  describe("createGamePlaySource", () => {
+    it("should create game play source when called.", () => {
+      const gamePlaySource = {
+        name: ROLE_NAMES.SEER,
+        players: [createFakePlayer()],
+        tata: "toto",
+      };
+
+      expect(createGamePlaySource(gamePlaySource)).toStrictEqual<GamePlaySource>(plainToInstance(GamePlaySource, {
+        name: ROLE_NAMES.SEER,
+        players: gamePlaySource.players,
+      }));
     });
   });
 
