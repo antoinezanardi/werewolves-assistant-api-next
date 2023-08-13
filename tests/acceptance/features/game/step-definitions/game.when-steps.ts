@@ -48,6 +48,14 @@ When(/^the werewolves eat the player named (?<name>.+)$/u, async function(this: 
   this.game = this.response.json<Game>();
 });
 
+When(/^the big bad wolf eats the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
+  const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
+  const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
 When(
   /^the witch uses (?<potion1>life|death) potion on the player named (?<name1>.+?)(?: and (?<potion2>(?!\k<potion1>)(?:life|death)) potion on the player named (?<name2>.+?))?$/u,
   async function(this: CustomWorld, firstPotion: WITCH_POTIONS, firstTargetName: string, secondPotion: WITCH_POTIONS | null, secondTargetName: string | null): Promise<void> {
