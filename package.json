@@ -25,6 +25,7 @@
     "lint:staged": "lint-staged -c config/lintstaged/.lintstagedrc.json",
     "lint:fix": "eslint . --fix",
     "test": "NODE_ENV=test jest --config config/jest/jest-global.ts",
+    "test:staged": "NODE_ENV=test jest --config config/jest/jest-global.ts -o",
     "test:watch": "NODE_ENV=test jest --watch --config config/jest/jest-global.ts",
     "test:cov": "NODE_ENV=test jest --coverage --config config/jest/jest-global.ts",
     "test:stryker": "NODE_ENV=test rimraf tests/stryker/coverage && stryker run config/stryker/stryker.conf.js",
