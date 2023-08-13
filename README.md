@@ -120,6 +120,9 @@ npm run test:e2e:cov
 # Run both unit and e2e tests with coverage
 npm run test:cov
 
+# Run both unit and e2e tests only on staged files (run on pre-commit)
+npm run test:staged
+
 # Run acceptance tests
 npm run test:cucumber
 
@@ -150,6 +153,9 @@ npm run lint
 
 # Lint and fix
 npm run lint:fix
+
+# Lint and fix only on staged files (run on pre-commit)
+npm run lint:staged
 ```
 
 Project is scanned by :
