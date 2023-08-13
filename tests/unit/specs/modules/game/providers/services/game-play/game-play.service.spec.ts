@@ -706,7 +706,7 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const game = createFakeGame({ players });
+      const game = createFakeGame({ players, turn: 1 });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -719,7 +719,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 0 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -732,7 +732,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 1 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -745,7 +745,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 1 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -758,8 +758,21 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, whiteWerewolf: { wakingUpInterval: 2 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([]);
+
+      expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should return false when white werewolf is in the game, alive and powerful but game's turn is not aligned with his waking up interval.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 4 } }) });
+      const game = createFakeGame({ players, turn: 3, options });
 
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -772,7 +785,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 2 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
@@ -785,7 +798,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, whiteWerewolf: { wakingUpInterval: 2 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([players[3]]);
 
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);

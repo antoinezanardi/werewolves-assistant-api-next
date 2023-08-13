@@ -113,14 +113,15 @@ export class GamePlayService {
 
   private isWhiteWerewolfGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
     const { wakingUpInterval } = game.options.roles.whiteWerewolf;
-    const shouldWhiteWerewolfBeCalled = wakingUpInterval > 0;
+    const shouldWhiteWerewolfBeCalledOnCurrentTurn = (game.turn - 1) % wakingUpInterval === 0;
     if (game instanceof CreateGameDto) {
-      return shouldWhiteWerewolfBeCalled && !!getPlayerDtoWithRole(game.players, ROLE_NAMES.WHITE_WEREWOLF);
+      return shouldWhiteWerewolfBeCalledOnCurrentTurn && !!getPlayerDtoWithRole(game.players, ROLE_NAMES.WHITE_WEREWOLF);
     }
     const { doSkipCallIfNoTarget } = game.options.roles;
     const availableTargets = getLeftToEatByWhiteWerewolfPlayers(game.players);
     const whiteWerewolfPlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.WHITE_WEREWOLF);
-    return shouldWhiteWerewolfBeCalled && !!whiteWerewolfPlayer && isPlayerAliveAndPowerful(whiteWerewolfPlayer) && (!doSkipCallIfNoTarget || !!availableTargets.length);
+    return shouldWhiteWerewolfBeCalledOnCurrentTurn && !!whiteWerewolfPlayer && isPlayerAliveAndPowerful(whiteWerewolfPlayer) &&
+      (!doSkipCallIfNoTarget || !!availableTargets.length);
   }
 
   private isPiedPiperGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
