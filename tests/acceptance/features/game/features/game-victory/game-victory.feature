@@ -197,7 +197,7 @@ Feature: 🏆 Game Victory
       | name |
 
   Scenario: 💞Lovers win the game
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
       | JB      | werewolf |
@@ -239,7 +239,7 @@ Feature: 🏆 Game Victory
       | Olivia |
 
   Scenario: 👼 Angel wins the game with the first votes
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
       | JB      | werewolf |
@@ -259,7 +259,7 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 👼 Angel wins the game with first murder of wolves
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
       | JB      | werewolf |
@@ -287,7 +287,7 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 🐺🦴 White werewolf wins the game
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | witch          |
       | JB      | werewolf       |
@@ -316,7 +316,7 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 🪈Pied Piper wins the game
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | witch      |
       | JB      | werewolf   |

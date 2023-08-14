@@ -10,6 +10,7 @@ import { getPlayerWithNameOrThrow } from "../../../../../src/modules/game/helper
 import { doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource } from "../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import type { Player } from "../../../../../src/modules/game/schemas/player/player.schema";
 import type { GameSource } from "../../../../../src/modules/game/types/game.type";
+import type { ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
 import type { CustomWorld } from "../../../shared/types/world.types";
 import { convertDatatableToPlayers } from "../helpers/game-datatable.helper";
 
@@ -45,6 +46,17 @@ Then(
   function(this: CustomWorld, expectedPlayersDatatable: DataTable): void {
     const players = convertDatatableToPlayers(expectedPlayersDatatable.rows(), this.game);
     expect(this.game.currentPlay?.source.players).toStrictEqual(players);
+  },
+);
+
+Then(
+  /^the game's winners should be (?<winners>villagers|werewolves|lovers|angel|white-werewolf|pied-piper|none) with the following players$/u,
+  function(this: CustomWorld, victoryType: GAME_VICTORY_TYPES, winnersDatable: DataTable): void {
+    const players = convertDatatableToPlayers(winnersDatable.rows(), this.game);
+    const expectedWinners = players.length ? players : undefined;
+
+    expect(this.game.victory?.type).toBe(victoryType);
+    expect(this.game.victory?.winners).toStrictEqual(expectedWinners);
   },
 );
 
@@ -112,12 +124,11 @@ Then(
 );
 
 Then(
-  /^the game's winners should be (?<winners>villagers|werewolves|lovers|angel|white-werewolf|pied-piper|none) with the following players$/u,
-  function(this: CustomWorld, victoryType: GAME_VICTORY_TYPES, winnersDatable: DataTable): void {
-    const players = convertDatatableToPlayers(winnersDatable.rows(), this.game);
-    const expectedWinners = players.length ? players : undefined;
+  /^the player named (?<name>.+?) should be on (?<currentSide>villagers|werewolves) current side and originally be on (?<originalSide>villagers|werewolves) side$/u,
+  function(this: CustomWorld, playerName: string, currentSide: ROLE_SIDES, originalSide: ROLE_SIDES): void {
+    const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
 
-    expect(this.game.victory?.type).toBe(victoryType);
-    expect(this.game.victory?.winners).toStrictEqual(expectedWinners);
+    expect(player.side.current).toBe(currentSide);
+    expect(player.side.original).toBe(originalSide);
   },
 );

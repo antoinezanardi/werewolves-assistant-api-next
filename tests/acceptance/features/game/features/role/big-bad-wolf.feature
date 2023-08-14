@@ -1,7 +1,7 @@
 Feature: 🐺👹 Big Bad Wolf role
 
   Scenario: 🐺👹Big Bad Wolf eats every night but powerless if one werewolf dies
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |
       | JB      | werewolf     |
@@ -55,7 +55,7 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia |
 
   Scenario: 🐺👹Big Bad Wolf eats every night and not powerless if one werewolf dies
-    Given a created game with options described in file no-sheriff-options.json, big-bad-wolf-not-powerless-if-werewolf-dies-option.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json, big-bad-wolf-not-powerless-if-werewolf-dies-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |
       | JB      | werewolf     |
@@ -113,7 +113,7 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia |
 
   Scenario: 🐺👹Big Bad Wolf eats every night but his role is skipped if no targets
-    Given a created game with options described in file no-sheriff-options.json, skip-roles-call-if-no-target-option.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |
       | JB      | werewolf     |
