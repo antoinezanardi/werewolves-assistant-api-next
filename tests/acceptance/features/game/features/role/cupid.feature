@@ -2,7 +2,7 @@ Feature: 💘 Cupid role
 
   Scenario: 💘 Cupid makes two people fall in love and they die if one of them dies
 
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
       | Olivia  | werewolf |

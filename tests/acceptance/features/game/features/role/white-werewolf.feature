@@ -1,7 +1,7 @@
 Feature: 🐺🦴White Werewolf role
 
   Scenario: 🐺🦴White Werewolf can eat or skip every other night an ally
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role              |
       | Antoine | villager          |
       | JB      | werewolf          |
@@ -91,7 +91,7 @@ Feature: 🐺🦴White Werewolf role
       | Olivia |
 
   Scenario: 🐺🦴White Werewolf can eat or skip every night an ally and his role is skipped if no targets
-    Given a created game with options described in file no-sheriff-options.json, white-werewolf-waking-up-every-night-option.json, skip-roles-call-if-no-target-option.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json, white-werewolf-waking-up-every-night-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role              |
       | Antoine | villager          |
       | JB      | werewolf          |
