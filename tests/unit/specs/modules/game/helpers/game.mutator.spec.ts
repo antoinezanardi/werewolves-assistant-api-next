@@ -1,4 +1,3 @@
-import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../src/modules/game/enums/player.enum";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "../../../../../../src/modules/game/helpers/game.mutator";
 import type { Game } from "../../../../../../src/modules/game/schemas/game.schema";
@@ -46,7 +45,7 @@ describe("Game Mutator", () => {
       const game = createFakeGame({ players });
       const newName = "It's a me, Mario !";
       const updatedPlayer = createFakeSeerAlivePlayer({ ...players[2], name: newName });
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       updatePlayerInGame(updatedPlayer._id, updatedPlayer, game);
       
       expect(game).toStrictEqual<Game>(clonedGame);
@@ -87,7 +86,7 @@ describe("Game Mutator", () => {
       const attributeToAdd = createFakeCharmedByPiedPiperPlayerAttribute();
       const players = bulkCreateFakePlayers(4);
       const game = createFakeGame({ players });
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       addPlayerAttributeInGame(players[2]._id, game, attributeToAdd);
       
       expect(game).toStrictEqual<Game>(clonedGame);
@@ -135,7 +134,7 @@ describe("Game Mutator", () => {
       const attributeToAdd = createFakeCharmedByPiedPiperPlayerAttribute();
       const players = bulkCreateFakePlayers(4);
       const game = createFakeGame({ players });
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       addPlayersAttributeInGame([players[1]._id, players[2]._id], game, attributeToAdd);
       
       expect(game).toStrictEqual<Game>(clonedGame);
@@ -168,7 +167,7 @@ describe("Game Mutator", () => {
     it("should not mutate the original game when called.", () => {
       const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffByAllPlayerAttribute()] }]);
       const game = createFakeGame({ players });
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       removePlayerAttributeByNameInGame(game.players[1]._id, game, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
 
       expect(game).toStrictEqual<Game>(clonedGame);
@@ -190,7 +189,7 @@ describe("Game Mutator", () => {
     it("should not mutate the original game when called.", () => {
       const gamePlayToPrepend = createFakeGamePlayHunterShoots();
       const game = createFakeGame({ upcomingPlays: [createFakeGamePlayCupidCharms()] });
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       prependUpcomingPlayInGame(gamePlayToPrepend, game);
       
       expect(game).toStrictEqual<Game>(clonedGame);
@@ -212,7 +211,7 @@ describe("Game Mutator", () => {
     it("should not mutate the original game when called.", () => {
       const gamePlayToAppend = createFakeGamePlayHunterShoots();
       const game = createFakeGame({ upcomingPlays: [createFakeGamePlayCupidCharms()] });
-      const clonedGame = cloneDeep(game);
+      const clonedGame = createFakeGame(game);
       appendUpcomingPlayInGame(gamePlayToAppend, game);
       
       expect(game).toStrictEqual<Game>(clonedGame);

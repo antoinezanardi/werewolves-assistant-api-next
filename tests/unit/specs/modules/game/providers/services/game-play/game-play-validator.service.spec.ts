@@ -20,6 +20,7 @@ import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay, cr
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "../../../../../../../factories/game/schemas/game-options/votes-game-options.schema.factory";
+import { createFakeGamePlaySource } from "../../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteByAllPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -1023,7 +1024,7 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when game source doesn't have a validation method.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlay({ source: ROLE_NAMES.IDIOT }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlay({ source: createFakeGamePlaySource({ name: ROLE_NAMES.IDIOT }) }) });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
       expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
@@ -1317,7 +1318,7 @@ describe("Game Play Validator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
       ]);
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat({ source: PLAYER_GROUPS.ALL }), players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat({ source: createFakeGamePlaySource({ name: PLAYER_GROUPS.ALL }) }), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];
       
       expect(() => services.gamePlayValidator["validateInfectedTargetsAndPotionUsage"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
@@ -1350,7 +1351,7 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw error when expected source is not WITCH but targets drank potions.", () => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions({ source: ROLE_NAMES.THIEF }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions({ source: createFakeGamePlaySource({ name: ROLE_NAMES.THIEF }) }) });
       const makeGamePlayTargetsWithRelationsDto = [
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.LIFE }),
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.DEATH }),
@@ -1479,7 +1480,7 @@ describe("Game Play Validator Service", () => {
   });
 
   describe("validateGamePlayVotesWithRelationsDtoSourceAndTarget", () => {
-    it("should throw error when one vote source is not alive.", () => {
+    it("should throw error when one vote source is dead.", () => {
       const players = [
         createFakeSeerAlivePlayer({ isAlive: false }),
         createFakeWerewolfAlivePlayer(),
@@ -1521,6 +1522,7 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[3], target: players[0] }),
       ];
 
       expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto)).toThrow(BadGamePlayPayloadException);
@@ -1571,9 +1573,22 @@ describe("Game Play Validator Service", () => {
       expect(() => services.gamePlayValidator["validateUnsetGamePlayVotesWithRelationsDto"](game)).not.toThrow();
     });
 
-    it("should throw error when there is no vote but they are required.", () => {
+    it("should do nothing when there is no vote when angel presence but it's not a vote action.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeIdiotAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.ANGEL_PRESENCE, action: GAME_PLAY_ACTIONS.CHOOSE_CARD }), options });
+
+      expect(() => services.gamePlayValidator["validateUnsetGamePlayVotesWithRelationsDto"](game)).not.toThrow();
+    });
+
+    it("should throw error when there is no vote but they are required.", () => {
+      const players = [
+        createFakeSeerAlivePlayer({ isAlive: false }),
         createFakeWerewolfAlivePlayer(),
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),

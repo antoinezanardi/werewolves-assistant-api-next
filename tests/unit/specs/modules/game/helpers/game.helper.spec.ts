@@ -1,6 +1,5 @@
-import { cloneDeep } from "lodash";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getExpectedPlayersToPlay, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithAttribute, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getExpectedPlayersToPlay, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithAttribute, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithAttribute, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
 import type { GetNearestPlayerOptions } from "../../../../../../src/modules/game/types/game.type";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
@@ -139,6 +138,41 @@ describe("Game Helper", () => {
     });
   });
 
+  describe("getPlayerWithName", () => {
+    it("should get player with specific name when called with this name.", () => {
+      const players = bulkCreateFakePlayers(6);
+
+      expect(getPlayerWithName(players, players[2].name)).toStrictEqual(players[2]);
+    });
+
+    it("should return undefined when called with unknown name.", () => {
+      const players = bulkCreateFakePlayers(6);
+
+      expect(getPlayerWithName(players, "i-cant-be-a-valid-name-that-is-bad")).toBeUndefined();
+    });
+  });
+
+  describe("getPlayerWithNameOrThrow", () => {
+    it("should get player with specific name when called with this id.", () => {
+      const players = bulkCreateFakePlayers(6);
+      const game = createFakeGame({ players });
+      const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: players[2].name };
+      const exception = new UnexpectedException("killPlayer", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+
+      expect(getPlayerWithNameOrThrow(players[2].name, game, exception)).toStrictEqual(players[2]);
+    });
+
+    it("should throw error when called with unknown name.", () => {
+      const players = bulkCreateFakePlayers(6);
+      const game = createFakeGame({ players });
+      const unknownPlayerName = "i-cant-be-a-valid-name-that-is-bad";
+      const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: unknownPlayerName };
+      const exception = new UnexpectedException("killPlayer", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+
+      expect(() => getPlayerWithNameOrThrow(unknownPlayerName, game, exception)).toThrow(exception);
+    });
+  });
+
   describe("getAdditionalCardWithId", () => {
     it("should get card with specific id when called with this id.", () => {
       const cards = bulkCreateFakeGameAdditionalCards(6);
@@ -176,7 +210,7 @@ describe("Game Helper", () => {
     });
 
     it("should return true when at least one werewolf is dead.", () => {
-      const notAllAlivePlayers = cloneDeep(players);
+      const notAllAlivePlayers = players.map(player => createFakePlayer(player));
       notAllAlivePlayers[0].isAlive = false;
       
       expect(areAllWerewolvesAlive(notAllAlivePlayers)).toBe(false);
@@ -200,7 +234,7 @@ describe("Game Helper", () => {
     });
 
     it("should return true when at least one villager is dead.", () => {
-      const notAllAlivePlayers = cloneDeep(players);
+      const notAllAlivePlayers = players.map(player => createFakePlayer(player));
       notAllAlivePlayers[1].isAlive = false;
       
       expect(areAllVillagersAlive(notAllAlivePlayers)).toBe(false);

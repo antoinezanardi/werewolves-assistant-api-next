@@ -1,13 +1,17 @@
 name: Werewolves Assistant API Release Workflow
+
 on:
   push:
     branches:
       - 'main'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
+
 env:
   GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+
 jobs:
   install:
     name: Install ⚙️
@@ -15,20 +19,24 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
+
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Cache npm dependencies 🥡
         uses: actions/cache@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Install project dependencies 📦
         run: npm ci --ignore-scripts
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
+
   mutant-tests:
     name: Mutant Tests 👽
     runs-on: ubuntu-latest
@@ -40,23 +48,29 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
+
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
+
       - name: Mutant tests 👽
         run: npm run test:stryker
+
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
   release:
     name: Release 🏷️
     runs-on: ubuntu-latest
@@ -67,19 +81,23 @@ jobs:
         uses: actions/checkout@v3
         with:
           persist-credentials: false
+
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Release 🏷️
         run: npx semantic-release
+
   all-tests:
     name: All Tests 🧬
     runs-on: ubuntu-latest
@@ -98,21 +116,26 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v3
+
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
+
       - name: All tests 🧬
         run: npm run test:cov 2>&1 | ./scripts/transform-jest-results-as-env-variables.sh >> "$GITHUB_ENV"
+
       - name: Set Jest Results As Outputs 📝
         id: outputs
         run: |
@@ -125,19 +148,60 @@ jobs:
           echo "JEST_BRANCHES_PERCENT=${{ env.JEST_BRANCHES_PERCENT }}" >> "$GITHUB_OUTPUT"
           echo "JEST_FUNCTIONS_PERCENT=${{ env.JEST_FUNCTIONS_PERCENT }}" >> "$GITHUB_OUTPUT"
           echo "JEST_LINES_PERCENT=${{ env.JEST_LINES_PERCENT }}" >> "$GITHUB_OUTPUT"
+
       - name: Save tests coverage in cache 🥡
         uses: actions/cache/save@v3
         id: cache-tests-coverage
         with:
           path: tests/coverage
           key: ${{ runner.os }}-tests-coverage-v3-${{hashFiles('tests/coverage/lcov.info')}}
+
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
+  acceptance-tests:
+    name: Acceptance Tests 🥒
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    outputs:
+      CUCUMBER_SCENARIOS_COUNT: ${{ steps.outputs.outputs.CUCUMBER_SCENARIOS_COUNT }}
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS v20 ⚙️
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Restore npm dependencies from cache 🥡
+        uses: actions/cache/restore@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
+      - name: Start Docker containers 🐳
+        run: npm run docker:test:start
+
+      - name: Acceptance Tests 🥒
+        run: npm run test:cucumber
+
+      - name: Set Cucumber Results As Outputs 📝
+        id: outputs
+        run: ./scripts/transform-cucumber-report-as-env-variables.sh >> "$GITHUB_OUTPUT"
+
+      - name: Stop Docker containers 🐳
+        run: npm run docker:test:stop
+
   badges:
     name: Generate Badges 💠
     runs-on: ubuntu-latest
     needs:
       - all-tests
+      - acceptance-tests
     steps:
       - name: Tests Count Badge 💠
         uses: RubbaBoy/BYOB@v1.3.0
@@ -188,6 +252,17 @@ jobs:
           ICON: https://cdn.simpleicons.org/codecov/white
           COLOR: 109B08
           GITHUB_TOKEN: ${{ secrets.BYOB_TOKEN }}
+
+      - name: Scenarios Badge 💠
+        uses: RubbaBoy/BYOB@v1.3.0
+        with:
+          NAME: scenarios
+          LABEL: Scenarios
+          STATUS: ${{ needs.acceptance-tests.outputs.CUCUMBER_SCENARIOS_COUNT }} scenarios
+          ICON: https://cdn.simpleicons.org/cucumber/white
+          COLOR: 169652
+          GITHUB_TOKEN: ${{ secrets.BYOB_TOKEN }}
+
   sonarcloud:
     name: SonarCloud Analysis 🌥️
     runs-on: ubuntu-latest

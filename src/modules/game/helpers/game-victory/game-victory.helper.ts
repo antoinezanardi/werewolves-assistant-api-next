@@ -9,7 +9,8 @@ import { GameVictory } from "../../schemas/game-victory/game-victory.schema";
 import type { Game } from "../../schemas/game.schema";
 import type { Player } from "../../schemas/player/player.schema";
 import { areAllPlayersDead, getLeftToCharmByPiedPiperPlayers, getPlayersWithAttribute, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "../game.helper";
-import { doesPlayerHaveAttribute, isPlayerAliveAndPowerful } from "../player/player.helper";
+import { doesPlayerHaveAttributeWithName } from "../player/player-attribute/player-attribute.helper";
+import { isPlayerAliveAndPowerful } from "../player/player.helper";
 
 function doWerewolvesWin(players: Player[]): boolean {
   const werewolvesSidedPlayers = getPlayersWithCurrentSide(players, ROLE_SIDES.WEREWOLVES);
@@ -24,7 +25,7 @@ function doVillagersWin(players: Player[]): boolean {
 function doLoversWin(players: Player[]): boolean {
   const lovers = getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
   return lovers.length > 0 && players.every(player => {
-    const isPlayerInLove = doesPlayerHaveAttribute(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
+    const isPlayerInLove = doesPlayerHaveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
     return isPlayerInLove && player.isAlive || !isPlayerInLove && !player.isAlive;
   });
 }
@@ -45,7 +46,7 @@ function doesPiedPiperWin(game: Game): boolean {
 
 function doesAngelWin(game: Game): boolean {
   const angelPlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.ANGEL);
-  if (!angelPlayer?.death || angelPlayer.isAlive || doesPlayerHaveAttribute(angelPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) || game.turn > 1) {
+  if (!angelPlayer?.death || angelPlayer.isAlive || doesPlayerHaveAttributeWithName(angelPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) || game.turn > 1) {
     return false;
   }
   return [PLAYER_DEATH_CAUSES.VOTE, PLAYER_DEATH_CAUSES.EATEN].includes(angelPlayer.death.cause);
@@ -56,7 +57,7 @@ function isGameOver(game: Game): boolean {
   if (!currentPlay) {
     throw createNoCurrentGamePlayUnexpectedException("isGameOver", { gameId: game._id });
   }
-  const isShootPlayIncoming = !!upcomingPlays.find(({ action, source }) => action === GAME_PLAY_ACTIONS.SHOOT && source === ROLE_NAMES.HUNTER);
+  const isShootPlayIncoming = !!upcomingPlays.find(({ action, source }) => action === GAME_PLAY_ACTIONS.SHOOT && source.name === ROLE_NAMES.HUNTER);
   return areAllPlayersDead(players) || currentPlay.action !== GAME_PLAY_ACTIONS.SHOOT && !isShootPlayIncoming &&
     (doWerewolvesWin(players) || doVillagersWin(players) ||
     doLoversWin(players) || doesWhiteWerewolfWin(players) || doesPiedPiperWin(game) || doesAngelWin(game));

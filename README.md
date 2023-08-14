@@ -92,6 +92,12 @@ Unit and E2E tests are orchestrated with :
 
 [![Covered Lines](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-lines)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-lines)
 
+Acceptance tests are managed by :
+
+![Cucumber](https://img.shields.io/badge/-Cucumber-black?style=for-the-badge&logoColor=white&logo=cucumber&color=169652) 
+
+[![Scenarios](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)
+
 Mutant testing is also available with :
 
 ![Stryker](https://img.shields.io/badge/-Stryker-black?style=for-the-badge&logoColor=white&logo=stripe&color=7F1B10) 
@@ -115,6 +121,12 @@ npm run test:e2e:cov
 
 # Run both unit and e2e tests with coverage
 npm run test:cov
+
+# Run both unit and e2e tests only on staged files (run on pre-commit)
+npm run test:staged
+
+# Run acceptance tests
+npm run test:cucumber
 
 # Run mutant tests with coverage
 npm run test:stryker
@@ -143,6 +155,9 @@ npm run lint
 
 # Lint and fix
 npm run lint:fix
+
+# Lint and fix only on staged files (run on pre-commit)
+npm run lint:staged
 ```
 
 Project is scanned by :

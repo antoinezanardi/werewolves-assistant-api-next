@@ -2,14 +2,14 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 import { defaultGameOptions } from "../../../../../../../../src/modules/game/constants/game-options/game-options.constant";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
+import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES } from "../../../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
 import * as GameHelper from "../../../../../../../../src/modules/game/helpers/game.helper";
 import * as PlayerHelper from "../../../../../../../../src/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "../../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-play.service";
-import type { GamePlay } from "../../../../../../../../src/modules/game/schemas/game-play.schema";
+import type { GamePlay } from "../../../../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "../../../../../../../../src/modules/game/schemas/game.schema";
 import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
 import { createFakeGameOptionsDto } from "../../../../../../../factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
@@ -18,7 +18,8 @@ import { createFakeCreateGameDto } from "../../../../../../../factories/game/dto
 import { createFakeGameHistoryRecord } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGamePlay, createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySource } from "../../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
+import { createFakeGamePlay, createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
@@ -33,6 +34,7 @@ describe("Game Play Service", () => {
     gameHelper: {
       getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
       getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
+      getExpectedPlayersToPlay: jest.SpyInstance;
     };
   };
 
@@ -42,6 +44,7 @@ describe("Game Play Service", () => {
       gameHelper: {
         getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers").mockReturnValue([]),
         getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers").mockReturnValue([]),
+        getExpectedPlayersToPlay: jest.spyOn(GameHelper, "getExpectedPlayersToPlay").mockReturnValue([]),
       },
     };
     
@@ -111,11 +114,22 @@ describe("Game Play Service", () => {
     });
 
     it("should make proceed to next game play when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeThiefAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const expectedPlayersToPlay = [players[1], players[3]];
+      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
       const game = createFakeGame({ upcomingPlays: [createFakeGamePlayAllVote()], currentPlay: createFakeGamePlayFoxSniffs() });
       const expectedGame = createFakeGame({
         ...game,
         upcomingPlays: [],
-        currentPlay: game.upcomingPlays[0],
+        currentPlay: createFakeGamePlay({
+          ...game.upcomingPlays[0],
+          source: createFakeGamePlaySource({ ...game.upcomingPlays[0].source, players: expectedPlayersToPlay }),
+        }),
       });
 
       expect(services.gamePlay.proceedToNextGamePlay(game)).toStrictEqual<Game>(expectedGame);
@@ -144,9 +158,9 @@ describe("Game Play Service", () => {
           options: defaultGameOptions,
         }),
         output: [
-          createFakeGamePlay({ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF }),
-          createFakeGamePlay({ source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK }),
-          createFakeGamePlay({ source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT }),
+          createFakeGamePlayAllElectSheriff(),
+          createFakeGamePlaySeerLooks(),
+          createFakeGamePlayWerewolvesEat(),
         ],
       },
       {
@@ -181,26 +195,26 @@ describe("Game Play Service", () => {
           options: defaultGameOptions,
         }),
         output: [
-          createFakeGamePlay({ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.ELECT_SHERIFF }),
-          createFakeGamePlay({ source: PLAYER_GROUPS.ALL, action: GAME_PLAY_ACTIONS.VOTE, cause: GAME_PLAY_CAUSES.ANGEL_PRESENCE }),
-          createFakeGamePlay({ source: ROLE_NAMES.THIEF, action: GAME_PLAY_ACTIONS.CHOOSE_CARD }),
-          createFakeGamePlay({ source: ROLE_NAMES.DOG_WOLF, action: GAME_PLAY_ACTIONS.CHOOSE_SIDE }),
-          createFakeGamePlay({ source: ROLE_NAMES.CUPID, action: GAME_PLAY_ACTIONS.CHARM }),
-          createFakeGamePlay({ source: ROLE_NAMES.SEER, action: GAME_PLAY_ACTIONS.LOOK }),
-          createFakeGamePlay({ source: ROLE_NAMES.FOX, action: GAME_PLAY_ACTIONS.SNIFF }),
-          createFakeGamePlay({ source: PLAYER_GROUPS.LOVERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER }),
-          createFakeGamePlay({ source: ROLE_NAMES.STUTTERING_JUDGE, action: GAME_PLAY_ACTIONS.CHOOSE_SIGN }),
-          createFakeGamePlay({ source: ROLE_NAMES.TWO_SISTERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER }),
-          createFakeGamePlay({ source: ROLE_NAMES.THREE_BROTHERS, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER }),
-          createFakeGamePlay({ source: ROLE_NAMES.WILD_CHILD, action: GAME_PLAY_ACTIONS.CHOOSE_MODEL }),
-          createFakeGamePlay({ source: ROLE_NAMES.RAVEN, action: GAME_PLAY_ACTIONS.MARK }),
-          createFakeGamePlay({ source: ROLE_NAMES.GUARD, action: GAME_PLAY_ACTIONS.PROTECT }),
-          createFakeGamePlay({ source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT }),
-          createFakeGamePlay({ source: ROLE_NAMES.WHITE_WEREWOLF, action: GAME_PLAY_ACTIONS.EAT }),
-          createFakeGamePlay({ source: ROLE_NAMES.BIG_BAD_WOLF, action: GAME_PLAY_ACTIONS.EAT }),
-          createFakeGamePlay({ source: ROLE_NAMES.WITCH, action: GAME_PLAY_ACTIONS.USE_POTIONS }),
-          createFakeGamePlay({ source: ROLE_NAMES.PIED_PIPER, action: GAME_PLAY_ACTIONS.CHARM }),
-          createFakeGamePlay({ source: PLAYER_GROUPS.CHARMED, action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER }),
+          createFakeGamePlayAllElectSheriff(),
+          createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.ANGEL_PRESENCE }),
+          createFakeGamePlayThiefChoosesCard(),
+          createFakeGamePlayDogWolfChoosesSide(),
+          createFakeGamePlayCupidCharms(),
+          createFakeGamePlaySeerLooks(),
+          createFakeGamePlayFoxSniffs(),
+          createFakeGamePlayLoversMeetEachOther(),
+          createFakeGamePlayStutteringJudgeChoosesSign(),
+          createFakeGamePlayTwoSistersMeetEachOther(),
+          createFakeGamePlayThreeBrothersMeetEachOther(),
+          createFakeGamePlayWildChildChoosesModel(),
+          createFakeGamePlayRavenMarks(),
+          createFakeGamePlayGuardProtects(),
+          createFakeGamePlayWerewolvesEat(),
+          createFakeGamePlayWhiteWerewolfEats(),
+          createFakeGamePlayBigBadWolfEats(),
+          createFakeGamePlayWitchUsesPotions(),
+          createFakeGamePlayPiedPiperCharms(),
+          createFakeGamePlayCharmedMeetEachOther(),
         ],
       },
       {
@@ -217,7 +231,7 @@ describe("Game Play Service", () => {
           ]),
           options: defaultGameOptions,
         }),
-        output: [createFakeGamePlay({ source: PLAYER_GROUPS.WEREWOLVES, action: GAME_PLAY_ACTIONS.EAT })],
+        output: [createFakeGamePlayWerewolvesEat()],
       },
     ])("should get upcoming night plays when $test [#$#].", async({ game, output }) => {
       await expect(services.gamePlay.getUpcomingNightPlays(game)).resolves.toStrictEqual<GamePlay[]>(output);
@@ -506,7 +520,7 @@ describe("Game Play Service", () => {
 
     it("should return false when game plays source group is villagers and game is dto.", () => {
       const gameDto = createFakeCreateGameDto();
-      const gamePlay = createFakeGamePlayWerewolvesEat({ source: PLAYER_GROUPS.VILLAGERS });
+      const gamePlay = createFakeGamePlayWerewolvesEat({ source: createFakeGamePlaySource({ name: PLAYER_GROUPS.VILLAGERS }) });
 
       expect(services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).toBe(false);
     });
@@ -692,7 +706,7 @@ describe("Game Play Service", () => {
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ]);
-      const game = createFakeGame({ players });
+      const game = createFakeGame({ players, turn: 1 });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -705,7 +719,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 0 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -718,7 +732,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 1 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -731,7 +745,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 1 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -744,8 +758,21 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, whiteWerewolf: { wakingUpInterval: 2 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([]);
+
+      expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should return false when white werewolf is in the game, alive and powerful but game's turn is not aligned with his waking up interval.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ]);
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 4 } }) });
+      const game = createFakeGame({ players, turn: 3, options });
 
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -758,7 +785,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, whiteWerewolf: { wakingUpInterval: 2 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
@@ -771,7 +798,7 @@ describe("Game Play Service", () => {
         createFakeAngelAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, whiteWerewolf: { wakingUpInterval: 2 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValue([players[3]]);
 
       expect(services.gamePlay["isWhiteWerewolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
@@ -851,7 +878,8 @@ describe("Game Play Service", () => {
         { role: { name: ROLE_NAMES.WEREWOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[0]]);
+
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](gameDto)).toBe(false);
     });
 
@@ -863,7 +891,8 @@ describe("Game Play Service", () => {
         { role: { name: ROLE_NAMES.BIG_BAD_WOLF } },
       ]);
       const gameDto = createFakeCreateGameDto({ players });
-      
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[0]]);
+
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](gameDto)).toBe(true);
     });
 
@@ -875,6 +904,7 @@ describe("Game Play Service", () => {
         createFakePiedPiperAlivePlayer(),
       ]);
       const game = createFakeGame({ players });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[0]]);
       
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -887,6 +917,7 @@ describe("Game Play Service", () => {
         createFakeBigBadWolfAlivePlayer({ isAlive: false }),
       ]);
       const game = createFakeGame({ players });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[0]]);
       
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -900,6 +931,7 @@ describe("Game Play Service", () => {
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[0]]);
       
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -913,6 +945,7 @@ describe("Game Play Service", () => {
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([]);
 
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -940,6 +973,7 @@ describe("Game Play Service", () => {
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: false } }) });
       const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[0]]);
       
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
@@ -953,6 +987,7 @@ describe("Game Play Service", () => {
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[0]]);
       
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
@@ -966,6 +1001,7 @@ describe("Game Play Service", () => {
       ]);
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([]);
 
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });

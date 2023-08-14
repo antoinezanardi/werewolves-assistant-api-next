@@ -3,11 +3,12 @@ import { plainToInstanceDefaultOptions } from "../../../../shared/validation/con
 import { ROLE_NAMES } from "../../../role/enums/role.enum";
 import { GAME_PLAY_ACTIONS } from "../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../enums/player.enum";
-import { GamePlay } from "../../schemas/game-play.schema";
+import { GamePlaySource } from "../../schemas/game-play/game-play-source.schema";
+import { GamePlay } from "../../schemas/game-play/game-play.schema";
 
 function createGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+    source: createGamePlaySource({ name: PLAYER_ATTRIBUTE_NAMES.SHERIFF }),
     action: GAME_PLAY_ACTIONS.SETTLE_VOTES,
     ...gamePlay,
   });
@@ -15,7 +16,7 @@ function createGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}): Ga
 
 function createGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+    source: createGamePlaySource({ name: PLAYER_ATTRIBUTE_NAMES.SHERIFF }),
     action: GAME_PLAY_ACTIONS.DELEGATE,
     ...gamePlay,
   });
@@ -23,7 +24,7 @@ function createGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}): GameP
 
 function createGamePlayAllVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: PLAYER_GROUPS.ALL,
+    source: createGamePlaySource({ name: PLAYER_GROUPS.ALL }),
     action: GAME_PLAY_ACTIONS.VOTE,
     ...gamePlay,
   });
@@ -31,7 +32,7 @@ function createGamePlayAllVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
 
 function createGamePlayAllElectSheriff(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: PLAYER_GROUPS.ALL,
+    source: createGamePlaySource({ name: PLAYER_GROUPS.ALL }),
     action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
     ...gamePlay,
   });
@@ -39,7 +40,7 @@ function createGamePlayAllElectSheriff(gamePlay: Partial<GamePlay> = {}): GamePl
 
 function createGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.THIEF,
+    source: createGamePlaySource({ name: ROLE_NAMES.THIEF }),
     action: GAME_PLAY_ACTIONS.CHOOSE_CARD,
     ...gamePlay,
   });
@@ -47,7 +48,7 @@ function createGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}): GameP
 
 function createGamePlayStutteringJudgeChoosesSign(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.STUTTERING_JUDGE,
+    source: createGamePlaySource({ name: ROLE_NAMES.STUTTERING_JUDGE }),
     action: GAME_PLAY_ACTIONS.CHOOSE_SIGN,
     ...gamePlay,
   });
@@ -55,7 +56,7 @@ function createGamePlayStutteringJudgeChoosesSign(gamePlay: Partial<GamePlay> = 
 
 function createGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.SCAPEGOAT,
+    source: createGamePlaySource({ name: ROLE_NAMES.SCAPEGOAT }),
     action: GAME_PLAY_ACTIONS.BAN_VOTING,
     ...gamePlay,
   });
@@ -63,7 +64,7 @@ function createGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {}): Ga
 
 function createGamePlayDogWolfChoosesSide(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.DOG_WOLF,
+    source: createGamePlaySource({ name: ROLE_NAMES.DOG_WOLF }),
     action: GAME_PLAY_ACTIONS.CHOOSE_SIDE,
     ...gamePlay,
   });
@@ -71,7 +72,7 @@ function createGamePlayDogWolfChoosesSide(gamePlay: Partial<GamePlay> = {}): Gam
 
 function createGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.WILD_CHILD,
+    source: createGamePlaySource({ name: ROLE_NAMES.WILD_CHILD }),
     action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,
     ...gamePlay,
   });
@@ -79,7 +80,7 @@ function createGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {}): 
 
 function createGamePlayFoxSniffs(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.FOX,
+    source: createGamePlaySource({ name: ROLE_NAMES.FOX }),
     action: GAME_PLAY_ACTIONS.SNIFF,
     ...gamePlay,
   });
@@ -87,7 +88,7 @@ function createGamePlayFoxSniffs(gamePlay: Partial<GamePlay> = {}): GamePlay {
 
 function createGamePlayCharmedMeetEachOther(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: PLAYER_GROUPS.CHARMED,
+    source: createGamePlaySource({ name: PLAYER_GROUPS.CHARMED }),
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
     ...gamePlay,
   });
@@ -95,7 +96,7 @@ function createGamePlayCharmedMeetEachOther(gamePlay: Partial<GamePlay> = {}): G
 
 function createGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: PLAYER_GROUPS.LOVERS,
+    source: createGamePlaySource({ name: PLAYER_GROUPS.LOVERS }),
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
     ...gamePlay,
   });
@@ -103,7 +104,7 @@ function createGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {}): Ga
 
 function createGamePlayThreeBrothersMeetEachOther(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.THREE_BROTHERS,
+    source: createGamePlaySource({ name: ROLE_NAMES.THREE_BROTHERS }),
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
     ...gamePlay,
   });
@@ -111,7 +112,7 @@ function createGamePlayThreeBrothersMeetEachOther(gamePlay: Partial<GamePlay> = 
 
 function createGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.TWO_SISTERS,
+    source: createGamePlaySource({ name: ROLE_NAMES.TWO_SISTERS }),
     action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
     ...gamePlay,
   });
@@ -119,7 +120,7 @@ function createGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> = {})
 
 function createGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.RAVEN,
+    source: createGamePlaySource({ name: ROLE_NAMES.RAVEN }),
     action: GAME_PLAY_ACTIONS.MARK,
     ...gamePlay,
   });
@@ -127,7 +128,7 @@ function createGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}): GamePlay {
 
 function createGamePlayGuardProtects(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.GUARD,
+    source: createGamePlaySource({ name: ROLE_NAMES.GUARD }),
     action: GAME_PLAY_ACTIONS.PROTECT,
     ...gamePlay,
   });
@@ -135,7 +136,7 @@ function createGamePlayGuardProtects(gamePlay: Partial<GamePlay> = {}): GamePlay
 
 function createGamePlayHunterShoots(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.HUNTER,
+    source: createGamePlaySource({ name: ROLE_NAMES.HUNTER }),
     action: GAME_PLAY_ACTIONS.SHOOT,
     ...gamePlay,
   });
@@ -143,7 +144,7 @@ function createGamePlayHunterShoots(gamePlay: Partial<GamePlay> = {}): GamePlay 
 
 function createGamePlayWitchUsesPotions(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.WITCH,
+    source: createGamePlaySource({ name: ROLE_NAMES.WITCH }),
     action: GAME_PLAY_ACTIONS.USE_POTIONS,
     ...gamePlay,
   });
@@ -151,7 +152,7 @@ function createGamePlayWitchUsesPotions(gamePlay: Partial<GamePlay> = {}): GameP
 
 function createGamePlayPiedPiperCharms(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.PIED_PIPER,
+    source: createGamePlaySource({ name: ROLE_NAMES.PIED_PIPER }),
     action: GAME_PLAY_ACTIONS.CHARM,
     ...gamePlay,
   });
@@ -159,7 +160,7 @@ function createGamePlayPiedPiperCharms(gamePlay: Partial<GamePlay> = {}): GamePl
 
 function createGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.CUPID,
+    source: createGamePlaySource({ name: ROLE_NAMES.CUPID }),
     action: GAME_PLAY_ACTIONS.CHARM,
     ...gamePlay,
   });
@@ -167,7 +168,7 @@ function createGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}): GamePlay {
 
 function createGamePlaySeerLooks(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.SEER,
+    source: createGamePlaySource({ name: ROLE_NAMES.SEER }),
     action: GAME_PLAY_ACTIONS.LOOK,
     ...gamePlay,
   });
@@ -175,7 +176,7 @@ function createGamePlaySeerLooks(gamePlay: Partial<GamePlay> = {}): GamePlay {
 
 function createGamePlayWhiteWerewolfEats(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.WHITE_WEREWOLF,
+    source: createGamePlaySource({ name: ROLE_NAMES.WHITE_WEREWOLF }),
     action: GAME_PLAY_ACTIONS.EAT,
     ...gamePlay,
   });
@@ -183,7 +184,7 @@ function createGamePlayWhiteWerewolfEats(gamePlay: Partial<GamePlay> = {}): Game
 
 function createGamePlayBigBadWolfEats(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: ROLE_NAMES.BIG_BAD_WOLF,
+    source: createGamePlaySource({ name: ROLE_NAMES.BIG_BAD_WOLF }),
     action: GAME_PLAY_ACTIONS.EAT,
     ...gamePlay,
   });
@@ -191,10 +192,14 @@ function createGamePlayBigBadWolfEats(gamePlay: Partial<GamePlay> = {}): GamePla
 
 function createGamePlayWerewolvesEat(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: PLAYER_GROUPS.WEREWOLVES,
+    source: createGamePlaySource({ name: PLAYER_GROUPS.WEREWOLVES }),
     action: GAME_PLAY_ACTIONS.EAT,
     ...gamePlay,
   });
+}
+
+function createGamePlaySource(gamePlaySource: GamePlaySource): GamePlaySource {
+  return plainToInstance(GamePlaySource, gamePlaySource, { ...plainToInstanceDefaultOptions, excludeExtraneousValues: true });
 }
 
 function createGamePlay(gamePlay: GamePlay): GamePlay {
@@ -226,5 +231,6 @@ export {
   createGamePlayWhiteWerewolfEats,
   createGamePlayBigBadWolfEats,
   createGamePlayWerewolvesEat,
+  createGamePlaySource,
   createGamePlay,
 };

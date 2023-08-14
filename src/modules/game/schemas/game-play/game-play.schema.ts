@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
-import { gamePlayApiProperties } from "../constants/game-play.constant";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../enums/game-play.enum";
-import { GameSource } from "../types/game.type";
+import { Expose, Type } from "class-transformer";
+import { gamePlayApiProperties } from "../../constants/game-play/game-play.constant";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../enums/game-play.enum";
+import { GamePlaySource, GamePlaySourceSchema } from "./game-play-source.schema";
 
 @Schema({
   versionKey: false,
@@ -12,9 +12,13 @@ import { GameSource } from "../types/game.type";
 })
 class GamePlay {
   @ApiProperty(gamePlayApiProperties.source)
-  @Prop({ required: true })
+  @Prop({
+    required: true,
+    type: GamePlaySourceSchema,
+  })
+  @Type(() => GamePlaySource)
   @Expose()
-  public source: GameSource;
+  public source: GamePlaySource;
 
   @ApiProperty(gamePlayApiProperties.action)
   @Prop({ required: true })

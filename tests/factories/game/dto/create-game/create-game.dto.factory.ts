@@ -24,6 +24,7 @@ function createFakeCreateGameDto(createGameDto: Partial<CreateGameDto> = {}, ove
     phase: createGameDto.phase ?? GAME_PHASES.NIGHT,
     players: createGameDto.players ?? [],
     upcomingPlays: createGameDto.upcomingPlays ?? [],
+    currentPlay: createGameDto.currentPlay ?? null,
     options: createGameDto.options ?? defaultGameOptions,
     ...override,
   }, plainToInstanceDefaultOptions);

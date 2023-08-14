@@ -1,4 +1,5 @@
 import { plainToInstance } from "class-transformer";
+import { toJSON } from "../../../../../../tests/helpers/object/object.helper";
 import { plainToInstanceDefaultOptions } from "../../../../../shared/validation/constants/validation.constant";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { GAME_PHASES } from "../../../enums/game.enum";
@@ -178,7 +179,7 @@ function createSheriffByAllPlayerAttribute(playerAttribute: Partial<PlayerAttrib
 }
 
 function createPlayerAttribute(playerAttribute: PlayerAttribute): PlayerAttribute {
-  return plainToInstance(PlayerAttribute, playerAttribute, plainToInstanceDefaultOptions);
+  return plainToInstance(PlayerAttribute, toJSON(playerAttribute), plainToInstanceDefaultOptions);
 }
 
 export {
