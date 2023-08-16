@@ -61,8 +61,8 @@ Then(
 );
 
 Then(
-  /^the player named (?<name>.+?) should have the (?<attributeName>\S+)(?: from (?<attributeSource>\S+))? attribute$/u,
-  function(this: CustomWorld, playerName: string, attributeName: PLAYER_ATTRIBUTE_NAMES, attributeSource: GameSource | null): void {
+  /^the player named (?<name>.+?) should(?<shouldMiss> not)? have the (?<attributeName>\S+)(?: from (?<attributeSource>\S+))? attribute$/u,
+  function(this: CustomWorld, playerName: string, shouldMiss: string | null, attributeName: PLAYER_ATTRIBUTE_NAMES, attributeSource: GameSource | null): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
     let doesPlayerHaveAttribute = false;
     if (attributeSource !== null) {
@@ -71,7 +71,7 @@ Then(
       doesPlayerHaveAttribute = doesPlayerHaveAttributeWithName(player, attributeName);
     }
     
-    expect(doesPlayerHaveAttribute).toBe(true);
+    expect(doesPlayerHaveAttribute).toBe(shouldMiss === null);
   },
 );
 
