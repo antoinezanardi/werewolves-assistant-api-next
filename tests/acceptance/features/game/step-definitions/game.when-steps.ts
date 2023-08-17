@@ -4,6 +4,7 @@ import type { MakeGamePlayDto } from "../../../../../src/modules/game/dto/make-g
 import type { WITCH_POTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
 import { getPlayerWithNameOrThrow } from "../../../../../src/modules/game/helpers/game.helper";
 import type { Game } from "../../../../../src/modules/game/schemas/game.schema";
+import type { ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
 import type { CustomWorld } from "../../../shared/types/world.types";
 import { convertDatatableToMakeGameplayVotes, convertDatatableToPlayers } from "../helpers/game-datatable.helper";
 import { makeGamePlayRequest } from "../helpers/game-request.helper";
@@ -143,6 +144,13 @@ When(/^the fox sniffs the player named (?<name>.+)$/u, async function(this: Cust
 When(/^the wild child chooses the player named (?<name>.+) as a model$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
+When(/^the dog wolf chooses the (?<chosenSide>villagers|werewolves) side$/u, async function(this: CustomWorld, chosenSide: ROLE_SIDES): Promise<void> {
+  const makeGamePlayDto: MakeGamePlayDto = { chosenSide };
 
   this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
   this.game = this.response.json<Game>();

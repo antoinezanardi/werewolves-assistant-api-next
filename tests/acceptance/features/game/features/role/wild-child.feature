@@ -20,8 +20,8 @@ Feature: 🐒 Wild Child role
     And the game's current play should be all to vote
 
     When all vote with the following votes
-    | voter | target |
-    | Maxime | Olivia |
+      | voter  | target |
+      | Maxime | Olivia |
     Then the player named Olivia should be murdered by all from vote
     And the player named Antoine should be on werewolves current side and originally be on villagers side
     And the game's current play should be werewolves to eat
