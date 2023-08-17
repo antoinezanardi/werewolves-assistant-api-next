@@ -132,6 +132,14 @@ When(/^the charmed people meet each other$/u, async function(this: CustomWorld):
   this.game = this.response.json<Game>();
 });
 
+When(/^the fox sniffs the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
+  const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
+  const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
 When(/^the player or group skips his turn$/u, async function(this: CustomWorld): Promise<void> {
   this.response = await makeGamePlayRequest({}, this.game, this.app);
   this.game = this.response.json<Game>();
