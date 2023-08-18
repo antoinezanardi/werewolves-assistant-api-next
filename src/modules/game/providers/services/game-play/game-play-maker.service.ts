@@ -9,7 +9,7 @@ import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enu
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlayAllVote, createGamePlaySheriffSettlesVotes } from "../../../helpers/game-play/game-play.factory";
 import { createGame } from "../../../helpers/game.factory";
-import { getFoxSniffedPlayers, getPlayerWithAttribute, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
+import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "../../../helpers/game.mutator";
 import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "../../../helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteByAllDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedByAllDeath } from "../../../helpers/player/player-death/player-death.factory";
@@ -80,7 +80,7 @@ export class GamePlayMakerService {
       return clonedGame;
     }
     const targetedPlayer = targets[0].player;
-    const sheriffPlayer = getPlayerWithAttribute(clonedGame.players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+    const sheriffPlayer = getPlayerWithActiveAttributeName(clonedGame, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
     if (sheriffPlayer) {
       clonedGame = removePlayerAttributeByNameInGame(sheriffPlayer._id, clonedGame, PLAYER_ATTRIBUTE_NAMES.SHERIFF) as GameWithCurrentPlay;
     }
@@ -103,12 +103,12 @@ export class GamePlayMakerService {
 
   private async handleTieInVotes(game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
-    const scapegoatPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.SCAPEGOAT);
-    if (scapegoatPlayer && isPlayerAliveAndPowerful(scapegoatPlayer)) {
+    const scapegoatPlayer = getPlayerWithCurrentRole(clonedGame, ROLE_NAMES.SCAPEGOAT);
+    if (scapegoatPlayer && isPlayerAliveAndPowerful(scapegoatPlayer, game)) {
       const playerVoteScapegoatedByAllDeath = createPlayerVoteScapegoatedByAllDeath();
       return this.playerKillerService.killOrRevealPlayer(scapegoatPlayer._id, clonedGame, playerVoteScapegoatedByAllDeath);
     }
-    const sheriffPlayer = getPlayerWithAttribute(clonedGame.players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+    const sheriffPlayer = getPlayerWithActiveAttributeName(clonedGame, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
     if (sheriffPlayer?.isAlive === true) {
       const gamePlaySheriffSettlesVotes = createGamePlaySheriffSettlesVotes();
       return prependUpcomingPlayInGame(gamePlaySheriffSettlesVotes, clonedGame);
@@ -186,7 +186,7 @@ export class GamePlayMakerService {
   
   private thiefChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
-    const thiefPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.THIEF);
+    const thiefPlayer = getPlayerWithCurrentRole(clonedGame, ROLE_NAMES.THIEF);
     if (!thiefPlayer || !chosenCard) {
       return clonedGame;
     }
@@ -211,7 +211,7 @@ export class GamePlayMakerService {
   
   private dogWolfChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
-    const dogWolfPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.DOG_WOLF);
+    const dogWolfPlayer = getPlayerWithCurrentRole(clonedGame, ROLE_NAMES.DOG_WOLF);
     if (chosenSide === undefined || !dogWolfPlayer) {
       return clonedGame;
     }
@@ -233,7 +233,7 @@ export class GamePlayMakerService {
   private foxSniffs({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
     const expectedTargetCount = 1;
-    const foxPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.FOX);
+    const foxPlayer = getPlayerWithCurrentRole(clonedGame, ROLE_NAMES.FOX);
     const { isPowerlessIfMissesWerewolf: isFoxPowerlessIfMissesWerewolf } = clonedGame.options.roles.fox;
     if (targets?.length !== expectedTargetCount || !foxPlayer) {
       return clonedGame;

@@ -269,37 +269,43 @@ describe("Player Killer Service", () => {
 
   describe("doesPlayerRoleMustBeRevealed", () => {
     it("should return false when player role is already revealed.", () => {
+      const game = createFakeGame();
       const player = createFakeVillagerVillagerAlivePlayer();
       const death = createFakePlayerVoteByAllDeath();
 
-      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death)).toBe(false);
+      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death, game)).toBe(false);
     });
 
     it("should return false when player role is not idiot.", () => {
+      const game = createFakeGame();
       const player = createFakeSeerAlivePlayer();
       const death = createFakePlayerVoteByAllDeath();
 
-      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death)).toBe(false);
+      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death, game)).toBe(false);
     });
 
     it("should return false when player role is idiot but powerless.", () => {
+      const game = createFakeGame();
       const player = createFakeIdiotAlivePlayer({ attributes: [createPowerlessByAncientPlayerAttribute()] });
       const death = createFakePlayerVoteByAllDeath();
-      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death)).toBe(false);
+
+      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death, game)).toBe(false);
     });
 
     it("should return false when player role is idiot but death cause is not vote.", () => {
+      const game = createFakeGame();
       const player = createFakeIdiotAlivePlayer();
       const death = createFakePlayerDeathPotionByWitchDeath();
 
-      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death)).toBe(false);
+      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death, game)).toBe(false);
     });
 
     it("should return true when player role is idiot and death cause is not vote.", () => {
+      const game = createFakeGame();
       const player = createFakeIdiotAlivePlayer();
       const death = createFakePlayerVoteByAllDeath();
 
-      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death)).toBe(true);
+      expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death, game)).toBe(true);
     });
   });
 
@@ -399,28 +405,32 @@ describe("Player Killer Service", () => {
 
   describe("isIdiotKillable", () => {
     it("should return true when idiot is already revealed.", () => {
+      const game = createFakeGame();
       const player = createFakeIdiotAlivePlayer();
       player.role.isRevealed = true;
 
-      expect(services.playerKiller["isIdiotKillable"](player, PLAYER_DEATH_CAUSES.VOTE)).toBe(true);
+      expect(services.playerKiller["isIdiotKillable"](player, PLAYER_DEATH_CAUSES.VOTE, game)).toBe(true);
     });
 
     it("should return true when idiot is killed by other cause than a vote.", () => {
+      const game = createFakeGame();
       const player = createFakeIdiotAlivePlayer();
 
-      expect(services.playerKiller["isIdiotKillable"](player, PLAYER_DEATH_CAUSES.DEATH_POTION)).toBe(true);
+      expect(services.playerKiller["isIdiotKillable"](player, PLAYER_DEATH_CAUSES.DEATH_POTION, game)).toBe(true);
     });
 
     it("should return true when idiot is killed by vote but powerless.", () => {
+      const game = createFakeGame();
       const player = createFakeIdiotAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] });
 
-      expect(services.playerKiller["isIdiotKillable"](player, PLAYER_DEATH_CAUSES.VOTE)).toBe(true);
+      expect(services.playerKiller["isIdiotKillable"](player, PLAYER_DEATH_CAUSES.VOTE, game)).toBe(true);
     });
 
     it("should return false when idiot is not revealed, dies from votes and is not powerless.", () => {
+      const game = createFakeGame();
       const player = createFakeIdiotAlivePlayer();
 
-      expect(services.playerKiller["isIdiotKillable"](player, PLAYER_DEATH_CAUSES.VOTE)).toBe(false);
+      expect(services.playerKiller["isIdiotKillable"](player, PLAYER_DEATH_CAUSES.VOTE, game)).toBe(false);
     });
   });
 
@@ -488,7 +498,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame();
       await services.playerKiller["isPlayerKillable"](player, game, PLAYER_DEATH_CAUSES.VOTE);
 
-      expect(isIdiotKillableMock).toHaveBeenCalledExactlyOnceWith(player, PLAYER_DEATH_CAUSES.VOTE);
+      expect(isIdiotKillableMock).toHaveBeenCalledExactlyOnceWith(player, PLAYER_DEATH_CAUSES.VOTE, game);
     });
 
     it("should not call is idiot killable when player is not an idiot.", async() => {

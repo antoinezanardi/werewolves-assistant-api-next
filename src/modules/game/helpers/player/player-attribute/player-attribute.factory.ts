@@ -45,9 +45,9 @@ function createCantVoteByScapegoatPlayerAttribute(game: Game, playerAttribute: P
   return createPlayerAttribute({
     name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
     source: ROLE_NAMES.SCAPEGOAT,
-    remainingPhases: 2,
+    remainingPhases: 1,
     activeAt: {
-      turn: game.turn + 1,
+      turn: game.phase === GAME_PHASES.DAY ? game.turn + 1 : game.turn,
       phase: GAME_PHASES.DAY,
     },
     ...playerAttribute,

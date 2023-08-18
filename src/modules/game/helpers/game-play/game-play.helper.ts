@@ -16,8 +16,8 @@ function getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayD
     return;
   }
   return makeGamePlayDto.votes.reduce<MakeGamePlayVoteWithRelationsDto[]>((acc, vote) => {
-    const source = getPlayerWithId(game.players, vote.sourceId);
-    const target = getPlayerWithId(game.players, vote.targetId);
+    const source = getPlayerWithId(game, vote.sourceId);
+    const target = getPlayerWithId(game, vote.targetId);
     if (source === undefined) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, vote.sourceId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
     }
@@ -37,7 +37,7 @@ function getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePla
     return;
   }
   return makeGamePlayDto.targets.reduce<MakeGamePlayTargetWithRelationsDto[]>((acc, target) => {
-    const player = getPlayerWithId(game.players, target.playerId);
+    const player = getPlayerWithId(game, target.playerId);
     if (player === undefined) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, target.playerId.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
     }

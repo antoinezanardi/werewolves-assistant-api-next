@@ -28,7 +28,9 @@ describe("Game Victory Helper", () => {
   
   describe("doWerewolvesWin", () => {
     it("should return false when there are no players provided.", () => {
-      expect(doWerewolvesWin([])).toBe(false);
+      const game = createFakeGame();
+
+      expect(doWerewolvesWin(game)).toBe(false);
     });
 
     it("should return false when there are no werewolves among players.", () => {
@@ -36,8 +38,9 @@ describe("Game Victory Helper", () => {
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doWerewolvesWin(players)).toBe(false);
+      expect(doWerewolvesWin(game)).toBe(false);
     });
 
     it("should return false when there are at least one alive villager among players.", () => {
@@ -47,8 +50,9 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doWerewolvesWin(players)).toBe(false);
+      expect(doWerewolvesWin(game)).toBe(false);
     });
 
     it("should return true when all villagers are dead.", () => {
@@ -58,14 +62,16 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doWerewolvesWin(players)).toBe(true);
+      expect(doWerewolvesWin(game)).toBe(true);
     });
   });
   
   describe("doVillagersWin", () => {
     it("should return false when there are no players provided.", () => {
-      expect(doVillagersWin([])).toBe(false);
+      const game = createFakeGame();
+      expect(doVillagersWin(game)).toBe(false);
     });
 
     it("should return false when there are no villagers among players.", () => {
@@ -73,8 +79,9 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeWhiteWerewolfAlivePlayer({ isAlive: false }),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doVillagersWin(players)).toBe(false);
+      expect(doVillagersWin(game)).toBe(false);
     });
 
     it("should return false when there are at least one alive werewolf among players.", () => {
@@ -84,8 +91,9 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doVillagersWin(players)).toBe(false);
+      expect(doVillagersWin(game)).toBe(false);
     });
 
     it("should return true when all werewolves are dead.", () => {
@@ -95,14 +103,17 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doVillagersWin(players)).toBe(true);
+      expect(doVillagersWin(game)).toBe(true);
     });
   });
 
   describe("doLoversWin", () => {
     it("should return false when no players are provided.", () => {
-      expect(doLoversWin([])).toBe(false);
+      const game = createFakeGame();
+
+      expect(doLoversWin(game)).toBe(false);
     });
 
     it("should return false when there are no lovers among players.", () => {
@@ -112,8 +123,9 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doLoversWin(players)).toBe(false);
+      expect(doLoversWin(game)).toBe(false);
     });
 
     it("should return false when at least one non-lover player is alive.", () => {
@@ -123,8 +135,9 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doLoversWin(players)).toBe(false);
+      expect(doLoversWin(game)).toBe(false);
     });
 
     it("should return false when at least one lover player is dead.", () => {
@@ -134,8 +147,9 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()], isAlive: false }),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doLoversWin(players)).toBe(false);
+      expect(doLoversWin(game)).toBe(false);
     });
 
     it("should return true when lovers are the last survivors.", () => {
@@ -145,14 +159,17 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doLoversWin(players)).toBe(true);
+      expect(doLoversWin(game)).toBe(true);
     });
   });
 
   describe("doesWhiteWerewolfWin", () => {
     it("should return false when no players are provided.", () => {
-      expect(doesWhiteWerewolfWin([])).toBe(false);
+      const game = createFakeGame();
+
+      expect(doesWhiteWerewolfWin(game)).toBe(false);
     });
 
     it("should return false when there is no white werewolf among players.", () => {
@@ -160,8 +177,9 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doesWhiteWerewolfWin(players)).toBe(false);
+      expect(doesWhiteWerewolfWin(game)).toBe(false);
     });
 
     it("should return false when there is at least one alive players among players except white werewolf himself.", () => {
@@ -170,8 +188,9 @@ describe("Game Victory Helper", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
         createFakeWhiteWerewolfAlivePlayer(),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doesWhiteWerewolfWin(players)).toBe(false);
+      expect(doesWhiteWerewolfWin(game)).toBe(false);
     });
 
     it("should return false when all players are dead even white werewolf himself.", () => {
@@ -180,8 +199,9 @@ describe("Game Victory Helper", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
         createFakeWhiteWerewolfAlivePlayer({ isAlive: false }),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doesWhiteWerewolfWin(players)).toBe(false);
+      expect(doesWhiteWerewolfWin(game)).toBe(false);
     });
 
     it("should return true when all players are dead except white werewolf.", () => {
@@ -190,8 +210,9 @@ describe("Game Victory Helper", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
         createFakeWhiteWerewolfAlivePlayer({ isAlive: true }),
       ];
+      const game = createFakeGame({ players });
 
-      expect(doesWhiteWerewolfWin(players)).toBe(true);
+      expect(doesWhiteWerewolfWin(game)).toBe(true);
     });
   });
 

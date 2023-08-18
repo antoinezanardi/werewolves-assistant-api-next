@@ -21,7 +21,7 @@ function updatePlayerInGame(playerId: Types.ObjectId, playerDataToUpdate: Partia
 
 function addPlayerAttributeInGame(playerId: Types.ObjectId, game: Game, attribute: PlayerAttribute): Game {
   const clonedGame = createGame(game);
-  const player = getPlayerWithId(clonedGame.players, playerId);
+  const player = getPlayerWithId(clonedGame, playerId);
   if (!player) {
     return clonedGame;
   }
@@ -42,7 +42,7 @@ function addPlayersAttributeInGame(playerIds: Types.ObjectId[], game: Game, attr
 
 function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game, attributeName: PLAYER_ATTRIBUTE_NAMES): Game {
   const clonedGame = createGame(game);
-  const player = getPlayerWithId(clonedGame.players, playerId);
+  const player = getPlayerWithId(clonedGame, playerId);
   if (!player) {
     return clonedGame;
   }

@@ -15,7 +15,7 @@ Feature: 👼 Angel role
       | Antoine | Olivia |
       | JB      | Olivia |
     Then the player named Olivia should be murdered by all from vote
-    And 2 of the following players should have the powerless from ancient attribute
+    And 2 of the following players should have the active powerless from ancient attribute
       | name    |
       | Antoine |
       | JB      |

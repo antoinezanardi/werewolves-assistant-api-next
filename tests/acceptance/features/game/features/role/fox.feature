@@ -14,7 +14,7 @@ Feature: 🦊 Fox role
     Then the game's current play should be fox to sniff
 
     When the fox sniffs the player named Doudou
-    Then the player named Antoine should not have the powerless from fox attribute
+    Then the player named Antoine should not have the active powerless from fox attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Coco
@@ -25,7 +25,7 @@ Feature: 🦊 Fox role
     Then the game's current play should be fox to sniff
 
     When the player or group skips his turn
-    Then the player named Antoine should not have the powerless from fox attribute
+    Then the player named Antoine should not have the active powerless from fox attribute
 
     When the werewolves eat the player named Juju
     Then the player named Juju should be murdered by werewolves from eaten
@@ -34,7 +34,7 @@ Feature: 🦊 Fox role
     Then the game's current play should be fox to sniff
 
     When the fox sniffs the player named Antoine
-    Then the player named Antoine should have the powerless from fox attribute
+    Then the player named Antoine should have the active powerless from fox attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -57,4 +57,4 @@ Feature: 🦊 Fox role
     Then the game's current play should be fox to sniff
 
     When the fox sniffs the player named Juju
-    Then the player named Antoine should not have the powerless from fox attribute
+    Then the player named Antoine should not have the active powerless from fox attribute

@@ -2,49 +2,50 @@ import type { Types } from "mongoose";
 import { createCantFindPlayerUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "../../../shared/exception/helpers/unexpected-exception.factory";
 import { ROLE_NAMES, ROLE_SIDES } from "../../role/enums/role.enum";
 import type { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
+import type { CreateGameDto } from "../dto/create-game/create-game.dto";
 import { GAME_PLAY_ACTIONS } from "../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../enums/player.enum";
 import type { GameAdditionalCard } from "../schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "../schemas/game.schema";
 import type { Player } from "../schemas/player/player.schema";
 import type { GameSource, GetNearestPlayerOptions } from "../types/game.type";
-import { doesPlayerHaveAttributeWithName } from "./player/player-attribute/player-attribute.helper";
+import { doesPlayerHaveActiveAttributeWithName } from "./player/player-attribute/player-attribute.helper";
 import { createPlayer } from "./player/player.factory";
 
-function getPlayerDtoWithRole(players: CreateGamePlayerDto[], role: ROLE_NAMES): CreateGamePlayerDto | undefined {
-  return players.find(player => player.role.name === role);
+function getPlayerDtoWithRole(game: CreateGameDto, role: ROLE_NAMES): CreateGamePlayerDto | undefined {
+  return game.players.find(player => player.role.name === role);
 }
 
-function getPlayerWithCurrentRole(players: Player[], role: ROLE_NAMES): Player | undefined {
-  return players.find(player => player.role.current === role);
+function getPlayerWithCurrentRole(game: Game, role: ROLE_NAMES): Player | undefined {
+  return game.players.find(player => player.role.current === role);
 }
 
-function getPlayersWithCurrentRole(players: Player[], role: ROLE_NAMES): Player[] {
-  return players.filter(player => player.role.current === role);
+function getPlayersWithCurrentRole(game: Game, role: ROLE_NAMES): Player[] {
+  return game.players.filter(player => player.role.current === role);
 }
 
-function getPlayersWithCurrentSide(players: Player[], side: ROLE_SIDES): Player[] {
-  return players.filter(player => player.side.current === side);
+function getPlayersWithCurrentSide(game: Game, side: ROLE_SIDES): Player[] {
+  return game.players.filter(player => player.side.current === side);
 }
 
-function getPlayerWithId(players: Player[], id: Types.ObjectId): Player | undefined {
-  return players.find(({ _id }) => _id.toString() === id.toString());
+function getPlayerWithId(game: Game, id: Types.ObjectId): Player | undefined {
+  return game.players.find(({ _id }) => _id.toString() === id.toString());
 }
 
 function getPlayerWithIdOrThrow(playerId: Types.ObjectId, game: Game, exception: Error): Player {
-  const player = getPlayerWithId(game.players, playerId);
+  const player = getPlayerWithId(game, playerId);
   if (!player) {
     throw exception;
   }
   return player;
 }
 
-function getPlayerWithName(players: Player[], playerName: string): Player | undefined {
-  return players.find(({ name }) => name.toString() === playerName.toString());
+function getPlayerWithName(game: Game, playerName: string): Player | undefined {
+  return game.players.find(({ name }) => name.toString() === playerName.toString());
 }
 
 function getPlayerWithNameOrThrow(playerName: string, game: Game, exception: Error): Player {
-  const player = getPlayerWithName(game.players, playerName);
+  const player = getPlayerWithName(game, playerName);
   if (!player) {
     throw exception;
   }
@@ -55,68 +56,68 @@ function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Ty
   return cards?.find(({ _id }) => _id.toString() === id.toString());
 }
 
-function areAllWerewolvesAlive(players: Player[]): boolean {
-  const werewolfPlayers = getPlayersWithCurrentSide(players, ROLE_SIDES.WEREWOLVES);
+function areAllWerewolvesAlive(game: Game): boolean {
+  const werewolfPlayers = getPlayersWithCurrentSide(game, ROLE_SIDES.WEREWOLVES);
   return werewolfPlayers.length > 0 && werewolfPlayers.every(werewolf => werewolf.isAlive);
 }
 
-function areAllVillagersAlive(players: Player[]): boolean {
-  const villagerPlayers = getPlayersWithCurrentSide(players, ROLE_SIDES.VILLAGERS);
+function areAllVillagersAlive(game: Game): boolean {
+  const villagerPlayers = getPlayersWithCurrentSide(game, ROLE_SIDES.VILLAGERS);
   return villagerPlayers.length > 0 && villagerPlayers.every(villager => villager.isAlive);
 }
 
-function areAllPlayersDead(players: Player[]): boolean {
-  return players.length > 0 && players.every(({ isAlive }) => !isAlive);
+function areAllPlayersDead(game: Game): boolean {
+  return game.players.length > 0 && game.players.every(({ isAlive }) => !isAlive);
 }
 
-function getPlayerWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player | undefined {
-  return players.find(player => doesPlayerHaveAttributeWithName(player, attribute));
+function getPlayerWithActiveAttributeName(game: Game, attributeName: PLAYER_ATTRIBUTE_NAMES): Player | undefined {
+  return game.players.find(player => doesPlayerHaveActiveAttributeWithName(player, attributeName, game));
 }
 
-function getPlayersWithAttribute(players: Player[], attribute: PLAYER_ATTRIBUTE_NAMES): Player[] {
-  return players.filter(player => doesPlayerHaveAttributeWithName(player, attribute));
+function getPlayersWithActiveAttributeName(game: Game, attribute: PLAYER_ATTRIBUTE_NAMES): Player[] {
+  return game.players.filter(player => doesPlayerHaveActiveAttributeWithName(player, attribute, game));
 }
 
-function getAlivePlayers(players: Player[]): Player[] {
-  return players.filter(player => player.isAlive);
+function getAlivePlayers(game: Game): Player[] {
+  return game.players.filter(player => player.isAlive);
 }
 
-function getAliveVillagerSidedPlayers(players: Player[]): Player[] {
-  return players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS);
+function getAliveVillagerSidedPlayers(game: Game): Player[] {
+  return game.players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS);
 }
 
-function getAliveWerewolfSidedPlayers(players: Player[]): Player[] {
-  return players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES);
+function getAliveWerewolfSidedPlayers(game: Game): Player[] {
+  return game.players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES);
 }
 
-function getLeftToCharmByPiedPiperPlayers(players: Player[]): Player[] {
-  return players.filter(player => player.isAlive && !doesPlayerHaveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.CHARMED) &&
+function getLeftToCharmByPiedPiperPlayers(game: Game): Player[] {
+  return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.CHARMED, game) &&
     player.role.current !== ROLE_NAMES.PIED_PIPER);
 }
 
-function getLeftToEatByWerewolvesPlayers(players: Player[]): Player[] {
-  return players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS &&
-    !doesPlayerHaveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.EATEN));
+function getLeftToEatByWerewolvesPlayers(game: Game): Player[] {
+  return game.players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS &&
+    !doesPlayerHaveActiveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.EATEN, game));
 }
 
-function getLeftToEatByWhiteWerewolfPlayers(players: Player[]): Player[] {
-  return players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES && player.role.current !== ROLE_NAMES.WHITE_WEREWOLF);
+function getLeftToEatByWhiteWerewolfPlayers(game: Game): Player[] {
+  return game.players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES && player.role.current !== ROLE_NAMES.WHITE_WEREWOLF);
 }
 
-function getGroupOfPlayers(players: Player[], group: PLAYER_GROUPS): Player[] {
+function getGroupOfPlayers(game: Game, group: PLAYER_GROUPS): Player[] {
   if (group === PLAYER_GROUPS.ALL) {
-    return players;
+    return game.players;
   }
   if (group === PLAYER_GROUPS.LOVERS) {
-    return getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
+    return getPlayersWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
   }
   if (group === PLAYER_GROUPS.CHARMED) {
-    return getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.CHARMED);
+    return getPlayersWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.CHARMED);
   }
   if (group === PLAYER_GROUPS.VILLAGERS) {
-    return getPlayersWithCurrentSide(players, ROLE_SIDES.VILLAGERS);
+    return getPlayersWithCurrentSide(game, ROLE_SIDES.VILLAGERS);
   }
-  return getPlayersWithCurrentSide(players, ROLE_SIDES.WEREWOLVES);
+  return getPlayersWithCurrentSide(game, ROLE_SIDES.WEREWOLVES);
 }
 
 function isGameSourceRole(source: GameSource): source is ROLE_NAMES {
@@ -127,12 +128,12 @@ function isGameSourceGroup(source: GameSource): source is PLAYER_GROUPS {
   return Object.values(PLAYER_GROUPS).includes(source as PLAYER_GROUPS);
 }
 
-function getNonexistentPlayerId(players: Player[], candidateIds?: Types.ObjectId[]): Types.ObjectId | undefined {
-  return candidateIds?.find(candidateId => !getPlayerWithId(players, candidateId));
+function getNonexistentPlayerId(game: Game, candidateIds?: Types.ObjectId[]): Types.ObjectId | undefined {
+  return candidateIds?.find(candidateId => !getPlayerWithId(game, candidateId));
 }
 
-function getNonexistentPlayer(players: Player[], candidatePlayers?: Player[]): Player | undefined {
-  return candidatePlayers?.find(candidatePlayer => !getPlayerWithId(players, candidatePlayer._id));
+function getNonexistentPlayer(game: Game, candidatePlayers?: Player[]): Player | undefined {
+  return candidatePlayers?.find(candidatePlayer => !getPlayerWithId(game, candidatePlayer._id));
 }
 
 function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Player[] {
@@ -150,7 +151,7 @@ function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Play
 }
 
 function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: GetNearestPlayerOptions): Player | undefined {
-  const alivePlayers = getAlivePlayers(game.players);
+  const alivePlayers = getAlivePlayers(game);
   alivePlayers.sort((a, b) => a.position - b.position);
   const cantFindPlayerException = createCantFindPlayerUnexpectedException("getNearestAliveNeighbor", { gameId: game._id, playerId });
   const player = getPlayerWithIdOrThrow(playerId, game, cantFindPlayerException);
@@ -173,18 +174,18 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
 }
 
 function getExpectedPlayersToPlay(game: Game): Player[] {
-  const { players, currentPlay } = game;
+  const { currentPlay } = game;
   const mustIncludeDeadPlayersGamePlayActions = [GAME_PLAY_ACTIONS.SHOOT, GAME_PLAY_ACTIONS.BAN_VOTING, GAME_PLAY_ACTIONS.DELEGATE];
   let expectedPlayersToPlay: Player[] = [];
   if (currentPlay === null) {
     throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
   }
   if (isGameSourceGroup(currentPlay.source.name)) {
-    expectedPlayersToPlay = getGroupOfPlayers(players, currentPlay.source.name);
+    expectedPlayersToPlay = getGroupOfPlayers(game, currentPlay.source.name);
   } else if (isGameSourceRole(currentPlay.source.name)) {
-    expectedPlayersToPlay = getPlayersWithCurrentRole(players, currentPlay.source.name);
+    expectedPlayersToPlay = getPlayersWithCurrentRole(game, currentPlay.source.name);
   } else {
-    expectedPlayersToPlay = getPlayersWithAttribute(players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+    expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
   }
   if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
     expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);
@@ -205,8 +206,8 @@ export {
   areAllWerewolvesAlive,
   areAllVillagersAlive,
   areAllPlayersDead,
-  getPlayerWithAttribute,
-  getPlayersWithAttribute,
+  getPlayerWithActiveAttributeName,
+  getPlayersWithActiveAttributeName,
   getAlivePlayers,
   getAliveVillagerSidedPlayers,
   getAliveWerewolfSidedPlayers,
