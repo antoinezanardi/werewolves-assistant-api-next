@@ -11,14 +11,14 @@ Feature: 🪈 Pied Piper role
       | Mom     | villager              |
 
     When the werewolves eat the player named Thomas
-    Then the player named Thomas should have the eaten from werewolves attribute
+    Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be pied-piper to charm
 
     When the pied piper charms the following players
       | name   |
       | Thomas |
       | Olivia |
-    Then 2 of the following players should have the charmed from pied-piper attribute
+    Then 2 of the following players should have the active charmed from pied-piper attribute
       | name   |
       | Olivia |
       | Thomas |
@@ -35,14 +35,14 @@ Feature: 🪈 Pied Piper role
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Dad
-    Then the player named Dad should have the eaten from werewolves attribute
+    Then the player named Dad should have the active eaten from werewolves attribute
     And the game's current play should be pied-piper to charm
 
     When the pied piper charms the following players
       | name |
       | Dad  |
       | Mom  |
-    Then 3 of the following players should have the charmed from pied-piper attribute
+    Then 3 of the following players should have the active charmed from pied-piper attribute
       | name   |
       | Olivia |
       | Dad    |
@@ -92,7 +92,7 @@ Feature: 🪈 Pied Piper role
       | Thomas |
       | Olivia |
       | JB     |
-    Then 3 of the following players should have the charmed from pied-piper attribute
+    Then 3 of the following players should have the active charmed from pied-piper attribute
       | name   |
       | Olivia |
       | JB     |
@@ -111,13 +111,13 @@ Feature: 🪈 Pied Piper role
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
-    Then the player named Thomas should have the eaten from werewolves attribute
+    Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be pied-piper to charm
 
     When the pied piper charms the following players
       | name |
       | Dad  |
-    Then 3 of the following players should have the charmed from pied-piper attribute
+    Then 3 of the following players should have the active charmed from pied-piper attribute
       | name   |
       | Olivia |
       | JB     |
@@ -138,7 +138,7 @@ Feature: 🪈 Pied Piper role
       | Dad     | villager   |
 
     When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the eaten from werewolves attribute
+    Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be pied-piper to charm
 
     When the pied piper charms the following players
@@ -146,7 +146,7 @@ Feature: 🪈 Pied Piper role
       | Thomas |
       | Olivia |
       | JB     |
-    Then 3 of the following players should have the charmed from pied-piper attribute
+    Then 3 of the following players should have the active charmed from pied-piper attribute
       | name   |
       | Olivia |
       | JB     |

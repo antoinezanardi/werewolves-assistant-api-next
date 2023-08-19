@@ -10,7 +10,7 @@ Feature: 👧 Little Girl role
       | Thomas  | villager    |
 
     When the guard protects the player named Olivia
-    Then the player named Olivia should have the protected from guard attribute
+    Then the player named Olivia should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia

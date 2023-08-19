@@ -10,7 +10,7 @@ Feature: 💘 Cupid role
       | Thomas  | idiot    |
 
     When the cupid shoots an arrow at the player named JB and the player named Thomas
-    Then 2 of the following players should have the in-love from cupid attribute
+    Then 2 of the following players should have the active in-love from cupid attribute
       | name   |
       | JB     |
       | Thomas |

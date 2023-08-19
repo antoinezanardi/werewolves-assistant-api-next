@@ -12,7 +12,7 @@ Feature: 🐒 Wild Child role
     And the player named Antoine should be on villagers current side and originally be on villagers side
 
     When the wild child chooses the player named Olivia as a model
-    Then the player named Olivia should have the worshiped from wild-child attribute
+    Then the player named Olivia should have the active worshiped from wild-child attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB

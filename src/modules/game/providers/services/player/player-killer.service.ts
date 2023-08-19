@@ -8,9 +8,10 @@ import { createGame } from "../../../helpers/game.factory";
 import { getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "../../../helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "../../../helpers/game.mutator";
 import { createCantVoteByAllPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByAncientPlayerAttribute } from "../../../helpers/player/player-attribute/player-attribute.factory";
-import { doesPlayerHaveAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
+import { doesPlayerHaveActiveAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
 import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerReconsiderPardonByAllDeath } from "../../../helpers/player/player-death/player-death.factory";
 import { createPlayer } from "../../../helpers/player/player.factory";
+import { isPlayerPowerful } from "../../../helpers/player/player.helper";
 import type { Game } from "../../../schemas/game.schema";
 import type { PlayerDeath } from "../../../schemas/player/player-death.schema";
 import type { Player } from "../../../schemas/player/player.schema";
@@ -26,7 +27,7 @@ export class PlayerKillerService {
     if (await this.isPlayerKillable(playerToKill, clonedGame, death.cause)) {
       return this.killPlayer(playerToKill, clonedGame, death);
     }
-    if (this.doesPlayerRoleMustBeRevealed(playerToKill, death)) {
+    if (this.doesPlayerRoleMustBeRevealed(playerToKill, death, game)) {
       return this.revealPlayerRole(playerToKill, clonedGame);
     }
     return clonedGame;
@@ -58,10 +59,9 @@ export class PlayerKillerService {
     return this.applyPlayerRoleRevelationOutcomes(clonedPlayerToReveal, clonedGame);
   }
 
-  private doesPlayerRoleMustBeRevealed(playerToReveal: Player, death: PlayerDeath): boolean {
+  private doesPlayerRoleMustBeRevealed(playerToReveal: Player, death: PlayerDeath, game: Game): boolean {
     return !playerToReveal.role.isRevealed && playerToReveal.role.current === ROLE_NAMES.IDIOT &&
-      !doesPlayerHaveAttributeWithName(playerToReveal, PLAYER_ATTRIBUTE_NAMES.POWERLESS) &&
-      death.cause === PLAYER_DEATH_CAUSES.VOTE;
+      isPlayerPowerful(playerToReveal, game) && death.cause === PLAYER_DEATH_CAUSES.VOTE;
   }
 
   private removePlayerAttributesAfterDeath(player: Player): Player {
@@ -83,15 +83,15 @@ export class PlayerKillerService {
     }, livesCountAgainstWerewolves);
   }
 
-  private isIdiotKillable(idiotPlayer: Player, cause: PLAYER_DEATH_CAUSES): boolean {
-    const isIdiotPowerless = doesPlayerHaveAttributeWithName(idiotPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS);
+  private isIdiotKillable(idiotPlayer: Player, cause: PLAYER_DEATH_CAUSES, game: Game): boolean {
+    const isIdiotPowerless = !isPlayerPowerful(idiotPlayer, game);
     return idiotPlayer.role.isRevealed || cause !== PLAYER_DEATH_CAUSES.VOTE || isIdiotPowerless;
   }
 
   private canPlayerBeEaten(eatenPlayer: Player, game: Game): boolean {
     const { isProtectedByGuard: isLittleGirlProtectedByGuard } = game.options.roles.littleGirl;
-    const isPlayerSavedByWitch = doesPlayerHaveAttributeWithName(eatenPlayer, PLAYER_ATTRIBUTE_NAMES.DRANK_LIFE_POTION);
-    const isPlayerProtectedByGuard = doesPlayerHaveAttributeWithName(eatenPlayer, PLAYER_ATTRIBUTE_NAMES.PROTECTED);
+    const isPlayerSavedByWitch = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PLAYER_ATTRIBUTE_NAMES.DRANK_LIFE_POTION, game);
+    const isPlayerProtectedByGuard = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PLAYER_ATTRIBUTE_NAMES.PROTECTED, game);
     return !isPlayerSavedByWitch && (!isPlayerProtectedByGuard || eatenPlayer.role.current === ROLE_NAMES.LITTLE_GIRL && !isLittleGirlProtectedByGuard);
   }
 
@@ -100,7 +100,7 @@ export class PlayerKillerService {
       return false;
     }
     if (player.role.current === ROLE_NAMES.IDIOT) {
-      return this.isIdiotKillable(player, cause);
+      return this.isIdiotKillable(player, cause, game);
     }
     if (player.role.current === ROLE_NAMES.ANCIENT) {
       return this.isAncientKillable(game, cause);
@@ -110,9 +110,9 @@ export class PlayerKillerService {
 
   private applyWorshipedPlayerDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    const wildChildPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.WILD_CHILD);
-    if (!doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.WORSHIPED) ||
-      wildChildPlayer === undefined || !wildChildPlayer.isAlive || doesPlayerHaveAttributeWithName(wildChildPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS)) {
+    const wildChildPlayer = getPlayerWithCurrentRole(clonedGame, ROLE_NAMES.WILD_CHILD);
+    if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.WORSHIPED, clonedGame) ||
+      wildChildPlayer === undefined || !wildChildPlayer.isAlive || !isPlayerPowerful(wildChildPlayer, clonedGame)) {
       return clonedGame;
     }
     wildChildPlayer.side.current = ROLE_SIDES.WEREWOLVES;
@@ -121,10 +121,10 @@ export class PlayerKillerService {
 
   private applyInLovePlayerDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    const otherLoverFinder = (player: Player): boolean => doesPlayerHaveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE) &&
+    const otherLoverFinder = (player: Player): boolean => doesPlayerHaveActiveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, game) &&
       player.isAlive && player._id !== killedPlayer._id;
     const otherPlayerInLove = clonedGame.players.find(otherLoverFinder);
-    if (!doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.IN_LOVE) || !otherPlayerInLove) {
+    if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, clonedGame) || !otherPlayerInLove) {
       return clonedGame;
     }
     return this.killPlayer(otherPlayerInLove, clonedGame, createPlayerBrokenHeartByCupidDeath());
@@ -132,8 +132,8 @@ export class PlayerKillerService {
 
   private applySheriffPlayerDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    if (!doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.SHERIFF) ||
-      killedPlayer.role.current === ROLE_NAMES.IDIOT && !doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS)) {
+    if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.SHERIFF, game) ||
+      killedPlayer.role.current === ROLE_NAMES.IDIOT && isPlayerPowerful(killedPlayer, clonedGame)) {
       return clonedGame;
     }
     return prependUpcomingPlayInGame(createGamePlaySheriffDelegates(), clonedGame);
@@ -143,15 +143,15 @@ export class PlayerKillerService {
     let clonedGame = createGame(game);
     let clonedKilledPlayer = createPlayer(killedPlayer);
     const cantFindPlayerException = createCantFindPlayerUnexpectedException("applyPlayerAttributesDeathOutcomes", { gameId: game._id, playerId: killedPlayer._id });
-    if (doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.SHERIFF)) {
+    if (doesPlayerHaveActiveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.SHERIFF, clonedGame)) {
       clonedGame = this.applySheriffPlayerDeathOutcomes(clonedKilledPlayer, clonedGame);
       clonedKilledPlayer = getPlayerWithIdOrThrow(clonedKilledPlayer._id, clonedGame, cantFindPlayerException);
     }
-    if (doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.IN_LOVE)) {
+    if (doesPlayerHaveActiveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, clonedGame)) {
       clonedGame = this.applyInLovePlayerDeathOutcomes(clonedKilledPlayer, clonedGame);
       clonedKilledPlayer = getPlayerWithIdOrThrow(clonedKilledPlayer._id, clonedGame, cantFindPlayerException);
     }
-    if (doesPlayerHaveAttributeWithName(clonedKilledPlayer, PLAYER_ATTRIBUTE_NAMES.WORSHIPED)) {
+    if (doesPlayerHaveActiveAttributeWithName(clonedKilledPlayer, PLAYER_ATTRIBUTE_NAMES.WORSHIPED, clonedGame)) {
       clonedGame = this.applyWorshipedPlayerDeathOutcomes(clonedKilledPlayer, clonedGame);
     }
     return clonedGame;
@@ -160,7 +160,7 @@ export class PlayerKillerService {
   private applyRustySwordKnightDeathOutcomes(killedPlayer: Player, game: Game, death: PlayerDeath): Game {
     const clonedGame = createGame(game);
     const leftAliveWerewolfNeighbor = getNearestAliveNeighbor(killedPlayer._id, clonedGame, { direction: "left", playerSide: ROLE_SIDES.WEREWOLVES });
-    if (killedPlayer.role.current !== ROLE_NAMES.RUSTY_SWORD_KNIGHT || doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) ||
+    if (killedPlayer.role.current !== ROLE_NAMES.RUSTY_SWORD_KNIGHT || !isPlayerPowerful(killedPlayer, clonedGame) ||
       death.cause !== PLAYER_DEATH_CAUSES.EATEN || !leftAliveWerewolfNeighbor) {
       return clonedGame;
     }
@@ -169,8 +169,7 @@ export class PlayerKillerService {
 
   private applyScapegoatDeathOutcomes(killedPlayer: Player, game: Game, death: PlayerDeath): Game {
     const clonedGame = createGame(game);
-    if (killedPlayer.role.current !== ROLE_NAMES.SCAPEGOAT || doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS) ||
-      death.cause !== PLAYER_DEATH_CAUSES.VOTE_SCAPEGOATED) {
+    if (killedPlayer.role.current !== ROLE_NAMES.SCAPEGOAT || !isPlayerPowerful(killedPlayer, clonedGame) || death.cause !== PLAYER_DEATH_CAUSES.VOTE_SCAPEGOATED) {
       return clonedGame;
     }
     return prependUpcomingPlayInGame(createGamePlayScapegoatBansVoting(), clonedGame);
@@ -180,14 +179,14 @@ export class PlayerKillerService {
     let clonedGame = createGame(game);
     const ancientRevengeDeathCauses: PLAYER_DEATH_CAUSES[] = [PLAYER_DEATH_CAUSES.VOTE, PLAYER_DEATH_CAUSES.SHOT, PLAYER_DEATH_CAUSES.DEATH_POTION];
     const { idiot: idiotOptions, ancient: ancientOptions } = clonedGame.options.roles;
-    if (killedPlayer.role.current !== ROLE_NAMES.ANCIENT || doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS)) {
+    if (killedPlayer.role.current !== ROLE_NAMES.ANCIENT || !isPlayerPowerful(killedPlayer, game)) {
       return clonedGame;
     }
     if (ancientRevengeDeathCauses.includes(death.cause) && ancientOptions.doesTakeHisRevenge) {
-      const aliveVillagerSidedPlayersIds = getAliveVillagerSidedPlayers(clonedGame.players).map(({ _id }) => _id);
+      const aliveVillagerSidedPlayersIds = getAliveVillagerSidedPlayers(clonedGame).map(({ _id }) => _id);
       clonedGame = addPlayersAttributeInGame(aliveVillagerSidedPlayersIds, clonedGame, createPowerlessByAncientPlayerAttribute());
     }
-    const idiotPlayer = getPlayerWithCurrentRole(clonedGame.players, ROLE_NAMES.IDIOT);
+    const idiotPlayer = getPlayerWithCurrentRole(clonedGame, ROLE_NAMES.IDIOT);
     if (idiotPlayer?.isAlive === true && idiotPlayer.role.isRevealed && idiotOptions.doesDieOnAncientDeath) {
       return this.killPlayer(idiotPlayer, clonedGame, createPlayerReconsiderPardonByAllDeath());
     }
@@ -196,7 +195,7 @@ export class PlayerKillerService {
 
   private applyHunterDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    if (killedPlayer.role.current !== ROLE_NAMES.HUNTER || doesPlayerHaveAttributeWithName(killedPlayer, PLAYER_ATTRIBUTE_NAMES.POWERLESS)) {
+    if (killedPlayer.role.current !== ROLE_NAMES.HUNTER || !isPlayerPowerful(killedPlayer, game)) {
       return clonedGame;
     }
     return prependUpcomingPlayInGame(createGamePlayHunterShoots(), clonedGame);

@@ -12,11 +12,11 @@ Feature: 🐺🦴White Werewolf role
       | Patoche | villager          |
 
     When the guard protects the player named Antoine
-    Then the player named Antoine should have the protected from guard attribute
+    Then the player named Antoine should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the eaten from werewolves attribute
+    Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
 
     When the player or group skips his turn
@@ -32,7 +32,7 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be guard to protect
 
     When the guard protects the player named Thomas
-    Then the player named Thomas should have the protected from guard attribute
+    Then the player named Thomas should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -47,11 +47,11 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be guard to protect
 
     When the guard protects the player named Olivia
-    Then the player named Olivia should have the protected from guard attribute
+    Then the player named Olivia should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Elsa
-    Then the player named Elsa should have the eaten from werewolves attribute
+    Then the player named Elsa should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
 
     When the white werewolf eats the player named JB
@@ -65,7 +65,7 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be guard to protect
 
     When the guard protects the player named Thomas
-    Then the player named Thomas should have the protected from guard attribute
+    Then the player named Thomas should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -76,11 +76,11 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be guard to protect
 
     When the guard protects the player named Olivia
-    Then the player named Olivia should have the protected from guard attribute
+    Then the player named Olivia should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
-    Then the player named Thomas should have the eaten from werewolves attribute
+    Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
 
     When the player or group skips his turn
@@ -99,11 +99,11 @@ Feature: 🐺🦴White Werewolf role
       | Thomas  | guard             |
 
     When the guard protects the player named Antoine
-    Then the player named Antoine should have the protected from guard attribute
+    Then the player named Antoine should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the eaten from werewolves attribute
+    Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
 
     When the player or group skips his turn
@@ -114,11 +114,11 @@ Feature: 🐺🦴White Werewolf role
     Then the game's current play should be guard to protect
 
     When the guard protects the player named Olivia
-    Then the player named Olivia should have the protected from guard attribute
+    Then the player named Olivia should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the eaten from werewolves attribute
+    Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
 
     When the white werewolf eats the player named JB
@@ -130,7 +130,7 @@ Feature: 🐺🦴White Werewolf role
     Then the game's current play should be guard to protect
 
     When the guard protects the player named Thomas
-    Then the player named Thomas should have the protected from guard attribute
+    Then the player named Thomas should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas

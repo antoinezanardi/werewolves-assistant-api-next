@@ -17,13 +17,19 @@ When(/^all elect sheriff with the following votes$/u, async function(this: Custo
   this.game = this.response.json<Game>();
 });
 
-When(/^all vote with the following votes$/u, async function(this: CustomWorld, votesDatatable: DataTable): Promise<void> {
-  const votes = convertDatatableToMakeGameplayVotes(votesDatatable.rows(), this.game);
-  const makeGamePlayDto: MakeGamePlayDto = { votes };
+When(
+  /^all vote with the following votes(?<stutteringJudgeRequest> and the stuttering judge does his sign)?$/u,
+  async function(this: CustomWorld, stutteringJudgeRequest: string | null, votesDatatable: DataTable): Promise<void> {
+    const votes = convertDatatableToMakeGameplayVotes(votesDatatable.rows(), this.game);
+    const makeGamePlayDto: MakeGamePlayDto = {
+      votes,
+      doesJudgeRequestAnotherVote: stutteringJudgeRequest !== null || undefined,
+    };
 
-  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
-  this.game = this.response.json<Game>();
-});
+    this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+    this.game = this.response.json<Game>();
+  },
+);
 
 When(/^the sheriff delegates his role to the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
@@ -128,6 +134,14 @@ When(/^the pied piper charms the following players$/u, async function(this: Cust
   this.game = this.response.json<Game>();
 });
 
+When(/^the scapegoat bans from vote the following players$/u, async function(this: CustomWorld, targetsDatatable: DataTable): Promise<void> {
+  const targets = convertDatatableToPlayers(targetsDatatable.rows(), this.game);
+  const makeGamePlayDto: MakeGamePlayDto = { targets: targets.map(({ _id }) => ({ playerId: _id })) };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
 When(/^the charmed people meet each other$/u, async function(this: CustomWorld): Promise<void> {
   this.response = await makeGamePlayRequest({}, this.game, this.app);
   this.game = this.response.json<Game>();
@@ -153,6 +167,11 @@ When(/^the dog wolf chooses the (?<chosenSide>villagers|werewolves) side$/u, asy
   const makeGamePlayDto: MakeGamePlayDto = { chosenSide };
 
   this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
+When(/^the stuttering judge chooses his sign$/u, async function(this: CustomWorld): Promise<void> {
+  this.response = await makeGamePlayRequest({}, this.game, this.app);
   this.game = this.response.json<Game>();
 });
 

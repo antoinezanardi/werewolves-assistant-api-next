@@ -12,11 +12,11 @@ Feature: 🛡️ Guard role
       | Cari    | villager     |
 
     When the guard protects the player named Antoine
-    Then the player named Antoine should have the protected from guard attribute
+    Then the player named Antoine should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the eaten from werewolves attribute
+    Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be big-bad-wolf to eat
 
     When the big bad wolf eats the player named Juju
@@ -28,11 +28,11 @@ Feature: 🛡️ Guard role
     Then the game's current play should be guard to protect
 
     When the guard protects the player named Nana
-    Then the player named Nana should have the protected from guard attribute
+    Then the player named Nana should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Nana
-    Then the player named Nana should have the eaten from werewolves attribute
+    Then the player named Nana should have the active eaten from werewolves attribute
     And the game's current play should be big-bad-wolf to eat
 
     When the big bad wolf eats the player named Thomas
@@ -44,11 +44,11 @@ Feature: 🛡️ Guard role
     Then the game's current play should be guard to protect
 
     When the guard protects the player named Cari
-    Then the player named Cari should have the protected from guard attribute
+    Then the player named Cari should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the eaten from werewolves attribute
+    Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be big-bad-wolf to eat
 
     When the big bad wolf eats the player named Cari
@@ -64,11 +64,11 @@ Feature: 🛡️ Guard role
       | Thomas  | villager |
 
     When the guard protects the player named Thomas
-    Then the player named Thomas should have the protected from guard attribute
+    Then the player named Thomas should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
-    Then the player named JB should have the eaten from werewolves attribute
+    Then the player named JB should have the active eaten from werewolves attribute
     And the game's current play should be witch to use-potions
 
     When the witch uses death potion on the player named Thomas
@@ -84,7 +84,7 @@ Feature: 🛡️ Guard role
       | Thomas  | villager |
 
     When the guard protects the player named Thomas
-    Then the player named Thomas should have the protected from guard attribute
+    Then the player named Thomas should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -95,7 +95,7 @@ Feature: 🛡️ Guard role
     Then the game's current play should be guard to protect
 
     When the guard protects the player named Thomas
-    Then the player named Thomas should have the protected from guard attribute
+    Then the player named Thomas should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
