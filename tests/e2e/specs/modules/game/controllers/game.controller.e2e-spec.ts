@@ -5,6 +5,7 @@ import { getModelToken } from "@nestjs/mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
+import { gameAdditionalCardsThiefRoleNames } from "../../../../../../src/modules/game/constants/game-additional-card/game-additional-card.constant";
 import { defaultGameOptions } from "../../../../../../src/modules/game/constants/game-options/game-options.constant";
 import type { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "../../../../../../src/modules/game/dto/create-game/create-game.dto";
@@ -13,22 +14,27 @@ import type { MakeGamePlayDto } from "../../../../../../src/modules/game/dto/mak
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../../../../src/modules/game/enums/game-play.enum";
 import { GAME_PHASES, GAME_STATUSES } from "../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
+import type { GameAdditionalCard } from "../../../../../../src/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameHistoryRecord } from "../../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameOptions } from "../../../../../../src/modules/game/schemas/game-options/game-options.schema";
 import type { GamePlay } from "../../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import { Game } from "../../../../../../src/modules/game/schemas/game.schema";
 import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
+import { createFakeCreateGameAdditionalCardDto } from "../../../../../factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeGameOptionsDto } from "../../../../../factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
+import { createFakeCreateThiefGameOptionsDto } from "../../../../../factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeGameAdditionalCard } from "../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord } from "../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeCompositionGameOptions } from "../../../../../factories/game/schemas/game-options/composition-game-options.schema.factory";
 import { createFakeGameOptions } from "../../../../../factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeRolesGameOptions } from "../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "../../../../../factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlaySource } from "../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayAllVote, createFakeGamePlayCupidCharms, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayAllVote, createFakeGamePlayCupidCharms, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
@@ -366,6 +372,101 @@ describe("Game Controller", () => {
         test: "one of the player position is not consistent faced to others",
         errorMessage: "players.position must be all set or all undefined. Please check that every player has unique position, from 0 to players.length - 1",
       },
+      {
+        payload: createFakeCreateGameDto({
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.THIEF } },
+          ]),
+        }),
+        test: "thief is in the game but additional cards are not set",
+        errorMessage: "additionalCards must be set if there is a player with role `thief`",
+      },
+      {
+        payload: createFakeCreateGameDto({
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.VILLAGER } },
+          ]),
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+          ],
+        }),
+        test: "thief is not in the game but additional cards are set",
+        errorMessage: "additionalCards can't be set if there is no player with role `thief`",
+      },
+      {
+        payload: createFakeCreateGameDto({
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.THIEF } },
+          ]),
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+          ],
+        }),
+        test: "thief additional cards are more than the expected default limit",
+        errorMessage: "additionalCards length must be equal to options.roles.thief.additionalCardsCount",
+      },
+      {
+        payload: createFakeCreateGameDto({
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.THIEF } },
+          ]),
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+          ],
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeCreateThiefGameOptionsDto({ additionalCardsCount: 4 }) }) }),
+        }),
+        test: "thief additional cards are less than the expected limit defined in options",
+        errorMessage: "additionalCards length must be equal to options.roles.thief.additionalCardsCount",
+      },
+      {
+        payload: createFakeCreateGameDto({
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.THIEF } },
+          ]),
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.THIEF, recipient: ROLE_NAMES.THIEF }),
+          ],
+        }),
+        test: "one thief additional card is the thief himself",
+        errorMessage: `additionalCards.roleName must be one of the following values: ${gameAdditionalCardsThiefRoleNames.toString()}`,
+      },
+      {
+        payload: createFakeCreateGameDto({
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.THIEF } },
+          ]),
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.TWO_SISTERS, recipient: ROLE_NAMES.THIEF }),
+          ],
+        }),
+        test: "one thief additional card is is not available for thief",
+        errorMessage: `additionalCards.roleName must be one of the following values: ${gameAdditionalCardsThiefRoleNames.toString()}`,
+      },
     ])("should not allow game creation when $test [#$#].", async({
       payload,
       errorMessage,
@@ -430,6 +531,77 @@ describe("Game Controller", () => {
           createFakeGamePlayWerewolvesEat(),
           createFakeGamePlayWhiteWerewolfEats(),
         ]) as GamePlay[],
+        options: defaultGameOptions,
+        createdAt: expect.any(String) as Date,
+        updatedAt: expect.any(String) as Date,
+      };
+
+      expect(response.statusCode).toBe(HttpStatus.CREATED);
+      expect(response.json()).toStrictEqual<Game>(expectedGame);
+    });
+    
+    it(`should create game with additional cards when thief is in the game.`, async() => {
+      const payload = createFakeCreateGameDto({
+        players: bulkCreateFakeCreateGamePlayerDto(6, [
+          { role: { name: ROLE_NAMES.THIEF }, name: "Antoine" },
+          { role: { name: ROLE_NAMES.WEREWOLF }, name: "Mathis" },
+          { role: { name: ROLE_NAMES.VILLAGER_VILLAGER }, name: "Virgil" },
+          { role: { name: ROLE_NAMES.WHITE_WEREWOLF }, name: "JB" },
+          { role: { name: ROLE_NAMES.CUPID }, name: "Doudou" },
+          { role: { name: ROLE_NAMES.SEER }, name: "Juju" },
+        ]),
+        additionalCards: [
+          createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+          createFakeGameAdditionalCard({ roleName: ROLE_NAMES.SEER, recipient: ROLE_NAMES.THIEF }),
+        ],
+      }, { options: undefined });
+      const response = await app.inject({
+        method: "POST",
+        url: "/games",
+        payload,
+      });
+      const expectedPlayers = payload.players.map<Player>((player, index) => ({
+        _id: expect.any(String) as Types.ObjectId,
+        name: player.name,
+        role: {
+          current: player.role.name,
+          original: player.role.name,
+          isRevealed: player.role.name === ROLE_NAMES.VILLAGER_VILLAGER,
+        },
+        side: {
+          current: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER, ROLE_NAMES.CUPID, ROLE_NAMES.SEER, ROLE_NAMES.THIEF].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+          original: [ROLE_NAMES.VILLAGER, ROLE_NAMES.VILLAGER_VILLAGER, ROLE_NAMES.CUPID, ROLE_NAMES.SEER, ROLE_NAMES.THIEF].includes(player.role.name) ? ROLE_SIDES.VILLAGERS : ROLE_SIDES.WEREWOLVES,
+        },
+        attributes: [],
+        position: index,
+        isAlive: true,
+      }));
+      const expectedGameAdditionalCards = payload.additionalCards?.map<GameAdditionalCard>(additionalCard => ({
+        _id: expect.any(String) as Types.ObjectId,
+        roleName: additionalCard.roleName,
+        recipient: additionalCard.recipient,
+        isUsed: false,
+      }));
+      const expectedGame: Game = {
+        _id: expect.any(String) as Types.ObjectId,
+        phase: GAME_PHASES.NIGHT,
+        status: GAME_STATUSES.PLAYING,
+        turn: 1,
+        tick: 1,
+        players: expectedPlayers,
+        currentPlay: {
+          action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
+          source: { name: PLAYER_GROUPS.ALL, players: expectedPlayers },
+        },
+        upcomingPlays: toJSON([
+          createFakeGamePlayThiefChoosesCard(),
+          createFakeGamePlayCupidCharms(),
+          createFakeGamePlaySeerLooks(),
+          createFakeGamePlayLoversMeetEachOther(),
+          createFakeGamePlayWerewolvesEat(),
+          createFakeGamePlayWhiteWerewolfEats(),
+        ]) as GamePlay[],
+        additionalCards: expectedGameAdditionalCards,
         options: defaultGameOptions,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,

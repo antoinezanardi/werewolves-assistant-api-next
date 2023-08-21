@@ -4,7 +4,7 @@ import type { MakeGamePlayDto } from "../../../../../src/modules/game/dto/make-g
 import type { WITCH_POTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
 import { getPlayerWithNameOrThrow } from "../../../../../src/modules/game/helpers/game.helper";
 import type { Game } from "../../../../../src/modules/game/schemas/game.schema";
-import type { ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
+import type { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
 import type { CustomWorld } from "../../../shared/types/world.types";
 import { convertDatatableToMakeGameplayVotes, convertDatatableToPlayers } from "../helpers/game-datatable.helper";
 import { makeGamePlayRequest } from "../helpers/game-request.helper";
@@ -172,6 +172,12 @@ When(/^the dog wolf chooses the (?<chosenSide>villagers|werewolves) side$/u, asy
 
 When(/^the stuttering judge chooses his sign$/u, async function(this: CustomWorld): Promise<void> {
   this.response = await makeGamePlayRequest({}, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
+When(/^the thief chooses card with role (?<cardRole>.+)$/u, async function(this: CustomWorld, cardRole: ROLE_NAMES): Promise<void> {
+  const chosenCard = this.game.additionalCards?.find(({ roleName }) => roleName === cardRole);
+  this.response = await makeGamePlayRequest({ chosenCardId: chosenCard?._id }, this.game, this.app);
   this.game = this.response.json<Game>();
 });
 

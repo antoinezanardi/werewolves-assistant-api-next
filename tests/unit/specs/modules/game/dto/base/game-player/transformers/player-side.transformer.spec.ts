@@ -1,6 +1,6 @@
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 import { playerSideTransformer } from "../../../../../../../../../src/modules/game/dto/base/game-player/transformers/player-side.transformer";
-import type { CreateGamePlayerSideDto } from "../../../../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player-side.dto/create-game-player-side.dto";
+import type { CreateGamePlayerSideDto } from "../../../../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player-side/create-game-player-side.dto";
 import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../../../../src/modules/role/enums/role.enum";
 import { createFakeCreateGamePlayerDto } from "../../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 

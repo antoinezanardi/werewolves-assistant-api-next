@@ -1,6 +1,9 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
+import { roles } from "../../../role/constants/role.constant";
 import { ROLE_NAMES } from "../../../role/enums/role.enum";
 import type { GameAdditionalCard } from "../../schemas/game-additional-card/game-additional-card.schema";
+
+const gameAdditionalCardsThiefRoleNames: Readonly<ROLE_NAMES[]> = Object.freeze(roles.filter(({ minInGame, name }) => name !== ROLE_NAMES.THIEF && minInGame === undefined).map(({ name }) => name));
 
 const gameAdditionalCardFieldsSpecs: Readonly<Record<keyof GameAdditionalCard, ApiPropertyOptions>> = Object.freeze({
   _id: { required: true },
@@ -24,7 +27,7 @@ const gameAdditionalCardApiProperties: Readonly<Record<keyof GameAdditionalCard,
     ...gameAdditionalCardFieldsSpecs._id,
   },
   roleName: {
-    description: "Game additional card role name",
+    description: `Game additional card role name. If \`recipient\` is \`${ROLE_NAMES.THIEF}\`, possible values are : ${gameAdditionalCardsThiefRoleNames.toString()}`,
     ...gameAdditionalCardFieldsSpecs.roleName,
   },
   recipient: {
@@ -37,4 +40,8 @@ const gameAdditionalCardApiProperties: Readonly<Record<keyof GameAdditionalCard,
   },
 });
 
-export { gameAdditionalCardFieldsSpecs, gameAdditionalCardApiProperties };
+export {
+  gameAdditionalCardFieldsSpecs,
+  gameAdditionalCardApiProperties,
+  gameAdditionalCardsThiefRoleNames,
+};

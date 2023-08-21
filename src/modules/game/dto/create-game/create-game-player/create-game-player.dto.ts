@@ -5,8 +5,8 @@ import { playerApiProperties } from "../../../constants/player/player.constant";
 import { GamePlayerBaseDto } from "../../base/game-player/game-player.base.dto";
 import { playerRoleTransformer } from "../../base/game-player/transformers/player-role.transformer";
 import { playerSideTransformer } from "../../base/game-player/transformers/player-side.transformer";
-import { CreateGamePlayerRoleDto } from "./create-game-player-role.dto/create-game-player-role.dto";
-import { CreateGamePlayerSideDto } from "./create-game-player-side.dto/create-game-player-side.dto";
+import { CreateGamePlayerRoleDto } from "./create-game-player-role/create-game-player-role.dto";
+import { CreateGamePlayerSideDto } from "./create-game-player-side/create-game-player-side.dto";
 
 class CreateGamePlayerDto extends IntersectionType(
   PickType(GamePlayerBaseDto, ["name"] as const),

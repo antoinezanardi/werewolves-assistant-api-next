@@ -46,7 +46,7 @@ const gameApiProperties: Readonly<Record<keyof Game, ApiPropertyOptions>> = Obje
   currentPlay: { description: "Current play which needs to be performed" },
   upcomingPlays: { description: "Queue of upcoming plays that needs to be performed to continue the game right after the current play" },
   options: { description: "Game's options" },
-  additionalCards: { description: "Game's additional cards" },
+  additionalCards: { description: "Game's additional cards. Not set if thief is not in the game" },
   victory: { description: "Victory data set when `status` is `over`" },
   createdAt: { description: "When the game was created" },
   updatedAt: { description: "When the game was updated" },
