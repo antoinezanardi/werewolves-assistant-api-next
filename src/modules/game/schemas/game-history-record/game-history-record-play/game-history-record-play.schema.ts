@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { ROLE_SIDES } from "../../../../role/enums/role.enum";
 import { gameHistoryRecordPlayApiProperties, gameHistoryRecordPlayFieldsSpecs } from "../../../constants/game-history-record/game-history-record-play/game-history-record-play.constant";
-import { GAME_PLAY_ACTIONS } from "../../../enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
 import { GameAdditionalCardSchema, GameAdditionalCard } from "../../game-additional-card/game-additional-card.schema";
 import { GameHistoryRecordPlaySource, GameHistoryRecordPlaySourceSchema } from "./game-history-record-play-source.schema";
 import { GameHistoryRecordPlayTargetSchema, GameHistoryRecordPlayTarget } from "./game-history-record-play-target.schema";
@@ -32,6 +32,14 @@ class GameHistoryRecordPlay {
   @Type(() => GameHistoryRecordPlaySource)
   @Expose()
   public source: GameHistoryRecordPlaySource;
+
+  @ApiProperty(gameHistoryRecordPlayApiProperties.cause)
+  @Prop({
+    required: gameHistoryRecordPlayFieldsSpecs.cause.required,
+    enum: gameHistoryRecordPlayFieldsSpecs.cause.enum,
+  })
+  @Expose()
+  public cause?: GAME_PLAY_CAUSES;
 
   @ApiProperty(gameHistoryRecordPlayApiProperties.targets)
   @Prop({

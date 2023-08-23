@@ -5,6 +5,7 @@ import { Model } from "mongoose";
 import { ROLE_NAMES } from "../../../role/enums/role.enum";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../enums/game-history-record.enum";
 import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../enums/game-play.enum";
+import { GAME_PHASES } from "../../enums/game.enum";
 import type { GameHistoryRecordDocument } from "../../schemas/game-history-record/game-history-record.schema";
 import { GameHistoryRecord } from "../../schemas/game-history-record/game-history-record.schema";
 import type { GameHistoryRecordToInsert } from "../../types/game-history-record.type";
@@ -102,5 +103,9 @@ export class GameHistoryRecordRepository {
   public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = { gameId };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
+  }
+
+  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GAME_PHASES): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordModel.find({ gameId, turn, phase });
   }
 }

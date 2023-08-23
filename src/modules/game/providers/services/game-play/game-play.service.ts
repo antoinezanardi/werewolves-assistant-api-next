@@ -5,13 +5,14 @@ import { gamePlaysNightOrder } from "../../../constants/game.constant";
 import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "../../../dto/create-game/create-game.dto";
 import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
-import type { GAME_PHASES } from "../../../enums/game.enum";
+import { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "../../../helpers/game-play/game-play.factory";
-import { findPlayPriorityIndex } from "../../../helpers/game-play/game-play.helper";
+import { areGamePlaysEqual, findPlayPriorityIndex } from "../../../helpers/game-play/game-play.helper";
 import { createGame } from "../../../helpers/game.factory";
 import { areAllWerewolvesAlive, getExpectedPlayersToPlay, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "../../../helpers/player/player.helper";
+import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
 import type { SheriffGameOptions } from "../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
 import type { GamePlay } from "../../../schemas/game-play/game-play.schema";
 import type { Game } from "../../../schemas/game.schema";
@@ -24,9 +25,9 @@ export class GamePlayService {
   public async refreshUpcomingPlays(game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     clonedGame = await this.removeObsoleteUpcomingPlays(clonedGame);
-    // const currentPhaseUpcomingPlays = clonedGame.phase === GAME_PHASES.NIGHT ? await this.getUpcomingNightPlays(clonedGame) : this.getUpcomingDayPlays();
-    // const upcomingPlaysToSort = [...clonedGame.upcomingPlays, ...currentPhaseUpcomingPlays];
-    clonedGame.upcomingPlays = this.sortUpcomingPlaysByPriority(clonedGame.upcomingPlays);
+    const currentPhaseNewUpcomingPlays = await this.getNewUpcomingPlaysForCurrentPhase(clonedGame);
+    const upcomingPlaysToSort = [...clonedGame.upcomingPlays, ...currentPhaseNewUpcomingPlays];
+    clonedGame.upcomingPlays = this.sortUpcomingPlaysByPriority(upcomingPlaysToSort);
     return clonedGame;
   }
 
@@ -69,6 +70,24 @@ export class GamePlayService {
     }
     clonedGame.upcomingPlays = validUpcomingPlays;
     return clonedGame;
+  }
+
+  private isUpcomingPlayNewForCurrentPhase(upcomingPlay: GamePlay, game: Game, gameHistoryPhaseRecords: GameHistoryRecord[]): boolean {
+    const { currentPlay } = game;
+    const isAlreadyPlayed = gameHistoryPhaseRecords.some(({ play }) => {
+      const { source, action, cause } = play;
+      return areGamePlaysEqual({ source, action, cause }, upcomingPlay);
+    });
+    const isInUpcomingPlays = game.upcomingPlays.some(gamePlay => areGamePlaysEqual(gamePlay, upcomingPlay));
+    const isCurrentPlay = !!currentPlay && areGamePlaysEqual(currentPlay, upcomingPlay);
+    return !isInUpcomingPlays && !isAlreadyPlayed && !isCurrentPlay;
+  }
+
+  private async getNewUpcomingPlaysForCurrentPhase(game: Game): Promise<GamePlay[]> {
+    const { _id, turn, phase } = game;
+    const currentPhaseUpcomingPlays = game.phase === GAME_PHASES.NIGHT ? await this.getUpcomingNightPlays(game) : this.getUpcomingDayPlays();
+    const gameHistoryPhaseRecords = await this.gameHistoryRecordService.getGameHistoryPhaseRecords(_id, turn, phase);
+    return currentPhaseUpcomingPlays.filter(gamePlay => this.isUpcomingPlayNewForCurrentPhase(gamePlay, game, gameHistoryPhaseRecords));
   }
 
   private validateUpcomingPlaysPriority(upcomingPlays: GamePlay[]): void {

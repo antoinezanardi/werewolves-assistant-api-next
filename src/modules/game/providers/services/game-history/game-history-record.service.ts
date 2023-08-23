@@ -11,6 +11,7 @@ import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/m
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-record.enum";
 import type { WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
+import { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "../../../enums/player.enum";
 import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "../../../helpers/game.helper";
 import { GameHistoryRecordPlaySource } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
@@ -66,6 +67,10 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
   }
 
+  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GAME_PHASES): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryPhaseRecords(gameId, turn, phase);
+  }
+
   public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     return this.gameHistoryRecordRepository.getPreviousGameHistoryRecord(gameId);
   }
@@ -115,6 +120,7 @@ export class GameHistoryRecordService {
     const gameHistoryRecordPlayToInsert: GameHistoryRecordPlay = {
       source: this.generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame),
       action: baseGame.currentPlay.action,
+      cause: baseGame.currentPlay.cause,
       didJudgeRequestAnotherVote: play.doesJudgeRequestAnotherVote,
       targets: play.targets,
       votes: play.votes,

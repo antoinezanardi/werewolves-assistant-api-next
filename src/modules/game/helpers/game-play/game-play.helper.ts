@@ -79,10 +79,15 @@ function findPlayPriorityIndex(play: GamePlay): number {
   });
 }
 
+function areGamePlaysEqual(playA: GamePlay, playB: GamePlay): boolean {
+  return playA.action === playB.action && playA.cause === playB.cause && playA.source.name === playB.source.name;
+}
+
 export {
   getVotesWithRelationsFromMakeGamePlayDto,
   getTargetsWithRelationsFromMakeGamePlayDto,
   getChosenCardFromMakeGamePlayDto,
   createMakeGamePlayDtoWithRelations,
   findPlayPriorityIndex,
+  areGamePlaysEqual,
 };
