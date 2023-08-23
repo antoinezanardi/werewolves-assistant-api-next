@@ -467,6 +467,38 @@ describe("Game Controller", () => {
         test: "one thief additional card is is not available for thief",
         errorMessage: `additionalCards.roleName must be one of the following values: ${gameAdditionalCardsThiefRoleNames.toString()}`,
       },
+      {
+        payload: createFakeCreateGameDto({
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.THIEF } },
+          ]),
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.DOG_WOLF, recipient: ROLE_NAMES.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.DOG_WOLF, recipient: ROLE_NAMES.THIEF }),
+          ],
+        }),
+        test: "two thief additional role cards exceed the maximum occurrences in game possible",
+        errorMessage: "additionalCards.roleName can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles",
+      },
+      {
+        payload: createFakeCreateGameDto({
+          players: bulkCreateFakeCreateGamePlayerDto(4, [
+            { role: { name: ROLE_NAMES.WEREWOLF } },
+            { role: { name: ROLE_NAMES.PIED_PIPER } },
+            { role: { name: ROLE_NAMES.WITCH } },
+            { role: { name: ROLE_NAMES.THIEF } },
+          ]),
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WITCH, recipient: ROLE_NAMES.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
+          ],
+        }),
+        test: "one thief additional role card exceeds the maximum occurrences in game possible because another player has it",
+        errorMessage: "additionalCards.roleName can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles",
+      },
     ])("should not allow game creation when $test [#$#].", async({
       payload,
       errorMessage,
@@ -552,7 +584,7 @@ describe("Game Controller", () => {
         ]),
         additionalCards: [
           createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF, recipient: ROLE_NAMES.THIEF }),
-          createFakeGameAdditionalCard({ roleName: ROLE_NAMES.SEER, recipient: ROLE_NAMES.THIEF }),
+          createFakeGameAdditionalCard({ roleName: ROLE_NAMES.VILE_FATHER_OF_WOLVES, recipient: ROLE_NAMES.THIEF }),
         ],
       }, { options: undefined });
       const response = await app.inject({

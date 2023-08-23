@@ -7,6 +7,7 @@ import { GamePlay } from "../../schemas/game-play/game-play.schema";
 import { AdditionalCardsForThiefRoles } from "../base/decorators/additional-cards/additional-cards-for-thief-roles.decorator";
 import { AdditionalCardsForThiefSize } from "../base/decorators/additional-cards/additional-cards-for-thief-size.decorator";
 import { AdditionalCardsPresence } from "../base/decorators/additional-cards/additional-cards-presence.decorator";
+import { AdditionalCardsRolesMaxInGame } from "../base/decorators/additional-cards/additional-cards-roles-max-in-game.decorator";
 import { CompositionBounds } from "../base/decorators/composition/composition-bounds.decorator";
 import { CompositionHasVillager } from "../base/decorators/composition/composition-has-villager.decorator";
 import { CompositionHasWerewolf } from "../base/decorators/composition/composition-has-werewolf.decorator";
@@ -61,6 +62,7 @@ class CreateGameDto {
   @Type(() => CreateGameAdditionalCardDto)
   @ValidateNested({ each: true })
   @AdditionalCardsPresence()
+  @AdditionalCardsRolesMaxInGame()
   @AdditionalCardsForThiefSize()
   @AdditionalCardsForThiefRoles()
   public additionalCards?: CreateGameAdditionalCardDto[];

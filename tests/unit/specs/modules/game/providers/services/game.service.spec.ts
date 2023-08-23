@@ -49,7 +49,7 @@ describe("Game Service", () => {
     gamePlayService: {
       getUpcomingNightPlays: jest.SpyInstance;
       proceedToNextGamePlay: jest.SpyInstance;
-      removeObsoleteUpcomingPlays: jest.SpyInstance;
+      refreshUpcomingPlays: jest.SpyInstance;
     };
     gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.SpyInstance };
     gamePlayMakerService: { makeGamePlay: jest.SpyInstance };
@@ -84,7 +84,7 @@ describe("Game Service", () => {
       gamePlayService: {
         getUpcomingNightPlays: jest.fn(),
         proceedToNextGamePlay: jest.fn(),
-        removeObsoleteUpcomingPlays: jest.fn(),
+        refreshUpcomingPlays: jest.fn(),
       },
       gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.fn() },
       gamePlayMakerService: { makeGamePlay: jest.fn() },
@@ -238,7 +238,7 @@ describe("Game Service", () => {
     beforeEach(() => {
       mocks.gamePlayHelper.createMakeGamePlayDtoWithRelations.mockReturnValue(play);
       mocks.gamePlayMakerService.makeGamePlay.mockResolvedValue(game);
-      mocks.gamePlayService.removeObsoleteUpcomingPlays.mockReturnValue(game);
+      mocks.gamePlayService.refreshUpcomingPlays.mockReturnValue(game);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
       mocks.gameVictoryHelper.isGameOver.mockReturnValue(false);
       localMocks = {
@@ -279,7 +279,7 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
-      expect(mocks.gamePlayService.removeObsoleteUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayService.refreshUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call proceed to next game play method when called.", async() => {
@@ -331,7 +331,7 @@ describe("Game Service", () => {
       mocks.gameVictoryHelper.isGameOver.mockReturnValue(true);
       mocks.gamePlayMakerService.makeGamePlay.mockReturnValue(game);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
-      mocks.gamePlayService.removeObsoleteUpcomingPlays.mockReturnValue(game.upcomingPlays);
+      mocks.gamePlayService.refreshUpcomingPlays.mockReturnValue(game.upcomingPlays);
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
       expect(localMocks.gameService.setGameAsOver).toHaveBeenCalledExactlyOnceWith(game);

@@ -22,9 +22,9 @@ Given(/^a created game described in file (?<filename>.+\.json)$/u, async functio
 Given(
   /^a created game(?: with additional cards described in file (?<cardsFilename>[\w-]+\.json) and)?(?: with options described in files? (?<optionFilenames>(?:[\w-]+\.json(?:,\s)?)+) and)? with the following players$/u,
   async function(this: CustomWorld, cardsFileName: string | null, optionFilenames: string | null, playersDatatable: DataTable): Promise<void> {
-    let gameAdditionalCards: GameAdditionalCard[] = [];
+    let additionalCards: GameAdditionalCard[] = [];
     if (cardsFileName !== null) {
-      gameAdditionalCards = readJsonFile<GameAdditionalCard[]>("game", cardsFileName);
+      additionalCards = readJsonFile<GameAdditionalCard[]>("game", cardsFileName);
     }
     let options = {};
     if (optionFilenames !== null) {
@@ -35,7 +35,11 @@ Given(
       options = construct<Record<string, unknown>>(flatOptions);
     }
     const players = convertDatatableToCreateGamePlayersDto(playersDatatable.rows());
-    const createGameDto: CreateGameDto = plainToInstance(CreateGameDto, { players, options, gameAdditionalCards }, plainToInstanceDefaultOptions);
+    const createGameDto: CreateGameDto = plainToInstance(CreateGameDto, {
+      players,
+      options,
+      additionalCards: additionalCards.length ? additionalCards : undefined,
+    }, plainToInstanceDefaultOptions);
 
     this.response = await createGameRequest(createGameDto, this.app);
     this.game = this.response.json<Game>();

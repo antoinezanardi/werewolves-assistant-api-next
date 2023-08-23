@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
+import { gamePlaysPriorityList } from "../../../constants/game-play/game-play.constant";
 import { gamePlaysNightOrder } from "../../../constants/game.constant";
 import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "../../../dto/create-game/create-game.dto";
 import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
-import type { GAME_PHASES } from "../../../enums/game.enum";
+import { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "../../../helpers/game-play/game-play.factory";
 import { createGame } from "../../../helpers/game.factory";
@@ -18,16 +19,13 @@ import { GameHistoryRecordService } from "../game-history/game-history-record.se
 @Injectable()
 export class GamePlayService {
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
-  
-  public async removeObsoleteUpcomingPlays(game: Game): Promise<Game> {
-    const clonedGame = createGame(game);
-    const validUpcomingPlays: GamePlay[] = [];
-    for (const upcomingPlay of clonedGame.upcomingPlays) {
-      if (await this.isGamePlaySuitableForCurrentPhase(clonedGame, upcomingPlay)) {
-        validUpcomingPlays.push(upcomingPlay);
-      }
-    }
-    clonedGame.upcomingPlays = validUpcomingPlays;
+
+  public async refreshUpcomingPlays(game: Game): Promise<Game> {
+    let clonedGame = createGame(game);
+    clonedGame = await this.removeObsoleteUpcomingPlays(clonedGame);
+    const currentPhaseUpcomingPlays = clonedGame.phase === GAME_PHASES.NIGHT ? await this.getUpcomingNightPlays(clonedGame) : this.getUpcomingDayPlays();
+    const upcomingPlaysToSort = [...clonedGame.upcomingPlays, ...currentPhaseUpcomingPlays];
+    clonedGame.upcomingPlays = this.sortUpcomingPlaysByPriority(upcomingPlaysToSort);
     return clonedGame;
   }
 
@@ -58,6 +56,31 @@ export class GamePlayService {
       }
     }
     return upcomingNightPlays;
+  }
+
+  private async removeObsoleteUpcomingPlays(game: Game): Promise<Game> {
+    const clonedGame = createGame(game);
+    const validUpcomingPlays: GamePlay[] = [];
+    for (const upcomingPlay of clonedGame.upcomingPlays) {
+      if (await this.isGamePlaySuitableForCurrentPhase(clonedGame, upcomingPlay)) {
+        validUpcomingPlays.push(upcomingPlay);
+      }
+    }
+    clonedGame.upcomingPlays = validUpcomingPlays;
+    return clonedGame;
+  }
+
+  private sortUpcomingPlaysByPriority(upcomingPlays: GamePlay[]): GamePlay[] {
+    const clonedUpcomingPlays = upcomingPlays.map(upcomingPlay => createGamePlay(upcomingPlay));
+    return clonedUpcomingPlays.sort((playA, playB) => {
+      const findPlayPriorityIndex = (play: GamePlay): number => gamePlaysPriorityList.findIndex(playPriority => {
+        const { source, action, cause } = playPriority;
+        return source.name === play.source.name && action === play.action && cause === play.cause;
+      });
+      const playAPriority = findPlayPriorityIndex(playA);
+      const playBPriority = findPlayPriorityIndex(playB);
+      return playAPriority - playBPriority;
+    });
   }
 
   private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GAME_PHASES): boolean {

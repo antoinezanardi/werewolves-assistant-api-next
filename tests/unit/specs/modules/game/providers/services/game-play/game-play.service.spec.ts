@@ -61,51 +61,6 @@ describe("Game Play Service", () => {
     services = { gamePlay: module.get<GamePlayService>(GamePlayService) };
   });
 
-  describe("removeObsoleteUpcomingPlays", () => {
-    it("should return game as is when no game play needs to be removed.", async() => {
-      const players = [
-        createFakeSeerAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer({ isAlive: false }),
-        createFakeWitchAlivePlayer(),
-      ];
-      const upcomingPlays = [
-        createFakeGamePlaySeerLooks(),
-        createFakeGamePlayHunterShoots(),
-        createFakeGamePlayWitchUsesPotions(),
-        createFakeGamePlayWerewolvesEat(),
-      ];
-      const game = createFakeGame({ players, upcomingPlays });
-
-      await expect(services.gamePlay.removeObsoleteUpcomingPlays(game)).resolves.toStrictEqual<Game>(game);
-    });
-
-    it("should remove some game plays when players became powerless or died.", async() => {
-      const players = [
-        createFakeSeerAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer({ isAlive: false }),
-        createFakeWitchAlivePlayer({ isAlive: false }),
-      ];
-      const upcomingPlays = [
-        createFakeGamePlaySeerLooks(),
-        createFakeGamePlayHunterShoots(),
-        createFakeGamePlayWitchUsesPotions(),
-        createFakeGamePlayWerewolvesEat(),
-      ];
-      const game = createFakeGame({ players, upcomingPlays });
-      const expectedGame = createFakeGame({
-        ...game,
-        upcomingPlays: [
-          createFakeGamePlayHunterShoots(),
-          createFakeGamePlayWerewolvesEat(),
-        ],
-      });
-
-      await expect(services.gamePlay.removeObsoleteUpcomingPlays(game)).resolves.toStrictEqual<Game>(expectedGame);
-    });
-  });
-
   describe("proceedToNextGamePlay", () => {
     it("should return game as is when there is no upcoming plays.", () => {
       const game = createFakeGame();
@@ -235,6 +190,57 @@ describe("Game Play Service", () => {
       },
     ])("should get upcoming night plays when $test [#$#].", async({ game, output }) => {
       await expect(services.gamePlay.getUpcomingNightPlays(game)).resolves.toStrictEqual<GamePlay[]>(output);
+    });
+  });
+
+  describe("removeObsoleteUpcomingPlays", () => {
+    it("should return game as is when no game play needs to be removed.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer({ isAlive: false }),
+        createFakeWitchAlivePlayer(),
+      ];
+      const upcomingPlays = [
+        createFakeGamePlaySeerLooks(),
+        createFakeGamePlayHunterShoots(),
+        createFakeGamePlayWitchUsesPotions(),
+        createFakeGamePlayWerewolvesEat(),
+      ];
+      const game = createFakeGame({ players, upcomingPlays });
+
+      await expect(services.gamePlay["removeObsoleteUpcomingPlays"](game)).resolves.toStrictEqual<Game>(game);
+    });
+
+    it("should remove some game plays when players became powerless or died.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer({ isAlive: false }),
+        createFakeWitchAlivePlayer({ isAlive: false }),
+      ];
+      const upcomingPlays = [
+        createFakeGamePlaySeerLooks(),
+        createFakeGamePlayHunterShoots(),
+        createFakeGamePlayWitchUsesPotions(),
+        createFakeGamePlayWerewolvesEat(),
+      ];
+      const game = createFakeGame({ players, upcomingPlays });
+      const expectedGame = createFakeGame({
+        ...game,
+        upcomingPlays: [
+          createFakeGamePlayHunterShoots(),
+          createFakeGamePlayWerewolvesEat(),
+        ],
+      });
+
+      await expect(services.gamePlay["removeObsoleteUpcomingPlays"](game)).resolves.toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("sortUpcomingPlaysByPriority", () => {
+    it("should return empty array when upcoming plays are empty.", () => {
+      expect(services.gamePlay["sortUpcomingPlaysByPriority"]([])).toStrictEqual<GamePlay[]>([]);
     });
   });
 
