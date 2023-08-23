@@ -12,6 +12,7 @@ import { GamePlayService } from "../../../../../../../../src/modules/game/provid
 import type { GamePlay } from "../../../../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "../../../../../../../../src/modules/game/schemas/game.schema";
 import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
+import * as UnexpectedExceptionFactory from "../../../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
 import { createFakeGameOptionsDto } from "../../../../../../../factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
 import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "../../../../../../../factories/game/dto/create-game/create-game.dto.factory";
@@ -36,6 +37,9 @@ describe("Game Play Service", () => {
       getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
       getExpectedPlayersToPlay: jest.SpyInstance;
     };
+    unexpectedExceptionFactory: {
+      createNoGamePlayPriorityUnexpectedException: jest.SpyInstance;
+    };
   };
 
   beforeEach(async() => {
@@ -46,8 +50,8 @@ describe("Game Play Service", () => {
         getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers").mockReturnValue([]),
         getExpectedPlayersToPlay: jest.spyOn(GameHelper, "getExpectedPlayersToPlay").mockReturnValue([]),
       },
+      unexpectedExceptionFactory: { createNoGamePlayPriorityUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoGamePlayPriorityUnexpectedException").mockImplementation() },
     };
-    
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
@@ -59,6 +63,42 @@ describe("Game Play Service", () => {
     }).compile();
     
     services = { gamePlay: module.get<GamePlayService>(GamePlayService) };
+  });
+
+  describe("refreshUpcomingPlays", () => {
+    let localMocks: {
+      gamePlayService: {
+        removeObsoleteUpcomingPlays: jest.SpyInstance;
+        sortUpcomingPlaysByPriority: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = {
+        gamePlayService: {
+          removeObsoleteUpcomingPlays: jest.spyOn(services.gamePlay as unknown as { removeObsoleteUpcomingPlays }, "removeObsoleteUpcomingPlays").mockImplementation(),
+          sortUpcomingPlaysByPriority: jest.spyOn(services.gamePlay as unknown as { sortUpcomingPlaysByPriority }, "sortUpcomingPlaysByPriority").mockImplementation(),
+        },
+      };
+    });
+
+    it("should call removeObsoleteUpcomingPlays when called.", async() => {
+      const game = createFakeGame();
+      localMocks.gamePlayService.removeObsoleteUpcomingPlays.mockResolvedValue(game);
+      localMocks.gamePlayService.sortUpcomingPlaysByPriority.mockReturnValue(game.upcomingPlays);
+      await services.gamePlay.refreshUpcomingPlays(game);
+
+      expect(localMocks.gamePlayService.removeObsoleteUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call sortUpcomingPlaysByPriority when called.", async() => {
+      const game = createFakeGame();
+      localMocks.gamePlayService.removeObsoleteUpcomingPlays.mockResolvedValue(game);
+      localMocks.gamePlayService.sortUpcomingPlaysByPriority.mockReturnValue(game.upcomingPlays);
+      await services.gamePlay.refreshUpcomingPlays(game);
+
+      expect(localMocks.gamePlayService.sortUpcomingPlaysByPriority).toHaveBeenCalledExactlyOnceWith(game.upcomingPlays);
+    });
   });
 
   describe("proceedToNextGamePlay", () => {
@@ -238,9 +278,59 @@ describe("Game Play Service", () => {
     });
   });
 
+  describe("validateUpcomingPlaysPriority", () => {
+    it("should do nothing when all game plays have a priority.", () => {
+      const upcomingPlays = [
+        createFakeGamePlayAllElectSheriff(),
+        createFakeGamePlayHunterShoots(),
+        createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+      ];
+
+      expect(() => services.gamePlay["validateUpcomingPlaysPriority"](upcomingPlays)).not.toThrow();
+    });
+
+    it("should throw an error when the first upcoming play doesn't have a priority.", () => {
+      const upcomingPlays = [
+        createFakeGamePlayWitchUsesPotions({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+        createFakeGamePlayHunterShoots(),
+        createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+      ];
+
+      expect(() => services.gamePlay["validateUpcomingPlaysPriority"](upcomingPlays)).toThrow(undefined);
+      expect(mocks.unexpectedExceptionFactory.createNoGamePlayPriorityUnexpectedException).toHaveBeenCalledExactlyOnceWith("validateUpcomingPlaysPriority", upcomingPlays[0]);
+    });
+  });
+
   describe("sortUpcomingPlaysByPriority", () => {
     it("should return empty array when upcoming plays are empty.", () => {
       expect(services.gamePlay["sortUpcomingPlaysByPriority"]([])).toStrictEqual<GamePlay[]>([]);
+    });
+
+    it("should return upcoming plays sorted by priority when called with defined actions in priority list.", () => {
+      const upcomingPlaysToSort = [
+        createFakeGamePlayAllVote(),
+        createFakeGamePlayAllElectSheriff(),
+        createFakeGamePlayBigBadWolfEats(),
+        createFakeGamePlayWerewolvesEat(),
+        createFakeGamePlaySeerLooks(),
+        createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.STUTTERING_JUDGE_REQUEST }),
+        createFakeGamePlayWitchUsesPotions(),
+        createFakeGamePlayHunterShoots(),
+        createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+      ];
+      const expectedUpcomingPlays = [
+        createFakeGamePlayHunterShoots(),
+        createFakeGamePlayAllElectSheriff(),
+        createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+        createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.STUTTERING_JUDGE_REQUEST }),
+        createFakeGamePlayAllVote(),
+        createFakeGamePlaySeerLooks(),
+        createFakeGamePlayWerewolvesEat(),
+        createFakeGamePlayBigBadWolfEats(),
+        createFakeGamePlayWitchUsesPotions(),
+      ];
+
+      expect(services.gamePlay["sortUpcomingPlaysByPriority"](upcomingPlaysToSort)).toStrictEqual<GamePlay[]>(expectedUpcomingPlays);
     });
   });
 

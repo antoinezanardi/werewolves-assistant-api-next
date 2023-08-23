@@ -1,13 +1,14 @@
 import { Injectable } from "@nestjs/common";
+import { createNoGamePlayPriorityUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
-import { gamePlaysPriorityList } from "../../../constants/game-play/game-play.constant";
 import { gamePlaysNightOrder } from "../../../constants/game.constant";
 import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "../../../dto/create-game/create-game.dto";
 import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
-import { GAME_PHASES } from "../../../enums/game.enum";
+import type { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "../../../helpers/game-play/game-play.factory";
+import { findPlayPriorityIndex } from "../../../helpers/game-play/game-play.helper";
 import { createGame } from "../../../helpers/game.factory";
 import { areAllWerewolvesAlive, getExpectedPlayersToPlay, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "../../../helpers/player/player.helper";
@@ -23,9 +24,9 @@ export class GamePlayService {
   public async refreshUpcomingPlays(game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     clonedGame = await this.removeObsoleteUpcomingPlays(clonedGame);
-    const currentPhaseUpcomingPlays = clonedGame.phase === GAME_PHASES.NIGHT ? await this.getUpcomingNightPlays(clonedGame) : this.getUpcomingDayPlays();
-    const upcomingPlaysToSort = [...clonedGame.upcomingPlays, ...currentPhaseUpcomingPlays];
-    clonedGame.upcomingPlays = this.sortUpcomingPlaysByPriority(upcomingPlaysToSort);
+    // const currentPhaseUpcomingPlays = clonedGame.phase === GAME_PHASES.NIGHT ? await this.getUpcomingNightPlays(clonedGame) : this.getUpcomingDayPlays();
+    // const upcomingPlaysToSort = [...clonedGame.upcomingPlays, ...currentPhaseUpcomingPlays];
+    clonedGame.upcomingPlays = this.sortUpcomingPlaysByPriority(clonedGame.upcomingPlays);
     return clonedGame;
   }
 
@@ -70,16 +71,22 @@ export class GamePlayService {
     return clonedGame;
   }
 
+  private validateUpcomingPlaysPriority(upcomingPlays: GamePlay[]): void {
+    for (const upcomingPlay of upcomingPlays) {
+      const playPriorityIndex = findPlayPriorityIndex(upcomingPlay);
+      if (playPriorityIndex === -1) {
+        throw createNoGamePlayPriorityUnexpectedException(this.validateUpcomingPlaysPriority.name, upcomingPlay);
+      }
+    }
+  }
+
   private sortUpcomingPlaysByPriority(upcomingPlays: GamePlay[]): GamePlay[] {
     const clonedUpcomingPlays = upcomingPlays.map(upcomingPlay => createGamePlay(upcomingPlay));
+    this.validateUpcomingPlaysPriority(clonedUpcomingPlays);
     return clonedUpcomingPlays.sort((playA, playB) => {
-      const findPlayPriorityIndex = (play: GamePlay): number => gamePlaysPriorityList.findIndex(playPriority => {
-        const { source, action, cause } = playPriority;
-        return source.name === play.source.name && action === play.action && cause === play.cause;
-      });
-      const playAPriority = findPlayPriorityIndex(playA);
-      const playBPriority = findPlayPriorityIndex(playB);
-      return playAPriority - playBPriority;
+      const playAPriorityIndex = findPlayPriorityIndex(playA);
+      const playBPriorityIndex = findPlayPriorityIndex(playB);
+      return playAPriorityIndex - playBPriorityIndex;
     });
   }
 

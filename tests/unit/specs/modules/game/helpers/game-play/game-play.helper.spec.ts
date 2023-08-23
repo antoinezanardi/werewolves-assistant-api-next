@@ -1,8 +1,8 @@
 import type { MakeGamePlayTargetWithRelationsDto } from "../../../../../../../src/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "../../../../../../../src/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "../../../../../../../src/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
-import { WITCH_POTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
-import { createMakeGamePlayDtoWithRelations, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto } from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
+import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
+import { createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto } from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
 import { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
 import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enum";
 import { ResourceNotFoundException } from "../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
@@ -11,6 +11,7 @@ import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../fa
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
 import { bulkCreateFakePlayers } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
@@ -172,6 +173,20 @@ describe("Game Play Helper", () => {
       });
 
       expect(createMakeGamePlayDtoWithRelations(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayWithRelationsDto>(expectedMakeGamePlayDtoWithRelationsDto);
+    });
+  });
+
+  describe("findPlayPriorityIndex", () => {
+    it("should return -1 when play is not found in priority list.", () => {
+      const gamePlay = createFakeGamePlaySeerLooks({ action: GAME_PLAY_ACTIONS.EAT });
+
+      expect(findPlayPriorityIndex(gamePlay)).toBe(-1);
+    });
+
+    it("should return index when play is found in priority list.", () => {
+      const gamePlay = createFakeGamePlayHunterShoots();
+
+      expect(findPlayPriorityIndex(gamePlay)).toBe(0);
     });
   });
 });

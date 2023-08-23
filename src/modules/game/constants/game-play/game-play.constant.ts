@@ -50,6 +50,11 @@ const gamePlaysPriorityList: Readonly<GamePlay[]> = Object.freeze([
   {
     source: { name: PLAYER_GROUPS.ALL },
     action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
+    cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES,
+  },
+  {
+    source: { name: PLAYER_GROUPS.ALL },
+    action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
   },
   {
     source: { name: PLAYER_ATTRIBUTE_NAMES.SHERIFF as GameSource },
