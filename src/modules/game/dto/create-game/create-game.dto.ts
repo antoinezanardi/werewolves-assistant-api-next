@@ -1,9 +1,9 @@
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, Equals, IsArray, IsOptional, ValidateNested } from "class-validator";
-import { gameApiProperties, gameFieldsSpecs } from "../../constants/game.constant";
 import { GAME_PHASES } from "../../enums/game.enum";
 import { GamePlay } from "../../schemas/game-play/game-play.schema";
+import { gameApiProperties, gameFieldsSpecs } from "../../schemas/game.schema.constant";
 import { AdditionalCardsForThiefRoles } from "../base/decorators/additional-cards/additional-cards-for-thief-roles.decorator";
 import { AdditionalCardsForThiefSize } from "../base/decorators/additional-cards/additional-cards-for-thief-size.decorator";
 import { AdditionalCardsPresence } from "../base/decorators/additional-cards/additional-cards-presence.decorator";
