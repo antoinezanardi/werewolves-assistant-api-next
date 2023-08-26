@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { BAD_GAME_PLAY_PAYLOAD_REASONS } from "../../../../../shared/exception/enums/bad-game-play-payload-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
 import { BadGamePlayPayloadException } from "../../../../../shared/exception/types/bad-game-play-payload-exception.type";
+import { werewolvesRoles } from "../../../../role/constants/role.constant";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { optionalTargetsActions, requiredTargetsActions, requiredVotesActions, stutteringJudgeRequestOpportunityActions } from "../../../constants/game-play/game-play.constant";
 import type { MakeGamePlayTargetWithRelationsDto } from "../../../dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
@@ -10,9 +11,10 @@ import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/m
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGame } from "../../../helpers/game.factory";
-import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole, getPlayerWithId } from "../../../helpers/game.helper";
-import { doesPlayerHaveAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
+import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
+import { doesPlayerHaveActiveAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
+import type { GameAdditionalCard } from "../../../schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "../../../schemas/game.schema";
 import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
 import type { GameSource } from "../../../types/game.type";
@@ -35,24 +37,33 @@ export class GamePlayValidatorService {
     this.validateGamePlayWithRelationsDtoChosenCard(play, clonedGameWithCurrentPlay);
   }
 
-  private validateGamePlayWithRelationsDtoChosenCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): void {
-    if (!chosenCard) {
-      if (game.currentPlay.action === GAME_PLAY_ACTIONS.CHOOSE_CARD) {
-        throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_CHOSEN_CARD);
-      }
+  private validateGamePlayThiefChosenCard(chosenCard: GameAdditionalCard | undefined, game: GameWithCurrentPlay): void {
+    const { mustChooseBetweenWerewolves } = game.options.roles.thief;
+    if (!game.additionalCards || !mustChooseBetweenWerewolves) {
       return;
     }
-    if (game.currentPlay.action !== GAME_PLAY_ACTIONS.CHOOSE_CARD) {
-      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_CHOSEN_CARD);
+    const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => werewolvesRoles.find(role => role.name === roleName));
+    if (areAllAdditionalCardsWerewolves && !chosenCard) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.THIEF_MUST_CHOOSE_CARD);
     }
   }
 
-  private validateDrankLifePotionTargets(drankLifePotionTargets: MakeGamePlayTargetWithRelationsDto[]): void {
+  private validateGamePlayWithRelationsDtoChosenCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): void {
+    if (game.currentPlay.action !== GAME_PLAY_ACTIONS.CHOOSE_CARD) {
+      if (chosenCard) {
+        throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_CHOSEN_CARD);
+      }
+      return;
+    }
+    this.validateGamePlayThiefChosenCard(chosenCard, game);
+  }
+
+  private validateDrankLifePotionTargets(drankLifePotionTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
     if (drankLifePotionTargets.length > 1) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.TOO_MUCH_DRANK_LIFE_POTION_TARGETS);
     }
     if (drankLifePotionTargets.length &&
-      (!doesPlayerHaveAttributeWithName(drankLifePotionTargets[0].player, PLAYER_ATTRIBUTE_NAMES.EATEN) || !drankLifePotionTargets[0].player.isAlive)) {
+      (!doesPlayerHaveActiveAttributeWithName(drankLifePotionTargets[0].player, PLAYER_ATTRIBUTE_NAMES.EATEN, game) || !drankLifePotionTargets[0].player.isAlive)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_LIFE_POTION_TARGET);
     }
   }
@@ -74,7 +85,7 @@ export class GamePlayValidatorService {
     if (hasWitchUsedLifePotion && drankLifePotionTargets.length || hasWitchUsedDeathPotion && drankDeathPotionTargets.length) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_DRANK_POTION_TARGET);
     }
-    this.validateDrankLifePotionTargets(drankLifePotionTargets);
+    this.validateDrankLifePotionTargets(drankLifePotionTargets, game);
     this.validateDrankDeathPotionTargets(drankDeathPotionTargets);
   }
 
@@ -84,16 +95,16 @@ export class GamePlayValidatorService {
       return;
     }
     const hasVileFatherOfWolvesInfected = (await this.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords(game._id)).length > 0;
-    const vileFatherOfWolvesPlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.VILE_FATHER_OF_WOLVES);
-    if (!vileFatherOfWolvesPlayer || !isPlayerAliveAndPowerful(vileFatherOfWolvesPlayer) || hasVileFatherOfWolvesInfected) {
+    const vileFatherOfWolvesPlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.VILE_FATHER_OF_WOLVES);
+    if (!vileFatherOfWolvesPlayer || !isPlayerAliveAndPowerful(vileFatherOfWolvesPlayer, game) || hasVileFatherOfWolvesInfected) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_INFECTED_TARGET);
     }
     this.validateGamePlayTargetsBoundaries(infectedTargets, { min: 1, max: 1 });
   }
   
   private validateWerewolvesTargetsBoundaries(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
-    const leftToEatByWerewolvesPlayers = getLeftToEatByWerewolvesPlayers(game.players);
-    const leftToEatByWhiteWerewolfPlayers = getLeftToEatByWhiteWerewolfPlayers(game.players);
+    const leftToEatByWerewolvesPlayers = getLeftToEatByWerewolvesPlayers(game);
+    const leftToEatByWhiteWerewolfPlayers = getLeftToEatByWhiteWerewolfPlayers(game);
     const bigBadWolfExpectedTargetsCount = leftToEatByWerewolvesPlayers.length ? 1 : 0;
     const whiteWerewolfMaxTargetsCount = leftToEatByWhiteWerewolfPlayers.length ? 1 : 0;
     const werewolvesSourceTargetsBoundaries: Partial<Record<GameSource, { min: number; max: number }>> = {
@@ -114,15 +125,17 @@ export class GamePlayValidatorService {
       return;
     }
     const targetedPlayer = playTargets[0].player;
-    const pureWolvesAvailableTargets = getLeftToEatByWerewolvesPlayers(game.players);
-    if (game.currentPlay.source.name === PLAYER_GROUPS.WEREWOLVES && !getPlayerWithId(pureWolvesAvailableTargets, targetedPlayer._id)) {
+    const pureWolvesAvailableTargets = getLeftToEatByWerewolvesPlayers(game);
+    const isTargetedPlayerInPureWolvesTargets = !!pureWolvesAvailableTargets.find(({ _id }) => _id.toString() === targetedPlayer._id.toString());
+    if (game.currentPlay.source.name === PLAYER_GROUPS.WEREWOLVES && !isTargetedPlayerInPureWolvesTargets) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_WEREWOLVES_TARGET);
     }
-    if (game.currentPlay.source.name === ROLE_NAMES.BIG_BAD_WOLF && !getPlayerWithId(pureWolvesAvailableTargets, targetedPlayer._id)) {
+    if (game.currentPlay.source.name === ROLE_NAMES.BIG_BAD_WOLF && !isTargetedPlayerInPureWolvesTargets) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_BIG_BAD_WOLF_TARGET);
     }
-    const whiteWerewolfAvailableTargets = getLeftToEatByWhiteWerewolfPlayers(game.players);
-    if (game.currentPlay.source.name === ROLE_NAMES.WHITE_WEREWOLF && !getPlayerWithId(whiteWerewolfAvailableTargets, targetedPlayer._id)) {
+    const whiteWerewolfAvailableTargets = getLeftToEatByWhiteWerewolfPlayers(game);
+    const isTargetedPlayerInWhiteWerewolfTargets = !!whiteWerewolfAvailableTargets.find(({ _id }) => _id.toString() === targetedPlayer._id.toString());
+    if (game.currentPlay.source.name === ROLE_NAMES.WHITE_WEREWOLF && !isTargetedPlayerInWhiteWerewolfTargets) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_WHITE_WEREWOLF_TARGET);
     }
     await this.validateGamePlayInfectedTargets(playTargets, game);
@@ -160,7 +173,7 @@ export class GamePlayValidatorService {
 
   private validateGamePlaySeerTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
     this.validateGamePlayTargetsBoundaries(playTargets, { min: 1, max: 1 });
-    const seerPlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.SEER);
+    const seerPlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.SEER);
     const targetedPlayer = playTargets[0].player;
     if (!targetedPlayer.isAlive || targetedPlayer._id === seerPlayer?._id) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_SEER_TARGET);
@@ -176,7 +189,7 @@ export class GamePlayValidatorService {
 
   private validateGamePlayWildChildTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
     this.validateGamePlayTargetsBoundaries(playTargets, { min: 1, max: 1 });
-    const wildChildPlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.WILD_CHILD);
+    const wildChildPlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.WILD_CHILD);
     const targetedPlayer = playTargets[0].player;
     if (!targetedPlayer.isAlive || targetedPlayer._id === wildChildPlayer?._id) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_WILD_CHILD_TARGET);
@@ -185,7 +198,7 @@ export class GamePlayValidatorService {
 
   private validateGamePlayPiedPiperTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
     const { charmedPeopleCountPerNight } = game.options.roles.piedPiper;
-    const leftToCharmByPiedPiperPlayers = getLeftToCharmByPiedPiperPlayers(game.players);
+    const leftToCharmByPiedPiperPlayers = getLeftToCharmByPiedPiperPlayers(game);
     const leftToCharmByPiedPiperPlayersCount = leftToCharmByPiedPiperPlayers.length;
     const countToCharm = Math.min(charmedPeopleCountPerNight, leftToCharmByPiedPiperPlayersCount);
     this.validateGamePlayTargetsBoundaries(playTargets, { min: countToCharm, max: countToCharm });
@@ -285,8 +298,8 @@ export class GamePlayValidatorService {
     }
   }
   
-  private validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes: MakeGamePlayVoteWithRelationsDto[]): void {
-    if (playVotes.some(({ source }) => !source.isAlive || doesPlayerHaveAttributeWithName(source, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE))) {
+  private validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes: MakeGamePlayVoteWithRelationsDto[], game: Game): void {
+    if (playVotes.some(({ source }) => !source.isAlive || doesPlayerHaveActiveAttributeWithName(source, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE, game))) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.BAD_VOTE_SOURCE);
     }
     if (playVotes.some(({ target }) => !target.isAlive)) {
@@ -302,7 +315,7 @@ export class GamePlayValidatorService {
     const { canBeSkipped: canVotesBeSkipped } = game.options.votes;
     const isCurrentPlayVoteCauseOfAngelPresence = currentPlayAction === GAME_PLAY_ACTIONS.VOTE && currentPlayCause === GAME_PLAY_CAUSES.ANGEL_PRESENCE;
     const isCurrentPlayVoteInevitable = currentPlayAction === GAME_PLAY_ACTIONS.ELECT_SHERIFF || isCurrentPlayVoteCauseOfAngelPresence;
-    const canSomePlayerVote = game.players.some(player => player.isAlive && !doesPlayerHaveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE));
+    const canSomePlayerVote = game.players.some(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.CANT_VOTE, game));
     if (canSomePlayerVote && (!canVotesBeSkipped && requiredVotesActions.includes(currentPlayAction) || canVotesBeSkipped && isCurrentPlayVoteInevitable)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_VOTES);
     }
@@ -316,7 +329,7 @@ export class GamePlayValidatorService {
     if (!requiredVotesActions.includes(game.currentPlay.action)) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_VOTES);
     }
-    this.validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes);
+    this.validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes, game);
     if (game.currentPlay.cause === GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES) {
       await this.validateGamePlayVotesTieBreakerWithRelationsDto(playVotes, game);
     }
@@ -337,9 +350,9 @@ export class GamePlayValidatorService {
     }
     const { voteRequestsCount } = game.options.roles.stutteringJudge;
     const gameHistoryJudgeRequestRecords = await this.gameHistoryRecordService.getGameHistoryJudgeRequestRecords(game._id);
-    const stutteringJudgePlayer = getPlayerWithCurrentRole(game.players, ROLE_NAMES.STUTTERING_JUDGE);
+    const stutteringJudgePlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.STUTTERING_JUDGE);
     if (!stutteringJudgeRequestOpportunityActions.includes(game.currentPlay.action) ||
-        !stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer) ||
+        !stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer, game) ||
         gameHistoryJudgeRequestRecords.length >= voteRequestsCount) {
       throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
     }

@@ -1,9 +1,10 @@
 import { GAME_PHASES } from "../../../../../../../../src/modules/game/enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../../src/modules/game/enums/player.enum";
-import { doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource, getPlayerAttributeWithName, getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "../../../../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource, getActivePlayerAttributeWithName, getPlayerAttributeWithName, getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "../../../../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import type { PlayerAttribute } from "../../../../../../../../src/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
 import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeEatenByWerewolvesPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
 
 describe("Player Attribute Helper", () => {
@@ -51,6 +52,28 @@ describe("Player Attribute Helper", () => {
     });
   });
 
+  describe("getPlayerAttributeWithName", () => {
+    it("should get attribute when player has this attribute.", () => {
+      const attributes = [
+        createFakeSheriffByAllPlayerAttribute(),
+        createFakePowerlessByAncientPlayerAttribute(),
+      ];
+      const player = createFakePlayer({ attributes });
+
+      expect(getPlayerAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS)).toStrictEqual(attributes[1]);
+    });
+
+    it("should return undefined when player doesn't have the attribute.", () => {
+      const attributes = [
+        createFakeSheriffByAllPlayerAttribute(),
+        createFakePowerlessByAncientPlayerAttribute(),
+      ];
+      const player = createFakePlayer({ attributes });
+
+      expect(getPlayerAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE)).toBeUndefined();
+    });
+  });
+
   describe("doesPlayerHaveAttributeWithName", () => {
     it("should return false when player doesn't have any attributes.", () => {
       const player = createFakePlayer({ attributes: [] });
@@ -70,58 +93,74 @@ describe("Player Attribute Helper", () => {
       expect(doesPlayerHaveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.SEEN)).toBe(true);
     });
   });
-  
-  describe("getPlayerAttributeWithName", () => {
-    it("should get attribute when player has this attribute.", () => {
-      const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
-        createFakePowerlessByAncientPlayerAttribute(),
-      ];
-      const player = createFakePlayer({ attributes });
 
-      expect(getPlayerAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS)).toStrictEqual(attributes[1]);
-    });
-    
+  describe("getActivePlayerAttributeWithName", () => {
     it("should return undefined when player doesn't have the attribute.", () => {
+      const game = createFakeGame({ turn: 1, phase: GAME_PHASES.DAY });
       const attributes = [
         createFakeSheriffByAllPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getPlayerAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE)).toBeUndefined();
+      expect(getActivePlayerAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, game)).toBeUndefined();
+    });
+
+    it("should return undefined when player has the attribute but not active yet.", () => {
+      const game = createFakeGame({ turn: 1, phase: GAME_PHASES.DAY });
+      const attributes = [
+        createFakeSheriffByAllPlayerAttribute(),
+        createFakeInLoveByCupidPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 2, phase: GAME_PHASES.DAY }) }),
+      ];
+      const player = createFakePlayer({ attributes });
+
+      expect(getActivePlayerAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, game)).toBeUndefined();
+    });
+
+    it("should return the attribute when player has the attribute and is active yet.", () => {
+      const game = createFakeGame({ turn: 1, phase: GAME_PHASES.DAY });
+      const attributes = [
+        createFakeSheriffByAllPlayerAttribute(),
+        createFakeInLoveByCupidPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GAME_PHASES.DAY }) }),
+      ];
+      const player = createFakePlayer({ attributes });
+
+      expect(getActivePlayerAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, game)).toStrictEqual<PlayerAttribute>(attributes[1]);
     });
   });
 
-  describe("doesPlayerHaveAttributeWithNameAndSource", () => {
-    it("should get attribute when player has this attribute.", () => {
+  describe("doesPlayerHaveActiveAttributeWithName", () => {
+    it("should return false when player doesn't have the attribute.", () => {
+      const game = createFakeGame({ turn: 1, phase: GAME_PHASES.DAY });
       const attributes = [
         createFakeSheriffByAllPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(doesPlayerHaveAttributeWithNameAndSource(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS, ROLE_NAMES.ANCIENT)).toBe(true);
+      expect(doesPlayerHaveActiveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, game)).toBe(false);
     });
 
-    it("should return undefined when player doesn't have the attribute with correct name.", () => {
+    it("should return false when player has the attribute but not active yet.", () => {
+      const game = createFakeGame({ turn: 1, phase: GAME_PHASES.DAY });
       const attributes = [
         createFakeSheriffByAllPlayerAttribute(),
-        createFakePowerlessByAncientPlayerAttribute(),
+        createFakeInLoveByCupidPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 2, phase: GAME_PHASES.DAY }) }),
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(doesPlayerHaveAttributeWithNameAndSource(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, ROLE_NAMES.ANCIENT)).toBe(false);
+      expect(doesPlayerHaveActiveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, game)).toBe(false);
     });
 
-    it("should return undefined when player doesn't have the attribute with correct source.", () => {
+    it("should return true when player has the attribute and is active yet.", () => {
+      const game = createFakeGame({ turn: 1, phase: GAME_PHASES.DAY });
       const attributes = [
         createFakeSheriffByAllPlayerAttribute(),
-        createFakePowerlessByAncientPlayerAttribute(),
+        createFakeInLoveByCupidPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GAME_PHASES.DAY }) }),
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(doesPlayerHaveAttributeWithNameAndSource(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS, ROLE_NAMES.CUPID)).toBe(false);
+      expect(doesPlayerHaveActiveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, game)).toBe(true);
     });
   });
 
@@ -154,6 +193,38 @@ describe("Player Attribute Helper", () => {
       const player = createFakePlayer({ attributes });
 
       expect(getPlayerAttributeWithNameAndSource(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS, ROLE_NAMES.CUPID)).toBeUndefined();
+    });
+  });
+
+  describe("doesPlayerHaveAttributeWithNameAndSource", () => {
+    it("should get attribute when player has this attribute.", () => {
+      const attributes = [
+        createFakeSheriffByAllPlayerAttribute(),
+        createFakePowerlessByAncientPlayerAttribute(),
+      ];
+      const player = createFakePlayer({ attributes });
+
+      expect(doesPlayerHaveAttributeWithNameAndSource(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS, ROLE_NAMES.ANCIENT)).toBe(true);
+    });
+
+    it("should return undefined when player doesn't have the attribute with correct name.", () => {
+      const attributes = [
+        createFakeSheriffByAllPlayerAttribute(),
+        createFakePowerlessByAncientPlayerAttribute(),
+      ];
+      const player = createFakePlayer({ attributes });
+
+      expect(doesPlayerHaveAttributeWithNameAndSource(player, PLAYER_ATTRIBUTE_NAMES.IN_LOVE, ROLE_NAMES.ANCIENT)).toBe(false);
+    });
+
+    it("should return undefined when player doesn't have the attribute with correct source.", () => {
+      const attributes = [
+        createFakeSheriffByAllPlayerAttribute(),
+        createFakePowerlessByAncientPlayerAttribute(),
+      ];
+      const player = createFakePlayer({ attributes });
+
+      expect(doesPlayerHaveAttributeWithNameAndSource(player, PLAYER_ATTRIBUTE_NAMES.POWERLESS, ROLE_NAMES.CUPID)).toBe(false);
     });
   });
 });

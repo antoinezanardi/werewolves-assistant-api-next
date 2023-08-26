@@ -1,3 +1,4 @@
+@game-victory
 Feature: 🏆 Game Victory
 
   Scenario: 🧑🏻‍🌾 Villagers win the game
@@ -14,19 +15,19 @@ Feature: 🏆 Game Victory
       | Thomas  | Olivia  |
       | JB      | Antoine |
       | Olivia  | JB      |
-    Then the player named Olivia should have the sheriff from all attribute
+    Then the player named Olivia should have the active sheriff from all attribute
     And the game's tick should be 2
     And the game's turn should be 1
     And the game's phase should be night
     And the game's current play should be seer to look
 
     When the seer looks at the player named Antoine
-    Then the player named Antoine should have the seen from seer attribute
+    Then the player named Antoine should have the active seen from seer attribute
     And the game's tick should be 3
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
-    Then the player named Thomas should have the eaten from werewolves attribute
+    Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's tick should be 4
     And the game's current play should be witch to use-potions
 
@@ -43,14 +44,7 @@ Feature: 🏆 Game Victory
       | JB      | Antoine |
     Then the player named Olivia should be murdered by all from vote
     And the game's phase should be day
-    And the game's current play should be sheriff to delegate
-
-    When the sheriff delegates his role to the player named JB
-    Then the player named JB should have the sheriff from sheriff attribute
     And the game's current play should be hunter to shoot
-    And the game's current play should be played by the following players
-      | name   |
-      | Olivia |
 
     When the hunter shoots at the player named JB
     Then the player named JB should be murdered by hunter from shot
@@ -76,24 +70,24 @@ Feature: 🏆 Game Victory
       | JB      | Antoine |
       | Olivia  | Antoine |
     Then the game's current play should be all to elect-sheriff because previous-votes-were-in-ties
-    But nobody should have the sheriff attribute
+    But nobody should have the active sheriff from all attribute
 
     When all elect sheriff with the following votes
       | source  | target |
       | Antoine | Olivia |
       | Thomas  | Olivia |
-    Then the player named Olivia should have the sheriff from all attribute
+    Then the player named Olivia should have the active sheriff from all attribute
     And the game's current play should be seer to look
 
     When the seer looks at the player named JB
-    Then the player named JB should have the seen from seer attribute
+    Then the player named JB should have the active seen from seer attribute
     And the game's current play should be werewolves to eat
     And the game's current play should be played by the following players
       | name |
       | JB   |
 
     When the werewolves eat the player named Thomas
-    Then the player named Thomas should have the eaten from werewolves attribute
+    Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be witch to use-potions
 
     When the witch uses death potion on the player named Olivia
@@ -103,7 +97,7 @@ Feature: 🏆 Game Victory
     And the game's current play should be sheriff to delegate
 
     When the sheriff delegates his role to the player named Antoine
-    Then the player named Antoine should have the sheriff from sheriff attribute
+    Then the player named Antoine should have the active sheriff from sheriff attribute
     And the game's current play should be hunter to shoot
     And the game's current play should be played by the following players
       | name   |
@@ -131,13 +125,13 @@ Feature: 🏆 Game Victory
       | JB      | Antoine |
       | Olivia  | Antoine |
     Then the game's current play should be all to elect-sheriff because previous-votes-were-in-ties
-    But nobody should have the sheriff attribute
+    But nobody should have the active sheriff from all attribute
 
     When all elect sheriff with the following votes
       | source  | target  |
       | Antoine | JB      |
       | Thomas  | Antoine |
-    Then 1 of the following players should have the sheriff from all attribute
+    Then 1 of the following players should have the active sheriff from all attribute
       | name    |
       | Antoine |
       | JB      |
@@ -147,20 +141,20 @@ Feature: 🏆 Game Victory
       | Thomas |
 
     When the seer looks at the player named JB
-    Then the player named JB should have the seen from seer attribute
+    Then the player named JB should have the active seen from seer attribute
     And the game's current play should be werewolves to eat
     And the game's current play should be played by the following players
       | name |
       | JB   |
 
     When the werewolves eat the player named Olivia
-    Then the player named Olivia should have the eaten from werewolves attribute
+    Then the player named Olivia should have the active eaten from werewolves attribute
     And the game's current play should be witch to use-potions
 
     When the witch uses life potion on the player named Olivia
     Then the player named Olivia should be alive
-    And nobody should have the eaten from werewolves attribute
-    And nobody should have the drank-life-potion from witch attribute
+    And nobody should have the active eaten from werewolves attribute
+    And nobody should have the active drank-life-potion from witch attribute
     And the game's phase should be day
     And the game's current play should be all to vote
     And the game's current play should be played by the following players
@@ -185,7 +179,7 @@ Feature: 🏆 Game Victory
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the eaten from werewolves attribute
+    Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be witch to use-potions
     And the game's current play should be played by the following players
       | name    |
@@ -197,7 +191,7 @@ Feature: 🏆 Game Victory
       | name |
 
   Scenario: 💞Lovers win the game
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
       | JB      | werewolf |
@@ -205,14 +199,14 @@ Feature: 🏆 Game Victory
       | Thomas  | seer     |
 
     When the cupid shoots an arrow at the player named Olivia and the player named JB
-    Then 2 of the following players should have the in-love from cupid attribute
+    Then 2 of the following players should have the active in-love from cupid attribute
       | name   |
       | Olivia |
       | JB     |
     And the game's current play should be seer to look
 
     When the seer looks at the player named Antoine
-    Then the player named Antoine should have the seen from seer attribute
+    Then the player named Antoine should have the active seen from seer attribute
     And the game's current play should be lovers to meet-each-other
     And the game's current play should be played by the following players
       | name   |
@@ -223,7 +217,7 @@ Feature: 🏆 Game Victory
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
-    Then the player named Thomas should have the eaten from werewolves attribute
+    Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be witch to use-potions
     And the game's current play should be played by the following players
       | name    |
@@ -239,7 +233,7 @@ Feature: 🏆 Game Victory
       | Olivia |
 
   Scenario: 👼 Angel wins the game with the first votes
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
       | JB      | werewolf |
@@ -259,7 +253,7 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 👼 Angel wins the game with first murder of wolves
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
       | JB      | werewolf |
@@ -276,7 +270,7 @@ Feature: 🏆 Game Victory
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
-    Then the player named Thomas should have the eaten from werewolves attribute
+    Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be witch to use-potions
 
     When the player or group skips his turn
@@ -287,7 +281,7 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 🐺🦴 White werewolf wins the game
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | witch          |
       | JB      | werewolf       |
@@ -295,15 +289,15 @@ Feature: 🏆 Game Victory
       | Thomas  | white-werewolf |
 
     When the guard protects the player named Olivia
-    Then the player named Olivia should have the protected from guard attribute
+    Then the player named Olivia should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the eaten from werewolves attribute
+    Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
 
     When the white werewolf eats the player named JB
-    Then the player named JB should have the eaten from white-werewolf attribute
+    Then the player named JB should have the active eaten from white-werewolf attribute
     And the game's current play should be witch to use-potions
 
     When the witch uses death potion on the player named Olivia
@@ -316,7 +310,7 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 🪈Pied Piper wins the game
-    Given a created game with options described in file no-sheriff-options.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | witch      |
       | JB      | werewolf   |
@@ -324,11 +318,11 @@ Feature: 🏆 Game Victory
       | Thomas  | pied-piper |
 
     When the guard protects the player named Thomas
-    Then the player named Thomas should have the protected from guard attribute
+    Then the player named Thomas should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the eaten from werewolves attribute
+    Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be witch to use-potions
 
     When the player or group skips his turn
@@ -338,7 +332,7 @@ Feature: 🏆 Game Victory
       | name   |
       | Olivia |
       | JB     |
-    Then 2 of the following players should have the charmed from pied-piper attribute
+    Then 2 of the following players should have the active charmed from pied-piper attribute
       | name   |
       | JB     |
       | Olivia |

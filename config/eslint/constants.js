@@ -8,6 +8,7 @@ const OFF = "off";
 const MAX_LENGTH_DEFAULT_CONFIG = {
   code: MAX_LENGTH,
   ignoreTemplateLiterals: true,
+  ignoreRegExpLiterals: true,
   ignorePattern: "^import\\s.+\\sfrom\\s.+;$",
 };
 const BOOLEAN_PREFIXES = ["is", "was", "are", "were", "should", "has", "can", "does", "do", "did", "must"];

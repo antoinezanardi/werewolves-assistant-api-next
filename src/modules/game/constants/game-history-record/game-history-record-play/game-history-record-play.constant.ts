@@ -1,6 +1,6 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ROLE_SIDES } from "../../../../role/enums/role.enum";
-import { GAME_PLAY_ACTIONS } from "../../../enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
 import type { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 
 const gameHistoryRecordPlayFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecordPlay, ApiPropertyOptions>>({
@@ -9,6 +9,10 @@ const gameHistoryRecordPlayFieldsSpecs = Object.freeze<Record<keyof GameHistoryR
     enum: GAME_PLAY_ACTIONS,
   },
   source: { required: true },
+  cause: {
+    required: false,
+    enum: GAME_PLAY_CAUSES,
+  },
   targets: { required: false },
   votes: { required: false },
   voting: { required: false },
@@ -28,6 +32,10 @@ const gameHistoryRecordPlayApiProperties = Object.freeze<Record<keyof GameHistor
   source: {
     description: "Play's source",
     ...gameHistoryRecordPlayFieldsSpecs.source,
+  },
+  cause: {
+    description: "Play's cause",
+    ...gameHistoryRecordPlayFieldsSpecs.cause,
   },
   targets: {
     description: "Players affected by the play.",

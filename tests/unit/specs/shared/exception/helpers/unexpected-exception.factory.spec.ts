@@ -1,4 +1,5 @@
-import { createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createNoCurrentGamePlayUnexpectedException, createPlayerIsDeadUnexpectedException } from "../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
+import { createFakeGamePlay } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
 import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
 
@@ -50,6 +51,19 @@ describe("Unexpected Exception Factory", () => {
         statusCode: 500,
         message: "Unexpected exception in makePlay",
         error: `Game with id "${interpolations.gameId.toString()}" doesn't have a current game play to deal with`,
+      });
+    });
+  });
+
+  describe("createNoGamePlayPriorityUnexpectedException", () => {
+    it("should create no game play priority unexpected exception when called.", () => {
+      const gamePlay = createFakeGamePlay();
+      const exception = createNoGamePlayPriorityUnexpectedException("makePlay", gamePlay);
+
+      expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
+        statusCode: 500,
+        message: "Unexpected exception in makePlay",
+        error: `Game play "${JSON.stringify(gamePlay)}" doesn't have a set priority`,
       });
     });
   });

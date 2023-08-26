@@ -18,7 +18,7 @@ import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../fac
 import { createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakePiedPiperGameOptions, createFakeRolesGameOptions, createFakeThiefGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "../../../../../../../factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlaySource } from "../../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
@@ -140,13 +140,74 @@ describe("Game Play Validator Service", () => {
     });
   });
 
+  describe("validateGamePlayThiefChosenCard", () => {
+    it("should do nothing when game additional cards are not set.", () => {
+      const chosenCard = createFakeGameAdditionalCard();
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).not.toThrow();
+    });
+    
+    it("should do nothing when game additional cards are set but thief can skip even if all cards are werewolves.", () => {
+      const chosenCard = createFakeGameAdditionalCard();
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: false }) }) });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WHITE_WEREWOLF }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).not.toThrow();
+    });
+
+    it("should do nothing when thief can't skip if all cards are werewolves but they are not so he can skip.", () => {
+      const chosenCard = undefined;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.SEER }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).not.toThrow();
+    });
+
+    it("should do nothing when thief can't skip if all cards are werewolves but he chose one anyway.", () => {
+      const chosenCard = createFakeGameAdditionalCard();
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WHITE_WEREWOLF }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).not.toThrow();
+    });
+
+    it("should throw error when all additional cards are werewolves and thief didn't choose a card.", () => {
+      const chosenCard = undefined;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WHITE_WEREWOLF }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).toThrow(BadGamePlayPayloadException);
+      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Thief must choose a card (`chosenCard`)");
+    });
+  });
+
   describe("validateGamePlayWithRelationsDtoChosenCard", () => {
-    it("should throw error when chosen card is not defined but expected.", () => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayThiefChoosesCard() });
-      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
-      
-      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`chosenCard` is required on this current game's state");
+    let localMocks: {
+      gamePlayValidatorService: {
+        validateGamePlayThiefChosenCard: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = { gamePlayValidatorService: { validateGamePlayThiefChosenCard: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayThiefChosenCard }, "validateGamePlayThiefChosenCard").mockImplementation() } };
     });
 
     it("should do nothing when chosen card is not defined and not expected.", () => {
@@ -164,11 +225,13 @@ describe("Game Play Validator Service", () => {
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`chosenCard` can't be set on this current game's state");
     });
 
-    it("should do nothing when chosen card is defined but expected.", () => {
+    it("should call validateGamePlayThiefChosenCard method when action is choose card.", () => {
+      const chosenCard = createFakeGameAdditionalCard();
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayThiefChoosesCard() });
-      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenCard: createFakeGameAdditionalCard() });
-      
-      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game)).not.toThrow();
+      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenCard });
+      services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game);
+
+      expect(localMocks.gamePlayValidatorService.validateGamePlayThiefChosenCard).toHaveBeenCalledExactlyOnceWith(chosenCard, game);
     });
   });
 
@@ -178,36 +241,42 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.LIFE }),
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WITCH_POTIONS.LIFE }),
       ];
+      const game = createFakeGame();
       
-      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets)).toThrow(BadGamePlayPayloadException);
+      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game)).toThrow(BadGamePlayPayloadException);
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("There are too much targets which drank life potion (`targets.drankPotion`)");
     });
 
     it("should throw error when life potion target is not alive.", () => {
       const targetedPlayer = createFakePlayer({ isAlive: false, attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
       const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WITCH_POTIONS.LIFE })];
+      const game = createFakeGame();
       
-      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets)).toThrow(BadGamePlayPayloadException);
+      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game)).toThrow(BadGamePlayPayloadException);
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Life potion can't be applied to this target (`targets.drankPotion`)");
     });
 
     it("should throw error when life potion target is not eaten by werewolves.", () => {
       const targetedPlayer = createFakePlayer({ isAlive: true, attributes: [] });
       const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WITCH_POTIONS.LIFE })];
+      const game = createFakeGame();
       
-      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets)).toThrow(BadGamePlayPayloadException);
+      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game)).toThrow(BadGamePlayPayloadException);
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Life potion can't be applied to this target (`targets.drankPotion`)");
     });
 
     it("should do nothing when there is no life potion target.", () => {
-      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"]([])).not.toThrow();
+      const game = createFakeGame();
+
+      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"]([], game)).not.toThrow();
     });
 
     it("should do nothing when life potion target is applied on valid target.", () => {
       const targetedPlayer = createFakePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()], isAlive: true });
       const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WITCH_POTIONS.LIFE })];
+      const game = createFakeGame();
       
-      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets)).not.toThrow();
+      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game)).not.toThrow();
     });
   });
 
@@ -344,7 +413,7 @@ describe("Game Play Validator Service", () => {
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([]);
+      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
       expect(localMocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([]);
     });
 
@@ -358,7 +427,7 @@ describe("Game Play Validator Service", () => {
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]]);
+      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
       expect(localMocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[1]]);
     });
 
@@ -371,7 +440,7 @@ describe("Game Play Validator Service", () => {
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue(gameHistoryRecords);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]]);
+      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
       expect(localMocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([]);
     });
 
@@ -384,7 +453,7 @@ describe("Game Play Validator Service", () => {
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WITCH_POTIONS.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([]);
+      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
       expect(localMocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]]);
     });
   });
@@ -549,56 +618,98 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw error when source is WEREWOLVES and targeted player is dead.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat() });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
+      const players = [
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] })];
 
       await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Werewolves can't eat this target");
     });
 
     it("should throw error when source is WEREWOLVES and targeted player is from werewolves side.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat() });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeWerewolfAlivePlayer() })];
+      const players = [
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] })];
 
       await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Werewolves can't eat this target");
     });
 
     it("should throw error when source is BIG_BAD_WOLF and targeted player is dead.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayBigBadWolfEats() });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
+      const players = [
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayBigBadWolfEats(), players });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] })];
 
       await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Big bad wolf can't eat this target");
     });
 
     it("should throw error when source is BIG_BAD_WOLF and targeted player is from werewolves side.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayBigBadWolfEats() });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeWerewolfAlivePlayer() })];
+      const players = [
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayBigBadWolfEats(), players });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] })];
 
       await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Big bad wolf can't eat this target");
     });
 
     it("should throw error when source is BIG_BAD_WOLF and targeted player is already eaten.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayBigBadWolfEats() });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }) })];
+      const players = [
+        createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayBigBadWolfEats(), players });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] })];
 
       await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Big bad wolf can't eat this target");
     });
 
     it("should throw error when source is WHITE_WEREWOLF and targeted player is dead.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWhiteWerewolfEats() });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeWerewolfAlivePlayer({ isAlive: false }) })];
+      const players = [
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ isAlive: false }),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWhiteWerewolfEats(), players });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] })];
 
       await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("White werewolf can't eat this target");
     });
 
     it("should throw error when source is WHITE_WEREWOLF and targeted player is from villagers side.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWhiteWerewolfEats() });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer() })];
+      const players = [
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWhiteWerewolfEats(), players });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2] })];
 
       await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("White werewolf can't eat this target");
@@ -1487,12 +1598,13 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
+      const game = createFakeGame({ players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[1] }),
       ];
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto)).toThrow(BadGamePlayPayloadException);
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("One source is not able to vote because he's dead or doesn't have the ability to do so");
     });
 
@@ -1503,12 +1615,13 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
+      const game = createFakeGame({ players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[1] }),
       ];
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto)).toThrow(BadGamePlayPayloadException);
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("One source is not able to vote because he's dead or doesn't have the ability to do so");
     });
 
@@ -1519,13 +1632,14 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
+      const game = createFakeGame({ players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[3], target: players[0] }),
       ];
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto)).toThrow(BadGamePlayPayloadException);
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("One target can't be voted because he's dead");
     });
 
@@ -1536,12 +1650,13 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
+      const game = createFakeGame({ players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[0] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[1] }),
       ];
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto)).toThrow(BadGamePlayPayloadException);
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("One vote has the same source and target");
     });
   });

@@ -54,18 +54,33 @@ describe("Player Attribute Factory", () => {
   });
 
   describe("createCantVoteByScapegoatPlayerAttribute", () => {
-    it("should create can't vote attribute by scapegoat when called.", () => {
-      const game = createFakeGame({ turn: 2, phase: GAME_PHASES.NIGHT });
+    it("should create can't vote attribute by scapegoat active in next turn when game phase is day.", () => {
+      const game = createFakeGame({ turn: 2, phase: GAME_PHASES.DAY });
       const expectedAttribute = createFakePlayerAttribute({
         name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
         source: ROLE_NAMES.SCAPEGOAT,
-        remainingPhases: 2,
+        remainingPhases: 1,
         activeAt: {
           turn: 3,
           phase: GAME_PHASES.DAY,
         },
       });
       
+      expect(createCantVoteByScapegoatPlayerAttribute(game)).toStrictEqual<PlayerAttribute>(expectedAttribute);
+    });
+
+    it("should create can't vote attribute by scapegoat active in current turn when game phase is night.", () => {
+      const game = createFakeGame({ turn: 2, phase: GAME_PHASES.NIGHT });
+      const expectedAttribute = createFakePlayerAttribute({
+        name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
+        source: ROLE_NAMES.SCAPEGOAT,
+        remainingPhases: 1,
+        activeAt: {
+          turn: 2,
+          phase: GAME_PHASES.DAY,
+        },
+      });
+
       expect(createCantVoteByScapegoatPlayerAttribute(game)).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });

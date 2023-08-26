@@ -11,8 +11,9 @@ import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/m
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-record.enum";
 import type { WITCH_POTIONS } from "../../../enums/game-play.enum";
 import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
+import type { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "../../../enums/player.enum";
-import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithAttribute, getPlayerWithId } from "../../../helpers/game.helper";
+import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "../../../helpers/game.helper";
 import { GameHistoryRecordPlaySource } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
 import { GameHistoryRecordPlayVoting } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
 import { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
@@ -66,6 +67,10 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
   }
 
+  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GAME_PHASES): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryPhaseRecords(gameId, turn, phase);
+  }
+
   public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     return this.gameHistoryRecordRepository.getPreviousGameHistoryRecord(gameId);
   }
@@ -94,20 +99,18 @@ export class GameHistoryRecordService {
   }
 
   private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
-    const { players: basePlayers } = baseGame;
     const { players: newPlayers } = newGame;
     const currentDeadPlayers = newPlayers.filter(player => {
-      const matchingBasePlayer = getPlayerWithId(basePlayers, player._id);
+      const matchingBasePlayer = getPlayerWithId(baseGame, player._id);
       return matchingBasePlayer?.isAlive === true && !player.isAlive;
     });
     return currentDeadPlayers.length ? currentDeadPlayers : undefined;
   }
 
   private generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
-    const { players: basePlayers } = baseGame;
     const { players: newPlayers } = newGame;
     const currentRevealedPlayers = newPlayers.filter(player => {
-      const matchingBasePlayer = getPlayerWithId(basePlayers, player._id);
+      const matchingBasePlayer = getPlayerWithId(baseGame, player._id);
       return matchingBasePlayer?.role.isRevealed === false && player.role.isRevealed && player.isAlive;
     });
     return currentRevealedPlayers.length ? currentRevealedPlayers : undefined;
@@ -117,6 +120,7 @@ export class GameHistoryRecordService {
     const gameHistoryRecordPlayToInsert: GameHistoryRecordPlay = {
       source: this.generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame),
       action: baseGame.currentPlay.action,
+      cause: baseGame.currentPlay.cause,
       didJudgeRequestAnotherVote: play.doesJudgeRequestAnotherVote,
       targets: play.targets,
       votes: play.votes,
@@ -131,7 +135,7 @@ export class GameHistoryRecordService {
     newGame: Game,
     gameHistoryRecordToInsert: GameHistoryRecordToInsert,
   ): GAME_HISTORY_RECORD_VOTING_RESULTS {
-    const sheriffPlayer = getPlayerWithAttribute(newGame.players, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+    const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
     const areSomePlayersDeadFromCurrentVotes = gameHistoryRecordToInsert.deadPlayers?.some(({ death }) => {
       const deathFromVoteCauses = [PLAYER_DEATH_CAUSES.VOTE, PLAYER_DEATH_CAUSES.VOTE_SCAPEGOATED];
       return death?.cause !== undefined && deathFromVoteCauses.includes(death.cause);
@@ -170,19 +174,19 @@ export class GameHistoryRecordService {
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {
-    const unmatchedSource = getNonexistentPlayer(game.players, play.source.players);
+    const unmatchedSource = getNonexistentPlayer(game, play.source.players);
     if (unmatchedSource) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedSource._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_SOURCE);
     }
-    const unmatchedTarget = getNonexistentPlayer(game.players, play.targets?.map(target => target.player));
+    const unmatchedTarget = getNonexistentPlayer(game, play.targets?.map(target => target.player));
     if (unmatchedTarget) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedTarget._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
     }
-    const unmatchedVoter = getNonexistentPlayer(game.players, play.votes?.map(vote => vote.source));
+    const unmatchedVoter = getNonexistentPlayer(game, play.votes?.map(vote => vote.source));
     if (unmatchedVoter) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedVoter._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
     }
-    const unmatchedVoteTarget = getNonexistentPlayer(game.players, play.votes?.map(vote => vote.target));
+    const unmatchedVoteTarget = getNonexistentPlayer(game, play.votes?.map(vote => vote.target));
     if (unmatchedVoteTarget) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedVoteTarget._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
     }
@@ -197,11 +201,11 @@ export class GameHistoryRecordService {
     if (game === null) {
       throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString(), RESOURCE_NOT_FOUND_REASONS.UNKNOWN_GAME_PLAY_GAME_ID);
     }
-    const unmatchedRevealedPlayer = getNonexistentPlayer(game.players, revealedPlayers);
+    const unmatchedRevealedPlayer = getNonexistentPlayer(game, revealedPlayers);
     if (unmatchedRevealedPlayer) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedRevealedPlayer._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_REVEALED_PLAYER);
     }
-    const unmatchedDeadPlayer = getNonexistentPlayer(game.players, deadPlayers);
+    const unmatchedDeadPlayer = getNonexistentPlayer(game, deadPlayers);
     if (unmatchedDeadPlayer) {
       throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedDeadPlayer._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_DEAD_PLAYER);
     }

@@ -1,0 +1,7 @@
+{
+  "roles": {
+    "piedPiper": {
+      "isPowerlessIfInfected": false
+    }
+  }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "roleName": "white-werewolf",
+    "recipient": "thief"
+  },
+  {
+    "roleName": "werewolf",
+    "recipient": "thief"
+  },
+  {
+    "roleName": "villager-villager",
+    "recipient": "thief"
+  },
+  {
+    "roleName": "idiot",
+    "recipient": "thief"
+  },
+  {
+    "roleName": "dog-wolf",
+    "recipient": "thief"
+  }
+]

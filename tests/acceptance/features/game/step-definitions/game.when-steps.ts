@@ -4,6 +4,7 @@ import type { MakeGamePlayDto } from "../../../../../src/modules/game/dto/make-g
 import type { WITCH_POTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
 import { getPlayerWithNameOrThrow } from "../../../../../src/modules/game/helpers/game.helper";
 import type { Game } from "../../../../../src/modules/game/schemas/game.schema";
+import type { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
 import type { CustomWorld } from "../../../shared/types/world.types";
 import { convertDatatableToMakeGameplayVotes, convertDatatableToPlayers } from "../helpers/game-datatable.helper";
 import { makeGamePlayRequest } from "../helpers/game-request.helper";
@@ -16,13 +17,19 @@ When(/^all elect sheriff with the following votes$/u, async function(this: Custo
   this.game = this.response.json<Game>();
 });
 
-When(/^all vote with the following votes$/u, async function(this: CustomWorld, votesDatatable: DataTable): Promise<void> {
-  const votes = convertDatatableToMakeGameplayVotes(votesDatatable.rows(), this.game);
-  const makeGamePlayDto: MakeGamePlayDto = { votes };
+When(
+  /^all vote with the following votes(?<stutteringJudgeRequest> and the stuttering judge does his sign)?$/u,
+  async function(this: CustomWorld, stutteringJudgeRequest: string | null, votesDatatable: DataTable): Promise<void> {
+    const votes = convertDatatableToMakeGameplayVotes(votesDatatable.rows(), this.game);
+    const makeGamePlayDto: MakeGamePlayDto = {
+      votes,
+      doesJudgeRequestAnotherVote: stutteringJudgeRequest !== null || undefined,
+    };
 
-  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
-  this.game = this.response.json<Game>();
-});
+    this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+    this.game = this.response.json<Game>();
+  },
+);
 
 When(/^the sheriff delegates his role to the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
@@ -43,6 +50,14 @@ When(/^the seer looks at the player named (?<name>.+)$/u, async function(this: C
 When(/^the werewolves eat the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
+When(/^the vile father of wolves infects the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
+  const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
+  const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id, isInfected: true }] };
 
   this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
   this.game = this.response.json<Game>();
@@ -119,8 +134,50 @@ When(/^the pied piper charms the following players$/u, async function(this: Cust
   this.game = this.response.json<Game>();
 });
 
+When(/^the scapegoat bans from vote the following players$/u, async function(this: CustomWorld, targetsDatatable: DataTable): Promise<void> {
+  const targets = convertDatatableToPlayers(targetsDatatable.rows(), this.game);
+  const makeGamePlayDto: MakeGamePlayDto = { targets: targets.map(({ _id }) => ({ playerId: _id })) };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
 When(/^the charmed people meet each other$/u, async function(this: CustomWorld): Promise<void> {
   this.response = await makeGamePlayRequest({}, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
+When(/^the fox sniffs the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
+  const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
+  const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
+When(/^the wild child chooses the player named (?<name>.+) as a model$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
+  const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
+  const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
+When(/^the dog wolf chooses the (?<chosenSide>villagers|werewolves) side$/u, async function(this: CustomWorld, chosenSide: ROLE_SIDES): Promise<void> {
+  const makeGamePlayDto: MakeGamePlayDto = { chosenSide };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
+When(/^the stuttering judge chooses his sign$/u, async function(this: CustomWorld): Promise<void> {
+  this.response = await makeGamePlayRequest({}, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
+When(/^the thief chooses card with role (?<cardRole>.+)$/u, async function(this: CustomWorld, cardRole: ROLE_NAMES): Promise<void> {
+  const chosenCard = this.game.additionalCards?.find(({ roleName }) => roleName === cardRole);
+  this.response = await makeGamePlayRequest({ chosenCardId: chosenCard?._id }, this.game, this.app);
   this.game = this.response.json<Game>();
 });
 

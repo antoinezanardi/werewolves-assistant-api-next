@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES } from "../../../enums/player.enum";
 import { createGame } from "../../../helpers/game.factory";
-import { doesPlayerHaveAttributeWithName, getPlayerAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
+import { doesPlayerHaveActiveAttributeWithName, getActivePlayerAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
 import { createPlayer } from "../../../helpers/player/player.factory";
 import type { Game } from "../../../schemas/game.schema";
 import type { Player } from "../../../schemas/player/player.schema";
@@ -40,7 +40,7 @@ export class GamePhaseService {
   private async applyEndingDayPlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);
-    if (doesPlayerHaveAttributeWithName(clonedPlayer, PLAYER_ATTRIBUTE_NAMES.CONTAMINATED)) {
+    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, PLAYER_ATTRIBUTE_NAMES.CONTAMINATED, clonedGame)) {
       clonedGame = await this.playerAttributeService.applyContaminatedAttributeOutcomes(clonedPlayer, clonedGame);
     }
     return clonedGame;
@@ -49,11 +49,11 @@ export class GamePhaseService {
   private async applyEndingNightPlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);
-    const eatenAttribute = getPlayerAttributeWithName(clonedPlayer, PLAYER_ATTRIBUTE_NAMES.EATEN);
+    const eatenAttribute = getActivePlayerAttributeWithName(clonedPlayer, PLAYER_ATTRIBUTE_NAMES.EATEN, clonedGame);
     if (eatenAttribute) {
       clonedGame = await this.playerAttributeService.applyEatenAttributeOutcomes(clonedPlayer, clonedGame, eatenAttribute);
     }
-    if (doesPlayerHaveAttributeWithName(clonedPlayer, PLAYER_ATTRIBUTE_NAMES.DRANK_DEATH_POTION)) {
+    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, PLAYER_ATTRIBUTE_NAMES.DRANK_DEATH_POTION, clonedGame)) {
       clonedGame = await this.playerAttributeService.applyDrankDeathPotionAttributeOutcomes(clonedPlayer, clonedGame);
     }
     return clonedGame;
