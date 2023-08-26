@@ -72,7 +72,7 @@ export class GameService {
     const play = createMakeGamePlayDtoWithRelations(makeGamePlayDto, clonedGame);
     await this.gamePlayValidatorService.validateGamePlayWithRelationsDto(play, clonedGame);
     clonedGame = await this.gamePlayMakerService.makeGamePlay(play, clonedGame);
-    clonedGame = await this.gamePlayService.removeObsoleteUpcomingPlays(clonedGame);
+    clonedGame = await this.gamePlayService.refreshUpcomingPlays(clonedGame);
     clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
     clonedGame.tick++;
     if (isGamePhaseOver(clonedGame)) {

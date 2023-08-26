@@ -1,9 +1,9 @@
 import {
   doesCompositionHaveAtLeastOneWerewolf,
   getCompositionHasWerewolfDefaultMessage,
-} from "../../../../../../../../src/modules/game/dto/base/decorators/composition-has-werewolf.decorator";
-import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+} from "../../../../../../../../../src/modules/game/dto/base/decorators/composition/composition-has-werewolf.decorator";
+import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
+import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 describe("Composition Has Werewolf Decorator", () => {
   describe("doesCompositionHaveAtLeastOneWerewolf", () => {

@@ -1,0 +1,7 @@
+{
+  "roles": {
+    "thief": {
+      "mustChooseBetweenWerewolves": false
+    }
+  }
+}

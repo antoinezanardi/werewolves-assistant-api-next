@@ -1,3 +1,4 @@
+@angel-role
 Feature: 👼 Angel role
 
   Scenario: 👼 Angel doesn't win because he is powerless

@@ -3,8 +3,8 @@ import { Expose, Transform, Type } from "class-transformer";
 import { ArrayNotContains, ArrayUnique, IsArray, IsBoolean, IsOptional, ValidateNested } from "class-validator";
 import { toBoolean } from "../../../../shared/validation/transformers/validation.transformer";
 import { ROLE_NAMES } from "../../../role/enums/role.enum";
-import { CompositionBounds } from "../base/decorators/composition-bounds.decorator";
-import { CompositionUniqueNames } from "../base/decorators/composition-unique-names.decorator";
+import { CompositionBounds } from "../base/decorators/composition/composition-bounds.decorator";
+import { CompositionUniqueNames } from "../base/decorators/composition/composition-unique-names.decorator";
 import { GetGameRandomCompositionPlayerDto } from "./get-game-random-composition-player/get-game-random-composition-player.dto";
 
 class GetGameRandomCompositionDto {

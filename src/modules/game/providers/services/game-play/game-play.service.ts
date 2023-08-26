@@ -1,15 +1,18 @@
 import { Injectable } from "@nestjs/common";
+import { createNoGamePlayPriorityUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { gamePlaysNightOrder } from "../../../constants/game.constant";
 import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "../../../dto/create-game/create-game.dto";
 import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
-import type { GAME_PHASES } from "../../../enums/game.enum";
+import { GAME_PHASES } from "../../../enums/game.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
 import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "../../../helpers/game-play/game-play.factory";
+import { areGamePlaysEqual, findPlayPriorityIndex } from "../../../helpers/game-play/game-play.helper";
 import { createGame } from "../../../helpers/game.factory";
 import { areAllWerewolvesAlive, getExpectedPlayersToPlay, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "../../../helpers/player/player.helper";
+import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
 import type { SheriffGameOptions } from "../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
 import type { GamePlay } from "../../../schemas/game-play/game-play.schema";
 import type { Game } from "../../../schemas/game.schema";
@@ -18,16 +21,13 @@ import { GameHistoryRecordService } from "../game-history/game-history-record.se
 @Injectable()
 export class GamePlayService {
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
-  
-  public async removeObsoleteUpcomingPlays(game: Game): Promise<Game> {
-    const clonedGame = createGame(game);
-    const validUpcomingPlays: GamePlay[] = [];
-    for (const upcomingPlay of clonedGame.upcomingPlays) {
-      if (await this.isGamePlaySuitableForCurrentPhase(clonedGame, upcomingPlay)) {
-        validUpcomingPlays.push(upcomingPlay);
-      }
-    }
-    clonedGame.upcomingPlays = validUpcomingPlays;
+
+  public async refreshUpcomingPlays(game: Game): Promise<Game> {
+    let clonedGame = createGame(game);
+    clonedGame = await this.removeObsoleteUpcomingPlays(clonedGame);
+    const currentPhaseNewUpcomingPlays = await this.getNewUpcomingPlaysForCurrentPhase(clonedGame);
+    const upcomingPlaysToSort = [...clonedGame.upcomingPlays, ...currentPhaseNewUpcomingPlays];
+    clonedGame.upcomingPlays = this.sortUpcomingPlaysByPriority(upcomingPlaysToSort);
     return clonedGame;
   }
 
@@ -58,6 +58,55 @@ export class GamePlayService {
       }
     }
     return upcomingNightPlays;
+  }
+
+  private async removeObsoleteUpcomingPlays(game: Game): Promise<Game> {
+    const clonedGame = createGame(game);
+    const validUpcomingPlays: GamePlay[] = [];
+    for (const upcomingPlay of clonedGame.upcomingPlays) {
+      if (await this.isGamePlaySuitableForCurrentPhase(clonedGame, upcomingPlay)) {
+        validUpcomingPlays.push(upcomingPlay);
+      }
+    }
+    clonedGame.upcomingPlays = validUpcomingPlays;
+    return clonedGame;
+  }
+
+  private isUpcomingPlayNewForCurrentPhase(upcomingPlay: GamePlay, game: Game, gameHistoryPhaseRecords: GameHistoryRecord[]): boolean {
+    const { currentPlay } = game;
+    const isAlreadyPlayed = gameHistoryPhaseRecords.some(({ play }) => {
+      const { source, action, cause } = play;
+      return areGamePlaysEqual({ source, action, cause }, upcomingPlay);
+    });
+    const isInUpcomingPlays = game.upcomingPlays.some(gamePlay => areGamePlaysEqual(gamePlay, upcomingPlay));
+    const isCurrentPlay = !!currentPlay && areGamePlaysEqual(currentPlay, upcomingPlay);
+    return !isInUpcomingPlays && !isAlreadyPlayed && !isCurrentPlay;
+  }
+
+  private async getNewUpcomingPlaysForCurrentPhase(game: Game): Promise<GamePlay[]> {
+    const { _id, turn, phase } = game;
+    const currentPhaseUpcomingPlays = game.phase === GAME_PHASES.NIGHT ? await this.getUpcomingNightPlays(game) : this.getUpcomingDayPlays();
+    const gameHistoryPhaseRecords = await this.gameHistoryRecordService.getGameHistoryPhaseRecords(_id, turn, phase);
+    return currentPhaseUpcomingPlays.filter(gamePlay => this.isUpcomingPlayNewForCurrentPhase(gamePlay, game, gameHistoryPhaseRecords));
+  }
+
+  private validateUpcomingPlaysPriority(upcomingPlays: GamePlay[]): void {
+    for (const upcomingPlay of upcomingPlays) {
+      const playPriorityIndex = findPlayPriorityIndex(upcomingPlay);
+      if (playPriorityIndex === -1) {
+        throw createNoGamePlayPriorityUnexpectedException(this.validateUpcomingPlaysPriority.name, upcomingPlay);
+      }
+    }
+  }
+
+  private sortUpcomingPlaysByPriority(upcomingPlays: GamePlay[]): GamePlay[] {
+    const clonedUpcomingPlays = upcomingPlays.map(upcomingPlay => createGamePlay(upcomingPlay));
+    this.validateUpcomingPlaysPriority(clonedUpcomingPlays);
+    return clonedUpcomingPlays.sort((playA, playB) => {
+      const playAPriorityIndex = findPlayPriorityIndex(playA);
+      const playBPriorityIndex = findPlayPriorityIndex(playB);
+      return playAPriorityIndex - playBPriorityIndex;
+    });
   }
 
   private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GAME_PHASES): boolean {

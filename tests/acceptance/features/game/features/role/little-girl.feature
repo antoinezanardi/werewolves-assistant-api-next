@@ -1,3 +1,4 @@
+@little-girl-role
 Feature: 👧 Little Girl role
 
   Scenario: 👧 Little Girl is protected by the guard with the right game option

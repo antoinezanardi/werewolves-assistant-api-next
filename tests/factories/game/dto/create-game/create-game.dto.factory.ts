@@ -25,6 +25,7 @@ function createFakeCreateGameDto(createGameDto: Partial<CreateGameDto> = {}, ove
     players: createGameDto.players ?? [],
     upcomingPlays: createGameDto.upcomingPlays ?? [],
     currentPlay: createGameDto.currentPlay ?? null,
+    additionalCards: createGameDto.additionalCards ?? undefined,
     options: createGameDto.options ?? defaultGameOptions,
     ...override,
   }, plainToInstanceDefaultOptions);

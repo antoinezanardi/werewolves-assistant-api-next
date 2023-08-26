@@ -1,3 +1,4 @@
+@pied-piper-role
 Feature: 🪈 Pied Piper role
 
   Scenario: 🪈 Pied Piper charms but not call anymore nor doesn't win because he's infected

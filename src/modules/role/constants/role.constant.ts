@@ -188,4 +188,10 @@ const roles: Readonly<Role[]> = plainToInstance(Role, [
   ...villagerRoles,
 ]).map(role => Object.freeze(role));
 
-export { roles, defaultWerewolfRole, werewolvesRoles, defaultVillagerRole, villagerRoles };
+export {
+  roles,
+  defaultWerewolfRole,
+  defaultVillagerRole,
+  werewolvesRoles,
+  villagerRoles,
+};

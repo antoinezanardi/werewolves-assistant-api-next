@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 import { GAME_PLAY_ACTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../src/modules/game/enums/player.enum";
 import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "../../../../../../../src/modules/game/helpers/game-play/game-play.factory";
-import { GamePlaySource } from "../../../../../../../src/modules/game/schemas/game-play/game-play-source.schema";
+import { GamePlaySource } from "../../../../../../../src/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import { GamePlay } from "../../../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import { ROLE_NAMES } from "../../../../../../../src/modules/role/enums/role.enum";
 import { createFakeGamePlaySource } from "../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";

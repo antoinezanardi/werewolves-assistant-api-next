@@ -1,3 +1,4 @@
+@fox-role
 Feature: 🦊 Fox role
 
   Scenario: 🦊 Fox is powerless if he misses a werewolf of any kind
@@ -45,7 +46,7 @@ Feature: 🦊 Fox role
 
   Scenario: 🦊 Fox is not powerless if he misses a werewolf of any kind with game option
 
-    Given a created game with options described in files no-sheriff-option.json, fox-not-powerless-if-misses-werewolf.json and with the following players
+    Given a created game with options described in files no-sheriff-option.json, fox-not-powerless-if-misses-werewolf-option.json and with the following players
       | name    | role                  |
       | Antoine | fox                   |
       | Juju    | villager              |

@@ -1,4 +1,5 @@
 import type { Types } from "mongoose";
+import type { GamePlay } from "../../../modules/game/schemas/game-play/game-play.schema";
 import { UNEXPECTED_EXCEPTION_REASONS } from "../enums/unexpected-exception.enum";
 import { UnexpectedException } from "../types/unexpected-exception.type";
 
@@ -21,9 +22,14 @@ function createNoCurrentGamePlayUnexpectedException(scope: string, interpolation
   return new UnexpectedException(scope, UNEXPECTED_EXCEPTION_REASONS.NO_CURRENT_GAME_PLAY, { gameId: gameId.toString() });
 }
 
+function createNoGamePlayPriorityUnexpectedException(scope: string, gamePlay: GamePlay): UnexpectedException {
+  return new UnexpectedException(scope, UNEXPECTED_EXCEPTION_REASONS.NO_GAME_PLAY_PRIORITY, { gamePlay: JSON.stringify(gamePlay) });
+}
+
 export {
   createCantFindPlayerUnexpectedException,
   createPlayerIsDeadUnexpectedException,
   createCantGenerateGamePlaysUnexpectedException,
   createNoCurrentGamePlayUnexpectedException,
+  createNoGamePlayPriorityUnexpectedException,
 };

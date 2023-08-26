@@ -1,3 +1,4 @@
+@game-victory
 Feature: 🏆 Game Victory
 
   Scenario: 🧑🏻‍🌾 Villagers win the game
@@ -43,14 +44,7 @@ Feature: 🏆 Game Victory
       | JB      | Antoine |
     Then the player named Olivia should be murdered by all from vote
     And the game's phase should be day
-    And the game's current play should be sheriff to delegate
-
-    When the sheriff delegates his role to the player named JB
-    Then the player named JB should have the active sheriff from sheriff attribute
     And the game's current play should be hunter to shoot
-    And the game's current play should be played by the following players
-      | name   |
-      | Olivia |
 
     When the hunter shoots at the player named JB
     Then the player named JB should be murdered by hunter from shot

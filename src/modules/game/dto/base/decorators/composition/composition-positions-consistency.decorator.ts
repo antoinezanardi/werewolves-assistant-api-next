@@ -35,4 +35,8 @@ function CompositionPositionsConsistency(validationOptions?: ValidationOptions) 
   };
 }
 
-export { CompositionPositionsConsistency, doesCompositionHaveConsistentPositions, getCompositionPositionsConsistencyDefaultMessage };
+export {
+  CompositionPositionsConsistency,
+  doesCompositionHaveConsistentPositions,
+  getCompositionPositionsConsistencyDefaultMessage,
+};

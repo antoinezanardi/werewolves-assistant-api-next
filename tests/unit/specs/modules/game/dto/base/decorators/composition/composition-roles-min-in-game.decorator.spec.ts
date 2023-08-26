@@ -1,9 +1,9 @@
 import {
   getCompositionRolesMinInGameDefaultMessage,
   areCompositionRolesMinInGameRespected,
-} from "../../../../../../../../src/modules/game/dto/base/decorators/composition-roles-min-in-game.decorator";
-import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+} from "../../../../../../../../../src/modules/game/dto/base/decorators/composition/composition-roles-min-in-game.decorator";
+import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
+import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 describe("Composition Roles Min In Game Decorator", () => {
   describe("areCompositionRolesMinInGameRespected", () => {

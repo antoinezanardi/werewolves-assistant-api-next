@@ -1,6 +1,6 @@
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 import { playerRoleTransformer } from "../../../../../../../../../src/modules/game/dto/base/game-player/transformers/player-role.transformer";
-import type { CreateGamePlayerRoleDto } from "../../../../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player-role.dto/create-game-player-role.dto";
+import type { CreateGamePlayerRoleDto } from "../../../../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player-role/create-game-player-role.dto";
 import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
 
 describe("Player Role Transformer", () => {

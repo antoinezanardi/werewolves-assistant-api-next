@@ -1,3 +1,4 @@
+@white-werewolf-role
 Feature: 🐺🦴White Werewolf role
 
   Scenario: 🐺🦴White Werewolf can eat or skip every other night an ally

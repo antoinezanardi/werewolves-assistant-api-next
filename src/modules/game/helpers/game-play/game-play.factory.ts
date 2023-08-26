@@ -3,7 +3,7 @@ import { plainToInstanceDefaultOptions } from "../../../../shared/validation/con
 import { ROLE_NAMES } from "../../../role/enums/role.enum";
 import { GAME_PLAY_ACTIONS } from "../../enums/game-play.enum";
 import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../enums/player.enum";
-import { GamePlaySource } from "../../schemas/game-play/game-play-source.schema";
+import { GamePlaySource } from "../../schemas/game-play/game-play-source/game-play-source.schema";
 import { GamePlay } from "../../schemas/game-play/game-play.schema";
 
 function createGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}): GamePlay {

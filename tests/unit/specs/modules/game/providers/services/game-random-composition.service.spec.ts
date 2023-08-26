@@ -1,9 +1,9 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { doesCompositionHaveAtLeastOneVillager } from "../../../../../../../src/modules/game/dto/base/decorators/composition-has-villager.decorator";
-import { doesCompositionHaveAtLeastOneWerewolf } from "../../../../../../../src/modules/game/dto/base/decorators/composition-has-werewolf.decorator";
-import { areCompositionRolesMaxInGameRespected } from "../../../../../../../src/modules/game/dto/base/decorators/composition-roles-max-in-game.decorator";
-import { areCompositionRolesMinInGameRespected } from "../../../../../../../src/modules/game/dto/base/decorators/composition-roles-min-in-game.decorator";
+import { doesCompositionHaveAtLeastOneVillager } from "../../../../../../../src/modules/game/dto/base/decorators/composition/composition-has-villager.decorator";
+import { doesCompositionHaveAtLeastOneWerewolf } from "../../../../../../../src/modules/game/dto/base/decorators/composition/composition-has-werewolf.decorator";
+import { areCompositionRolesMaxInGameRespected } from "../../../../../../../src/modules/game/dto/base/decorators/composition/composition-roles-max-in-game.decorator";
+import { areCompositionRolesMinInGameRespected } from "../../../../../../../src/modules/game/dto/base/decorators/composition/composition-roles-min-in-game.decorator";
 import type { CreateGamePlayerDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { GetGameRandomCompositionDto } from "../../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import { GameRandomCompositionService } from "../../../../../../../src/modules/game/providers/services/game-random-composition.service";

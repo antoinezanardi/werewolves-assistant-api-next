@@ -3,11 +3,13 @@ import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
 import { RESOURCE_NOT_FOUND_REASONS } from "../../../../shared/exception/enums/resource-not-found-error.enum";
 import { ResourceNotFoundException } from "../../../../shared/exception/types/resource-not-found-exception.type";
 import { plainToInstanceDefaultOptions } from "../../../../shared/validation/constants/validation.constant";
+import { gamePlaysPriorityList } from "../../constants/game-play/game-play.constant";
 import { MakeGamePlayTargetWithRelationsDto } from "../../dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import { MakeGamePlayVoteWithRelationsDto } from "../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { MakeGamePlayWithRelationsDto } from "../../dto/make-game-play/make-game-play-with-relations.dto";
 import type { MakeGamePlayDto } from "../../dto/make-game-play/make-game-play.dto";
 import type { GameAdditionalCard } from "../../schemas/game-additional-card/game-additional-card.schema";
+import type { GamePlay } from "../../schemas/game-play/game-play.schema";
 import type { Game } from "../../schemas/game.schema";
 import { getAdditionalCardWithId, getPlayerWithId } from "../game.helper";
 
@@ -70,9 +72,22 @@ function createMakeGamePlayDtoWithRelations(makeGamePlayDto: MakeGamePlayDto, ga
   return makeGamePlayWithRelationsDto;
 }
 
+function findPlayPriorityIndex(play: GamePlay): number {
+  return gamePlaysPriorityList.findIndex(playInPriorityList => {
+    const { source, action, cause } = playInPriorityList;
+    return source.name === play.source.name && action === play.action && cause === play.cause;
+  });
+}
+
+function areGamePlaysEqual(playA: GamePlay, playB: GamePlay): boolean {
+  return playA.action === playB.action && playA.cause === playB.cause && playA.source.name === playB.source.name;
+}
+
 export {
   getVotesWithRelationsFromMakeGamePlayDto,
   getTargetsWithRelationsFromMakeGamePlayDto,
   getChosenCardFromMakeGamePlayDto,
   createMakeGamePlayDtoWithRelations,
+  findPlayPriorityIndex,
+  areGamePlaysEqual,
 };

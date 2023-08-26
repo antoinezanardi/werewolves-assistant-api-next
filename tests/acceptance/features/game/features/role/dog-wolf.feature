@@ -1,3 +1,4 @@
+@dog-wolf-role
 Feature: 🐶 Dog Wolf role
 
   Scenario: 🐶 Dog Wolf chooses the villagers side

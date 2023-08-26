@@ -3,6 +3,7 @@ enum UNEXPECTED_EXCEPTION_REASONS {
   PLAYER_IS_DEAD = `Player with id "{{playerId}}" is dead in game "{{gameId}}"`,
   CANT_GENERATE_GAME_PLAYS = `Can't generate game plays`,
   NO_CURRENT_GAME_PLAY = `Game with id "{{gameId}}" doesn't have a current game play to deal with`,
+  NO_GAME_PLAY_PRIORITY = `Game play "{{gamePlay}}" doesn't have a set priority`,
 }
 
 export { UNEXPECTED_EXCEPTION_REASONS };

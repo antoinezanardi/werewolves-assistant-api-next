@@ -9,7 +9,7 @@ import type { PLAYER_DEATH_CAUSES, PLAYER_ATTRIBUTE_NAMES } from "../../../../..
 import { getPlayerWithNameOrThrow } from "../../../../../src/modules/game/helpers/game.helper";
 import { getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import type { GameSource } from "../../../../../src/modules/game/types/game.type";
-import type { ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
+import type { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
 import type { CustomWorld } from "../../../shared/types/world.types";
 import { convertDatatableToPlayers } from "../helpers/game-datatable.helper";
 
@@ -129,6 +129,16 @@ Then(
       source: deathSource,
       cause: deathCause,
     });
+  },
+);
+
+Then(
+  /^the player named (?<name>.+?) should be currently a (?<currentRole>.+) and originally a (?<originalRole>.+)$/u,
+  function(this: CustomWorld, playerName: string, currentRole: ROLE_NAMES, originalRole: ROLE_NAMES): void {
+    const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
+
+    expect(player.role.current).toBe(currentRole);
+    expect(player.role.original).toBe(originalRole);
   },
 );
 
