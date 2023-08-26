@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { BAD_GAME_PLAY_PAYLOAD_REASONS } from "../../../../../shared/exception/enums/bad-game-play-payload-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
 import { BadGamePlayPayloadException } from "../../../../../shared/exception/types/bad-game-play-payload-exception.type";
+import { werewolvesRoles } from "../../../../role/constants/role.constant";
 import { ROLE_NAMES } from "../../../../role/enums/role.enum";
 import { optionalTargetsActions, requiredTargetsActions, requiredVotesActions, stutteringJudgeRequestOpportunityActions } from "../../../constants/game-play/game-play.constant";
 import type { MakeGamePlayTargetWithRelationsDto } from "../../../dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
@@ -13,6 +14,7 @@ import { createGame } from "../../../helpers/game.factory";
 import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
 import { doesPlayerHaveActiveAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
+import type { GameAdditionalCard } from "../../../schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "../../../schemas/game.schema";
 import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
 import type { GameSource } from "../../../types/game.type";
@@ -35,16 +37,25 @@ export class GamePlayValidatorService {
     this.validateGamePlayWithRelationsDtoChosenCard(play, clonedGameWithCurrentPlay);
   }
 
+  private validateGamePlayThiefChosenCard(chosenCard: GameAdditionalCard | undefined, game: GameWithCurrentPlay): void {
+    const { mustChooseBetweenWerewolves } = game.options.roles.thief;
+    if (!game.additionalCards || !mustChooseBetweenWerewolves) {
+      return;
+    }
+    const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => werewolvesRoles.find(role => role.name === roleName));
+    if (areAllAdditionalCardsWerewolves && !chosenCard) {
+      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.THIEF_MUST_CHOOSE_CARD);
+    }
+  }
+
   private validateGamePlayWithRelationsDtoChosenCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): void {
-    if (!chosenCard) {
-      if (game.currentPlay.action === GAME_PLAY_ACTIONS.CHOOSE_CARD) {
-        throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.REQUIRED_CHOSEN_CARD);
+    if (game.currentPlay.action !== GAME_PLAY_ACTIONS.CHOOSE_CARD) {
+      if (chosenCard) {
+        throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_CHOSEN_CARD);
       }
       return;
     }
-    if (game.currentPlay.action !== GAME_PLAY_ACTIONS.CHOOSE_CARD) {
-      throw new BadGamePlayPayloadException(BAD_GAME_PLAY_PAYLOAD_REASONS.UNEXPECTED_CHOSEN_CARD);
-    }
+    this.validateGamePlayThiefChosenCard(chosenCard, game);
   }
 
   private validateDrankLifePotionTargets(drankLifePotionTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): void {

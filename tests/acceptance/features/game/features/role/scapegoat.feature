@@ -1,3 +1,4 @@
+@scapegoat-role
 Feature: 🐐 Scapegoat role
 
   Scenario: 🐐 Scapegoat bans from votes after a tie in votes, even if the active sheriff is here

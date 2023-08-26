@@ -18,7 +18,7 @@ import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../fac
 import { createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakePiedPiperGameOptions, createFakeRolesGameOptions, createFakeThiefGameOptions } from "../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "../../../../../../../factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlaySource } from "../../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
@@ -140,13 +140,74 @@ describe("Game Play Validator Service", () => {
     });
   });
 
+  describe("validateGamePlayThiefChosenCard", () => {
+    it("should do nothing when game additional cards are not set.", () => {
+      const chosenCard = createFakeGameAdditionalCard();
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).not.toThrow();
+    });
+    
+    it("should do nothing when game additional cards are set but thief can skip even if all cards are werewolves.", () => {
+      const chosenCard = createFakeGameAdditionalCard();
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: false }) }) });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WHITE_WEREWOLF }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).not.toThrow();
+    });
+
+    it("should do nothing when thief can't skip if all cards are werewolves but they are not so he can skip.", () => {
+      const chosenCard = undefined;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.SEER }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).not.toThrow();
+    });
+
+    it("should do nothing when thief can't skip if all cards are werewolves but he chose one anyway.", () => {
+      const chosenCard = createFakeGameAdditionalCard();
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WHITE_WEREWOLF }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).not.toThrow();
+    });
+
+    it("should throw error when all additional cards are werewolves and thief didn't choose a card.", () => {
+      const chosenCard = undefined;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: ROLE_NAMES.WHITE_WEREWOLF }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).toThrow(BadGamePlayPayloadException);
+      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Thief must choose a card (`chosenCard`)");
+    });
+  });
+
   describe("validateGamePlayWithRelationsDtoChosenCard", () => {
-    it("should throw error when chosen card is not defined but expected.", () => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayThiefChoosesCard() });
-      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
-      
-      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`chosenCard` is required on this current game's state");
+    let localMocks: {
+      gamePlayValidatorService: {
+        validateGamePlayThiefChosenCard: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = { gamePlayValidatorService: { validateGamePlayThiefChosenCard: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayThiefChosenCard }, "validateGamePlayThiefChosenCard").mockImplementation() } };
     });
 
     it("should do nothing when chosen card is not defined and not expected.", () => {
@@ -164,11 +225,13 @@ describe("Game Play Validator Service", () => {
       expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`chosenCard` can't be set on this current game's state");
     });
 
-    it("should do nothing when chosen card is defined but expected.", () => {
+    it("should call validateGamePlayThiefChosenCard method when action is choose card.", () => {
+      const chosenCard = createFakeGameAdditionalCard();
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayThiefChoosesCard() });
-      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenCard: createFakeGameAdditionalCard() });
-      
-      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game)).not.toThrow();
+      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenCard });
+      services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game);
+
+      expect(localMocks.gamePlayValidatorService.validateGamePlayThiefChosenCard).toHaveBeenCalledExactlyOnceWith(chosenCard, game);
     });
   });
 

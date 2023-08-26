@@ -1,3 +1,4 @@
+@wild-child-role
 Feature: 🐒 Wild Child role
 
   Scenario: 🐒 Wild Child changes his side when his model dies

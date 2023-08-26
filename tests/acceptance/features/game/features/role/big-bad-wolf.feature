@@ -1,3 +1,4 @@
+@big-bad-wolf-role
 Feature: 🐺👹 Big Bad Wolf role
 
   Scenario: 🐺👹Big Bad Wolf eats every night but powerless if one werewolf dies

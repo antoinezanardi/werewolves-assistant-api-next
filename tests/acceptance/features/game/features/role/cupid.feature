@@ -1,3 +1,4 @@
+@cupid-role
 Feature: 💘 Cupid role
 
   Scenario: 💘 Cupid makes two people fall in love and they die if one of them dies

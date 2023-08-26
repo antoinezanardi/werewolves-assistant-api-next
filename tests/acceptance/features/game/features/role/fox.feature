@@ -1,3 +1,4 @@
+@fox-role
 Feature: 🦊 Fox role
 
   Scenario: 🦊 Fox is powerless if he misses a werewolf of any kind

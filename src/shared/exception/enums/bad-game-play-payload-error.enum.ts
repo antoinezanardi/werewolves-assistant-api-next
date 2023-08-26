@@ -3,7 +3,7 @@ enum BAD_GAME_PLAY_PAYLOAD_REASONS {
   UNEXPECTED_CHOSEN_SIDE = "`chosenSide` can't be set on this current game's state",
   REQUIRED_CHOSEN_SIDE = "`chosenSide` is required on this current game's state",
   UNEXPECTED_CHOSEN_CARD = "`chosenCard` can't be set on this current game's state",
-  REQUIRED_CHOSEN_CARD = "`chosenCard` is required on this current game's state",
+  THIEF_MUST_CHOOSE_CARD = "Thief must choose a card (`chosenCard`)",
   UNEXPECTED_VOTES = "`votes` can't be set on this current game's state",
   REQUIRED_VOTES = "`votes` is required on this current game's state",
   SAME_SOURCE_AND_TARGET_VOTE = "One vote has the same source and target",

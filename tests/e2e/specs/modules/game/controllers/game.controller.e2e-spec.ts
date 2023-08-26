@@ -881,7 +881,10 @@ describe("Game Controller", () => {
       const game = createFakeGame({
         status: GAME_STATUSES.PLAYING,
         currentPlay: createFakeGamePlayAllVote({ source: createFakeGamePlaySource({ name: PLAYER_GROUPS.ALL, players }) }),
-        upcomingPlays: [createFakeGamePlaySeerLooks()],
+        upcomingPlays: [
+          createFakeGamePlaySeerLooks(),
+          createFakeGamePlayWerewolvesEat(),
+        ],
         players,
       });
       await models.game.create(game);
@@ -922,6 +925,7 @@ describe("Game Controller", () => {
         createFakeWerewolfAlivePlayer(),
       ]);
       const game = createFakeGame({
+        phase: GAME_PHASES.NIGHT,
         status: GAME_STATUSES.PLAYING,
         currentPlay: createFakeGamePlaySeerLooks({ source: createFakeGamePlaySource({ name: ROLE_NAMES.SEER, players: [players[1]] }) }),
         upcomingPlays: [createFakeGamePlayWerewolvesEat()],

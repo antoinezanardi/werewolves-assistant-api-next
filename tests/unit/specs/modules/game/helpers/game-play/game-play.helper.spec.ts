@@ -1,8 +1,9 @@
 import type { MakeGamePlayTargetWithRelationsDto } from "../../../../../../../src/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "../../../../../../../src/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "../../../../../../../src/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
-import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
-import { createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto } from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
+import { areGamePlaysEqual, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto } from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
+import type { GamePlay } from "../../../../../../../src/modules/game/schemas/game-play/game-play.schema";
 import { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
 import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enum";
 import { ResourceNotFoundException } from "../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
@@ -11,7 +12,7 @@ import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../fa
 import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
 import { bulkCreateFakePlayers } from "../../../../../../factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
@@ -187,6 +188,37 @@ describe("Game Play Helper", () => {
       const gamePlay = createFakeGamePlayHunterShoots();
 
       expect(findPlayPriorityIndex(gamePlay)).toBe(0);
+    });
+  });
+
+  describe("areGamePlaysEqual", () => {
+    it.each<{ playA: GamePlay; playB: GamePlay; result: boolean; test: string }>([
+      {
+        playA: createFakeGamePlaySeerLooks(),
+        playB: createFakeGamePlaySeerLooks(),
+        result: true,
+        test: "both plays are equal",
+      },
+      {
+        playA: createFakeGamePlayWerewolvesEat(),
+        playB: createFakeGamePlayWhiteWerewolfEats(),
+        result: false,
+        test: "both sources are not equal",
+      },
+      {
+        playA: createFakeGamePlayAllVote(),
+        playB: createFakeGamePlayAllElectSheriff(),
+        result: false,
+        test: "both actions are not equal",
+      },
+      {
+        playA: createFakeGamePlayAllVote(),
+        playB: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+        result: false,
+        test: "both causes are not equal",
+      },
+    ])("should return $result when $test [#$#].", ({ playA, playB, result }) => {
+      expect(areGamePlaysEqual(playA, playB)).toBe(result);
     });
   });
 });

@@ -5,7 +5,7 @@ import { Model } from "mongoose";
 import { ROLE_NAMES } from "../../../role/enums/role.enum";
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../enums/game-history-record.enum";
 import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../enums/game-play.enum";
-import { GAME_PHASES } from "../../enums/game.enum";
+import type { GAME_PHASES } from "../../enums/game.enum";
 import type { GameHistoryRecordDocument } from "../../schemas/game-history-record/game-history-record.schema";
 import { GameHistoryRecord } from "../../schemas/game-history-record/game-history-record.schema";
 import type { GameHistoryRecordToInsert } from "../../types/game-history-record.type";

@@ -1,3 +1,4 @@
+@guard-role
 Feature: 🛡️ Guard role
 
   Scenario: 🛡️ Guard protects against every kind of werewolves but nor for the little girl
