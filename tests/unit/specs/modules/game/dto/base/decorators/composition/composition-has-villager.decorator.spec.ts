@@ -1,4 +1,3 @@
-
 import {
   doesCompositionHaveAtLeastOneVillager,
   getCompositionHasVillagerDefaultMessage,

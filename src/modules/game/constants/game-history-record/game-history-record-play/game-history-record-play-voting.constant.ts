@@ -1,4 +1,3 @@
-
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";

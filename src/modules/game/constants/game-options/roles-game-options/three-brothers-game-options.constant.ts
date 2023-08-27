@@ -1,4 +1,3 @@
-
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
 import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";

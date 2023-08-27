@@ -1,4 +1,3 @@
-
 import {
   getCompositionRolesMaxInGameDefaultMessage,
   areCompositionRolesMaxInGameRespected,

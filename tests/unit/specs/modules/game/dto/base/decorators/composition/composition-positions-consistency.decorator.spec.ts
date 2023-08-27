@@ -1,4 +1,3 @@
-
 import {
   doesCompositionHaveConsistentPositions,
   getCompositionPositionsConsistencyDefaultMessage,

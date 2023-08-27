@@ -1,4 +1,3 @@
-
 import { roles, villagerRoles, werewolvesRoles } from "@/modules/role/constants/role.constant";
 import { ROLE_SIDES } from "@/modules/role/enums/role.enum";
 

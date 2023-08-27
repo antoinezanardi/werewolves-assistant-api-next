@@ -1,4 +1,3 @@
-
 import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "@/modules/role/enums/role.enum";
 import { getRolesWithSide } from "@/modules/role/helpers/role.helper";
 import type { Role } from "@/modules/role/types/role.type";

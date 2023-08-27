@@ -1,4 +1,3 @@
-
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";

@@ -1,4 +1,3 @@
-
 import type { Types } from "mongoose";
 
 import type { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";

@@ -1,4 +1,3 @@
-
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
 import { GAME_VICTORY_TYPES } from "@/modules/game/enums/game-victory.enum";

@@ -1,4 +1,3 @@
-
 enum ROLE_NAMES {
   WEREWOLF = "werewolf",
   BIG_BAD_WOLF = "big-bad-wolf",

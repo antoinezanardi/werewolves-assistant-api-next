@@ -1,4 +1,3 @@
-
 import {
   getCompositionRolesMinInGameDefaultMessage,
   areCompositionRolesMinInGameRespected,
