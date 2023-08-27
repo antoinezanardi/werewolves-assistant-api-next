@@ -229,7 +229,13 @@ const standardRules = Object.freeze({
   "newline-per-chained-call": OFF,
   "no-mixed-spaces-and-tabs": [ERROR, "smart-tabs"],
   "no-multi-spaces": ERROR,
-  "no-multiple-empty-lines": [ERROR, { max: 1 }],
+  "no-multiple-empty-lines": [
+    ERROR, {
+      max: 1,
+      maxBOF: 0,
+      maxEOF: 0,
+    },
+  ],
   "no-tabs": OFF,
   "no-trailing-spaces": [ERROR, { skipBlankLines: true }],
   "no-whitespace-before-property": ERROR,

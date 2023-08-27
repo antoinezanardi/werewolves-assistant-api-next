@@ -1,30 +1,33 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
-import { toJSON } from "../../../../../../tests/helpers/object/object.helper";
-import { API_RESOURCES } from "../../../../../shared/api/enums/api.enum";
-import { RESOURCE_NOT_FOUND_REASONS } from "../../../../../shared/exception/enums/resource-not-found-error.enum";
-import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
-import { ResourceNotFoundException } from "../../../../../shared/exception/types/resource-not-found-exception.type";
-import { plainToInstanceDefaultOptions } from "../../../../../shared/validation/constants/validation.constant";
-import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../enums/game-history-record.enum";
-import type { WITCH_POTIONS } from "../../../enums/game-play.enum";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
-import type { GAME_PHASES } from "../../../enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "../../../enums/player.enum";
-import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "../../../helpers/game.helper";
-import { GameHistoryRecordPlaySource } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
-import { GameHistoryRecordPlayVoting } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
-import { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
-import type { Game } from "../../../schemas/game.schema";
-import type { Player } from "../../../schemas/player/player.schema";
-import { GameHistoryRecordToInsert } from "../../../types/game-history-record.type";
-import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
-import { GameHistoryRecordRepository } from "../../repositories/game-history-record.repository";
-import { GameRepository } from "../../repositories/game.repository";
-import { GamePlayVoteService } from "../game-play/game-play-vote/game-play-vote.service";
+
+import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
+import type { WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "@/modules/game/enums/game-play.enum";
+import type { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "@/modules/game/enums/player.enum";
+import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "@/modules/game/helpers/game.helper";
+import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
+import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
+import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
+import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
+import { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
+import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
+import { RESOURCE_NOT_FOUND_REASONS } from "@/shared/exception/enums/resource-not-found-error.enum";
+import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { toJSON } from "@tests/helpers/object/object.helper";
 
 @Injectable()
 export class GameHistoryRecordService {

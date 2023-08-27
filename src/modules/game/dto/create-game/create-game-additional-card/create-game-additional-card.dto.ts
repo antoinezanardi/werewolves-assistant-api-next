@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { Equals, IsEnum } from "class-validator";
-import { ROLE_NAMES } from "../../../../role/enums/role.enum";
-import { gameAdditionalCardApiProperties } from "../../../constants/game-additional-card/game-additional-card.constant";
+
+import { gameAdditionalCardApiProperties } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
 
 class CreateGameAdditionalCardDto {
   @ApiProperty(gameAdditionalCardApiProperties.roleName)

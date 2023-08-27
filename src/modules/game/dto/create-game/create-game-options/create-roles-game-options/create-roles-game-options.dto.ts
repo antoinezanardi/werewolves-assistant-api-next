@@ -1,25 +1,26 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
-import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/roles-game-options.constant";
-import { CreateAncientGameOptionsDto } from "./create-ancient-game-options.dto";
-import { CreateBearTamerGameOptionsDto } from "./create-bear-tamer-game-options.dto";
-import { CreateBigBadWolfGameOptionsDto } from "./create-big-bad-wolf-game-options.dto";
-import { CreateDogWolfGameOptionsDto } from "./create-dog-wolf-game-options.dto";
-import { CreateFoxGameOptionsDto } from "./create-fox-game-options.dto";
-import { CreateGuardGameOptionsDto } from "./create-guard-game-options.dto";
-import { CreateIdiotGameOptionsDto } from "./create-idiot-game-options.dto";
-import { CreateLittleGirlGameOptionsDto } from "./create-little-girl-game-options.dto";
-import { CreatePiedPiperGameOptionsDto } from "./create-pied-piper-game-options.dto";
-import { CreateRavenGameOptionsDto } from "./create-raven-game-options.dto";
-import { CreateSeerGameOptionsDto } from "./create-seer-game-options.dto";
-import { CreateSheriffGameOptionsDto } from "./create-sheriff-game-options/create-sheriff-game-options.dto";
-import { CreateStutteringJudgeGameOptionsDto } from "./create-stuttering-judge-game-options.dto";
-import { CreateThiefGameOptionsDto } from "./create-thief-game-options.dto";
-import { CreateThreeBrothersGameOptionsDto } from "./create-three-brothers-game-options.dto";
-import { CreateTwoSistersGameOptionsDto } from "./create-two-sisters-game-options.dto";
-import { CreateWhiteWerewolfGameOptionsDto } from "./create-white-werewolf-game-options.dto";
-import { CreateWildChildGameOptionsDto } from "./create-wild-child-game-options.dto";
+
+import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/roles-game-options.constant";
+import { CreateAncientGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-ancient-game-options.dto";
+import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
+import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
+import { CreateDogWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
+import { CreateFoxGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-fox-game-options.dto";
+import { CreateGuardGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-guard-game-options.dto";
+import { CreateIdiotGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
+import { CreateLittleGirlGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-little-girl-game-options.dto";
+import { CreatePiedPiperGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-pied-piper-game-options.dto";
+import { CreateRavenGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-raven-game-options.dto";
+import { CreateSeerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-seer-game-options.dto";
+import { CreateSheriffGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-game-options.dto";
+import { CreateStutteringJudgeGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-stuttering-judge-game-options.dto";
+import { CreateThiefGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-thief-game-options.dto";
+import { CreateThreeBrothersGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-three-brothers-game-options.dto";
+import { CreateTwoSistersGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-two-sisters-game-options.dto";
+import { CreateWhiteWerewolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-white-werewolf-game-options.dto";
+import { CreateWildChildGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-wild-child-game-options.dto";
 
 class CreateRolesGameOptionsDto {
   @ApiProperty({

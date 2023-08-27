@@ -1,7 +1,8 @@
-import { API_RESOURCES } from "../../../../../../src/shared/api/enums/api.enum";
-import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../../../src/shared/exception/enums/bad-resource-mutation-error.enum";
-import { BadResourceMutationException } from "../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type";
-import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
+import { BAD_RESOURCE_MUTATION_REASONS } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
+import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.type";
+
+import type { ExceptionResponse } from "@tests/types/exception/exception.types";
 
 describe("Resource not found mutation exception type", () => {
   describe("getResponse", () => {

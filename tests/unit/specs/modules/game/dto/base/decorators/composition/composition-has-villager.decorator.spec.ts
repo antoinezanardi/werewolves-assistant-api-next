@@ -1,9 +1,10 @@
 import {
   doesCompositionHaveAtLeastOneVillager,
   getCompositionHasVillagerDefaultMessage,
-} from "../../../../../../../../../src/modules/game/dto/base/decorators/composition/composition-has-villager.decorator";
-import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+} from "@/modules/game/dto/base/decorators/composition/composition-has-villager.decorator";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 describe("Composition Has Villager Decorator", () => {
   describe("doesCompositionHaveAtLeastOneVillager", () => {

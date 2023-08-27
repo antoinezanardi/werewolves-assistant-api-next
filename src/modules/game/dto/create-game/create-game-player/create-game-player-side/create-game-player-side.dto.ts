@@ -1,7 +1,8 @@
 import { ApiHideProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { Allow } from "class-validator";
-import { ROLE_SIDES } from "../../../../../role/enums/role.enum";
+
+import { ROLE_SIDES } from "@/modules/role/enums/role.enum";
 
 class CreateGamePlayerSideDto {
   @ApiHideProperty()

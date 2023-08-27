@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { thiefGameOptionsApiProperties, thiefGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/thief-judge-game-options.constant";
+
+import { thiefGameOptionsApiProperties, thiefGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/thief-judge-game-options.constant";
 
 @Schema({
   versionKey: false,

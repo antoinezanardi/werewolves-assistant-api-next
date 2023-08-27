@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { seerGameOptionsApiProperties, seerGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/seer-game-options.constant";
+
+import { seerGameOptionsApiProperties, seerGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/seer-game-options.constant";
 
 @Schema({
   versionKey: false,

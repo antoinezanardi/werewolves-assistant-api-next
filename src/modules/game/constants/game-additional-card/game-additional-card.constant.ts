@@ -1,7 +1,8 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import { roles } from "../../../role/constants/role.constant";
-import { ROLE_NAMES } from "../../../role/enums/role.enum";
-import type { GameAdditionalCard } from "../../schemas/game-additional-card/game-additional-card.schema";
+
+import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
+import { roles } from "@/modules/role/constants/role.constant";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
 
 const gameAdditionalCardsThiefRoleNames: Readonly<ROLE_NAMES[]> = Object.freeze(roles.filter(({ minInGame, name }) => name !== ROLE_NAMES.THIEF && minInGame === undefined).map(({ name }) => name));
 

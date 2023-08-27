@@ -1,9 +1,10 @@
-import type { ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
 import isObject from "isobject";
 import { has } from "lodash";
-import { roles } from "../../../../../role/constants/role.constant";
-import type { ROLE_NAMES } from "../../../../../role/enums/role.enum";
+import type { ValidationOptions } from "class-validator";
+
+import { roles } from "@/modules/role/constants/role.constant";
+import type { ROLE_NAMES } from "@/modules/role/enums/role.enum";
 
 function areCompositionRolesMaxInGameRespected(value?: unknown): boolean {
   if (!Array.isArray(value) || value.some(player => !isObject(player) || !has(player, ["role", "name"]))) {

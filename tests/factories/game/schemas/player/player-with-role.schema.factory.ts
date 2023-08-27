@@ -1,9 +1,10 @@
-import type { PlayerRole } from "../../../../../src/modules/game/schemas/player/player-role.schema";
-import type { PlayerSide } from "../../../../../src/modules/game/schemas/player/player-side.schema";
-import type { Player } from "../../../../../src/modules/game/schemas/player/player.schema";
-import { villagerRoles } from "../../../../../src/modules/role/constants/role.constant";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
-import { createFakePlayer } from "./player.schema.factory";
+import type { PlayerRole } from "@/modules/game/schemas/player/player-role.schema";
+import type { PlayerSide } from "@/modules/game/schemas/player/player-side.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import { villagerRoles } from "@/modules/role/constants/role.constant";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 function createFakeWerewolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
   return createFakeAlivePlayerWithRole(ROLE_NAMES.WEREWOLF, player, override);

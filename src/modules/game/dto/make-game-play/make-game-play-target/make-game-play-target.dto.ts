@@ -2,7 +2,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { IsBoolean, IsEnum, IsMongoId, IsOptional } from "class-validator";
 import { Types } from "mongoose";
-import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../enums/game-play.enum";
+
+import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
 
 class MakeGamePlayTargetDto {
   @ApiProperty({ description: `Player's Id` })

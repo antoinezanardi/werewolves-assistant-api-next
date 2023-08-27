@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import { GAME_VICTORY_TYPES } from "../../enums/game-victory.enum";
-import type { GameVictory } from "../../schemas/game-victory/game-victory.schema";
+
+import { GAME_VICTORY_TYPES } from "@/modules/game/enums/game-victory.enum";
+import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 
 const gameVictoryFieldsSpecs: Readonly<Record<keyof GameVictory, ApiPropertyOptions>> = Object.freeze({
   type: {

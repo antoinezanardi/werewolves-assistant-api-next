@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { SheriffElectionGameOptions } from "../../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options.schema";
-import { defaultGameOptions } from "../../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { SheriffElectionGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options.schema";
 
 const sheriffElectionGameOptionsFieldsSpecs = Object.freeze({
   turn: {

@@ -1,7 +1,8 @@
-import { createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
-import { createFakeGamePlay } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
-import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
+import { createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+
+import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import type { ExceptionResponse } from "@tests/types/exception/exception.types";
 
 describe("Unexpected Exception Factory", () => {
   describe("createCantFindPlayerUnexpectedException", () => {

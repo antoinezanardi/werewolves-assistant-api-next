@@ -1,10 +1,13 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { GameAdditionalCard } from "../../../../../src/modules/game/schemas/game-additional-card/game-additional-card.schema";
-import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { bulkCreate } from "../../../shared/bulk-create.factory";
-import { createFakeObjectId } from "../../../shared/mongoose/mongoose.factory";
+
+import { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 
 function createFakeGameAdditionalCard(gameAdditionalCard: Partial<GameAdditionalCard> = {}, override: object = {}): GameAdditionalCard {
   return plainToInstance(GameAdditionalCard, {

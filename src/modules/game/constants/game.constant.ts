@@ -1,8 +1,8 @@
-import { ROLE_NAMES } from "../../role/enums/role.enum";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../enums/player.enum";
-import type { GamePlay } from "../schemas/game-play/game-play.schema";
-import type { GameSource } from "../types/game.type";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "@/modules/game/enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import type { GameSource } from "@/modules/game/types/game.type";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
 
 const gameSourceValues: Readonly<GameSource[]> = Object.freeze([
   ...Object.values(PLAYER_GROUPS),

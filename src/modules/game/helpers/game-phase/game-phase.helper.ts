@@ -1,4 +1,4 @@
-import type { Game } from "../../schemas/game.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
 
 function isGamePhaseOver(game: Game): boolean {
   return !game.currentPlay;

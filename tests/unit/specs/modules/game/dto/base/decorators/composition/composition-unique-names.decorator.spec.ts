@@ -1,4 +1,4 @@
-import { getPlayerName } from "../../../../../../../../../src/modules/game/dto/base/decorators/composition/composition-unique-names.decorator";
+import { getPlayerName } from "@/modules/game/dto/base/decorators/composition/composition-unique-names.decorator";
 
 describe("Composition Unique Names Decorator", () => {
   describe("getPlayerName", () => {

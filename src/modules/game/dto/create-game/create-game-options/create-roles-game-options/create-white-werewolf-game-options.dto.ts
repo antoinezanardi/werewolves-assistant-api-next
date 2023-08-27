@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, Max, Min } from "class-validator";
-import { whiteWerewolfGameOptionsApiProperties, whiteWerewolfGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/white-werewolf-game-options.constant";
+
+import { whiteWerewolfGameOptionsApiProperties, whiteWerewolfGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/white-werewolf-game-options.constant";
 
 class CreateWhiteWerewolfGameOptionsDto {
   @ApiProperty({

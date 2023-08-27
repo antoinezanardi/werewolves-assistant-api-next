@@ -1,5 +1,5 @@
-import { API_RESOURCES } from "../../../../../../src/shared/api/enums/api.enum";
-import { getResourceSingularForm } from "../../../../../../src/shared/api/helpers/api.helper";
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
+import { getResourceSingularForm } from "@/shared/api/helpers/api.helper";
 
 describe("API Helper", () => {
   describe("getResourceSingularForm", () => {

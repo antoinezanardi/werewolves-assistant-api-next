@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { WildChildGameOptions } from "../../../schemas/game-options/roles-game-options/wild-child-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { WildChildGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options.schema";
 
 const wildChildGameOptionsFieldsSpecs = Object.freeze({ isTransformationRevealed: { default: defaultGameOptions.roles.wildChild.isTransformationRevealed } });
 

@@ -1,11 +1,14 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../src/modules/game/enums/player.enum";
-import { GamePlay } from "../../../../../src/modules/game/schemas/game-play/game-play.schema";
-import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { createFakeGamePlaySource } from "./game-play-source.schema.factory";
+
+import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 
 function createFakeGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({

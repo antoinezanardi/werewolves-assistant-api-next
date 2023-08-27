@@ -2,11 +2,12 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { Types } from "mongoose";
-import { playerApiProperties, playersFieldsSpecs } from "../../constants/player/player.constant";
-import { PlayerAttribute, PlayerAttributeSchema } from "./player-attribute/player-attribute.schema";
-import { PlayerDeath, PlayerDeathSchema } from "./player-death.schema";
-import { PlayerRole, PlayerRoleSchema } from "./player-role.schema";
-import { PlayerSide, PlayerSideSchema } from "./player-side.schema";
+
+import { playerApiProperties, playersFieldsSpecs } from "@/modules/game/constants/player/player.constant";
+import { PlayerAttribute, PlayerAttributeSchema } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import { PlayerDeath, PlayerDeathSchema } from "@/modules/game/schemas/player/player-death.schema";
+import { PlayerRole, PlayerRoleSchema } from "@/modules/game/schemas/player/player-role.schema";
+import { PlayerSide, PlayerSideSchema } from "@/modules/game/schemas/player/player-side.schema";
 
 @Schema({ versionKey: false })
 class Player {

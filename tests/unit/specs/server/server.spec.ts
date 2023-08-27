@@ -1,10 +1,11 @@
-import type { INestApplication } from "@nestjs/common";
 import * as NestCommon from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
+import type { INestApplication } from "@nestjs/common";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-import { fastifyServerDefaultOptions } from "../../../../src/server/constants/server.constant";
-import { bootstrap } from "../../../../src/server/server";
+
+import { fastifyServerDefaultOptions } from "@/server/constants/server.constant";
+import { bootstrap } from "@/server/server";
 
 jest.mock<typeof NestCommon>("@nestjs/common", () => {
   const original = jest.requireActual<typeof NestCommon>("@nestjs/common");
@@ -15,7 +16,7 @@ jest.mock<typeof NestCommon>("@nestjs/common", () => {
 });
 jest.mock("@nestjs/core");
 jest.mock("@nestjs/platform-fastify");
-jest.mock("../../../../src/server/swagger/swagger");
+jest.mock("@/server/swagger/swagger");
 
 describe("Server", () => {
   describe("bootstrap", () => {

@@ -1,5 +1,6 @@
 import qs from "qs";
-import { queryStringParser } from "../../../../../src/server/helpers/server.helper";
+
+import { queryStringParser } from "@/server/helpers/server.helper";
 
 describe("Server Helper", () => {
   describe("queryStringParser", () => {

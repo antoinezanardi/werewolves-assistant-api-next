@@ -1,6 +1,7 @@
-import { UNEXPECTED_EXCEPTION_REASONS } from "../../../../../../src/shared/exception/enums/unexpected-exception.enum";
-import { UnexpectedException } from "../../../../../../src/shared/exception/types/unexpected-exception.type";
-import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
+import { UNEXPECTED_EXCEPTION_REASONS } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+
+import type { ExceptionResponse } from "@tests/types/exception/exception.types";
 
 describe("Unexpected exception type", () => {
   describe("getResponse", () => {

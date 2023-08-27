@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { playerDeathApiProperties } from "../../constants/player/player-death.constant";
-import { PLAYER_DEATH_CAUSES } from "../../enums/player.enum";
-import { GameSource } from "../../types/game.type";
+
+import { playerDeathApiProperties } from "@/modules/game/constants/player/player-death.constant";
+import { PLAYER_DEATH_CAUSES } from "@/modules/game/enums/player.enum";
+import { GameSource } from "@/modules/game/types/game.type";
 
 @Schema({
   versionKey: false,

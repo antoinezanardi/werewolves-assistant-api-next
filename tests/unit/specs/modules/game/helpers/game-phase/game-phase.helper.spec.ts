@@ -1,5 +1,6 @@
-import { isGamePhaseOver } from "../../../../../../../src/modules/game/helpers/game-phase/game-phase.helper";
-import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../../factories/game/schemas/game.schema.factory";
+import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.helper";
+
+import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Game Phase Helper", () => {
   describe("isGamePhaseOver", () => {

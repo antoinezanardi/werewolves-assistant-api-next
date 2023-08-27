@@ -1,27 +1,30 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
-import { createFakeGamePlayAllElectSheriff } from "../../../../../../tests/factories/game/schemas/game-play/game-play.schema.factory";
-import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
-import { roles } from "../../../../role/constants/role.constant";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../../role/enums/role.enum";
-import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import { createGamePlayAllVote, createGamePlaySheriffSettlesVotes } from "../../../helpers/game-play/game-play.factory";
-import { createGame } from "../../../helpers/game.factory";
-import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "../../../helpers/game.mutator";
-import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "../../../helpers/player/player-attribute/player-attribute.factory";
-import { createPlayerShotByHunterDeath, createPlayerVoteByAllDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedByAllDeath } from "../../../helpers/player/player-death/player-death.factory";
-import { isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
-import type { Game } from "../../../schemas/game.schema";
-import type { PlayerRole } from "../../../schemas/player/player-role.schema";
-import type { PlayerSide } from "../../../schemas/player/player-side.schema";
-import type { Player } from "../../../schemas/player/player.schema";
-import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
-import type { GameSource } from "../../../types/game.type";
-import { PlayerKillerService } from "../player/player-killer.service";
-import { GamePlayVoteService } from "./game-play-vote/game-play-vote.service";
+
+import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { createGamePlayAllVote, createGamePlaySheriffSettlesVotes } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGame } from "@/modules/game/helpers/game.factory";
+import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createPlayerShotByHunterDeath, createPlayerVoteByAllDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedByAllDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
+import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
+import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
+import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { PlayerRole } from "@/modules/game/schemas/player/player-role.schema";
+import type { PlayerSide } from "@/modules/game/schemas/player/player-side.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import type { GameSource } from "@/modules/game/types/game.type";
+import { roles } from "@/modules/role/constants/role.constant";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+
+import { createFakeGamePlayAllElectSheriff } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 
 @Injectable()
 export class GamePlayMakerService {

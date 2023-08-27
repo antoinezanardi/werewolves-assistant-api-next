@@ -1,22 +1,24 @@
 import { Injectable } from "@nestjs/common";
-import { createNoGamePlayPriorityUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
-import { ROLE_NAMES } from "../../../../role/enums/role.enum";
-import { gamePlaysNightOrder } from "../../../constants/game.constant";
-import { CreateGamePlayerDto } from "../../../dto/create-game/create-game-player/create-game-player.dto";
-import { CreateGameDto } from "../../../dto/create-game/create-game.dto";
-import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
-import { GAME_PHASES } from "../../../enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "../../../helpers/game-play/game-play.factory";
-import { areGamePlaysEqual, findPlayPriorityIndex } from "../../../helpers/game-play/game-play.helper";
-import { createGame } from "../../../helpers/game.factory";
-import { areAllWerewolvesAlive, getExpectedPlayersToPlay, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "../../../helpers/game.helper";
-import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "../../../helpers/player/player.helper";
-import type { GameHistoryRecord } from "../../../schemas/game-history-record/game-history-record.schema";
-import type { SheriffGameOptions } from "../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
-import type { GamePlay } from "../../../schemas/game-play/game-play.schema";
-import type { Game } from "../../../schemas/game.schema";
-import { GameHistoryRecordService } from "../game-history/game-history-record.service";
+
+import { gamePlaysNightOrder } from "@/modules/game/constants/game.constant";
+import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
+import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "@/modules/game/helpers/game-play/game-play.factory";
+import { areGamePlaysEqual, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
+import { createGame } from "@/modules/game/helpers/game.factory";
+import { areAllWerewolvesAlive, getExpectedPlayersToPlay, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import type { SheriffGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { createNoGamePlayPriorityUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 @Injectable()
 export class GamePlayService {

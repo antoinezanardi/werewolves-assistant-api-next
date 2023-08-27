@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsEnum } from "class-validator";
-import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
-import { playerRoleApiProperties } from "../../../../constants/player/player-role.constant";
-import { playerApiProperties } from "../../../../constants/player/player.constant";
+
+import { playerRoleApiProperties } from "@/modules/game/constants/player/player-role.constant";
+import { playerApiProperties } from "@/modules/game/constants/player/player.constant";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
 
 class GamePlayerRoleBaseDto {
   @ApiProperty(playerApiProperties.role)

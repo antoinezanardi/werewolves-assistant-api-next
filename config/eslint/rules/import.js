@@ -44,42 +44,16 @@ const importRules = Object.freeze({
   "import/extensions": OFF,
   "import/order": [
     ERROR, {
-      warnOnUnassignedImports: true,
-      alphabetize: {
-        order: "asc",
-        caseInsensitive: true,
-      },
-      pathGroups: [
-        {
-          pattern: "@+([a-z])/**",
-          group: "external",
-          position: "before",
-        }, {
-          pattern: "@/models/**",
-          group: "internal",
-          position: "after",
-        }, {
-          pattern: "@/store/**",
-          group: "internal",
-          position: "after",
-        }, {
-          pattern: "@/services/**",
-          group: "internal",
-          position: "after",
-        }, {
-          pattern: "@/components/**",
-          group: "internal",
-          position: "after",
-        }, {
-          pattern: "@/composables/**",
-          group: "internal",
-          position: "after",
-        }, {
-          pattern: "@/utils/**",
-          group: "internal",
-          position: "after",
-        },
+      "warnOnUnassignedImports": true,
+      "groups": ["builtin", "external", "internal", "parent", "sibling"],
+      "pathGroups": [
+        { pattern: "@/modules/**", group: "parent" },
+        { pattern: "@/server/**", group: "parent", position: "after" },
+        { pattern: "@/shared/**", group: "parent", position: "after" },
+        { pattern: "@tests/**", group: "parent", position: "after" },
       ],
+      "pathGroupsExcludedImportTypes": ["@tests/"],
+      "newlines-between": "always",
     },
   ],
   "import/newline-after-import": ERROR,

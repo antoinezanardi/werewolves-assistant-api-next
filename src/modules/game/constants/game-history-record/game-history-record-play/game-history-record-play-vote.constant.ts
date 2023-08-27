@@ -1,5 +1,6 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { GameHistoryRecordPlayVote } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-vote.schema";
+
+import type { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote.schema";
 
 const gameHistoryRecordPlayVoteFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecordPlayVote, ApiPropertyOptions>>({
   source: { required: true },

@@ -1,11 +1,13 @@
 import type { ValidationArguments } from "class-validator";
-import { getAdditionalCardsForThiefSizeDefaultMessage, isAdditionalCardsForThiefSizeRespected } from "../../../../../../../../../src/modules/game/dto/base/decorators/additional-cards/additional-cards-for-thief-size.decorator";
-import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
-import { createFakeCreateGameAdditionalCardDto } from "../../../../../../../../factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
-import { createFakeCreateThiefGameOptionsDto } from "../../../../../../../../factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
-import { createFakeCreateGameDto } from "../../../../../../../../factories/game/dto/create-game/create-game.dto.factory";
-import { createFakeGameOptions } from "../../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeRolesGameOptions } from "../../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
+
+import { getAdditionalCardsForThiefSizeDefaultMessage, isAdditionalCardsForThiefSizeRespected } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-thief-size.decorator";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
+import { createFakeCreateThiefGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
+import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
+import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 
 describe("Additional Cards For Thief Size Decorator", () => {
   describe("isAdditionalCardsForThiefSizeRespected", () => {

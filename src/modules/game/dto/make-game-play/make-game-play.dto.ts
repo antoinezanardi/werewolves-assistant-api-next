@@ -2,11 +2,12 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { ArrayUnique, IsArray, IsBoolean, IsEnum, IsMongoId, IsOptional, ValidateNested } from "class-validator";
 import { Types } from "mongoose";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../role/enums/role.enum";
-import { requiredTargetsActions, requiredVotesActions, stutteringJudgeRequestOpportunityActions } from "../../constants/game-play/game-play.constant";
-import { GAME_PLAY_ACTIONS } from "../../enums/game-play.enum";
-import { MakeGamePlayTargetDto } from "./make-game-play-target/make-game-play-target.dto";
-import { MakeGamePlayVoteDto } from "./make-game-play-vote/make-game-play-vote.dto";
+
+import { requiredTargetsActions, requiredVotesActions, stutteringJudgeRequestOpportunityActions } from "@/modules/game/constants/game-play/game-play.constant";
+import { MakeGamePlayTargetDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target.dto";
+import { MakeGamePlayVoteDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote.dto";
+import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
 
 class MakeGamePlayDto {
   @ApiProperty({ description: `Players affected by the play. Must be set when game's upcoming play action is one of the following : ${requiredTargetsActions.toString()}` })

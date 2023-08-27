@@ -1,7 +1,9 @@
 import type { Types } from "mongoose";
-import type { GamePlay } from "../../../modules/game/schemas/game-play/game-play.schema";
-import { UNEXPECTED_EXCEPTION_REASONS } from "../enums/unexpected-exception.enum";
-import { UnexpectedException } from "../types/unexpected-exception.type";
+
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+
+import { UNEXPECTED_EXCEPTION_REASONS } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
 function createCantFindPlayerUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId; playerId: Types.ObjectId }): UnexpectedException {
   const { gameId, playerId } = interpolations;

@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { RavenGameOptions } from "../../../schemas/game-options/roles-game-options/raven-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { RavenGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/raven-game-options.schema";
 
 const ravenGameOptionsFieldsSpecs = Object.freeze({
   markPenalty: {

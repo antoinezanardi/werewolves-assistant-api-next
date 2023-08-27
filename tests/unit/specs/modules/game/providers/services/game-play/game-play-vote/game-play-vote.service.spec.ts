@@ -1,16 +1,18 @@
-import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import type { MakeGamePlayVoteWithRelationsDto } from "../../../../../../../../../src/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
-import { GamePlayVoteService } from "../../../../../../../../../src/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
-import type { Player } from "../../../../../../../../../src/modules/game/schemas/player/player.schema";
-import type { PlayerVoteCount } from "../../../../../../../../../src/modules/game/types/game-play.type";
-import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
-import { createFakeGameOptions } from "../../../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeRavenGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "../../../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayFoxSniffs } from "../../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGameWithCurrentPlay } from "../../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePowerlessByAncientPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeAncientAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
+import type { TestingModule } from "@nestjs/testing";
+
+import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
+import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { PlayerVoteCount } from "@/modules/game/types/game-play.type";
+
+import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
+import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeRavenGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayFoxSniffs } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakePowerlessByAncientPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeAncientAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 
 describe("Game Play Vote Service", () => {
   let services: { gamePlayVote: GamePlayVoteService };

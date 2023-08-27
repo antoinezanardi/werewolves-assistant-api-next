@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { DogWolfGameOptions } from "../../../schemas/game-options/roles-game-options/dog-wolf-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { DogWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options.schema";
 
 const dogWolfGameOptionsFieldsSpecs = Object.freeze({ isChosenSideRevealed: { default: defaultGameOptions.roles.dogWolf.isChosenSideRevealed } });
 

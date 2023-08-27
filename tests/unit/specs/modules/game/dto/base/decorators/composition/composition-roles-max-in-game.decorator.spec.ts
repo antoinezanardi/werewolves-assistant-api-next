@@ -1,9 +1,10 @@
 import {
   getCompositionRolesMaxInGameDefaultMessage,
   areCompositionRolesMaxInGameRespected,
-} from "../../../../../../../../../src/modules/game/dto/base/decorators/composition/composition-roles-max-in-game.decorator";
-import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+} from "@/modules/game/dto/base/decorators/composition/composition-roles-max-in-game.decorator";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 describe("Composition Roles Max In Game Decorator", () => {
   describe("areCompositionRolesMaxInGameRespected", () => {

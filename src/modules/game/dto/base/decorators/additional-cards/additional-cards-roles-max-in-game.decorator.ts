@@ -1,8 +1,9 @@
 import { registerDecorator } from "class-validator";
 import type { ValidationArguments, ValidationOptions } from "class-validator";
-import { roles } from "../../../../../role/constants/role.constant";
-import type { CreateGameAdditionalCardDto } from "../../../create-game/create-game-additional-card/create-game-additional-card.dto";
-import type { CreateGameDto } from "../../../create-game/create-game.dto";
+
+import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
+import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import { roles } from "@/modules/role/constants/role.constant";
 
 function areAdditionalCardsRolesMaxInGameRespected(value: unknown, validationArguments: ValidationArguments): boolean {
   if (value === undefined) {

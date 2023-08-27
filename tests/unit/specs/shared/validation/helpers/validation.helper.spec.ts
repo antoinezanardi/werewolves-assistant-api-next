@@ -1,4 +1,4 @@
-import { doesArrayRespectBounds } from "../../../../../../src/shared/validation/helpers/validation.helper";
+import { doesArrayRespectBounds } from "@/shared/validation/helpers/validation.helper";
 
 describe("Validation Helper", () => {
   describe("doesArrayRespectBounds", () => {

@@ -1,27 +1,29 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { CreateAncientGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-ancient-game-options.dto";
-import { CreateBearTamerGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
-import { CreateBigBadWolfGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
-import { CreateDogWolfGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
-import { CreateFoxGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-fox-game-options.dto";
-import { CreateGuardGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-guard-game-options.dto";
-import { CreateIdiotGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
-import { CreateLittleGirlGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-little-girl-game-options.dto";
-import { CreatePiedPiperGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-pied-piper-game-options.dto";
-import { CreateRavenGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-raven-game-options.dto";
-import { CreateRolesGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto";
-import { CreateSeerGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-seer-game-options.dto";
-import { CreateSheriffElectionGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-election-game-options.dto";
-import { CreateSheriffGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-game-options.dto";
-import { CreateStutteringJudgeGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-stuttering-judge-game-options.dto";
-import { CreateThiefGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-thief-game-options.dto";
-import { CreateThreeBrothersGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-three-brothers-game-options.dto";
-import { CreateTwoSistersGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-two-sisters-game-options.dto";
-import { CreateWhiteWerewolfGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-white-werewolf-game-options.dto";
-import { CreateWildChildGameOptionsDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-wild-child-game-options.dto";
-import { GAME_PHASES } from "../../../../../../../src/modules/game/enums/game.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../../../src/shared/validation/constants/validation.constant";
+
+import { CreateAncientGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-ancient-game-options.dto";
+import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
+import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
+import { CreateDogWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
+import { CreateFoxGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-fox-game-options.dto";
+import { CreateGuardGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-guard-game-options.dto";
+import { CreateIdiotGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
+import { CreateLittleGirlGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-little-girl-game-options.dto";
+import { CreatePiedPiperGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-pied-piper-game-options.dto";
+import { CreateRavenGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-raven-game-options.dto";
+import { CreateRolesGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto";
+import { CreateSeerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-seer-game-options.dto";
+import { CreateSheriffElectionGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-election-game-options.dto";
+import { CreateSheriffGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-game-options.dto";
+import { CreateStutteringJudgeGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-stuttering-judge-game-options.dto";
+import { CreateThiefGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-thief-game-options.dto";
+import { CreateThreeBrothersGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-three-brothers-game-options.dto";
+import { CreateTwoSistersGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-two-sisters-game-options.dto";
+import { CreateWhiteWerewolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-white-werewolf-game-options.dto";
+import { CreateWildChildGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-wild-child-game-options.dto";
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
 
 function createFakeCreateRavenGameOptionsDto(ravenGameOptions: Partial<CreateRavenGameOptionsDto> = {}, override: object = {}): CreateRavenGameOptionsDto {
   return plainToInstance(CreateRavenGameOptionsDto, {

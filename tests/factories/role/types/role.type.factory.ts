@@ -1,9 +1,12 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "../../../../src/modules/role/enums/role.enum";
-import { Role } from "../../../../src/modules/role/types/role.type";
-import { plainToInstanceDefaultOptions } from "../../../../src/shared/validation/constants/validation.constant";
-import { bulkCreate } from "../../shared/bulk-create.factory";
+
+import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "@/modules/role/enums/role.enum";
+import { Role } from "@/modules/role/types/role.type";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 
 function createFakeRole(role: Partial<Role> = {}, override: object = {}): Role {
   return plainToInstance(Role, {

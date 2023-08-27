@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import { GAME_PHASES } from "../../enums/game.enum";
-import type { GameOptions } from "../../schemas/game-options/game-options.schema";
+
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 
 const defaultGameOptions: GameOptions = Object.freeze({
   composition: { isHidden: false },

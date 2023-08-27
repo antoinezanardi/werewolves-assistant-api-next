@@ -1,14 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import type { FilterQuery, Types } from "mongoose";
 import { Model } from "mongoose";
-import { ROLE_NAMES } from "../../../role/enums/role.enum";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../enums/game-history-record.enum";
-import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../enums/game-play.enum";
-import type { GAME_PHASES } from "../../enums/game.enum";
-import type { GameHistoryRecordDocument } from "../../schemas/game-history-record/game-history-record.schema";
-import { GameHistoryRecord } from "../../schemas/game-history-record/game-history-record.schema";
-import type { GameHistoryRecordToInsert } from "../../types/game-history-record.type";
+import type { FilterQuery, Types } from "mongoose";
+
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
+import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import type { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import type { GameHistoryRecordDocument } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
 
 @Injectable()
 export class GameHistoryRecordRepository {

@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { PlayerDeath } from "../../schemas/player/player-death.schema";
-import { gameSourceValues } from "../game.constant";
+
+import { gameSourceValues } from "@/modules/game/constants/game.constant";
+import type { PlayerDeath } from "@/modules/game/schemas/player/player-death.schema";
 
 const playerDeathApiProperties: Record<keyof PlayerDeath, ApiPropertyOptions> = Object.freeze({
   source: {

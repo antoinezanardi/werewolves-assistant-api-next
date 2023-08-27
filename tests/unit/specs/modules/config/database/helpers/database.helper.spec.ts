@@ -1,8 +1,9 @@
 import { ConfigService } from "@nestjs/config";
-import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
-import { mongooseModuleFactory } from "../../../../../../../src/modules/config/database/helpers/database.helper";
+import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
+
+import { mongooseModuleFactory } from "@/modules/config/database/helpers/database.helper";
 
 describe("Database Helper", () => {
   let mocks: { configService: { getOrThrow: jest.SpyInstance } };

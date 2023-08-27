@@ -1,22 +1,24 @@
 import { getModelToken } from "@nestjs/mongoose";
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { Model, Types } from "mongoose";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../src/modules/game/enums/game-history-record.enum";
-import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
-import type { GAME_PHASES } from "../../../../../../../src/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../src/modules/game/enums/player.enum";
-import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
-import { GameHistoryRecord } from "../../../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
-import type { GameHistoryRecordToInsert } from "../../../../../../../src/modules/game/types/game-history-record.type";
-import type { GameSource } from "../../../../../../../src/modules/game/types/game.type";
-import type { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
-import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllElectSheriffPlay, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
-import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../factories/game/schemas/player/player.schema.factory";
-import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
-import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
-import { toJSON } from "../../../../../../helpers/object/object.helper";
-import { initNestApp } from "../../../../../helpers/nest-app.helper";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
+import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import type { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
+import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
+import type { GameSource } from "@/modules/game/types/game.type";
+import type { ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import { toJSON } from "@tests/helpers/object/object.helper";
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllElectSheriffPlay, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 
 describe("Game History Record Repository", () => {
   let app: NestFastifyApplication;

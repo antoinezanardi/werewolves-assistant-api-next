@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { guardGameOptionsApiProperties, guardGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/guard-game-options.constant";
+
+import { guardGameOptionsApiProperties, guardGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/guard-game-options.constant";
 
 @Schema({
   versionKey: false,

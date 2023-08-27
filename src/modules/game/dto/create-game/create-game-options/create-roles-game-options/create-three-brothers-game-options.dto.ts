@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, Max, Min } from "class-validator";
-import { threeBrothersGameOptionsApiProperties, threeBrothersGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/three-brothers-game-options.constant";
+
+import { threeBrothersGameOptionsApiProperties, threeBrothersGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/three-brothers-game-options.constant";
 
 class CreateThreeBrothersGameOptionsDto {
   @ApiProperty({

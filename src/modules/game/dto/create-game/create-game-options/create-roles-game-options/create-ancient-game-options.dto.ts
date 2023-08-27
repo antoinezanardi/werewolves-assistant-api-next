@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsInt, IsOptional, Max, Min } from "class-validator";
-import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/ancient-game-options.constant";
+
+import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/ancient-game-options.constant";
 
 class CreateAncientGameOptionsDto {
   @ApiProperty({

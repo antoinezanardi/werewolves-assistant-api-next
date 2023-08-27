@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { gameOptionsApiProperties } from "../../constants/game-options/game-options.constant";
-import { CompositionGameOptions, CompositionGameOptionsSchema } from "./composition-game-options.schema";
-import { RolesGameOptions, RolesGameOptionsSchema } from "./roles-game-options/roles-game-options.schema";
-import { VotesGameOptions, VotesGameOptionsSchema } from "./votes-game-options.schema";
+
+import { gameOptionsApiProperties } from "@/modules/game/constants/game-options/game-options.constant";
+import { CompositionGameOptions, CompositionGameOptionsSchema } from "@/modules/game/schemas/game-options/composition-game-options.schema";
+import { RolesGameOptions, RolesGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema";
+import { VotesGameOptions, VotesGameOptionsSchema } from "@/modules/game/schemas/game-options/votes-game-options.schema";
 
 @Schema({
   versionKey: false,

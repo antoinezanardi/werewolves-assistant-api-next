@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/ancient-game-options.constant";
+
+import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/ancient-game-options.constant";
 
 @Schema({
   versionKey: false,

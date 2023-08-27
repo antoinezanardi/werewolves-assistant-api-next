@@ -3,10 +3,11 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { SchemaTypes, Types } from "mongoose";
 import type { HydratedDocument } from "mongoose";
-import { gameHistoryRecordApiProperties, gameHistoryRecordFieldsSpecs } from "../../constants/game-history-record/game-history-record.constant";
-import { GAME_PHASES } from "../../enums/game.enum";
-import { PlayerSchema, Player } from "../player/player.schema";
-import { GameHistoryRecordPlay, GameHistoryRecordPlaySchema } from "./game-history-record-play/game-history-record-play.schema";
+
+import { gameHistoryRecordApiProperties, gameHistoryRecordFieldsSpecs } from "@/modules/game/constants/game-history-record/game-history-record.constant";
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { GameHistoryRecordPlay, GameHistoryRecordPlaySchema } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import { PlayerSchema, Player } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
   timestamps: { createdAt: true, updatedAt: false },

@@ -1,11 +1,14 @@
 import { plainToInstance } from "class-transformer";
-import { toJSON } from "../../../../../../tests/helpers/object/object.helper";
-import { plainToInstanceDefaultOptions } from "../../../../../shared/validation/constants/validation.constant";
-import { ROLE_NAMES } from "../../../../role/enums/role.enum";
-import { GAME_PHASES } from "../../../enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import type { Game } from "../../../schemas/game.schema";
-import { PlayerAttribute } from "../../../schemas/player/player-attribute/player-attribute.schema";
+
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { toJSON } from "@tests/helpers/object/object.helper";
 
 function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({

@@ -1,8 +1,8 @@
-import { ROLE_SIDES } from "../../../role/enums/role.enum";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../enums/player.enum";
-import type { Game } from "../../schemas/game.schema";
-import type { Player } from "../../schemas/player/player.schema";
-import { doesPlayerHaveActiveAttributeWithName } from "./player-attribute/player-attribute.helper";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import { ROLE_SIDES } from "@/modules/role/enums/role.enum";
 
 function canPiedPiperCharm(piedPiperPlayer: Player, game: Game): boolean {
   const { isPowerlessIfInfected } = game.options.roles.piedPiper;

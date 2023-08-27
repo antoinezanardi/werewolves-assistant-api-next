@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { ravenGameOptionsApiProperties, ravenGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/raven-game-options.constant";
+
+import { ravenGameOptionsApiProperties, ravenGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/raven-game-options.constant";
 
 @Schema({
   versionKey: false,

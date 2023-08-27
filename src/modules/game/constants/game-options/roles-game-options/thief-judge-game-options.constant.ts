@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { ThiefGameOptions } from "../../../schemas/game-options/roles-game-options/thief-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { ThiefGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/thief-game-options.schema";
 
 const thiefGameOptionsFieldsSpecs = Object.freeze({
   mustChooseBetweenWerewolves: { default: defaultGameOptions.roles.thief.mustChooseBetweenWerewolves },

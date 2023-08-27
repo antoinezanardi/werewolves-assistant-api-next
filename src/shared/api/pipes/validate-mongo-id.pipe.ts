@@ -1,6 +1,6 @@
-import type { PipeTransform } from "@nestjs/common";
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { Types } from "mongoose";
+import type { PipeTransform } from "@nestjs/common";
 
 @Injectable()
 class ValidateMongoId implements PipeTransform<string> {

@@ -1,17 +1,19 @@
-import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { parseInt } from "lodash";
-import type { GAME_PLAY_CAUSES, GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
-import type { GAME_VICTORY_TYPES } from "../../../../../src/modules/game/enums/game-victory.enum";
-import type { GAME_STATUSES, GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
-import type { PLAYER_DEATH_CAUSES, PLAYER_ATTRIBUTE_NAMES } from "../../../../../src/modules/game/enums/player.enum";
-import { getPlayerWithNameOrThrow } from "../../../../../src/modules/game/helpers/game.helper";
-import { getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
-import type { GameSource } from "../../../../../src/modules/game/types/game.type";
-import type { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
-import type { CustomWorld } from "../../../shared/types/world.types";
-import { convertDatatableToPlayers } from "../helpers/game-datatable.helper";
+import type { DataTable } from "@cucumber/cucumber";
+
+import type { GAME_PLAY_CAUSES, GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
+import type { GAME_VICTORY_TYPES } from "@/modules/game/enums/game-victory.enum";
+import type { GAME_STATUSES, GAME_PHASES } from "@/modules/game/enums/game.enum";
+import type { PLAYER_DEATH_CAUSES, PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helper";
+import { getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import type { GameSource } from "@/modules/game/types/game.type";
+import type { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
+import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 
 Then(/^the game's tick should be (?<tick>\d)$/u, function(this: CustomWorld, tick: string): void {
   expect(this.game.tick).toBe(parseInt(tick));

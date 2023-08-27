@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/pied-piper-game-options.constant";
+
+import { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/pied-piper-game-options.constant";
 
 @Schema({
   versionKey: false,

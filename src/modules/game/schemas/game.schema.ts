@@ -3,13 +3,14 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { Types } from "mongoose";
 import type { HydratedDocument } from "mongoose";
-import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
-import { GameAdditionalCardSchema, GameAdditionalCard } from "./game-additional-card/game-additional-card.schema";
-import { GameOptions, GameOptionsSchema } from "./game-options/game-options.schema";
-import { GamePlaySchema, GamePlay } from "./game-play/game-play.schema";
-import { GameVictory, GameVictorySchema } from "./game-victory/game-victory.schema";
-import { gameApiProperties, gameFieldsSpecs } from "./game.schema.constant";
-import { PlayerSchema, Player } from "./player/player.schema";
+
+import { GAME_PHASES, GAME_STATUSES } from "@/modules/game/enums/game.enum";
+import { GameAdditionalCardSchema, GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
+import { GameOptions, GameOptionsSchema } from "@/modules/game/schemas/game-options/game-options.schema";
+import { GamePlaySchema, GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import { GameVictory, GameVictorySchema } from "@/modules/game/schemas/game-victory/game-victory.schema";
+import { gameApiProperties, gameFieldsSpecs } from "@/modules/game/schemas/game.schema.constant";
+import { PlayerSchema, Player } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
   timestamps: true,

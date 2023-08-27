@@ -1,7 +1,8 @@
-import type { ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
-import { gameAdditionalCardsThiefRoleNames } from "../../../../constants/game-additional-card/game-additional-card.constant";
-import type { CreateGameAdditionalCardDto } from "../../../create-game/create-game-additional-card/create-game-additional-card.dto";
+import type { ValidationOptions } from "class-validator";
+
+import { gameAdditionalCardsThiefRoleNames } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
+import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 
 function areAdditionalCardsForThiefRolesRespected(value: unknown): boolean {
   if (value === undefined) {

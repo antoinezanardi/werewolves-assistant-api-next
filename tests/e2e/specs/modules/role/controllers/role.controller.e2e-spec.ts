@@ -1,8 +1,10 @@
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-import { roles } from "../../../../../../src/modules/role/constants/role.constant";
-import type { Role } from "../../../../../../src/modules/role/types/role.type";
-import { bulkCreateFakeRoles } from "../../../../../factories/role/types/role.type.factory";
-import { initNestApp } from "../../../../helpers/nest-app.helper";
+
+import { roles } from "@/modules/role/constants/role.constant";
+import type { Role } from "@/modules/role/types/role.type";
+
+import { bulkCreateFakeRoles } from "@tests/factories/role/types/role.type.factory";
+import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 
 describe("Role Controller", () => {
   let app: NestFastifyApplication;

@@ -1,13 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { GAME_PHASES } from "../../../enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../enums/player.enum";
-import { createGame } from "../../../helpers/game.factory";
-import { doesPlayerHaveActiveAttributeWithName, getActivePlayerAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
-import { createPlayer } from "../../../helpers/player/player.factory";
-import type { Game } from "../../../schemas/game.schema";
-import type { Player } from "../../../schemas/player/player.schema";
-import { GamePlayService } from "../game-play/game-play.service";
-import { PlayerAttributeService } from "../player/player-attribute.service";
+
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { createGame } from "@/modules/game/helpers/game.factory";
+import { doesPlayerHaveActiveAttributeWithName, getActivePlayerAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { createPlayer } from "@/modules/game/helpers/player/player.factory";
+import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
+import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
 
 @Injectable()
 export class GamePhaseService {

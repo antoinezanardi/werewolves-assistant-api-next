@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { playerAttributeApiProperties, playerAttributeFieldsSpecs } from "../../../constants/player/player-attribute/player-attribute.constant";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../enums/player.enum";
-import { GameSource } from "../../../types/game.type";
-import { PlayerAttributeActivation, PlayerAttributeActivationSchema } from "./player-attribute-activation.schema";
+
+import { playerAttributeApiProperties, playerAttributeFieldsSpecs } from "@/modules/game/constants/player/player-attribute/player-attribute.constant";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { PlayerAttributeActivation, PlayerAttributeActivationSchema } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation.schema";
+import { GameSource } from "@/modules/game/types/game.type";
 
 @Schema({
   versionKey: false,

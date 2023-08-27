@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { PlayerAttribute } from "../../../schemas/player/player-attribute/player-attribute.schema";
-import { gameSourceValues } from "../../game.constant";
+
+import { gameSourceValues } from "@/modules/game/constants/game.constant";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 
 const playerAttributeFieldsSpecs = Object.freeze({
   remainingPhases: { minimum: 1 },

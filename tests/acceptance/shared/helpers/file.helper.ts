@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
-import type { FeatureName } from "../types/feature.types";
+
+import type { FeatureName } from "@tests/acceptance/shared/types/feature.types";
 
 function readJsonFile<T>(feature: FeatureName, fileName: string): T {
   const path = `tests/acceptance/features/${feature}/data/${fileName}`;

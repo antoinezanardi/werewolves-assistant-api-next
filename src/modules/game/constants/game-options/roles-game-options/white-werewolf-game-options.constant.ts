@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { WhiteWerewolfGameOptions } from "../../../schemas/game-options/roles-game-options/white-werewolf-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { WhiteWerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/white-werewolf-game-options.schema";
 
 const whiteWerewolfGameOptionsFieldsSpecs = Object.freeze({
   wakingUpInterval: {

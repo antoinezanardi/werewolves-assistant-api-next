@@ -1,12 +1,15 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { gameHistoryRecordFieldsSpecs } from "../../../../../src/modules/game/constants/game-history-record/game-history-record.constant";
-import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
-import { GameHistoryRecordToInsert } from "../../../../../src/modules/game/types/game-history-record.type";
-import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { bulkCreate } from "../../../shared/bulk-create.factory";
-import { createFakeObjectId } from "../../../shared/mongoose/mongoose.factory";
-import { createFakeGameHistoryRecordPlay } from "../../schemas/game-history-record/game-history-record.schema.factory";
+
+import { gameHistoryRecordFieldsSpecs } from "@/modules/game/constants/game-history-record/game-history-record.constant";
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
+import { createFakeGameHistoryRecordPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 
 function createFakeGameHistoryRecordToInsert(gameHistoryRecordToInsert: Partial<GameHistoryRecordToInsert> = {}, override: object = {}): GameHistoryRecordToInsert {
   return plainToInstance(GameHistoryRecordToInsert, {

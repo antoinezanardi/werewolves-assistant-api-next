@@ -1,8 +1,10 @@
 import { plainToInstance } from "class-transformer";
-import { plainToInstanceDefaultOptions } from "../../../../../shared/validation/constants/validation.constant";
-import { ROLE_NAMES } from "../../../../role/enums/role.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import { PlayerDeath } from "../../../schemas/player/player-death.schema";
+
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { PlayerDeath } from "@/modules/game/schemas/player/player-death.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
 
 function createPlayerDiseaseByRustySwordKnightDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({

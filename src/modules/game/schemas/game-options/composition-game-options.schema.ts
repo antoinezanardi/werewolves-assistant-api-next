@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { compositionGameOptionsApiProperties, compositionGameOptionsFieldsSpecs } from "../../constants/game-options/composition-game-options.constant";
+
+import { compositionGameOptionsApiProperties, compositionGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/composition-game-options.constant";
 
 @Schema({
   versionKey: false,

@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { wildChildGameOptionsApiProperties, wildChildGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/wild-child-game-options.constant";
+
+import { wildChildGameOptionsApiProperties, wildChildGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/wild-child-game-options.constant";
 
 @Schema({
   versionKey: false,

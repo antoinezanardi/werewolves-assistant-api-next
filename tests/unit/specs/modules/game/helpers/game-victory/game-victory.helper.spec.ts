@@ -1,19 +1,21 @@
-import { GAME_PLAY_ACTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
-import { GAME_VICTORY_TYPES } from "../../../../../../../src/modules/game/enums/game-victory.enum";
-import { doesAngelWin, doesPiedPiperWin, doesWhiteWerewolfWin, doLoversWin, doVillagersWin, doWerewolvesWin, generateGameVictoryData, isGameOver } from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
-import type { GameVictory } from "../../../../../../../src/modules/game/schemas/game-victory/game-victory.schema";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
-import * as UnexpectedExceptionFactory from "../../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
-import { createFakeGameOptions } from "../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGamePlaySource } from "../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
-import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute } from "../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerVoteByAllDeath } from "../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayerSide } from "../../../../../../factories/game/schemas/player/player.schema.factory";
+import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
+import { GAME_VICTORY_TYPES } from "@/modules/game/enums/game-victory.enum";
+import { doesAngelWin, doesPiedPiperWin, doesWhiteWerewolfWin, doLoversWin, doVillagersWin, doWerewolvesWin, generateGameVictoryData, isGameOver } from "@/modules/game/helpers/game-victory/game-victory.helper";
+import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
+
+import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
+import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerVoteByAllDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Victory Helper", () => {
   let mocks: {

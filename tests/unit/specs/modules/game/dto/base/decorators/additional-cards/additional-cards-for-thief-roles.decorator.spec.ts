@@ -1,7 +1,8 @@
-import { gameAdditionalCardsThiefRoleNames } from "../../../../../../../../../src/modules/game/constants/game-additional-card/game-additional-card.constant";
-import { areAdditionalCardsForThiefRolesRespected, getAdditionalCardsForThiefRolesDefaultMessage } from "../../../../../../../../../src/modules/game/dto/base/decorators/additional-cards/additional-cards-for-thief-roles.decorator";
-import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
-import { createFakeCreateGameAdditionalCardDto } from "../../../../../../../../factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
+import { gameAdditionalCardsThiefRoleNames } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
+import { areAdditionalCardsForThiefRolesRespected, getAdditionalCardsForThiefRolesDefaultMessage } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-thief-roles.decorator";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 
 describe("Additional Cards For Thief Roles Decorator", () => {
   describe("areAdditionalCardsForThiefRolesRespected", () => {

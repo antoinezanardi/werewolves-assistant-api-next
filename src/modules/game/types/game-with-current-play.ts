@@ -1,7 +1,8 @@
 import { OmitType } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { GamePlay } from "../schemas/game-play/game-play.schema";
-import { Game } from "../schemas/game.schema";
+
+import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import { Game } from "@/modules/game/schemas/game.schema";
 
 class GameWithCurrentPlay extends OmitType(Game, ["currentPlay"]) {
   @Type(() => GamePlay)

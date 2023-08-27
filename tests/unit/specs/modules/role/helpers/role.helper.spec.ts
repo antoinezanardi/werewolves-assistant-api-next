@@ -1,6 +1,6 @@
-import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "../../../../../../src/modules/role/enums/role.enum";
-import { getRolesWithSide } from "../../../../../../src/modules/role/helpers/role.helper";
-import type { Role } from "../../../../../../src/modules/role/types/role.type";
+import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "@/modules/role/enums/role.enum";
+import { getRolesWithSide } from "@/modules/role/helpers/role.helper";
+import type { Role } from "@/modules/role/types/role.type";
 
 describe("Role Helper", () => {
   describe("getRolesWithSide", () => {

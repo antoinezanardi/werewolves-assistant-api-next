@@ -1,12 +1,15 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { GAME_PHASES, GAME_STATUSES } from "../../../../src/modules/game/enums/game.enum";
-import { Game } from "../../../../src/modules/game/schemas/game.schema";
-import { GameWithCurrentPlay } from "../../../../src/modules/game/types/game-with-current-play";
-import { plainToInstanceDefaultOptions } from "../../../../src/shared/validation/constants/validation.constant";
-import { createFakeObjectId } from "../../shared/mongoose/mongoose.factory";
-import { createFakeGameOptions } from "./game-options/game-options.schema.factory";
-import { createFakeGamePlay } from "./game-play/game-play.schema.factory";
+
+import { GAME_PHASES, GAME_STATUSES } from "@/modules/game/enums/game.enum";
+import { Game } from "@/modules/game/schemas/game.schema";
+import { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 
 function createFakeGameWithCurrentPlay(game: Partial<GameWithCurrentPlay> = {}, override: object = {}): GameWithCurrentPlay {
   return plainToInstance(GameWithCurrentPlay, {

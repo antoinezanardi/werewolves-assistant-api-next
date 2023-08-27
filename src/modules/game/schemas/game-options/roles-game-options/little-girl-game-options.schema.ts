@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { littleGirlGameOptionsApiProperties, littleGirlGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/little-girl-game-options.constant";
+
+import { littleGirlGameOptionsApiProperties, littleGirlGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/little-girl-game-options.constant";
 
 @Schema({
   versionKey: false,

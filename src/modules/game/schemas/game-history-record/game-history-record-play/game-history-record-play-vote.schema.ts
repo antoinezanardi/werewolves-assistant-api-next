@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { gameHistoryRecordPlayVoteFieldsSpecs } from "../../../constants/game-history-record/game-history-record-play/game-history-record-play-vote.constant";
-import { Player, PlayerSchema } from "../../player/player.schema";
+
+import { gameHistoryRecordPlayVoteFieldsSpecs } from "@/modules/game/constants/game-history-record/game-history-record-play/game-history-record-play-vote.constant";
+import { Player, PlayerSchema } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
   versionKey: false,

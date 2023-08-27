@@ -1,5 +1,6 @@
 import * as NestSwagger from "@nestjs/swagger";
-import { ApiGameIdParam } from "../../../../../../../src/modules/game/controllers/decorators/api-game-id-param.decorator";
+
+import { ApiGameIdParam } from "@/modules/game/controllers/decorators/api-game-id-param.decorator";
 
 describe("Api Game Id Param Decorator", () => {
   let mocks: { nestSwagger: { ApiParam: jest.SpyInstance } };
