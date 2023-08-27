@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { SeerGameOptions } from "../../../schemas/game-options/roles-game-options/seer-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { SeerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options.schema";
 
 const seerGameOptionsFieldsSpecs = Object.freeze({
   isTalkative: { default: defaultGameOptions.roles.seer.isTalkative },

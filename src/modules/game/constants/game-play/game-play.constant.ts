@@ -1,7 +1,9 @@
-import { createFakeGamePlaySheriffSettlesVotes } from "../../../../../tests/factories/game/schemas/game-play/game-play.schema.factory";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../enums/game-play.enum";
-import { createGamePlayAllElectSheriff, createGamePlayAllVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "../../helpers/game-play/game-play.factory";
-import type { GamePlay } from "../../schemas/game-play/game-play.schema";
+
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "@/modules/game/enums/game-play.enum";
+import { createGamePlayAllElectSheriff, createGamePlayAllVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+
+import { createFakeGamePlaySheriffSettlesVotes } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 
 const requiredTargetsActions: Readonly<GAME_PLAY_ACTIONS[]> = Object.freeze([
   GAME_PLAY_ACTIONS.LOOK,

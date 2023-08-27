@@ -1,5 +1,6 @@
 import type { TransformFnParams } from "class-transformer";
-import { toBoolean } from "../../../../../../src/shared/validation/transformers/validation.transformer";
+
+import { toBoolean } from "@/shared/validation/transformers/validation.transformer";
 
 describe("Validation Transformer", () => {
   describe("toBoolean", () => {

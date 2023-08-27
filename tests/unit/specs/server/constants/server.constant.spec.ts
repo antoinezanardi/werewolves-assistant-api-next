@@ -1,5 +1,6 @@
 import type { FastifyServerOptions } from "fastify";
-import { fastifyServerDefaultOptions } from "../../../../../src/server/constants/server.constant";
+
+import { fastifyServerDefaultOptions } from "@/server/constants/server.constant";
 
 describe("Server Constant", () => {
   describe("fastifyServerDefaultOptions", () => {

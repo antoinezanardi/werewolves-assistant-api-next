@@ -1,13 +1,15 @@
+
 import type { Types } from "mongoose";
-import type { PLAYER_ATTRIBUTE_NAMES } from "../enums/player.enum";
-import type { GamePlay } from "../schemas/game-play/game-play.schema";
-import type { Game } from "../schemas/game.schema";
-import type { PlayerAttribute } from "../schemas/player/player-attribute/player-attribute.schema";
-import type { Player } from "../schemas/player/player.schema";
-import { createGame } from "./game.factory";
-import { getPlayerWithId } from "./game.helper";
-import { createPlayerAttribute } from "./player/player-attribute/player-attribute.factory";
-import { createPlayer } from "./player/player.factory";
+
+import type { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { createGame } from "@/modules/game/helpers/game.factory";
+import { getPlayerWithId } from "@/modules/game/helpers/game.helper";
+import { createPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createPlayer } from "@/modules/game/helpers/player/player.factory";
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
 
 function updatePlayerInGame(playerId: Types.ObjectId, playerDataToUpdate: Partial<Player>, game: Game): Game {
   const clonedGame = createGame(game);

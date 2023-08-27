@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { RolesGameOptions } from "../../../schemas/game-options/roles-game-options/roles-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { RolesGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema";
 
 const rolesGameOptionsFieldsSpecs = Object.freeze({
   areRevealedOnDeath: { default: defaultGameOptions.roles.areRevealedOnDeath },

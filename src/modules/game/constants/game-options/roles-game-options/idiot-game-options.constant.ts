@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { IdiotGameOptions } from "../../../schemas/game-options/roles-game-options/idiot-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { IdiotGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options.schema";
 
 const idiotGameOptionsFieldsSpecs = Object.freeze({ doesDieOnAncientDeath: { default: defaultGameOptions.roles.idiot.doesDieOnAncientDeath } });
 

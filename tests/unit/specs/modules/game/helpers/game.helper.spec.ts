@@ -1,21 +1,23 @@
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getExpectedPlayersToPlay, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "../../../../../../src/modules/game/helpers/game.helper";
-import type { Player } from "../../../../../../src/modules/game/schemas/player/player.schema";
-import type { GetNearestPlayerOptions } from "../../../../../../src/modules/game/types/game.type";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
-import { UNEXPECTED_EXCEPTION_REASONS } from "../../../../../../src/shared/exception/enums/unexpected-exception.enum";
-import * as UnexpectedExceptionFactory from "../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
-import type { ExceptionInterpolations } from "../../../../../../src/shared/exception/types/exception.type";
-import { UnexpectedException } from "../../../../../../src/shared/exception/types/unexpected-exception.type";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
-import { createFakeCreateGameDto } from "../../../../../factories/game/dto/create-game/create-game.dto.factory";
-import { bulkCreateFakeGameAdditionalCards } from "../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
-import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getExpectedPlayersToPlay, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { GetNearestPlayerOptions } from "@/modules/game/types/game.type";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import type { ExceptionInterpolations } from "@/shared/exception/types/exception.type";
+import { UNEXPECTED_EXCEPTION_REASONS } from "@/shared/exception/enums/unexpected-exception.enum";
+import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+
+import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
+import { bulkCreateFakeGameAdditionalCards } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
 describe("Game Helper", () => {
   let mocks: {

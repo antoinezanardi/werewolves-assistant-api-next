@@ -1,16 +1,19 @@
+
 import type { Types } from "mongoose";
-import { createCantFindPlayerUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "../../../shared/exception/helpers/unexpected-exception.factory";
-import { ROLE_NAMES, ROLE_SIDES } from "../../role/enums/role.enum";
-import type { CreateGamePlayerDto } from "../dto/create-game/create-game-player/create-game-player.dto";
-import type { CreateGameDto } from "../dto/create-game/create-game.dto";
-import { GAME_PLAY_ACTIONS } from "../enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../enums/player.enum";
-import type { GameAdditionalCard } from "../schemas/game-additional-card/game-additional-card.schema";
-import type { Game } from "../schemas/game.schema";
-import type { Player } from "../schemas/player/player.schema";
-import type { GameSource, GetNearestPlayerOptions } from "../types/game.type";
-import { doesPlayerHaveActiveAttributeWithName } from "./player/player-attribute/player-attribute.helper";
-import { createPlayer } from "./player/player.factory";
+
+import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
+import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { createPlayer } from "@/modules/game/helpers/player/player.factory";
+import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { GameSource, GetNearestPlayerOptions } from "@/modules/game/types/game.type";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import { createCantFindPlayerUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 function getPlayerDtoWithRole(game: CreateGameDto, role: ROLE_NAMES): CreateGamePlayerDto | undefined {
   return game.players.find(player => player.role.name === role);

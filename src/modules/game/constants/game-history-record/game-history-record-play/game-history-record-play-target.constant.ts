@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import { WITCH_POTIONS } from "../../../enums/game-play.enum";
-import type { GameHistoryRecordPlayTarget } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
+
+import { WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import type { GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
 
 const gameHistoryRecordPlayTargetFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecordPlayTarget, ApiPropertyOptions>>({
   player: { required: true },

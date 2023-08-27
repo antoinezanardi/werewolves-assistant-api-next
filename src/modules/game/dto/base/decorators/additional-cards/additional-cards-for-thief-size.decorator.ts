@@ -1,6 +1,7 @@
-import type { ValidationArguments, ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
-import type { CreateGameDto } from "../../../create-game/create-game.dto";
+import type { ValidationArguments, ValidationOptions } from "class-validator";
+
+import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 
 function isAdditionalCardsForThiefSizeRespected(value: unknown, validationArguments: ValidationArguments): boolean {
   const { options } = validationArguments.object as CreateGameDto;

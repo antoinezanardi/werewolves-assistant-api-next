@@ -1,35 +1,38 @@
-import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../../../../src/modules/game/enums/game-history-record.enum";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../../src/modules/game/enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
-import { createGamePlayAllElectSheriff } from "../../../../../../../../src/modules/game/helpers/game-play/game-play.factory";
-import { GameHistoryRecordRepository } from "../../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
-import { GameRepository } from "../../../../../../../../src/modules/game/providers/repositories/game.repository";
-import { GameHistoryRecordService } from "../../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
-import { GamePlayVoteService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
-import type { GameHistoryRecordPlay } from "../../../../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import type { Player } from "../../../../../../../../src/modules/game/schemas/player/player.schema";
-import type { GameHistoryRecordToInsert } from "../../../../../../../../src/modules/game/types/game-history-record.type";
-import { ROLE_SIDES } from "../../../../../../../../src/modules/role/enums/role.enum";
-import { API_RESOURCES } from "../../../../../../../../src/shared/api/enums/api.enum";
-import * as UnexpectedExceptionFactory from "../../../../../../../../src/shared/exception/helpers/unexpected-exception.factory";
-import { ResourceNotFoundException } from "../../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
-import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
-import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "../../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote, createFakeGameHistoryRecordPlayVoting } from "../../../../../../../factories/game/schemas/game-history-record/game-history-record.schema.factory";
-import { createFakeGamePlaySource } from "../../../../../../../factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteByAllDeath, createFakePlayerVoteScapegoatedByAllDeath } from "../../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers, createFakePlayer, createFakePlayerRole } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
-import { createFakeGameHistoryRecordToInsert } from "../../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
-import { createFakeObjectId } from "../../../../../../../factories/shared/mongoose/mongoose.factory";
+import type { TestingModule } from "@nestjs/testing";
 
-jest.mock("../../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { createGamePlayAllElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
+import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
+import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
+import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
+import { ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
+import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+
+import { bulkCreateFakePlayers, createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteByAllDeath, createFakePlayerVoteScapegoatedByAllDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
+import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote, createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
+
+jest.mock("@/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game History Record Service", () => {
   let mocks: {

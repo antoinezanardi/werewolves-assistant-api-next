@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { sample, shuffle } from "lodash";
-import { defaultVillagerRole, defaultWerewolfRole, roles } from "../../../role/constants/role.constant";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../role/enums/role.enum";
-import { getRolesWithSide } from "../../../role/helpers/role.helper";
-import { Role } from "../../../role/types/role.type";
-import { GetGameRandomCompositionPlayerResponseDto } from "../../dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
-import type { GetGameRandomCompositionDto } from "../../dto/get-game-random-composition/get-game-random-composition.dto";
+
+import { GetGameRandomCompositionPlayerResponseDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
+import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
+import { defaultVillagerRole, defaultWerewolfRole, roles } from "@/modules/role/constants/role.constant";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+import { getRolesWithSide } from "@/modules/role/helpers/role.helper";
+import { Role } from "@/modules/role/types/role.type";
 
 @Injectable()
 export class GameRandomCompositionService {

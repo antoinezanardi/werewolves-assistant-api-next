@@ -1,21 +1,23 @@
 import { Injectable } from "@nestjs/common";
 import type { Types } from "mongoose";
-import { createCantFindPlayerUnexpectedException, createPlayerIsDeadUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../../role/enums/role.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "../../../enums/player.enum";
-import { createGamePlayHunterShoots, createGamePlayScapegoatBansVoting, createGamePlaySheriffDelegates } from "../../../helpers/game-play/game-play.factory";
-import { createGame } from "../../../helpers/game.factory";
-import { getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "../../../helpers/game.helper";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "../../../helpers/game.mutator";
-import { createCantVoteByAllPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByAncientPlayerAttribute } from "../../../helpers/player/player-attribute/player-attribute.factory";
-import { doesPlayerHaveActiveAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
-import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerReconsiderPardonByAllDeath } from "../../../helpers/player/player-death/player-death.factory";
-import { createPlayer } from "../../../helpers/player/player.factory";
-import { isPlayerPowerful } from "../../../helpers/player/player.helper";
-import type { Game } from "../../../schemas/game.schema";
-import type { PlayerDeath } from "../../../schemas/player/player-death.schema";
-import type { Player } from "../../../schemas/player/player.schema";
-import { GameHistoryRecordService } from "../game-history/game-history-record.service";
+
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "@/modules/game/enums/player.enum";
+import { createGamePlayHunterShoots, createGamePlayScapegoatBansVoting, createGamePlaySheriffDelegates } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGame } from "@/modules/game/helpers/game.factory";
+import { getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { createCantVoteByAllPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByAncientPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerReconsiderPardonByAllDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
+import { createPlayer } from "@/modules/game/helpers/player/player.factory";
+import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { PlayerDeath } from "@/modules/game/schemas/player/player-death.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import { createCantFindPlayerUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 @Injectable()
 export class PlayerKillerService {

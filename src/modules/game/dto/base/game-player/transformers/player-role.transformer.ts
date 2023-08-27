@@ -1,7 +1,8 @@
-import type { TransformFnParams } from "class-transformer/types/interfaces";
 import { has } from "lodash";
-import { roles } from "../../../../../role/constants/role.constant";
-import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
+import type { TransformFnParams } from "class-transformer/types/interfaces";
+
+import { roles } from "@/modules/role/constants/role.constant";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
 
 function playerRoleTransformer(params: TransformFnParams): unknown {
   if (!has(params.value as object, "name")) {

@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { BearTamerGameOptions } from "../../../schemas/game-options/roles-game-options/bear-tamer-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { BearTamerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options.schema";
 
 const bearTamerGameOptionsFieldsSpecs = Object.freeze({ doesGrowlIfInfected: { default: defaultGameOptions.roles.bearTamer.doesGrowlIfInfected } });
 

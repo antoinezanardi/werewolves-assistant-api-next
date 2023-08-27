@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { VotesGameOptions } from "../../schemas/game-options/votes-game-options.schema";
-import { defaultGameOptions } from "./game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { VotesGameOptions } from "@/modules/game/schemas/game-options/votes-game-options.schema";
 
 const votesGameOptionsFieldsSpecs = Object.freeze({ canBeSkipped: { default: defaultGameOptions.votes.canBeSkipped } });
 

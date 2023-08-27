@@ -1,7 +1,8 @@
-import { API_RESOURCES } from "../../../../../../src/shared/api/enums/api.enum";
-import { RESOURCE_NOT_FOUND_REASONS } from "../../../../../../src/shared/exception/enums/resource-not-found-error.enum";
-import { ResourceNotFoundException } from "../../../../../../src/shared/exception/types/resource-not-found-exception.type";
-import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
+import { RESOURCE_NOT_FOUND_REASONS } from "@/shared/exception/enums/resource-not-found-error.enum";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+
+import type { ExceptionResponse } from "@tests/types/exception/exception.types";
 
 describe("Resource not found exception type", () => {
   describe("getResponse", () => {

@@ -1,11 +1,13 @@
-import { GAME_PHASES } from "../../../../../../../../src/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../../../src/modules/game/enums/player.enum";
-import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource, getActivePlayerAttributeWithName, getPlayerAttributeWithName, getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "../../../../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
-import type { PlayerAttribute } from "../../../../../../../../src/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
-import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
+
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource, getActivePlayerAttributeWithName, getPlayerAttributeWithName, getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Player Attribute Helper", () => {
   describe("isPlayerAttributeActive", () => {

@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../enums/game-play.enum";
-import { GamePlaySource, GamePlaySourceSchema } from "./game-play-source/game-play-source.schema";
-import { gamePlayApiProperties } from "./game-play.schema.constant";
+
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "@/modules/game/enums/game-play.enum";
+import { GamePlaySource, GamePlaySourceSchema } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
+import { gamePlayApiProperties } from "@/modules/game/schemas/game-play/game-play.schema.constant";
 
 @Schema({
   versionKey: false,

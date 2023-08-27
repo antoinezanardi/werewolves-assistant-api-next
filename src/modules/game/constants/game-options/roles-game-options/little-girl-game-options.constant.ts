@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { LittleGirlGameOptions } from "../../../schemas/game-options/roles-game-options/little-girl-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { LittleGirlGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options.schema";
 
 const littleGirlGameOptionsFieldsSpecs = Object.freeze({ isProtectedByGuard: { default: defaultGameOptions.roles.littleGirl.isProtectedByGuard } });
 

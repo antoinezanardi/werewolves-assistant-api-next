@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { ROLE_SIDES } from "../../../role/enums/role.enum";
-import { playerSideApiProperties } from "../../constants/player/player-side.constant";
+
+import { playerSideApiProperties } from "@/modules/game/constants/player/player-side.constant";
+import { ROLE_SIDES } from "@/modules/role/enums/role.enum";
 
 @Schema({
   versionKey: false,

@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { stutteringJudgeGameOptionsApiProperties, stutteringJudgeGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/stuttering-judge-game-options.constant";
+
+import { stutteringJudgeGameOptionsApiProperties, stutteringJudgeGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/stuttering-judge-game-options.constant";
 
 @Schema({
   versionKey: false,

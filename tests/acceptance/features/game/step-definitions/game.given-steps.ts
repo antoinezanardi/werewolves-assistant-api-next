@@ -1,16 +1,19 @@
-import type { DataTable } from "@cucumber/cucumber";
 import { Given } from "@cucumber/cucumber";
 import { plainToInstance } from "class-transformer";
 import { construct, crush } from "radash";
-import { CreateGameDto } from "../../../../../src/modules/game/dto/create-game/create-game.dto";
-import type { GameAdditionalCard } from "../../../../../src/modules/game/schemas/game-additional-card/game-additional-card.schema";
-import type { GameOptions } from "../../../../../src/modules/game/schemas/game-options/game-options.schema";
-import type { Game } from "../../../../../src/modules/game/schemas/game.schema";
-import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { readJsonFile } from "../../../shared/helpers/file.helper";
-import type { CustomWorld } from "../../../shared/types/world.types";
-import { convertDatatableToCreateGamePlayersDto } from "../helpers/game-datatable.helper";
-import { createGameRequest } from "../helpers/game-request.helper";
+import type { DataTable } from "@cucumber/cucumber";
+
+import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
+import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
+import { readJsonFile } from "@tests/acceptance/shared/helpers/file.helper";
+import { createGameRequest } from "@tests/acceptance/features/game/helpers/game-request.helper";
+import { convertDatatableToCreateGamePlayersDto } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 
 Given(/^a created game described in file (?<filename>.+\.json)$/u, async function(this: CustomWorld, fileName: string): Promise<void> {
   const createGameDto = readJsonFile<CreateGameDto>("game", fileName);

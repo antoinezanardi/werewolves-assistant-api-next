@@ -1,19 +1,21 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
-import { CreateGameDto } from "../dto/create-game/create-game.dto";
-import { GetGameRandomCompositionPlayerResponseDto } from "../dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
-import { GetGameRandomCompositionDto } from "../dto/get-game-random-composition/get-game-random-composition.dto";
-import { MakeGamePlayDto } from "../dto/make-game-play/make-game-play.dto";
-import { GAME_STATUSES } from "../enums/game.enum";
-import { GameHistoryRecordService } from "../providers/services/game-history/game-history-record.service";
-import { GameRandomCompositionService } from "../providers/services/game-random-composition.service";
-import { GameService } from "../providers/services/game.service";
-import { GameHistoryRecord } from "../schemas/game-history-record/game-history-record.schema";
-import { Game } from "../schemas/game.schema";
-import { ApiGameIdParam } from "./decorators/api-game-id-param.decorator";
-import { ApiGameNotFoundResponse } from "./decorators/api-game-not-found-response.decorator";
-import { GetGameByIdPipe } from "./pipes/get-game-by-id.pipe";
+
+import { ApiGameIdParam } from "@/modules/game/controllers/decorators/api-game-id-param.decorator";
+import { ApiGameNotFoundResponse } from "@/modules/game/controllers/decorators/api-game-not-found-response.decorator";
+import { GetGameByIdPipe } from "@/modules/game/controllers/pipes/get-game-by-id.pipe";
+import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import { GetGameRandomCompositionPlayerResponseDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
+import { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
+import { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
+import { GAME_STATUSES } from "@/modules/game/enums/game.enum";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import { GameRandomCompositionService } from "@/modules/game/providers/services/game-random-composition.service";
+import { GameService } from "@/modules/game/providers/services/game.service";
+import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import { Game } from "@/modules/game/schemas/game.schema";
+
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
 
 @ApiTags("🎲 Games")
 @Controller(API_RESOURCES.GAMES)

@@ -1,15 +1,17 @@
-import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { PlayerAttributeService } from "../../../../../../../../src/modules/game/providers/services/player/player-attribute.service";
-import { PlayerKillerService } from "../../../../../../../../src/modules/game/providers/services/player/player-killer.service";
-import type { Game } from "../../../../../../../../src/modules/game/schemas/game.schema";
-import type { PlayerAttribute } from "../../../../../../../../src/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import type { Player } from "../../../../../../../../src/modules/game/schemas/player/player.schema";
-import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteByAllPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakePlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerDiseaseByRustySwordKnightDeath, createFakePlayerEatenByWerewolvesDeath } from "../../../../../../../factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeSeerAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
+import type { TestingModule } from "@nestjs/testing";
+
+import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
+import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeSeerAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerDiseaseByRustySwordKnightDeath, createFakePlayerEatenByWerewolvesDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeCantVoteByAllPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakePlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Player Attribute Service", () => {
   let services: { playerAttribute: PlayerAttributeService };

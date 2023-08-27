@@ -1,7 +1,9 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import { ROLE_SIDES } from "../../../../role/enums/role.enum";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
-import type { GameHistoryRecordPlay } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "@/modules/game/enums/game-play.enum";
+import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import { ROLE_SIDES } from "@/modules/role/enums/role.enum";
 
 const gameHistoryRecordPlayFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecordPlay, ApiPropertyOptions>>({
   action: {

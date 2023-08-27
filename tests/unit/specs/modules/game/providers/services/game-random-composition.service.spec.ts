@@ -1,17 +1,19 @@
-import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { doesCompositionHaveAtLeastOneVillager } from "../../../../../../../src/modules/game/dto/base/decorators/composition/composition-has-villager.decorator";
-import { doesCompositionHaveAtLeastOneWerewolf } from "../../../../../../../src/modules/game/dto/base/decorators/composition/composition-has-werewolf.decorator";
-import { areCompositionRolesMaxInGameRespected } from "../../../../../../../src/modules/game/dto/base/decorators/composition/composition-roles-max-in-game.decorator";
-import { areCompositionRolesMinInGameRespected } from "../../../../../../../src/modules/game/dto/base/decorators/composition/composition-roles-min-in-game.decorator";
-import type { CreateGamePlayerDto } from "../../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
-import type { GetGameRandomCompositionDto } from "../../../../../../../src/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
-import { GameRandomCompositionService } from "../../../../../../../src/modules/game/providers/services/game-random-composition.service";
-import { roles } from "../../../../../../../src/modules/role/constants/role.constant";
-import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "../../../../../../../src/modules/role/enums/role.enum";
-import type { Role } from "../../../../../../../src/modules/role/types/role.type";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
-import { createFakeGetGameRandomCompositionDto } from "../../../../../../factories/game/dto/get-game-random-composition/get-game-random-composition.dto.factory";
+import type { TestingModule } from "@nestjs/testing";
+
+import { doesCompositionHaveAtLeastOneVillager } from "@/modules/game/dto/base/decorators/composition/composition-has-villager.decorator";
+import { doesCompositionHaveAtLeastOneWerewolf } from "@/modules/game/dto/base/decorators/composition/composition-has-werewolf.decorator";
+import { areCompositionRolesMaxInGameRespected } from "@/modules/game/dto/base/decorators/composition/composition-roles-max-in-game.decorator";
+import { areCompositionRolesMinInGameRespected } from "@/modules/game/dto/base/decorators/composition/composition-roles-min-in-game.decorator";
+import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
+import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
+import { GameRandomCompositionService } from "@/modules/game/providers/services/game-random-composition.service";
+import { roles } from "@/modules/role/constants/role.constant";
+import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "@/modules/role/enums/role.enum";
+import type { Role } from "@/modules/role/types/role.type";
+
+import { createFakeGetGameRandomCompositionDto } from "@tests/factories/game/dto/get-game-random-composition/get-game-random-composition.dto.factory";
+import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 describe("Game Random Composition Service", () => {
   let services: { gameRandomComposition: GameRandomCompositionService };

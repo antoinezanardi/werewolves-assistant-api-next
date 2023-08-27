@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { bearTamerGameOptionsApiProperties, bearTamerGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/bear-tamer-game-options.constant";
+
+import { bearTamerGameOptionsApiProperties, bearTamerGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/bear-tamer-game-options.constant";
 
 @Schema({
   versionKey: false,

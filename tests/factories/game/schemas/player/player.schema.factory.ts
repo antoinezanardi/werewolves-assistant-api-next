@@ -1,13 +1,16 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { PlayerRole } from "../../../../../src/modules/game/schemas/player/player-role.schema";
-import { PlayerSide } from "../../../../../src/modules/game/schemas/player/player-side.schema";
-import { Player } from "../../../../../src/modules/game/schemas/player/player.schema";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { bulkCreate } from "../../../shared/bulk-create.factory";
-import { createFakeObjectId } from "../../../shared/mongoose/mongoose.factory";
-import { createFakePlayerDeath } from "./player-death/player-death.schema.factory";
+
+import { PlayerRole } from "@/modules/game/schemas/player/player-role.schema";
+import { PlayerSide } from "@/modules/game/schemas/player/player-side.schema";
+import { Player } from "@/modules/game/schemas/player/player.schema";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
+import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 
 function createFakePlayerSide(playerSide: Partial<PlayerSide> = {}, override: object = {}): PlayerSide {
   return plainToInstance(PlayerSide, {

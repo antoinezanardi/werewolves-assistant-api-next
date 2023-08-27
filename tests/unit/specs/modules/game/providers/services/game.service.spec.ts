@@ -1,38 +1,41 @@
-import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.enum";
-import * as GamePhaseHelper from "../../../../../../../src/modules/game/helpers/game-phase/game-phase.helper";
-import * as GamePlayHelper from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
-import * as GameVictoryHelper from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
-import * as GameHelper from "../../../../../../../src/modules/game/helpers/game.helper";
-import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
-import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
-import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
-import { GamePhaseService } from "../../../../../../../src/modules/game/providers/services/game-phase/game-phase.service";
-import { GamePlayMakerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-maker.service";
-import { GamePlayValidatorService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-validator.service";
-import { GamePlayVoteService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
-import { GamePlayService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play.service";
-import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
-import { PlayerAttributeService } from "../../../../../../../src/modules/game/providers/services/player/player-attribute.service";
-import type { Game } from "../../../../../../../src/modules/game/schemas/game.schema";
-import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enum";
-import { UNEXPECTED_EXCEPTION_REASONS } from "../../../../../../../src/shared/exception/enums/unexpected-exception.enum";
-import { BadResourceMutationException } from "../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type";
-import { ResourceNotFoundException } from "../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
-import { UnexpectedException } from "../../../../../../../src/shared/exception/types/unexpected-exception.type";
-import { createFakeCreateGameDto } from "../../../../../../factories/game/dto/create-game/create-game.dto.factory";
-import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
-import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
-import { createFakeGamePlayAllVote } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
-import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
-import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
+import type { TestingModule } from "@nestjs/testing";
 
-jest.mock("../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type");
-jest.mock("../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
+import { GAME_STATUSES } from "@/modules/game/enums/game.enum";
+import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helper";
+import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helper";
+import * as GameVictoryHelper from "@/modules/game/helpers/game-victory/game-victory.helper";
+import * as GameHelper from "@/modules/game/helpers/game.helper";
+import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
+import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
+import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker.service";
+import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
+import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
+import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
+import { GameService } from "@/modules/game/providers/services/game.service";
+import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
+import { UNEXPECTED_EXCEPTION_REASONS } from "@/shared/exception/enums/unexpected-exception.enum";
+import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.type";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
+import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
+import { createFakeGamePlayAllVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
+import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
+
+jest.mock("@/shared/exception/types/bad-resource-mutation-exception.type");
+jest.mock("@/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game Service", () => {
   let mocks: {

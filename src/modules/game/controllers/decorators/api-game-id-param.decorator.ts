@@ -1,5 +1,5 @@
-import type { ApiParamOptions } from "@nestjs/swagger";
 import { ApiParam } from "@nestjs/swagger";
+import type { ApiParamOptions } from "@nestjs/swagger";
 
 function ApiGameIdParam(options: Partial<ApiParamOptions> = {}): MethodDecorator {
   const defaultOptions: ApiParamOptions = {

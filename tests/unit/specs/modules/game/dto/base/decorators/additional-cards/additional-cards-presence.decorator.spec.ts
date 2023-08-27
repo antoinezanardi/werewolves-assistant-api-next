@@ -1,9 +1,11 @@
 import type { ValidationArguments } from "class-validator";
-import { getAdditionalCardsPresenceDefaultMessage, isAdditionalCardsPresenceRespected } from "../../../../../../../../../src/modules/game/dto/base/decorators/additional-cards/additional-cards-presence.decorator";
-import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
-import { createFakeCreateGameAdditionalCardDto } from "../../../../../../../../factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
-import { createFakeCreateGamePlayerDto } from "../../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
-import { createFakeCreateGameDto } from "../../../../../../../../factories/game/dto/create-game/create-game.dto.factory";
+
+import { getAdditionalCardsPresenceDefaultMessage, isAdditionalCardsPresenceRespected } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-presence.decorator";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
+import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 
 describe("Additional Cards Presence Decorator", () => {
   describe("isAdditionalCardsPresenceRespected", () => {

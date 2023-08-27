@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { GameHistoryRecordPlaySource } from "../../../schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
-import { gameSourceValues } from "../../game.constant";
+
+import { gameSourceValues } from "@/modules/game/constants/game.constant";
+import type { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
 
 const gameHistoryRecordPlaySourceFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecordPlaySource, ApiPropertyOptions>>({
   name: {

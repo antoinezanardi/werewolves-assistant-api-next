@@ -1,23 +1,26 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { gameSourceValues } from "../../../../../src/modules/game/constants/game.constant";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "../../../../../src/modules/game/enums/game-history-record.enum";
-import { GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
-import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../src/modules/game/enums/player.enum";
-import { GameHistoryRecordPlaySource } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
-import { GameHistoryRecordPlayTarget } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
-import { GameHistoryRecordPlayVote } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote.schema";
-import { GameHistoryRecordPlayVoting } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
-import { GameHistoryRecordPlay } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import { GameHistoryRecord } from "../../../../../src/modules/game/schemas/game-history-record/game-history-record.schema";
-import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { bulkCreate } from "../../../shared/bulk-create.factory";
-import { createFakeObjectId } from "../../../shared/mongoose/mongoose.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../player/player-attribute/player-attribute.schema.factory";
-import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "../player/player-with-role.schema.factory";
-import { createFakePlayer } from "../player/player.schema.factory";
+
+import { gameSourceValues } from "@/modules/game/constants/game.constant";
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
+import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
+import { GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
+import { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote.schema";
+import { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
+import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 
 function createFakeGameHistoryRecordWerewolvesEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({

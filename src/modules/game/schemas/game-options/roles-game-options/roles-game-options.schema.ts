@@ -1,25 +1,26 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/roles-game-options.constant";
-import { AncientGameOptions, AncientGameOptionsSchema } from "./ancient-game-options.schema";
-import { BearTamerGameOptions, BearTamerGameOptionsSchema } from "./bear-tamer-game-options.schema";
-import { BigBadWolfGameOptions, BigBadWolfGameOptionsSchema } from "./big-bad-wolf-game-options.schema";
-import { DogWolfGameOptions, DogWolfGameOptionsSchema } from "./dog-wolf-game-options.schema";
-import { FoxGameOptions, FoxGameOptionsSchema } from "./fox-game-options.schema";
-import { GuardGameOptions, GuardGameOptionsSchema } from "./guard-game-options.schema";
-import { IdiotGameOptions, IdiotGameOptionsSchema } from "./idiot-game-options.schema";
-import { LittleGirlGameOptions, LittleGirlGameOptionsSchema } from "./little-girl-game-options.schema";
-import { PiedPiperGameOptions, PiedPiperGameOptionsSchema } from "./pied-piper-game-options.schema";
-import { RavenGameOptions, RavenGameOptionsSchema } from "./raven-game-options.schema";
-import { SeerGameOptions, SeerGameOptionsSchema } from "./seer-game-options.schema";
-import { SheriffGameOptions, SheriffGameOptionsSchema } from "./sheriff-game-options/sheriff-game-options.schema";
-import { StutteringJudgeGameOptions, StutteringJudgeGameOptionsSchema } from "./stuttering-judge-game-options.schema";
-import { ThiefGameOptions, ThiefGameOptionsSchema } from "./thief-game-options.schema";
-import { ThreeBrothersGameOptions, ThreeBrothersGameOptionsSchema } from "./three-brothers-game-options.schema";
-import { TwoSistersGameOptions, TwoSistersGameOptionsSchema } from "./two-sisters-game-options.schema";
-import { WhiteWerewolfGameOptions, WhiteWerewolfGameOptionsSchema } from "./white-werewolf-game-options.schema";
-import { WildChildGameOptions, WildChildGameOptionsSchema } from "./wild-child-game-options.schema";
+
+import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/roles-game-options.constant";
+import { AncientGameOptions, AncientGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/ancient-game-options.schema";
+import { BearTamerGameOptions, BearTamerGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options.schema";
+import { BigBadWolfGameOptions, BigBadWolfGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options.schema";
+import { DogWolfGameOptions, DogWolfGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options.schema";
+import { FoxGameOptions, FoxGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options.schema";
+import { GuardGameOptions, GuardGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/guard-game-options.schema";
+import { IdiotGameOptions, IdiotGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options.schema";
+import { LittleGirlGameOptions, LittleGirlGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options.schema";
+import { PiedPiperGameOptions, PiedPiperGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options.schema";
+import { RavenGameOptions, RavenGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/raven-game-options.schema";
+import { SeerGameOptions, SeerGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options.schema";
+import { SheriffGameOptions, SheriffGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
+import { StutteringJudgeGameOptions, StutteringJudgeGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/stuttering-judge-game-options.schema";
+import { ThiefGameOptions, ThiefGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/thief-game-options.schema";
+import { ThreeBrothersGameOptions, ThreeBrothersGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/three-brothers-game-options.schema";
+import { TwoSistersGameOptions, TwoSistersGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/two-sisters-game-options.schema";
+import { WhiteWerewolfGameOptions, WhiteWerewolfGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/white-werewolf-game-options.schema";
+import { WildChildGameOptions, WildChildGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options.schema";
 
 @Schema({
   versionKey: false,

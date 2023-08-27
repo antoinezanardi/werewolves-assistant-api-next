@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { GuardGameOptions } from "../../../schemas/game-options/roles-game-options/guard-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { GuardGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/guard-game-options.schema";
 
 const guardGameOptionsFieldsSpecs = Object.freeze({ canProtectTwice: { default: defaultGameOptions.roles.guard.canProtectTwice } });
 

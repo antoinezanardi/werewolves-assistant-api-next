@@ -1,8 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { BadRequestException } from "@nestjs/common";
-import { ValidateMongoId } from "../../../../../../src/shared/api/pipes/validate-mongo-id.pipe";
-import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
-import { createObjectIdFromString } from "../../../../../helpers/mongoose/mongoose.helper";
+
+import { ValidateMongoId } from "@/shared/api/pipes/validate-mongo-id.pipe";
+
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helper";
 
 describe("Validate MongoId Pipe", () => {
   const pipe = new ValidateMongoId();

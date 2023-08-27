@@ -1,4 +1,4 @@
-import { API_RESOURCES } from "../enums/api.enum";
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
 
 function getResourceSingularForm(resource: API_RESOURCES): string {
   const resourceSingularForms: Record<API_RESOURCES, string> = {

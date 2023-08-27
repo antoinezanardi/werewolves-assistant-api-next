@@ -1,9 +1,10 @@
 import { OmitType } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { GameAdditionalCard } from "../../schemas/game-additional-card/game-additional-card.schema";
-import { MakeGamePlayTargetWithRelationsDto } from "./make-game-play-target/make-game-play-target-with-relations.dto";
-import { MakeGamePlayVoteWithRelationsDto } from "./make-game-play-vote/make-game-play-vote-with-relations.dto";
-import { MakeGamePlayDto } from "./make-game-play.dto";
+
+import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
+import { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
+import { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
+import { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 
 class MakeGamePlayWithRelationsDto extends OmitType(MakeGamePlayDto, ["targets", "votes", "chosenCardId"] as const) {
   @Expose()

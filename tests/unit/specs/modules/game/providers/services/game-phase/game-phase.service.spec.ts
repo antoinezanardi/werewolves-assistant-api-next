@@ -1,14 +1,16 @@
-import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { GAME_PHASES } from "../../../../../../../../src/modules/game/enums/game.enum";
-import { GamePhaseService } from "../../../../../../../../src/modules/game/providers/services/game-phase/game-phase.service";
-import { GamePlayService } from "../../../../../../../../src/modules/game/providers/services/game-play/game-play.service";
-import { PlayerAttributeService } from "../../../../../../../../src/modules/game/providers/services/player/player-attribute.service";
-import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "../../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeWerewolfAlivePlayer } from "../../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../../../factories/game/schemas/player/player.schema.factory";
+import type { TestingModule } from "@nestjs/testing";
+
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
+import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
+import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
+
+import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Phase Service", () => {
   let services: { gamePhase: GamePhaseService };

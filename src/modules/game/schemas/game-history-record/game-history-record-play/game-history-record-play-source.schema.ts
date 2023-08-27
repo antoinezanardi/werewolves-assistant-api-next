@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { doesArrayRespectBounds } from "../../../../../shared/validation/helpers/validation.helper";
-import { gameHistoryRecordPlaySourceApiProperties, gameHistoryRecordPlaySourceFieldsSpecs } from "../../../constants/game-history-record/game-history-record-play/game-history-record-play-source.constant";
-import { GameSource } from "../../../types/game.type";
-import { PlayerSchema, Player } from "../../player/player.schema";
+
+import { gameHistoryRecordPlaySourceApiProperties, gameHistoryRecordPlaySourceFieldsSpecs } from "@/modules/game/constants/game-history-record/game-history-record-play/game-history-record-play-source.constant";
+import { PlayerSchema, Player } from "@/modules/game/schemas/player/player.schema";
+import { GameSource } from "@/modules/game/types/game.type";
+
+import { doesArrayRespectBounds } from "@/shared/validation/helpers/validation.helper";
 
 @Schema({
   versionKey: false,

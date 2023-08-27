@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { sheriffGameOptionsApiProperties, sheriffGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
-import { SheriffElectionGameOptions, SheriffElectionGameOptionsSchema } from "./sheriff-election-game-options.schema";
+
+import { sheriffGameOptionsApiProperties, sheriffGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
+import { SheriffElectionGameOptions, SheriffElectionGameOptionsSchema } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options.schema";
 
 @Schema({
   versionKey: false,

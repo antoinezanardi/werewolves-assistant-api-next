@@ -1,17 +1,19 @@
 import { plainToInstance } from "class-transformer";
-import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
-import { RESOURCE_NOT_FOUND_REASONS } from "../../../../shared/exception/enums/resource-not-found-error.enum";
-import { ResourceNotFoundException } from "../../../../shared/exception/types/resource-not-found-exception.type";
-import { plainToInstanceDefaultOptions } from "../../../../shared/validation/constants/validation.constant";
-import { gamePlaysPriorityList } from "../../constants/game-play/game-play.constant";
-import { MakeGamePlayTargetWithRelationsDto } from "../../dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
-import { MakeGamePlayVoteWithRelationsDto } from "../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
-import { MakeGamePlayWithRelationsDto } from "../../dto/make-game-play/make-game-play-with-relations.dto";
-import type { MakeGamePlayDto } from "../../dto/make-game-play/make-game-play.dto";
-import type { GameAdditionalCard } from "../../schemas/game-additional-card/game-additional-card.schema";
-import type { GamePlay } from "../../schemas/game-play/game-play.schema";
-import type { Game } from "../../schemas/game.schema";
-import { getAdditionalCardWithId, getPlayerWithId } from "../game.helper";
+
+import { gamePlaysPriorityList } from "@/modules/game/constants/game-play/game-play.constant";
+import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
+import { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
+import { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
+import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
+import { getAdditionalCardWithId, getPlayerWithId } from "@/modules/game/helpers/game.helper";
+import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
+
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
+import { RESOURCE_NOT_FOUND_REASONS } from "@/shared/exception/enums/resource-not-found-error.enum";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
 
 function getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayDto, game: Game): MakeGamePlayVoteWithRelationsDto[] | undefined {
   if (makeGamePlayDto.votes === undefined) {

@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { threeBrothersGameOptionsApiProperties, threeBrothersGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/three-brothers-game-options.constant";
+
+import { threeBrothersGameOptionsApiProperties, threeBrothersGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/three-brothers-game-options.constant";
 
 @Schema({
   versionKey: false,

@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { TwoSistersGameOptions } from "../../../schemas/game-options/roles-game-options/two-sisters-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { TwoSistersGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/two-sisters-game-options.schema";
 
 const twoSistersGameOptionsFieldsSpecs = Object.freeze({
   wakingUpInterval: {

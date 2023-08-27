@@ -1,10 +1,13 @@
 import { plainToInstance } from "class-transformer";
-import { defaultGameOptions } from "../../../../../src/modules/game/constants/game-options/game-options.constant";
-import { CreateGameDto } from "../../../../../src/modules/game/dto/create-game/create-game.dto";
-import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
-import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { createFakeCreateGamePlayerDto } from "./create-game-player/create-game-player.dto.factory";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 function createFakeCreateGameWithPlayersDto(createGameDto: Partial<CreateGameDto> = {}, override: object = {}): CreateGameDto {
   return createFakeCreateGameDto({

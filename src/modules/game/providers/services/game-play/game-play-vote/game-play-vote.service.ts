@@ -1,15 +1,16 @@
 import { Injectable } from "@nestjs/common";
-import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
-import type { MakeGamePlayVoteWithRelationsDto } from "../../../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
-import { GAME_PLAY_ACTIONS } from "../../../../enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../enums/player.enum";
-import { createGame } from "../../../../helpers/game.factory";
-import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "../../../../helpers/game.helper";
-import { createPlayer } from "../../../../helpers/player/player.factory";
-import { isPlayerPowerful } from "../../../../helpers/player/player.helper";
-import type { Player } from "../../../../schemas/player/player.schema";
-import type { PlayerVoteCount } from "../../../../types/game-play.type";
-import type { GameWithCurrentPlay } from "../../../../types/game-with-current-play";
+
+import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
+import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { createGame } from "@/modules/game/helpers/game.factory";
+import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { createPlayer } from "@/modules/game/helpers/player/player.factory";
+import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { PlayerVoteCount } from "@/modules/game/types/game-play.type";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
 
 @Injectable()
 export class GamePlayVoteService {

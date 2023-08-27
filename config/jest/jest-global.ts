@@ -1,9 +1,15 @@
+import { pathsToModuleNameMapper } from "ts-jest";
 import type { Config } from "jest";
+
+import { compilerOptions } from "../../tsconfig.json";
 
 const config: Config = {
   moduleFileExtensions: ["js", "ts"],
   rootDir: "../../",
   testEnvironment: "node",
+  preset: "ts-jest",
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
+  modulePaths: ["<rootDir>"],
   testRegex: ["tests/unit/.+.spec.ts", "tests/e2e/.+.e2e-spec.ts"],
   transform: { "^.+\\.(t|j)s$": "ts-jest" },
   resetMocks: true,

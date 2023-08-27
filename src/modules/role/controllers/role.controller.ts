@@ -1,8 +1,10 @@
 import { Controller, Get, HttpStatus } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
-import { roles } from "../constants/role.constant";
-import { Role } from "../types/role.type";
+
+import { roles } from "@/modules/role/constants/role.constant";
+import { Role } from "@/modules/role/types/role.type";
+
+import { API_RESOURCES } from "@/shared/api/enums/api.enum";
 
 @ApiTags("🃏 Roles")
 @Controller(API_RESOURCES.ROLES)

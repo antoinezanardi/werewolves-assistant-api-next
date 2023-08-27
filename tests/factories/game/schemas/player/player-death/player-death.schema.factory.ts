@@ -1,10 +1,12 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { gameSourceValues } from "../../../../../../src/modules/game/constants/game.constant";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import { PlayerDeath } from "../../../../../../src/modules/game/schemas/player/player-death.schema";
-import { ROLE_NAMES } from "../../../../../../src/modules/role/enums/role.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
+
+import { gameSourceValues } from "@/modules/game/constants/game.constant";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { PlayerDeath } from "@/modules/game/schemas/player/player-death.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
 
 function createFakePlayerDiseaseByRustySwordKnightDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({

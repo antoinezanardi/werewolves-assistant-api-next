@@ -1,9 +1,9 @@
-import { GAME_PHASES } from "../../../enums/game.enum";
-import type { PLAYER_ATTRIBUTE_NAMES } from "../../../enums/player.enum";
-import type { Game } from "../../../schemas/game.schema";
-import type { PlayerAttribute } from "../../../schemas/player/player-attribute/player-attribute.schema";
-import type { Player } from "../../../schemas/player/player.schema";
-import type { GameSource } from "../../../types/game.type";
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import type { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { GameSource } from "@/modules/game/types/game.type";
 
 function isPlayerAttributeActive({ activeAt }: PlayerAttribute, game: Game): boolean {
   return activeAt === undefined || activeAt.turn < game.turn ||

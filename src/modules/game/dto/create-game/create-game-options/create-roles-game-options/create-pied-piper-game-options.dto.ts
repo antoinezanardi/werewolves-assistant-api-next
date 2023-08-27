@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsInt, IsOptional, Max, Min } from "class-validator";
-import { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/pied-piper-game-options.constant";
+
+import { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/pied-piper-game-options.constant";
 
 class CreatePiedPiperGameOptionsDto {
   @ApiProperty({

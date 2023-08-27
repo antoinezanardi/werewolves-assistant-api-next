@@ -1,12 +1,13 @@
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../src/modules/game/enums/player.enum";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "../../../../../../src/modules/game/helpers/game.mutator";
-import type { Game } from "../../../../../../src/modules/game/schemas/game.schema";
-import { createFakeGamePlayCupidCharms, createFakeGamePlayHunterShoots } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeSeerAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
-import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import type { Game } from "@/modules/game/schemas/game.schema";
+
+import { createFakeGamePlayCupidCharms, createFakeGamePlayHunterShoots } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeSeerAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
 describe("Game Mutator", () => {
   describe("updatePlayerInGame", () => {

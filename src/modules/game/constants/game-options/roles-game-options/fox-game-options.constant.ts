@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { FoxGameOptions } from "../../../schemas/game-options/roles-game-options/fox-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { FoxGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options.schema";
 
 const foxGameOptionsFieldsSpecs = Object.freeze({ isPowerlessIfMissesWerewolf: { default: defaultGameOptions.roles.fox.isPowerlessIfMissesWerewolf } });
 

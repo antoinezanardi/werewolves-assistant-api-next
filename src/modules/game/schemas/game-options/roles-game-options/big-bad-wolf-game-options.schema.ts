@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
-import { bigBadWolfGameOptionsApiProperties, bigBadWolfGameOptionsFieldsSpecs } from "../../../constants/game-options/roles-game-options/big-bad-wolf-game-options.constant";
+
+import { bigBadWolfGameOptionsApiProperties, bigBadWolfGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/big-bad-wolf-game-options.constant";
 
 @Schema({
   versionKey: false,

@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { CompositionGameOptions } from "../../schemas/game-options/composition-game-options.schema";
-import { defaultGameOptions } from "./game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { CompositionGameOptions } from "@/modules/game/schemas/game-options/composition-game-options.schema";
 
 const compositionGameOptionsFieldsSpecs = Object.freeze({ isHidden: { default: defaultGameOptions.composition.isHidden } });
 

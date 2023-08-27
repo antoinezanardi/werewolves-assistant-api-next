@@ -1,6 +1,7 @@
-import { BAD_GAME_PLAY_PAYLOAD_REASONS } from "../../../../../../src/shared/exception/enums/bad-game-play-payload-error.enum";
-import { BadGamePlayPayloadException } from "../../../../../../src/shared/exception/types/bad-game-play-payload-exception.type";
-import type { ExceptionResponse } from "../../../../../types/exception/exception.types";
+import { BAD_GAME_PLAY_PAYLOAD_REASONS } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
+import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.type";
+
+import type { ExceptionResponse } from "@tests/types/exception/exception.types";
 
 describe("Bad game play payload exception type", () => {
   describe("getResponse", () => {

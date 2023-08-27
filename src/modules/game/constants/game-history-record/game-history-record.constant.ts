@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import { GAME_PHASES } from "../../enums/game.enum";
-import type { GameHistoryRecord } from "../../schemas/game-history-record/game-history-record.schema";
+
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 
 const gameHistoryRecordFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecord, ApiPropertyOptions>>({
   _id: { required: true },

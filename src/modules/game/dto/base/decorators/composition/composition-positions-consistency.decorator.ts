@@ -1,6 +1,6 @@
-import type { ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
 import isObject from "isobject";
+import type { ValidationOptions } from "class-validator";
 
 function doesCompositionHaveConsistentPositions(value?: unknown): boolean {
   if (!Array.isArray(value) || value.some(player => !isObject(player))) {

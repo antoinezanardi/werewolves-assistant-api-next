@@ -1,9 +1,11 @@
 import type { ValidationArguments } from "class-validator";
-import { areAdditionalCardsRolesMaxInGameRespected, getAdditionalCardsRolesMaxInGameDefaultMessage } from "../../../../../../../../../src/modules/game/dto/base/decorators/additional-cards/additional-cards-roles-max-in-game.decorator";
-import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
-import { createFakeCreateGameAdditionalCardDto } from "../../../../../../../../factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
-import { createFakeCreateGamePlayerDto } from "../../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
-import { createFakeCreateGameDto } from "../../../../../../../../factories/game/dto/create-game/create-game.dto.factory";
+
+import { areAdditionalCardsRolesMaxInGameRespected, getAdditionalCardsRolesMaxInGameDefaultMessage } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-roles-max-in-game.decorator";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
+import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 
 describe("Additional Cards Roles Max in Game Decorator", () => {
   describe("areAdditionalCardsRolesMaxInGameRespected", () => {

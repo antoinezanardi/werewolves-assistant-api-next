@@ -1,24 +1,26 @@
 import { Injectable } from "@nestjs/common";
-import { BAD_GAME_PLAY_PAYLOAD_REASONS } from "../../../../../shared/exception/enums/bad-game-play-payload-error.enum";
-import { createNoCurrentGamePlayUnexpectedException } from "../../../../../shared/exception/helpers/unexpected-exception.factory";
-import { BadGamePlayPayloadException } from "../../../../../shared/exception/types/bad-game-play-payload-exception.type";
-import { werewolvesRoles } from "../../../../role/constants/role.constant";
-import { ROLE_NAMES } from "../../../../role/enums/role.enum";
-import { optionalTargetsActions, requiredTargetsActions, requiredVotesActions, stutteringJudgeRequestOpportunityActions } from "../../../constants/game-play/game-play.constant";
-import type { MakeGamePlayTargetWithRelationsDto } from "../../../dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
-import type { MakeGamePlayVoteWithRelationsDto } from "../../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
-import type { MakeGamePlayWithRelationsDto } from "../../../dto/make-game-play/make-game-play-with-relations.dto";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../enums/player.enum";
-import { createGame } from "../../../helpers/game.factory";
-import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole } from "../../../helpers/game.helper";
-import { doesPlayerHaveActiveAttributeWithName } from "../../../helpers/player/player-attribute/player-attribute.helper";
-import { isPlayerAliveAndPowerful } from "../../../helpers/player/player.helper";
-import type { GameAdditionalCard } from "../../../schemas/game-additional-card/game-additional-card.schema";
-import type { Game } from "../../../schemas/game.schema";
-import type { GameWithCurrentPlay } from "../../../types/game-with-current-play";
-import type { GameSource } from "../../../types/game.type";
-import { GameHistoryRecordService } from "../game-history/game-history-record.service";
+
+import { optionalTargetsActions, requiredTargetsActions, requiredVotesActions, stutteringJudgeRequestOpportunityActions } from "@/modules/game/constants/game-play/game-play.constant";
+import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
+import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
+import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { createGame } from "@/modules/game/helpers/game.factory";
+import { getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import type { GameSource } from "@/modules/game/types/game.type";
+import { werewolvesRoles } from "@/modules/role/constants/role.constant";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { BAD_GAME_PLAY_PAYLOAD_REASONS } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
+import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.type";
 
 @Injectable()
 export class GamePlayValidatorService {

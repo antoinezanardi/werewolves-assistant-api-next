@@ -1,7 +1,9 @@
-import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "../../../../../../src/modules/role/enums/role.enum";
-import { createRole } from "../../../../../../src/modules/role/helpers/role.factory";
-import type { Role } from "../../../../../../src/modules/role/types/role.type";
-import { createFakeRole } from "../../../../../factories/role/types/role.type.factory";
+
+import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "@/modules/role/enums/role.enum";
+import { createRole } from "@/modules/role/helpers/role.factory";
+import type { Role } from "@/modules/role/types/role.type";
+
+import { createFakeRole } from "@tests/factories/role/types/role.type.factory";
 
 describe("Role Factory", () => {
   describe("createRole", () => {

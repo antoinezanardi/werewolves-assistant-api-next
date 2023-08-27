@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { gameHistoryRecordPlayTargetApiProperties, gameHistoryRecordPlayTargetFieldsSpecs } from "../../../constants/game-history-record/game-history-record-play/game-history-record-play-target.constant";
-import { WITCH_POTIONS } from "../../../enums/game-play.enum";
-import { Player, PlayerSchema } from "../../player/player.schema";
+
+import { gameHistoryRecordPlayTargetApiProperties, gameHistoryRecordPlayTargetFieldsSpecs } from "@/modules/game/constants/game-history-record/game-history-record-play/game-history-record-play-target.constant";
+import { WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import { Player, PlayerSchema } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
   versionKey: false,

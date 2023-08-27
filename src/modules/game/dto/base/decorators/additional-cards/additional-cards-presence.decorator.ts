@@ -1,7 +1,8 @@
-import type { ValidationArguments, ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
-import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
-import type { CreateGameDto } from "../../../create-game/create-game.dto";
+import type { ValidationArguments, ValidationOptions } from "class-validator";
+
+import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
 
 function isAdditionalCardsPresenceRespected(value: unknown, validationArguments: ValidationArguments): boolean {
   const { players } = validationArguments.object as Partial<CreateGameDto>;

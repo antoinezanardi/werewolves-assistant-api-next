@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsOptional } from "class-validator";
-import { wildChildGameOptionsApiProperties, wildChildGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/wild-child-game-options.constant";
+
+import { wildChildGameOptionsApiProperties, wildChildGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/wild-child-game-options.constant";
 
 class CreateWildChildGameOptionsDto {
   @ApiProperty({

@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { SheriffGameOptions } from "../../../../schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
-import { defaultGameOptions } from "../../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { SheriffGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
 
 const sheriffGameOptionsFieldsSpecs = Object.freeze({
   isEnabled: { default: defaultGameOptions.roles.sheriff.isEnabled },

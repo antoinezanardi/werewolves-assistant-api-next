@@ -1,15 +1,17 @@
 import { plainToInstance } from "class-transformer";
-import { createNoCurrentGamePlayUnexpectedException } from "../../../../shared/exception/helpers/unexpected-exception.factory";
-import { plainToInstanceDefaultOptions } from "../../../../shared/validation/constants/validation.constant";
-import { ROLE_NAMES, ROLE_SIDES } from "../../../role/enums/role.enum";
-import { GAME_PLAY_ACTIONS } from "../../enums/game-play.enum";
-import { GAME_VICTORY_TYPES } from "../../enums/game-victory.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "../../enums/player.enum";
-import { GameVictory } from "../../schemas/game-victory/game-victory.schema";
-import type { Game } from "../../schemas/game.schema";
-import { areAllPlayersDead, getLeftToCharmByPiedPiperPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "../game.helper";
-import { doesPlayerHaveActiveAttributeWithName } from "../player/player-attribute/player-attribute.helper";
-import { isPlayerAliveAndPowerful, isPlayerPowerful } from "../player/player.helper";
+
+import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
+import { GAME_VICTORY_TYPES } from "@/modules/game/enums/game-victory.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "@/modules/game/enums/player.enum";
+import { areAllPlayersDead, getLeftToCharmByPiedPiperPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
 
 function doWerewolvesWin(game: Game): boolean {
   const werewolvesSidedPlayers = getPlayersWithCurrentSide(game, ROLE_SIDES.WEREWOLVES);

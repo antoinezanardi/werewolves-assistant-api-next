@@ -1,13 +1,15 @@
-import type { DataTable } from "@cucumber/cucumber";
 import { When } from "@cucumber/cucumber";
-import type { MakeGamePlayDto } from "../../../../../src/modules/game/dto/make-game-play/make-game-play.dto";
-import type { WITCH_POTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
-import { getPlayerWithNameOrThrow } from "../../../../../src/modules/game/helpers/game.helper";
-import type { Game } from "../../../../../src/modules/game/schemas/game.schema";
-import type { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
-import type { CustomWorld } from "../../../shared/types/world.types";
-import { convertDatatableToMakeGameplayVotes, convertDatatableToPlayers } from "../helpers/game-datatable.helper";
-import { makeGamePlayRequest } from "../helpers/game-request.helper";
+import type { DataTable } from "@cucumber/cucumber";
+
+import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
+import type { WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helper";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
+import { makeGamePlayRequest } from "@tests/acceptance/features/game/helpers/game-request.helper";
+import { convertDatatableToMakeGameplayVotes, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 
 When(/^all elect sheriff with the following votes$/u, async function(this: CustomWorld, votesDatatable: DataTable): Promise<void> {
   const votes = convertDatatableToMakeGameplayVotes(votesDatatable.rows(), this.game);

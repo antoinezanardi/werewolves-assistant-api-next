@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
-import type { Game } from "./game.schema";
+
+import { GAME_PHASES, GAME_STATUSES } from "@/modules/game/enums/game.enum";
+import type { Game } from "@/modules/game/schemas/game.schema";
 
 const gameFieldsSpecs = Object.freeze({
   players: {

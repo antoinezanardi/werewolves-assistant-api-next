@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { ThreeBrothersGameOptions } from "../../../schemas/game-options/roles-game-options/three-brothers-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { ThreeBrothersGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/three-brothers-game-options.schema";
 
 const threeBrothersGameOptionsFieldsSpecs = Object.freeze({
   wakingUpInterval: {

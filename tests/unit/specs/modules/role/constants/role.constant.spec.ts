@@ -1,6 +1,8 @@
-import { roles, villagerRoles, werewolvesRoles } from "../../../../../../src/modules/role/constants/role.constant";
-import { ROLE_SIDES } from "../../../../../../src/modules/role/enums/role.enum";
-import { bulkCreateFakeRoles } from "../../../../../factories/role/types/role.type.factory";
+
+import { roles, villagerRoles, werewolvesRoles } from "@/modules/role/constants/role.constant";
+import { ROLE_SIDES } from "@/modules/role/enums/role.enum";
+
+import { bulkCreateFakeRoles } from "@tests/factories/role/types/role.type.factory";
 
 describe("Role Constant", () => {
   describe("werewolvesRoles", () => {

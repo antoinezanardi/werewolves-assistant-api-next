@@ -1,10 +1,12 @@
 import { plainToInstance } from "class-transformer";
-import { plainToInstanceDefaultOptions } from "../../../../shared/validation/constants/validation.constant";
-import { ROLE_NAMES } from "../../../role/enums/role.enum";
-import { GAME_PLAY_ACTIONS } from "../../enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../enums/player.enum";
-import { GamePlaySource } from "../../schemas/game-play/game-play-source/game-play-source.schema";
-import { GamePlay } from "../../schemas/game-play/game-play.schema";
+
+import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
+import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
 
 function createGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({

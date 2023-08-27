@@ -1,5 +1,6 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { PlayerRole } from "../../schemas/player/player-role.schema";
+
+import type { PlayerRole } from "@/modules/game/schemas/player/player-role.schema";
 
 const playerRoleApiProperties: Record<keyof PlayerRole, ApiPropertyOptions> = Object.freeze({
   original: { description: "Player's original role when the game started" },

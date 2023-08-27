@@ -1,6 +1,8 @@
+
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { StutteringJudgeGameOptions } from "../../../schemas/game-options/roles-game-options/stuttering-judge-game-options.schema";
-import { defaultGameOptions } from "../game-options.constant";
+
+import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import type { StutteringJudgeGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/stuttering-judge-game-options.schema";
 
 const stutteringJudgeGameOptionsFieldsSpecs = Object.freeze({
   voteRequestsCount: {

@@ -1,6 +1,8 @@
+
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { HealthCheckResult } from "@nestjs/terminus";
-import { initNestApp } from "../../../../helpers/nest-app.helper";
+
+import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 
 describe("Health Controller", () => {
   let app: NestFastifyApplication;

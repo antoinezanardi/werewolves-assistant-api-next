@@ -1,14 +1,17 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { gameSourceValues } from "../../../../../../src/modules/game/constants/game.constant";
-import { GAME_PHASES } from "../../../../../../src/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../src/modules/game/enums/player.enum";
-import type { Game } from "../../../../../../src/modules/game/schemas/game.schema";
-import { PlayerAttributeActivation } from "../../../../../../src/modules/game/schemas/player/player-attribute/player-attribute-activation.schema";
-import { PlayerAttribute } from "../../../../../../src/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import { ROLE_NAMES } from "../../../../../../src/modules/role/enums/role.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
-import { bulkCreate } from "../../../../shared/bulk-create.factory";
+
+import { gameSourceValues } from "@/modules/game/constants/game.constant";
+import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation.schema";
+import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+
+import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+
+import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 
 function createFakeSheriffBySheriffPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
