@@ -3,11 +3,11 @@ import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
-import type { WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "@/modules/game/enums/game-play.enum";
-import type { GAME_PHASES } from "@/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_DEATH_CAUSES } from "@/modules/game/enums/player.enum";
+import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
+import type { WitchPotions } from "@/modules/game/enums/game-play.enum";
+import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
+import type { GamePhases } from "@/modules/game/enums/game.enum";
+import { PlayerAttributeNames, PlayerDeathCauses } from "@/modules/game/enums/player.enum";
 import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "@/modules/game/helpers/game.helper";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
@@ -21,11 +21,11 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
 
-import { API_RESOURCES } from "@/shared/api/enums/api.enum";
-import { RESOURCE_NOT_FOUND_REASONS } from "@/shared/exception/enums/resource-not-found-error.enum";
+import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
-import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { toJSON } from "@tests/helpers/object/object.helper";
 
@@ -46,11 +46,11 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getLastGameHistoryGuardProtectsRecord(gameId);
   }
 
-  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GAME_PLAY_ACTIONS): Promise<GameHistoryRecord | null> {
+  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayActions): Promise<GameHistoryRecord | null> {
     return this.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord(gameId, action);
   }
 
-  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WITCH_POTIONS): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, potion);
   }
 
@@ -70,7 +70,7 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
   }
 
-  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GAME_PHASES): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhases): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordRepository.getGameHistoryPhaseRecords(gameId, turn, phase);
   }
 
@@ -94,7 +94,7 @@ export class GameHistoryRecordService {
     if (gameHistoryRecordToInsert.play.votes) {
       gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
     }
-    return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, plainToInstanceDefaultOptions);
+    return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
   }
 
   public async getGameHistory(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
@@ -130,32 +130,32 @@ export class GameHistoryRecordService {
       chosenCard: play.chosenCard,
       chosenSide: play.chosenSide,
     };
-    return plainToInstance(GameHistoryRecordPlay, toJSON(gameHistoryRecordPlayToInsert), plainToInstanceDefaultOptions);
+    return plainToInstance(GameHistoryRecordPlay, toJSON(gameHistoryRecordPlayToInsert), PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
   }
   
   private generateCurrentGameHistoryRecordPlayVotingResultToInsert(
     baseGame: GameWithCurrentPlay,
     newGame: Game,
     gameHistoryRecordToInsert: GameHistoryRecordToInsert,
-  ): GAME_HISTORY_RECORD_VOTING_RESULTS {
-    const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+  ): GameHistoryRecordVotingResults {
+    const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, PlayerAttributeNames.SHERIFF);
     const areSomePlayersDeadFromCurrentVotes = gameHistoryRecordToInsert.deadPlayers?.some(({ death }) => {
-      const deathFromVoteCauses = [PLAYER_DEATH_CAUSES.VOTE, PLAYER_DEATH_CAUSES.VOTE_SCAPEGOATED];
+      const deathFromVoteCauses = [PlayerDeathCauses.VOTE, PlayerDeathCauses.VOTE_SCAPEGOATED];
       return death?.cause !== undefined && deathFromVoteCauses.includes(death.cause);
     }) === true;
-    if (baseGame.currentPlay.action === GAME_PLAY_ACTIONS.ELECT_SHERIFF) {
-      return sheriffPlayer ? GAME_HISTORY_RECORD_VOTING_RESULTS.SHERIFF_ELECTION : GAME_HISTORY_RECORD_VOTING_RESULTS.TIE;
+    if (baseGame.currentPlay.action === GamePlayActions.ELECT_SHERIFF) {
+      return sheriffPlayer ? GameHistoryRecordVotingResults.SHERIFF_ELECTION : GameHistoryRecordVotingResults.TIE;
     }
     if (!gameHistoryRecordToInsert.play.votes || gameHistoryRecordToInsert.play.votes.length === 0) {
-      return GAME_HISTORY_RECORD_VOTING_RESULTS.SKIPPED;
+      return GameHistoryRecordVotingResults.SKIPPED;
     }
     if (areSomePlayersDeadFromCurrentVotes) {
-      return GAME_HISTORY_RECORD_VOTING_RESULTS.DEATH;
+      return GameHistoryRecordVotingResults.DEATH;
     }
-    if (baseGame.currentPlay.cause === GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES) {
-      return GAME_HISTORY_RECORD_VOTING_RESULTS.INCONSEQUENTIAL;
+    if (baseGame.currentPlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES) {
+      return GameHistoryRecordVotingResults.INCONSEQUENTIAL;
     }
-    return GAME_HISTORY_RECORD_VOTING_RESULTS.TIE;
+    return GameHistoryRecordVotingResults.TIE;
   }
 
   private generateCurrentGameHistoryRecordPlayVotingToInsert(
@@ -169,32 +169,32 @@ export class GameHistoryRecordService {
       result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, gameHistoryRecordToInsert),
       nominatedPlayers,
     };
-    return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, plainToInstanceDefaultOptions);
+    return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
   }
   
   private generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame: GameWithCurrentPlay): GameHistoryRecordPlaySource {
-    return plainToInstance(GameHistoryRecordPlaySource, toJSON(baseGame.currentPlay.source), plainToInstanceDefaultOptions);
+    return plainToInstance(GameHistoryRecordPlaySource, toJSON(baseGame.currentPlay.source), PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {
     const unmatchedSource = getNonexistentPlayer(game, play.source.players);
     if (unmatchedSource) {
-      throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedSource._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_SOURCE);
+      throw new ResourceNotFoundException(ApiResources.PLAYERS, unmatchedSource._id.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_SOURCE);
     }
     const unmatchedTarget = getNonexistentPlayer(game, play.targets?.map(target => target.player));
     if (unmatchedTarget) {
-      throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedTarget._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
+      throw new ResourceNotFoundException(ApiResources.PLAYERS, unmatchedTarget._id.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
     }
     const unmatchedVoter = getNonexistentPlayer(game, play.votes?.map(vote => vote.source));
     if (unmatchedVoter) {
-      throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedVoter._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
+      throw new ResourceNotFoundException(ApiResources.PLAYERS, unmatchedVoter._id.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
     }
     const unmatchedVoteTarget = getNonexistentPlayer(game, play.votes?.map(vote => vote.target));
     if (unmatchedVoteTarget) {
-      throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedVoteTarget._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
+      throw new ResourceNotFoundException(ApiResources.PLAYERS, unmatchedVoteTarget._id.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
     }
     if (play.chosenCard && !getAdditionalCardWithId(game.additionalCards, play.chosenCard._id)) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAME_ADDITIONAL_CARDS, play.chosenCard._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
+      throw new ResourceNotFoundException(ApiResources.GAME_ADDITIONAL_CARDS, play.chosenCard._id.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
     }
   }
 
@@ -202,15 +202,15 @@ export class GameHistoryRecordService {
     const { gameId, play, revealedPlayers, deadPlayers } = gameHistoryRecordToInsert;
     const game = await this.gameRepository.findOne({ _id: gameId });
     if (game === null) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString(), RESOURCE_NOT_FOUND_REASONS.UNKNOWN_GAME_PLAY_GAME_ID);
+      throw new ResourceNotFoundException(ApiResources.GAMES, gameId.toString(), ResourceNotFoundReasons.UNKNOWN_GAME_PLAY_GAME_ID);
     }
     const unmatchedRevealedPlayer = getNonexistentPlayer(game, revealedPlayers);
     if (unmatchedRevealedPlayer) {
-      throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedRevealedPlayer._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_REVEALED_PLAYER);
+      throw new ResourceNotFoundException(ApiResources.PLAYERS, unmatchedRevealedPlayer._id.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_REVEALED_PLAYER);
     }
     const unmatchedDeadPlayer = getNonexistentPlayer(game, deadPlayers);
     if (unmatchedDeadPlayer) {
-      throw new ResourceNotFoundException(API_RESOURCES.PLAYERS, unmatchedDeadPlayer._id.toString(), RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_DEAD_PLAYER);
+      throw new ResourceNotFoundException(ApiResources.PLAYERS, unmatchedDeadPlayer._id.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_DEAD_PLAYER);
     }
     this.validateGameHistoryRecordToInsertPlayData(play, game);
   }

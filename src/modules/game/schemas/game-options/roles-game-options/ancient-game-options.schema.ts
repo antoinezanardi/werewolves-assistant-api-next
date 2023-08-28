@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/ancient-game-options.constant";
+import { ANCIENT_GAME_OPTIONS_API_PROPERTIES, ANCIENT_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/ancient-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,21 +10,24 @@ import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "
   _id: false,
 })
 class AncientGameOptions {
-  @ApiProperty(ancientGameOptionsApiProperties.livesCountAgainstWerewolves)
+  @ApiProperty(ANCIENT_GAME_OPTIONS_API_PROPERTIES.livesCountAgainstWerewolves)
   @Prop({
-    default: ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.default,
-    min: ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.minimum,
-    max: ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.maximum,
+    default: ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves.default,
+    min: ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves.minimum,
+    max: ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves.maximum,
   })
   @Expose()
   public livesCountAgainstWerewolves: number;
 
-  @ApiProperty(ancientGameOptionsApiProperties.doesTakeHisRevenge)
-  @Prop({ default: ancientGameOptionsFieldsSpecs.doesTakeHisRevenge.default })
+  @ApiProperty(ANCIENT_GAME_OPTIONS_API_PROPERTIES.doesTakeHisRevenge)
+  @Prop({ default: ANCIENT_GAME_OPTIONS_FIELDS_SPECS.doesTakeHisRevenge.default })
   @Expose()
   public doesTakeHisRevenge: boolean;
 }
 
-const AncientGameOptionsSchema = SchemaFactory.createForClass(AncientGameOptions);
+const ANCIENT_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(AncientGameOptions);
 
-export { AncientGameOptions, AncientGameOptionsSchema };
+export {
+  AncientGameOptions,
+  ANCIENT_GAME_OPTIONS_SCHEMA,
+};

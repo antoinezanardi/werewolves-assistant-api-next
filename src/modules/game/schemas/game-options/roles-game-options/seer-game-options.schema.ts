@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { seerGameOptionsApiProperties, seerGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/seer-game-options.constant";
+import { SEER_GAME_OPTIONS_API_PROPERTIES, SEER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/seer-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,17 +10,20 @@ import { seerGameOptionsApiProperties, seerGameOptionsFieldsSpecs } from "@/modu
   _id: false,
 })
 class SeerGameOptions {
-  @ApiProperty(seerGameOptionsApiProperties.isTalkative)
-  @Prop({ default: seerGameOptionsFieldsSpecs.isTalkative.default })
+  @ApiProperty(SEER_GAME_OPTIONS_API_PROPERTIES.isTalkative)
+  @Prop({ default: SEER_GAME_OPTIONS_FIELDS_SPECS.isTalkative.default })
   @Expose()
   public isTalkative: boolean;
 
-  @ApiProperty(seerGameOptionsApiProperties.canSeeRoles)
-  @Prop({ default: seerGameOptionsFieldsSpecs.canSeeRoles.default })
+  @ApiProperty(SEER_GAME_OPTIONS_API_PROPERTIES.canSeeRoles)
+  @Prop({ default: SEER_GAME_OPTIONS_FIELDS_SPECS.canSeeRoles.default })
   @Expose()
   public canSeeRoles: boolean;
 }
 
-const SeerGameOptionsSchema = SchemaFactory.createForClass(SeerGameOptions);
+const SEER_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(SeerGameOptions);
 
-export { SeerGameOptions, SeerGameOptionsSchema };
+export {
+  SeerGameOptions,
+  SEER_GAME_OPTIONS_SCHEMA,
+};

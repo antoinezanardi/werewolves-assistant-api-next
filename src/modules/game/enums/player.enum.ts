@@ -1,4 +1,4 @@
-enum PLAYER_GROUPS {
+enum PlayerGroups {
   ALL = "all",
   VILLAGERS = "villagers",
   WEREWOLVES = "werewolves",
@@ -6,7 +6,7 @@ enum PLAYER_GROUPS {
   CHARMED = "charmed",
 }
 
-enum PLAYER_ATTRIBUTE_NAMES {
+enum PlayerAttributeNames {
   SHERIFF = "sheriff",
   SEEN = "seen",
   EATEN = "eaten",
@@ -23,7 +23,7 @@ enum PLAYER_ATTRIBUTE_NAMES {
   CONTAMINATED = "contaminated",
 }
 
-enum PLAYER_DEATH_CAUSES {
+enum PlayerDeathCauses {
   DEATH_POTION = "death-potion",
   EATEN = "eaten",
   SHOT = "shot",
@@ -35,7 +35,7 @@ enum PLAYER_DEATH_CAUSES {
 }
 
 export {
-  PLAYER_GROUPS,
-  PLAYER_ATTRIBUTE_NAMES,
-  PLAYER_DEATH_CAUSES,
+  PlayerGroups,
+  PlayerAttributeNames,
+  PlayerDeathCauses,
 };

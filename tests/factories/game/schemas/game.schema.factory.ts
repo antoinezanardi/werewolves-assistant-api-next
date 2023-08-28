@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_PHASES, GAME_STATUSES } from "@/modules/game/enums/game.enum";
+import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
 import { Game } from "@/modules/game/schemas/game.schema";
 import { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
 
-import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
@@ -16,7 +16,7 @@ function createFakeGameWithCurrentPlay(game: Partial<GameWithCurrentPlay> = {}, 
     ...createFakeGame(game, override),
     currentPlay: game.currentPlay ?? createFakeGamePlay(),
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
@@ -25,8 +25,8 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
     players: game.players ?? [],
     currentPlay: game.currentPlay ?? null,
     upcomingPlays: game.upcomingPlays ?? [],
-    phase: game.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
-    status: game.status ?? faker.helpers.arrayElement(Object.values(GAME_STATUSES)),
+    phase: game.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
+    status: game.status ?? faker.helpers.arrayElement(Object.values(GameStatuses)),
     tick: game.tick ?? faker.number.int({ min: 1 }),
     turn: game.turn ?? faker.number.int({ min: 1 }),
     additionalCards: game.additionalCards ?? undefined,
@@ -35,7 +35,7 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
     createdAt: game.createdAt ?? faker.date.recent(),
     updatedAt: game.updatedAt ?? faker.date.recent(),
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 export {

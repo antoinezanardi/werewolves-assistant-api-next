@@ -3,16 +3,16 @@ import isObject from "isobject";
 import { has } from "lodash";
 import type { ValidationOptions } from "class-validator";
 
-import { roles } from "@/modules/role/constants/role.constant";
-import type { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { ROLES } from "@/modules/role/constants/role.constant";
+import type { RoleNames } from "@/modules/role/enums/role.enum";
 import type { Role } from "@/modules/role/types/role.type";
 
 function areCompositionRolesMinInGameRespected(value?: unknown): boolean {
   if (!Array.isArray(value) || value.some(player => !isObject(player) || !has(player, ["role", "name"]))) {
     return false;
   }
-  const players = value as { role: { name: ROLE_NAMES } }[];
-  return roles
+  const players = value as { role: { name: RoleNames } }[];
+  return ROLES
     .filter((role): role is Role & { minInGame: number } => role.minInGame !== undefined)
     .every(role => {
       const roleCount = players.filter(player => player.role.name === role.name).length;

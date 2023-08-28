@@ -5,7 +5,7 @@ import { ArrayNotContains, ArrayUnique, IsArray, IsBoolean, IsOptional, Validate
 import { CompositionBounds } from "@/modules/game/dto/base/decorators/composition/composition-bounds.decorator";
 import { CompositionUniqueNames } from "@/modules/game/dto/base/decorators/composition/composition-unique-names.decorator";
 import { GetGameRandomCompositionPlayerDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition-player/get-game-random-composition-player.dto";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { toBoolean } from "@/shared/validation/transformers/validation.transformer";
 
@@ -21,15 +21,15 @@ class GetGameRandomCompositionDto {
   @ApiProperty({
     name: "excluded-roles",
     description: "Roles that won't be given by game random composition. All roles can be excluded except `villager` and `werewolf`",
-    enum: ROLE_NAMES,
+    enum: RoleNames,
     required: false,
   })
   @Expose({ name: "excluded-roles" })
   @IsOptional()
   @IsArray()
-  @ArrayNotContains([ROLE_NAMES.VILLAGER, ROLE_NAMES.WEREWOLF])
-  @ArrayUnique((role: ROLE_NAMES) => role, { message: "excluded roles must be unique" })
-  public excludedRoles: ROLE_NAMES[] = [];
+  @ArrayNotContains([RoleNames.VILLAGER, RoleNames.WEREWOLF])
+  @ArrayUnique((role: RoleNames) => role, { message: "excluded roles must be unique" })
+  public excludedRoles: RoleNames[] = [];
 
   @ApiProperty({
     name: "are-recommended-min-players-respected",

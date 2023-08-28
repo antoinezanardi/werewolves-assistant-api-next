@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { votesGameOptionsApiProperties, votesGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/votes-game-options.constant";
+import { VOTES_GAME_OPTIONS_API_PROPERTIES, VOTES_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/votes-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,15 +10,15 @@ import { votesGameOptionsApiProperties, votesGameOptionsFieldsSpecs } from "@/mo
   _id: false,
 })
 class VotesGameOptions {
-  @ApiProperty(votesGameOptionsApiProperties.canBeSkipped)
-  @Prop({ default: votesGameOptionsFieldsSpecs.canBeSkipped.default })
+  @ApiProperty(VOTES_GAME_OPTIONS_API_PROPERTIES.canBeSkipped)
+  @Prop({ default: VOTES_GAME_OPTIONS_FIELDS_SPECS.canBeSkipped.default })
   @Expose()
   public canBeSkipped: boolean;
 }
 
-const VotesGameOptionsSchema = SchemaFactory.createForClass(VotesGameOptions);
+const VOTES_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(VotesGameOptions);
 
 export {
   VotesGameOptions,
-  VotesGameOptionsSchema,
+  VOTES_GAME_OPTIONS_SCHEMA,
 };

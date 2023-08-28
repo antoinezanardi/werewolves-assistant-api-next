@@ -2,8 +2,8 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { playerDeathApiProperties } from "@/modules/game/constants/player/player-death.constant";
-import { PLAYER_DEATH_CAUSES } from "@/modules/game/enums/player.enum";
+import { PLAYER_DEATH_API_PROPERTIES } from "@/modules/game/constants/player/player-death.constant";
+import { PlayerDeathCauses } from "@/modules/game/enums/player.enum";
 import { GameSource } from "@/modules/game/types/game.type";
 
 @Schema({
@@ -12,17 +12,20 @@ import { GameSource } from "@/modules/game/types/game.type";
   _id: false,
 })
 class PlayerDeath {
-  @ApiProperty(playerDeathApiProperties.source)
+  @ApiProperty(PLAYER_DEATH_API_PROPERTIES.source)
   @Prop({ required: true })
   @Expose()
   public source: GameSource;
 
-  @ApiProperty(playerDeathApiProperties.cause)
+  @ApiProperty(PLAYER_DEATH_API_PROPERTIES.cause)
   @Prop({ required: true })
   @Expose()
-  public cause: PLAYER_DEATH_CAUSES;
+  public cause: PlayerDeathCauses;
 }
 
-const PlayerDeathSchema = SchemaFactory.createForClass(PlayerDeath);
+const PLAYER_DEATH_SCHEMA = SchemaFactory.createForClass(PlayerDeath);
 
-export { PlayerDeath, PlayerDeathSchema };
+export {
+  PlayerDeath,
+  PLAYER_DEATH_SCHEMA,
+};

@@ -1,7 +1,7 @@
 import { Test } from "@nestjs/testing";
 import type { TestingModule } from "@nestjs/testing";
 
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
@@ -69,7 +69,7 @@ describe("Game Phase Service", () => {
 
     it("should call ending game phase method for each player when called.", async() => {
       const players = bulkCreateFakePlayers(4);
-      const game = createFakeGame({ phase: GAME_PHASES.NIGHT, players });
+      const game = createFakeGame({ phase: GamePhases.NIGHT, players });
       localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer.mockResolvedValue(game);
       await services.gamePhase.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(game);
 
@@ -90,10 +90,10 @@ describe("Game Phase Service", () => {
     });
 
     it("should switch to night and append upcoming night plays when game's current phase is DAY.", async() => {
-      const game = createFakeGame({ phase: GAME_PHASES.DAY, upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const game = createFakeGame({ phase: GamePhases.DAY, upcomingPlays: [createFakeGamePlayHunterShoots()] });
       const expectedGame = createFakeGame({
         ...game,
-        phase: GAME_PHASES.NIGHT,
+        phase: GamePhases.NIGHT,
         turn: game.turn + 1,
         upcomingPlays: [...game.upcomingPlays, ...upcomingNightPlays],
       });
@@ -102,10 +102,10 @@ describe("Game Phase Service", () => {
     });
 
     it("should switch to day and append upcoming day plays when game's current phase is NIGHT.", async() => {
-      const game = createFakeGame({ phase: GAME_PHASES.NIGHT, upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const game = createFakeGame({ phase: GamePhases.NIGHT, upcomingPlays: [createFakeGamePlayHunterShoots()] });
       const expectedGame = createFakeGame({
         ...game,
-        phase: GAME_PHASES.DAY,
+        phase: GamePhases.DAY,
         upcomingPlays: [...game.upcomingPlays, ...upcomingDayPlays],
       });
 
@@ -177,7 +177,7 @@ describe("Game Phase Service", () => {
 
     it("should call ending night method when game phase is night.", async() => {
       const player = createFakePlayer();
-      const game = createFakeGame({ phase: GAME_PHASES.NIGHT });
+      const game = createFakeGame({ phase: GamePhases.NIGHT });
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayer"](player, game);
 
       expect(localMocks.gamePhaseService.applyEndingNightPlayerAttributesOutcomesToPlayer).toHaveBeenCalledExactlyOnceWith(player, game);
@@ -186,7 +186,7 @@ describe("Game Phase Service", () => {
 
     it("should call ending day method when game phase is day.", async() => {
       const player = createFakePlayer();
-      const game = createFakeGame({ phase: GAME_PHASES.DAY });
+      const game = createFakeGame({ phase: GamePhases.DAY });
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayer"](player, game);
 
       expect(localMocks.gamePhaseService.applyEndingDayPlayerAttributesOutcomesToPlayer).toHaveBeenCalledExactlyOnceWith(player, game);

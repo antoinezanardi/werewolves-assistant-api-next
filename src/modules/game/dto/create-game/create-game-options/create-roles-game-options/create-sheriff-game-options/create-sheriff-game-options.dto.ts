@@ -2,20 +2,20 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
-import { sheriffGameOptionsApiProperties, sheriffGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
+import { SHERIFF_GAME_OPTIONS_API_PROPERTIES, SHERIFF_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
 import { CreateSheriffElectionGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-election-game-options.dto";
 
 class CreateSheriffGameOptionsDto {
   @ApiProperty({
-    ...sheriffGameOptionsApiProperties.isEnabled,
+    ...SHERIFF_GAME_OPTIONS_API_PROPERTIES.isEnabled,
     required: false,
   })
   @IsOptional()
   @IsBoolean()
-  public isEnabled: boolean = sheriffGameOptionsFieldsSpecs.isEnabled.default;
+  public isEnabled: boolean = SHERIFF_GAME_OPTIONS_FIELDS_SPECS.isEnabled.default;
 
   @ApiProperty({
-    ...sheriffGameOptionsApiProperties.electedAt,
+    ...SHERIFF_GAME_OPTIONS_API_PROPERTIES.electedAt,
     required: false,
   })
   @IsOptional()
@@ -24,12 +24,12 @@ class CreateSheriffGameOptionsDto {
   public electedAt: CreateSheriffElectionGameOptionsDto = new CreateSheriffElectionGameOptionsDto();
 
   @ApiProperty({
-    ...sheriffGameOptionsApiProperties.hasDoubledVote,
+    ...SHERIFF_GAME_OPTIONS_API_PROPERTIES.hasDoubledVote,
     required: false,
   })
   @IsOptional()
   @IsBoolean()
-  public hasDoubledVote: boolean = sheriffGameOptionsFieldsSpecs.hasDoubledVote.default;
+  public hasDoubledVote: boolean = SHERIFF_GAME_OPTIONS_FIELDS_SPECS.hasDoubledVote.default;
 }
 
 export { CreateSheriffGameOptionsDto };

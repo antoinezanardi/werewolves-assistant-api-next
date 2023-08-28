@@ -1,11 +1,11 @@
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getExpectedPlayersToPlay, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GetNearestPlayerOptions } from "@/modules/game/types/game.type";
-import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import type { ExceptionInterpolations } from "@/shared/exception/types/exception.type";
-import { UNEXPECTED_EXCEPTION_REASONS } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
@@ -32,61 +32,61 @@ describe("Game Helper", () => {
   
   describe("getPlayerDtoWithRole", () => {
     const players = bulkCreateFakeCreateGamePlayerDto(6, [
-      { role: { name: ROLE_NAMES.WITCH } },
-      { role: { name: ROLE_NAMES.SEER } },
-      { role: { name: ROLE_NAMES.WEREWOLF } },
-      { role: { name: ROLE_NAMES.TWO_SISTERS } },
-      { role: { name: ROLE_NAMES.TWO_SISTERS } },
-      { role: { name: ROLE_NAMES.IDIOT } },
+      { role: { name: RoleNames.WITCH } },
+      { role: { name: RoleNames.SEER } },
+      { role: { name: RoleNames.WEREWOLF } },
+      { role: { name: RoleNames.TWO_SISTERS } },
+      { role: { name: RoleNames.TWO_SISTERS } },
+      { role: { name: RoleNames.IDIOT } },
     ]);
     const game = createFakeCreateGameDto({ players });
 
     it("should return player with role when a player has this role.", () => {
-      expect(getPlayerDtoWithRole(game, ROLE_NAMES.WEREWOLF)).toStrictEqual(game.players[2]);
+      expect(getPlayerDtoWithRole(game, RoleNames.WEREWOLF)).toStrictEqual(game.players[2]);
     });
 
     it("should return undefined when player with role is not found.", () => {
-      expect(getPlayerDtoWithRole(game, ROLE_NAMES.THREE_BROTHERS)).toBeUndefined();
+      expect(getPlayerDtoWithRole(game, RoleNames.THREE_BROTHERS)).toBeUndefined();
     });
   });
 
   describe("getPlayerWithCurrentRole", () => {
     const players = bulkCreateFakePlayers(6, [
-      { role: { current: ROLE_NAMES.WITCH, original: ROLE_NAMES.WITCH, isRevealed: false } },
-      { role: { current: ROLE_NAMES.SEER, original: ROLE_NAMES.SEER, isRevealed: false } },
-      { role: { current: ROLE_NAMES.WEREWOLF, original: ROLE_NAMES.WEREWOLF, isRevealed: false } },
-      { role: { current: ROLE_NAMES.TWO_SISTERS, original: ROLE_NAMES.TWO_SISTERS, isRevealed: false } },
-      { role: { current: ROLE_NAMES.TWO_SISTERS, original: ROLE_NAMES.TWO_SISTERS, isRevealed: false } },
-      { role: { current: ROLE_NAMES.IDIOT, original: ROLE_NAMES.IDIOT, isRevealed: false } },
+      { role: { current: RoleNames.WITCH, original: RoleNames.WITCH, isRevealed: false } },
+      { role: { current: RoleNames.SEER, original: RoleNames.SEER, isRevealed: false } },
+      { role: { current: RoleNames.WEREWOLF, original: RoleNames.WEREWOLF, isRevealed: false } },
+      { role: { current: RoleNames.TWO_SISTERS, original: RoleNames.TWO_SISTERS, isRevealed: false } },
+      { role: { current: RoleNames.TWO_SISTERS, original: RoleNames.TWO_SISTERS, isRevealed: false } },
+      { role: { current: RoleNames.IDIOT, original: RoleNames.IDIOT, isRevealed: false } },
     ]);
     const game = createFakeGame({ players });
 
     it("should return player with role when a player has this role.", () => {
-      expect(getPlayerWithCurrentRole(game, ROLE_NAMES.SEER)).toStrictEqual(players[1]);
+      expect(getPlayerWithCurrentRole(game, RoleNames.SEER)).toStrictEqual(players[1]);
     });
 
     it("should return undefined when player with role is not found.", () => {
-      expect(getPlayerWithCurrentRole(game, ROLE_NAMES.BIG_BAD_WOLF)).toBeUndefined();
+      expect(getPlayerWithCurrentRole(game, RoleNames.BIG_BAD_WOLF)).toBeUndefined();
     });
   });
 
   describe("getPlayersWithCurrentRole", () => {
     const players = bulkCreateFakePlayers(6, [
-      { role: { current: ROLE_NAMES.THREE_BROTHERS, original: ROLE_NAMES.WITCH, isRevealed: false } },
-      { role: { current: ROLE_NAMES.THREE_BROTHERS, original: ROLE_NAMES.SEER, isRevealed: false } },
-      { role: { current: ROLE_NAMES.THREE_BROTHERS, original: ROLE_NAMES.WEREWOLF, isRevealed: false } },
-      { role: { current: ROLE_NAMES.TWO_SISTERS, original: ROLE_NAMES.TWO_SISTERS, isRevealed: false } },
-      { role: { current: ROLE_NAMES.TWO_SISTERS, original: ROLE_NAMES.TWO_SISTERS, isRevealed: false } },
-      { role: { current: ROLE_NAMES.IDIOT, original: ROLE_NAMES.IDIOT, isRevealed: false } },
+      { role: { current: RoleNames.THREE_BROTHERS, original: RoleNames.WITCH, isRevealed: false } },
+      { role: { current: RoleNames.THREE_BROTHERS, original: RoleNames.SEER, isRevealed: false } },
+      { role: { current: RoleNames.THREE_BROTHERS, original: RoleNames.WEREWOLF, isRevealed: false } },
+      { role: { current: RoleNames.TWO_SISTERS, original: RoleNames.TWO_SISTERS, isRevealed: false } },
+      { role: { current: RoleNames.TWO_SISTERS, original: RoleNames.TWO_SISTERS, isRevealed: false } },
+      { role: { current: RoleNames.IDIOT, original: RoleNames.IDIOT, isRevealed: false } },
     ]);
     const game = createFakeGame({ players });
 
     it("should return players when they have this role.", () => {
-      expect(getPlayersWithCurrentRole(game, ROLE_NAMES.THREE_BROTHERS)).toStrictEqual([players[0], players[1], players[2]]);
+      expect(getPlayersWithCurrentRole(game, RoleNames.THREE_BROTHERS)).toStrictEqual([players[0], players[1], players[2]]);
     });
 
     it("should return empty array when no one has the role.", () => {
-      expect(getPlayersWithCurrentRole(game, ROLE_NAMES.WEREWOLF)).toStrictEqual([]);
+      expect(getPlayersWithCurrentRole(game, RoleNames.WEREWOLF)).toStrictEqual([]);
     });
   });
 
@@ -102,11 +102,11 @@ describe("Game Helper", () => {
     const game = createFakeGame({ players });
 
     it("should return werewolves when they have this side.", () => {
-      expect(getPlayersWithCurrentSide(game, ROLE_SIDES.WEREWOLVES)).toStrictEqual([players[0], players[1], players[4], players[5]]);
+      expect(getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES)).toStrictEqual([players[0], players[1], players[4], players[5]]);
     });
 
     it("should return villagers when they have this side.", () => {
-      expect(getPlayersWithCurrentSide(game, ROLE_SIDES.VILLAGERS)).toStrictEqual([players[2], players[3]]);
+      expect(getPlayersWithCurrentSide(game, RoleSides.VILLAGERS)).toStrictEqual([players[2], players[3]]);
     });
   });
 
@@ -131,7 +131,7 @@ describe("Game Helper", () => {
       const players = bulkCreateFakePlayers(6);
       const game = createFakeGame({ players });
       const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: players[2]._id.toString() };
-      const exception = new UnexpectedException("killPlayer", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+      const exception = new UnexpectedException("killPlayer", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
       
       expect(getPlayerWithIdOrThrow(players[2]._id, game, exception)).toStrictEqual(players[2]);
     });
@@ -141,7 +141,7 @@ describe("Game Helper", () => {
       const game = createFakeGame({ players });
       const unknownPlayerId = createFakeObjectId();
       const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: unknownPlayerId.toString() };
-      const exception = new UnexpectedException("killPlayer", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+      const exception = new UnexpectedException("killPlayer", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
       
       expect(() => getPlayerWithIdOrThrow(unknownPlayerId, game, exception)).toThrow(exception);
     });
@@ -168,7 +168,7 @@ describe("Game Helper", () => {
       const players = bulkCreateFakePlayers(6);
       const game = createFakeGame({ players });
       const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: players[2].name };
-      const exception = new UnexpectedException("killPlayer", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+      const exception = new UnexpectedException("killPlayer", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
 
       expect(getPlayerWithNameOrThrow(players[2].name, game, exception)).toStrictEqual(players[2]);
     });
@@ -178,7 +178,7 @@ describe("Game Helper", () => {
       const game = createFakeGame({ players });
       const unknownPlayerName = "i-cant-be-a-valid-name-that-is-bad";
       const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: unknownPlayerName };
-      const exception = new UnexpectedException("killPlayer", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+      const exception = new UnexpectedException("killPlayer", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
 
       expect(() => getPlayerWithNameOrThrow(unknownPlayerName, game, exception)).toThrow(exception);
     });
@@ -290,7 +290,7 @@ describe("Game Helper", () => {
       ]);
       const game = createFakeGame({ players });
 
-      expect(getPlayerWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.CHARMED)).toStrictEqual<Player>(players[2]);
+      expect(getPlayerWithActiveAttributeName(game, PlayerAttributeNames.CHARMED)).toStrictEqual<Player>(players[2]);
     });
 
     it("should return undefined when player with attribute is not found.", () => {
@@ -302,7 +302,7 @@ describe("Game Helper", () => {
       ]);
       const game = createFakeGame({ players });
 
-      expect(getPlayerWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.SEEN)).toBeUndefined();
+      expect(getPlayerWithActiveAttributeName(game, PlayerAttributeNames.SEEN)).toBeUndefined();
     });
   });
 
@@ -316,11 +316,11 @@ describe("Game Helper", () => {
     const game = createFakeGame({ players });
 
     it("should return players when they have the attribute.", () => {
-      expect(getPlayersWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.CHARMED)).toStrictEqual([players[0], players[2]]);
+      expect(getPlayersWithActiveAttributeName(game, PlayerAttributeNames.CHARMED)).toStrictEqual([players[0], players[2]]);
     });
 
     it("should return empty array when none has the attribute.", () => {
-      expect(getPlayersWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.SEEN)).toStrictEqual([]);
+      expect(getPlayersWithActiveAttributeName(game, PlayerAttributeNames.SEEN)).toStrictEqual([]);
     });
   });
 
@@ -423,43 +423,43 @@ describe("Game Helper", () => {
     const game = createFakeGame({ players });
 
     it("should return all players when group is all.", () => {
-      expect(getGroupOfPlayers(game, PLAYER_GROUPS.ALL)).toStrictEqual(players);
+      expect(getGroupOfPlayers(game, PlayerGroups.ALL)).toStrictEqual(players);
     });
 
     it("should return players in love when group is lovers.", () => {
-      expect(getGroupOfPlayers(game, PLAYER_GROUPS.LOVERS)).toStrictEqual([players[2], players[5]]);
+      expect(getGroupOfPlayers(game, PlayerGroups.LOVERS)).toStrictEqual([players[2], players[5]]);
     });
 
     it("should return charmed players when group is charmed.", () => {
-      expect(getGroupOfPlayers(game, PLAYER_GROUPS.CHARMED)).toStrictEqual([players[0], players[3]]);
+      expect(getGroupOfPlayers(game, PlayerGroups.CHARMED)).toStrictEqual([players[0], players[3]]);
     });
 
     it("should return villagers when group is villagers.", () => {
-      expect(getGroupOfPlayers(game, PLAYER_GROUPS.VILLAGERS)).toStrictEqual([players[0], players[2], players[4]]);
+      expect(getGroupOfPlayers(game, PlayerGroups.VILLAGERS)).toStrictEqual([players[0], players[2], players[4]]);
     });
 
     it("should return werewolves when group is werewolves.", () => {
-      expect(getGroupOfPlayers(game, PLAYER_GROUPS.WEREWOLVES)).toStrictEqual([players[1], players[3], players[5]]);
+      expect(getGroupOfPlayers(game, PlayerGroups.WEREWOLVES)).toStrictEqual([players[1], players[3], players[5]]);
     });
   });
 
   describe("isGameSourceRole", () => {
     it("should return true when source is role.", () => {
-      expect(isGameSourceRole(ROLE_NAMES.WITCH)).toBe(true);
+      expect(isGameSourceRole(RoleNames.WITCH)).toBe(true);
     });
 
     it("should return false when source is group.", () => {
-      expect(isGameSourceRole(PLAYER_GROUPS.ALL)).toBe(false);
+      expect(isGameSourceRole(PlayerGroups.ALL)).toBe(false);
     });
   });
 
   describe("isGameSourceGroup", () => {
     it("should return true when source is group.", () => {
-      expect(isGameSourceGroup(PLAYER_GROUPS.WEREWOLVES)).toBe(true);
+      expect(isGameSourceGroup(PlayerGroups.WEREWOLVES)).toBe(true);
     });
 
     it("should return false when source is role.", () => {
-      expect(isGameSourceGroup(ROLE_NAMES.SEER)).toBe(false);
+      expect(isGameSourceGroup(RoleNames.SEER)).toBe(false);
     });
   });
 
@@ -571,7 +571,7 @@ describe("Game Helper", () => {
       const game = createFakeGame({ players });
       const unknownPlayerId = createFakeObjectId();
       const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: unknownPlayerId.toString() };
-      const exception = new UnexpectedException("getFoxSniffedTargets", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+      const exception = new UnexpectedException("getFoxSniffedTargets", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
 
       expect(() => getFoxSniffedPlayers(unknownPlayerId, game)).toThrow(exception);
     });
@@ -591,7 +591,7 @@ describe("Game Helper", () => {
       const options: GetNearestPlayerOptions = { direction: "right" };
       const unknownPlayerId = createFakeObjectId();
       const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: unknownPlayerId.toString() };
-      const exception = new UnexpectedException("getNearestAliveNeighbor", UNEXPECTED_EXCEPTION_REASONS.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+      const exception = new UnexpectedException("getNearestAliveNeighbor", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
       
       expect(() => getNearestAliveNeighbor(unknownPlayerId, game, options)).toThrow(exception);
     });
@@ -636,7 +636,7 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer({ position: 2 }),
       ];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: ROLE_SIDES.VILLAGERS };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.VILLAGERS };
       
       expect(getNearestAliveNeighbor(players[3]._id, game, options)).toStrictEqual<Player>(players[1]);
     });
@@ -651,7 +651,7 @@ describe("Game Helper", () => {
         createFakeVillagerAlivePlayer({ position: 5, isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: ROLE_SIDES.WEREWOLVES };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
       
       expect(getNearestAliveNeighbor(players[1]._id, game, options)).toStrictEqual<Player>(players[0]);
     });
@@ -666,7 +666,7 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer({ position: 2, isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: ROLE_SIDES.WEREWOLVES };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
       
       expect(getNearestAliveNeighbor(players[4]._id, game, options)).toBeUndefined();
     });
@@ -681,7 +681,7 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer({ position: 2, isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: ROLE_SIDES.WEREWOLVES };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
       
       expect(getNearestAliveNeighbor(players[4]._id, game, options)).toBeUndefined();
     });

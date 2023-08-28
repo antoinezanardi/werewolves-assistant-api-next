@@ -14,20 +14,33 @@ const MAX_LENGTH_DEFAULT_CONFIG = {
 const BOOLEAN_PREFIXES = ["is", "was", "are", "were", "should", "has", "can", "does", "do", "did", "must"];
 const NAMING_CONVENTION_DEFAULT_CONFIG = [
   {
-    selector: ["enum", "enumMember"],
+    selector: ["enumMember"],
     format: ["UPPER_CASE"],
-  }, {
-    selector: ["class", "interface", "typeParameter"],
+  },
+  {
+    selector: ["class", "interface", "typeParameter", "enum"],
     format: ["PascalCase"],
-  }, {
+  },
+  {
     selector: ["function", "classProperty", "classMethod", "accessor"],
     format: ["camelCase"],
     leadingUnderscore: "allow",
-  }, {
+  },
+  {
     selector: ["variable", "classProperty"],
     types: ["boolean"],
     format: ["PascalCase"],
     prefix: BOOLEAN_PREFIXES,
+  },
+  {
+    selector: ["variable"],
+    modifiers: ["exported"],
+    format: ["UPPER_CASE"],
+  },
+  {
+    selector: ["objectLiteralProperty"],
+    modifiers: ["exported"],
+    format: ["UPPER_CASE"],
   },
 ];
 

@@ -1,26 +1,29 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { PiedPiperGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options.schema";
 
-const piedPiperGameOptionsFieldsSpecs = Object.freeze({
+const PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS = Object.freeze({
   charmedPeopleCountPerNight: {
-    default: defaultGameOptions.roles.piedPiper.charmedPeopleCountPerNight,
+    default: DEFAULT_GAME_OPTIONS.roles.piedPiper.charmedPeopleCountPerNight,
     minimum: 1,
     maximum: 5,
   },
-  isPowerlessIfInfected: { default: defaultGameOptions.roles.piedPiper.isPowerlessIfInfected },
+  isPowerlessIfInfected: { default: DEFAULT_GAME_OPTIONS.roles.piedPiper.isPowerlessIfInfected },
 });
 
-const piedPiperGameOptionsApiProperties: Record<keyof PiedPiperGameOptions, ApiPropertyOptions> = Object.freeze({
+const PIED_PIPER_GAME_OPTIONS_API_PROPERTIES: Record<keyof PiedPiperGameOptions, ApiPropertyOptions> = Object.freeze({
   charmedPeopleCountPerNight: {
     description: "Number of `charmed` people by the `pied piper` per night if there are enough targets (or number of not charmed players otherwise)",
-    ...piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight,
+    ...PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight,
   },
   isPowerlessIfInfected: {
     description: "If set to `true`, `pied piper` will be `powerless` if he is infected by the `vile father of wolves`",
-    ...piedPiperGameOptionsFieldsSpecs.isPowerlessIfInfected,
+    ...PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected,
   },
 });
 
-export { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs };
+export {
+  PIED_PIPER_GAME_OPTIONS_API_PROPERTIES,
+  PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS,
+};

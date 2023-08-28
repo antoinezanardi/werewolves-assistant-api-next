@@ -1,4 +1,4 @@
-enum API_RESOURCES {
+enum ApiResources {
   GAMES = "games",
   PLAYERS = "players",
   GAME_ADDITIONAL_CARDS = "game-additional-cards",
@@ -6,4 +6,4 @@ enum API_RESOURCES {
   HEALTH = "health",
 }
 
-export { API_RESOURCES };
+export { ApiResources };

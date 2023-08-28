@@ -1,12 +1,12 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { gameSourceValues } from "@/modules/game/constants/game.constant";
+import { GAME_SOURCE_VALUES } from "@/modules/game/constants/game.constant";
 import type { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
 
-const gameHistoryRecordPlaySourceFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecordPlaySource, ApiPropertyOptions>>({
+const GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS = Object.freeze<Record<keyof GameHistoryRecordPlaySource, ApiPropertyOptions>>({
   name: {
     required: true,
-    enum: gameSourceValues,
+    enum: GAME_SOURCE_VALUES,
   },
   players: {
     minItems: 1,
@@ -14,15 +14,18 @@ const gameHistoryRecordPlaySourceFieldsSpecs = Object.freeze<Record<keyof GameHi
   },
 });
 
-const gameHistoryRecordPlaySourceApiProperties = Object.freeze<Record<keyof GameHistoryRecordPlaySource, ApiPropertyOptions>>({
+const GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES = Object.freeze<Record<keyof GameHistoryRecordPlaySource, ApiPropertyOptions>>({
   name: {
     description: "Source of the play",
-    ...gameHistoryRecordPlaySourceFieldsSpecs.name,
+    ...GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.name,
   },
   players: {
     description: "Players that made the play",
-    ...gameHistoryRecordPlaySourceFieldsSpecs.players,
+    ...GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.players,
   },
 });
 
-export { gameHistoryRecordPlaySourceFieldsSpecs, gameHistoryRecordPlaySourceApiProperties };
+export {
+  GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS,
+  GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES,
+};

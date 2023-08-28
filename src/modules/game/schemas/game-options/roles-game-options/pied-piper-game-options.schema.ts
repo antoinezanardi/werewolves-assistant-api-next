@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/pied-piper-game-options.constant";
+import { PIED_PIPER_GAME_OPTIONS_API_PROPERTIES, PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/pied-piper-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,21 +10,24 @@ import { piedPiperGameOptionsApiProperties, piedPiperGameOptionsFieldsSpecs } fr
   _id: false,
 })
 class PiedPiperGameOptions {
-  @ApiProperty(piedPiperGameOptionsApiProperties.charmedPeopleCountPerNight)
+  @ApiProperty(PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.charmedPeopleCountPerNight)
   @Prop({
-    default: piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight.default,
-    min: piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight.minimum,
-    max: piedPiperGameOptionsFieldsSpecs.charmedPeopleCountPerNight.maximum,
+    default: PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight.default,
+    min: PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight.minimum,
+    max: PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight.maximum,
   })
   @Expose()
   public charmedPeopleCountPerNight: number;
 
-  @ApiProperty(piedPiperGameOptionsApiProperties.isPowerlessIfInfected)
-  @Prop({ default: piedPiperGameOptionsFieldsSpecs.isPowerlessIfInfected.default })
+  @ApiProperty(PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfInfected)
+  @Prop({ default: PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected.default })
   @Expose()
   public isPowerlessIfInfected: boolean;
 }
 
-const PiedPiperGameOptionsSchema = SchemaFactory.createForClass(PiedPiperGameOptions);
+const PIED_PIPER_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(PiedPiperGameOptions);
 
-export { PiedPiperGameOptions, PiedPiperGameOptionsSchema };
+export {
+  PiedPiperGameOptions,
+  PIED_PIPER_GAME_OPTIONS_SCHEMA,
+};

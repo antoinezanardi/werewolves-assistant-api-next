@@ -1,103 +1,103 @@
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "@/modules/game/enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GameSource } from "@/modules/game/types/game.type";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
-const gameSourceValues: Readonly<GameSource[]> = Object.freeze([
-  ...Object.values(PLAYER_GROUPS),
-  ...Object.values(ROLE_NAMES),
-  PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+const GAME_SOURCE_VALUES: Readonly<GameSource[]> = Object.freeze([
+  ...Object.values(PlayerGroups),
+  ...Object.values(RoleNames),
+  PlayerAttributeNames.SHERIFF,
 ]);
 
-const gamePlaysNightOrder: Readonly<(GamePlay & { isFirstNightOnly?: boolean })[]> = Object.freeze([
+const GAME_PLAYS_NIGHT_ORDER: Readonly<(GamePlay & { isFirstNightOnly?: boolean })[]> = Object.freeze([
   {
-    source: { name: PLAYER_GROUPS.ALL },
-    action: GAME_PLAY_ACTIONS.VOTE,
-    cause: GAME_PLAY_CAUSES.ANGEL_PRESENCE,
+    source: { name: PlayerGroups.ALL },
+    action: GamePlayActions.VOTE,
+    cause: GamePlayCauses.ANGEL_PRESENCE,
     isFirstNightOnly: true,
   },
   {
-    source: { name: ROLE_NAMES.THIEF },
-    action: GAME_PLAY_ACTIONS.CHOOSE_CARD,
+    source: { name: RoleNames.THIEF },
+    action: GamePlayActions.CHOOSE_CARD,
     isFirstNightOnly: true,
   },
   {
-    source: { name: ROLE_NAMES.DOG_WOLF },
-    action: GAME_PLAY_ACTIONS.CHOOSE_SIDE,
+    source: { name: RoleNames.DOG_WOLF },
+    action: GamePlayActions.CHOOSE_SIDE,
     isFirstNightOnly: true,
   },
   {
-    source: { name: ROLE_NAMES.CUPID },
-    action: GAME_PLAY_ACTIONS.CHARM,
+    source: { name: RoleNames.CUPID },
+    action: GamePlayActions.CHARM,
     isFirstNightOnly: true,
   },
   {
-    source: { name: ROLE_NAMES.SEER },
-    action: GAME_PLAY_ACTIONS.LOOK,
+    source: { name: RoleNames.SEER },
+    action: GamePlayActions.LOOK,
   },
   {
-    source: { name: ROLE_NAMES.FOX },
-    action: GAME_PLAY_ACTIONS.SNIFF,
+    source: { name: RoleNames.FOX },
+    action: GamePlayActions.SNIFF,
   },
   {
-    source: { name: PLAYER_GROUPS.LOVERS },
-    action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
+    source: { name: PlayerGroups.LOVERS },
+    action: GamePlayActions.MEET_EACH_OTHER,
     isFirstNightOnly: true,
   },
   {
-    source: { name: ROLE_NAMES.STUTTERING_JUDGE },
-    action: GAME_PLAY_ACTIONS.CHOOSE_SIGN,
+    source: { name: RoleNames.STUTTERING_JUDGE },
+    action: GamePlayActions.CHOOSE_SIGN,
     isFirstNightOnly: true,
   },
   {
-    source: { name: ROLE_NAMES.TWO_SISTERS },
-    action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
+    source: { name: RoleNames.TWO_SISTERS },
+    action: GamePlayActions.MEET_EACH_OTHER,
   },
   {
-    source: { name: ROLE_NAMES.THREE_BROTHERS },
-    action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
+    source: { name: RoleNames.THREE_BROTHERS },
+    action: GamePlayActions.MEET_EACH_OTHER,
   },
   {
-    source: { name: ROLE_NAMES.WILD_CHILD },
-    action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,
+    source: { name: RoleNames.WILD_CHILD },
+    action: GamePlayActions.CHOOSE_MODEL,
     isFirstNightOnly: true,
   },
   {
-    source: { name: ROLE_NAMES.RAVEN },
-    action: GAME_PLAY_ACTIONS.MARK,
+    source: { name: RoleNames.RAVEN },
+    action: GamePlayActions.MARK,
   },
   {
-    source: { name: ROLE_NAMES.GUARD },
-    action: GAME_PLAY_ACTIONS.PROTECT,
+    source: { name: RoleNames.GUARD },
+    action: GamePlayActions.PROTECT,
   },
   {
-    source: { name: PLAYER_GROUPS.WEREWOLVES },
-    action: GAME_PLAY_ACTIONS.EAT,
+    source: { name: PlayerGroups.WEREWOLVES },
+    action: GamePlayActions.EAT,
   },
   {
-    source: { name: ROLE_NAMES.WHITE_WEREWOLF },
-    action: GAME_PLAY_ACTIONS.EAT,
+    source: { name: RoleNames.WHITE_WEREWOLF },
+    action: GamePlayActions.EAT,
   },
   {
-    source: { name: ROLE_NAMES.BIG_BAD_WOLF },
-    action: GAME_PLAY_ACTIONS.EAT,
+    source: { name: RoleNames.BIG_BAD_WOLF },
+    action: GamePlayActions.EAT,
   },
   {
-    source: { name: ROLE_NAMES.WITCH },
-    action: GAME_PLAY_ACTIONS.USE_POTIONS,
+    source: { name: RoleNames.WITCH },
+    action: GamePlayActions.USE_POTIONS,
   },
   {
-    source: { name: ROLE_NAMES.PIED_PIPER },
-    action: GAME_PLAY_ACTIONS.CHARM,
+    source: { name: RoleNames.PIED_PIPER },
+    action: GamePlayActions.CHARM,
   },
   {
-    source: { name: PLAYER_GROUPS.CHARMED },
-    action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
+    source: { name: PlayerGroups.CHARMED },
+    action: GamePlayActions.MEET_EACH_OTHER,
   },
 ]);
 
 export {
-  gameSourceValues,
-  gamePlaysNightOrder,
+  GAME_SOURCE_VALUES,
+  GAME_PLAYS_NIGHT_ORDER,
 };

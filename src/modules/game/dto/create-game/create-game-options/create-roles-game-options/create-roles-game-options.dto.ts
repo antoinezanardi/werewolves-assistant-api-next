@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
-import { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/roles-game-options.constant";
+import { ROLES_GAME_OPTIONS_API_PROPERTIES, ROLES_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/roles-game-options.constant";
 import { CreateAncientGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-ancient-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
 import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
@@ -24,23 +24,23 @@ import { CreateWildChildGameOptionsDto } from "@/modules/game/dto/create-game/cr
 
 class CreateRolesGameOptionsDto {
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.doSkipCallIfNoTarget,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.doSkipCallIfNoTarget,
     required: false,
   })
   @IsOptional()
   @IsBoolean()
-  public doSkipCallIfNoTarget: boolean = rolesGameOptionsFieldsSpecs.doSkipCallIfNoTarget.default;
+  public doSkipCallIfNoTarget: boolean = ROLES_GAME_OPTIONS_FIELDS_SPECS.doSkipCallIfNoTarget.default;
   
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.areRevealedOnDeath,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.areRevealedOnDeath,
     required: false,
   })
   @IsOptional()
   @IsBoolean()
-  public areRevealedOnDeath: boolean = rolesGameOptionsFieldsSpecs.areRevealedOnDeath.default;
+  public areRevealedOnDeath: boolean = ROLES_GAME_OPTIONS_FIELDS_SPECS.areRevealedOnDeath.default;
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.sheriff,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.sheriff,
     required: false,
   })
   @IsOptional()
@@ -49,7 +49,7 @@ class CreateRolesGameOptionsDto {
   public sheriff: CreateSheriffGameOptionsDto = new CreateSheriffGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.bigBadWolf,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.bigBadWolf,
     required: false,
   })
   @IsOptional()
@@ -58,7 +58,7 @@ class CreateRolesGameOptionsDto {
   public bigBadWolf: CreateBigBadWolfGameOptionsDto = new CreateBigBadWolfGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.whiteWerewolf,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.whiteWerewolf,
     required: false,
   })
   @IsOptional()
@@ -67,7 +67,7 @@ class CreateRolesGameOptionsDto {
   public whiteWerewolf: CreateWhiteWerewolfGameOptionsDto = new CreateWhiteWerewolfGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.seer,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.seer,
     required: false,
   })
   @IsOptional()
@@ -76,7 +76,7 @@ class CreateRolesGameOptionsDto {
   public seer: CreateSeerGameOptionsDto = new CreateSeerGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.littleGirl,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.littleGirl,
     required: false,
   })
   @IsOptional()
@@ -85,7 +85,7 @@ class CreateRolesGameOptionsDto {
   public littleGirl: CreateLittleGirlGameOptionsDto = new CreateLittleGirlGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.guard,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.guard,
     required: false,
   })
   @IsOptional()
@@ -94,7 +94,7 @@ class CreateRolesGameOptionsDto {
   public guard: CreateGuardGameOptionsDto = new CreateGuardGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.ancient,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.ancient,
     required: false,
   })
   @IsOptional()
@@ -103,7 +103,7 @@ class CreateRolesGameOptionsDto {
   public ancient: CreateAncientGameOptionsDto = new CreateAncientGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.idiot,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.idiot,
     required: false,
   })
   @IsOptional()
@@ -112,7 +112,7 @@ class CreateRolesGameOptionsDto {
   public idiot: CreateIdiotGameOptionsDto = new CreateIdiotGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.twoSisters,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.twoSisters,
     required: false,
   })
   @IsOptional()
@@ -121,7 +121,7 @@ class CreateRolesGameOptionsDto {
   public twoSisters: CreateTwoSistersGameOptionsDto = new CreateTwoSistersGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.threeBrothers,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.threeBrothers,
     required: false,
   })
   @IsOptional()
@@ -130,7 +130,7 @@ class CreateRolesGameOptionsDto {
   public threeBrothers: CreateThreeBrothersGameOptionsDto = new CreateThreeBrothersGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.fox,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.fox,
     required: false,
   })
   @IsOptional()
@@ -139,7 +139,7 @@ class CreateRolesGameOptionsDto {
   public fox: CreateFoxGameOptionsDto = new CreateFoxGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.bearTamer,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.bearTamer,
     required: false,
   })
   @IsOptional()
@@ -148,7 +148,7 @@ class CreateRolesGameOptionsDto {
   public bearTamer: CreateBearTamerGameOptionsDto = new CreateBearTamerGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.stutteringJudge,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.stutteringJudge,
     required: false,
   })
   @IsOptional()
@@ -157,7 +157,7 @@ class CreateRolesGameOptionsDto {
   public stutteringJudge: CreateStutteringJudgeGameOptionsDto = new CreateStutteringJudgeGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.wildChild,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.wildChild,
     required: false,
   })
   @IsOptional()
@@ -166,7 +166,7 @@ class CreateRolesGameOptionsDto {
   public wildChild: CreateWildChildGameOptionsDto = new CreateWildChildGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.dogWolf,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.dogWolf,
     required: false,
   })
   @IsOptional()
@@ -175,7 +175,7 @@ class CreateRolesGameOptionsDto {
   public dogWolf: CreateDogWolfGameOptionsDto = new CreateDogWolfGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.thief,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.thief,
     required: false,
   })
   @IsOptional()
@@ -184,7 +184,7 @@ class CreateRolesGameOptionsDto {
   public thief: CreateThiefGameOptionsDto = new CreateThiefGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.piedPiper,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.piedPiper,
     required: false,
   })
   @IsOptional()
@@ -193,7 +193,7 @@ class CreateRolesGameOptionsDto {
   public piedPiper: CreatePiedPiperGameOptionsDto = new CreatePiedPiperGameOptionsDto();
 
   @ApiProperty({
-    ...rolesGameOptionsApiProperties.raven,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.raven,
     required: false,
   })
   @IsOptional()

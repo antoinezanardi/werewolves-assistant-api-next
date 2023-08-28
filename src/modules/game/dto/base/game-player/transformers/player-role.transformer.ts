@@ -1,8 +1,8 @@
 import { has } from "lodash";
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 
-import { roles } from "@/modules/role/constants/role.constant";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { ROLES } from "@/modules/role/constants/role.constant";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 function playerRoleTransformer(params: TransformFnParams): unknown {
   if (!has(params.value as object, "name")) {
@@ -10,17 +10,17 @@ function playerRoleTransformer(params: TransformFnParams): unknown {
   }
   const value = params.value as {
     name: string;
-    current: ROLE_NAMES;
-    original: ROLE_NAMES;
+    current: RoleNames;
+    original: RoleNames;
     isRevealed: boolean;
   };
-  const role = roles.find(({ name }) => name === value.name);
+  const role = ROLES.find(({ name }) => name === value.name);
   if (role === undefined) {
     return value;
   }
   value.current = role.name;
   value.original = role.name;
-  value.isRevealed = role.name === ROLE_NAMES.VILLAGER_VILLAGER;
+  value.isRevealed = role.name === RoleNames.VILLAGER_VILLAGER;
   return value;
 }
 

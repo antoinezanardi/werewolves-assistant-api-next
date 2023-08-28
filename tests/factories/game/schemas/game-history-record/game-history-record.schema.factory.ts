@@ -1,20 +1,20 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { gameSourceValues } from "@/modules/game/constants/game.constant";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
-import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { GAME_SOURCE_VALUES } from "@/modules/game/constants/game.constant";
+import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
+import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
 import { GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
 import { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote.schema";
 import { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
 import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
@@ -24,9 +24,9 @@ import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlay
 
 function createFakeGameHistoryRecordWerewolvesEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.EAT,
+    action: GamePlayActions.EAT,
     source: {
-      name: PLAYER_GROUPS.WEREWOLVES,
+      name: PlayerGroups.WEREWOLVES,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeWerewolfAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -35,9 +35,9 @@ function createFakeGameHistoryRecordWerewolvesEatPlay(gameHistoryRecordPlay: Par
 
 function createFakeGameHistoryRecordBigBadWolfEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.EAT,
+    action: GamePlayActions.EAT,
     source: {
-      name: ROLE_NAMES.BIG_BAD_WOLF,
+      name: RoleNames.BIG_BAD_WOLF,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeBigBadWolfAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -46,9 +46,9 @@ function createFakeGameHistoryRecordBigBadWolfEatPlay(gameHistoryRecordPlay: Par
 
 function createFakeGameHistoryRecordWhiteWerewolfEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.EAT,
+    action: GamePlayActions.EAT,
     source: {
-      name: ROLE_NAMES.WHITE_WEREWOLF,
+      name: RoleNames.WHITE_WEREWOLF,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeWhiteWerewolfAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -57,9 +57,9 @@ function createFakeGameHistoryRecordWhiteWerewolfEatPlay(gameHistoryRecordPlay: 
 
 function createFakeGameHistoryRecordSeerLookPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.LOOK,
+    action: GamePlayActions.LOOK,
     source: {
-      name: ROLE_NAMES.SEER,
+      name: RoleNames.SEER,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeSeerAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -68,9 +68,9 @@ function createFakeGameHistoryRecordSeerLookPlay(gameHistoryRecordPlay: Partial<
 
 function createFakeGameHistoryRecordCupidCharmPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.CHARM,
+    action: GamePlayActions.CHARM,
     source: {
-      name: ROLE_NAMES.CUPID,
+      name: RoleNames.CUPID,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeCupidAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -79,9 +79,9 @@ function createFakeGameHistoryRecordCupidCharmPlay(gameHistoryRecordPlay: Partia
 
 function createFakeGameHistoryRecordPiedPiperCharmPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.CHARM,
+    action: GamePlayActions.CHARM,
     source: {
-      name: ROLE_NAMES.PIED_PIPER,
+      name: RoleNames.PIED_PIPER,
       players: gameHistoryRecordPlay.source?.players ?? [createFakePiedPiperAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -90,9 +90,9 @@ function createFakeGameHistoryRecordPiedPiperCharmPlay(gameHistoryRecordPlay: Pa
 
 function createFakeGameHistoryRecordWitchUsePotionsPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.USE_POTIONS,
+    action: GamePlayActions.USE_POTIONS,
     source: {
-      name: ROLE_NAMES.WITCH,
+      name: RoleNames.WITCH,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeWitchAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -101,9 +101,9 @@ function createFakeGameHistoryRecordWitchUsePotionsPlay(gameHistoryRecordPlay: P
 
 function createFakeGameHistoryRecordHunterShootPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.SHOOT,
+    action: GamePlayActions.SHOOT,
     source: {
-      name: ROLE_NAMES.HUNTER,
+      name: RoleNames.HUNTER,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeHunterAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -112,9 +112,9 @@ function createFakeGameHistoryRecordHunterShootPlay(gameHistoryRecordPlay: Parti
 
 function createFakeGameHistoryRecordGuardProtectPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.PROTECT,
+    action: GamePlayActions.PROTECT,
     source: {
-      name: ROLE_NAMES.GUARD,
+      name: RoleNames.GUARD,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeGuardAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -123,9 +123,9 @@ function createFakeGameHistoryRecordGuardProtectPlay(gameHistoryRecordPlay: Part
 
 function createFakeGameHistoryRecordRavenMarkPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.MARK,
+    action: GamePlayActions.MARK,
     source: {
-      name: ROLE_NAMES.RAVEN,
+      name: RoleNames.RAVEN,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeRavenAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -134,9 +134,9 @@ function createFakeGameHistoryRecordRavenMarkPlay(gameHistoryRecordPlay: Partial
 
 function createFakeGameHistoryRecordTwoSistersMeetEachOtherPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
+    action: GamePlayActions.MEET_EACH_OTHER,
     source: {
-      name: ROLE_NAMES.TWO_SISTERS,
+      name: RoleNames.TWO_SISTERS,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeTwoSistersAlivePlayer(), createFakeTwoSistersAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -145,9 +145,9 @@ function createFakeGameHistoryRecordTwoSistersMeetEachOtherPlay(gameHistoryRecor
 
 function createFakeGameHistoryRecordThreeBrothersMeetEachOtherPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
+    action: GamePlayActions.MEET_EACH_OTHER,
     source: {
-      name: ROLE_NAMES.THREE_BROTHERS,
+      name: RoleNames.THREE_BROTHERS,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeThreeBrothersAlivePlayer(), createFakeThreeBrothersAlivePlayer(), createFakeThreeBrothersAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -160,9 +160,9 @@ function createFakeGameHistoryRecordCharmedMeetEachOtherPlay(gameHistoryRecordPl
     createFakePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
   ];
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.MEET_EACH_OTHER,
+    action: GamePlayActions.MEET_EACH_OTHER,
     source: {
-      name: PLAYER_GROUPS.CHARMED,
+      name: PlayerGroups.CHARMED,
       players: gameHistoryRecordPlay.source?.players ?? sourcePlayers,
     },
     ...gameHistoryRecordPlay,
@@ -171,9 +171,9 @@ function createFakeGameHistoryRecordCharmedMeetEachOtherPlay(gameHistoryRecordPl
 
 function createFakeGameHistoryRecordFoxSniffPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.SNIFF,
+    action: GamePlayActions.SNIFF,
     source: {
-      name: ROLE_NAMES.FOX,
+      name: RoleNames.FOX,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeFoxAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -182,9 +182,9 @@ function createFakeGameHistoryRecordFoxSniffPlay(gameHistoryRecordPlay: Partial<
 
 function createFakeGameHistoryRecordWildChildChooseModelPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.CHOOSE_MODEL,
+    action: GamePlayActions.CHOOSE_MODEL,
     source: {
-      name: ROLE_NAMES.WILD_CHILD,
+      name: RoleNames.WILD_CHILD,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeWildChildAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -193,9 +193,9 @@ function createFakeGameHistoryRecordWildChildChooseModelPlay(gameHistoryRecordPl
 
 function createFakeGameHistoryRecordWildDogWolfChooseSidePlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.CHOOSE_SIDE,
+    action: GamePlayActions.CHOOSE_SIDE,
     source: {
-      name: ROLE_NAMES.DOG_WOLF,
+      name: RoleNames.DOG_WOLF,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeDogWolfAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -204,9 +204,9 @@ function createFakeGameHistoryRecordWildDogWolfChooseSidePlay(gameHistoryRecordP
 
 function createFakeGameHistoryRecordScapegoatBanVotingPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.BAN_VOTING,
+    action: GamePlayActions.BAN_VOTING,
     source: {
-      name: ROLE_NAMES.SCAPEGOAT,
+      name: RoleNames.SCAPEGOAT,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeScapegoatAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -215,9 +215,9 @@ function createFakeGameHistoryRecordScapegoatBanVotingPlay(gameHistoryRecordPlay
 
 function createFakeGameHistoryRecordStutteringJudgeChooseSignPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.CHOOSE_SIGN,
+    action: GamePlayActions.CHOOSE_SIGN,
     source: {
-      name: ROLE_NAMES.STUTTERING_JUDGE,
+      name: RoleNames.STUTTERING_JUDGE,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeStutteringJudgeAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -226,9 +226,9 @@ function createFakeGameHistoryRecordStutteringJudgeChooseSignPlay(gameHistoryRec
 
 function createFakeGameHistoryRecordThiefChooseCardPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.CHOOSE_CARD,
+    action: GamePlayActions.CHOOSE_CARD,
     source: {
-      name: ROLE_NAMES.THIEF,
+      name: RoleNames.THIEF,
       players: gameHistoryRecordPlay.source?.players ?? [createFakeThiefAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -237,9 +237,9 @@ function createFakeGameHistoryRecordThiefChooseCardPlay(gameHistoryRecordPlay: P
 
 function createFakeGameHistoryRecordAllElectSheriffPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.ELECT_SHERIFF,
+    action: GamePlayActions.ELECT_SHERIFF,
     source: {
-      name: PLAYER_GROUPS.ALL,
+      name: PlayerGroups.ALL,
       players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -248,9 +248,9 @@ function createFakeGameHistoryRecordAllElectSheriffPlay(gameHistoryRecordPlay: P
 
 function createFakeGameHistoryRecordAllVotePlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.VOTE,
+    action: GamePlayActions.VOTE,
     source: {
-      name: PLAYER_GROUPS.ALL,
+      name: PlayerGroups.ALL,
       players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -259,9 +259,9 @@ function createFakeGameHistoryRecordAllVotePlay(gameHistoryRecordPlay: Partial<G
 
 function createFakeGameHistoryRecordSheriffDelegatePlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.DELEGATE,
+    action: GamePlayActions.DELEGATE,
     source: {
-      name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+      name: PlayerAttributeNames.SHERIFF,
       players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] })],
     },
     ...gameHistoryRecordPlay,
@@ -270,9 +270,9 @@ function createFakeGameHistoryRecordSheriffDelegatePlay(gameHistoryRecordPlay: P
 
 function createFakeGameHistoryRecordSheriffSettleVotesPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
-    action: GAME_PLAY_ACTIONS.SETTLE_VOTES,
+    action: GamePlayActions.SETTLE_VOTES,
     source: {
-      name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+      name: PlayerAttributeNames.SHERIFF,
       players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] })],
     },
     ...gameHistoryRecordPlay,
@@ -281,10 +281,10 @@ function createFakeGameHistoryRecordSheriffSettleVotesPlay(gameHistoryRecordPlay
 
 function createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlaySource: Partial<GameHistoryRecordPlaySource> = {}, override: object = {}): GameHistoryRecordPlaySource {
   return plainToInstance(GameHistoryRecordPlaySource, {
-    name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(gameSourceValues),
+    name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(GAME_SOURCE_VALUES),
     players: gameHistoryRecordPlaySource.players ?? [createFakePlayer()],
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 function createFakeGameHistoryRecordPlayVote(gameHistoryRecordPlayVote: Partial<GameHistoryRecordPlayVote> = {}, override: object = {}): GameHistoryRecordPlayVote {
@@ -292,7 +292,7 @@ function createFakeGameHistoryRecordPlayVote(gameHistoryRecordPlayVote: Partial<
     source: gameHistoryRecordPlayVote.source ?? createFakePlayer(),
     target: gameHistoryRecordPlayVote.target ?? createFakePlayer(),
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Partial<GameHistoryRecordPlayTarget> = {}, override: object = {}): GameHistoryRecordPlayTarget {
@@ -301,21 +301,21 @@ function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Part
     isInfected: gameHistoryRecordPlayTarget.isInfected ?? undefined,
     drankPotion: gameHistoryRecordPlayTarget.drankPotion ?? undefined,
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 function createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlayVoting: Partial<GameHistoryRecordPlayVoting> = {}, override: object = {}): GameHistoryRecordPlayVoting {
   return plainToInstance(GameHistoryRecordPlayVoting, {
-    result: gameHistoryRecordPlayVoting.result ?? faker.helpers.arrayElement(Object.values(GAME_HISTORY_RECORD_VOTING_RESULTS)),
+    result: gameHistoryRecordPlayVoting.result ?? faker.helpers.arrayElement(Object.values(GameHistoryRecordVotingResults)),
     nominatedPlayers: gameHistoryRecordPlayVoting.nominatedPlayers ?? undefined,
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return plainToInstance(GameHistoryRecordPlay, {
     source: createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlay.source),
-    action: gameHistoryRecordPlay.action ?? faker.helpers.arrayElement(Object.values(GAME_PLAY_ACTIONS)),
+    action: gameHistoryRecordPlay.action ?? faker.helpers.arrayElement(Object.values(GamePlayActions)),
     targets: gameHistoryRecordPlay.targets ?? undefined,
     votes: gameHistoryRecordPlay.votes ?? undefined,
     voting: gameHistoryRecordPlay.voting ? createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlay.voting, override) : undefined,
@@ -323,7 +323,7 @@ function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHist
     chosenSide: gameHistoryRecordPlay.chosenSide ?? undefined,
     chosenCard: gameHistoryRecordPlay.chosenCard ?? undefined,
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecord> = {}, override: object = {}): GameHistoryRecord {
@@ -332,13 +332,13 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
     gameId: gameHistoryRecord.gameId ?? createFakeObjectId(),
     tick: gameHistoryRecord.tick ?? faker.number.int({ min: 1 }),
     turn: gameHistoryRecord.turn ?? faker.number.int({ min: 1 }),
-    phase: gameHistoryRecord.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
+    phase: gameHistoryRecord.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
     play: createFakeGameHistoryRecordPlay(gameHistoryRecord.play),
     revealedPlayers: gameHistoryRecord.revealedPlayers ?? undefined,
     deadPlayers: gameHistoryRecord.deadPlayers ?? undefined,
     createdAt: gameHistoryRecord.createdAt ?? faker.date.recent(),
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 function bulkCreateFakeGameHistoryRecords(length: number, gameHistoryRecords: Partial<GameHistoryRecord>[] = [], overrides: object[] = []): GameHistoryRecord[] {

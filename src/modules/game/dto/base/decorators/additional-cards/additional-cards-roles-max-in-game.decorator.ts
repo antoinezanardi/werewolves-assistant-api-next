@@ -3,7 +3,7 @@ import type { ValidationArguments, ValidationOptions } from "class-validator";
 
 import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { roles } from "@/modules/role/constants/role.constant";
+import { ROLES } from "@/modules/role/constants/role.constant";
 
 function areAdditionalCardsRolesMaxInGameRespected(value: unknown, validationArguments: ValidationArguments): boolean {
   if (value === undefined) {
@@ -14,7 +14,7 @@ function areAdditionalCardsRolesMaxInGameRespected(value: unknown, validationArg
     return false;
   }
   const additionalCards = value as CreateGameAdditionalCardDto[];
-  return roles.every(role => {
+  return ROLES.every(role => {
     const playersRoleCount = players.filter(player => player.role.name === role.name).length;
     const additionalCardsRoleCount = additionalCards.filter(additionalCard => additionalCard.roleName === role.name).length;
     return playersRoleCount + additionalCardsRoleCount <= role.maxInGame;

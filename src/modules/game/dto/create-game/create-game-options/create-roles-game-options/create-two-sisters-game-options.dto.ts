@@ -1,18 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, Max, Min } from "class-validator";
 
-import { twoSistersGameOptionsApiProperties, twoSistersGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/two-sisters-game-options.constant";
+import { TWO_SISTERS_GAME_OPTIONS_API_PROPERTIES, TWO_SISTERS_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/two-sisters-game-options.constant";
 
 class CreateTwoSistersGameOptionsDto {
   @ApiProperty({
-    ...twoSistersGameOptionsApiProperties.wakingUpInterval,
+    ...TWO_SISTERS_GAME_OPTIONS_API_PROPERTIES.wakingUpInterval,
     required: false,
   })
   @IsOptional()
   @IsInt()
-  @Min(twoSistersGameOptionsFieldsSpecs.wakingUpInterval.minimum)
-  @Max(twoSistersGameOptionsFieldsSpecs.wakingUpInterval.maximum)
-  public wakingUpInterval: number = twoSistersGameOptionsFieldsSpecs.wakingUpInterval.default;
+  @Min(TWO_SISTERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.minimum)
+  @Max(TWO_SISTERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.maximum)
+  public wakingUpInterval: number = TWO_SISTERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.default;
 }
 
 export { CreateTwoSistersGameOptionsDto };

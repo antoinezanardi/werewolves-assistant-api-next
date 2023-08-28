@@ -4,8 +4,8 @@ import { sample, shuffle } from "lodash";
 
 import { GetGameRandomCompositionPlayerResponseDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
-import { defaultVillagerRole, defaultWerewolfRole, roles } from "@/modules/role/constants/role.constant";
-import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+import { DEFAULT_VILLAGER_ROLE, DEFAULT_WEREWOLF_ROLE, ROLES } from "@/modules/role/constants/role.constant";
+import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import { getRolesWithSide } from "@/modules/role/helpers/role.helper";
 import { Role } from "@/modules/role/types/role.type";
 
@@ -16,8 +16,8 @@ export class GameRandomCompositionService {
     const werewolfRolesCount = this.getWerewolfCountForComposition(getGameRandomCompositionDto.players.length);
     const villagerRolesCount = getGameRandomCompositionDto.players.length - werewolfRolesCount;
     const randomRoles = [
-      ...this.getRandomRolesForSide(availableRoles, werewolfRolesCount, ROLE_SIDES.WEREWOLVES),
-      ...this.getRandomRolesForSide(availableRoles, villagerRolesCount, ROLE_SIDES.VILLAGERS),
+      ...this.getRandomRolesForSide(availableRoles, werewolfRolesCount, RoleSides.WEREWOLVES),
+      ...this.getRandomRolesForSide(availableRoles, villagerRolesCount, RoleSides.VILLAGERS),
     ];
     const shuffledRandomRoles = shuffle(randomRoles);
     return getGameRandomCompositionDto.players.map<GetGameRandomCompositionPlayerResponseDto>((player, index) => plainToInstance(GetGameRandomCompositionPlayerResponseDto, {
@@ -27,10 +27,10 @@ export class GameRandomCompositionService {
     }));
   }
 
-  private getRandomRolesForSide(availableRoles: Role[], rolesToPickCount: number, side: ROLE_SIDES): Role[] {
+  private getRandomRolesForSide(availableRoles: Role[], rolesToPickCount: number, side: RoleSides): Role[] {
     const randomRoles: Role[] = [];
     const availableSidedRoles = getRolesWithSide(availableRoles, side);
-    const defaultSidedRole = side === ROLE_SIDES.VILLAGERS ? defaultVillagerRole : defaultWerewolfRole;
+    const defaultSidedRole = side === RoleSides.VILLAGERS ? DEFAULT_VILLAGER_ROLE : DEFAULT_WEREWOLF_ROLE;
     let randomRolesToPickCount = 1;
     for (let i = 0; i < rolesToPickCount; i += randomRolesToPickCount) {
       const leftRolesToPickCount = rolesToPickCount - i;
@@ -63,10 +63,10 @@ export class GameRandomCompositionService {
       arePowerfulVillagerRolesPrioritized,
       arePowerfulWerewolfRolesPrioritized,
     } = getGameRandomCompositionDto;
-    return roles.filter(role => {
-      if (role.name === ROLE_NAMES.VILLAGER) {
+    return ROLES.filter(role => {
+      if (role.name === RoleNames.VILLAGER) {
         return !arePowerfulVillagerRolesPrioritized;
-      } else if (role.name === ROLE_NAMES.WEREWOLF) {
+      } else if (role.name === RoleNames.WEREWOLF) {
         return !arePowerfulWerewolfRolesPrioritized;
       }
       const isRolePermitted = !excludedRoles.includes(role.name);

@@ -3,16 +3,16 @@ import isObject from "isobject";
 import { has } from "lodash";
 import type { ValidationOptions } from "class-validator";
 
-import { roles } from "@/modules/role/constants/role.constant";
-import type { ROLE_NAMES } from "@/modules/role/enums/role.enum";
-import { ROLE_SIDES } from "@/modules/role/enums/role.enum";
+import { ROLES } from "@/modules/role/constants/role.constant";
+import type { RoleNames } from "@/modules/role/enums/role.enum";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
 function doesCompositionHaveAtLeastOneVillager(value?: unknown): boolean {
   if (!Array.isArray(value) || value.some(player => !isObject(player) || !has(player, ["role", "name"]))) {
     return false;
   }
-  const players = value as { role: { name: ROLE_NAMES } }[];
-  const werewolfRoles = roles.filter(role => role.side === ROLE_SIDES.VILLAGERS);
+  const players = value as { role: { name: RoleNames } }[];
+  const werewolfRoles = ROLES.filter(role => role.side === RoleSides.VILLAGERS);
   return players.some(({ role }) => werewolfRoles.find(werewolfRole => role.name === werewolfRole.name));
 }
 

@@ -1,15 +1,18 @@
 import type { ValidationPipeOptions } from "@nestjs/common";
 import type { ClassTransformOptions } from "class-transformer/types/interfaces";
 
-const plainToInstanceDefaultOptions: Readonly<ClassTransformOptions> = Object.freeze({
+const PLAIN_TO_INSTANCE_DEFAULT_OPTIONS: Readonly<ClassTransformOptions> = Object.freeze({
   exposeDefaultValues: true,
   exposeUnsetFields: false,
 });
 
-const validationPipeDefaultOptions: Readonly<ValidationPipeOptions> = Object.freeze({
+const VALIDATION_PIPE_DEFAULT_OPTIONS: Readonly<ValidationPipeOptions> = Object.freeze({
   transform: true,
   whitelist: true,
-  transformOptions: plainToInstanceDefaultOptions,
+  transformOptions: PLAIN_TO_INSTANCE_DEFAULT_OPTIONS,
 });
 
-export { plainToInstanceDefaultOptions, validationPipeDefaultOptions };
+export {
+  PLAIN_TO_INSTANCE_DEFAULT_OPTIONS,
+  VALIDATION_PIPE_DEFAULT_OPTIONS,
+};

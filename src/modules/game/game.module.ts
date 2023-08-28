@@ -15,15 +15,15 @@ import { GameRandomCompositionService } from "@/modules/game/providers/services/
 import { GameService } from "@/modules/game/providers/services/game.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
-import { GameHistoryRecord, GameHistoryRecordSchema } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
-import { Game, GameSchema } from "@/modules/game/schemas/game.schema";
+import { GameHistoryRecord, GAME_HISTORY_RECORD_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import { Game, GAME_SCHEMA } from "@/modules/game/schemas/game.schema";
 
 @Module({
   imports: [
     DatabaseModule,
     MongooseModule.forFeature([
-      { name: Game.name, schema: GameSchema },
-      { name: GameHistoryRecord.name, schema: GameHistoryRecordSchema },
+      { name: Game.name, schema: GAME_SCHEMA },
+      { name: GameHistoryRecord.name, schema: GAME_HISTORY_RECORD_SCHEMA },
     ]),
   ],
   controllers: [GameController],

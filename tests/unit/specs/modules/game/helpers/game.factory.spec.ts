@@ -1,4 +1,4 @@
-import { GAME_PHASES, GAME_STATUSES } from "@/modules/game/enums/game.enum";
+import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import type { Game } from "@/modules/game/schemas/game.schema";
 
@@ -16,11 +16,11 @@ describe("Game Factory", () => {
         currentPlay: createFakeGamePlayAllVote(),
         tick: 1,
         turn: 2,
-        phase: GAME_PHASES.DAY,
+        phase: GamePhases.DAY,
         players: [createFakePlayer()],
         options: createFakeGameOptions(),
         upcomingPlays: [createFakeGamePlayAllElectSheriff()],
-        status: GAME_STATUSES.PLAYING,
+        status: GameStatuses.PLAYING,
         createdAt: new Date(),
         updatedAt: new Date(),
       };

@@ -1,5 +1,5 @@
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "@/modules/game/helpers/player/player.helper";
-import { ROLE_SIDES } from "@/modules/role/enums/role.enum";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
@@ -29,7 +29,7 @@ describe("Player Helper", () => {
     it("should return false when pied piper is infected and thus is powerless.", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
       const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) });
+      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
       
       expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(false);
     });
@@ -37,7 +37,7 @@ describe("Player Helper", () => {
     it("should return true when pied piper is infected but original rule is not respected.", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
       const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) });
+      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
       
       expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(true);
     });
@@ -45,7 +45,7 @@ describe("Player Helper", () => {
     it("should return true when pied piper is not powerless and currently a villager.", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
       const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.VILLAGERS }) });
+      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.VILLAGERS }) });
       
       expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(true);
     });

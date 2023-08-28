@@ -2,10 +2,10 @@ import { When } from "@cucumber/cucumber";
 import type { DataTable } from "@cucumber/cucumber";
 
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
-import type { WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
+import type { WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helper";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+import type { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 import { makeGamePlayRequest } from "@tests/acceptance/features/game/helpers/game-request.helper";
@@ -75,7 +75,7 @@ When(/^the big bad wolf eats the player named (?<name>.+)$/u, async function(thi
 
 When(
   /^the witch uses (?<potion1>life|death) potion on the player named (?<name1>.+?)(?: and (?<potion2>(?!\k<potion1>)(?:life|death)) potion on the player named (?<name2>.+?))?$/u,
-  async function(this: CustomWorld, firstPotion: WITCH_POTIONS, firstTargetName: string, secondPotion: WITCH_POTIONS | null, secondTargetName: string | null): Promise<void> {
+  async function(this: CustomWorld, firstPotion: WitchPotions, firstTargetName: string, secondPotion: WitchPotions | null, secondTargetName: string | null): Promise<void> {
     const firstTarget = getPlayerWithNameOrThrow(firstTargetName, this.game, new Error("Player name not found"));
     const targets = [{ playerId: firstTarget._id, drankPotion: firstPotion }];
     if (secondTargetName !== null && secondPotion !== null) {
@@ -165,7 +165,7 @@ When(/^the wild child chooses the player named (?<name>.+) as a model$/u, async 
   this.game = this.response.json<Game>();
 });
 
-When(/^the dog wolf chooses the (?<chosenSide>villagers|werewolves) side$/u, async function(this: CustomWorld, chosenSide: ROLE_SIDES): Promise<void> {
+When(/^the dog wolf chooses the (?<chosenSide>villagers|werewolves) side$/u, async function(this: CustomWorld, chosenSide: RoleSides): Promise<void> {
   const makeGamePlayDto: MakeGamePlayDto = { chosenSide };
 
   this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
@@ -177,7 +177,7 @@ When(/^the stuttering judge chooses his sign$/u, async function(this: CustomWorl
   this.game = this.response.json<Game>();
 });
 
-When(/^the thief chooses card with role (?<cardRole>.+)$/u, async function(this: CustomWorld, cardRole: ROLE_NAMES): Promise<void> {
+When(/^the thief chooses card with role (?<cardRole>.+)$/u, async function(this: CustomWorld, cardRole: RoleNames): Promise<void> {
   const chosenCard = this.game.additionalCards?.find(({ roleName }) => roleName === cardRole);
   this.response = await makeGamePlayRequest({ chosenCardId: chosenCard?._id }, this.game, this.app);
   this.game = this.response.json<Game>();

@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 
-import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeCompositionGameOptions } from "@tests/factories/game/schemas/game-options/composition-game-options.schema.factory";
 import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
@@ -14,7 +14,7 @@ function createFakeGameOptions(gameOptions: Partial<GameOptions> = {}, override:
     votes: createFakeVotesGameOptions(gameOptions.votes),
     roles: createFakeRolesGameOptions(gameOptions.roles),
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 export { createFakeGameOptions };

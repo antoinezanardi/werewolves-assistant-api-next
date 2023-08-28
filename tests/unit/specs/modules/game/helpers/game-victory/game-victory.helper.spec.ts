@@ -1,8 +1,8 @@
-import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
-import { GAME_VICTORY_TYPES } from "@/modules/game/enums/game-victory.enum";
+import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
+import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
 import { doesAngelWin, doesPiedPiperWin, doesWhiteWerewolfWin, doLoversWin, doVillagersWin, doWerewolvesWin, generateGameVictoryData, isGameOver } from "@/modules/game/helpers/game-victory/game-victory.helper";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
-import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -277,7 +277,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) }),
+        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
       const game = createFakeGame({ players, options });
@@ -290,7 +290,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) }),
+        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
       const game = createFakeGame({ players, options });
@@ -430,7 +430,7 @@ describe("Game Victory Helper", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: ROLE_NAMES.HUNTER }) }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.HUNTER }) }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const currentPlay = createFakeGamePlayAllVote();
@@ -477,7 +477,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ action: GAME_PLAY_ACTIONS.LOOK }),
+        createFakeGamePlayHunterShoots({ action: GamePlayActions.LOOK }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const currentPlay = createFakeGamePlayAllVote();
@@ -494,7 +494,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: ROLE_NAMES.THIEF }) }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.THIEF }) }),
         createFakeGamePlayAllVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
@@ -542,7 +542,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) }),
+        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
       ];
       const upcomingPlays = [
         createFakeGamePlayAllVote(),
@@ -581,11 +581,11 @@ describe("Game Victory Helper", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: ROLE_NAMES.HUNTER }) }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.HUNTER }) }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const game = createFakeGame({ players, upcomingPlays });
-      const expectedGameVictory = createFakeGameVictory({ type: GAME_VICTORY_TYPES.NONE });
+      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.NONE });
 
       expect(generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -599,7 +599,7 @@ describe("Game Victory Helper", () => {
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
       const game = createFakeGame({ players, options, turn: 1 });
-      const expectedGameVictory = createFakeGameVictory({ type: GAME_VICTORY_TYPES.ANGEL, winners: [players[3]] });
+      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.ANGEL, winners: [players[3]] });
 
       expect(generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -612,7 +612,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
-      const expectedGameVictory = createFakeGameVictory({ type: GAME_VICTORY_TYPES.LOVERS, winners: [players[2], players[3]] });
+      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.LOVERS, winners: [players[2], players[3]] });
 
       expect(generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -622,11 +622,11 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) }),
+        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
       const game = createFakeGame({ players, options });
-      const expectedGameVictory = createFakeGameVictory({ type: GAME_VICTORY_TYPES.PIED_PIPER, winners: [players[3]] });
+      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.PIED_PIPER, winners: [players[3]] });
 
       expect(generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -638,7 +638,7 @@ describe("Game Victory Helper", () => {
         createFakeWhiteWerewolfAlivePlayer({ isAlive: true }),
       ];
       const game = createFakeGame({ players });
-      const expectedGameVictory = createFakeGameVictory({ type: GAME_VICTORY_TYPES.WHITE_WEREWOLF, winners: [players[2]] });
+      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.WHITE_WEREWOLF, winners: [players[2]] });
 
       expect(generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -651,7 +651,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const expectedGameVictory = createFakeGameVictory({ type: GAME_VICTORY_TYPES.WEREWOLVES, winners: [players[2], players[3]] });
+      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.WEREWOLVES, winners: [players[2], players[3]] });
 
       expect(generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -664,7 +664,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const expectedGameVictory = createFakeGameVictory({ type: GAME_VICTORY_TYPES.VILLAGERS, winners: [players[0], players[1]] });
+      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.VILLAGERS, winners: [players[0], players[1]] });
 
       expect(generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });

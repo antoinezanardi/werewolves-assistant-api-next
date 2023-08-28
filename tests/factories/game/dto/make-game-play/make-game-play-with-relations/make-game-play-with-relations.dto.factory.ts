@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 
-import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createFakeMakeGamePlayWithRelationsDto(makeGamePlayWithRelationsDto: Partial<MakeGamePlayWithRelationsDto> = {}, override: object = {}): MakeGamePlayWithRelationsDto {
   return plainToInstance(MakeGamePlayWithRelationsDto, {
@@ -12,7 +12,7 @@ function createFakeMakeGamePlayWithRelationsDto(makeGamePlayWithRelationsDto: Pa
     chosenCard: makeGamePlayWithRelationsDto.chosenCard ?? undefined,
     chosenSide: makeGamePlayWithRelationsDto.chosenSide ?? undefined,
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 export { createFakeMakeGamePlayWithRelationsDto };

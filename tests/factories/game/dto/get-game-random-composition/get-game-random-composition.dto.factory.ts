@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 
-import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createFakeGetGameRandomCompositionDto(getGameRandomCompositionDto: Partial<GetGameRandomCompositionDto> = {}, override: object = {}): GetGameRandomCompositionDto {
   return plainToInstance(GetGameRandomCompositionDto, {
@@ -12,7 +12,7 @@ function createFakeGetGameRandomCompositionDto(getGameRandomCompositionDto: Part
     arePowerfulVillagerRolesPrioritized: getGameRandomCompositionDto.arePowerfulVillagerRolesPrioritized ?? true,
     arePowerfulWerewolfRolesPrioritized: getGameRandomCompositionDto.arePowerfulWerewolfRolesPrioritized ?? false,
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 export { createFakeGetGameRandomCompositionDto };

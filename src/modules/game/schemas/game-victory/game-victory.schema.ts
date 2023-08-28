@@ -2,9 +2,9 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { gameVictoryApiProperties } from "@/modules/game/constants/game-victory/game-victory.constant";
-import { GAME_VICTORY_TYPES } from "@/modules/game/enums/game-victory.enum";
-import { PlayerSchema, Player } from "@/modules/game/schemas/player/player.schema";
+import { GAME_VICTORY_API_PROPERTIES } from "@/modules/game/constants/game-victory/game-victory.constant";
+import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
+import { PLAYER_SCHEMA, Player } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
   versionKey: false,
@@ -12,18 +12,21 @@ import { PlayerSchema, Player } from "@/modules/game/schemas/player/player.schem
   _id: false,
 })
 class GameVictory {
-  @ApiProperty(gameVictoryApiProperties.type)
-  @Prop({ required: true, enum: gameVictoryApiProperties.type.enum })
+  @ApiProperty(GAME_VICTORY_API_PROPERTIES.type)
+  @Prop({ required: true, enum: GAME_VICTORY_API_PROPERTIES.type.enum })
   @Expose()
-  public type: GAME_VICTORY_TYPES;
+  public type: GameVictoryTypes;
 
-  @ApiProperty(gameVictoryApiProperties.winners)
-  @Prop({ type: [PlayerSchema], default: undefined })
+  @ApiProperty(GAME_VICTORY_API_PROPERTIES.winners)
+  @Prop({ type: [PLAYER_SCHEMA], default: undefined })
   @Type(() => Player)
   @Expose()
   public winners?: Player[];
 }
 
-const GameVictorySchema = SchemaFactory.createForClass(GameVictory);
+const GAME_VICTORY_SCHEMA = SchemaFactory.createForClass(GameVictory);
 
-export { GameVictory, GameVictorySchema };
+export {
+  GameVictory,
+  GAME_VICTORY_SCHEMA,
+};

@@ -1,4 +1,4 @@
-import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "@/modules/role/enums/role.enum";
+import { RoleNames, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
 import { createRole } from "@/modules/role/helpers/role.factory";
 import type { Role } from "@/modules/role/types/role.type";
 
@@ -8,9 +8,9 @@ describe("Role Factory", () => {
   describe("createRole", () => {
     it("should create a role when called.", () => {
       const role: Role = {
-        name: ROLE_NAMES.ANCIENT,
-        type: ROLE_TYPES.AMBIGUOUS,
-        side: ROLE_SIDES.VILLAGERS,
+        name: RoleNames.ANCIENT,
+        type: RoleTypes.AMBIGUOUS,
+        side: RoleSides.VILLAGERS,
         maxInGame: 1,
         minInGame: 1,
       };

@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { dogWolfGameOptionsApiProperties, dogWolfGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/dog-wolf-game-options.constant";
+import { DOG_WOLF_GAME_OPTIONS_API_PROPERTIES, DOG_WOLF_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/dog-wolf-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,12 +10,15 @@ import { dogWolfGameOptionsApiProperties, dogWolfGameOptionsFieldsSpecs } from "
   _id: false,
 })
 class DogWolfGameOptions {
-  @ApiProperty(dogWolfGameOptionsApiProperties.isChosenSideRevealed)
-  @Prop({ default: dogWolfGameOptionsFieldsSpecs.isChosenSideRevealed.default })
+  @ApiProperty(DOG_WOLF_GAME_OPTIONS_API_PROPERTIES.isChosenSideRevealed)
+  @Prop({ default: DOG_WOLF_GAME_OPTIONS_FIELDS_SPECS.isChosenSideRevealed.default })
   @Expose()
   public isChosenSideRevealed: boolean;
 }
 
-const DogWolfGameOptionsSchema = SchemaFactory.createForClass(DogWolfGameOptions);
+const DOG_WOLF_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(DogWolfGameOptions);
 
-export { DogWolfGameOptions, DogWolfGameOptionsSchema };
+export {
+  DogWolfGameOptions,
+  DOG_WOLF_GAME_OPTIONS_SCHEMA,
+};

@@ -2,9 +2,9 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { gameHistoryRecordPlayTargetApiProperties, gameHistoryRecordPlayTargetFieldsSpecs } from "@/modules/game/constants/game-history-record/game-history-record-play/game-history-record-play-target.constant";
-import { WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
-import { Player, PlayerSchema } from "@/modules/game/schemas/player/player.schema";
+import { GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS } from "@/modules/game/constants/game-history-record/game-history-record-play/game-history-record-play-target.constant";
+import { WitchPotions } from "@/modules/game/enums/game-play.enum";
+import { Player, PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
   versionKey: false,
@@ -12,29 +12,32 @@ import { Player, PlayerSchema } from "@/modules/game/schemas/player/player.schem
   _id: false,
 })
 class GameHistoryRecordPlayTarget {
-  @ApiProperty(gameHistoryRecordPlayTargetApiProperties.player)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.player)
   @Prop({
-    required: gameHistoryRecordPlayTargetFieldsSpecs.player.required,
-    type: PlayerSchema,
+    required: GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.player.required,
+    type: PLAYER_SCHEMA,
   })
   @Type(() => Player)
   @Expose()
   public player: Player;
 
-  @ApiProperty(gameHistoryRecordPlayTargetApiProperties.isInfected)
-  @Prop({ required: gameHistoryRecordPlayTargetFieldsSpecs.isInfected.required })
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.isInfected)
+  @Prop({ required: GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.isInfected.required })
   @Expose()
   public isInfected?: boolean;
 
-  @ApiProperty(gameHistoryRecordPlayTargetApiProperties.drankPotion)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.drankPotion)
   @Prop({
-    required: gameHistoryRecordPlayTargetFieldsSpecs.drankPotion.required,
-    enum: gameHistoryRecordPlayTargetFieldsSpecs.drankPotion.enum,
+    required: GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.drankPotion.required,
+    enum: GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.drankPotion.enum,
   })
   @Expose()
-  public drankPotion?: WITCH_POTIONS;
+  public drankPotion?: WitchPotions;
 }
 
-const GameHistoryRecordPlayTargetSchema = SchemaFactory.createForClass(GameHistoryRecordPlayTarget);
+const GAME_HISTORY_RECORD_PLAY_TARGET_SCHEMA = SchemaFactory.createForClass(GameHistoryRecordPlayTarget);
 
-export { GameHistoryRecordPlayTarget, GameHistoryRecordPlayTargetSchema };
+export {
+  GameHistoryRecordPlayTarget,
+  GAME_HISTORY_RECORD_PLAY_TARGET_SCHEMA,
+};

@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { gameHistoryRecordFieldsSpecs } from "@/modules/game/constants/game-history-record/game-history-record.constant";
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/constants/game-history-record/game-history-record.constant";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
 
-import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
@@ -14,14 +14,14 @@ import { createFakeGameHistoryRecordPlay } from "@tests/factories/game/schemas/g
 function createFakeGameHistoryRecordToInsert(gameHistoryRecordToInsert: Partial<GameHistoryRecordToInsert> = {}, override: object = {}): GameHistoryRecordToInsert {
   return plainToInstance(GameHistoryRecordToInsert, {
     gameId: gameHistoryRecordToInsert.gameId ?? createFakeObjectId(),
-    tick: gameHistoryRecordToInsert.tick ?? faker.number.int({ min: gameHistoryRecordFieldsSpecs.tick.minimum }),
-    turn: gameHistoryRecordToInsert.turn ?? faker.number.int({ min: gameHistoryRecordFieldsSpecs.turn.minimum }),
-    phase: gameHistoryRecordToInsert.phase ?? faker.helpers.arrayElement(Object.values(GAME_PHASES)),
+    tick: gameHistoryRecordToInsert.tick ?? faker.number.int({ min: GAME_HISTORY_RECORD_FIELDS_SPECS.tick.minimum }),
+    turn: gameHistoryRecordToInsert.turn ?? faker.number.int({ min: GAME_HISTORY_RECORD_FIELDS_SPECS.turn.minimum }),
+    phase: gameHistoryRecordToInsert.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
     play: createFakeGameHistoryRecordPlay(gameHistoryRecordToInsert.play),
     revealedPlayers: gameHistoryRecordToInsert.revealedPlayers ?? undefined,
     deadPlayers: gameHistoryRecordToInsert.deadPlayers ?? undefined,
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 function bulkCreateFakeGameHistoryRecordsToInsert(

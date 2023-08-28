@@ -2,20 +2,23 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 
 import type { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote.schema";
 
-const gameHistoryRecordPlayVoteFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecordPlayVote, ApiPropertyOptions>>({
+const GAME_HISTORY_RECORD_PLAY_VOTE_FIELDS_SPECS = Object.freeze<Record<keyof GameHistoryRecordPlayVote, ApiPropertyOptions>>({
   source: { required: true },
   target: { required: true },
 });
 
-const gameHistoryRecordPlayTargetApiProperties = Object.freeze<Record<keyof GameHistoryRecordPlayVote, ApiPropertyOptions>>({
+const GAME_HISTORY_RECORD_PLAY_VOTE_API_PROPERTIES = Object.freeze<Record<keyof GameHistoryRecordPlayVote, ApiPropertyOptions>>({
   source: {
     description: "Player who made the vote",
-    ...gameHistoryRecordPlayVoteFieldsSpecs.source,
+    ...GAME_HISTORY_RECORD_PLAY_VOTE_FIELDS_SPECS.source,
   },
   target: {
     description: "Player targeted by the vote",
-    ...gameHistoryRecordPlayVoteFieldsSpecs.target,
+    ...GAME_HISTORY_RECORD_PLAY_VOTE_FIELDS_SPECS.target,
   },
 });
 
-export { gameHistoryRecordPlayVoteFieldsSpecs, gameHistoryRecordPlayTargetApiProperties };
+export {
+  GAME_HISTORY_RECORD_PLAY_VOTE_FIELDS_SPECS,
+  GAME_HISTORY_RECORD_PLAY_VOTE_API_PROPERTIES,
+};

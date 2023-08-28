@@ -1,6 +1,6 @@
 import type { Types } from "mongoose";
 
-import type { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import type { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getPlayerWithId } from "@/modules/game/helpers/game.helper";
 import { createPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
@@ -41,7 +41,7 @@ function addPlayersAttributeInGame(playerIds: Types.ObjectId[], game: Game, attr
   return clonedGame;
 }
 
-function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game, attributeName: PLAYER_ATTRIBUTE_NAMES): Game {
+function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game, attributeName: PlayerAttributeNames): Game {
   const clonedGame = createGame(game);
   const player = getPlayerWithId(clonedGame, playerId);
   if (!player) {
