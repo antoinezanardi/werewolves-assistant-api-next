@@ -99,6 +99,10 @@ npm run docker:test:start
 
 [![Scenarios](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)
 
+Click on the badge below 👇 to see the **[reports](https://reports.cucumber.io/report-collections/9a53c3ab-ff98-43ce-977d-4b6ba9f9ae18)**. 
+
+[![ScenariosReports](https://messages.cucumber.io/api/report-collections/9a53c3ab-ff98-43ce-977d-4b6ba9f9ae18/badge)](https://reports.cucumber.io/report-collections/9a53c3ab-ff98-43ce-977d-4b6ba9f9ae18)
+
 ### 👽 Mutant testing
 
 ![Stryker](https://img.shields.io/badge/-Stryker-black?style=for-the-badge&logoColor=white&logo=stripe&color=7F1B10) 
@@ -131,6 +135,9 @@ npm run test:staged
 
 # Run acceptance tests
 npm run test:cucumber
+
+# Run acceptance tests and publish the report
+npm run test:cucumber:publish
 
 # Run mutant tests with coverage
 npm run test:stryker
