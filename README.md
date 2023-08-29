@@ -17,7 +17,7 @@
 ![NPM](https://img.shields.io/badge/-npm-black?style=flat-square&logoColor=white&logo=npm&color=CE0201)[![Known Vulnerabilities](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next/badge.svg?targetFile=package.json&style=flat-square)](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next?targetFile=package.json)
 
 [![Tests count](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/tests-count)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/tests-count)
-[![Covered Statements](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-statements)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-statements)
+[![Scenarios](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fantoinezanardi%2Fwerewolves-assistant-api-next%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/antoinezanardi/werewolves-assistant-api-next/main)
 
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
@@ -27,7 +27,7 @@
 ## 📋 Table of Contents
 
 1. 🐺 [What is this API ?](#what-is-this-api)
-2. 🃏 [Roles available](#roles-available)
+2. 🃏 [Available roles](#available-roles)
 3. 🔨 [Installation](#installation)
 4. 💯 [Tests](#tests)
 5. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
@@ -39,11 +39,11 @@
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
 
-This is the **next** version of the current [Werewolves Assistant API](https://github.com/antoinezanardi/werewolves-assistant-api). It is still under development.
+This is the **next** version of the current **[Werewolves Assistant API](https://github.com/antoinezanardi/werewolves-assistant-api)**. It is still under development.
 
 #### 🤔 Want to know more about this awesome project ? <a href="https://werewolves-assistant.antoinezanardi.fr/about" target="_blank">**Check out the dedicated about page**</a>.
 
-## <a name="roles-available">🃏 Roles available</a>
+## <a name="available-roles">🃏 Available roles</a>
 
 **27 different official roles** are available to play :
 
@@ -78,7 +78,7 @@ npm run docker:test:start
 
 ## <a name="tests">💯 Tests</a>
 
-Unit and E2E tests are orchestrated with :
+### 🧪 Unit and E2E tests
 
 ![Jest](https://img.shields.io/badge/-Jest-black?style=for-the-badge&logoColor=white&logo=jest&color=BF3B14)
 
@@ -92,20 +92,23 @@ Unit and E2E tests are orchestrated with :
 
 [![Covered Lines](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-lines)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/covered-lines)
 
-Acceptance tests are managed by :
+### 🥒 Acceptance tests
 
 ![Cucumber](https://img.shields.io/badge/-Cucumber-black?style=for-the-badge&logoColor=white&logo=cucumber&color=169652) 
 
 [![Scenarios](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)
 
-Mutant testing is also available with :
+### 👽 Mutant testing
 
 ![Stryker](https://img.shields.io/badge/-Stryker-black?style=for-the-badge&logoColor=white&logo=stripe&color=7F1B10) 
 
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fantoinezanardi%2Fwerewolves-assistant-api-next%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/antoinezanardi/werewolves-assistant-api-next/main)
 
+You can also check the **[mutation testing report](https://dashboard.stryker-mutator.io/reports/github.com/antoinezanardi/werewolves-assistant-api-next/main#mutant)**.
 
-Before testing, you must follow the [installation steps](#installation).
+### ▶️ Commands
+
+Before testing, you must follow the **[installation steps](#installation)**.
 
 Then, run one of the following commands :
 
@@ -137,13 +140,15 @@ npm run test:stryker:force
 
 ## <a name="code-analysis-and-consistency">☑️ Code analysis and consistency</a>
 
-Code linting is managed by :
+### 🔍 Code linting & formatting
 
-![EsLint](https://img.shields.io/badge/-ESLint-black?style=for-the-badge&logoColor=white&logo=eslint&color=341BAB)
+![ESLint](https://img.shields.io/badge/-ESLint-black?style=for-the-badge&logoColor=white&logo=eslint&color=341BAB)
 
-In order to keep the code clean, consistent and free of bad TS practises, more than **300 rules are activated** !
+In order to keep the code clean, consistent and free of bad TS practices, more than **300 ESLint rules are activated** !
 
 Complete list of all enabled rules is available in the **[.eslintrc.js file](https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/master/.eslintrc.js)**.
+
+### ▶️ Commands
 
 Before linting, you must follow the [installation steps](#installation).
 
@@ -160,7 +165,7 @@ npm run lint:fix
 npm run lint:staged
 ```
 
-Project is scanned by :
+### 🥇 Project quality scanner
 
 ![SonarCloud](https://img.shields.io/badge/-SonarCloud-black?style=for-the-badge&logoColor=white&logo=sonarcloud&color=F37A3A)
 
@@ -191,9 +196,9 @@ Releases on **main** branch are generated and published automatically by :
 
 ![Semantic Release](https://img.shields.io/badge/-Semantic%20Release-black?style=for-the-badge&logoColor=white&logo=semantic-release&color=000000)
 
-It uses the [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) strategy.
+It uses the **[conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)** strategy.
 
-Each change when a new release comes up is listed in the <a href="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/master/CHANGELOG.md" target="_blank">CHANGELOG.md file</a>.
+Each change when a new release comes up is listed in the **<a href="https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/master/CHANGELOG.md" target="_blank">CHANGELOG.md file</a>**.
 
 Also, you can keep up with changes by watching releases via the **Watch GitHub button** at the top of this page.
 
@@ -201,7 +206,7 @@ Also, you can keep up with changes by watching releases via the **Watch GitHub b
 
 ## <a name="misc-commands">✨ Misc commands</a>
 
-### 🌳 Animated tree visualisation of the project's evolution with [Gource](https://gource.io/)
+### 🌳 Animated tree visualisation of the project's evolution with **[Gource](https://gource.io/)**
 ```shell
 # Please ensure that `gource` is installed on your system.
 npm run gource
