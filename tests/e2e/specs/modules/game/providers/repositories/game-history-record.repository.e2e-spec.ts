@@ -1,10 +1,10 @@
 import { getModelToken } from "@nestjs/mongoose";
-import type { Model, Types } from "mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { Model, Types } from "mongoose";
 
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import type { GamePhases } from "@/modules/game/enums/game.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -12,13 +12,13 @@ import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-histor
 import type { GameSource } from "@/modules/game/types/game.type";
 import type { RoleSides } from "@/modules/role/enums/role.enum";
 
-import { toJSON } from "@tests/helpers/object/object.helper";
-import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
-import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllElectSheriffPlay, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAllElectSheriffPlay, createFakeGameHistoryRecordAllVotePlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { toJSON } from "@tests/helpers/object/object.helper";
 
 describe("Game History Record Repository", () => {
   let app: NestFastifyApplication;
@@ -505,6 +505,26 @@ describe("Game History Record Repository", () => {
       const record = await repositories.gameHistoryRecord.getPreviousGameHistoryRecord(gameId);
 
       expect(toJSON(record)).toStrictEqual<GameHistoryRecord>(toJSON(gameHistoryRecords[3]) as GameHistoryRecord);
+    });
+  });
+
+  describe("getGameHistoryPhaseRecords", () => {
+    it("should get 3 records when called with gameId, turn and phase.", async() => {
+      const gameId = createFakeObjectId();
+      const otherGameId = createFakeObjectId();
+      const gameHistoryRecords = [
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.DAY }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.NIGHT }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.DAY }),
+        createFakeGameHistoryRecord({ gameId, turn: 2, phase: GamePhases.DAY }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.DAY }),
+        createFakeGameHistoryRecord({ gameId: otherGameId, phase: GamePhases.DAY, turn: 1 }),
+      ];
+      await populate(gameHistoryRecords);
+      const records = await repositories.gameHistoryRecord.getGameHistoryPhaseRecords(gameId, 1, GamePhases.DAY);
+      const expectedRecords = [gameHistoryRecords[0], gameHistoryRecords[2], gameHistoryRecords[4]];
+
+      expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
     });
   });
 });
