@@ -11,7 +11,6 @@
       "tests/acceptance/**/*.ts"
     ],
     "publish": false,
-    "publishQuiet": true,
     "format": [
       "summary",
       "progress-bar",
