@@ -3,38 +3,41 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { Types } from "mongoose";
 
-import { gameAdditionalCardApiProperties, gameAdditionalCardFieldsSpecs } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { GAME_ADDITIONAL_CARDS_API_PROPERTIES, GAME_ADDITIONAL_CARDS_FIELDS_SPECS } from "@/modules/game/constants/game-additional-cards/game-additional-cards.constant";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Schema({ versionKey: false })
 class GameAdditionalCard {
-  @ApiProperty(gameAdditionalCardApiProperties._id)
+  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES._id)
   @Type(() => String)
   @Expose()
   public _id: Types.ObjectId;
 
-  @ApiProperty(gameAdditionalCardApiProperties.roleName)
+  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.roleName)
   @Prop({
-    required: gameAdditionalCardFieldsSpecs.roleName.required,
-    enum: gameAdditionalCardFieldsSpecs.roleName.enum,
+    required: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName.required,
+    enum: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName.enum,
   })
   @Expose()
-  public roleName: ROLE_NAMES;
+  public roleName: RoleNames;
 
-  @ApiProperty(gameAdditionalCardApiProperties.recipient)
+  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.recipient)
   @Prop({
-    required: gameAdditionalCardFieldsSpecs.recipient.required,
-    enum: gameAdditionalCardFieldsSpecs.recipient.enum,
+    required: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.recipient.required,
+    enum: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.recipient.enum,
   })
   @Expose()
-  public recipient: ROLE_NAMES.THIEF;
+  public recipient: RoleNames.THIEF;
 
-  @ApiProperty(gameAdditionalCardApiProperties.isUsed)
-  @Prop({ default: gameAdditionalCardFieldsSpecs.isUsed.default as boolean })
+  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.isUsed)
+  @Prop({ default: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.isUsed.default as boolean })
   @Expose()
   public isUsed: boolean;
 }
 
-const GameAdditionalCardSchema = SchemaFactory.createForClass(GameAdditionalCard);
+const GAME_ADDITIONAL_CARD_SCHEMA = SchemaFactory.createForClass(GameAdditionalCard);
 
-export { GameAdditionalCard, GameAdditionalCardSchema };
+export {
+  GameAdditionalCard,
+  GAME_ADDITIONAL_CARD_SCHEMA,
+};

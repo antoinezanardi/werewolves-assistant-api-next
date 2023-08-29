@@ -1,28 +1,28 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
+import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import type { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
 
-const gameHistoryRecordPlayVotingFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecordPlayVoting, ApiPropertyOptions>>({
+const GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS = Object.freeze<Record<keyof GameHistoryRecordPlayVoting, ApiPropertyOptions>>({
   result: {
     required: true,
-    enum: GAME_HISTORY_RECORD_VOTING_RESULTS,
+    enum: GameHistoryRecordVotingResults,
   },
   nominatedPlayers: { required: false },
 });
 
-const gameHistoryRecordPlayVotingApiProperties = Object.freeze<Record<keyof GameHistoryRecordPlayVoting, ApiPropertyOptions>>({
+const GAME_HISTORY_RECORD_PLAY_VOTING_API_PROPERTIES = Object.freeze<Record<keyof GameHistoryRecordPlayVoting, ApiPropertyOptions>>({
   result: {
     description: "Define the results and their consequences",
-    ...gameHistoryRecordPlayVotingFieldsSpecs.result,
+    ...GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS.result,
   },
   nominatedPlayers: {
     description: "Nominated players from the play votes",
-    ...gameHistoryRecordPlayVotingFieldsSpecs.nominatedPlayers,
+    ...GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS.nominatedPlayers,
   },
 });
 
 export {
-  gameHistoryRecordPlayVotingFieldsSpecs,
-  gameHistoryRecordPlayVotingApiProperties,
+  GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS,
+  GAME_HISTORY_RECORD_PLAY_VOTING_API_PROPERTIES,
 };

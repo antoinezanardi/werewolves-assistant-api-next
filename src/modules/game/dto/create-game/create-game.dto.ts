@@ -17,22 +17,22 @@ import { gamePlayersPositionTransformer } from "@/modules/game/dto/base/transfor
 import { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import { CreateGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-game-options.dto";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
-import { gameApiProperties, gameFieldsSpecs } from "@/modules/game/schemas/game.schema.constant";
+import { GAME_API_PROPERTIES, GAME_FIELDS_SPECS } from "@/modules/game/schemas/game.schema.constant";
 
 class CreateGameDto {
   @ApiHideProperty()
   @IsOptional()
-  @Equals(gameFieldsSpecs.turn.default)
-  public turn: number = gameFieldsSpecs.turn.default;
+  @Equals(GAME_FIELDS_SPECS.turn.default)
+  public turn: number = GAME_FIELDS_SPECS.turn.default;
 
   @ApiHideProperty()
   @IsOptional()
-  @Equals(gameFieldsSpecs.phase.default)
-  public phase: GAME_PHASES = gameFieldsSpecs.phase.default;
+  @Equals(GAME_FIELDS_SPECS.phase.default)
+  public phase: GamePhases = GAME_FIELDS_SPECS.phase.default;
 
-  @ApiProperty(gameApiProperties.players)
+  @ApiProperty(GAME_API_PROPERTIES.players)
   @Transform(gamePlayersPositionTransformer)
   @Type(() => CreateGamePlayerDto)
   @ValidateNested({ each: true })
@@ -57,7 +57,7 @@ class CreateGameDto {
   public upcomingPlays: GamePlay[] = [];
 
   @ApiProperty({
-    ...gameApiProperties.additionalCards,
+    ...GAME_API_PROPERTIES.additionalCards,
     required: false,
   })
   @Type(() => CreateGameAdditionalCardDto)
@@ -69,7 +69,7 @@ class CreateGameDto {
   public additionalCards?: CreateGameAdditionalCardDto[];
 
   @ApiProperty({
-    ...gameApiProperties.options,
+    ...GAME_API_PROPERTIES.options,
     required: false,
   })
   @Type(() => CreateGameOptionsDto)

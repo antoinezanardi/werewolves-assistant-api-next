@@ -2,31 +2,31 @@ import type { Types } from "mongoose";
 
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { GAME_PLAY_ACTIONS } from "@/modules/game/enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameSource, GetNearestPlayerOptions } from "@/modules/game/types/game.type";
-import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/enums/role.enum";
+import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createCantFindPlayerUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
-function getPlayerDtoWithRole(game: CreateGameDto, role: ROLE_NAMES): CreateGamePlayerDto | undefined {
+function getPlayerDtoWithRole(game: CreateGameDto, role: RoleNames): CreateGamePlayerDto | undefined {
   return game.players.find(player => player.role.name === role);
 }
 
-function getPlayerWithCurrentRole(game: Game, role: ROLE_NAMES): Player | undefined {
+function getPlayerWithCurrentRole(game: Game, role: RoleNames): Player | undefined {
   return game.players.find(player => player.role.current === role);
 }
 
-function getPlayersWithCurrentRole(game: Game, role: ROLE_NAMES): Player[] {
+function getPlayersWithCurrentRole(game: Game, role: RoleNames): Player[] {
   return game.players.filter(player => player.role.current === role);
 }
 
-function getPlayersWithCurrentSide(game: Game, side: ROLE_SIDES): Player[] {
+function getPlayersWithCurrentSide(game: Game, side: RoleSides): Player[] {
   return game.players.filter(player => player.side.current === side);
 }
 
@@ -59,12 +59,12 @@ function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Ty
 }
 
 function areAllWerewolvesAlive(game: Game): boolean {
-  const werewolfPlayers = getPlayersWithCurrentSide(game, ROLE_SIDES.WEREWOLVES);
+  const werewolfPlayers = getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES);
   return werewolfPlayers.length > 0 && werewolfPlayers.every(werewolf => werewolf.isAlive);
 }
 
 function areAllVillagersAlive(game: Game): boolean {
-  const villagerPlayers = getPlayersWithCurrentSide(game, ROLE_SIDES.VILLAGERS);
+  const villagerPlayers = getPlayersWithCurrentSide(game, RoleSides.VILLAGERS);
   return villagerPlayers.length > 0 && villagerPlayers.every(villager => villager.isAlive);
 }
 
@@ -72,11 +72,11 @@ function areAllPlayersDead(game: Game): boolean {
   return game.players.length > 0 && game.players.every(({ isAlive }) => !isAlive);
 }
 
-function getPlayerWithActiveAttributeName(game: Game, attributeName: PLAYER_ATTRIBUTE_NAMES): Player | undefined {
+function getPlayerWithActiveAttributeName(game: Game, attributeName: PlayerAttributeNames): Player | undefined {
   return game.players.find(player => doesPlayerHaveActiveAttributeWithName(player, attributeName, game));
 }
 
-function getPlayersWithActiveAttributeName(game: Game, attribute: PLAYER_ATTRIBUTE_NAMES): Player[] {
+function getPlayersWithActiveAttributeName(game: Game, attribute: PlayerAttributeNames): Player[] {
   return game.players.filter(player => doesPlayerHaveActiveAttributeWithName(player, attribute, game));
 }
 
@@ -85,49 +85,49 @@ function getAlivePlayers(game: Game): Player[] {
 }
 
 function getAliveVillagerSidedPlayers(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS);
+  return game.players.filter(player => player.isAlive && player.side.current === RoleSides.VILLAGERS);
 }
 
 function getAliveWerewolfSidedPlayers(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES);
+  return game.players.filter(player => player.isAlive && player.side.current === RoleSides.WEREWOLVES);
 }
 
 function getLeftToCharmByPiedPiperPlayers(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.CHARMED, game) &&
-    player.role.current !== ROLE_NAMES.PIED_PIPER);
+  return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CHARMED, game) &&
+    player.role.current !== RoleNames.PIED_PIPER);
 }
 
 function getLeftToEatByWerewolvesPlayers(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.VILLAGERS &&
-    !doesPlayerHaveActiveAttributeWithName(player, PLAYER_ATTRIBUTE_NAMES.EATEN, game));
+  return game.players.filter(player => player.isAlive && player.side.current === RoleSides.VILLAGERS &&
+    !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.EATEN, game));
 }
 
 function getLeftToEatByWhiteWerewolfPlayers(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && player.side.current === ROLE_SIDES.WEREWOLVES && player.role.current !== ROLE_NAMES.WHITE_WEREWOLF);
+  return game.players.filter(player => player.isAlive && player.side.current === RoleSides.WEREWOLVES && player.role.current !== RoleNames.WHITE_WEREWOLF);
 }
 
-function getGroupOfPlayers(game: Game, group: PLAYER_GROUPS): Player[] {
-  if (group === PLAYER_GROUPS.ALL) {
+function getGroupOfPlayers(game: Game, group: PlayerGroups): Player[] {
+  if (group === PlayerGroups.ALL) {
     return game.players;
   }
-  if (group === PLAYER_GROUPS.LOVERS) {
-    return getPlayersWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
+  if (group === PlayerGroups.LOVERS) {
+    return getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
   }
-  if (group === PLAYER_GROUPS.CHARMED) {
-    return getPlayersWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.CHARMED);
+  if (group === PlayerGroups.CHARMED) {
+    return getPlayersWithActiveAttributeName(game, PlayerAttributeNames.CHARMED);
   }
-  if (group === PLAYER_GROUPS.VILLAGERS) {
-    return getPlayersWithCurrentSide(game, ROLE_SIDES.VILLAGERS);
+  if (group === PlayerGroups.VILLAGERS) {
+    return getPlayersWithCurrentSide(game, RoleSides.VILLAGERS);
   }
-  return getPlayersWithCurrentSide(game, ROLE_SIDES.WEREWOLVES);
+  return getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES);
 }
 
-function isGameSourceRole(source: GameSource): source is ROLE_NAMES {
-  return Object.values(ROLE_NAMES).includes(source as ROLE_NAMES);
+function isGameSourceRole(source: GameSource): source is RoleNames {
+  return Object.values(RoleNames).includes(source as RoleNames);
 }
 
-function isGameSourceGroup(source: GameSource): source is PLAYER_GROUPS {
-  return Object.values(PLAYER_GROUPS).includes(source as PLAYER_GROUPS);
+function isGameSourceGroup(source: GameSource): source is PlayerGroups {
+  return Object.values(PlayerGroups).includes(source as PlayerGroups);
 }
 
 function getNonexistentPlayerId(game: Game, candidateIds?: Types.ObjectId[]): Types.ObjectId | undefined {
@@ -177,7 +177,7 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
 
 function getExpectedPlayersToPlay(game: Game): Player[] {
   const { currentPlay } = game;
-  const mustIncludeDeadPlayersGamePlayActions = [GAME_PLAY_ACTIONS.SHOOT, GAME_PLAY_ACTIONS.BAN_VOTING, GAME_PLAY_ACTIONS.DELEGATE];
+  const mustIncludeDeadPlayersGamePlayActions = [GamePlayActions.SHOOT, GamePlayActions.BAN_VOTING, GamePlayActions.DELEGATE];
   let expectedPlayersToPlay: Player[] = [];
   if (currentPlay === null) {
     throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
@@ -187,7 +187,7 @@ function getExpectedPlayersToPlay(game: Game): Player[] {
   } else if (isGameSourceRole(currentPlay.source.name)) {
     expectedPlayersToPlay = getPlayersWithCurrentRole(game, currentPlay.source.name);
   } else {
-    expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+    expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.SHERIFF);
   }
   if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
     expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);

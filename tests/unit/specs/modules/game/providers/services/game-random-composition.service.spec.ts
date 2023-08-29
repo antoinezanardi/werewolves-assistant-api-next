@@ -8,8 +8,8 @@ import { areCompositionRolesMinInGameRespected } from "@/modules/game/dto/base/d
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import { GameRandomCompositionService } from "@/modules/game/providers/services/game-random-composition.service";
-import { roles } from "@/modules/role/constants/role.constant";
-import { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES } from "@/modules/role/enums/role.enum";
+import { ROLES } from "@/modules/role/constants/role.constant";
+import { RoleNames, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
 import type { Role } from "@/modules/role/types/role.type";
 
 import { createFakeGetGameRandomCompositionDto } from "@tests/factories/game/dto/get-game-random-composition/get-game-random-composition.dto.factory";
@@ -44,98 +44,98 @@ describe("Game Random Composition Service", () => {
   
   describe("getRandomRolesForSide", () => {
     it("should get only werewolves when side is werewolves and no roles are available.", () => {
-      const result = services.gameRandomComposition["getRandomRolesForSide"]([], 10, ROLE_SIDES.WEREWOLVES);
+      const result = services.gameRandomComposition["getRandomRolesForSide"]([], 10, RoleSides.WEREWOLVES);
 
       expect(result).toHaveLength(10);
-      expect(result.every(role => role.name === ROLE_NAMES.WEREWOLF)).toBe(true);
+      expect(result.every(role => role.name === RoleNames.WEREWOLF)).toBe(true);
     });
 
     it("should get only villagers when side is villagers and no roles are available.", () => {
-      const result = services.gameRandomComposition["getRandomRolesForSide"]([], 24, ROLE_SIDES.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"]([], 24, RoleSides.VILLAGERS);
 
       expect(result).toHaveLength(24);
-      expect(result.every(role => role.name === ROLE_NAMES.VILLAGER)).toBe(true);
+      expect(result.every(role => role.name === RoleNames.VILLAGER)).toBe(true);
     });
 
     it("should get seer, witch, pied piper, and all others are villagers when side is villagers and only seer and witch are available.", () => {
       const availableRoles: Role[] = [
-        { name: ROLE_NAMES.SEER, side: ROLE_SIDES.VILLAGERS, maxInGame: 1, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 1, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.PIED_PIPER, side: ROLE_SIDES.VILLAGERS, maxInGame: 1, type: ROLE_TYPES.VILLAGER },
+        { name: RoleNames.SEER, side: RoleSides.VILLAGERS, maxInGame: 1, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 1, type: RoleTypes.VILLAGER },
+        { name: RoleNames.PIED_PIPER, side: RoleSides.VILLAGERS, maxInGame: 1, type: RoleTypes.VILLAGER },
       ];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 10, ROLE_SIDES.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 10, RoleSides.VILLAGERS);
 
       expect(result).toIncludeAllMembers([
-        { name: ROLE_NAMES.SEER, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.PIED_PIPER, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.VILLAGER, side: ROLE_SIDES.VILLAGERS, maxInGame: 99, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.VILLAGER, side: ROLE_SIDES.VILLAGERS, maxInGame: 99, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.VILLAGER, side: ROLE_SIDES.VILLAGERS, maxInGame: 99, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.VILLAGER, side: ROLE_SIDES.VILLAGERS, maxInGame: 99, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.VILLAGER, side: ROLE_SIDES.VILLAGERS, maxInGame: 99, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.VILLAGER, side: ROLE_SIDES.VILLAGERS, maxInGame: 99, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.VILLAGER, side: ROLE_SIDES.VILLAGERS, maxInGame: 99, type: ROLE_TYPES.VILLAGER },
+        { name: RoleNames.SEER, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.PIED_PIPER, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.VILLAGER, side: RoleSides.VILLAGERS, maxInGame: 99, type: RoleTypes.VILLAGER },
+        { name: RoleNames.VILLAGER, side: RoleSides.VILLAGERS, maxInGame: 99, type: RoleTypes.VILLAGER },
+        { name: RoleNames.VILLAGER, side: RoleSides.VILLAGERS, maxInGame: 99, type: RoleTypes.VILLAGER },
+        { name: RoleNames.VILLAGER, side: RoleSides.VILLAGERS, maxInGame: 99, type: RoleTypes.VILLAGER },
+        { name: RoleNames.VILLAGER, side: RoleSides.VILLAGERS, maxInGame: 99, type: RoleTypes.VILLAGER },
+        { name: RoleNames.VILLAGER, side: RoleSides.VILLAGERS, maxInGame: 99, type: RoleTypes.VILLAGER },
+        { name: RoleNames.VILLAGER, side: RoleSides.VILLAGERS, maxInGame: 99, type: RoleTypes.VILLAGER },
       ]);
     });
 
     it("should not get fox when minInGame is too high for left to pick.", () => {
       const availableRoles: Role[] = [
-        { name: ROLE_NAMES.SEER, side: ROLE_SIDES.VILLAGERS, maxInGame: 1, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 1, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.FOX, side: ROLE_SIDES.VILLAGERS, minInGame: 99, maxInGame: 1, type: ROLE_TYPES.VILLAGER },
+        { name: RoleNames.SEER, side: RoleSides.VILLAGERS, maxInGame: 1, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 1, type: RoleTypes.VILLAGER },
+        { name: RoleNames.FOX, side: RoleSides.VILLAGERS, minInGame: 99, maxInGame: 1, type: RoleTypes.VILLAGER },
       ];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 90, ROLE_SIDES.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 90, RoleSides.VILLAGERS);
 
       expect(result).toHaveLength(90);
-      expect(result.find(role => role.name === ROLE_NAMES.FOX)).toBeUndefined();
+      expect(result.find(role => role.name === RoleNames.FOX)).toBeUndefined();
     });
 
     it("should get three brothers when minInGame is exactly left to pick count.", () => {
-      const availableRoles: Role[] = [{ name: ROLE_NAMES.THREE_BROTHERS, side: ROLE_SIDES.VILLAGERS, minInGame: 3, maxInGame: 3, type: ROLE_TYPES.VILLAGER }];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 3, ROLE_SIDES.VILLAGERS);
+      const availableRoles: Role[] = [{ name: RoleNames.THREE_BROTHERS, side: RoleSides.VILLAGERS, minInGame: 3, maxInGame: 3, type: RoleTypes.VILLAGER }];
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 3, RoleSides.VILLAGERS);
 
       expect(result).toHaveLength(3);
       expect(result).toIncludeAllMembers([
-        { name: ROLE_NAMES.THREE_BROTHERS, side: ROLE_SIDES.VILLAGERS, minInGame: 3, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.THREE_BROTHERS, side: ROLE_SIDES.VILLAGERS, minInGame: 3, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.THREE_BROTHERS, side: ROLE_SIDES.VILLAGERS, minInGame: 3, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
+        { name: RoleNames.THREE_BROTHERS, side: RoleSides.VILLAGERS, minInGame: 3, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.THREE_BROTHERS, side: RoleSides.VILLAGERS, minInGame: 3, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.THREE_BROTHERS, side: RoleSides.VILLAGERS, minInGame: 3, maxInGame: 0, type: RoleTypes.VILLAGER },
       ]);
     });
 
     it("should get two sisters when minInGame is lower than left to pick count.", () => {
       const availableRoles: Role[] = [
-        { name: ROLE_NAMES.TWO_SISTERS, side: ROLE_SIDES.VILLAGERS, minInGame: 2, maxInGame: 2, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.SEER, side: ROLE_SIDES.VILLAGERS, maxInGame: 1, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 1, type: ROLE_TYPES.VILLAGER },
+        { name: RoleNames.TWO_SISTERS, side: RoleSides.VILLAGERS, minInGame: 2, maxInGame: 2, type: RoleTypes.VILLAGER },
+        { name: RoleNames.SEER, side: RoleSides.VILLAGERS, maxInGame: 1, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 1, type: RoleTypes.VILLAGER },
       ];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 4, ROLE_SIDES.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 4, RoleSides.VILLAGERS);
 
       expect(result).toHaveLength(4);
       expect(result).toIncludeAllMembers([
-        { name: ROLE_NAMES.TWO_SISTERS, side: ROLE_SIDES.VILLAGERS, minInGame: 2, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.TWO_SISTERS, side: ROLE_SIDES.VILLAGERS, minInGame: 2, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.SEER, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
+        { name: RoleNames.TWO_SISTERS, side: RoleSides.VILLAGERS, minInGame: 2, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.TWO_SISTERS, side: RoleSides.VILLAGERS, minInGame: 2, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.SEER, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
       ]);
     });
 
     it("should get full witches when maxInGame is equal to left to pick count.", () => {
-      const availableRoles: Role[] = [{ name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 10, type: ROLE_TYPES.VILLAGER }];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 10, ROLE_SIDES.VILLAGERS);
+      const availableRoles: Role[] = [{ name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 10, type: RoleTypes.VILLAGER }];
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 10, RoleSides.VILLAGERS);
 
       expect(result).toHaveLength(10);
       expect(result).toIncludeAllMembers([
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
-        { name: ROLE_NAMES.WITCH, side: ROLE_SIDES.VILLAGERS, maxInGame: 0, type: ROLE_TYPES.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
+        { name: RoleNames.WITCH, side: RoleSides.VILLAGERS, maxInGame: 0, type: RoleTypes.VILLAGER },
       ]);
     });
   });
@@ -156,7 +156,7 @@ describe("Game Random Composition Service", () => {
   describe("getAvailableRolesForGameRandomComposition", () => {
     const players = bulkCreateFakeCreateGamePlayerDto(60);
     it("should not include some roles when there are excluded.", () => {
-      const excludedRoles: ROLE_NAMES[] = [ROLE_NAMES.SEER, ROLE_NAMES.WITCH, ROLE_NAMES.PIED_PIPER, ROLE_NAMES.WHITE_WEREWOLF];
+      const excludedRoles: RoleNames[] = [RoleNames.SEER, RoleNames.WITCH, RoleNames.PIED_PIPER, RoleNames.WHITE_WEREWOLF];
       const result = services.gameRandomComposition["getAvailableRolesForGameRandomComposition"](createFakeGetGameRandomCompositionDto({ players, excludedRoles }));
 
       expect(result.every(role => !excludedRoles.includes(role.name))).toBe(true);
@@ -166,56 +166,56 @@ describe("Game Random Composition Service", () => {
       const compositionDto = createFakeGetGameRandomCompositionDto({ players, arePowerfulVillagerRolesPrioritized: false });
       const result = services.gameRandomComposition["getAvailableRolesForGameRandomComposition"](compositionDto);
 
-      expect(result.some(role => role.name === ROLE_NAMES.VILLAGER)).toBe(true);
+      expect(result.some(role => role.name === RoleNames.VILLAGER)).toBe(true);
     });
 
     it("should include default villager role when powerful villager roles are not prioritized.", () => {
       const compositionDto = createFakeGetGameRandomCompositionDto({ players, arePowerfulVillagerRolesPrioritized: true });
       const result = services.gameRandomComposition["getAvailableRolesForGameRandomComposition"](compositionDto);
 
-      expect(result.some(role => role.name === ROLE_NAMES.VILLAGER)).toBe(false);
+      expect(result.some(role => role.name === RoleNames.VILLAGER)).toBe(false);
     });
 
     it("should not include default werewolf role when powerful werewolf roles are prioritized.", () => {
       const compositionDto = createFakeGetGameRandomCompositionDto({ players, arePowerfulWerewolfRolesPrioritized: false });
       const result = services.gameRandomComposition["getAvailableRolesForGameRandomComposition"](compositionDto);
 
-      expect(result.some(role => role.name === ROLE_NAMES.WEREWOLF)).toBe(true);
+      expect(result.some(role => role.name === RoleNames.WEREWOLF)).toBe(true);
     });
 
     it("should include default werewolf role when powerful werewolf roles are not prioritized.", () => {
       const compositionDto = createFakeGetGameRandomCompositionDto({ players, arePowerfulWerewolfRolesPrioritized: true });
       const result = services.gameRandomComposition["getAvailableRolesForGameRandomComposition"](compositionDto);
 
-      expect(result.some(role => role.name === ROLE_NAMES.WEREWOLF)).toBe(false);
+      expect(result.some(role => role.name === RoleNames.WEREWOLF)).toBe(false);
     });
 
     it("should not include roles with recommended minimum of players when areRecommendedMinPlayersRespected is true and not enough players.", () => {
-      const rolesWithoutRecommendedMinPlayers = roles.filter(role => role.recommendedMinPlayers === undefined);
+      const rolesWithoutRecommendedMinPlayers = ROLES.filter(role => role.recommendedMinPlayers === undefined);
       const result = services.gameRandomComposition["getAvailableRolesForGameRandomComposition"](createFakeGetGameRandomCompositionDto({
         players: bulkCreateFakeCreateGamePlayerDto(10),
         excludedRoles: rolesWithoutRecommendedMinPlayers.map(({ name }) => name),
         areRecommendedMinPlayersRespected: true,
       }));
-      const expectedRoleNames = [ROLE_NAMES.VILLAGER, ROLE_NAMES.WEREWOLF];
+      const expectedRoleNames = [RoleNames.VILLAGER, RoleNames.WEREWOLF];
 
       expect(result.every(role => expectedRoleNames.includes(role.name))).toBe(true);
     });
 
     it("should include roles with recommended minimum of players when areRecommendedMinPlayersRespected is true when enough players.", () => {
-      const rolesWithoutRecommendedMinPlayers = roles.filter(role => role.recommendedMinPlayers === undefined);
+      const rolesWithoutRecommendedMinPlayers = ROLES.filter(role => role.recommendedMinPlayers === undefined);
       const result = services.gameRandomComposition["getAvailableRolesForGameRandomComposition"](createFakeGetGameRandomCompositionDto({
         players: bulkCreateFakeCreateGamePlayerDto(12),
         excludedRoles: rolesWithoutRecommendedMinPlayers.map(({ name }) => name),
         areRecommendedMinPlayersRespected: true,
       }));
       const expectedRoleNames = [
-        ROLE_NAMES.WEREWOLF,
-        ROLE_NAMES.PIED_PIPER,
-        ROLE_NAMES.FOX,
-        ROLE_NAMES.TWO_SISTERS,
-        ROLE_NAMES.WHITE_WEREWOLF,
-        ROLE_NAMES.VILE_FATHER_OF_WOLVES,
+        RoleNames.WEREWOLF,
+        RoleNames.PIED_PIPER,
+        RoleNames.FOX,
+        RoleNames.TWO_SISTERS,
+        RoleNames.WHITE_WEREWOLF,
+        RoleNames.VILE_FATHER_OF_WOLVES,
       ];
 
       expect(result).toHaveLength(6);

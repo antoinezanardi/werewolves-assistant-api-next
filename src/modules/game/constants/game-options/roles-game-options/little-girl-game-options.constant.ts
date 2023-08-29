@@ -1,15 +1,18 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { LittleGirlGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options.schema";
 
-const littleGirlGameOptionsFieldsSpecs = Object.freeze({ isProtectedByGuard: { default: defaultGameOptions.roles.littleGirl.isProtectedByGuard } });
+const LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS = Object.freeze({ isProtectedByGuard: { default: DEFAULT_GAME_OPTIONS.roles.littleGirl.isProtectedByGuard } });
 
-const littleGirlGameOptionsApiProperties: Record<keyof LittleGirlGameOptions, ApiPropertyOptions> = Object.freeze({
+const LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES: Record<keyof LittleGirlGameOptions, ApiPropertyOptions> = Object.freeze({
   isProtectedByGuard: {
     description: "If set to `false`, the `little girl` won't be protected by the `guard` from the `werewolves` attacks",
-    ...littleGirlGameOptionsFieldsSpecs.isProtectedByGuard,
+    ...LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS.isProtectedByGuard,
   },
 });
 
-export { littleGirlGameOptionsApiProperties, littleGirlGameOptionsFieldsSpecs };
+export {
+  LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES,
+  LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS,
+};

@@ -1,18 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, Max, Min } from "class-validator";
 
-import { stutteringJudgeGameOptionsApiProperties, stutteringJudgeGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/stuttering-judge-game-options.constant";
+import { STUTTERING_JUDGE_GAME_OPTIONS_API_PROPERTIES, STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/stuttering-judge-game-options.constant";
 
 class CreateStutteringJudgeGameOptionsDto {
   @ApiProperty({
-    ...stutteringJudgeGameOptionsApiProperties.voteRequestsCount,
+    ...STUTTERING_JUDGE_GAME_OPTIONS_API_PROPERTIES.voteRequestsCount,
     required: false,
   })
   @IsOptional()
   @IsInt()
-  @Min(stutteringJudgeGameOptionsFieldsSpecs.voteRequestsCount.minimum)
-  @Max(stutteringJudgeGameOptionsFieldsSpecs.voteRequestsCount.maximum)
-  public voteRequestsCount: number = stutteringJudgeGameOptionsFieldsSpecs.voteRequestsCount.default;
+  @Min(STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS.voteRequestsCount.minimum)
+  @Max(STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS.voteRequestsCount.maximum)
+  public voteRequestsCount: number = STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS.voteRequestsCount.default;
 }
 
 export { CreateStutteringJudgeGameOptionsDto };

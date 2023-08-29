@@ -2,19 +2,19 @@ import isObject from "isobject";
 import { has } from "lodash";
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 
-import { roles } from "@/modules/role/constants/role.constant";
-import type { ROLE_SIDES, ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { ROLES } from "@/modules/role/constants/role.constant";
+import type { RoleSides, RoleNames } from "@/modules/role/enums/role.enum";
 
 function playerSideTransformer(params: TransformFnParams): unknown {
   if (!isObject(params.value) || !isObject(params.obj) || !has(params.obj as object, ["role", "name"])) {
     return params.value;
   }
-  const obj = params.obj as { role: { name: ROLE_NAMES } };
+  const obj = params.obj as { role: { name: RoleNames } };
   const value = params.value as {
-    current: ROLE_SIDES;
-    original: ROLE_SIDES;
+    current: RoleSides;
+    original: RoleSides;
   };
-  const role = roles.find(({ name }) => name === obj.role.name);
+  const role = ROLES.find(({ name }) => name === obj.role.name);
   if (role === undefined) {
     return value;
   }

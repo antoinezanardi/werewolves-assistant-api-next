@@ -1,12 +1,15 @@
-enum GAME_PHASES {
+enum GamePhases {
   DAY = "day",
   NIGHT = "night",
 }
 
-enum GAME_STATUSES {
+enum GameStatuses {
   PLAYING = "playing",
   OVER = "over",
   CANCELED = "canceled",
 }
 
-export { GAME_PHASES, GAME_STATUSES };
+export {
+  GamePhases,
+  GameStatuses,
+};

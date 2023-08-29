@@ -1,26 +1,29 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { ThiefGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/thief-game-options.schema";
 
-const thiefGameOptionsFieldsSpecs = Object.freeze({
-  mustChooseBetweenWerewolves: { default: defaultGameOptions.roles.thief.mustChooseBetweenWerewolves },
+const THIEF_GAME_OPTIONS_FIELDS_SPECS = Object.freeze({
+  mustChooseBetweenWerewolves: { default: DEFAULT_GAME_OPTIONS.roles.thief.mustChooseBetweenWerewolves },
   additionalCardsCount: {
-    default: defaultGameOptions.roles.thief.additionalCardsCount,
+    default: DEFAULT_GAME_OPTIONS.roles.thief.additionalCardsCount,
     minimum: 1,
     maximum: 5,
   },
 });
 
-const thiefGameOptionsApiProperties: Record<keyof ThiefGameOptions, ApiPropertyOptions> = Object.freeze({
+const THIEF_GAME_OPTIONS_API_PROPERTIES: Record<keyof ThiefGameOptions, ApiPropertyOptions> = Object.freeze({
   mustChooseBetweenWerewolves: {
     description: "If set to `true`, if all `thief` additional cards are from the `werewolves` side, he can't skip and must choose one",
-    ...thiefGameOptionsFieldsSpecs.mustChooseBetweenWerewolves,
+    ...THIEF_GAME_OPTIONS_FIELDS_SPECS.mustChooseBetweenWerewolves,
   },
   additionalCardsCount: {
     description: "Number of additional cards for the `thief` at the beginning of the game",
-    ...thiefGameOptionsFieldsSpecs.additionalCardsCount,
+    ...THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount,
   },
 });
 
-export { thiefGameOptionsApiProperties, thiefGameOptionsFieldsSpecs };
+export {
+  THIEF_GAME_OPTIONS_API_PROPERTIES,
+  THIEF_GAME_OPTIONS_FIELDS_SPECS,
+};

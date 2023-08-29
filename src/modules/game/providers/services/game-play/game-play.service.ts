@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 
-import { gamePlaysNightOrder } from "@/modules/game/constants/game.constant";
+import { GAME_PLAYS_NIGHT_ORDER } from "@/modules/game/constants/game.constant";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { GAME_PLAY_CAUSES, WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { areGamePlaysEqual, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
 import { createGame } from "@/modules/game/helpers/game.factory";
@@ -16,7 +16,7 @@ import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-reco
 import type { SheriffGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { createNoGamePlayPriorityUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -51,7 +51,7 @@ export class GamePlayService {
 
   public async getUpcomingNightPlays(game: CreateGameDto | Game): Promise<GamePlay[]> {
     const isFirstNight = game.turn === 1;
-    const eligibleNightPlays = gamePlaysNightOrder.filter(play => isFirstNight || play.isFirstNightOnly !== true);
+    const eligibleNightPlays = GAME_PLAYS_NIGHT_ORDER.filter(play => isFirstNight || play.isFirstNightOnly !== true);
     const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase);
     const upcomingNightPlays: GamePlay[] = isSheriffElectionTime ? [createGamePlayAllElectSheriff()] : [];
     for (const eligibleNightPlay of eligibleNightPlays) {
@@ -87,7 +87,7 @@ export class GamePlayService {
 
   private async getNewUpcomingPlaysForCurrentPhase(game: Game): Promise<GamePlay[]> {
     const { _id, turn, phase } = game;
-    const currentPhaseUpcomingPlays = game.phase === GAME_PHASES.NIGHT ? await this.getUpcomingNightPlays(game) : this.getUpcomingDayPlays();
+    const currentPhaseUpcomingPlays = game.phase === GamePhases.NIGHT ? await this.getUpcomingNightPlays(game) : this.getUpcomingDayPlays();
     const gameHistoryPhaseRecords = await this.gameHistoryRecordService.getGameHistoryPhaseRecords(_id, turn, phase);
     return currentPhaseUpcomingPlays.filter(gamePlay => this.isUpcomingPlayNewForCurrentPhase(gamePlay, game, gameHistoryPhaseRecords));
   }
@@ -111,54 +111,54 @@ export class GamePlayService {
     });
   }
 
-  private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GAME_PHASES): boolean {
+  private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GamePhases): boolean {
     const { electedAt, isEnabled } = sheriffGameOptions;
     return isEnabled && electedAt.turn === currentTurn && electedAt.phase === currentPhase;
   }
 
   private isLoversGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
     if (game instanceof CreateGameDto) {
-      return !!getPlayerDtoWithRole(game, ROLE_NAMES.CUPID);
+      return !!getPlayerDtoWithRole(game, RoleNames.CUPID);
     }
-    const cupidPlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.CUPID);
+    const cupidPlayer = getPlayerWithCurrentRole(game, RoleNames.CUPID);
     if (!cupidPlayer) {
       return false;
     }
-    const inLovePlayers = getPlayersWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.IN_LOVE);
+    const inLovePlayers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
     return !inLovePlayers.length && isPlayerAliveAndPowerful(cupidPlayer, game) || inLovePlayers.length > 0 && inLovePlayers.every(player => player.isAlive);
   }
 
   private isAllGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): boolean {
-    if (gamePlay.cause !== GAME_PLAY_CAUSES.ANGEL_PRESENCE) {
+    if (gamePlay.cause !== GamePlayCauses.ANGEL_PRESENCE) {
       return true;
     }
     if (game instanceof CreateGameDto) {
-      return !!getPlayerDtoWithRole(game, ROLE_NAMES.ANGEL);
+      return !!getPlayerDtoWithRole(game, RoleNames.ANGEL);
     }
-    const angelPlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.ANGEL);
+    const angelPlayer = getPlayerWithCurrentRole(game, RoleNames.ANGEL);
     return !!angelPlayer && isPlayerAliveAndPowerful(angelPlayer, game);
   }
 
   private isGroupGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): boolean {
-    const source = gamePlay.source.name as PLAYER_GROUPS;
-    const specificGroupMethods: Record<PLAYER_GROUPS, (game: CreateGameDto | Game, gamePlay: GamePlay) => boolean> = {
-      [PLAYER_GROUPS.ALL]: this.isAllGamePlaySuitableForCurrentPhase,
-      [PLAYER_GROUPS.LOVERS]: this.isLoversGamePlaySuitableForCurrentPhase,
-      [PLAYER_GROUPS.CHARMED]: this.isPiedPiperGamePlaySuitableForCurrentPhase,
-      [PLAYER_GROUPS.WEREWOLVES]: () => game instanceof CreateGameDto || getGroupOfPlayers(game, source).some(werewolf => isPlayerAliveAndPowerful(werewolf, game)),
-      [PLAYER_GROUPS.VILLAGERS]: () => false,
+    const source = gamePlay.source.name as PlayerGroups;
+    const specificGroupMethods: Record<PlayerGroups, (game: CreateGameDto | Game, gamePlay: GamePlay) => boolean> = {
+      [PlayerGroups.ALL]: this.isAllGamePlaySuitableForCurrentPhase,
+      [PlayerGroups.LOVERS]: this.isLoversGamePlaySuitableForCurrentPhase,
+      [PlayerGroups.CHARMED]: this.isPiedPiperGamePlaySuitableForCurrentPhase,
+      [PlayerGroups.WEREWOLVES]: () => game instanceof CreateGameDto || getGroupOfPlayers(game, source).some(werewolf => isPlayerAliveAndPowerful(werewolf, game)),
+      [PlayerGroups.VILLAGERS]: () => false,
     };
     return specificGroupMethods[source](game, gamePlay);
   }
 
   private async isWitchGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {
     if (game instanceof CreateGameDto) {
-      return !!getPlayerDtoWithRole(game, ROLE_NAMES.WITCH);
+      return !!getPlayerDtoWithRole(game, RoleNames.WITCH);
     }
-    const hasWitchUsedLifePotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WITCH_POTIONS.LIFE)).length > 0;
-    const hasWitchUsedDeathPotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WITCH_POTIONS.DEATH)).length > 0;
+    const hasWitchUsedLifePotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.LIFE)).length > 0;
+    const hasWitchUsedDeathPotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.DEATH)).length > 0;
     const { doSkipCallIfNoTarget } = game.options.roles;
-    const witchPlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.WITCH);
+    const witchPlayer = getPlayerWithCurrentRole(game, RoleNames.WITCH);
     return !!witchPlayer && isPlayerAliveAndPowerful(witchPlayer, game) && (!doSkipCallIfNoTarget || !hasWitchUsedLifePotion || !hasWitchUsedDeathPotion);
   }
 
@@ -166,31 +166,31 @@ export class GamePlayService {
     const { wakingUpInterval } = game.options.roles.whiteWerewolf;
     const shouldWhiteWerewolfBeCalledOnCurrentTurn = (game.turn - 1) % wakingUpInterval === 0;
     if (game instanceof CreateGameDto) {
-      return shouldWhiteWerewolfBeCalledOnCurrentTurn && !!getPlayerDtoWithRole(game, ROLE_NAMES.WHITE_WEREWOLF);
+      return shouldWhiteWerewolfBeCalledOnCurrentTurn && !!getPlayerDtoWithRole(game, RoleNames.WHITE_WEREWOLF);
     }
     const { doSkipCallIfNoTarget } = game.options.roles;
     const availableTargets = getLeftToEatByWhiteWerewolfPlayers(game);
-    const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.WHITE_WEREWOLF);
+    const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, RoleNames.WHITE_WEREWOLF);
     return shouldWhiteWerewolfBeCalledOnCurrentTurn && !!whiteWerewolfPlayer && isPlayerAliveAndPowerful(whiteWerewolfPlayer, game) &&
       (!doSkipCallIfNoTarget || !!availableTargets.length);
   }
 
   private isPiedPiperGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
     if (game instanceof CreateGameDto) {
-      return !!getPlayerDtoWithRole(game, ROLE_NAMES.PIED_PIPER);
+      return !!getPlayerDtoWithRole(game, RoleNames.PIED_PIPER);
     }
-    const piedPiperPlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.PIED_PIPER);
+    const piedPiperPlayer = getPlayerWithCurrentRole(game, RoleNames.PIED_PIPER);
     return !!piedPiperPlayer && canPiedPiperCharm(piedPiperPlayer, game);
   }
 
   private isBigBadWolfGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
     if (game instanceof CreateGameDto) {
-      return !!getPlayerDtoWithRole(game, ROLE_NAMES.BIG_BAD_WOLF);
+      return !!getPlayerDtoWithRole(game, RoleNames.BIG_BAD_WOLF);
     }
     const { doSkipCallIfNoTarget } = game.options.roles;
     const availableTargets = getLeftToEatByWerewolvesPlayers(game);
     const { isPowerlessIfWerewolfDies } = game.options.roles.bigBadWolf;
-    const bigBadWolfPlayer = getPlayerWithCurrentRole(game, ROLE_NAMES.BIG_BAD_WOLF);
+    const bigBadWolfPlayer = getPlayerWithCurrentRole(game, RoleNames.BIG_BAD_WOLF);
     return !!bigBadWolfPlayer && isPlayerAliveAndPowerful(bigBadWolfPlayer, game) &&
       (!isPowerlessIfWerewolfDies || areAllWerewolvesAlive(game) && (!doSkipCallIfNoTarget || !!availableTargets.length));
   }
@@ -199,9 +199,9 @@ export class GamePlayService {
     const { wakingUpInterval } = game.options.roles.threeBrothers;
     const shouldThreeBrothersBeCalled = wakingUpInterval > 0;
     if (game instanceof CreateGameDto) {
-      return shouldThreeBrothersBeCalled && !!getPlayerDtoWithRole(game, ROLE_NAMES.THREE_BROTHERS);
+      return shouldThreeBrothersBeCalled && !!getPlayerDtoWithRole(game, RoleNames.THREE_BROTHERS);
     }
-    const threeBrothersPlayers = getPlayersWithCurrentRole(game, ROLE_NAMES.THREE_BROTHERS);
+    const threeBrothersPlayers = getPlayersWithCurrentRole(game, RoleNames.THREE_BROTHERS);
     const minimumBrotherCountToCall = 2;
     return shouldThreeBrothersBeCalled && threeBrothersPlayers.filter(brother => brother.isAlive).length >= minimumBrotherCountToCall;
   }
@@ -210,27 +210,27 @@ export class GamePlayService {
     const { wakingUpInterval } = game.options.roles.twoSisters;
     const shouldTwoSistersBeCalled = wakingUpInterval > 0;
     if (game instanceof CreateGameDto) {
-      return shouldTwoSistersBeCalled && !!getPlayerDtoWithRole(game, ROLE_NAMES.TWO_SISTERS);
+      return shouldTwoSistersBeCalled && !!getPlayerDtoWithRole(game, RoleNames.TWO_SISTERS);
     }
-    const twoSistersPlayers = getPlayersWithCurrentRole(game, ROLE_NAMES.TWO_SISTERS);
+    const twoSistersPlayers = getPlayersWithCurrentRole(game, RoleNames.TWO_SISTERS);
     return shouldTwoSistersBeCalled && twoSistersPlayers.length > 0 && twoSistersPlayers.every(sister => sister.isAlive);
   }
 
   private async isRoleGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
-    const source = gamePlay.source.name as ROLE_NAMES;
+    const source = gamePlay.source.name as RoleNames;
     const player = game instanceof CreateGameDto ? getPlayerDtoWithRole(game, source) : getPlayerWithCurrentRole(game, source);
     if (!player) {
       return false;
     }
-    const specificRoleMethods: Partial<Record<ROLE_NAMES, () => Promise<boolean> | boolean>> = {
-      [ROLE_NAMES.TWO_SISTERS]: () => this.isTwoSistersGamePlaySuitableForCurrentPhase(game),
-      [ROLE_NAMES.THREE_BROTHERS]: () => this.isThreeBrothersGamePlaySuitableForCurrentPhase(game),
-      [ROLE_NAMES.BIG_BAD_WOLF]: () => this.isBigBadWolfGamePlaySuitableForCurrentPhase(game),
-      [ROLE_NAMES.PIED_PIPER]: () => this.isPiedPiperGamePlaySuitableForCurrentPhase(game),
-      [ROLE_NAMES.WHITE_WEREWOLF]: () => this.isWhiteWerewolfGamePlaySuitableForCurrentPhase(game),
-      [ROLE_NAMES.WITCH]: async() => this.isWitchGamePlaySuitableForCurrentPhase(game),
-      [ROLE_NAMES.HUNTER]: () => player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game),
-      [ROLE_NAMES.SCAPEGOAT]: () => player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game),
+    const specificRoleMethods: Partial<Record<RoleNames, () => Promise<boolean> | boolean>> = {
+      [RoleNames.TWO_SISTERS]: () => this.isTwoSistersGamePlaySuitableForCurrentPhase(game),
+      [RoleNames.THREE_BROTHERS]: () => this.isThreeBrothersGamePlaySuitableForCurrentPhase(game),
+      [RoleNames.BIG_BAD_WOLF]: () => this.isBigBadWolfGamePlaySuitableForCurrentPhase(game),
+      [RoleNames.PIED_PIPER]: () => this.isPiedPiperGamePlaySuitableForCurrentPhase(game),
+      [RoleNames.WHITE_WEREWOLF]: () => this.isWhiteWerewolfGamePlaySuitableForCurrentPhase(game),
+      [RoleNames.WITCH]: async() => this.isWitchGamePlaySuitableForCurrentPhase(game),
+      [RoleNames.HUNTER]: () => player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game),
+      [RoleNames.SCAPEGOAT]: () => player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game),
     };
     if (specificRoleMethods[source] !== undefined) {
       return await specificRoleMethods[source]?.() === true;
@@ -245,7 +245,7 @@ export class GamePlayService {
     if (game instanceof CreateGameDto) {
       return true;
     }
-    const sheriffPlayer = getPlayerWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+    const sheriffPlayer = getPlayerWithActiveAttributeName(game, PlayerAttributeNames.SHERIFF);
     return !!sheriffPlayer;
   }
 

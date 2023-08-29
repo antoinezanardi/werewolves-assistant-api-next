@@ -1,9 +1,9 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 
-const gameHistoryRecordFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecord, ApiPropertyOptions>>({
+const GAME_HISTORY_RECORD_FIELDS_SPECS = Object.freeze<Record<keyof GameHistoryRecord, ApiPropertyOptions>>({
   _id: { required: true },
   gameId: { required: true },
   turn: {
@@ -11,7 +11,7 @@ const gameHistoryRecordFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecor
     required: true,
   },
   phase: {
-    enum: GAME_PHASES,
+    enum: GamePhases,
     required: true,
   },
   tick: {
@@ -24,48 +24,48 @@ const gameHistoryRecordFieldsSpecs = Object.freeze<Record<keyof GameHistoryRecor
   createdAt: { required: true },
 });
 
-const gameHistoryRecordApiProperties = Object.freeze<Record<keyof GameHistoryRecord, ApiPropertyOptions>>({
+const GAME_HISTORY_RECORD_API_PROPERTIES = Object.freeze<Record<keyof GameHistoryRecord, ApiPropertyOptions>>({
   _id: {
     description: "Game history record's Mongo ObjectId",
     example: "507f1f77bcf86cd799439011",
-    ...gameHistoryRecordFieldsSpecs._id,
+    ...GAME_HISTORY_RECORD_FIELDS_SPECS._id,
   },
   gameId: {
     description: "Game's Mongo ObjectId related to this history record",
     example: "507f1f77bcf86cd799439012",
-    ...gameHistoryRecordFieldsSpecs.gameId,
+    ...GAME_HISTORY_RECORD_FIELDS_SPECS.gameId,
   },
   turn: {
     description: "Game's turn recorded in history",
-    ...gameHistoryRecordFieldsSpecs.turn,
+    ...GAME_HISTORY_RECORD_FIELDS_SPECS.turn,
   },
   phase: {
     description: "Game's phase recorded in history",
-    ...gameHistoryRecordFieldsSpecs.phase,
+    ...GAME_HISTORY_RECORD_FIELDS_SPECS.phase,
   },
   tick: {
     description: "Game's tick recorded in history",
-    ...gameHistoryRecordFieldsSpecs.tick,
+    ...GAME_HISTORY_RECORD_FIELDS_SPECS.tick,
   },
   play: {
     description: "Game's play recorded in history",
-    ...gameHistoryRecordFieldsSpecs.play,
+    ...GAME_HISTORY_RECORD_FIELDS_SPECS.play,
   },
   revealedPlayers: {
     description: "Player(s) which the role has been revealed after the play",
-    ...gameHistoryRecordFieldsSpecs.revealedPlayers,
+    ...GAME_HISTORY_RECORD_FIELDS_SPECS.revealedPlayers,
   },
   deadPlayers: {
     description: "Player(s) that died after the play",
-    ...gameHistoryRecordFieldsSpecs.deadPlayers,
+    ...GAME_HISTORY_RECORD_FIELDS_SPECS.deadPlayers,
   },
   createdAt: {
     description: "When the game history record was created",
-    ...gameHistoryRecordFieldsSpecs.createdAt,
+    ...GAME_HISTORY_RECORD_FIELDS_SPECS.createdAt,
   },
 });
 
 export {
-  gameHistoryRecordFieldsSpecs,
-  gameHistoryRecordApiProperties,
+  GAME_HISTORY_RECORD_FIELDS_SPECS,
+  GAME_HISTORY_RECORD_API_PROPERTIES,
 };

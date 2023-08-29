@@ -2,8 +2,8 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { playerRoleApiProperties } from "@/modules/game/constants/player/player-role.constant";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { PLAYER_ROLE_API_PROPERTIES } from "@/modules/game/constants/player/player-role.constant";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Schema({
   versionKey: false,
@@ -11,22 +11,25 @@ import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
   _id: false,
 })
 class PlayerRole {
-  @ApiProperty(playerRoleApiProperties.original)
+  @ApiProperty(PLAYER_ROLE_API_PROPERTIES.original)
   @Prop({ required: true })
   @Expose()
-  public original: ROLE_NAMES;
+  public original: RoleNames;
 
-  @ApiProperty(playerRoleApiProperties.current)
+  @ApiProperty(PLAYER_ROLE_API_PROPERTIES.current)
   @Prop({ required: true })
   @Expose()
-  public current: ROLE_NAMES;
+  public current: RoleNames;
 
-  @ApiProperty(playerRoleApiProperties.isRevealed)
+  @ApiProperty(PLAYER_ROLE_API_PROPERTIES.isRevealed)
   @Prop({ required: true })
   @Expose()
   public isRevealed: boolean;
 }
 
-const PlayerRoleSchema = SchemaFactory.createForClass(PlayerRole);
+const PLAYER_ROLE_SCHEMA = SchemaFactory.createForClass(PlayerRole);
 
-export { PlayerRole, PlayerRoleSchema };
+export {
+  PlayerRole,
+  PLAYER_ROLE_SCHEMA,
+};

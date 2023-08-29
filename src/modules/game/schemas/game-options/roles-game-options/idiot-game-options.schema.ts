@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { idiotGameOptionsApiProperties, idiotGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/idiot-game-options.constant";
+import { IDIOT_GAME_OPTIONS_API_PROPERTIES, IDIOT_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/idiot-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,12 +10,15 @@ import { idiotGameOptionsApiProperties, idiotGameOptionsFieldsSpecs } from "@/mo
   _id: false,
 })
 class IdiotGameOptions {
-  @ApiProperty(idiotGameOptionsApiProperties.doesDieOnAncientDeath)
-  @Prop({ default: idiotGameOptionsFieldsSpecs.doesDieOnAncientDeath.default })
+  @ApiProperty(IDIOT_GAME_OPTIONS_API_PROPERTIES.doesDieOnAncientDeath)
+  @Prop({ default: IDIOT_GAME_OPTIONS_FIELDS_SPECS.doesDieOnAncientDeath.default })
   @Expose()
   public doesDieOnAncientDeath: boolean;
 }
 
-const IdiotGameOptionsSchema = SchemaFactory.createForClass(IdiotGameOptions);
+const IDIOT_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(IdiotGameOptions);
 
-export { IdiotGameOptions, IdiotGameOptionsSchema };
+export {
+  IdiotGameOptions,
+  IDIOT_GAME_OPTIONS_SCHEMA,
+};

@@ -1,19 +1,19 @@
 import { plainToInstance } from "class-transformer";
 
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "@/modules/game/enums/player.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { toJSON } from "@tests/helpers/object/object.helper";
 
 function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.CONTAMINATED,
-    source: ROLE_NAMES.RUSTY_SWORD_KNIGHT,
+    name: PlayerAttributeNames.CONTAMINATED,
+    source: RoleNames.RUSTY_SWORD_KNIGHT,
     remainingPhases: 2,
     ...playerAttribute,
   });
@@ -21,8 +21,8 @@ function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Pa
 
 function createGrowledByBearTamerPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.GROWLED,
-    source: ROLE_NAMES.BEAR_TAMER,
+    name: PlayerAttributeNames.GROWLED,
+    source: RoleNames.BEAR_TAMER,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -30,28 +30,28 @@ function createGrowledByBearTamerPlayerAttribute(playerAttribute: Partial<Player
 
 function createCharmedByPiedPiperPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.CHARMED,
-    source: ROLE_NAMES.PIED_PIPER,
+    name: PlayerAttributeNames.CHARMED,
+    source: RoleNames.PIED_PIPER,
     ...playerAttribute,
   });
 }
 
 function createCantVoteByAllPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
-    source: PLAYER_GROUPS.ALL,
+    name: PlayerAttributeNames.CANT_VOTE,
+    source: PlayerGroups.ALL,
     ...playerAttribute,
   });
 }
 
 function createCantVoteByScapegoatPlayerAttribute(game: Game, playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
-    source: ROLE_NAMES.SCAPEGOAT,
+    name: PlayerAttributeNames.CANT_VOTE,
+    source: RoleNames.SCAPEGOAT,
     remainingPhases: 1,
     activeAt: {
-      turn: game.phase === GAME_PHASES.DAY ? game.turn + 1 : game.turn,
-      phase: GAME_PHASES.DAY,
+      turn: game.phase === GamePhases.DAY ? game.turn + 1 : game.turn,
+      phase: GamePhases.DAY,
     },
     ...playerAttribute,
   });
@@ -59,8 +59,8 @@ function createCantVoteByScapegoatPlayerAttribute(game: Game, playerAttribute: P
 
 function createPowerlessByFoxPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
-    source: ROLE_NAMES.FOX,
+    name: PlayerAttributeNames.POWERLESS,
+    source: RoleNames.FOX,
     doesRemainAfterDeath: true,
     ...playerAttribute,
   });
@@ -68,8 +68,8 @@ function createPowerlessByFoxPlayerAttribute(playerAttribute: Partial<PlayerAttr
 
 function createPowerlessByAncientPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
-    source: ROLE_NAMES.ANCIENT,
+    name: PlayerAttributeNames.POWERLESS,
+    source: RoleNames.ANCIENT,
     doesRemainAfterDeath: true,
     ...playerAttribute,
   });
@@ -77,24 +77,24 @@ function createPowerlessByAncientPlayerAttribute(playerAttribute: Partial<Player
 
 function createWorshipedByWildChildPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.WORSHIPED,
-    source: ROLE_NAMES.WILD_CHILD,
+    name: PlayerAttributeNames.WORSHIPED,
+    source: RoleNames.WILD_CHILD,
     ...playerAttribute,
   });
 }
 
 function createInLoveByCupidPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.IN_LOVE,
-    source: ROLE_NAMES.CUPID,
+    name: PlayerAttributeNames.IN_LOVE,
+    source: RoleNames.CUPID,
     ...playerAttribute,
   });
 }
 
 function createRavenMarkByRavenPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.RAVEN_MARKED,
-    source: ROLE_NAMES.RAVEN,
+    name: PlayerAttributeNames.RAVEN_MARKED,
+    source: RoleNames.RAVEN,
     remainingPhases: 2,
     ...playerAttribute,
   });
@@ -102,8 +102,8 @@ function createRavenMarkByRavenPlayerAttribute(playerAttribute: Partial<PlayerAt
 
 function createProtectedByGuardPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.PROTECTED,
-    source: ROLE_NAMES.GUARD,
+    name: PlayerAttributeNames.PROTECTED,
+    source: RoleNames.GUARD,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -111,8 +111,8 @@ function createProtectedByGuardPlayerAttribute(playerAttribute: Partial<PlayerAt
 
 function createDrankDeathPotionByWitchPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.DRANK_DEATH_POTION,
-    source: ROLE_NAMES.WITCH,
+    name: PlayerAttributeNames.DRANK_DEATH_POTION,
+    source: RoleNames.WITCH,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -120,8 +120,8 @@ function createDrankDeathPotionByWitchPlayerAttribute(playerAttribute: Partial<P
 
 function createDrankLifePotionByWitchPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.DRANK_LIFE_POTION,
-    source: ROLE_NAMES.WITCH,
+    name: PlayerAttributeNames.DRANK_LIFE_POTION,
+    source: RoleNames.WITCH,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -129,8 +129,8 @@ function createDrankLifePotionByWitchPlayerAttribute(playerAttribute: Partial<Pl
 
 function createEatenByBigBadWolfPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.EATEN,
-    source: ROLE_NAMES.BIG_BAD_WOLF,
+    name: PlayerAttributeNames.EATEN,
+    source: RoleNames.BIG_BAD_WOLF,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -138,8 +138,8 @@ function createEatenByBigBadWolfPlayerAttribute(playerAttribute: Partial<PlayerA
 
 function createEatenByWhiteWerewolfPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.EATEN,
-    source: ROLE_NAMES.WHITE_WEREWOLF,
+    name: PlayerAttributeNames.EATEN,
+    source: RoleNames.WHITE_WEREWOLF,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -147,8 +147,8 @@ function createEatenByWhiteWerewolfPlayerAttribute(playerAttribute: Partial<Play
 
 function createEatenByWerewolvesPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.EATEN,
-    source: PLAYER_GROUPS.WEREWOLVES,
+    name: PlayerAttributeNames.EATEN,
+    source: PlayerGroups.WEREWOLVES,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -156,8 +156,8 @@ function createEatenByWerewolvesPlayerAttribute(playerAttribute: Partial<PlayerA
 
 function createSeenBySeerPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.SEEN,
-    source: ROLE_NAMES.SEER,
+    name: PlayerAttributeNames.SEEN,
+    source: RoleNames.SEER,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -165,8 +165,8 @@ function createSeenBySeerPlayerAttribute(playerAttribute: Partial<PlayerAttribut
 
 function createSheriffBySheriffPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
-    source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+    name: PlayerAttributeNames.SHERIFF,
+    source: PlayerAttributeNames.SHERIFF,
     doesRemainAfterDeath: true,
     ...playerAttribute,
   });
@@ -174,15 +174,15 @@ function createSheriffBySheriffPlayerAttribute(playerAttribute: Partial<PlayerAt
 
 function createSheriffByAllPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
-    source: PLAYER_GROUPS.ALL,
+    name: PlayerAttributeNames.SHERIFF,
+    source: PlayerGroups.ALL,
     doesRemainAfterDeath: true,
     ...playerAttribute,
   });
 }
 
 function createPlayerAttribute(playerAttribute: PlayerAttribute): PlayerAttribute {
-  return plainToInstance(PlayerAttribute, toJSON(playerAttribute), plainToInstanceDefaultOptions);
+  return plainToInstance(PlayerAttribute, toJSON(playerAttribute), PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 export {

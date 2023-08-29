@@ -3,13 +3,12 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import type { FilterQuery, Types } from "mongoose";
 
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
-import { GAME_PLAY_ACTIONS, WITCH_POTIONS } from "@/modules/game/enums/game-play.enum";
-import type { GAME_PHASES } from "@/modules/game/enums/game.enum";
-import type { GameHistoryRecordDocument } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
+import { GamePlayActions, WitchPotions } from "@/modules/game/enums/game-play.enum";
+import type { GamePhases } from "@/modules/game/enums/game.enum";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
-import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import type { GameHistoryRecordDocument, GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Injectable()
 export class GameHistoryRecordRepository {
@@ -26,26 +25,26 @@ export class GameHistoryRecordRepository {
   public async getLastGameHistoryGuardProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
-      "play.action": GAME_PLAY_ACTIONS.PROTECT,
-      "play.source.name": ROLE_NAMES.GUARD,
+      "play.action": GamePlayActions.PROTECT,
+      "play.source.name": RoleNames.GUARD,
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
   
-  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GAME_PLAY_ACTIONS): Promise<GameHistoryRecord | null> {
+  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayActions): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": action,
-      "play.voting.result": GAME_HISTORY_RECORD_VOTING_RESULTS.TIE,
+      "play.voting.result": GameHistoryRecordVotingResults.TIE,
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
-  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WITCH_POTIONS): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
-      "play.source.name": ROLE_NAMES.WITCH,
-      "play.action": GAME_PLAY_ACTIONS.USE_POTIONS,
+      "play.source.name": RoleNames.WITCH,
+      "play.action": GamePlayActions.USE_POTIONS,
       "play.targets.drankPotion": potion,
     };
     return this.gameHistoryRecordModel.find(filter);
@@ -54,7 +53,7 @@ export class GameHistoryRecordRepository {
   public async getGameHistoryVileFatherOfWolvesInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
-      "play.action": GAME_PLAY_ACTIONS.EAT,
+      "play.action": GamePlayActions.EAT,
       "play.targets.isInfected": true,
     };
     return this.gameHistoryRecordModel.find(filter);
@@ -71,8 +70,8 @@ export class GameHistoryRecordRepository {
   public async getGameHistoryWerewolvesEatAncientRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
-      "play.action": GAME_PLAY_ACTIONS.EAT,
-      "play.targets.player.role.current": ROLE_NAMES.ANCIENT,
+      "play.action": GamePlayActions.EAT,
+      "play.targets.player.role.current": RoleNames.ANCIENT,
     };
     return this.gameHistoryRecordModel.find(filter);
   }
@@ -82,17 +81,17 @@ export class GameHistoryRecordRepository {
       gameId,
       $or: [
         {
-          "play.source.name": ROLE_NAMES.GUARD,
-          "play.action": GAME_PLAY_ACTIONS.PROTECT,
-          "play.targets.player.role.current": ROLE_NAMES.ANCIENT,
+          "play.source.name": RoleNames.GUARD,
+          "play.action": GamePlayActions.PROTECT,
+          "play.targets.player.role.current": RoleNames.ANCIENT,
         },
         {
-          "play.source.name": ROLE_NAMES.WITCH,
-          "play.action": GAME_PLAY_ACTIONS.USE_POTIONS,
+          "play.source.name": RoleNames.WITCH,
+          "play.action": GamePlayActions.USE_POTIONS,
           "play.targets": {
             $elemMatch: {
-              "player.role.current": ROLE_NAMES.ANCIENT,
-              "drankPotion": WITCH_POTIONS.LIFE,
+              "player.role.current": RoleNames.ANCIENT,
+              "drankPotion": WitchPotions.LIFE,
             },
           },
         },
@@ -106,7 +105,7 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
-  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GAME_PHASES): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhases): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordModel.find({ gameId, turn, phase });
   }
 }

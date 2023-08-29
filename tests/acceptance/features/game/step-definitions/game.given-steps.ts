@@ -8,7 +8,7 @@ import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 
-import { plainToInstanceDefaultOptions } from "@/shared/validation/constants/validation.constant";
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 import { readJsonFile } from "@tests/acceptance/shared/helpers/file.helper";
@@ -42,7 +42,7 @@ Given(
       players,
       options,
       additionalCards: additionalCards.length ? additionalCards : undefined,
-    }, plainToInstanceDefaultOptions);
+    }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 
     this.response = await createGameRequest(createGameDto, this.app);
     this.game = this.response.json<Game>();

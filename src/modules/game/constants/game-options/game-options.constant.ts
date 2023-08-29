@@ -1,9 +1,9 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 
-const defaultGameOptions: GameOptions = Object.freeze({
+const DEFAULT_GAME_OPTIONS: GameOptions = Object.freeze({
   composition: { isHidden: false },
   votes: { canBeSkipped: true },
   roles: {
@@ -13,7 +13,7 @@ const defaultGameOptions: GameOptions = Object.freeze({
       isEnabled: true,
       electedAt: {
         turn: 1,
-        phase: GAME_PHASES.NIGHT,
+        phase: GamePhases.NIGHT,
       },
       hasDoubledVote: true,
     },
@@ -49,10 +49,13 @@ const defaultGameOptions: GameOptions = Object.freeze({
   },
 });
 
-const gameOptionsApiProperties: Record<keyof GameOptions, ApiPropertyOptions> = Object.freeze({
+const GAME_OPTIONS_API_PROPERTIES: Record<keyof GameOptions, ApiPropertyOptions> = Object.freeze({
   composition: { description: "Game's composition options" },
   votes: { description: "Game's votes options" },
   roles: { description: "Game's roles options" },
 });
 
-export { defaultGameOptions, gameOptionsApiProperties };
+export {
+  DEFAULT_GAME_OPTIONS,
+  GAME_OPTIONS_API_PROPERTIES,
+};

@@ -1,25 +1,28 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { SheriffElectionGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options.schema";
 
-const sheriffElectionGameOptionsFieldsSpecs = Object.freeze({
+const SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS = Object.freeze({
   turn: {
-    default: defaultGameOptions.roles.sheriff.electedAt.turn,
+    default: DEFAULT_GAME_OPTIONS.roles.sheriff.electedAt.turn,
     minimum: 1,
   },
-  phase: { default: defaultGameOptions.roles.sheriff.electedAt.phase },
+  phase: { default: DEFAULT_GAME_OPTIONS.roles.sheriff.electedAt.phase },
 });
 
-const sheriffElectionGameOptionsApiProperties: Record<keyof SheriffElectionGameOptions, ApiPropertyOptions> = Object.freeze({
+const SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES: Record<keyof SheriffElectionGameOptions, ApiPropertyOptions> = Object.freeze({
   turn: {
     description: "Game's turn when the `sheriff` is elected",
-    ...sheriffElectionGameOptionsFieldsSpecs.turn,
+    ...SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.turn,
   },
   phase: {
     description: "Game's phase when the `sheriff` is elected",
-    ...sheriffElectionGameOptionsFieldsSpecs.phase,
+    ...SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.phase,
   },
 });
 
-export { sheriffElectionGameOptionsApiProperties, sheriffElectionGameOptionsFieldsSpecs };
+export {
+  SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES,
+  SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS,
+};

@@ -3,7 +3,7 @@ import type { Config } from "jest";
 
 import { compilerOptions } from "../../tsconfig.json";
 
-const config: Config = {
+const JEST_UNIT_CONFIG: Config = {
   moduleFileExtensions: ["js", "ts"],
   rootDir: "../../",
   testEnvironment: "node",
@@ -38,4 +38,4 @@ const config: Config = {
   },
 };
 
-export default config;
+export default JEST_UNIT_CONFIG;

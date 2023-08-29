@@ -1,26 +1,26 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
 
-import { sheriffElectionGameOptionsApiProperties, sheriffElectionGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options.constant";
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES, SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options.constant";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 
 class CreateSheriffElectionGameOptionsDto {
   @ApiProperty({
-    ...sheriffElectionGameOptionsApiProperties.turn,
+    ...SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES.turn,
     required: false,
   })
   @IsOptional()
   @IsInt()
-  @Min(sheriffElectionGameOptionsFieldsSpecs.turn.minimum)
-  public turn: number = sheriffElectionGameOptionsFieldsSpecs.turn.default;
+  @Min(SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.turn.minimum)
+  public turn: number = SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.turn.default;
 
   @ApiProperty({
-    ...sheriffElectionGameOptionsApiProperties.phase,
+    ...SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES.phase,
     required: false,
   })
   @IsOptional()
-  @IsEnum(GAME_PHASES)
-  public phase: GAME_PHASES = sheriffElectionGameOptionsFieldsSpecs.phase.default;
+  @IsEnum(GamePhases)
+  public phase: GamePhases = SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.phase.default;
 }
 
 export { CreateSheriffElectionGameOptionsDto };

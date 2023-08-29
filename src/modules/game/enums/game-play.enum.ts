@@ -1,4 +1,4 @@
-enum GAME_PLAY_ACTIONS {
+enum GamePlayActions {
   EAT = "eat",
   LOOK = "look",
   CHARM = "charm",
@@ -19,19 +19,19 @@ enum GAME_PLAY_ACTIONS {
   SETTLE_VOTES = "settle-votes",
 }
 
-enum GAME_PLAY_CAUSES {
+enum GamePlayCauses {
   STUTTERING_JUDGE_REQUEST = "stuttering-judge-request",
   PREVIOUS_VOTES_WERE_IN_TIES = "previous-votes-were-in-ties",
   ANGEL_PRESENCE = "angel-presence",
 }
 
-enum WITCH_POTIONS {
+enum WitchPotions {
   LIFE = "life",
   DEATH = "death",
 }
 
 export {
-  GAME_PLAY_ACTIONS,
-  GAME_PLAY_CAUSES,
-  WITCH_POTIONS,
+  GamePlayActions,
+  GamePlayCauses,
+  WitchPotions,
 };

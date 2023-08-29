@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { foxGameOptionsApiProperties, foxGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/fox-game-options.constant";
+import { FOX_GAME_OPTIONS_API_PROPERTIES, FOX_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/fox-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,12 +10,15 @@ import { foxGameOptionsApiProperties, foxGameOptionsFieldsSpecs } from "@/module
   _id: false,
 })
 class FoxGameOptions {
-  @ApiProperty(foxGameOptionsApiProperties.isPowerlessIfMissesWerewolf)
-  @Prop({ default: foxGameOptionsFieldsSpecs.isPowerlessIfMissesWerewolf.default })
+  @ApiProperty(FOX_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfMissesWerewolf)
+  @Prop({ default: FOX_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfMissesWerewolf.default })
   @Expose()
   public isPowerlessIfMissesWerewolf: boolean;
 }
 
-const FoxGameOptionsSchema = SchemaFactory.createForClass(FoxGameOptions);
+const FOX_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(FoxGameOptions);
 
-export { FoxGameOptions, FoxGameOptionsSchema };
+export {
+  FoxGameOptions,
+  FOX_GAME_OPTIONS_SCHEMA,
+};

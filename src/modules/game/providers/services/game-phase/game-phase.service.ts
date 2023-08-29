@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/enums/player.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
+import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { doesPlayerHaveActiveAttributeWithName, getActivePlayerAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
@@ -27,13 +27,13 @@ export class GamePhaseService {
 
   public async switchPhaseAndAppendGamePhaseUpcomingPlays(game: Game): Promise<Game> {
     const clonedGame = createGame(game);
-    clonedGame.phase = clonedGame.phase === GAME_PHASES.NIGHT ? GAME_PHASES.DAY : GAME_PHASES.NIGHT;
-    if (clonedGame.phase === GAME_PHASES.NIGHT) {
+    clonedGame.phase = clonedGame.phase === GamePhases.NIGHT ? GamePhases.DAY : GamePhases.NIGHT;
+    if (clonedGame.phase === GamePhases.NIGHT) {
       clonedGame.turn++;
     }
     const upcomingNightPlays = await this.gamePlayService.getUpcomingNightPlays(clonedGame);
     const upcomingDayPlays = this.gamePlayService.getUpcomingDayPlays();
-    const phaseUpcomingPlays = clonedGame.phase === GAME_PHASES.NIGHT ? upcomingNightPlays : upcomingDayPlays;
+    const phaseUpcomingPlays = clonedGame.phase === GamePhases.NIGHT ? upcomingNightPlays : upcomingDayPlays;
     clonedGame.upcomingPlays = [...clonedGame.upcomingPlays, ...phaseUpcomingPlays];
     return clonedGame;
   }
@@ -41,7 +41,7 @@ export class GamePhaseService {
   private async applyEndingDayPlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);
-    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, PLAYER_ATTRIBUTE_NAMES.CONTAMINATED, clonedGame)) {
+    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, PlayerAttributeNames.CONTAMINATED, clonedGame)) {
       clonedGame = await this.playerAttributeService.applyContaminatedAttributeOutcomes(clonedPlayer, clonedGame);
     }
     return clonedGame;
@@ -50,11 +50,11 @@ export class GamePhaseService {
   private async applyEndingNightPlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);
-    const eatenAttribute = getActivePlayerAttributeWithName(clonedPlayer, PLAYER_ATTRIBUTE_NAMES.EATEN, clonedGame);
+    const eatenAttribute = getActivePlayerAttributeWithName(clonedPlayer, PlayerAttributeNames.EATEN, clonedGame);
     if (eatenAttribute) {
       clonedGame = await this.playerAttributeService.applyEatenAttributeOutcomes(clonedPlayer, clonedGame, eatenAttribute);
     }
-    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, PLAYER_ATTRIBUTE_NAMES.DRANK_DEATH_POTION, clonedGame)) {
+    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, PlayerAttributeNames.DRANK_DEATH_POTION, clonedGame)) {
       clonedGame = await this.playerAttributeService.applyDrankDeathPotionAttributeOutcomes(clonedPlayer, clonedGame);
     }
     return clonedGame;
@@ -63,7 +63,7 @@ export class GamePhaseService {
   private async applyEndingGamePhasePlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     const clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);
-    if (clonedGame.phase === GAME_PHASES.NIGHT) {
+    if (clonedGame.phase === GamePhases.NIGHT) {
       return this.applyEndingNightPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);
     }
     return this.applyEndingDayPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);

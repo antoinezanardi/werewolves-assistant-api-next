@@ -1,47 +1,47 @@
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "@/modules/game/enums/game-play.enum";
+import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import { createGamePlayAllElectSheriff, createGamePlayAllVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 
 import { createFakeGamePlaySheriffSettlesVotes } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 
-const requiredTargetsActions: Readonly<GAME_PLAY_ACTIONS[]> = Object.freeze([
-  GAME_PLAY_ACTIONS.LOOK,
-  GAME_PLAY_ACTIONS.CHARM,
-  GAME_PLAY_ACTIONS.SHOOT,
-  GAME_PLAY_ACTIONS.PROTECT,
-  GAME_PLAY_ACTIONS.CHOOSE_MODEL,
-  GAME_PLAY_ACTIONS.DELEGATE,
-  GAME_PLAY_ACTIONS.SETTLE_VOTES,
+const REQUIRED_TARGET_ACTIONS: Readonly<GamePlayActions[]> = Object.freeze([
+  GamePlayActions.LOOK,
+  GamePlayActions.CHARM,
+  GamePlayActions.SHOOT,
+  GamePlayActions.PROTECT,
+  GamePlayActions.CHOOSE_MODEL,
+  GamePlayActions.DELEGATE,
+  GamePlayActions.SETTLE_VOTES,
 ]);
 
-const optionalTargetsActions: Readonly<GAME_PLAY_ACTIONS[]> = Object.freeze([
-  GAME_PLAY_ACTIONS.EAT,
-  GAME_PLAY_ACTIONS.USE_POTIONS,
-  GAME_PLAY_ACTIONS.MARK,
-  GAME_PLAY_ACTIONS.SNIFF,
-  GAME_PLAY_ACTIONS.BAN_VOTING,
+const OPTIONAL_TARGET_ACTIONS: Readonly<GamePlayActions[]> = Object.freeze([
+  GamePlayActions.EAT,
+  GamePlayActions.USE_POTIONS,
+  GamePlayActions.MARK,
+  GamePlayActions.SNIFF,
+  GamePlayActions.BAN_VOTING,
 ]);
 
-const requiredVotesActions: Readonly<GAME_PLAY_ACTIONS[]> = Object.freeze([
-  GAME_PLAY_ACTIONS.VOTE,
-  GAME_PLAY_ACTIONS.ELECT_SHERIFF,
+const REQUIRED_VOTE_ACTIONS: Readonly<GamePlayActions[]> = Object.freeze([
+  GamePlayActions.VOTE,
+  GamePlayActions.ELECT_SHERIFF,
 ]);
 
-const stutteringJudgeRequestOpportunityActions: Readonly<GAME_PLAY_ACTIONS[]> = Object.freeze([
-  GAME_PLAY_ACTIONS.VOTE,
-  GAME_PLAY_ACTIONS.SETTLE_VOTES,
+const STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS: Readonly<GamePlayActions[]> = Object.freeze([
+  GamePlayActions.VOTE,
+  GamePlayActions.SETTLE_VOTES,
 ]);
 
-const gamePlaysPriorityList: Readonly<GamePlay[]> = Object.freeze([
+const GAME_PLAYS_PRIORITY_LIST: Readonly<GamePlay[]> = Object.freeze([
   createGamePlayHunterShoots(),
-  createGamePlayAllElectSheriff({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+  createGamePlayAllElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
   createGamePlayAllElectSheriff(),
   createGamePlaySheriffDelegates(),
   createGamePlayScapegoatBansVoting(),
   createFakeGamePlaySheriffSettlesVotes(),
-  createGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
-  createGamePlayAllVote({ cause: GAME_PLAY_CAUSES.ANGEL_PRESENCE }),
-  createGamePlayAllVote({ cause: GAME_PLAY_CAUSES.STUTTERING_JUDGE_REQUEST }),
+  createGamePlayAllVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
+  createGamePlayAllVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+  createGamePlayAllVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }),
   createGamePlayAllVote(),
   createGamePlayThiefChoosesCard(),
   createGamePlayDogWolfChoosesSide(),
@@ -64,9 +64,9 @@ const gamePlaysPriorityList: Readonly<GamePlay[]> = Object.freeze([
 ]);
 
 export {
-  requiredTargetsActions,
-  optionalTargetsActions,
-  requiredVotesActions,
-  stutteringJudgeRequestOpportunityActions,
-  gamePlaysPriorityList,
+  REQUIRED_TARGET_ACTIONS,
+  OPTIONAL_TARGET_ACTIONS,
+  REQUIRED_VOTE_ACTIONS,
+  STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS,
+  GAME_PLAYS_PRIORITY_LIST,
 };

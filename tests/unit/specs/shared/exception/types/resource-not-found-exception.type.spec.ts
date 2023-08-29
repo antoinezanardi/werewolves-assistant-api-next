@@ -1,5 +1,5 @@
-import { API_RESOURCES } from "@/shared/api/enums/api.enum";
-import { RESOURCE_NOT_FOUND_REASONS } from "@/shared/exception/enums/resource-not-found-error.enum";
+import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
 
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";
@@ -8,7 +8,7 @@ describe("Resource not found exception type", () => {
   describe("getResponse", () => {
     it("should get response without description when called without reason.", () => {
       const id = "123";
-      const exception = new ResourceNotFoundException(API_RESOURCES.PLAYERS, id);
+      const exception = new ResourceNotFoundException(ApiResources.PLAYERS, id);
 
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 404,
@@ -19,7 +19,7 @@ describe("Resource not found exception type", () => {
 
     it("should get response with description when called with reason.", () => {
       const id = "123";
-      const exception = new ResourceNotFoundException(API_RESOURCES.PLAYERS, id, RESOURCE_NOT_FOUND_REASONS.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
+      const exception = new ResourceNotFoundException(ApiResources.PLAYERS, id, ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
 
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 404,

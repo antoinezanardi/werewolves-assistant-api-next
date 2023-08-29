@@ -2,9 +2,9 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { gameHistoryRecordPlayVotingApiProperties, gameHistoryRecordPlayVotingFieldsSpecs } from "@/modules/game/constants/game-history-record/game-history-record-play/game-history-record-play-voting.constant";
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/enums/game-history-record.enum";
-import { Player, PlayerSchema } from "@/modules/game/schemas/player/player.schema";
+import { GAME_HISTORY_RECORD_PLAY_VOTING_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS } from "@/modules/game/constants/game-history-record/game-history-record-play/game-history-record-play-voting.constant";
+import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
+import { Player, PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
   versionKey: false,
@@ -12,18 +12,18 @@ import { Player, PlayerSchema } from "@/modules/game/schemas/player/player.schem
   _id: false,
 })
 class GameHistoryRecordPlayVoting {
-  @ApiProperty(gameHistoryRecordPlayVotingApiProperties.result)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_VOTING_API_PROPERTIES.result)
   @Prop({
-    required: gameHistoryRecordPlayVotingFieldsSpecs.result.required,
-    enum: gameHistoryRecordPlayVotingFieldsSpecs.result.enum,
+    required: GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS.result.required,
+    enum: GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS.result.enum,
   })
   @Expose()
-  public result: GAME_HISTORY_RECORD_VOTING_RESULTS;
+  public result: GameHistoryRecordVotingResults;
 
-  @ApiProperty(gameHistoryRecordPlayVotingApiProperties.nominatedPlayers)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_VOTING_API_PROPERTIES.nominatedPlayers)
   @Prop({
-    required: gameHistoryRecordPlayVotingFieldsSpecs.nominatedPlayers.required,
-    type: [PlayerSchema],
+    required: GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS.nominatedPlayers.required,
+    type: [PLAYER_SCHEMA],
     default: undefined,
   })
   @Type(() => Player)
@@ -31,6 +31,9 @@ class GameHistoryRecordPlayVoting {
   public nominatedPlayers?: Player[];
 }
 
-const GameHistoryRecordPlayVotingSchema = SchemaFactory.createForClass(GameHistoryRecordPlayVoting);
+const GAME_HISTORY_RECORD_PLAY_VOTING_SCHEMA = SchemaFactory.createForClass(GameHistoryRecordPlayVoting);
 
-export { GameHistoryRecordPlayVoting, GameHistoryRecordPlayVotingSchema };
+export {
+  GameHistoryRecordPlayVoting,
+  GAME_HISTORY_RECORD_PLAY_VOTING_SCHEMA,
+};

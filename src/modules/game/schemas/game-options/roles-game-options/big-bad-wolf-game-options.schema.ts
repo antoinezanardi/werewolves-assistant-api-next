@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { bigBadWolfGameOptionsApiProperties, bigBadWolfGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/big-bad-wolf-game-options.constant";
+import { BIG_BAD_WOLF_GAME_OPTIONS_API_PROPERTIES, BIG_BAD_WOLF_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/big-bad-wolf-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,12 +10,12 @@ import { bigBadWolfGameOptionsApiProperties, bigBadWolfGameOptionsFieldsSpecs } 
   _id: false,
 })
 class BigBadWolfGameOptions {
-  @ApiProperty(bigBadWolfGameOptionsApiProperties.isPowerlessIfWerewolfDies)
-  @Prop({ default: bigBadWolfGameOptionsFieldsSpecs.isPowerlessIfWerewolfDies.default })
+  @ApiProperty(BIG_BAD_WOLF_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfWerewolfDies)
+  @Prop({ default: BIG_BAD_WOLF_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfWerewolfDies.default })
   @Expose()
   public isPowerlessIfWerewolfDies: boolean;
 }
 
-const BigBadWolfGameOptionsSchema = SchemaFactory.createForClass(BigBadWolfGameOptions);
+const BIG_BAD_WOLF_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(BigBadWolfGameOptions);
 
-export { BigBadWolfGameOptions, BigBadWolfGameOptionsSchema };
+export { BigBadWolfGameOptions, BIG_BAD_WOLF_GAME_OPTIONS_SCHEMA };

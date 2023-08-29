@@ -1,4 +1,4 @@
-enum ROLE_NAMES {
+enum RoleNames {
   WEREWOLF = "werewolf",
   BIG_BAD_WOLF = "big-bad-wolf",
   VILE_FATHER_OF_WOLVES = "vile-father-of-wolves",
@@ -28,16 +28,16 @@ enum ROLE_NAMES {
   RAVEN = "raven",
 }
 
-enum ROLE_SIDES {
+enum RoleSides {
   VILLAGERS = "villagers",
   WEREWOLVES = "werewolves",
 }
 
-enum ROLE_TYPES {
+enum RoleTypes {
   VILLAGER = "villager",
   WEREWOLF = "werewolf",
   LONELY = "lonely",
   AMBIGUOUS = "ambiguous",
 }
 
-export { ROLE_NAMES, ROLE_SIDES, ROLE_TYPES };
+export { RoleNames, RoleSides, RoleTypes };

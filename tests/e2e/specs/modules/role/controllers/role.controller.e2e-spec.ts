@@ -1,6 +1,6 @@
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
-import { roles } from "@/modules/role/constants/role.constant";
+import { ROLES } from "@/modules/role/constants/role.constant";
 import type { Role } from "@/modules/role/types/role.type";
 
 import { bulkCreateFakeRoles } from "@tests/factories/role/types/role.type.factory";
@@ -24,7 +24,7 @@ describe("Role Controller", () => {
       const respondedRoles = response.json<Role[]>();
 
       expect(response.statusCode).toBe(200);
-      expect(bulkCreateFakeRoles(respondedRoles.length, respondedRoles)).toStrictEqual(roles);
+      expect(bulkCreateFakeRoles(respondedRoles.length, respondedRoles)).toStrictEqual(ROLES);
     });
   });
 });

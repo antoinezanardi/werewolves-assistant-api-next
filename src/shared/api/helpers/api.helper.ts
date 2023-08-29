@@ -1,12 +1,12 @@
-import { API_RESOURCES } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enum";
 
-function getResourceSingularForm(resource: API_RESOURCES): string {
-  const resourceSingularForms: Record<API_RESOURCES, string> = {
-    [API_RESOURCES.GAMES]: "game",
-    [API_RESOURCES.PLAYERS]: "player",
-    [API_RESOURCES.GAME_ADDITIONAL_CARDS]: "additional card",
-    [API_RESOURCES.ROLES]: "role",
-    [API_RESOURCES.HEALTH]: "health",
+function getResourceSingularForm(resource: ApiResources): string {
+  const resourceSingularForms: Record<ApiResources, string> = {
+    [ApiResources.GAMES]: "game",
+    [ApiResources.PLAYERS]: "player",
+    [ApiResources.GAME_ADDITIONAL_CARDS]: "additional card",
+    [ApiResources.ROLES]: "role",
+    [ApiResources.HEALTH]: "health",
   };
   return resourceSingularForms[resource];
 }

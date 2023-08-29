@@ -2,11 +2,11 @@ import { registerDecorator } from "class-validator";
 import type { ValidationArguments, ValidationOptions } from "class-validator";
 
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { ROLE_NAMES } from "@/modules/role/enums/role.enum";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 function isAdditionalCardsPresenceRespected(value: unknown, validationArguments: ValidationArguments): boolean {
   const { players } = validationArguments.object as Partial<CreateGameDto>;
-  const doSomePlayersNeedAdditionalCards = players?.some(player => player.role.name === ROLE_NAMES.THIEF) === true;
+  const doSomePlayersNeedAdditionalCards = players?.some(player => player.role.name === RoleNames.THIEF) === true;
   return doSomePlayersNeedAdditionalCards ? Array.isArray(value) : value === undefined;
 }
 

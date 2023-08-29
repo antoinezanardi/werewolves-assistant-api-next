@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { twoSistersGameOptionsApiProperties, twoSistersGameOptionsFieldsSpecs } from "@/modules/game/constants/game-options/roles-game-options/two-sisters-game-options.constant";
+import { TWO_SISTERS_GAME_OPTIONS_API_PROPERTIES, TWO_SISTERS_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/two-sisters-game-options.constant";
 
 @Schema({
   versionKey: false,
@@ -10,16 +10,19 @@ import { twoSistersGameOptionsApiProperties, twoSistersGameOptionsFieldsSpecs } 
   _id: false,
 })
 class TwoSistersGameOptions {
-  @ApiProperty(twoSistersGameOptionsApiProperties.wakingUpInterval)
+  @ApiProperty(TWO_SISTERS_GAME_OPTIONS_API_PROPERTIES.wakingUpInterval)
   @Prop({
-    default: twoSistersGameOptionsFieldsSpecs.wakingUpInterval.default,
-    min: twoSistersGameOptionsFieldsSpecs.wakingUpInterval.minimum,
-    max: twoSistersGameOptionsFieldsSpecs.wakingUpInterval.maximum,
+    default: TWO_SISTERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.default,
+    min: TWO_SISTERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.minimum,
+    max: TWO_SISTERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.maximum,
   })
   @Expose()
   public wakingUpInterval: number;
 }
 
-const TwoSistersGameOptionsSchema = SchemaFactory.createForClass(TwoSistersGameOptions);
+const TWO_SISTERS_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(TwoSistersGameOptions);
 
-export { TwoSistersGameOptions, TwoSistersGameOptionsSchema };
+export {
+  TwoSistersGameOptions,
+  TWO_SISTERS_GAME_OPTIONS_SCHEMA,
+};

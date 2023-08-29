@@ -2,8 +2,8 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { playerAttributeActivationApiProperties, playerAttributeActivationFieldsSpecs } from "@/modules/game/constants/player/player-attribute/player-attribute-activation.constant";
-import { GAME_PHASES } from "@/modules/game/enums/game.enum";
+import { PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES, PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS } from "@/modules/game/constants/player/player-attribute/player-attribute-activation.constant";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 
 @Schema({
   versionKey: false,
@@ -11,20 +11,23 @@ import { GAME_PHASES } from "@/modules/game/enums/game.enum";
   _id: false,
 })
 class PlayerAttributeActivation {
-  @ApiProperty(playerAttributeActivationApiProperties.turn)
+  @ApiProperty(PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES.turn)
   @Prop({
     required: true,
-    min: playerAttributeActivationFieldsSpecs.turn.minimum,
+    min: PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS.turn.minimum,
   })
   @Expose()
   public turn: number;
 
-  @ApiProperty(playerAttributeActivationApiProperties.phase)
+  @ApiProperty(PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES.phase)
   @Prop({ required: true })
   @Expose()
-  public phase: GAME_PHASES;
+  public phase: GamePhases;
 }
 
-const PlayerAttributeActivationSchema = SchemaFactory.createForClass(PlayerAttributeActivation);
+const PLAYER_ATTRIBUTE_ACTIVATION_SCHEMA = SchemaFactory.createForClass(PlayerAttributeActivation);
 
-export { PlayerAttributeActivation, PlayerAttributeActivationSchema };
+export {
+  PlayerAttributeActivation,
+  PLAYER_ATTRIBUTE_ACTIVATION_SCHEMA,
+};

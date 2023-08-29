@@ -1,21 +1,21 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { defaultGameOptions } from "@/modules/game/constants/game-options/game-options.constant";
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { RolesGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema";
 
-const rolesGameOptionsFieldsSpecs = Object.freeze({
-  areRevealedOnDeath: { default: defaultGameOptions.roles.areRevealedOnDeath },
-  doSkipCallIfNoTarget: { default: defaultGameOptions.roles.doSkipCallIfNoTarget },
+const ROLES_GAME_OPTIONS_FIELDS_SPECS = Object.freeze({
+  areRevealedOnDeath: { default: DEFAULT_GAME_OPTIONS.roles.areRevealedOnDeath },
+  doSkipCallIfNoTarget: { default: DEFAULT_GAME_OPTIONS.roles.doSkipCallIfNoTarget },
 });
 
-const rolesGameOptionsApiProperties: Record<keyof RolesGameOptions, ApiPropertyOptions> = Object.freeze({
+const ROLES_GAME_OPTIONS_API_PROPERTIES: Record<keyof RolesGameOptions, ApiPropertyOptions> = Object.freeze({
   areRevealedOnDeath: {
     description: "If set to `true`, player's role is revealed when he's dead",
-    ...rolesGameOptionsFieldsSpecs.areRevealedOnDeath,
+    ...ROLES_GAME_OPTIONS_FIELDS_SPECS.areRevealedOnDeath,
   },
   doSkipCallIfNoTarget: {
     description: "If set to `true`, player's role won't be called if there is no target available for him",
-    ...rolesGameOptionsFieldsSpecs.doSkipCallIfNoTarget,
+    ...ROLES_GAME_OPTIONS_FIELDS_SPECS.doSkipCallIfNoTarget,
   },
   sheriff: { description: "Game `sheriff` role's options." },
   bigBadWolf: { description: "Game `big bad wolf` role's options." },
@@ -37,4 +37,7 @@ const rolesGameOptionsApiProperties: Record<keyof RolesGameOptions, ApiPropertyO
   raven: { description: "Game `raven` role's options." },
 });
 
-export { rolesGameOptionsApiProperties, rolesGameOptionsFieldsSpecs };
+export {
+  ROLES_GAME_OPTIONS_API_PROPERTIES,
+  ROLES_GAME_OPTIONS_FIELDS_SPECS,
+};

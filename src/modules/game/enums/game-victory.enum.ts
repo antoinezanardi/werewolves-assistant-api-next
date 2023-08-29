@@ -1,4 +1,4 @@
-enum GAME_VICTORY_TYPES {
+enum GameVictoryTypes {
   NONE = "none",
   WEREWOLVES = "werewolves",
   VILLAGERS = "villagers",
@@ -8,4 +8,4 @@ enum GAME_VICTORY_TYPES {
   ANGEL = "angel",
 }
 
-export { GAME_VICTORY_TYPES };
+export { GameVictoryTypes };
