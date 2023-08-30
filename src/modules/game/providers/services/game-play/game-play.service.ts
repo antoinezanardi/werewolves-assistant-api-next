@@ -162,9 +162,13 @@ export class GamePlayService {
     return !!witchPlayer && isPlayerAliveAndPowerful(witchPlayer, game) && (!doSkipCallIfNoTarget || !hasWitchUsedLifePotion || !hasWitchUsedDeathPotion);
   }
 
+  private shouldBeCalledOnCurrentTurnInterval(wakingUpInterval: number, game: CreateGameDto | Game): boolean {
+    return (game.turn - 1) % wakingUpInterval === 0;
+  }
+
   private isWhiteWerewolfGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
     const { wakingUpInterval } = game.options.roles.whiteWerewolf;
-    const shouldWhiteWerewolfBeCalledOnCurrentTurn = (game.turn - 1) % wakingUpInterval === 0;
+    const shouldWhiteWerewolfBeCalledOnCurrentTurn = this.shouldBeCalledOnCurrentTurnInterval(wakingUpInterval, game);
     if (game instanceof CreateGameDto) {
       return shouldWhiteWerewolfBeCalledOnCurrentTurn && !!getPlayerDtoWithRole(game, RoleNames.WHITE_WEREWOLF);
     }
@@ -208,12 +212,12 @@ export class GamePlayService {
 
   private isTwoSistersGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
     const { wakingUpInterval } = game.options.roles.twoSisters;
-    const shouldTwoSistersBeCalled = wakingUpInterval > 0;
+    const shouldTwoSistersBeCalledOnCurrentTurn = this.shouldBeCalledOnCurrentTurnInterval(wakingUpInterval, game);
     if (game instanceof CreateGameDto) {
-      return shouldTwoSistersBeCalled && !!getPlayerDtoWithRole(game, RoleNames.TWO_SISTERS);
+      return shouldTwoSistersBeCalledOnCurrentTurn && !!getPlayerDtoWithRole(game, RoleNames.TWO_SISTERS);
     }
     const twoSistersPlayers = getPlayersWithCurrentRole(game, RoleNames.TWO_SISTERS);
-    return shouldTwoSistersBeCalled && twoSistersPlayers.length > 0 && twoSistersPlayers.every(sister => sister.isAlive);
+    return shouldTwoSistersBeCalledOnCurrentTurn && twoSistersPlayers.length > 0 && twoSistersPlayers.every(sister => sister.isAlive);
   }
 
   private async isRoleGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
