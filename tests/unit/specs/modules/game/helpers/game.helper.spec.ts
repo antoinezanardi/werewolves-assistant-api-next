@@ -165,22 +165,34 @@ describe("Game Helper", () => {
 
   describe("getPlayerWithNameOrThrow", () => {
     it("should get player with specific name when called with this id.", () => {
-      const players = bulkCreateFakePlayers(6);
+      const players = [
+        createFakePlayer({ name: "player1" }),
+        createFakePlayer({ name: "player2" }),
+        createFakePlayer({ name: "player5" }),
+        createFakePlayer({ name: "player3" }),
+        createFakePlayer({ name: "player4" }),
+        createFakePlayer({ name: "player6" }),
+      ];
       const game = createFakeGame({ players });
-      const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: players[2].name };
-      const exception = new UnexpectedException("killPlayer", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+      const error = new Error("Can't find player with name…");
 
-      expect(getPlayerWithNameOrThrow(players[2].name, game, exception)).toStrictEqual(players[2]);
+      expect(getPlayerWithNameOrThrow("player5", game, error)).toStrictEqual(players[2]);
     });
 
     it("should throw error when called with unknown name.", () => {
-      const players = bulkCreateFakePlayers(6);
+      const players = [
+        createFakePlayer({ name: "player1" }),
+        createFakePlayer({ name: "player2" }),
+        createFakePlayer({ name: "player5" }),
+        createFakePlayer({ name: "player3" }),
+        createFakePlayer({ name: "player4" }),
+        createFakePlayer({ name: "player6" }),
+      ];
       const game = createFakeGame({ players });
       const unknownPlayerName = "i-cant-be-a-valid-name-that-is-bad";
-      const exceptionInterpolations: ExceptionInterpolations = { gameId: game._id.toString(), playerId: unknownPlayerName };
-      const exception = new UnexpectedException("killPlayer", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
+      const error = new Error(`Can't find player with name "${unknownPlayerName}" in game "${game._id.toString()}"`);
 
-      expect(() => getPlayerWithNameOrThrow(unknownPlayerName, game, exception)).toThrow(exception);
+      expect(() => getPlayerWithNameOrThrow(unknownPlayerName, game, error)).toThrow(error);
     });
   });
 
