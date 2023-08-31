@@ -49,6 +49,19 @@ describe("Game Play Vote Service", () => {
   });
   
   describe("getPlayerVoteCounts", () => {
+    it("should return empty array when votes are undefined.", () => {
+      const players: Player[] = [
+        createFakeAncientAlivePlayer(),
+        createFakeRavenAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ hasDoubledVote: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote(), options });
+
+      expect(services.gamePlayVote["getPlayerVoteCounts"](undefined, game)).toStrictEqual<PlayerVoteCount[]>([]);
+    });
+
     it("should get player vote counts with only simple votes when there is no sheriff.", () => {
       const players: Player[] = [
         createFakeAncientAlivePlayer(),

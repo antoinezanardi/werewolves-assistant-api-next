@@ -541,6 +541,7 @@ describe("Game Play Maker Service", () => {
       const game = createFakeGameWithCurrentPlay({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
       const expectedGame = createFakeGame(game);
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue([]);
 
       await expect(services.gamePlayMaker["allVote"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
@@ -724,6 +725,7 @@ describe("Game Play Maker Service", () => {
       const game = createFakeGameWithCurrentPlay({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
       const expectedGame = createFakeGame(game);
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue([]);
 
       expect(services.gamePlayMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
     });

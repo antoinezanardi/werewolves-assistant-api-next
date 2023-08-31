@@ -681,7 +681,7 @@ describe("Game History Record Service", () => {
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert)).toStrictEqual(expectedCurrentGameHistoryRecordPlayVoting);
     });
 
-    it("should call getNominatedPlayers method with empty votes when called without votes.", () => {
+    it("should call getNominatedPlayers method with undefined votes when called without votes.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer(),
@@ -695,7 +695,7 @@ describe("Game History Record Service", () => {
       localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue(GameHistoryRecordVotingResults.DEATH);
       services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert);
 
-      expect(mocks.gamePlayVoteService.getNominatedPlayers).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayVoteService.getNominatedPlayers).toHaveBeenCalledExactlyOnceWith(undefined, game);
     });
 
     it("should call getNominatedPlayers method with votes when called.", () => {

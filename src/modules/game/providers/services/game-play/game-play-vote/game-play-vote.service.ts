@@ -14,7 +14,7 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Injectable()
 export class GamePlayVoteService {
-  public getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): Player[] {
+  public getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Player[] {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     let playerVoteCounts = this.getPlayerVoteCounts(votes, clonedGame);
     playerVoteCounts = this.addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
@@ -22,7 +22,10 @@ export class GamePlayVoteService {
     return playerVoteCounts.filter(playerVoteCount => playerVoteCount[1] === maxVotes).map(playerVoteCount => createPlayer(playerVoteCount[0]));
   }
   
-  private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): PlayerVoteCount[] {
+  private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): PlayerVoteCount[] {
+    if (!votes) {
+      return [];
+    }
     const { hasDoubledVote: doesSheriffHaveDoubledVote } = game.options.roles.sheriff;
     const sheriffPlayer = getPlayerWithActiveAttributeName(game, PlayerAttributeNames.SHERIFF);
     return votes.reduce<PlayerVoteCount[]>((acc, vote) => {

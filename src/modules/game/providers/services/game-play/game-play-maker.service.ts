@@ -125,9 +125,6 @@ export class GamePlayMakerService {
 
   private async allVote({ votes, doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     let clonedGame = createGame(game) as GameWithCurrentPlay;
-    if (!votes) {
-      return clonedGame;
-    }
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
     if (doesJudgeRequestAnotherVote === true) {
       const gamePlayAllVote = createGamePlayAllVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST });
@@ -160,9 +157,6 @@ export class GamePlayMakerService {
   private allElectSheriff(play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     const { votes } = play;
-    if (!votes) {
-      return clonedGame;
-    }
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
     if (!nominatedPlayers.length) {
       return clonedGame;
