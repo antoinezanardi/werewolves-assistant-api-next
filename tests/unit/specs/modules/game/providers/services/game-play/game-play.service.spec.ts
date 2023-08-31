@@ -890,6 +890,49 @@ describe("Game Play Service", () => {
     });
   });
 
+  describe("shouldBeCalledOnCurrentTurnInterval", () => {
+    it.each<{ wakingUpInterval: number; game: Game; shouldBeCalled: boolean; test: string }>([
+      {
+        game: createFakeGame({ turn: 1 }),
+        wakingUpInterval: 1,
+        shouldBeCalled: true,
+        test: "waking up interval is 1 and it's the first turn.",
+      },
+      {
+        game: createFakeGame({ turn: 1 }),
+        wakingUpInterval: 2,
+        shouldBeCalled: true,
+        test: "waking up interval is 2 and it's the first turn.",
+      },
+      {
+        game: createFakeGame({ turn: 2 }),
+        wakingUpInterval: 1,
+        shouldBeCalled: true,
+        test: "waking up interval is 1 and it's the second turn.",
+      },
+      {
+        game: createFakeGame({ turn: 2 }),
+        wakingUpInterval: 2,
+        shouldBeCalled: false,
+        test: "waking up interval is 2 and it's the second turn.",
+      },
+      {
+        game: createFakeGame({ turn: 3 }),
+        wakingUpInterval: 1,
+        shouldBeCalled: true,
+        test: "waking up interval is 1 and it's the third turn.",
+      },
+      {
+        game: createFakeGame({ turn: 3 }),
+        wakingUpInterval: 2,
+        shouldBeCalled: true,
+        test: "waking up interval is 2 and it's the third turn.",
+      },
+    ])("should return $shouldBeCalled when $test [#$#].", ({ wakingUpInterval, game, shouldBeCalled }) => {
+      expect(services.gamePlay["shouldBeCalledOnCurrentTurnInterval"](wakingUpInterval, game)).toBe(shouldBeCalled);
+    });
+  });
+
   describe("isWhiteWerewolfGamePlaySuitableForCurrentPhase", () => {
     it("should return false when white werewolf is not in the game dto.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
@@ -1355,6 +1398,16 @@ describe("Game Play Service", () => {
   });
 
   describe("isTwoSistersGamePlaySuitableForCurrentPhase", () => {
+    let localMocks: {
+      gamePlayService: {
+        shouldBeCalledOnCurrentTurnInterval: jest.SpyInstance;
+      };
+    };
+    
+    beforeEach(() => {
+      localMocks = { gamePlayService: { shouldBeCalledOnCurrentTurnInterval: jest.spyOn(services.gamePlay as unknown as { shouldBeCalledOnCurrentTurnInterval }, "shouldBeCalledOnCurrentTurnInterval").mockReturnValue(true) } };
+    });
+    
     it("should return false when two sisters are not in the game dto.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
         { role: { name: RoleNames.SEER } },
@@ -1376,6 +1429,7 @@ describe("Game Play Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 0 } }) });
       const gameDto = createFakeCreateGameDto({ players, options });
+      localMocks.gamePlayService.shouldBeCalledOnCurrentTurnInterval.mockReturnValue(false);
       
       expect(services.gamePlay["isTwoSistersGamePlaySuitableForCurrentPhase"](gameDto)).toBe(false);
     });
@@ -1415,8 +1469,23 @@ describe("Game Play Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 0 } }) });
       const game = createFakeGame({ players, options });
+      localMocks.gamePlayService.shouldBeCalledOnCurrentTurnInterval.mockReturnValue(false);
       
       expect(services.gamePlay["isTwoSistersGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should call shouldBeCalledOnCurrentTurnInterval method with two sisters waking up interval when called.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeTwoSistersAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeTwoSistersAlivePlayer(),
+        createFakeWildChildAlivePlayer(),
+      ]);
+      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 342 } }) });
+      const game = createFakeGame({ players, turn: 1, options });
+      services.gamePlay["isTwoSistersGamePlaySuitableForCurrentPhase"](game);
+
+      expect(localMocks.gamePlayService.shouldBeCalledOnCurrentTurnInterval).toHaveBeenCalledWith(342, game);
     });
 
     it("should return true when two sisters are alive.", () => {
@@ -1427,7 +1496,7 @@ describe("Game Play Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 2 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isTwoSistersGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
@@ -1440,7 +1509,7 @@ describe("Game Play Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 2 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isTwoSistersGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
@@ -1453,7 +1522,7 @@ describe("Game Play Service", () => {
         createFakeWildChildAlivePlayer(),
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 2 } }) });
-      const game = createFakeGame({ players, options });
+      const game = createFakeGame({ players, turn: 1, options });
       
       expect(services.gamePlay["isTwoSistersGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
