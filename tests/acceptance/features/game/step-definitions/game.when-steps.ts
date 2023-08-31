@@ -117,6 +117,11 @@ When(/^the two sisters meet each other$/u, async function(this: CustomWorld): Pr
   this.game = this.response.json<Game>();
 });
 
+When(/^the three brothers meet each other$/u, async function(this: CustomWorld): Promise<void> {
+  this.response = await makeGamePlayRequest({}, this.game, this.app);
+  this.game = this.response.json<Game>();
+});
+
 When(/^the guard protects the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
