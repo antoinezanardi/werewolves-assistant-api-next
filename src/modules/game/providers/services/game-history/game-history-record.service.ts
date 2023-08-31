@@ -163,8 +163,7 @@ export class GameHistoryRecordService {
     newGame: Game,
     gameHistoryRecordToInsert: GameHistoryRecordToInsert,
   ): GameHistoryRecordPlayVoting {
-    const votes = gameHistoryRecordToInsert.play.votes ?? [];
-    const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, baseGame);
+    const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(gameHistoryRecordToInsert.play.votes, baseGame);
     const gameHistoryRecordPlayVoting: GameHistoryRecordPlayVoting = {
       result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, gameHistoryRecordToInsert),
       nominatedPlayers,
