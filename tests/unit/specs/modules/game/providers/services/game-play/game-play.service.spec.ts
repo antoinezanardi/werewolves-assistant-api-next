@@ -1281,6 +1281,16 @@ describe("Game Play Service", () => {
   });
 
   describe("isThreeBrothersGamePlaySuitableForCurrentPhase", () => {
+    let localMocks: {
+      gamePlayService: {
+        shouldBeCalledOnCurrentTurnInterval: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = { gamePlayService: { shouldBeCalledOnCurrentTurnInterval: jest.spyOn(services.gamePlay as unknown as { shouldBeCalledOnCurrentTurnInterval }, "shouldBeCalledOnCurrentTurnInterval").mockReturnValue(true) } };
+    });
+
     it("should return false when three brothers are not in the game dto.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
         { role: { name: RoleNames.SEER } },
@@ -1302,6 +1312,7 @@ describe("Game Play Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 0 } }) });
       const gameDto = createFakeCreateGameDto({ players, options });
+      localMocks.gamePlayService.shouldBeCalledOnCurrentTurnInterval.mockReturnValue(false);
       
       expect(services.gamePlay["isThreeBrothersGamePlaySuitableForCurrentPhase"](gameDto)).toBe(false);
     });
@@ -1340,8 +1351,23 @@ describe("Game Play Service", () => {
       ]);
       const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 0 } }) });
       const game = createFakeGame({ players, options });
+      localMocks.gamePlayService.shouldBeCalledOnCurrentTurnInterval.mockReturnValue(false);
       
       expect(services.gamePlay["isThreeBrothersGamePlaySuitableForCurrentPhase"](game)).toBe(false);
+    });
+
+    it("should call shouldBeCalledOnCurrentTurnInterval method with three brothers waking up interval when called.", () => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeTwoSistersAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeTwoSistersAlivePlayer(),
+        createFakeWildChildAlivePlayer(),
+      ]);
+      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 789 } }) });
+      const game = createFakeGame({ players, turn: 1, options });
+      services.gamePlay["isThreeBrothersGamePlaySuitableForCurrentPhase"](game);
+
+      expect(localMocks.gamePlayService.shouldBeCalledOnCurrentTurnInterval).toHaveBeenCalledWith(789, game);
     });
 
     it("should return true when three brothers are alive.", () => {
@@ -1370,7 +1396,7 @@ describe("Game Play Service", () => {
       expect(services.gamePlay["isThreeBrothersGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
 
-    it("should return false when one brothers is alive.", () => {
+    it("should return false when only one brothers is alive.", () => {
       const players = bulkCreateFakePlayers(4, [
         createFakeThreeBrothersAlivePlayer(),
         createFakeSeerAlivePlayer(),

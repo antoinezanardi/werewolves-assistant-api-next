@@ -39,7 +39,7 @@ Feature: 👯‍ Two sisters role
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
-  Scenario: 👯‍ Two sisters are called never called when options say they are not called
+  Scenario: 👯‍ Two sisters are called never called when options say they are not called at all
     Given a created game with options described in file no-sheriff-option.json, two-sisters-never-waking-up-option.json and with the following players
       | name    | role        |
       | Antoine | two-sisters |

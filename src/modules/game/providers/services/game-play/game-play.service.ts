@@ -201,13 +201,13 @@ export class GamePlayService {
 
   private isThreeBrothersGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
     const { wakingUpInterval } = game.options.roles.threeBrothers;
-    const shouldThreeBrothersBeCalled = wakingUpInterval > 0;
+    const shouldThreeBrothersBeCalledOnCurrentTurn = this.shouldBeCalledOnCurrentTurnInterval(wakingUpInterval, game);
     if (game instanceof CreateGameDto) {
-      return shouldThreeBrothersBeCalled && !!getPlayerDtoWithRole(game, RoleNames.THREE_BROTHERS);
+      return shouldThreeBrothersBeCalledOnCurrentTurn && !!getPlayerDtoWithRole(game, RoleNames.THREE_BROTHERS);
     }
     const threeBrothersPlayers = getPlayersWithCurrentRole(game, RoleNames.THREE_BROTHERS);
     const minimumBrotherCountToCall = 2;
-    return shouldThreeBrothersBeCalled && threeBrothersPlayers.filter(brother => brother.isAlive).length >= minimumBrotherCountToCall;
+    return shouldThreeBrothersBeCalledOnCurrentTurn && threeBrothersPlayers.filter(brother => brother.isAlive).length >= minimumBrotherCountToCall;
   }
 
   private isTwoSistersGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
