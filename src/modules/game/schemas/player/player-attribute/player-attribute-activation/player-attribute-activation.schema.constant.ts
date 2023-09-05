@@ -1,6 +1,6 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import type { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation.schema";
+import type { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema";
 
 const PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS = Object.freeze({ turn: { minimum: 1 } });
 

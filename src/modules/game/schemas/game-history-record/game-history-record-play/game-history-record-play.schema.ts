@@ -5,10 +5,10 @@ import { Expose, Type } from "class-transformer";
 import { GAME_HISTORY_RECORD_PLAY_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema.constant";
 import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import { GAME_ADDITIONAL_CARD_SCHEMA, GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
-import { GameHistoryRecordPlaySource, GAME_HISTORY_RECORD_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
-import { GAME_HISTORY_RECORD_PLAY_TARGET_SCHEMA, GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target.schema";
-import { GAME_HISTORY_RECORD_PLAY_VOTE_SCHEMA, GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote.schema";
-import { GameHistoryRecordPlayVoting, GAME_HISTORY_RECORD_PLAY_VOTING_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
+import { GameHistoryRecordPlaySource, GAME_HISTORY_RECORD_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
+import { GAME_HISTORY_RECORD_PLAY_TARGET_SCHEMA, GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
+import { GAME_HISTORY_RECORD_PLAY_VOTE_SCHEMA, GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
+import { GameHistoryRecordPlayVoting, GAME_HISTORY_RECORD_PLAY_VOTING_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
 import { RoleSides } from "@/modules/role/enums/role.enum";
 
 @Schema({

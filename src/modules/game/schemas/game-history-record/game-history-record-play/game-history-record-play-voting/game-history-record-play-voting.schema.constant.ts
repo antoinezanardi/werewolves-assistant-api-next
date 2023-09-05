@@ -1,7 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
-import type { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
+import type { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
 
 const GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS = Object.freeze<Record<keyof GameHistoryRecordPlayVoting, ApiPropertyOptions>>({
   result: {

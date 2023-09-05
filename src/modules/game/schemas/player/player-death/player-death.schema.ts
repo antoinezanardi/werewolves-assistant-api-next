@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { PLAYER_DEATH_API_PROPERTIES } from "@/modules/game/schemas/player/player-death.schema.constant";
+import { PLAYER_DEATH_API_PROPERTIES } from "@/modules/game/schemas/player/player-death/player-death.schema.constant";
 import { PlayerDeathCauses } from "@/modules/game/enums/player.enum";
 import { GameSource } from "@/modules/game/types/game.type";
 

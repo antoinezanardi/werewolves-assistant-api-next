@@ -12,8 +12,8 @@ import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttri
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
-import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";
-import { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting.schema";
+import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
+import { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
 import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";

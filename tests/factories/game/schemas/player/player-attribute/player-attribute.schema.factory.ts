@@ -5,7 +5,7 @@ import { GAME_SOURCE_VALUES } from "@/modules/game/constants/game.constant";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation.schema";
+import { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema";
 import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 

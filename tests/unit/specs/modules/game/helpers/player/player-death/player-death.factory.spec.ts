@@ -1,6 +1,6 @@
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerDeathPotionByWitchDeath, createPlayerDiseaseByRustySwordKnightDeath, createPlayerEatenByBigBadWolfDeath, createPlayerEatenByWerewolvesDeath, createPlayerEatenByWhiteWerewolfDeath, createPlayerReconsiderPardonByAllDeath, createPlayerShotByHunterDeath, createPlayerVoteByAllDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedByAllDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
-import type { PlayerDeath } from "@/modules/game/schemas/player/player-death.schema";
+import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";

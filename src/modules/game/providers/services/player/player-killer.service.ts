@@ -13,7 +13,7 @@ import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { PlayerDeath } from "@/modules/game/schemas/player/player-death.schema";
+import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 

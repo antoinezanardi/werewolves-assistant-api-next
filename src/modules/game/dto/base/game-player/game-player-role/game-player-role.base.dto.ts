@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsEnum } from "class-validator";
 
-import { PLAYER_ROLE_API_PROPERTIES } from "@/modules/game/schemas/player/player-role.schema.constant";
+import { PLAYER_ROLE_API_PROPERTIES } from "@/modules/game/schemas/player/player-role/player-role.schema.constant";
 import { PLAYER_API_PROPERTIES } from "@/modules/game/schemas/player/player.schema.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 

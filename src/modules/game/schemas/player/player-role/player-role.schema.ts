@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { PLAYER_ROLE_API_PROPERTIES } from "@/modules/game/schemas/player/player-role.schema.constant";
+import { PLAYER_ROLE_API_PROPERTIES } from "@/modules/game/schemas/player/player-role/player-role.schema.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Schema({
