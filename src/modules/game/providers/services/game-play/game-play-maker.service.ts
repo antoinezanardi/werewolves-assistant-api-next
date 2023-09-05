@@ -14,8 +14,8 @@ import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.h
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { PlayerRole } from "@/modules/game/schemas/player/player-role.schema";
-import type { PlayerSide } from "@/modules/game/schemas/player/player-side.schema";
+import type { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
+import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
 import type { GameSource } from "@/modules/game/types/game.type";

@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GAME_VICTORY_API_PROPERTIES } from "@/modules/game/constants/game-victory/game-victory.constant";
+import { GAME_VICTORY_API_PROPERTIES } from "@/modules/game/schemas/game-victory/game-victory.schema.constant";
 import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
 import { PLAYER_SCHEMA, Player } from "@/modules/game/schemas/player/player.schema";
 

@@ -1,5 +1,3 @@
-import type { ApiPropertyOptions } from "@nestjs/swagger";
-
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 
@@ -49,13 +47,4 @@ const DEFAULT_GAME_OPTIONS: GameOptions = Object.freeze({
   },
 });
 
-const GAME_OPTIONS_API_PROPERTIES: Record<keyof GameOptions, ApiPropertyOptions> = Object.freeze({
-  composition: { description: "Game's composition options" },
-  votes: { description: "Game's votes options" },
-  roles: { description: "Game's roles options" },
-});
-
-export {
-  DEFAULT_GAME_OPTIONS,
-  GAME_OPTIONS_API_PROPERTIES,
-};
+export { DEFAULT_GAME_OPTIONS };

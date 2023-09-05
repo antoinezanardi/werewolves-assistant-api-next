@@ -1,5 +1,5 @@
-import type { PlayerRole } from "@/modules/game/schemas/player/player-role.schema";
-import type { PlayerSide } from "@/modules/game/schemas/player/player-side.schema";
+import type { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
+import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { VILLAGER_ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";

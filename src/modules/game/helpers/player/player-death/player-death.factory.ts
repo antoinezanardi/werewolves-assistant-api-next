@@ -1,7 +1,7 @@
 import { plainToInstance } from "class-transformer";
 
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { PlayerDeath } from "@/modules/game/schemas/player/player-death.schema";
+import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";

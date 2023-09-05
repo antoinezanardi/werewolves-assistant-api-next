@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { PlayerRole } from "@/modules/game/schemas/player/player-role.schema";
-import { PlayerSide } from "@/modules/game/schemas/player/player-side.schema";
+import { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
+import { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
