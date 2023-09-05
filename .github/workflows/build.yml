@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
@@ -35,7 +35,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
@@ -56,7 +56,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
@@ -77,7 +77,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
@@ -98,7 +98,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
@@ -123,7 +123,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
@@ -157,7 +157,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
@@ -182,7 +182,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
         with:
@@ -208,7 +208,7 @@ jobs:
     if: "!startsWith(github.head_ref, 'dependabot/')"
     steps:
     - name: Checkout GitHub repository 📡
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Restore tests coverage from cache 🥡
