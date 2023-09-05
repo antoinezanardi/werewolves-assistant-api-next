@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
@@ -47,7 +47,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
@@ -78,7 +78,7 @@ jobs:
       - install
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
@@ -115,7 +115,7 @@ jobs:
       JEST_LINES_PERCENT: ${{ steps.outputs.outputs.JEST_LINES_PERCENT }}
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
@@ -170,7 +170,7 @@ jobs:
       CUCUMBER_SCENARIOS_COUNT: ${{ steps.outputs.outputs.CUCUMBER_SCENARIOS_COUNT }}
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup NodeJS v20 ⚙️
         uses: actions/setup-node@v3
@@ -272,7 +272,7 @@ jobs:
       - all-tests
     steps:
       - name: Checkout GitHub repository 📡
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Restore tests coverage from cache 🥡
