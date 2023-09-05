@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GAME_HISTORY_RECORD_PLAY_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS } from "@/modules/game/constants/game-history-record/game-history-record-play/game-history-record-play.constant";
+import { GAME_HISTORY_RECORD_PLAY_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema.constant";
 import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import { GAME_ADDITIONAL_CARD_SCHEMA, GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameHistoryRecordPlaySource, GAME_HISTORY_RECORD_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source.schema";

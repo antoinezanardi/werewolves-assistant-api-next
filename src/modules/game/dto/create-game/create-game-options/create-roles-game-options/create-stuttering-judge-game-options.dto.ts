@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, Max, Min } from "class-validator";
 
-import { STUTTERING_JUDGE_GAME_OPTIONS_API_PROPERTIES, STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/constants/game-options/roles-game-options/stuttering-judge-game-options.constant";
+import { STUTTERING_JUDGE_GAME_OPTIONS_API_PROPERTIES, STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/stuttering-judge-game-options/stuttering-judge-game-options.schema.constant";
 
 class CreateStutteringJudgeGameOptionsDto {
   @ApiProperty({

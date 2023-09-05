@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { SchemaTypes, Types } from "mongoose";
 
-import { GAME_HISTORY_RECORD_API_PROPERTIES, GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/constants/game-history-record/game-history-record.constant";
+import { GAME_HISTORY_RECORD_API_PROPERTIES, GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record.schema.constant";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GameHistoryRecordPlay, GAME_HISTORY_RECORD_PLAY_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { PLAYER_SCHEMA, Player } from "@/modules/game/schemas/player/player.schema";

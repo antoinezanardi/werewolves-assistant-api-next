@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GAME_HISTORY_RECORD_PLAY_VOTE_FIELDS_SPECS } from "@/modules/game/constants/game-history-record/game-history-record-play/game-history-record-play-vote.constant";
+import { GAME_HISTORY_RECORD_PLAY_VOTE_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote.schema.constant";
 import { Player, PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({

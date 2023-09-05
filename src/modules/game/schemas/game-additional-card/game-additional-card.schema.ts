@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 import { Types } from "mongoose";
 
-import { GAME_ADDITIONAL_CARDS_API_PROPERTIES, GAME_ADDITIONAL_CARDS_FIELDS_SPECS } from "@/modules/game/constants/game-additional-cards/game-additional-cards.constant";
+import { GAME_ADDITIONAL_CARDS_API_PROPERTIES, GAME_ADDITIONAL_CARDS_FIELDS_SPECS } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Schema({ versionKey: false })
