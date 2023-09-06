@@ -33,6 +33,16 @@ When(
   },
 );
 
+When(
+  /^nobody vote and the stuttering judge does his sign$/u,
+  async function(this: CustomWorld): Promise<void> {
+    const makeGamePlayDto: MakeGamePlayDto = { doesJudgeRequestAnotherVote: true };
+
+    this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+    this.game = this.response.json<Game>();
+  },
+);
+
 When(/^the sheriff delegates his role to the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };

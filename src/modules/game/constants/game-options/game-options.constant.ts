@@ -1,7 +1,7 @@
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 
-const DEFAULT_GAME_OPTIONS: GameOptions = Object.freeze({
+const DEFAULT_GAME_OPTIONS: Readonly<GameOptions> = Object.freeze({
   composition: { isHidden: false },
   votes: { canBeSkipped: true },
   roles: {
