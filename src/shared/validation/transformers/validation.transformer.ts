@@ -1,5 +1,4 @@
 import type { TransformFnParams } from "class-transformer";
-import isObject from "isobject";
 import { has } from "lodash";
 import { isValidObjectId, Types } from "mongoose";
 
@@ -13,7 +12,7 @@ function toBoolean({ value }: TransformFnParams): unknown {
 }
 
 function toObjectId({ obj }: TransformFnParams): unknown {
-  if (!isObject(obj) || !has(obj, "_id")) {
+  if (!has(obj, "_id")) {
     return undefined;
   }
   const { _id } = obj as { _id: unknown };
