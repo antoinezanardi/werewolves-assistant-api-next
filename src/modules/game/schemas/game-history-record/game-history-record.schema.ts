@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 import { SchemaTypes, Types } from "mongoose";
 
 import { GAME_HISTORY_RECORD_API_PROPERTIES, GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record.schema.constant";
@@ -8,13 +8,15 @@ import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GameHistoryRecordPlay, GAME_HISTORY_RECORD_PLAY_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { PLAYER_SCHEMA, Player } from "@/modules/game/schemas/player/player.schema";
 
+import { toObjectId } from "@/shared/validation/transformers/validation.transformer";
+
 @Schema({
   timestamps: { createdAt: true, updatedAt: false },
   versionKey: false,
 })
 class GameHistoryRecord {
   @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES._id)
-  @Type(() => String)
+  @Transform(toObjectId)
   @Expose()
   public _id: Types.ObjectId;
 

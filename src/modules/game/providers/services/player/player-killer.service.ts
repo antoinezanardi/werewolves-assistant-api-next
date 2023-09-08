@@ -124,7 +124,7 @@ export class PlayerKillerService {
   private applyInLovePlayerDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
     const otherLoverFinder = (player: Player): boolean => doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game) &&
-      player.isAlive && player._id !== killedPlayer._id;
+      player.isAlive && !player._id.equals(killedPlayer._id);
     const otherPlayerInLove = clonedGame.players.find(otherLoverFinder);
     if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, PlayerAttributeNames.IN_LOVE, clonedGame) || !otherPlayerInLove) {
       return clonedGame;

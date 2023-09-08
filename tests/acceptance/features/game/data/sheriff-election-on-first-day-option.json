@@ -1,0 +1,10 @@
+{
+  "roles": {
+    "sheriff": {
+      "electedAt": {
+        "phase": "day",
+        "turn": 1
+      }
+    }
+  }
+}

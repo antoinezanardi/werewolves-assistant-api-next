@@ -32,7 +32,7 @@ export class GamePhaseService {
       clonedGame.turn++;
     }
     const upcomingNightPlays = await this.gamePlayService.getUpcomingNightPlays(clonedGame);
-    const upcomingDayPlays = this.gamePlayService.getUpcomingDayPlays();
+    const upcomingDayPlays = this.gamePlayService.getUpcomingDayPlays(clonedGame);
     const phaseUpcomingPlays = clonedGame.phase === GamePhases.NIGHT ? upcomingNightPlays : upcomingDayPlays;
     clonedGame.upcomingPlays = [...clonedGame.upcomingPlays, ...phaseUpcomingPlays];
     return clonedGame;

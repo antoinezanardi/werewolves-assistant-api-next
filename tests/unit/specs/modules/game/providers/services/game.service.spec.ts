@@ -195,7 +195,7 @@ describe("Game Service", () => {
       const expectedGame = createFakeGameWithCurrentPlay(createdGame);
       expectedGame.currentPlay.source.players = expectedPlayersToPlay;
 
-      expect(localMocks.gameService.updateGame).toHaveBeenCalledWith(createdGame._id, expectedGame);
+      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, expectedGame);
     });
   });
 

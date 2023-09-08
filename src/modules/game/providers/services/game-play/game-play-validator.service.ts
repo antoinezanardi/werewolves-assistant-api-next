@@ -177,7 +177,7 @@ export class GamePlayValidatorService {
     this.validateGamePlayTargetsBoundaries(playTargets, { min: 1, max: 1 });
     const seerPlayer = getPlayerWithCurrentRole(game, RoleNames.SEER);
     const targetedPlayer = playTargets[0].player;
-    if (!targetedPlayer.isAlive || targetedPlayer._id === seerPlayer?._id) {
+    if (!targetedPlayer.isAlive || seerPlayer?._id.equals(targetedPlayer._id) === true) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SEER_TARGET);
     }
   }
@@ -193,7 +193,7 @@ export class GamePlayValidatorService {
     this.validateGamePlayTargetsBoundaries(playTargets, { min: 1, max: 1 });
     const wildChildPlayer = getPlayerWithCurrentRole(game, RoleNames.WILD_CHILD);
     const targetedPlayer = playTargets[0].player;
-    if (!targetedPlayer.isAlive || targetedPlayer._id === wildChildPlayer?._id) {
+    if (!targetedPlayer.isAlive || wildChildPlayer?._id.equals(targetedPlayer._id) === true) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WILD_CHILD_TARGET);
     }
   }
@@ -204,7 +204,7 @@ export class GamePlayValidatorService {
     const leftToCharmByPiedPiperPlayersCount = leftToCharmByPiedPiperPlayers.length;
     const countToCharm = Math.min(charmedPeopleCountPerNight, leftToCharmByPiedPiperPlayersCount);
     this.validateGamePlayTargetsBoundaries(playTargets, { min: countToCharm, max: countToCharm });
-    if (playTargets.some(({ player }) => !leftToCharmByPiedPiperPlayers.find(({ _id }) => player._id === _id))) {
+    if (playTargets.some(({ player }) => !leftToCharmByPiedPiperPlayers.find(({ _id }) => player._id.equals(_id)))) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_PIED_PIPER_TARGETS);
     }
   }
@@ -215,7 +215,7 @@ export class GamePlayValidatorService {
     const lastGuardHistoryRecord = await this.gameHistoryRecordService.getLastGameHistoryGuardProtectsRecord(game._id);
     const lastProtectedPlayer = lastGuardHistoryRecord?.play.targets?.[0].player;
     const targetedPlayer = playTargets[0].player;
-    if (!targetedPlayer.isAlive || !canProtectTwice && lastProtectedPlayer?._id === targetedPlayer._id) {
+    if (!targetedPlayer.isAlive || !canProtectTwice && lastProtectedPlayer?._id.equals(targetedPlayer._id) === true) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_GUARD_TARGET);
     }
   }
@@ -226,9 +226,9 @@ export class GamePlayValidatorService {
     if (game.currentPlay.action === GamePlayActions.DELEGATE && !targetedPlayer.isAlive) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SHERIFF_DELEGATE_TARGET);
     }
-    const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, game.currentPlay.action);
+    const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, GamePlayActions.VOTE);
     const lastTieInVotesRecordNominatedPlayers = lastTieInVotesRecord?.play.voting?.nominatedPlayers ?? [];
-    const isSheriffTargetInLastNominatedPlayers = lastTieInVotesRecordNominatedPlayers.find(({ _id }) => _id === targetedPlayer._id);
+    const isSheriffTargetInLastNominatedPlayers = lastTieInVotesRecordNominatedPlayers.find(({ _id }) => _id.equals(targetedPlayer._id));
     if (game.currentPlay.action === GamePlayActions.SETTLE_VOTES && !isSheriffTargetInLastNominatedPlayers) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SHERIFF_SETTLE_VOTES_TARGET);
     }
@@ -307,7 +307,7 @@ export class GamePlayValidatorService {
     if (playVotes.some(({ target }) => !target.isAlive)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_TARGET);
     }
-    if (playVotes.some(({ source, target }) => source._id === target._id)) {
+    if (playVotes.some(({ source, target }) => source._id.equals(target._id))) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.SAME_SOURCE_AND_TARGET_VOTE);
     }
   }

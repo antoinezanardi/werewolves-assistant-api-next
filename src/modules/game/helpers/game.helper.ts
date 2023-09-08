@@ -31,7 +31,7 @@ function getPlayersWithCurrentSide(game: Game, side: RoleSides): Player[] {
 }
 
 function getPlayerWithId(game: Game, id: Types.ObjectId): Player | undefined {
-  return game.players.find(({ _id }) => _id.toString() === id.toString());
+  return game.players.find(({ _id }) => _id.equals(id));
 }
 
 function getPlayerWithIdOrThrow(playerId: Types.ObjectId, game: Game, exception: Error): Player {
@@ -145,7 +145,7 @@ function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Play
   const rightAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "right" });
   const sniffedTargets = [leftAliveNeighbor, sniffedTarget, rightAliveNeighbor].filter((player): player is Player => !!player);
   return sniffedTargets.reduce<Player[]>((acc, target) => {
-    if (!acc.some(uniqueTarget => uniqueTarget._id.toString() === target._id.toString())) {
+    if (!acc.some(uniqueTarget => uniqueTarget._id.equals(target._id))) {
       return [...acc, target];
     }
     return acc;

@@ -45,8 +45,12 @@ export class GamePlayService {
     return clonedGame;
   }
 
-  public getUpcomingDayPlays(): GamePlay[] {
-    return [createGamePlayAllVote()];
+  public getUpcomingDayPlays(game: Game): GamePlay[] {
+    const upcomingDayPlays: GamePlay[] = [createGamePlayAllVote()];
+    if (this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase)) {
+      upcomingDayPlays.unshift(createGamePlayAllElectSheriff());
+    }
+    return upcomingDayPlays;
   }
 
   public async getUpcomingNightPlays(game: CreateGameDto | Game): Promise<GamePlay[]> {
@@ -87,7 +91,7 @@ export class GamePlayService {
 
   private async getNewUpcomingPlaysForCurrentPhase(game: Game): Promise<GamePlay[]> {
     const { _id, turn, phase } = game;
-    const currentPhaseUpcomingPlays = game.phase === GamePhases.NIGHT ? await this.getUpcomingNightPlays(game) : this.getUpcomingDayPlays();
+    const currentPhaseUpcomingPlays = game.phase === GamePhases.NIGHT ? await this.getUpcomingNightPlays(game) : this.getUpcomingDayPlays(game);
     const gameHistoryPhaseRecords = await this.gameHistoryRecordService.getGameHistoryPhaseRecords(_id, turn, phase);
     return currentPhaseUpcomingPlays.filter(gamePlay => this.isUpcomingPlayNewForCurrentPhase(gamePlay, game, gameHistoryPhaseRecords));
   }
