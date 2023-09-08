@@ -33,7 +33,7 @@ function addPlayerAttributeInGame(playerId: Types.ObjectId, game: Game, attribut
 function addPlayersAttributeInGame(playerIds: Types.ObjectId[], game: Game, attribute: PlayerAttribute): Game {
   const clonedGame = createGame(game);
   clonedGame.players = clonedGame.players.map(player => {
-    if (playerIds.includes(player._id)) {
+    if (playerIds.find(playerId => playerId.equals(player._id))) {
       player.attributes.push(createPlayerAttribute(attribute));
     }
     return player;

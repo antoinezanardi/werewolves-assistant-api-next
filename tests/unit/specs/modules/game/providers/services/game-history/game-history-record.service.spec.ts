@@ -288,13 +288,15 @@ describe("Game History Record Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay({ votes: [] });
       localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({
+      const gameHistoryRecordToInsert = {
         gameId: baseGame._id,
         turn: baseGame.turn,
         phase: baseGame.phase,
         tick: baseGame.tick,
         play: expectedCurrentGameHistoryPlayToInsert,
-      });
+        revealedPlayers: undefined,
+        deadPlayers: undefined,
+      };
       services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
 
       expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame, gameHistoryRecordToInsert);

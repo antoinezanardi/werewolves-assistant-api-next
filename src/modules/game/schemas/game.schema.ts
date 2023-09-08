@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 import { Types } from "mongoose";
 
 import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
@@ -11,13 +11,15 @@ import { GameVictory, GAME_VICTORY_SCHEMA } from "@/modules/game/schemas/game-vi
 import { GAME_API_PROPERTIES, GAME_FIELDS_SPECS } from "@/modules/game/schemas/game.schema.constant";
 import { PLAYER_SCHEMA, Player } from "@/modules/game/schemas/player/player.schema";
 
+import { toObjectId } from "@/shared/validation/transformers/validation.transformer";
+
 @Schema({
   timestamps: true,
   versionKey: false,
 })
 class Game {
   @ApiProperty(GAME_API_PROPERTIES._id)
-  @Type(() => String)
+  @Transform(toObjectId)
   @Expose()
   public _id: Types.ObjectId;
 

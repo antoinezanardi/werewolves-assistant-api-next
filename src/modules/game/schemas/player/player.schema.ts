@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
+import { Expose, Transform, Type } from "class-transformer";
 import { Types } from "mongoose";
 
 import { PLAYER_API_PROPERTIES, PLAYER_FIELDS_SPECS } from "@/modules/game/schemas/player/player.schema.constant";
@@ -9,10 +9,12 @@ import { PlayerDeath, PLAYER_DEATH_SCHEMA } from "@/modules/game/schemas/player/
 import { PlayerRole, PLAYER_ROLE_SCHEMA } from "@/modules/game/schemas/player/player-role/player-role.schema";
 import { PlayerSide, PLAYER_SIDE_SCHEMA } from "@/modules/game/schemas/player/player-side/player-side.schema";
 
+import { toObjectId } from "@/shared/validation/transformers/validation.transformer";
+
 @Schema({ versionKey: false })
 class Player {
   @ApiProperty(PLAYER_API_PROPERTIES._id)
-  @Type(() => String)
+  @Transform(toObjectId)
   @Expose()
   public _id: Types.ObjectId;
 
