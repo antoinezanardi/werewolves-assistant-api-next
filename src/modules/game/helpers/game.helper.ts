@@ -43,7 +43,7 @@ function getPlayerWithIdOrThrow(playerId: Types.ObjectId, game: Game, exception:
 }
 
 function getPlayerWithName(game: Game, playerName: string): Player | undefined {
-  return game.players.find(({ name }) => name.toString() === playerName.toString());
+  return game.players.find(({ name }) => name === playerName);
 }
 
 function getPlayerWithNameOrThrow(playerName: string, game: Game, exception: Error): Player {
@@ -55,7 +55,7 @@ function getPlayerWithNameOrThrow(playerName: string, game: Game, exception: Err
 }
 
 function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Types.ObjectId): GameAdditionalCard | undefined {
-  return cards?.find(({ _id }) => _id.toString() === id.toString());
+  return cards?.find(({ _id }) => _id.equals(id));
 }
 
 function areAllWerewolvesAlive(game: Game): boolean {
