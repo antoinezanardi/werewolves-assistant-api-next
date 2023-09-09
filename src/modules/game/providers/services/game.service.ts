@@ -1,28 +1,30 @@
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
-import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
-import { BAD_RESOURCE_MUTATION_REASONS } from "../../../../shared/exception/enums/bad-resource-mutation-error.enum";
-import { createCantGenerateGamePlaysUnexpectedException } from "../../../../shared/exception/helpers/unexpected-exception.factory";
-import { BadResourceMutationException } from "../../../../shared/exception/types/bad-resource-mutation-exception.type";
-import { ResourceNotFoundException } from "../../../../shared/exception/types/resource-not-found-exception.type";
-import { CreateGameDto } from "../../dto/create-game/create-game.dto";
-import type { MakeGamePlayDto } from "../../dto/make-game-play/make-game-play.dto";
-import { GAME_STATUSES } from "../../enums/game.enum";
-import { isGamePhaseOver } from "../../helpers/game-phase/game-phase.helper";
-import { createMakeGamePlayDtoWithRelations } from "../../helpers/game-play/game-play.helper";
-import { generateGameVictoryData, isGameOver } from "../../helpers/game-victory/game-victory.helper";
-import { createGame as createGameFromFactory } from "../../helpers/game.factory";
-import { getExpectedPlayersToPlay } from "../../helpers/game.helper";
-import type { Game } from "../../schemas/game.schema";
-import type { GameWithCurrentPlay } from "../../types/game-with-current-play";
-import { GameRepository } from "../repositories/game.repository";
-import { GameHistoryRecordService } from "./game-history/game-history-record.service";
-import { GamePhaseService } from "./game-phase/game-phase.service";
-import { GamePlayMakerService } from "./game-play/game-play-maker.service";
-import { GamePlayValidatorService } from "./game-play/game-play-validator.service";
-import { GamePlayService } from "./game-play/game-play.service";
-import { PlayerAttributeService } from "./player/player-attribute.service";
+
+import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
+import { GameStatuses } from "@/modules/game/enums/game.enum";
+import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.helper";
+import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-play/game-play.helper";
+import { generateGameVictoryData, isGameOver } from "@/modules/game/helpers/game-victory/game-victory.helper";
+import { createGame as createGameFromFactory } from "@/modules/game/helpers/game.factory";
+import { getExpectedPlayersToPlay } from "@/modules/game/helpers/game.helper";
+import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
+import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker.service";
+import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
+import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
+import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+
+import { ApiResources } from "@/shared/api/enums/api.enum";
+import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
+import { createCantGenerateGamePlaysUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.type";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
 
 @Injectable()
 export class GameService {
@@ -58,16 +60,16 @@ export class GameService {
   }
 
   public async cancelGame(game: Game): Promise<Game> {
-    if (game.status !== GAME_STATUSES.PLAYING) {
-      throw new BadResourceMutationException(API_RESOURCES.GAMES, game._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
+    if (game.status !== GameStatuses.PLAYING) {
+      throw new BadResourceMutationException(ApiResources.GAMES, game._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
     }
-    return this.updateGame(game._id, { status: GAME_STATUSES.CANCELED });
+    return this.updateGame(game._id, { status: GameStatuses.CANCELED });
   }
 
   public async makeGamePlay(game: Game, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
     let clonedGame = createGameFromFactory(game);
-    if (clonedGame.status !== GAME_STATUSES.PLAYING) {
-      throw new BadResourceMutationException(API_RESOURCES.GAMES, clonedGame._id.toString(), BAD_RESOURCE_MUTATION_REASONS.GAME_NOT_PLAYING);
+    if (clonedGame.status !== GameStatuses.PLAYING) {
+      throw new BadResourceMutationException(ApiResources.GAMES, clonedGame._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
     }
     const play = createMakeGamePlayDtoWithRelations(makeGamePlayDto, clonedGame);
     await this.gamePlayValidatorService.validateGamePlayWithRelationsDto(play, clonedGame);
@@ -97,14 +99,14 @@ export class GameService {
   private async updateGame(gameId: Types.ObjectId, gameDataToUpdate: Partial<Game>): Promise<Game> {
     const updatedGame = await this.gameRepository.updateOne({ _id: gameId }, gameDataToUpdate);
     if (updatedGame === null) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString());
+      throw new ResourceNotFoundException(ApiResources.GAMES, gameId.toString());
     }
     return updatedGame;
   }
 
   private setGameAsOver(game: Game): Game {
     const clonedGame = createGameFromFactory(game);
-    clonedGame.status = GAME_STATUSES.OVER;
+    clonedGame.status = GameStatuses.OVER;
     clonedGame.victory = generateGameVictoryData(clonedGame);
     return clonedGame;
   }

@@ -1,25 +1,26 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsInt, IsOptional, Max, Min } from "class-validator";
-import { thiefGameOptionsApiProperties, thiefGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/thief-judge-game-options.constant";
+
+import { THIEF_GAME_OPTIONS_API_PROPERTIES, THIEF_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/thief-game-options/thief-game-options.schema.constant";
 
 class CreateThiefGameOptionsDto {
   @ApiProperty({
-    ...thiefGameOptionsApiProperties.mustChooseBetweenWerewolves,
+    ...THIEF_GAME_OPTIONS_API_PROPERTIES.mustChooseBetweenWerewolves,
     required: false,
   })
   @IsOptional()
   @IsBoolean()
-  public mustChooseBetweenWerewolves: boolean = thiefGameOptionsFieldsSpecs.mustChooseBetweenWerewolves.default;
+  public mustChooseBetweenWerewolves: boolean = THIEF_GAME_OPTIONS_FIELDS_SPECS.mustChooseBetweenWerewolves.default;
 
   @ApiProperty({
-    ...thiefGameOptionsApiProperties.additionalCardsCount,
+    ...THIEF_GAME_OPTIONS_API_PROPERTIES.additionalCardsCount,
     required: false,
   })
   @IsOptional()
   @IsInt()
-  @Min(thiefGameOptionsFieldsSpecs.additionalCardsCount.minimum)
-  @Max(thiefGameOptionsFieldsSpecs.additionalCardsCount.maximum)
-  public additionalCardsCount: number = thiefGameOptionsFieldsSpecs.additionalCardsCount.default;
+  @Min(THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount.minimum)
+  @Max(THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount.maximum)
+  public additionalCardsCount: number = THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount.default;
 }
 
 export { CreateThiefGameOptionsDto };

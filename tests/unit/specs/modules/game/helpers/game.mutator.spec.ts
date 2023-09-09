@@ -1,12 +1,13 @@
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../../../src/modules/game/enums/player.enum";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "../../../../../../src/modules/game/helpers/game.mutator";
-import type { Game } from "../../../../../../src/modules/game/schemas/game.schema";
-import { createFakeGamePlayCupidCharms, createFakeGamePlayHunterShoots } from "../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGame } from "../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeSeerAlivePlayer } from "../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers, createFakePlayer } from "../../../../../factories/game/schemas/player/player.schema.factory";
-import { createFakeObjectId } from "../../../../../factories/shared/mongoose/mongoose.factory";
+import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import type { Game } from "@/modules/game/schemas/game.schema";
+
+import { createFakeGamePlayCupidCharms, createFakeGamePlayHunterShoots } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeSeerAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
 describe("Game Mutator", () => {
   describe("updatePlayerInGame", () => {
@@ -145,7 +146,7 @@ describe("Game Mutator", () => {
     it("should return game as is when player is not found in game.", () => {
       const game = createFakeGame();
 
-      expect(removePlayerAttributeByNameInGame(createFakeObjectId(), game, PLAYER_ATTRIBUTE_NAMES.SHERIFF)).toStrictEqual<Game>(game);
+      expect(removePlayerAttributeByNameInGame(createFakeObjectId(), game, PlayerAttributeNames.SHERIFF)).toStrictEqual<Game>(game);
     });
 
     it("should return game with player without his sheriff attribute when called.", () => {
@@ -161,14 +162,14 @@ describe("Game Mutator", () => {
         ],
       });
 
-      expect(removePlayerAttributeByNameInGame(game.players[1]._id, game, PLAYER_ATTRIBUTE_NAMES.SHERIFF)).toStrictEqual<Game>(expectedGame);
+      expect(removePlayerAttributeByNameInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF)).toStrictEqual<Game>(expectedGame);
     });
 
     it("should not mutate the original game when called.", () => {
       const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffByAllPlayerAttribute()] }]);
       const game = createFakeGame({ players });
       const clonedGame = createFakeGame(game);
-      removePlayerAttributeByNameInGame(game.players[1]._id, game, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+      removePlayerAttributeByNameInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF);
 
       expect(game).toStrictEqual<Game>(clonedGame);
     });

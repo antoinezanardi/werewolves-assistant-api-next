@@ -1,15 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsOptional } from "class-validator";
-import { guardGameOptionsApiProperties, guardGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/guard-game-options.constant";
+
+import { GUARD_GAME_OPTIONS_API_PROPERTIES, GUARD_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/guard-game-options/guard-game-options.schema.constant";
 
 class CreateGuardGameOptionsDto {
   @ApiProperty({
-    ...guardGameOptionsApiProperties.canProtectTwice,
+    ...GUARD_GAME_OPTIONS_API_PROPERTIES.canProtectTwice,
     required: false,
   })
   @IsOptional()
   @IsBoolean()
-  public canProtectTwice: boolean = guardGameOptionsFieldsSpecs.canProtectTwice.default;
+  public canProtectTwice: boolean = GUARD_GAME_OPTIONS_FIELDS_SPECS.canProtectTwice.default;
 }
 
 export { CreateGuardGameOptionsDto };

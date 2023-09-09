@@ -1,5 +1,5 @@
-import type { TransformFnParams } from "class-transformer/types/interfaces";
 import { has } from "lodash";
+import type { TransformFnParams } from "class-transformer/types/interfaces";
 
 function gamePlayersPositionTransformer(params: TransformFnParams): unknown {
   if (!Array.isArray(params.value)) {

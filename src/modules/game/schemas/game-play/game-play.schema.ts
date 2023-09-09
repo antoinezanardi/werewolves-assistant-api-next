@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../enums/game-play.enum";
-import { GamePlaySource, GamePlaySourceSchema } from "./game-play-source/game-play-source.schema";
-import { gamePlayApiProperties } from "./game-play.schema.constant";
+
+import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
+import { GamePlaySource, GAME_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
+import { GAME_PLAY_API_PROPERTIES } from "@/modules/game/schemas/game-play/game-play.schema.constant";
 
 @Schema({
   versionKey: false,
@@ -11,29 +12,29 @@ import { gamePlayApiProperties } from "./game-play.schema.constant";
   _id: false,
 })
 class GamePlay {
-  @ApiProperty(gamePlayApiProperties.source)
+  @ApiProperty(GAME_PLAY_API_PROPERTIES.source)
   @Prop({
     required: true,
-    type: GamePlaySourceSchema,
+    type: GAME_PLAY_SOURCE_SCHEMA,
   })
   @Type(() => GamePlaySource)
   @Expose()
   public source: GamePlaySource;
 
-  @ApiProperty(gamePlayApiProperties.action)
+  @ApiProperty(GAME_PLAY_API_PROPERTIES.action)
   @Prop({ required: true })
   @Expose()
-  public action: GAME_PLAY_ACTIONS;
+  public action: GamePlayActions;
 
-  @ApiProperty(gamePlayApiProperties.cause)
+  @ApiProperty(GAME_PLAY_API_PROPERTIES.cause)
   @Prop()
   @Expose()
-  public cause?: GAME_PLAY_CAUSES;
+  public cause?: GamePlayCauses;
 }
 
-const GamePlaySchema = SchemaFactory.createForClass(GamePlay);
+const GAME_PLAY_SCHEMA = SchemaFactory.createForClass(GamePlay);
 
 export {
   GamePlay,
-  GamePlaySchema,
+  GAME_PLAY_SCHEMA,
 };

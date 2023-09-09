@@ -4,11 +4,13 @@
       "tests/acceptance/features/**/*.feature"
     ],
     "requireModule": [
-      "ts-node/register"
+      "ts-node/register",
+      "tsconfig-paths/register"
     ],
-    "require": ["tests/acceptance/**/*.ts"],
+    "require": [
+      "tests/acceptance/**/*.ts"
+    ],
     "publish": false,
-    "publishQuiet": true,
     "format": [
       "summary",
       "progress-bar",

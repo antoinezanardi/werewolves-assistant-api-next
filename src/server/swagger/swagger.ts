@@ -1,6 +1,6 @@
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import type { INestApplication } from "@nestjs/common";
 import type { SwaggerCustomOptions } from "@nestjs/swagger";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 function createSwaggerDocument(path: string, app: INestApplication): void {
   const title = "Werewolves Assistant API Reference 🐺";

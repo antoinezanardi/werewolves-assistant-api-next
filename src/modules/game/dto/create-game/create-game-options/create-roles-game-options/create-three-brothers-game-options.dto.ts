@@ -1,17 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, Max, Min } from "class-validator";
-import { threeBrothersGameOptionsApiProperties, threeBrothersGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/three-brothers-game-options.constant";
+
+import { THREE_BROTHERS_GAME_OPTIONS_API_PROPERTIES, THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/three-brothers-game-options/three-brothers-game-options.schema.constant";
 
 class CreateThreeBrothersGameOptionsDto {
   @ApiProperty({
-    ...threeBrothersGameOptionsApiProperties.wakingUpInterval,
+    ...THREE_BROTHERS_GAME_OPTIONS_API_PROPERTIES.wakingUpInterval,
     required: false,
   })
   @IsOptional()
   @IsInt()
-  @Min(threeBrothersGameOptionsFieldsSpecs.wakingUpInterval.minimum)
-  @Max(threeBrothersGameOptionsFieldsSpecs.wakingUpInterval.maximum)
-  public wakingUpInterval: number = threeBrothersGameOptionsFieldsSpecs.wakingUpInterval.default;
+  @Min(THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.minimum)
+  @Max(THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.maximum)
+  public wakingUpInterval: number = THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.default;
 }
 
 export { CreateThreeBrothersGameOptionsDto };

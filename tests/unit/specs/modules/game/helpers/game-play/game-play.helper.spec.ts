@@ -1,23 +1,25 @@
-import type { MakeGamePlayTargetWithRelationsDto } from "../../../../../../../src/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
-import type { MakeGamePlayVoteWithRelationsDto } from "../../../../../../../src/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
-import type { MakeGamePlayWithRelationsDto } from "../../../../../../../src/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, WITCH_POTIONS } from "../../../../../../../src/modules/game/enums/game-play.enum";
-import { areGamePlaysEqual, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto } from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
-import type { GamePlay } from "../../../../../../../src/modules/game/schemas/game-play/game-play.schema";
-import { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
-import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enum";
-import { ResourceNotFoundException } from "../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
-import { createFakeMakeGamePlayTargetWithRelationsDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
-import { createFakeMakeGamePlayVoteWithRelationsDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
-import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
-import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
-import { bulkCreateFakeGameAdditionalCards } from "../../../../../../factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { bulkCreateFakePlayers } from "../../../../../../factories/game/schemas/player/player.schema.factory";
-import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
+import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
+import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
+import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
+import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
+import { areGamePlaysEqual, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto } from "@/modules/game/helpers/game-play/game-play.helper";
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
-jest.mock("../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
+import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+
+import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
+import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
+import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
+import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { bulkCreateFakeGameAdditionalCards } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { bulkCreateFakePlayers } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+
+jest.mock("@/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game Play Helper", () => {
   describe("getVotesWithRelationsFromMakeGamePlayDto", () => {
@@ -39,7 +41,7 @@ describe("Game Play Helper", () => {
       });
 
       expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.source` is not in the game players");
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(ApiResources.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.source` is not in the game players");
     });
 
     it("should throw error when votes contains one unknown target.", () => {
@@ -53,7 +55,7 @@ describe("Game Play Helper", () => {
       });
 
       expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.target` is not in the game players");
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(ApiResources.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.target` is not in the game players");
     });
 
     it("should fill votes with game players when called.", () => {
@@ -94,7 +96,7 @@ describe("Game Play Helper", () => {
       });
 
       expect(() => getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `targets.player` is not in the game players");
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(ApiResources.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `targets.player` is not in the game players");
     });
 
     it("should fill targets with game players when called.", () => {
@@ -103,13 +105,13 @@ describe("Game Play Helper", () => {
         targets: [
           { playerId: game.players[0]._id, isInfected: true },
           { playerId: game.players[1]._id },
-          { playerId: game.players[2]._id, drankPotion: WITCH_POTIONS.DEATH },
+          { playerId: game.players[2]._id, drankPotion: WitchPotions.DEATH },
         ],
       });
       const expectedTargets = [
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2], drankPotion: WITCH_POTIONS.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2], drankPotion: WitchPotions.DEATH }),
       ];
 
       expect(getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayTargetWithRelationsDto[]>(expectedTargets);
@@ -130,7 +132,7 @@ describe("Game Play Helper", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto({ chosenCardId: fakeCardId });
 
       expect(() => getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.GAME_ADDITIONAL_CARDS, fakeCardId.toString(), "Game Play - Chosen card is not in the game additional cards");
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(ApiResources.GAME_ADDITIONAL_CARDS, fakeCardId.toString(), "Game Play - Chosen card is not in the game additional cards");
     });
 
     it("should return chosen card when called.", () => {
@@ -152,11 +154,11 @@ describe("Game Play Helper", () => {
         targets: [
           { playerId: game.players[0]._id, isInfected: true },
           { playerId: game.players[1]._id },
-          { playerId: game.players[2]._id, drankPotion: WITCH_POTIONS.DEATH },
+          { playerId: game.players[2]._id, drankPotion: WitchPotions.DEATH },
         ],
         chosenCardId: game.additionalCards?.[3]._id,
         doesJudgeRequestAnotherVote: true,
-        chosenSide: ROLE_SIDES.WEREWOLVES,
+        chosenSide: RoleSides.WEREWOLVES,
       });
       const expectedMakeGamePlayDtoWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({
         votes: [
@@ -166,11 +168,11 @@ describe("Game Play Helper", () => {
         targets: [
           { player: game.players[0], isInfected: true },
           { player: game.players[1] },
-          { player: game.players[2], drankPotion: WITCH_POTIONS.DEATH },
+          { player: game.players[2], drankPotion: WitchPotions.DEATH },
         ],
         chosenCard: game.additionalCards?.[3],
         doesJudgeRequestAnotherVote: true,
-        chosenSide: ROLE_SIDES.WEREWOLVES,
+        chosenSide: RoleSides.WEREWOLVES,
       });
 
       expect(createMakeGamePlayDtoWithRelations(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayWithRelationsDto>(expectedMakeGamePlayDtoWithRelationsDto);
@@ -179,7 +181,7 @@ describe("Game Play Helper", () => {
 
   describe("findPlayPriorityIndex", () => {
     it("should return -1 when play is not found in priority list.", () => {
-      const gamePlay = createFakeGamePlaySeerLooks({ action: GAME_PLAY_ACTIONS.EAT });
+      const gamePlay = createFakeGamePlaySeerLooks({ action: GamePlayActions.EAT });
 
       expect(findPlayPriorityIndex(gamePlay)).toBe(-1);
     });
@@ -213,7 +215,7 @@ describe("Game Play Helper", () => {
       },
       {
         playA: createFakeGamePlayAllVote(),
-        playB: createFakeGamePlayAllVote({ cause: GAME_PLAY_CAUSES.PREVIOUS_VOTES_WERE_IN_TIES }),
+        playB: createFakeGamePlayAllVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
         result: false,
         test: "both causes are not equal",
       },

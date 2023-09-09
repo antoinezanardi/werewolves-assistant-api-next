@@ -1,17 +1,20 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
-import { CreateGamePlayerDto } from "../../../../../../src/modules/game/dto/create-game/create-game-player/create-game-player.dto";
-import { ROLE_NAMES } from "../../../../../../src/modules/role/enums/role.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
-import { bulkCreate } from "../../../../shared/bulk-create.factory";
+
+import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
+import { RoleNames } from "@/modules/role/enums/role.enum";
+
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 
 function createFakeCreateGamePlayerDto(createGamePlayerDto: Partial<CreateGamePlayerDto> = {}, override: Partial<CreateGamePlayerDto> = {}): CreateGamePlayerDto {
   return plainToInstance(CreateGamePlayerDto, {
     name: createGamePlayerDto.name ?? faker.person.firstName(),
-    role: { name: createGamePlayerDto.role?.name ?? faker.helpers.arrayElement(Object.values(ROLE_NAMES)) },
+    role: { name: createGamePlayerDto.role?.name ?? faker.helpers.arrayElement(Object.values(RoleNames)) },
     position: createGamePlayerDto.position ?? undefined,
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 function bulkCreateFakeCreateGamePlayerDto(length: number, createGamePlayersDto: Partial<CreateGamePlayerDto>[] = [], overrides: object[] = []): CreateGamePlayerDto[] {

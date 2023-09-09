@@ -1,10 +1,11 @@
 import { InternalServerErrorException } from "@nestjs/common";
 import { template } from "radash";
-import type { UNEXPECTED_EXCEPTION_REASONS } from "../enums/unexpected-exception.enum";
-import type { ExceptionInterpolations } from "./exception.type";
+
+import type { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import type { ExceptionInterpolations } from "@/shared/exception/types/exception.type";
 
 class UnexpectedException extends InternalServerErrorException {
-  public constructor(scope: string, reason: UNEXPECTED_EXCEPTION_REASONS, interpolations: ExceptionInterpolations = {}) {
+  public constructor(scope: string, reason: UnexpectedExceptionReasons, interpolations: ExceptionInterpolations = {}) {
     const message = `Unexpected exception in ${scope}`;
     super(message, { description: template(reason, interpolations) });
   }

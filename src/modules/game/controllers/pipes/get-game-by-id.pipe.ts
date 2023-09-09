@@ -1,10 +1,12 @@
-import type { PipeTransform } from "@nestjs/common";
 import { Injectable } from "@nestjs/common";
-import { API_RESOURCES } from "../../../../shared/api/enums/api.enum";
-import { ValidateMongoId } from "../../../../shared/api/pipes/validate-mongo-id.pipe";
-import { ResourceNotFoundException } from "../../../../shared/exception/types/resource-not-found-exception.type";
-import { GameRepository } from "../../providers/repositories/game.repository";
-import type { Game } from "../../schemas/game.schema";
+import type { PipeTransform } from "@nestjs/common";
+
+import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
+import type { Game } from "@/modules/game/schemas/game.schema";
+
+import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ValidateMongoId } from "@/shared/api/pipes/validate-mongo-id.pipe";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
 
 @Injectable()
 export class GetGameByIdPipe implements PipeTransform {
@@ -14,7 +16,7 @@ export class GetGameByIdPipe implements PipeTransform {
     const objectId = validateMongoIdPipe.transform(value);
     const game = await this.gameRepository.findOne({ _id: objectId });
     if (game === null) {
-      throw new ResourceNotFoundException(API_RESOURCES.GAMES, objectId.toString());
+      throw new ResourceNotFoundException(ApiResources.GAMES, objectId.toString());
     }
     return game;
   }

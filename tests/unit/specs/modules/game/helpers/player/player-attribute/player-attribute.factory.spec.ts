@@ -1,17 +1,18 @@
-import { GAME_PHASES } from "../../../../../../../../src/modules/game/enums/game.enum";
-import { PLAYER_ATTRIBUTE_NAMES, PLAYER_GROUPS } from "../../../../../../../../src/modules/game/enums/player.enum";
-import { createCantVoteByAllPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createGrowledByBearTamerPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByAncientPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "../../../../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.factory";
-import type { PlayerAttribute } from "../../../../../../../../src/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import { ROLE_NAMES } from "../../../../../../../../src/modules/role/enums/role.enum";
-import { createFakeGame } from "../../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePlayerAttribute } from "../../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { GamePhases } from "@/modules/game/enums/game.enum";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { createCantVoteByAllPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createGrowledByBearTamerPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByAncientPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import { RoleNames } from "@/modules/role/enums/role.enum";
+
+import { createFakePlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Player Attribute Factory", () => {
   describe("createContaminatedByRustySwordKnightPlayerAttribute", () => {
     it("should create contaminated attribute by rusty sword knight when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.CONTAMINATED,
-        source: ROLE_NAMES.RUSTY_SWORD_KNIGHT,
+        name: PlayerAttributeNames.CONTAMINATED,
+        source: RoleNames.RUSTY_SWORD_KNIGHT,
         remainingPhases: 2,
       });
       
@@ -22,8 +23,8 @@ describe("Player Attribute Factory", () => {
   describe("createGrowledByBearTamerPlayerAttribute", () => {
     it("should create growled attribute by bear tamer when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.GROWLED,
-        source: ROLE_NAMES.BEAR_TAMER,
+        name: PlayerAttributeNames.GROWLED,
+        source: RoleNames.BEAR_TAMER,
         remainingPhases: 1,
       });
       
@@ -34,8 +35,8 @@ describe("Player Attribute Factory", () => {
   describe("createCharmedByPiedPiperPlayerAttribute", () => {
     it("should create charmed attribute by pied piper when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.CHARMED,
-        source: ROLE_NAMES.PIED_PIPER,
+        name: PlayerAttributeNames.CHARMED,
+        source: RoleNames.PIED_PIPER,
       });
       
       expect(createCharmedByPiedPiperPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
@@ -45,8 +46,8 @@ describe("Player Attribute Factory", () => {
   describe("createCantVoteByAllPlayerAttribute", () => {
     it("should create can't vote attribute by all when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
-        source: PLAYER_GROUPS.ALL,
+        name: PlayerAttributeNames.CANT_VOTE,
+        source: PlayerGroups.ALL,
       });
       
       expect(createCantVoteByAllPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
@@ -55,14 +56,14 @@ describe("Player Attribute Factory", () => {
 
   describe("createCantVoteByScapegoatPlayerAttribute", () => {
     it("should create can't vote attribute by scapegoat active in next turn when game phase is day.", () => {
-      const game = createFakeGame({ turn: 2, phase: GAME_PHASES.DAY });
+      const game = createFakeGame({ turn: 2, phase: GamePhases.DAY });
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
-        source: ROLE_NAMES.SCAPEGOAT,
+        name: PlayerAttributeNames.CANT_VOTE,
+        source: RoleNames.SCAPEGOAT,
         remainingPhases: 1,
         activeAt: {
           turn: 3,
-          phase: GAME_PHASES.DAY,
+          phase: GamePhases.DAY,
         },
       });
       
@@ -70,14 +71,14 @@ describe("Player Attribute Factory", () => {
     });
 
     it("should create can't vote attribute by scapegoat active in current turn when game phase is night.", () => {
-      const game = createFakeGame({ turn: 2, phase: GAME_PHASES.NIGHT });
+      const game = createFakeGame({ turn: 2, phase: GamePhases.NIGHT });
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.CANT_VOTE,
-        source: ROLE_NAMES.SCAPEGOAT,
+        name: PlayerAttributeNames.CANT_VOTE,
+        source: RoleNames.SCAPEGOAT,
         remainingPhases: 1,
         activeAt: {
           turn: 2,
-          phase: GAME_PHASES.DAY,
+          phase: GamePhases.DAY,
         },
       });
 
@@ -88,8 +89,8 @@ describe("Player Attribute Factory", () => {
   describe("createPowerlessByFoxPlayerAttribute", () => {
     it("should create powerless attribute by fox when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
-        source: ROLE_NAMES.FOX,
+        name: PlayerAttributeNames.POWERLESS,
+        source: RoleNames.FOX,
         doesRemainAfterDeath: true,
       });
       
@@ -100,8 +101,8 @@ describe("Player Attribute Factory", () => {
   describe("createPowerlessByAncientPlayerAttribute", () => {
     it("should create powerless attribute by ancient when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.POWERLESS,
-        source: ROLE_NAMES.ANCIENT,
+        name: PlayerAttributeNames.POWERLESS,
+        source: RoleNames.ANCIENT,
         doesRemainAfterDeath: true,
       });
       
@@ -112,8 +113,8 @@ describe("Player Attribute Factory", () => {
   describe("createWorshipedByWildChildPlayerAttribute", () => {
     it("should create worshiped attribute by wild child when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.WORSHIPED,
-        source: ROLE_NAMES.WILD_CHILD,
+        name: PlayerAttributeNames.WORSHIPED,
+        source: RoleNames.WILD_CHILD,
       });
       
       expect(createWorshipedByWildChildPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
@@ -123,8 +124,8 @@ describe("Player Attribute Factory", () => {
   describe("createInLoveByCupidPlayerAttribute", () => {
     it("should create in love attribute by cupid when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.IN_LOVE,
-        source: ROLE_NAMES.CUPID,
+        name: PlayerAttributeNames.IN_LOVE,
+        source: RoleNames.CUPID,
       });
       
       expect(createInLoveByCupidPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
@@ -134,8 +135,8 @@ describe("Player Attribute Factory", () => {
   describe("createRavenMarkByRavenPlayerAttribute", () => {
     it("should create raven-marked attribute by raven when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.RAVEN_MARKED,
-        source: ROLE_NAMES.RAVEN,
+        name: PlayerAttributeNames.RAVEN_MARKED,
+        source: RoleNames.RAVEN,
         remainingPhases: 2,
       });
       
@@ -146,8 +147,8 @@ describe("Player Attribute Factory", () => {
   describe("createProtectedByGuardPlayerAttribute", () => {
     it("should create protected attribute by guard when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.PROTECTED,
-        source: ROLE_NAMES.GUARD,
+        name: PlayerAttributeNames.PROTECTED,
+        source: RoleNames.GUARD,
         remainingPhases: 1,
       });
       
@@ -158,8 +159,8 @@ describe("Player Attribute Factory", () => {
   describe("createDrankDeathPotionByWitchPlayerAttribute", () => {
     it("should create drank death potion attribute by witch when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.DRANK_DEATH_POTION,
-        source: ROLE_NAMES.WITCH,
+        name: PlayerAttributeNames.DRANK_DEATH_POTION,
+        source: RoleNames.WITCH,
         remainingPhases: 1,
       });
       
@@ -170,8 +171,8 @@ describe("Player Attribute Factory", () => {
   describe("createDrankLifePotionByWitchPlayerAttribute", () => {
     it("should create drank life potion attribute by witch when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.DRANK_LIFE_POTION,
-        source: ROLE_NAMES.WITCH,
+        name: PlayerAttributeNames.DRANK_LIFE_POTION,
+        source: RoleNames.WITCH,
         remainingPhases: 1,
       });
       
@@ -182,8 +183,8 @@ describe("Player Attribute Factory", () => {
   describe("createEatenByBigBadWolfPlayerAttribute", () => {
     it("should create eaten attribute by big bad wolf when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.EATEN,
-        source: ROLE_NAMES.BIG_BAD_WOLF,
+        name: PlayerAttributeNames.EATEN,
+        source: RoleNames.BIG_BAD_WOLF,
         remainingPhases: 1,
       });
       
@@ -194,8 +195,8 @@ describe("Player Attribute Factory", () => {
   describe("createEatenByWhiteWerewolfPlayerAttribute", () => {
     it("should create eaten attribute by white werewolves when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.EATEN,
-        source: ROLE_NAMES.WHITE_WEREWOLF,
+        name: PlayerAttributeNames.EATEN,
+        source: RoleNames.WHITE_WEREWOLF,
         remainingPhases: 1,
       });
       
@@ -206,8 +207,8 @@ describe("Player Attribute Factory", () => {
   describe("createEatenByWerewolvesPlayerAttribute", () => {
     it("should create eaten attribute by werewolves when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.EATEN,
-        source: PLAYER_GROUPS.WEREWOLVES,
+        name: PlayerAttributeNames.EATEN,
+        source: PlayerGroups.WEREWOLVES,
         remainingPhases: 1,
       });
       
@@ -218,8 +219,8 @@ describe("Player Attribute Factory", () => {
   describe("createSeenBySeerPlayerAttribute", () => {
     it("should create seen attribute by seer when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.SEEN,
-        source: ROLE_NAMES.SEER,
+        name: PlayerAttributeNames.SEEN,
+        source: RoleNames.SEER,
         remainingPhases: 1,
       });
       
@@ -230,8 +231,8 @@ describe("Player Attribute Factory", () => {
   describe("createSheriffBySheriffPlayerAttribute", () => {
     it("should create sheriff attribute by sheriff when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
-        source: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
+        name: PlayerAttributeNames.SHERIFF,
+        source: PlayerAttributeNames.SHERIFF,
         doesRemainAfterDeath: true,
       });
       
@@ -242,8 +243,8 @@ describe("Player Attribute Factory", () => {
   describe("createSheriffByAllPlayerAttribute", () => {
     it("should create sheriff attribute by all when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.SHERIFF,
-        source: PLAYER_GROUPS.ALL,
+        name: PlayerAttributeNames.SHERIFF,
+        source: PlayerGroups.ALL,
         doesRemainAfterDeath: true,
       });
       
@@ -254,13 +255,13 @@ describe("Player Attribute Factory", () => {
   describe("createPlayerAttribute", () => {
     it("should create player attribute when called.", () => {
       const playerAttribute: PlayerAttribute = {
-        name: PLAYER_ATTRIBUTE_NAMES.GROWLED,
-        source: ROLE_NAMES.BEAR_TAMER,
+        name: PlayerAttributeNames.GROWLED,
+        source: RoleNames.BEAR_TAMER,
       };
       
       expect(createPlayerAttribute(playerAttribute)).toStrictEqual<PlayerAttribute>(createFakePlayerAttribute({
-        name: PLAYER_ATTRIBUTE_NAMES.GROWLED,
-        source: ROLE_NAMES.BEAR_TAMER,
+        name: PlayerAttributeNames.GROWLED,
+        source: RoleNames.BEAR_TAMER,
       }));
     });
   });

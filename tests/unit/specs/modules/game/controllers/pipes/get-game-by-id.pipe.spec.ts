@@ -1,13 +1,16 @@
 import { faker } from "@faker-js/faker";
 import { BadRequestException } from "@nestjs/common";
-import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { GetGameByIdPipe } from "../../../../../../../src/modules/game/controllers/pipes/get-game-by-id.pipe";
-import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
-import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enum";
-import { ResourceNotFoundException } from "../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
-import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { createObjectIdFromString } from "../../../../../../helpers/mongoose/mongoose.helper";
+import type { TestingModule } from "@nestjs/testing";
+
+import { GetGameByIdPipe } from "@/modules/game/controllers/pipes/get-game-by-id.pipe";
+import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
+
+import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+
+import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helper";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Get Game By Id Pipe", () => {
   let getGameByIdPipe: GetGameByIdPipe;
@@ -42,7 +45,7 @@ describe("Get Game By Id Pipe", () => {
 
     it("should throw error when game is not found.", async() => {
       mocks.gameRepository.findOne.mockResolvedValue(null);
-      const expectedError = new ResourceNotFoundException(API_RESOURCES.GAMES, gameId.toString());
+      const expectedError = new ResourceNotFoundException(ApiResources.GAMES, gameId.toString());
 
       await expect(getGameByIdPipe.transform(gameId)).rejects.toThrow(expectedError);
     });

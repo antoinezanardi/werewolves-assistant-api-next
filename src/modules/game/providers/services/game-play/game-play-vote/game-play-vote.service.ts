@@ -1,19 +1,20 @@
 import { Injectable } from "@nestjs/common";
-import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
-import type { MakeGamePlayVoteWithRelationsDto } from "../../../../dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
-import { GAME_PLAY_ACTIONS } from "../../../../enums/game-play.enum";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../../enums/player.enum";
-import { createGame } from "../../../../helpers/game.factory";
-import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "../../../../helpers/game.helper";
-import { createPlayer } from "../../../../helpers/player/player.factory";
-import { isPlayerPowerful } from "../../../../helpers/player/player.helper";
-import type { Player } from "../../../../schemas/player/player.schema";
-import type { PlayerVoteCount } from "../../../../types/game-play.type";
-import type { GameWithCurrentPlay } from "../../../../types/game-with-current-play";
+
+import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
+import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
+import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { createGame } from "@/modules/game/helpers/game.factory";
+import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { createPlayer } from "@/modules/game/helpers/player/player.factory";
+import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { PlayerVoteCount } from "@/modules/game/types/game-play.type";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Injectable()
 export class GamePlayVoteService {
-  public getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): Player[] {
+  public getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Player[] {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     let playerVoteCounts = this.getPlayerVoteCounts(votes, clonedGame);
     playerVoteCounts = this.addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
@@ -21,14 +22,17 @@ export class GamePlayVoteService {
     return playerVoteCounts.filter(playerVoteCount => playerVoteCount[1] === maxVotes).map(playerVoteCount => createPlayer(playerVoteCount[0]));
   }
   
-  private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): PlayerVoteCount[] {
+  private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): PlayerVoteCount[] {
+    if (!votes) {
+      return [];
+    }
     const { hasDoubledVote: doesSheriffHaveDoubledVote } = game.options.roles.sheriff;
-    const sheriffPlayer = getPlayerWithActiveAttributeName(game, PLAYER_ATTRIBUTE_NAMES.SHERIFF);
+    const sheriffPlayer = getPlayerWithActiveAttributeName(game, PlayerAttributeNames.SHERIFF);
     return votes.reduce<PlayerVoteCount[]>((acc, vote) => {
       const doubledVoteValue = 2;
-      const isVoteSourceSheriff = vote.source._id.toString() === sheriffPlayer?._id.toString();
-      const voteValue = game.currentPlay.action === GAME_PLAY_ACTIONS.VOTE && isVoteSourceSheriff && doesSheriffHaveDoubledVote ? doubledVoteValue : 1;
-      const existingPlayerVoteCount = acc.find(value => value[0]._id.toString() === vote.target._id.toString());
+      const isVoteSourceSheriff = sheriffPlayer?._id.equals(vote.source._id) === true;
+      const voteValue = game.currentPlay.action === GamePlayActions.VOTE && isVoteSourceSheriff && doesSheriffHaveDoubledVote ? doubledVoteValue : 1;
+      const existingPlayerVoteCount = acc.find(value => value[0]._id.equals(vote.target._id));
       if (existingPlayerVoteCount) {
         existingPlayerVoteCount[1] += voteValue;
         return acc;
@@ -39,13 +43,13 @@ export class GamePlayVoteService {
   
   private addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: GameWithCurrentPlay): PlayerVoteCount[] {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
-    const ravenPlayer = getPlayerWithCurrentRole(clonedGame, ROLE_NAMES.RAVEN);
-    const ravenMarkedPlayer = getPlayerWithActiveAttributeName(clonedGame, PLAYER_ATTRIBUTE_NAMES.RAVEN_MARKED);
-    if (clonedGame.currentPlay.action !== GAME_PLAY_ACTIONS.VOTE || ravenPlayer?.isAlive !== true ||
+    const ravenPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.RAVEN);
+    const ravenMarkedPlayer = getPlayerWithActiveAttributeName(clonedGame, PlayerAttributeNames.RAVEN_MARKED);
+    if (clonedGame.currentPlay.action !== GamePlayActions.VOTE || ravenPlayer?.isAlive !== true ||
       !isPlayerPowerful(ravenPlayer, clonedGame) || ravenMarkedPlayer?.isAlive !== true) {
       return playerVoteCounts;
     }
-    const ravenMarkedPlayerVoteCount = playerVoteCounts.find(playerVoteCount => playerVoteCount[0]._id.toString() === ravenMarkedPlayer._id.toString());
+    const ravenMarkedPlayerVoteCount = playerVoteCounts.find(playerVoteCount => playerVoteCount[0]._id.equals(ravenMarkedPlayer._id));
     const { markPenalty } = clonedGame.options.roles.raven;
     if (ravenMarkedPlayerVoteCount) {
       ravenMarkedPlayerVoteCount[1] += markPenalty;

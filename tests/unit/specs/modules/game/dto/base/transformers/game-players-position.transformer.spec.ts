@@ -1,6 +1,8 @@
 import type { TransformFnParams } from "class-transformer/types/interfaces";
-import { gamePlayersPositionTransformer } from "../../../../../../../../src/modules/game/dto/base/transformers/game-players-position.transformer";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+
+import { gamePlayersPositionTransformer } from "@/modules/game/dto/base/transformers/game-players-position.transformer";
+
+import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 describe("Game Players Position Transformer", () => {
   describe("gamePlayersPositionTransformer", () => {

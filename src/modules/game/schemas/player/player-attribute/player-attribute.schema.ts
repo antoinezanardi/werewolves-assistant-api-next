@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { playerAttributeApiProperties, playerAttributeFieldsSpecs } from "../../../constants/player/player-attribute/player-attribute.constant";
-import { PLAYER_ATTRIBUTE_NAMES } from "../../../enums/player.enum";
-import { GameSource } from "../../../types/game.type";
-import { PlayerAttributeActivation, PlayerAttributeActivationSchema } from "./player-attribute-activation.schema";
+
+import { PLAYER_ATTRIBUTE_API_PROPERTIES, PLAYER_ATTRIBUTE_FIELDS_SPECS } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema.constant";
+import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { PlayerAttributeActivation, PLAYER_ATTRIBUTE_ACTIVATION_SCHEMA } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema";
+import { GameSource } from "@/modules/game/types/game.type";
 
 @Schema({
   versionKey: false,
@@ -12,33 +13,36 @@ import { PlayerAttributeActivation, PlayerAttributeActivationSchema } from "./pl
   _id: false,
 })
 class PlayerAttribute {
-  @ApiProperty(playerAttributeApiProperties.name)
+  @ApiProperty(PLAYER_ATTRIBUTE_API_PROPERTIES.name)
   @Prop({ required: true })
   @Expose()
-  public name: PLAYER_ATTRIBUTE_NAMES;
+  public name: PlayerAttributeNames;
 
-  @ApiProperty(playerAttributeApiProperties.source)
+  @ApiProperty(PLAYER_ATTRIBUTE_API_PROPERTIES.source)
   @Prop({ required: true })
   @Expose()
   public source: GameSource;
 
-  @ApiProperty(playerAttributeApiProperties.remainingPhases)
-  @Prop({ min: playerAttributeFieldsSpecs.remainingPhases.minimum })
+  @ApiProperty(PLAYER_ATTRIBUTE_API_PROPERTIES.remainingPhases)
+  @Prop({ min: PLAYER_ATTRIBUTE_FIELDS_SPECS.remainingPhases.minimum })
   @Expose()
   public remainingPhases?: number;
 
-  @ApiProperty(playerAttributeApiProperties.activeAt)
-  @Prop({ type: PlayerAttributeActivationSchema })
+  @ApiProperty(PLAYER_ATTRIBUTE_API_PROPERTIES.activeAt)
+  @Prop({ type: PLAYER_ATTRIBUTE_ACTIVATION_SCHEMA })
   @Type(() => PlayerAttributeActivation)
   @Expose()
   public activeAt?: PlayerAttributeActivation;
 
-  @ApiProperty(playerAttributeApiProperties.doesRemainAfterDeath)
+  @ApiProperty(PLAYER_ATTRIBUTE_API_PROPERTIES.doesRemainAfterDeath)
   @Prop({ required: false })
   @Expose()
   public doesRemainAfterDeath?: boolean;
 }
 
-const PlayerAttributeSchema = SchemaFactory.createForClass(PlayerAttribute);
+const PLAYER_ATTRIBUTE_SCHEMA = SchemaFactory.createForClass(PlayerAttribute);
 
-export { PlayerAttribute, PlayerAttributeSchema };
+export {
+  PlayerAttribute,
+  PLAYER_ATTRIBUTE_SCHEMA,
+};

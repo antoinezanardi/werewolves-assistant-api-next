@@ -1,14 +1,15 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
-import { gameOptionsApiProperties } from "../../../constants/game-options/game-options.constant";
-import { CreateCompositionGameOptionsDto } from "./create-composition-game-options/create-composition-game-options.dto";
-import { CreateRolesGameOptionsDto } from "./create-roles-game-options/create-roles-game-options.dto";
-import { CreateVotesGameOptionsDto } from "./create-votes-game-options/create-votes-game-options.dto";
+
+import { GAME_OPTIONS_API_PROPERTIES } from "@/modules/game/schemas/game-options/game-options.schema.constant";
+import { CreateCompositionGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-composition-game-options/create-composition-game-options.dto";
+import { CreateRolesGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto";
+import { CreateVotesGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-votes-game-options/create-votes-game-options.dto";
 
 class CreateGameOptionsDto {
   @ApiProperty({
-    ...gameOptionsApiProperties.composition,
+    ...GAME_OPTIONS_API_PROPERTIES.composition,
     required: false,
   })
   @IsOptional()
@@ -17,7 +18,7 @@ class CreateGameOptionsDto {
   public composition: CreateCompositionGameOptionsDto = new CreateCompositionGameOptionsDto();
 
   @ApiProperty({
-    ...gameOptionsApiProperties.votes,
+    ...GAME_OPTIONS_API_PROPERTIES.votes,
     required: false,
   })
   @IsOptional()
@@ -26,7 +27,7 @@ class CreateGameOptionsDto {
   public votes: CreateVotesGameOptionsDto = new CreateVotesGameOptionsDto();
 
   @ApiProperty({
-    ...gameOptionsApiProperties.roles,
+    ...GAME_OPTIONS_API_PROPERTIES.roles,
     required: false,
   })
   @IsOptional()

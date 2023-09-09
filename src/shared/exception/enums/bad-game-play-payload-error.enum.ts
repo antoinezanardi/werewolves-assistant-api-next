@@ -1,4 +1,4 @@
-enum BAD_GAME_PLAY_PAYLOAD_REASONS {
+enum BadGamePlayPayloadReasons {
   UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST = "`doesJudgeRequestAnotherVote` can't be set on this current game's state",
   UNEXPECTED_CHOSEN_SIDE = "`chosenSide` can't be set on this current game's state",
   REQUIRED_CHOSEN_SIDE = "`chosenSide` is required on this current game's state",
@@ -36,4 +36,4 @@ enum BAD_GAME_PLAY_PAYLOAD_REASONS {
   BAD_SHERIFF_SETTLE_VOTES_TARGET = "Sheriff can't break the tie in votes with this target",
 }
 
-export { BAD_GAME_PLAY_PAYLOAD_REASONS };
+export { BadGamePlayPayloadReasons };

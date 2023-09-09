@@ -1,9 +1,10 @@
 import {
   doesCompositionHaveAtLeastOneVillager,
   getCompositionHasVillagerDefaultMessage,
-} from "../../../../../../../../../src/modules/game/dto/base/decorators/composition/composition-has-villager.decorator";
-import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+} from "@/modules/game/dto/base/decorators/composition/composition-has-villager.decorator";
+import { RoleNames } from "@/modules/role/enums/role.enum";
+
+import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 describe("Composition Has Villager Decorator", () => {
   describe("doesCompositionHaveAtLeastOneVillager", () => {
@@ -17,10 +18,10 @@ describe("Composition Has Villager Decorator", () => {
 
     it("should return false when one of the players is not an object.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: ROLE_NAMES.TWO_SISTERS } },
-        { role: { name: ROLE_NAMES.TWO_SISTERS } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.VILLAGER } },
+        { role: { name: RoleNames.TWO_SISTERS } },
+        { role: { name: RoleNames.TWO_SISTERS } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.VILLAGER } },
       ]);
 
       expect(doesCompositionHaveAtLeastOneVillager([...players, "toto"])).toBe(false);
@@ -28,10 +29,10 @@ describe("Composition Has Villager Decorator", () => {
 
     it("should return false when one of the players doesn't have the good structure.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: ROLE_NAMES.TWO_SISTERS } },
-        { role: { name: ROLE_NAMES.TWO_SISTERS } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.VILLAGER } },
+        { role: { name: RoleNames.TWO_SISTERS } },
+        { role: { name: RoleNames.TWO_SISTERS } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.VILLAGER } },
       ]);
 
       expect(doesCompositionHaveAtLeastOneVillager([...players, { name: "bad", role: { titi: "toto" } }])).toBe(false);
@@ -39,10 +40,10 @@ describe("Composition Has Villager Decorator", () => {
 
     it("should return false when composition is full of werewolves.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.VILE_FATHER_OF_WOLVES } },
-        { role: { name: ROLE_NAMES.WHITE_WEREWOLF } },
-        { role: { name: ROLE_NAMES.VILE_FATHER_OF_WOLVES } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.VILE_FATHER_OF_WOLVES } },
+        { role: { name: RoleNames.WHITE_WEREWOLF } },
+        { role: { name: RoleNames.VILE_FATHER_OF_WOLVES } },
       ]);
 
       expect(doesCompositionHaveAtLeastOneVillager(players)).toBe(false);
@@ -54,10 +55,10 @@ describe("Composition Has Villager Decorator", () => {
 
     it("should return true when there is at least one villager in composition.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: ROLE_NAMES.WITCH } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
+        { role: { name: RoleNames.WITCH } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.WEREWOLF } },
       ]);
 
       expect(doesCompositionHaveAtLeastOneVillager(players)).toBe(true);

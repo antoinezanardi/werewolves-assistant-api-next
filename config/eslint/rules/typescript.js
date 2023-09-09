@@ -160,8 +160,20 @@ const typescriptRules = Object.freeze({
     },
   ],
   "@typescript-eslint/no-redeclare": ERROR,
-  // rule below is OFF because we don't need to restrict any import
-  "@typescript-eslint/no-restricted-imports": OFF,
+  "@typescript-eslint/no-restricted-imports": [
+    ERROR, {
+      patterns: [
+        {
+          group: ["./"],
+          message: "Relative imports to children directories are not allowed.",
+        },
+        {
+          group: ["../"],
+          message: "Relative imports from parent directories are not allowed.",
+        },
+      ],
+    },
+  ],
   "@typescript-eslint/no-shadow": [
     ERROR, {
       hoist: "never",
@@ -179,7 +191,7 @@ const typescriptRules = Object.freeze({
   "@typescript-eslint/padding-line-between-statements": [
     ERROR, {
       blankLine: "always",
-      prev: ["interface", "type", "class", "export", "import"],
+      prev: ["interface", "type", "class", "export"],
       next: "*",
     }, {
       blankLine: "always",
@@ -189,10 +201,6 @@ const typescriptRules = Object.freeze({
       blankLine: "never",
       prev: "*",
       next: ["return"],
-    }, {
-      blankLine: "never",
-      prev: "import",
-      next: "import",
     },
   ],
   "@typescript-eslint/quotes": [ERROR, "double", { allowTemplateLiterals: true }],

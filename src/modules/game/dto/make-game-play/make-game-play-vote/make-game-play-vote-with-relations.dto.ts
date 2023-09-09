@@ -1,7 +1,8 @@
 import { OmitType } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { Player } from "../../../schemas/player/player.schema";
-import { MakeGamePlayVoteDto } from "./make-game-play-vote.dto";
+
+import { MakeGamePlayVoteDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote.dto";
+import { Player } from "@/modules/game/schemas/player/player.schema";
 
 class MakeGamePlayVoteWithRelationsDto extends OmitType(MakeGamePlayVoteDto, ["sourceId", "targetId"] as const) {
   @Type(() => Player)

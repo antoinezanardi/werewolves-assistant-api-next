@@ -1,18 +1,21 @@
 import { plainToInstance } from "class-transformer";
-import { defaultGameOptions } from "../../../../../src/modules/game/constants/game-options/game-options.constant";
-import { CreateGameDto } from "../../../../../src/modules/game/dto/create-game/create-game.dto";
-import { GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
-import { ROLE_NAMES } from "../../../../../src/modules/role/enums/role.enum";
-import { plainToInstanceDefaultOptions } from "../../../../../src/shared/validation/constants/validation.constant";
-import { createFakeCreateGamePlayerDto } from "./create-game-player/create-game-player.dto.factory";
+
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
+import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import { GamePhases } from "@/modules/game/enums/game.enum";
+import { RoleNames } from "@/modules/role/enums/role.enum";
+
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 function createFakeCreateGameWithPlayersDto(createGameDto: Partial<CreateGameDto> = {}, override: object = {}): CreateGameDto {
   return createFakeCreateGameDto({
     players: [
-      createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: ROLE_NAMES.WITCH } }),
-      createFakeCreateGamePlayerDto({ name: "JB", role: { name: ROLE_NAMES.SEER } }),
-      createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: ROLE_NAMES.WEREWOLF } }),
-      createFakeCreateGamePlayerDto({ name: "Jérémy", role: { name: ROLE_NAMES.LITTLE_GIRL } }),
+      createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WITCH } }),
+      createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.SEER } }),
+      createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: RoleNames.WEREWOLF } }),
+      createFakeCreateGamePlayerDto({ name: "Jérémy", role: { name: RoleNames.LITTLE_GIRL } }),
     ],
     ...createGameDto,
   }, override);
@@ -21,14 +24,14 @@ function createFakeCreateGameWithPlayersDto(createGameDto: Partial<CreateGameDto
 function createFakeCreateGameDto(createGameDto: Partial<CreateGameDto> = {}, override: object = {}): CreateGameDto {
   return plainToInstance(CreateGameDto, {
     turn: createGameDto.turn ?? 1,
-    phase: createGameDto.phase ?? GAME_PHASES.NIGHT,
+    phase: createGameDto.phase ?? GamePhases.NIGHT,
     players: createGameDto.players ?? [],
     upcomingPlays: createGameDto.upcomingPlays ?? [],
     currentPlay: createGameDto.currentPlay ?? null,
     additionalCards: createGameDto.additionalCards ?? undefined,
-    options: createGameDto.options ?? defaultGameOptions,
+    options: createGameDto.options ?? DEFAULT_GAME_OPTIONS,
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 export {

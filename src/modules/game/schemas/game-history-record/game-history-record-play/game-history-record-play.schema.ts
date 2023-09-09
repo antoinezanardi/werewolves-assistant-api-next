@@ -1,14 +1,15 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { ROLE_SIDES } from "../../../../role/enums/role.enum";
-import { gameHistoryRecordPlayApiProperties, gameHistoryRecordPlayFieldsSpecs } from "../../../constants/game-history-record/game-history-record-play/game-history-record-play.constant";
-import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES } from "../../../enums/game-play.enum";
-import { GameAdditionalCardSchema, GameAdditionalCard } from "../../game-additional-card/game-additional-card.schema";
-import { GameHistoryRecordPlaySource, GameHistoryRecordPlaySourceSchema } from "./game-history-record-play-source.schema";
-import { GameHistoryRecordPlayTargetSchema, GameHistoryRecordPlayTarget } from "./game-history-record-play-target.schema";
-import { GameHistoryRecordPlayVoteSchema, GameHistoryRecordPlayVote } from "./game-history-record-play-vote.schema";
-import { GameHistoryRecordPlayVoting, GameHistoryRecordPlayVotingSchema } from "./game-history-record-play-voting.schema";
+
+import { GAME_HISTORY_RECORD_PLAY_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema.constant";
+import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
+import { GAME_ADDITIONAL_CARD_SCHEMA, GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
+import { GameHistoryRecordPlaySource, GAME_HISTORY_RECORD_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
+import { GAME_HISTORY_RECORD_PLAY_TARGET_SCHEMA, GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
+import { GAME_HISTORY_RECORD_PLAY_VOTE_SCHEMA, GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
+import { GameHistoryRecordPlayVoting, GAME_HISTORY_RECORD_PLAY_VOTING_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
 @Schema({
   versionKey: false,
@@ -16,83 +17,86 @@ import { GameHistoryRecordPlayVoting, GameHistoryRecordPlayVotingSchema } from "
   _id: false,
 })
 class GameHistoryRecordPlay {
-  @ApiProperty(gameHistoryRecordPlayApiProperties.action)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.action)
   @Prop({
-    required: gameHistoryRecordPlayFieldsSpecs.action.required,
-    enum: gameHistoryRecordPlayFieldsSpecs.action.enum,
+    required: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.action.required,
+    enum: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.action.enum,
   })
   @Expose()
-  public action: GAME_PLAY_ACTIONS;
+  public action: GamePlayActions;
 
-  @ApiProperty(gameHistoryRecordPlayApiProperties.source)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.source)
   @Prop({
-    required: gameHistoryRecordPlayFieldsSpecs.source.required,
-    type: GameHistoryRecordPlaySourceSchema,
+    required: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.source.required,
+    type: GAME_HISTORY_RECORD_PLAY_SOURCE_SCHEMA,
   })
   @Type(() => GameHistoryRecordPlaySource)
   @Expose()
   public source: GameHistoryRecordPlaySource;
 
-  @ApiProperty(gameHistoryRecordPlayApiProperties.cause)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.cause)
   @Prop({
-    required: gameHistoryRecordPlayFieldsSpecs.cause.required,
-    enum: gameHistoryRecordPlayFieldsSpecs.cause.enum,
+    required: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.cause.required,
+    enum: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.cause.enum,
   })
   @Expose()
-  public cause?: GAME_PLAY_CAUSES;
+  public cause?: GamePlayCauses;
 
-  @ApiProperty(gameHistoryRecordPlayApiProperties.targets)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.targets)
   @Prop({
-    required: gameHistoryRecordPlayFieldsSpecs.targets.required,
-    type: [GameHistoryRecordPlayTargetSchema],
+    required: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.targets.required,
+    type: [GAME_HISTORY_RECORD_PLAY_TARGET_SCHEMA],
     default: undefined,
   })
   @Type(() => GameHistoryRecordPlayTarget)
   @Expose()
   public targets?: GameHistoryRecordPlayTarget[];
 
-  @ApiProperty(gameHistoryRecordPlayApiProperties.votes)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.votes)
   @Prop({
-    required: gameHistoryRecordPlayFieldsSpecs.votes.required,
-    type: [GameHistoryRecordPlayVoteSchema],
+    required: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.votes.required,
+    type: [GAME_HISTORY_RECORD_PLAY_VOTE_SCHEMA],
     default: undefined,
   })
   @Type(() => GameHistoryRecordPlayVote)
   @Expose()
   public votes?: GameHistoryRecordPlayVote[];
 
-  @ApiProperty(gameHistoryRecordPlayApiProperties.voting)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.voting)
   @Prop({
-    required: gameHistoryRecordPlayFieldsSpecs.voting.required,
-    type: GameHistoryRecordPlayVotingSchema,
+    required: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.voting.required,
+    type: GAME_HISTORY_RECORD_PLAY_VOTING_SCHEMA,
   })
   @Type(() => GameHistoryRecordPlayVoting)
   @Expose()
   public voting?: GameHistoryRecordPlayVoting;
 
-  @ApiProperty(gameHistoryRecordPlayApiProperties.didJudgeRequestAnotherVote)
-  @Prop({ required: gameHistoryRecordPlayFieldsSpecs.didJudgeRequestAnotherVote.required })
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.didJudgeRequestAnotherVote)
+  @Prop({ required: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.didJudgeRequestAnotherVote.required })
   @Expose()
   public didJudgeRequestAnotherVote?: boolean;
 
-  @ApiProperty(gameHistoryRecordPlayApiProperties.chosenCard)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.chosenCard)
   @Prop({
-    required: gameHistoryRecordPlayFieldsSpecs.chosenCard.required,
-    type: GameAdditionalCardSchema,
+    required: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.chosenCard.required,
+    type: GAME_ADDITIONAL_CARD_SCHEMA,
   })
   @Type(() => GameAdditionalCard)
   @Expose()
   public chosenCard?: GameAdditionalCard;
 
-  @ApiProperty(gameHistoryRecordPlayApiProperties.chosenSide)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.chosenSide)
   @Prop({
-    required: gameHistoryRecordPlayFieldsSpecs.chosenSide.required,
-    enum: gameHistoryRecordPlayFieldsSpecs.chosenSide.enum,
+    required: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.chosenSide.required,
+    enum: GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.chosenSide.enum,
   })
   @Expose()
-  public chosenSide?: ROLE_SIDES;
+  public chosenSide?: RoleSides;
 }
 
-const GameHistoryRecordPlaySchema = SchemaFactory.createForClass(GameHistoryRecordPlay);
+const GAME_HISTORY_RECORD_PLAY_SCHEMA = SchemaFactory.createForClass(GameHistoryRecordPlay);
 
-export { GameHistoryRecordPlay, GameHistoryRecordPlaySchema };
+export {
+  GameHistoryRecordPlay,
+  GAME_HISTORY_RECORD_PLAY_SCHEMA,
+};

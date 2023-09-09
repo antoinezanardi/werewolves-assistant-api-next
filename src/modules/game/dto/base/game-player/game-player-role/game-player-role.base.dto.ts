@@ -1,23 +1,24 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsEnum } from "class-validator";
-import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
-import { playerRoleApiProperties } from "../../../../constants/player/player-role.constant";
-import { playerApiProperties } from "../../../../constants/player/player.constant";
+
+import { PLAYER_ROLE_API_PROPERTIES } from "@/modules/game/schemas/player/player-role/player-role.schema.constant";
+import { PLAYER_API_PROPERTIES } from "@/modules/game/schemas/player/player.schema.constant";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 class GamePlayerRoleBaseDto {
-  @ApiProperty(playerApiProperties.role)
-  @IsEnum(ROLE_NAMES)
-  public name: ROLE_NAMES;
+  @ApiProperty(PLAYER_API_PROPERTIES.role)
+  @IsEnum(RoleNames)
+  public name: RoleNames;
 
-  @ApiProperty(playerRoleApiProperties.original)
-  @IsEnum(ROLE_NAMES)
-  public original: ROLE_NAMES;
+  @ApiProperty(PLAYER_ROLE_API_PROPERTIES.original)
+  @IsEnum(RoleNames)
+  public original: RoleNames;
 
-  @ApiProperty(playerRoleApiProperties.current)
-  @IsEnum(ROLE_NAMES)
-  public current: ROLE_NAMES;
+  @ApiProperty(PLAYER_ROLE_API_PROPERTIES.current)
+  @IsEnum(RoleNames)
+  public current: RoleNames;
 
-  @ApiProperty(playerRoleApiProperties.isRevealed)
+  @ApiProperty(PLAYER_ROLE_API_PROPERTIES.isRevealed)
   @IsBoolean()
   public isRevealed: boolean;
 }

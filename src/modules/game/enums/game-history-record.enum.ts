@@ -1,4 +1,4 @@
-enum GAME_HISTORY_RECORD_VOTING_RESULTS {
+enum GameHistoryRecordVotingResults {
   SHERIFF_ELECTION = "sheriff-election",
   TIE = "tie",
   DEATH = "death",
@@ -6,4 +6,4 @@ enum GAME_HISTORY_RECORD_VOTING_RESULTS {
   SKIPPED = "skipped",
 }
 
-export { GAME_HISTORY_RECORD_VOTING_RESULTS };
+export { GameHistoryRecordVotingResults };

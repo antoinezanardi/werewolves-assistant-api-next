@@ -1,19 +1,20 @@
 import { ApiHideProperty, PickType } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { Allow } from "class-validator";
-import { ROLE_NAMES } from "../../../../../role/enums/role.enum";
-import { GamePlayerRoleBaseDto } from "../../../base/game-player/game-player-role/game-player-role.base.dto";
+
+import { GamePlayerRoleBaseDto } from "@/modules/game/dto/base/game-player/game-player-role/game-player-role.base.dto";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 class CreateGamePlayerRoleDto extends PickType(GamePlayerRoleBaseDto, ["name"] as const) {
   @ApiHideProperty()
   @Allow()
   @Expose()
-  public original?: ROLE_NAMES;
+  public original?: RoleNames;
 
   @ApiHideProperty()
   @Allow()
   @Expose()
-  public current?: ROLE_NAMES;
+  public current?: RoleNames;
 
   @ApiHideProperty()
   @Allow()

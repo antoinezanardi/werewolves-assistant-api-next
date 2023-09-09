@@ -1,17 +1,19 @@
-import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { parseInt } from "lodash";
-import type { GAME_PLAY_CAUSES, GAME_PLAY_ACTIONS } from "../../../../../src/modules/game/enums/game-play.enum";
-import type { GAME_VICTORY_TYPES } from "../../../../../src/modules/game/enums/game-victory.enum";
-import type { GAME_STATUSES, GAME_PHASES } from "../../../../../src/modules/game/enums/game.enum";
-import type { PLAYER_DEATH_CAUSES, PLAYER_ATTRIBUTE_NAMES } from "../../../../../src/modules/game/enums/player.enum";
-import { getPlayerWithNameOrThrow } from "../../../../../src/modules/game/helpers/game.helper";
-import { getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "../../../../../src/modules/game/helpers/player/player-attribute/player-attribute.helper";
-import type { GameSource } from "../../../../../src/modules/game/types/game.type";
-import type { ROLE_NAMES, ROLE_SIDES } from "../../../../../src/modules/role/enums/role.enum";
-import type { CustomWorld } from "../../../shared/types/world.types";
-import { convertDatatableToPlayers } from "../helpers/game-datatable.helper";
+import type { DataTable } from "@cucumber/cucumber";
+
+import type { GamePlayCauses, GamePlayActions } from "@/modules/game/enums/game-play.enum";
+import type { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
+import type { GameStatuses, GamePhases } from "@/modules/game/enums/game.enum";
+import type { PlayerDeathCauses, PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helper";
+import { getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import type { GameSource } from "@/modules/game/types/game.type";
+import type { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+
+import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
+import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 
 Then(/^the game's tick should be (?<tick>\d)$/u, function(this: CustomWorld, tick: string): void {
   expect(this.game.tick).toBe(parseInt(tick));
@@ -21,17 +23,17 @@ Then(/^the game's turn should be (?<turn>\d)$/u, function(this: CustomWorld, tur
   expect(this.game.turn).toBe(parseInt(turn));
 });
 
-Then(/^the game's phase should be (?<phase>night|day)$/u, function(this: CustomWorld, phase: GAME_PHASES): void {
+Then(/^the game's phase should be (?<phase>night|day)$/u, function(this: CustomWorld, phase: GamePhases): void {
   expect(this.game.phase).toBe(phase);
 });
 
-Then(/^the game's status should be (?<phase>playing|over|canceled)$/u, function(this: CustomWorld, status: GAME_STATUSES): void {
+Then(/^the game's status should be (?<phase>playing|over|canceled)$/u, function(this: CustomWorld, status: GameStatuses): void {
   expect(this.game.status).toBe(status);
 });
 
 Then(
   /^the game's current play should be (?<source>.+?) to (?<action>.+?)(?: because (?<cause>.+?))?$/u,
-  function(this: CustomWorld, source: GameSource, action: GAME_PLAY_ACTIONS, cause: GAME_PLAY_CAUSES | null): void {
+  function(this: CustomWorld, source: GameSource, action: GamePlayActions, cause: GamePlayCauses | null): void {
     expect(this.game.currentPlay?.source.name).toBe(source);
     expect(this.game.currentPlay?.action).toBe(action);
     if (cause !== null) {
@@ -50,7 +52,7 @@ Then(
 
 Then(
   /^the game's winners should be (?<winners>villagers|werewolves|lovers|angel|white-werewolf|pied-piper|none) with the following players$/u,
-  function(this: CustomWorld, victoryType: GAME_VICTORY_TYPES, winnersDatable: DataTable): void {
+  function(this: CustomWorld, victoryType: GameVictoryTypes, winnersDatable: DataTable): void {
     const players = convertDatatableToPlayers(winnersDatable.rows(), this.game);
     const expectedWinners = players.length ? players : undefined;
 
@@ -66,7 +68,7 @@ Then(
     playerName: string,
     shouldMiss: string | null,
     isActive: "active" | "inactive",
-    attributeName: PLAYER_ATTRIBUTE_NAMES,
+    attributeName: PlayerAttributeNames,
     attributeSource: GameSource,
   ): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
@@ -85,7 +87,7 @@ Then(
     this: CustomWorld,
     playerCount: string,
     isActive: "active" | "inactive",
-    attributeName: PLAYER_ATTRIBUTE_NAMES,
+    attributeName: PlayerAttributeNames,
     attributeSource: GameSource,
     expectedPlayersDatatable: DataTable,
   ): void {
@@ -102,7 +104,7 @@ Then(
 
 Then(
   /^nobody should have the (?<isActive>active|inactive) (?<attributeName>\S+) from (?<attributeSource>\S+) attribute$/u,
-  function(this: CustomWorld, isActive: "active" | "inactive", attributeName: PLAYER_ATTRIBUTE_NAMES, attributeSource: GameSource): void {
+  function(this: CustomWorld, isActive: "active" | "inactive", attributeName: PlayerAttributeNames, attributeSource: GameSource): void {
     const doSomePlayerHaveAttribute = this.game.players.some(player => {
       const attribute = getPlayerAttributeWithNameAndSource(player, attributeName, attributeSource);
       const isAttributeActive = !!attribute && isPlayerAttributeActive(attribute, this.game);
@@ -121,7 +123,7 @@ Then(/^the player named (?<name>.+?) should be alive$/u, function(this: CustomWo
 
 Then(
   /^the player named (?<name>.+?) should be murdered by (?<deathSource>.+?) from (?<deathCause>.+?)$/u,
-  function(this: CustomWorld, playerName: string, deathSource: GameSource, deathCause: PLAYER_DEATH_CAUSES): void {
+  function(this: CustomWorld, playerName: string, deathSource: GameSource, deathCause: PlayerDeathCauses): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
 
     expect(player.isAlive).toBe(false);
@@ -134,7 +136,7 @@ Then(
 
 Then(
   /^the player named (?<name>.+?) should be currently a (?<currentRole>.+) and originally a (?<originalRole>.+)$/u,
-  function(this: CustomWorld, playerName: string, currentRole: ROLE_NAMES, originalRole: ROLE_NAMES): void {
+  function(this: CustomWorld, playerName: string, currentRole: RoleNames, originalRole: RoleNames): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
 
     expect(player.role.current).toBe(currentRole);
@@ -144,7 +146,7 @@ Then(
 
 Then(
   /^the player named (?<name>.+?) should be on (?<currentSide>villagers|werewolves) current side and originally be on (?<originalSide>villagers|werewolves) side$/u,
-  function(this: CustomWorld, playerName: string, currentSide: ROLE_SIDES, originalSide: ROLE_SIDES): void {
+  function(this: CustomWorld, playerName: string, currentSide: RoleSides, originalSide: RoleSides): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
 
     expect(player.side.current).toBe(currentSide);

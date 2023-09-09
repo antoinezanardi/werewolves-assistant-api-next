@@ -1,38 +1,41 @@
-import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
-import { GAME_STATUSES } from "../../../../../../../src/modules/game/enums/game.enum";
-import * as GamePhaseHelper from "../../../../../../../src/modules/game/helpers/game-phase/game-phase.helper";
-import * as GamePlayHelper from "../../../../../../../src/modules/game/helpers/game-play/game-play.helper";
-import * as GameVictoryHelper from "../../../../../../../src/modules/game/helpers/game-victory/game-victory.helper";
-import * as GameHelper from "../../../../../../../src/modules/game/helpers/game.helper";
-import { GameHistoryRecordRepository } from "../../../../../../../src/modules/game/providers/repositories/game-history-record.repository";
-import { GameRepository } from "../../../../../../../src/modules/game/providers/repositories/game.repository";
-import { GameHistoryRecordService } from "../../../../../../../src/modules/game/providers/services/game-history/game-history-record.service";
-import { GamePhaseService } from "../../../../../../../src/modules/game/providers/services/game-phase/game-phase.service";
-import { GamePlayMakerService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-maker.service";
-import { GamePlayValidatorService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-validator.service";
-import { GamePlayVoteService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
-import { GamePlayService } from "../../../../../../../src/modules/game/providers/services/game-play/game-play.service";
-import { GameService } from "../../../../../../../src/modules/game/providers/services/game.service";
-import { PlayerAttributeService } from "../../../../../../../src/modules/game/providers/services/player/player-attribute.service";
-import type { Game } from "../../../../../../../src/modules/game/schemas/game.schema";
-import { API_RESOURCES } from "../../../../../../../src/shared/api/enums/api.enum";
-import { UNEXPECTED_EXCEPTION_REASONS } from "../../../../../../../src/shared/exception/enums/unexpected-exception.enum";
-import { BadResourceMutationException } from "../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type";
-import { ResourceNotFoundException } from "../../../../../../../src/shared/exception/types/resource-not-found-exception.type";
-import { UnexpectedException } from "../../../../../../../src/shared/exception/types/unexpected-exception.type";
-import { createFakeCreateGameDto } from "../../../../../../factories/game/dto/create-game/create-game.dto.factory";
-import { createFakeMakeGamePlayWithRelationsDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
-import { createFakeMakeGamePlayDto } from "../../../../../../factories/game/dto/make-game-play/make-game-play.dto.factory";
-import { createFakeGamePlayAllVote } from "../../../../../../factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGameVictory } from "../../../../../../factories/game/schemas/game-victory/game-victory.schema.factory";
-import { createFakeGame, createFakeGameWithCurrentPlay } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakeGameHistoryRecordToInsert } from "../../../../../../factories/game/types/game-history-record/game-history-record.type.factory";
-import { createFakeObjectId } from "../../../../../../factories/shared/mongoose/mongoose.factory";
+import type { TestingModule } from "@nestjs/testing";
 
-jest.mock("../../../../../../../src/shared/exception/types/bad-resource-mutation-exception.type");
-jest.mock("../../../../../../../src/shared/exception/types/resource-not-found-exception.type");
+import { GameStatuses } from "@/modules/game/enums/game.enum";
+import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helper";
+import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helper";
+import * as GameVictoryHelper from "@/modules/game/helpers/game-victory/game-victory.helper";
+import * as GameHelper from "@/modules/game/helpers/game.helper";
+import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
+import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
+import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker.service";
+import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
+import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
+import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
+import { GameService } from "@/modules/game/providers/services/game.service";
+import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+
+import { ApiResources } from "@/shared/api/enums/api.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.type";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+
+import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
+import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
+import { createFakeGamePlayAllVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
+import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
+
+jest.mock("@/shared/exception/types/bad-resource-mutation-exception.type");
+jest.mock("@/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game Service", () => {
   let mocks: {
@@ -162,7 +165,7 @@ describe("Game Service", () => {
     it("should throw error when can't generate upcoming plays.", async() => {
       mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([]);
       const toCreateGame = createFakeCreateGameDto();
-      const exception = new UnexpectedException("createGame", UNEXPECTED_EXCEPTION_REASONS.CANT_GENERATE_GAME_PLAYS);
+      const exception = new UnexpectedException("createGame", UnexpectedExceptionReasons.CANT_GENERATE_GAME_PLAYS);
 
       await expect(services.game.createGame(toCreateGame)).rejects.toThrow(exception);
     });
@@ -192,29 +195,29 @@ describe("Game Service", () => {
       const expectedGame = createFakeGameWithCurrentPlay(createdGame);
       expectedGame.currentPlay.source.players = expectedPlayersToPlay;
 
-      expect(localMocks.gameService.updateGame).toHaveBeenCalledWith(createdGame._id, expectedGame);
+      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, expectedGame);
     });
   });
 
   describe("cancelGame", () => {
     let localMocks: { gameService: { updateGame: jest.SpyInstance } };
-    const existingPlayingGame = createFakeGame({ status: GAME_STATUSES.PLAYING });
+    const existingPlayingGame = createFakeGame({ status: GameStatuses.PLAYING });
 
     beforeEach(() => {
       localMocks = { gameService: { updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockReturnValue(existingPlayingGame) } };
     });
 
     it("should throw error when game is not playing.", async() => {
-      const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
+      const canceledGame = createFakeGame({ status: GameStatuses.CANCELED });
 
       await expect(services.game.cancelGame(canceledGame)).toReject();
-      expect(BadResourceMutationException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
+      expect(BadResourceMutationException).toHaveBeenCalledExactlyOnceWith(ApiResources.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
     });
 
     it("should call update method when game can be canceled.", async() => {
       await services.game.cancelGame(existingPlayingGame);
 
-      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(existingPlayingGame._id, { status: GAME_STATUSES.CANCELED });
+      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(existingPlayingGame._id, { status: GameStatuses.CANCELED });
     });
   });
 
@@ -232,7 +235,7 @@ describe("Game Service", () => {
       createFakeVillagerAlivePlayer(),
       createFakeVillagerAlivePlayer(),
     ];
-    const game = createFakeGame({ status: GAME_STATUSES.PLAYING, players, currentPlay: createFakeGamePlayAllVote() });
+    const game = createFakeGame({ status: GameStatuses.PLAYING, players, currentPlay: createFakeGamePlayAllVote() });
     const play = createFakeMakeGamePlayWithRelationsDto();
 
     beforeEach(() => {
@@ -252,10 +255,10 @@ describe("Game Service", () => {
 
     it("should throw an error when game is not playing.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
-      const canceledGame = createFakeGame({ status: GAME_STATUSES.CANCELED });
+      const canceledGame = createFakeGame({ status: GameStatuses.CANCELED });
 
       await expect(services.game.makeGamePlay(canceledGame, makeGamePlayDto)).toReject();
-      expect(BadResourceMutationException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
+      expect(BadResourceMutationException).toHaveBeenCalledExactlyOnceWith(ApiResources.GAMES, canceledGame._id.toString(), `Game doesn't have status with value "playing"`);
     });
 
     it("should call play validator method when called.", async() => {
@@ -378,13 +381,13 @@ describe("Game Service", () => {
       const unknownObjectId = createFakeObjectId();
       mocks.gameRepository.updateOne.mockResolvedValue(null);
 
-      await expect(services.game["updateGame"](unknownObjectId, { status: GAME_STATUSES.OVER })).toReject();
-      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(API_RESOURCES.GAMES, unknownObjectId.toString());
+      await expect(services.game["updateGame"](unknownObjectId, { status: GameStatuses.OVER })).toReject();
+      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(ApiResources.GAMES, unknownObjectId.toString());
     });
 
     it("should return updated game when called.", async() => {
       const game = createFakeGame();
-      const gameDataToUpdate: Partial<Game> = { status: GAME_STATUSES.OVER };
+      const gameDataToUpdate: Partial<Game> = { status: GameStatuses.OVER };
       mocks.gameRepository.updateOne.mockResolvedValue(game);
 
       await expect(services.game["updateGame"](game._id, gameDataToUpdate)).resolves.toStrictEqual<Game>(game);
@@ -394,12 +397,12 @@ describe("Game Service", () => {
 
   describe("setGameAsOver", () => {
     it("should set game as over when called.", () => {
-      const game = createFakeGame({ status: GAME_STATUSES.PLAYING });
+      const game = createFakeGame({ status: GameStatuses.PLAYING });
       const gameVictoryData = createFakeGameVictory();
       jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
       const expectedGame = createFakeGame({
         ...game,
-        status: GAME_STATUSES.OVER,
+        status: GameStatuses.OVER,
         victory: gameVictoryData,
       });
 

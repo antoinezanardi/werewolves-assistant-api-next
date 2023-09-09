@@ -1,7 +1,8 @@
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import type { INestApplication } from "@nestjs/common";
 import type { SwaggerCustomOptions } from "@nestjs/swagger";
-import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
-import { createSwaggerDocument } from "../../../../../src/server/swagger/swagger";
+
+import { createSwaggerDocument } from "@/server/swagger/swagger";
 
 describe("Server Swagger", () => {
   describe("createSwaggerDocument", () => {

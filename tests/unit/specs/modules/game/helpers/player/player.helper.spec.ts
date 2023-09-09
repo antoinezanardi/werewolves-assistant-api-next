@@ -1,11 +1,12 @@
-import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "../../../../../../../src/modules/game/helpers/player/player.helper";
-import { ROLE_SIDES } from "../../../../../../../src/modules/role/enums/role.enum";
-import { createFakeGameOptions } from "../../../../../../factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "../../../../../../factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGame } from "../../../../../../factories/game/schemas/game.schema.factory";
-import { createFakePowerlessByAncientPlayerAttribute } from "../../../../../../factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePiedPiperAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "../../../../../../factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer, createFakePlayerSide } from "../../../../../../factories/game/schemas/player/player.schema.factory";
+import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "@/modules/game/helpers/player/player.helper";
+import { RoleSides } from "@/modules/role/enums/role.enum";
+
+import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakePowerlessByAncientPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePiedPiperAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePlayer, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Player Helper", () => {
   describe("canPiedPiperCharm", () => {
@@ -28,7 +29,7 @@ describe("Player Helper", () => {
     it("should return false when pied piper is infected and thus is powerless.", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
       const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) });
+      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
       
       expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(false);
     });
@@ -36,7 +37,7 @@ describe("Player Helper", () => {
     it("should return true when pied piper is infected but original rule is not respected.", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
       const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.WEREWOLVES }) });
+      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
       
       expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(true);
     });
@@ -44,7 +45,7 @@ describe("Player Helper", () => {
     it("should return true when pied piper is not powerless and currently a villager.", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
       const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: ROLE_SIDES.VILLAGERS }) });
+      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.VILLAGERS }) });
       
       expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(true);
     });

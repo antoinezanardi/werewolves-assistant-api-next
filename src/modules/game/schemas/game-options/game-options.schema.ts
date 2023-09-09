@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { gameOptionsApiProperties } from "../../constants/game-options/game-options.constant";
-import { CompositionGameOptions, CompositionGameOptionsSchema } from "./composition-game-options.schema";
-import { RolesGameOptions, RolesGameOptionsSchema } from "./roles-game-options/roles-game-options.schema";
-import { VotesGameOptions, VotesGameOptionsSchema } from "./votes-game-options.schema";
+
+import { GAME_OPTIONS_API_PROPERTIES } from "@/modules/game/schemas/game-options/game-options.schema.constant";
+import { CompositionGameOptions, COMPOSITION_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/composition-game-options/composition-game-options.schema";
+import { RolesGameOptions, ROLES_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema";
+import { VotesGameOptions, VOTES_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/votes-game-options/votes-game-options.schema";
 
 @Schema({
   versionKey: false,
@@ -12,27 +13,27 @@ import { VotesGameOptions, VotesGameOptionsSchema } from "./votes-game-options.s
   _id: false,
 })
 class GameOptions {
-  @ApiProperty(gameOptionsApiProperties.composition)
+  @ApiProperty(GAME_OPTIONS_API_PROPERTIES.composition)
   @Prop({
-    type: CompositionGameOptionsSchema,
+    type: COMPOSITION_GAME_OPTIONS_SCHEMA,
     default: () => ({}),
   })
   @Type(() => CompositionGameOptions)
   @Expose()
   public composition: CompositionGameOptions;
 
-  @ApiProperty(gameOptionsApiProperties.votes)
+  @ApiProperty(GAME_OPTIONS_API_PROPERTIES.votes)
   @Prop({
-    type: VotesGameOptionsSchema,
+    type: VOTES_GAME_OPTIONS_SCHEMA,
     default: () => ({}),
   })
   @Type(() => VotesGameOptions)
   @Expose()
   public votes: VotesGameOptions;
 
-  @ApiProperty(gameOptionsApiProperties.roles)
+  @ApiProperty(GAME_OPTIONS_API_PROPERTIES.roles)
   @Prop({
-    type: RolesGameOptionsSchema,
+    type: ROLES_GAME_OPTIONS_SCHEMA,
     default: () => ({}),
   })
   @Type(() => RolesGameOptions)
@@ -40,6 +41,9 @@ class GameOptions {
   public roles: RolesGameOptions;
 }
 
-const GameOptionsSchema = SchemaFactory.createForClass(GameOptions);
+const GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(GameOptions);
 
-export { GameOptions, GameOptionsSchema };
+export {
+  GameOptions,
+  GAME_OPTIONS_SCHEMA,
+};

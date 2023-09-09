@@ -1,11 +1,12 @@
 import { Controller, Get } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
-import type { HealthCheckResult, HealthIndicatorResult } from "@nestjs/terminus";
 import { HealthCheck, HealthCheckService, MongooseHealthIndicator } from "@nestjs/terminus";
-import { API_RESOURCES } from "../../../shared/api/enums/api.enum";
+import type { HealthCheckResult, HealthIndicatorResult } from "@nestjs/terminus";
+
+import { ApiResources } from "@/shared/api/enums/api.enum";
 
 @ApiTags("❤️ Health")
-@Controller(API_RESOURCES.HEALTH)
+@Controller(ApiResources.HEALTH)
 export class HealthController {
   public constructor(
     private readonly health: HealthCheckService,

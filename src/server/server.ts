@@ -1,15 +1,18 @@
 import { Logger, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
-import { AppModule } from "../app.module";
-import { validationPipeDefaultOptions } from "../shared/validation/constants/validation.constant";
-import { fastifyServerDefaultOptions } from "./constants/server.constant";
-import { createSwaggerDocument } from "./swagger/swagger";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+
+import { FASTIFY_SERVER_DEFAULT_OPTIONS } from "@/server/constants/server.constant";
+import { createSwaggerDocument } from "@/server/swagger/swagger";
+
+import { VALIDATION_PIPE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+import { AppModule } from "@/app.module";
 
 async function bootstrap(port = 3000): Promise<NestFastifyApplication> {
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(fastifyServerDefaultOptions));
-  app.useGlobalPipes(new ValidationPipe(validationPipeDefaultOptions));
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(FASTIFY_SERVER_DEFAULT_OPTIONS));
+  app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_DEFAULT_OPTIONS));
   const documentationPath = "docs";
   createSwaggerDocument(documentationPath, app);
   app.useStaticAssets({

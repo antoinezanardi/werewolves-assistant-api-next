@@ -1,9 +1,10 @@
 import {
   getCompositionRolesMaxInGameDefaultMessage,
   areCompositionRolesMaxInGameRespected,
-} from "../../../../../../../../../src/modules/game/dto/base/decorators/composition/composition-roles-max-in-game.decorator";
-import { ROLE_NAMES } from "../../../../../../../../../src/modules/role/enums/role.enum";
-import { bulkCreateFakeCreateGamePlayerDto } from "../../../../../../../../factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+} from "@/modules/game/dto/base/decorators/composition/composition-roles-max-in-game.decorator";
+import { RoleNames } from "@/modules/role/enums/role.enum";
+
+import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 describe("Composition Roles Max In Game Decorator", () => {
   describe("areCompositionRolesMaxInGameRespected", () => {
@@ -17,10 +18,10 @@ describe("Composition Roles Max In Game Decorator", () => {
 
     it("should return false when one of the players is not an object.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: ROLE_NAMES.TWO_SISTERS } },
-        { role: { name: ROLE_NAMES.TWO_SISTERS } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.VILLAGER } },
+        { role: { name: RoleNames.TWO_SISTERS } },
+        { role: { name: RoleNames.TWO_SISTERS } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.VILLAGER } },
       ]);
 
       expect(areCompositionRolesMaxInGameRespected([...players, "toto"])).toBe(false);
@@ -28,10 +29,10 @@ describe("Composition Roles Max In Game Decorator", () => {
 
     it("should return false when one of the players doesn't have the good structure.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: ROLE_NAMES.TWO_SISTERS } },
-        { role: { name: ROLE_NAMES.TWO_SISTERS } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.VILLAGER } },
+        { role: { name: RoleNames.TWO_SISTERS } },
+        { role: { name: RoleNames.TWO_SISTERS } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.VILLAGER } },
       ]);
 
       expect(areCompositionRolesMaxInGameRespected([...players, { name: "bad", role: { toto: "tata" } }])).toBe(false);
@@ -39,10 +40,10 @@ describe("Composition Roles Max In Game Decorator", () => {
 
     it("should return false when there is 2 players with the same role but max in game is 1.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: ROLE_NAMES.WITCH } },
-        { role: { name: ROLE_NAMES.WITCH } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.VILLAGER } },
+        { role: { name: RoleNames.WITCH } },
+        { role: { name: RoleNames.WITCH } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.VILLAGER } },
       ]);
 
       expect(areCompositionRolesMaxInGameRespected(players)).toBe(false);
@@ -54,14 +55,14 @@ describe("Composition Roles Max In Game Decorator", () => {
 
     it("should return true when the limit for each role is respected.", () => {
       const players = bulkCreateFakeCreateGamePlayerDto(8, [
-        { role: { name: ROLE_NAMES.WITCH } },
-        { role: { name: ROLE_NAMES.SEER } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.WEREWOLF } },
-        { role: { name: ROLE_NAMES.VILLAGER } },
-        { role: { name: ROLE_NAMES.VILLAGER } },
-        { role: { name: ROLE_NAMES.VILLAGER } },
-        { role: { name: ROLE_NAMES.VILLAGER } },
+        { role: { name: RoleNames.WITCH } },
+        { role: { name: RoleNames.SEER } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.WEREWOLF } },
+        { role: { name: RoleNames.VILLAGER } },
+        { role: { name: RoleNames.VILLAGER } },
+        { role: { name: RoleNames.VILLAGER } },
+        { role: { name: RoleNames.VILLAGER } },
       ]);
 
       expect(areCompositionRolesMaxInGameRespected(players)).toBe(true);

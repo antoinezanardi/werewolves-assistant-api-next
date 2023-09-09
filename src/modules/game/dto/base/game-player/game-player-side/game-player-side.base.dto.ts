@@ -1,16 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum } from "class-validator";
-import { ROLE_SIDES } from "../../../../../role/enums/role.enum";
-import { playerSideApiProperties } from "../../../../constants/player/player-side.constant";
+
+import { PLAYER_SIDE_API_PROPERTIES } from "@/modules/game/schemas/player/player-side/player-side.schema.constant";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
 class GamePlayerSideBaseDto {
-  @ApiProperty(playerSideApiProperties.original)
-  @IsEnum(ROLE_SIDES)
-  public original: ROLE_SIDES;
+  @ApiProperty(PLAYER_SIDE_API_PROPERTIES.original)
+  @IsEnum(RoleSides)
+  public original: RoleSides;
 
-  @ApiProperty(playerSideApiProperties.current)
-  @IsEnum(ROLE_SIDES)
-  public current: ROLE_SIDES;
+  @ApiProperty(PLAYER_SIDE_API_PROPERTIES.current)
+  @IsEnum(RoleSides)
+  public current: RoleSides;
 }
 
 export { GamePlayerSideBaseDto };

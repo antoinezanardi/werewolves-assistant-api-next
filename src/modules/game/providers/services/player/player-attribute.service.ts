@@ -1,13 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { createGame } from "../../../helpers/game.factory";
-import { createPlayerAttribute } from "../../../helpers/player/player-attribute/player-attribute.factory";
-import { isPlayerAttributeActive } from "../../../helpers/player/player-attribute/player-attribute.helper";
-import { createPlayerDiseaseByRustySwordKnightDeath, createPlayerDeathPotionByWitchDeath, createPlayerEatenByWerewolvesDeath } from "../../../helpers/player/player-death/player-death.factory";
-import { createPlayer } from "../../../helpers/player/player.factory";
-import type { Game } from "../../../schemas/game.schema";
-import type { PlayerAttribute } from "../../../schemas/player/player-attribute/player-attribute.schema";
-import type { Player } from "../../../schemas/player/player.schema";
-import { PlayerKillerService } from "./player-killer.service";
+
+import { createGame } from "@/modules/game/helpers/game.factory";
+import { createPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { createPlayerDiseaseByRustySwordKnightDeath, createPlayerDeathPotionByWitchDeath, createPlayerEatenByWerewolvesDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
+import { createPlayer } from "@/modules/game/helpers/player/player.factory";
+import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
 
 @Injectable()
 export class PlayerAttributeService {

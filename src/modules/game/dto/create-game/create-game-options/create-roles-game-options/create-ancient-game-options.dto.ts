@@ -1,25 +1,26 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsInt, IsOptional, Max, Min } from "class-validator";
-import { ancientGameOptionsApiProperties, ancientGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/ancient-game-options.constant";
+
+import { ANCIENT_GAME_OPTIONS_API_PROPERTIES, ANCIENT_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/ancient-game-options/ancient-game-options.schema.constant";
 
 class CreateAncientGameOptionsDto {
   @ApiProperty({
-    ...ancientGameOptionsApiProperties.livesCountAgainstWerewolves,
+    ...ANCIENT_GAME_OPTIONS_API_PROPERTIES.livesCountAgainstWerewolves,
     required: false,
   })
   @IsOptional()
   @IsInt()
-  @Min(ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.minimum)
-  @Max(ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.maximum)
-  public livesCountAgainstWerewolves: number = ancientGameOptionsFieldsSpecs.livesCountAgainstWerewolves.default;
+  @Min(ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves.minimum)
+  @Max(ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves.maximum)
+  public livesCountAgainstWerewolves: number = ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves.default;
 
   @ApiProperty({
-    ...ancientGameOptionsApiProperties.doesTakeHisRevenge,
+    ...ANCIENT_GAME_OPTIONS_API_PROPERTIES.doesTakeHisRevenge,
     required: false,
   })
   @IsOptional()
   @IsBoolean()
-  public doesTakeHisRevenge: boolean = ancientGameOptionsFieldsSpecs.doesTakeHisRevenge.default;
+  public doesTakeHisRevenge: boolean = ANCIENT_GAME_OPTIONS_FIELDS_SPECS.doesTakeHisRevenge.default;
 }
 
 export { CreateAncientGameOptionsDto };

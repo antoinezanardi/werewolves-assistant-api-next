@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { sheriffGameOptionsApiProperties, sheriffGameOptionsFieldsSpecs } from "../../../../constants/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.constant";
-import { SheriffElectionGameOptions, SheriffElectionGameOptionsSchema } from "./sheriff-election-game-options.schema";
+
+import { SHERIFF_GAME_OPTIONS_API_PROPERTIES, SHERIFF_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema.constant";
+import { SheriffElectionGameOptions, SHERIFF_ELECTION_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options/sheriff-election-game-options.schema";
 
 @Schema({
   versionKey: false,
@@ -10,26 +11,29 @@ import { SheriffElectionGameOptions, SheriffElectionGameOptionsSchema } from "./
   _id: false,
 })
 class SheriffGameOptions {
-  @ApiProperty(sheriffGameOptionsApiProperties.isEnabled)
-  @Prop({ default: sheriffGameOptionsFieldsSpecs.isEnabled.default })
+  @ApiProperty(SHERIFF_GAME_OPTIONS_API_PROPERTIES.isEnabled)
+  @Prop({ default: SHERIFF_GAME_OPTIONS_FIELDS_SPECS.isEnabled.default })
   @Expose()
   public isEnabled: boolean;
 
-  @ApiProperty(sheriffGameOptionsApiProperties.electedAt)
+  @ApiProperty(SHERIFF_GAME_OPTIONS_API_PROPERTIES.electedAt)
   @Prop({
-    type: SheriffElectionGameOptionsSchema,
+    type: SHERIFF_ELECTION_GAME_OPTIONS_SCHEMA,
     default: () => ({}),
   })
   @Type(() => SheriffElectionGameOptions)
   @Expose()
   public electedAt: SheriffElectionGameOptions;
 
-  @ApiProperty(sheriffGameOptionsApiProperties.hasDoubledVote)
-  @Prop({ default: sheriffGameOptionsFieldsSpecs.hasDoubledVote.default })
+  @ApiProperty(SHERIFF_GAME_OPTIONS_API_PROPERTIES.hasDoubledVote)
+  @Prop({ default: SHERIFF_GAME_OPTIONS_FIELDS_SPECS.hasDoubledVote.default })
   @Expose()
   public hasDoubledVote: boolean;
 }
 
-const SheriffGameOptionsSchema = SchemaFactory.createForClass(SheriffGameOptions);
+const SHERIFF_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(SheriffGameOptions);
 
-export { SheriffGameOptions, SheriffGameOptionsSchema };
+export {
+  SheriffGameOptions,
+  SHERIFF_GAME_OPTIONS_SCHEMA,
+};

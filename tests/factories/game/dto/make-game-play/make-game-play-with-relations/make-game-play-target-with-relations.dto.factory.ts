@@ -1,7 +1,10 @@
 import { plainToInstance } from "class-transformer";
-import { MakeGamePlayTargetWithRelationsDto } from "../../../../../../src/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
-import { plainToInstanceDefaultOptions } from "../../../../../../src/shared/validation/constants/validation.constant";
-import { createFakePlayer } from "../../../schemas/player/player.schema.factory";
+
+import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
+
+import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 function createFakeMakeGamePlayTargetWithRelationsDto(
   makeGamePlayTargetWithRelationsDto: Partial<MakeGamePlayTargetWithRelationsDto> = {},
@@ -12,7 +15,7 @@ function createFakeMakeGamePlayTargetWithRelationsDto(
     isInfected: makeGamePlayTargetWithRelationsDto.isInfected ?? undefined,
     drankPotion: makeGamePlayTargetWithRelationsDto.drankPotion ?? undefined,
     ...override,
-  }, plainToInstanceDefaultOptions);
+  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }
 
 export { createFakeMakeGamePlayTargetWithRelationsDto };

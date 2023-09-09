@@ -1,6 +1,7 @@
-import type { ApiResponseOptions } from "@nestjs/swagger";
 import * as NestSwagger from "@nestjs/swagger";
-import { ApiGameNotFoundResponse } from "../../../../../../../src/modules/game/controllers/decorators/api-game-not-found-response.decorator";
+import type { ApiResponseOptions } from "@nestjs/swagger";
+
+import { ApiGameNotFoundResponse } from "@/modules/game/controllers/decorators/api-game-not-found-response.decorator";
 
 describe("Api Game Not Found Response Decorator", () => {
   let mocks: { nestSwagger: { ApiNotFoundResponse: jest.SpyInstance } };

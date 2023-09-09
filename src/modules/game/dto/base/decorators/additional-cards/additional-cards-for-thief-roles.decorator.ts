@@ -1,18 +1,19 @@
-import type { ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
-import { gameAdditionalCardsThiefRoleNames } from "../../../../constants/game-additional-card/game-additional-card.constant";
-import type { CreateGameAdditionalCardDto } from "../../../create-game/create-game-additional-card/create-game-additional-card.dto";
+import type { ValidationOptions } from "class-validator";
+
+import { GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
+import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 
 function areAdditionalCardsForThiefRolesRespected(value: unknown): boolean {
   if (value === undefined) {
     return true;
   }
   const thiefAdditionalCards = value as CreateGameAdditionalCardDto[];
-  return thiefAdditionalCards.every(({ roleName }) => gameAdditionalCardsThiefRoleNames.includes(roleName));
+  return thiefAdditionalCards.every(({ roleName }) => GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES.includes(roleName));
 }
 
 function getAdditionalCardsForThiefRolesDefaultMessage(): string {
-  return `additionalCards.roleName must be one of the following values: ${gameAdditionalCardsThiefRoleNames.toString()}`;
+  return `additionalCards.roleName must be one of the following values: ${GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES.toString()}`;
 }
 
 function AdditionalCardsForThiefRoles(validationOptions?: ValidationOptions) {

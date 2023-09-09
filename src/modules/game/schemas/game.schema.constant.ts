@@ -1,42 +1,43 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-import { GAME_PHASES, GAME_STATUSES } from "../enums/game.enum";
-import type { Game } from "./game.schema";
 
-const gameFieldsSpecs = Object.freeze({
+import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
+import type { Game } from "@/modules/game/schemas/game.schema";
+
+const GAME_FIELDS_SPECS = Object.freeze({
   players: {
     minItems: 4,
     maxItems: 40,
   },
   turn: { default: 1 },
-  phase: { default: GAME_PHASES.NIGHT },
+  phase: { default: GamePhases.NIGHT },
   tick: { default: 1 },
-  status: { default: GAME_STATUSES.PLAYING },
+  status: { default: GameStatuses.PLAYING },
 });
 
-const gameApiProperties: Readonly<Record<keyof Game, ApiPropertyOptions>> = Object.freeze({
+const GAME_API_PROPERTIES: Readonly<Record<keyof Game, ApiPropertyOptions>> = Object.freeze({
   _id: {
     description: "Game's Mongo ObjectId",
     example: "507f1f77bcf86cd799439011",
   },
   turn: {
     description: "Starting at `1`, a turn starts with the first phase (the `night`) and ends with the second phase (the `day`)",
-    ...gameFieldsSpecs.turn,
+    ...GAME_FIELDS_SPECS.turn,
   },
   phase: {
     description: "Each turn has two phases, `day` and `night`. Starting at `night`",
-    ...gameFieldsSpecs.phase,
+    ...GAME_FIELDS_SPECS.phase,
   },
   tick: {
     description: "Starting at `1`, tick increments each time a play is made",
-    ...gameFieldsSpecs.tick,
+    ...GAME_FIELDS_SPECS.tick,
   },
   status: {
     description: "Game's current status",
-    ...gameFieldsSpecs.status,
+    ...GAME_FIELDS_SPECS.status,
   },
   players: {
     description: "Players of the game",
-    ...gameFieldsSpecs.players,
+    ...GAME_FIELDS_SPECS.players,
   },
   currentPlay: { description: "Current play which needs to be performed" },
   upcomingPlays: { description: "Queue of upcoming plays that needs to be performed to continue the game right after the current play" },
@@ -48,6 +49,6 @@ const gameApiProperties: Readonly<Record<keyof Game, ApiPropertyOptions>> = Obje
 });
 
 export {
-  gameFieldsSpecs,
-  gameApiProperties,
+  GAME_FIELDS_SPECS,
+  GAME_API_PROPERTIES,
 };
