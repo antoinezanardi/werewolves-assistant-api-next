@@ -30,9 +30,9 @@ export class GamePlayVoteService {
     const sheriffPlayer = getPlayerWithActiveAttributeName(game, PlayerAttributeNames.SHERIFF);
     return votes.reduce<PlayerVoteCount[]>((acc, vote) => {
       const doubledVoteValue = 2;
-      const isVoteSourceSheriff = vote.source._id.toString() === sheriffPlayer?._id.toString();
+      const isVoteSourceSheriff = sheriffPlayer?._id.equals(vote.source._id) === true;
       const voteValue = game.currentPlay.action === GamePlayActions.VOTE && isVoteSourceSheriff && doesSheriffHaveDoubledVote ? doubledVoteValue : 1;
-      const existingPlayerVoteCount = acc.find(value => value[0]._id.toString() === vote.target._id.toString());
+      const existingPlayerVoteCount = acc.find(value => value[0]._id.equals(vote.target._id));
       if (existingPlayerVoteCount) {
         existingPlayerVoteCount[1] += voteValue;
         return acc;
@@ -49,7 +49,7 @@ export class GamePlayVoteService {
       !isPlayerPowerful(ravenPlayer, clonedGame) || ravenMarkedPlayer?.isAlive !== true) {
       return playerVoteCounts;
     }
-    const ravenMarkedPlayerVoteCount = playerVoteCounts.find(playerVoteCount => playerVoteCount[0]._id.toString() === ravenMarkedPlayer._id.toString());
+    const ravenMarkedPlayerVoteCount = playerVoteCounts.find(playerVoteCount => playerVoteCount[0]._id.equals(ravenMarkedPlayer._id));
     const { markPenalty } = clonedGame.options.roles.raven;
     if (ravenMarkedPlayerVoteCount) {
       ravenMarkedPlayerVoteCount[1] += markPenalty;

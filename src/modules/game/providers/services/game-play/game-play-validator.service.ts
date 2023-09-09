@@ -128,7 +128,7 @@ export class GamePlayValidatorService {
     }
     const targetedPlayer = playTargets[0].player;
     const pureWolvesAvailableTargets = getLeftToEatByWerewolvesPlayers(game);
-    const isTargetedPlayerInPureWolvesTargets = !!pureWolvesAvailableTargets.find(({ _id }) => _id.toString() === targetedPlayer._id.toString());
+    const isTargetedPlayerInPureWolvesTargets = !!pureWolvesAvailableTargets.find(({ _id }) => _id.equals(targetedPlayer._id));
     if (game.currentPlay.source.name === PlayerGroups.WEREWOLVES && !isTargetedPlayerInPureWolvesTargets) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WEREWOLVES_TARGET);
     }
@@ -136,7 +136,7 @@ export class GamePlayValidatorService {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_BIG_BAD_WOLF_TARGET);
     }
     const whiteWerewolfAvailableTargets = getLeftToEatByWhiteWerewolfPlayers(game);
-    const isTargetedPlayerInWhiteWerewolfTargets = !!whiteWerewolfAvailableTargets.find(({ _id }) => _id.toString() === targetedPlayer._id.toString());
+    const isTargetedPlayerInWhiteWerewolfTargets = !!whiteWerewolfAvailableTargets.find(({ _id }) => _id.equals(targetedPlayer._id));
     if (game.currentPlay.source.name === RoleNames.WHITE_WEREWOLF && !isTargetedPlayerInWhiteWerewolfTargets) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WHITE_WEREWOLF_TARGET);
     }
@@ -295,7 +295,7 @@ export class GamePlayValidatorService {
   private async validateGamePlayVotesTieBreakerWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
     const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, game.currentPlay.action);
     const lastTieInVotesRecordNominatedPlayers = lastTieInVotesRecord?.play.voting?.nominatedPlayers ?? [];
-    if (playVotes.some(vote => !lastTieInVotesRecordNominatedPlayers.find(player => vote.target._id.toString() === player._id.toString()))) {
+    if (playVotes.some(vote => !lastTieInVotesRecordNominatedPlayers.find(player => vote.target._id.equals(player._id)))) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_TARGET_FOR_TIE_BREAKER);
     }
   }

@@ -12,7 +12,7 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 
 function updatePlayerInGame(playerId: Types.ObjectId, playerDataToUpdate: Partial<Player>, game: Game): Game {
   const clonedGame = createGame(game);
-  const playerIdx = clonedGame.players.findIndex(player => player._id.toString() === playerId.toString());
+  const playerIdx = clonedGame.players.findIndex(player => player._id.equals(playerId));
   if (playerIdx !== -1) {
     const clonedPlayer = createPlayer(clonedGame.players[playerIdx]);
     clonedGame.players.splice(playerIdx, 1, createPlayer(Object.assign(clonedPlayer, playerDataToUpdate)));
