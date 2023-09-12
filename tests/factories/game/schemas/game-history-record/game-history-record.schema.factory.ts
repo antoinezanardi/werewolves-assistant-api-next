@@ -20,7 +20,7 @@ import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.fa
 import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 
 function createFakeGameHistoryRecordWerewolvesEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
@@ -235,22 +235,22 @@ function createFakeGameHistoryRecordThiefChooseCardPlay(gameHistoryRecordPlay: P
   }, override);
 }
 
-function createFakeGameHistoryRecordAllElectSheriffPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
+function createFakeGameHistoryRecordSurvivorsElectSheriffPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
     action: GamePlayActions.ELECT_SHERIFF,
     source: {
-      name: PlayerGroups.ALL,
+      name: PlayerGroups.SURVIVORS,
       players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer()],
     },
     ...gameHistoryRecordPlay,
   }, override);
 }
 
-function createFakeGameHistoryRecordAllVotePlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
+function createFakeGameHistoryRecordSurvivorsVotePlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
     action: GamePlayActions.VOTE,
     source: {
-      name: PlayerGroups.ALL,
+      name: PlayerGroups.SURVIVORS,
       players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer()],
     },
     ...gameHistoryRecordPlay,
@@ -262,7 +262,7 @@ function createFakeGameHistoryRecordSheriffDelegatePlay(gameHistoryRecordPlay: P
     action: GamePlayActions.DELEGATE,
     source: {
       name: PlayerAttributeNames.SHERIFF,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] })],
+      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] })],
     },
     ...gameHistoryRecordPlay,
   }, override);
@@ -273,7 +273,7 @@ function createFakeGameHistoryRecordSheriffSettleVotesPlay(gameHistoryRecordPlay
     action: GamePlayActions.SETTLE_VOTES,
     source: {
       name: PlayerAttributeNames.SHERIFF,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] })],
+      players: gameHistoryRecordPlay.source?.players ?? [createFakePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] })],
     },
     ...gameHistoryRecordPlay,
   }, override);
@@ -365,8 +365,8 @@ export {
   createFakeGameHistoryRecordScapegoatBanVotingPlay,
   createFakeGameHistoryRecordStutteringJudgeChooseSignPlay,
   createFakeGameHistoryRecordThiefChooseCardPlay,
-  createFakeGameHistoryRecordAllElectSheriffPlay,
-  createFakeGameHistoryRecordAllVotePlay,
+  createFakeGameHistoryRecordSurvivorsElectSheriffPlay,
+  createFakeGameHistoryRecordSurvivorsVotePlay,
   createFakeGameHistoryRecordSheriffDelegatePlay,
   createFakeGameHistoryRecordSheriffSettleVotesPlay,
   createFakeGameHistoryRecordPlaySource,

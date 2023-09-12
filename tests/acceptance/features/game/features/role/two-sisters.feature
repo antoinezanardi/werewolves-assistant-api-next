@@ -17,14 +17,14 @@ Feature: 👯‍ Two sisters role
 
     When the werewolves eat the player named Julien
     Then the player named Julien should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Maxime
     Then the player named Maxime should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be two-sisters to meet-each-other
@@ -34,7 +34,7 @@ Feature: 👯‍ Two sisters role
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -66,7 +66,7 @@ Feature: 👯‍ Two sisters role
 
     When the werewolves eat the player named Julien
     Then the player named Julien should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be two-sisters to meet-each-other

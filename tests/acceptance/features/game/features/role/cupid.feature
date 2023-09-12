@@ -29,12 +29,12 @@ Feature: 💘 Cupid role
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When all vote with the following votes
       | source | target |
       | Olivia | JB     |
       | Thomas | JB     |
-    Then the player named JB should be murdered by all from vote
+    Then the player named JB should be murdered by survivors from vote
     And the player named Thomas should be murdered by cupid from broken-heart
     And the game's status should be over

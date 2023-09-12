@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlay, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
 import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
@@ -34,25 +34,25 @@ describe("Game Play Factory", () => {
     });
   });
 
-  describe("createGamePlayAllVote", () => {
+  describe("createGamePlaySurvivorsVote", () => {
     it("should create game play all vote when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: createFakeGamePlaySource({ name: PlayerGroups.ALL }),
+        source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
         action: GamePlayActions.VOTE,
       });
 
-      expect(createGamePlayAllVote()).toStrictEqual<GamePlay>(expectedGamePlay);
+      expect(createGamePlaySurvivorsVote()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
 
-  describe("createGamePlayAllElectSheriff", () => {
+  describe("createGamePlaySurvivorsElectSheriff", () => {
     it("should create game play all elect sheriff when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: createFakeGamePlaySource({ name: PlayerGroups.ALL }),
+        source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
         action: GamePlayActions.ELECT_SHERIFF,
       });
 
-      expect(createGamePlayAllElectSheriff()).toStrictEqual<GamePlay>(expectedGamePlay);
+      expect(createGamePlaySurvivorsElectSheriff()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
 

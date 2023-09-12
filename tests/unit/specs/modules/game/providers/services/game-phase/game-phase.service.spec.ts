@@ -6,9 +6,9 @@ import { GamePhaseService } from "@/modules/game/providers/services/game-phase/g
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 
-import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -81,7 +81,7 @@ describe("Game Phase Service", () => {
   });
 
   describe("switchPhaseAndAppendGamePhaseUpcomingPlays", () => {
-    const upcomingDayPlays = [createFakeGamePlayAllVote()];
+    const upcomingDayPlays = [createFakeGamePlaySurvivorsVote()];
     const upcomingNightPlays = [createFakeGamePlayWerewolvesEat(), createFakeGamePlaySeerLooks()];
 
     beforeEach(() => {
@@ -115,7 +115,7 @@ describe("Game Phase Service", () => {
 
   describe("applyEndingDayPlayerAttributesOutcomesToPlayer", () => {
     it("should do nothing when player doesn't have the contaminated attribute.", async() => {
-      const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] });
+      const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] });
       const game = createFakeGame({ players: [player] });
       
       await expect(services.gamePhase["applyEndingDayPlayerAttributesOutcomesToPlayer"](player, game)).resolves.toStrictEqual(game);
@@ -133,7 +133,7 @@ describe("Game Phase Service", () => {
 
   describe("applyEndingNightPlayerAttributesOutcomesToPlayer", () => {
     it("should do nothing when player doesn't have any ending night attributes.", async() => {
-      const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] });
+      const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] });
       const game = createFakeGame({ players: [player] });
 
       await expect(services.gamePhase["applyEndingNightPlayerAttributesOutcomesToPlayer"](player, game)).resolves.toStrictEqual(game);
@@ -143,7 +143,7 @@ describe("Game Phase Service", () => {
 
     it("should call all attributes outcomes methods when player has every attributes.", async() => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakeEatenByWerewolvesPlayerAttribute(),
         createFakeDrankDeathPotionByWitchPlayerAttribute(),
       ];

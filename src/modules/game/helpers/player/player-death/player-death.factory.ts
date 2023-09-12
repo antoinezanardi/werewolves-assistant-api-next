@@ -22,18 +22,18 @@ function createPlayerBrokenHeartByCupidDeath(playerDeath: Partial<PlayerDeath> =
   });
 }
 
-function createPlayerReconsiderPardonByAllDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
+function createPlayerReconsiderPardonBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
     cause: PlayerDeathCauses.RECONSIDER_PARDON,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     ...playerDeath,
   });
 }
 
-function createPlayerVoteScapegoatedByAllDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
+function createPlayerVoteScapegoatedBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
     cause: PlayerDeathCauses.VOTE_SCAPEGOATED,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     ...playerDeath,
   });
 }
@@ -46,10 +46,10 @@ function createPlayerVoteBySheriffDeath(playerDeath: Partial<PlayerDeath> = {}):
   });
 }
 
-function createPlayerVoteByAllDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
+function createPlayerVoteBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
     cause: PlayerDeathCauses.VOTE,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     ...playerDeath,
   });
 }
@@ -101,10 +101,10 @@ function createPlayerDeath(playerDeath: PlayerDeath): PlayerDeath {
 export {
   createPlayerDiseaseByRustySwordKnightDeath,
   createPlayerBrokenHeartByCupidDeath,
-  createPlayerReconsiderPardonByAllDeath,
-  createPlayerVoteScapegoatedByAllDeath,
+  createPlayerReconsiderPardonBySurvivorsDeath,
+  createPlayerVoteScapegoatedBySurvivorsDeath,
   createPlayerVoteBySheriffDeath,
-  createPlayerVoteByAllDeath,
+  createPlayerVoteBySurvivorsDeath,
   createPlayerShotByHunterDeath,
   createPlayerEatenByWhiteWerewolfDeath,
   createPlayerEatenByBigBadWolfDeath,

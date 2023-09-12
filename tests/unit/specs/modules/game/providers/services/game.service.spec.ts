@@ -29,7 +29,7 @@ import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
-import { createFakeGamePlayAllVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
@@ -172,11 +172,11 @@ describe("Game Service", () => {
 
     it("should call createGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
-      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlayAllVote()]);
+      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
       await services.game.createGame(toCreateGame);
       const expectedGame = createFakeCreateGameDto({
         ...toCreateGame,
-        currentPlay: createFakeGamePlayAllVote(),
+        currentPlay: createFakeGamePlaySurvivorsVote(),
         upcomingPlays: [],
       });
 
@@ -185,7 +185,7 @@ describe("Game Service", () => {
 
     it("should call updateGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
-      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlayAllVote()]);
+      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
       const expectedPlayersToPlay = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
@@ -235,7 +235,7 @@ describe("Game Service", () => {
       createFakeVillagerAlivePlayer(),
       createFakeVillagerAlivePlayer(),
     ];
-    const game = createFakeGame({ status: GameStatuses.PLAYING, players, currentPlay: createFakeGamePlayAllVote() });
+    const game = createFakeGame({ status: GameStatuses.PLAYING, players, currentPlay: createFakeGamePlaySurvivorsVote() });
     const play = createFakeMakeGamePlayWithRelationsDto();
 
     beforeEach(() => {

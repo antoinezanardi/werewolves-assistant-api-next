@@ -22,10 +22,10 @@ function createFakeSheriffBySheriffPlayerAttribute(attribute: Partial<PlayerAttr
   }, override);
 }
 
-function createFakeSheriffByAllPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeSheriffBySurvivorsPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.SHERIFF,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -137,10 +137,10 @@ function createFakePowerlessByAncientPlayerAttribute(attribute: Partial<PlayerAt
   }, override);
 }
 
-function createFakeCantVoteByAllPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeCantVoteBySurvivorsPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.CANT_VOTE,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     ...attribute,
   }, override);
 }
@@ -209,7 +209,7 @@ function bulkCreateFakePlayerAttributes(length: number, attributes: Partial<Play
 
 export {
   createFakeSheriffBySheriffPlayerAttribute,
-  createFakeSheriffByAllPlayerAttribute,
+  createFakeSheriffBySurvivorsPlayerAttribute,
   createFakeSeenBySeerPlayerAttribute,
   createFakeEatenByWerewolvesPlayerAttribute,
   createFakeEatenByWhiteWerewolfPlayerAttribute,
@@ -222,7 +222,7 @@ export {
   createFakeWorshipedByWildChildPlayerAttribute,
   createFakePowerlessByFoxPlayerAttribute,
   createFakePowerlessByAncientPlayerAttribute,
-  createFakeCantVoteByAllPlayerAttribute,
+  createFakeCantVoteBySurvivorsPlayerAttribute,
   createFakeCantVoteByScapegoatPlayerAttribute,
   createFakeCharmedByPiedPiperPlayerAttribute,
   createFakeGrowledByBearTamerPlayerAttribute,

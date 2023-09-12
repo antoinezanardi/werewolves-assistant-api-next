@@ -5,7 +5,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createGamePlayAllElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
@@ -21,10 +21,10 @@ import { ResourceNotFoundException } from "@/shared/exception/types/resource-not
 
 import { bulkCreateFakePlayers, createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteByAllDeath, createFakePlayerVoteScapegoatedByAllDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote, createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
@@ -472,12 +472,12 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllElectSheriff() });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsElectSheriff() });
       const newGame = createFakeGame({
         ...game,
         players: [
           createFakePlayer(players[0]),
-          createFakePlayer({ ...players[1], attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+          createFakePlayer({ ...players[1], attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
           createFakePlayer(players[2]),
           createFakePlayer(players[3]),
         ],
@@ -494,7 +494,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllElectSheriff() });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsElectSheriff() });
       const newGame = createFakeGame({
         ...game,
         players: [
@@ -516,7 +516,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
       const newGame = createFakeGame({
         ...game,
         players: [
@@ -527,7 +527,7 @@ describe("Game History Record Service", () => {
         ],
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: undefined });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteByAllDeath() })] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SKIPPED);
     });
@@ -539,7 +539,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
       const newGame = createFakeGame({
         ...game,
         players: [
@@ -550,7 +550,7 @@ describe("Game History Record Service", () => {
         ],
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteByAllDeath() })] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SKIPPED);
     });
@@ -562,7 +562,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
       const newGame = createFakeGame({
         ...game,
         players: [
@@ -574,7 +574,7 @@ describe("Game History Record Service", () => {
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
       const deadPlayers = [
-        createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteByAllDeath() }),
+        createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
         createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() }),
       ];
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers });
@@ -589,7 +589,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote() });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
       const newGame = createFakeGame({
         ...game,
         players: [
@@ -600,7 +600,7 @@ describe("Game History Record Service", () => {
         ],
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteScapegoatedByAllDeath() })] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteScapegoatedBySurvivorsDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.DEATH);
     });
@@ -612,7 +612,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }) });
       const newGame = createFakeGame({
         ...game,
         players: [
@@ -635,7 +635,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayAllVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }) });
       const newGame = createFakeGame({
         ...game,
         players: [
@@ -744,7 +744,7 @@ describe("Game History Record Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const expectedPlayers = [players[0], players[1], players[3]];
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createGamePlayAllElectSheriff({ source: createFakeGamePlaySource({ name: PlayerGroups.ALL, players: expectedPlayers }) }), players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createGamePlaySurvivorsElectSheriff({ source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players: expectedPlayers }) }), players });
       const expectedGameHistoryRecordPlaySource = createFakeGameHistoryRecordPlaySource({
         name: game.currentPlay.source.name,
         players: expectedPlayers,

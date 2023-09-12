@@ -18,8 +18,8 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 
 import { createFakePlayer, createFakePlayerRole, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeAncientAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakeIdiotAlivePlayer, createFakeLittleGirlAlivePlayer, createFakeRustySwordKnightAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerDeathPotionByWitchDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerReconsiderPardonByAllDeath, createFakePlayerVoteByAllDeath, createFakePlayerVoteScapegoatedByAllDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeCantVoteByAllPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeSheriffByAllPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerDeathPotionByWitchDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerReconsiderPardonBySurvivorsDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeAncientGameOptions, createFakeIdiotGameOptions, createFakeLittleGirlGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
@@ -172,7 +172,7 @@ describe("Player Killer Service", () => {
         players: [
           createFakePlayer({
             ...players[0],
-            attributes: [createFakeCantVoteByAllPlayerAttribute()],
+            attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()],
           }),
           game.players[1],
           game.players[2],
@@ -275,7 +275,7 @@ describe("Player Killer Service", () => {
     it("should return false when player role is already revealed.", () => {
       const game = createFakeGame();
       const player = createFakeVillagerVillagerAlivePlayer();
-      const death = createFakePlayerVoteByAllDeath();
+      const death = createFakePlayerVoteBySurvivorsDeath();
 
       expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death, game)).toBe(false);
     });
@@ -283,7 +283,7 @@ describe("Player Killer Service", () => {
     it("should return false when player role is not idiot.", () => {
       const game = createFakeGame();
       const player = createFakeSeerAlivePlayer();
-      const death = createFakePlayerVoteByAllDeath();
+      const death = createFakePlayerVoteBySurvivorsDeath();
 
       expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death, game)).toBe(false);
     });
@@ -291,7 +291,7 @@ describe("Player Killer Service", () => {
     it("should return false when player role is idiot but powerless.", () => {
       const game = createFakeGame();
       const player = createFakeIdiotAlivePlayer({ attributes: [createPowerlessByAncientPlayerAttribute()] });
-      const death = createFakePlayerVoteByAllDeath();
+      const death = createFakePlayerVoteBySurvivorsDeath();
 
       expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death, game)).toBe(false);
     });
@@ -307,7 +307,7 @@ describe("Player Killer Service", () => {
     it("should return true when player role is idiot and death cause is not vote.", () => {
       const game = createFakeGame();
       const player = createFakeIdiotAlivePlayer();
-      const death = createFakePlayerVoteByAllDeath();
+      const death = createFakePlayerVoteBySurvivorsDeath();
 
       expect(services.playerKiller["doesPlayerRoleMustBeRevealed"](player, death, game)).toBe(true);
     });
@@ -318,9 +318,9 @@ describe("Player Killer Service", () => {
       const player = createFakePlayer({
         isAlive: false,
         attributes: [
-          createFakeCantVoteByAllPlayerAttribute({ doesRemainAfterDeath: false }),
+          createFakeCantVoteBySurvivorsPlayerAttribute({ doesRemainAfterDeath: false }),
           createFakePowerlessByAncientPlayerAttribute(),
-          createFakeSheriffByAllPlayerAttribute({ doesRemainAfterDeath: true }),
+          createFakeSheriffBySurvivorsPlayerAttribute({ doesRemainAfterDeath: true }),
         ],
       });
       const expectedPlayer = createFakePlayer({
@@ -681,7 +681,7 @@ describe("Player Killer Service", () => {
 
     it("should return game as is when player is idiot and not powerless.", () => {
       const players = [
-        createFakeIdiotAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeIdiotAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeGuardAlivePlayer(),
@@ -693,7 +693,7 @@ describe("Player Killer Service", () => {
 
     it("should prepend sheriff election game play when called with powerless idiot.", () => {
       const players = [
-        createFakeIdiotAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute(), createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeIdiotAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeGuardAlivePlayer(),
@@ -709,7 +709,7 @@ describe("Player Killer Service", () => {
 
     it("should prepend sheriff election game play when called with any other role.", () => {
       const players = [
-        createFakeWildChildAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeWildChildAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeGuardAlivePlayer(),
@@ -748,11 +748,11 @@ describe("Player Killer Service", () => {
       expect(mocks.gameHelper.getPlayerWithIdOrThrow).not.toHaveBeenCalled();
     });
 
-    it("should call all methods when player have all attributes.", () => {
+    it("should call survivors methods when player have all attributes.", () => {
       const players = [
         createFakeIdiotAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute(), createFakeInLoveByCupidPlayerAttribute(), createFakeWorshipedByWildChildPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakeInLoveByCupidPlayerAttribute(), createFakeWorshipedByWildChildPlayerAttribute()] }),
         createFakeGuardAlivePlayer(),
       ];
       const game = createFakeGame({ players });
@@ -811,7 +811,7 @@ describe("Player Killer Service", () => {
         createFakeGuardAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const death = createFakePlayerVoteByAllDeath();
+      const death = createFakePlayerVoteBySurvivorsDeath();
 
       expect(services.playerKiller["applyRustySwordKnightDeathOutcomes"](players[0], game, death)).toStrictEqual<Game>(game);
     });
@@ -861,7 +861,7 @@ describe("Player Killer Service", () => {
         createFakeGuardAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const death = createFakePlayerVoteScapegoatedByAllDeath();
+      const death = createFakePlayerVoteScapegoatedBySurvivorsDeath();
 
       expect(services.playerKiller["applyScapegoatDeathOutcomes"](players[0], game, death)).toStrictEqual<Game>(game);
     });
@@ -874,7 +874,7 @@ describe("Player Killer Service", () => {
         createFakeGuardAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const death = createFakePlayerVoteScapegoatedByAllDeath();
+      const death = createFakePlayerVoteScapegoatedBySurvivorsDeath();
 
       expect(services.playerKiller["applyScapegoatDeathOutcomes"](players[0], game, death)).toStrictEqual<Game>(game);
     });
@@ -887,7 +887,7 @@ describe("Player Killer Service", () => {
         createFakeGuardAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const death = createFakePlayerVoteByAllDeath();
+      const death = createFakePlayerVoteBySurvivorsDeath();
 
       expect(services.playerKiller["applyScapegoatDeathOutcomes"](players[0], game, death)).toStrictEqual<Game>(game);
     });
@@ -901,7 +901,7 @@ describe("Player Killer Service", () => {
       ];
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGame({ players, upcomingPlays });
-      const death = createFakePlayerVoteScapegoatedByAllDeath();
+      const death = createFakePlayerVoteScapegoatedBySurvivorsDeath();
       const expectedGame = createFakeGame({
         ...game,
         upcomingPlays: [createFakeGamePlayScapegoatBansVoting(), ...upcomingPlays],
@@ -923,7 +923,7 @@ describe("Player Killer Service", () => {
       const idiotOptions = createFakeIdiotGameOptions({ doesDieOnAncientDeath: true });
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ idiot: idiotOptions, ancient: ancientOptions }) });
       const game = createFakeGame({ players, options });
-      const death = createFakePlayerVoteScapegoatedByAllDeath();
+      const death = createFakePlayerVoteScapegoatedBySurvivorsDeath();
 
       expect(services.playerKiller["applyAncientDeathOutcomes"](players[0], game, death)).toStrictEqual<Game>(game);
     });
@@ -939,7 +939,7 @@ describe("Player Killer Service", () => {
       const ancientOptions = createFakeAncientGameOptions({ doesTakeHisRevenge: true });
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: ancientOptions }) });
       const game = createFakeGame({ players, options });
-      const death = createFakePlayerVoteByAllDeath();
+      const death = createFakePlayerVoteBySurvivorsDeath();
 
       expect(services.playerKiller["applyAncientDeathOutcomes"](players[0], game, death)).toStrictEqual<Game>(game);
     });
@@ -1031,7 +1031,7 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerDeathPotionByWitchDeath();
       services.playerKiller["applyAncientDeathOutcomes"](players[0], game, death);
 
-      expect(mocks.playerKillerService.killPlayer).toHaveBeenCalledExactlyOnceWith(players[1], game, createFakePlayerReconsiderPardonByAllDeath());
+      expect(mocks.playerKillerService.killPlayer).toHaveBeenCalledExactlyOnceWith(players[1], game, createFakePlayerReconsiderPardonBySurvivorsDeath());
     });
   });
 

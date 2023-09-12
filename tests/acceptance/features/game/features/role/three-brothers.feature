@@ -18,14 +18,14 @@ Feature: 👨‍👨‍👦 Three Brothers role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Maxime
     Then the player named Maxime should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be three-brothers to meet-each-other
@@ -35,14 +35,14 @@ Feature: 👨‍👨‍👦 Three Brothers role
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Julien
     Then the player named Julien should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -74,7 +74,7 @@ Feature: 👨‍👨‍👦 Three Brothers role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be three-brothers to meet-each-other

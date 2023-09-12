@@ -4,7 +4,7 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 
 import { createFakeGamePlayCupidCharms, createFakeGamePlayHunterShoots } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
@@ -150,7 +150,7 @@ describe("Game Mutator", () => {
     });
 
     it("should return game with player without his sheriff attribute when called.", () => {
-      const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffByAllPlayerAttribute(), createFakeCharmedByPiedPiperPlayerAttribute()] }]);
+      const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakeCharmedByPiedPiperPlayerAttribute()] }]);
       const game = createFakeGame({ players });
       const expectedGame = createFakeGame({
         ...game,
@@ -166,7 +166,7 @@ describe("Game Mutator", () => {
     });
 
     it("should not mutate the original game when called.", () => {
-      const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffByAllPlayerAttribute()] }]);
+      const players = bulkCreateFakePlayers(4, [{}, { attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }]);
       const game = createFakeGame({ players });
       const clonedGame = createFakeGame(game);
       removePlayerAttributeByNameInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF);

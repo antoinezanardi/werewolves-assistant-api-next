@@ -1,5 +1,5 @@
 enum PlayerGroups {
-  ALL = "all",
+  SURVIVORS = "survivors",
   VILLAGERS = "villagers",
   WEREWOLVES = "werewolves",
   LOVERS = "lovers",

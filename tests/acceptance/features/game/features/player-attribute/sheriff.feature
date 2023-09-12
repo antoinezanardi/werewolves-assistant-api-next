@@ -10,19 +10,19 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  | villager |
       | JB      | villager |
       | Babou   | villager |
-    Then the game's current play should be all to elect-sheriff
+    Then the game's current play should be survivors to elect-sheriff
 
     When all elect sheriff with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | JB      | Olivia |
       | Thomas  | Olivia |
-    Then the player named Olivia should have the active sheriff from all attribute
+    Then the player named Olivia should have the active sheriff from survivors attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When all vote with the following votes
       | voter  | target |
@@ -44,25 +44,25 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  | villager |
       | JB      | villager |
       | Babou   | villager |
-    Then the game's current play should be all to elect-sheriff
+    Then the game's current play should be survivors to elect-sheriff
 
     When all elect sheriff with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | JB      | Olivia |
       | Thomas  | Olivia |
-    Then the player named Olivia should have the active sheriff from all attribute
+    Then the player named Olivia should have the active sheriff from survivors attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When all vote with the following votes
       | voter  | target |
       | JB     | Olivia |
       | Olivia | JB     |
-    Then the player named JB should be murdered by all from vote
+    Then the player named JB should be murdered by survivors from vote
 
   Scenario: 🎖️ Sheriff has normal vote with the right option
     Given a created game with options described in file sheriff-has-normal-vote-option.json and with the following players
@@ -72,19 +72,19 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  | villager |
       | JB      | villager |
       | Babou   | villager |
-    Then the game's current play should be all to elect-sheriff
+    Then the game's current play should be survivors to elect-sheriff
 
     When all elect sheriff with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | JB      | Olivia |
       | Thomas  | Olivia |
-    Then the player named Olivia should have the active sheriff from all attribute
+    Then the player named Olivia should have the active sheriff from survivors attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When all vote with the following votes
       | voter  | target |
@@ -101,7 +101,7 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  | villager |
       | JB      | villager |
       | Babou   | villager |
-    Then the game's current play should be all to elect-sheriff
+    Then the game's current play should be survivors to elect-sheriff
 
   Scenario: 🎖️ Sheriff can't be deactivated with the right option
     Given a created game with options described in file no-sheriff-option.json and with the following players
@@ -125,7 +125,7 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be all to elect-sheriff
+    And the game's current play should be survivors to elect-sheriff
 
   Scenario: 🎖️ Sheriff can be elected on second night with right option
     Given a created game with options described in file sheriff-election-on-second-night-option.json and with the following players
@@ -139,10 +139,10 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
-    Then the game's current play should be all to elect-sheriff
+    Then the game's current play should be survivors to elect-sheriff
 
   Scenario: 🎖️ Sheriff delegates if he is not the idiot
     Given a created game with the following players
@@ -152,14 +152,14 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  | villager |
       | JB      | villager |
       | Babou   | villager |
-    Then the game's current play should be all to elect-sheriff
+    Then the game's current play should be survivors to elect-sheriff
 
     When all elect sheriff with the following votes
       | voter   | target |
       | Antoine | Thomas |
       | JB      | Thomas |
       | Thomas  | Olivia |
-    Then the player named Thomas should have the active sheriff from all attribute
+    Then the player named Thomas should have the active sheriff from survivors attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -177,20 +177,20 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  | idiot    |
       | JB      | villager |
       | Babou   | villager |
-    Then the game's current play should be all to elect-sheriff
+    Then the game's current play should be survivors to elect-sheriff
 
     When all elect sheriff with the following votes
       | voter   | target |
       | Antoine | Thomas |
       | JB      | Thomas |
       | Thomas  | Olivia |
-    Then the player named Thomas should have the active sheriff from all attribute
+    Then the player named Thomas should have the active sheriff from survivors attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
-    And the player named Thomas should have the active sheriff from all attribute
+    And the game's current play should be survivors to vote
+    And the player named Thomas should have the active sheriff from survivors attribute
 
   Scenario: 🎖️ Sheriff election is randomized when there is a tie
     Given a created game with the following players
@@ -206,14 +206,14 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  | JB      |
       | JB      | Antoine |
       | Olivia  | Antoine |
-    Then the game's current play should be all to elect-sheriff because previous-votes-were-in-ties
-    But nobody should have the active sheriff from all attribute
+    Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
+    But nobody should have the active sheriff from survivors attribute
 
     When all elect sheriff with the following votes
       | source  | target  |
       | Antoine | JB      |
       | Thomas  | Antoine |
-    Then 1 of the following players should have the active sheriff from all attribute
+    Then 1 of the following players should have the active sheriff from survivors attribute
       | name    |
       | Antoine |
       | JB      |

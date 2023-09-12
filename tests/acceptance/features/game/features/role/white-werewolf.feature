@@ -21,7 +21,7 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be white-werewolf to eat
 
     When the player or group skips his turn
-    Then the game's current play should be all to vote
+    Then the game's current play should be survivors to vote
     And the player named Antoine should be alive
 
     When all vote with the following votes
@@ -29,7 +29,7 @@ Feature: 🐺🦴White Werewolf role
       | Antoine | Olaf    |
       | Thomas  | Olaf    |
       | JB      | Antoine |
-    Then the player named Olaf should be murdered by all from vote
+    Then the player named Olaf should be murdered by survivors from vote
     And the game's current play should be guard to protect
 
     When the guard protects the player named Thomas
@@ -38,13 +38,13 @@ Feature: 🐺🦴White Werewolf role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be alive
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When all vote with the following votes
       | source | target  |
       | Thomas | Antoine |
       | JB     | Antoine |
-    Then the player named Antoine should be murdered by all from vote
+    Then the player named Antoine should be murdered by survivors from vote
     And the game's current play should be guard to protect
 
     When the guard protects the player named Olivia
@@ -57,12 +57,12 @@ Feature: 🐺🦴White Werewolf role
 
     When the white werewolf eats the player named JB
     Then the player named JB should be murdered by white-werewolf from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When all vote with the following votes
       | source | target  |
       | Olivia | Patoche |
-    Then the player named Patoche should be murdered by all from vote
+    Then the player named Patoche should be murdered by survivors from vote
     And the game's current play should be guard to protect
 
     When the guard protects the player named Thomas
@@ -71,7 +71,7 @@ Feature: 🐺🦴White Werewolf role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be alive
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     And the game's current play should be guard to protect
@@ -108,7 +108,7 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be white-werewolf to eat
 
     When the player or group skips his turn
-    Then the game's current play should be all to vote
+    Then the game's current play should be survivors to vote
     And the player named Antoine should be alive
 
     When the player or group skips his turn
@@ -125,7 +125,7 @@ Feature: 🐺🦴White Werewolf role
     When the white werewolf eats the player named JB
     Then the player named Antoine should be murdered by werewolves from eaten
     And the player named JB should be murdered by white-werewolf from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be guard to protect
@@ -136,4 +136,4 @@ Feature: 🐺🦴White Werewolf role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be alive
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
