@@ -30,7 +30,7 @@ Feature: 🪈 Pied Piper role
       | Thomas |
 
     When the player or group skips his turn
-    Then the game's current play should be all to vote
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -56,14 +56,14 @@ Feature: 🪈 Pied Piper role
       | Mom    |
 
     When the player or group skips his turn
-    Then the game's current play should be all to vote
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
     When the vile father of wolves infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When all vote with the following votes
       | source  | target |
@@ -106,7 +106,7 @@ Feature: 🪈 Pied Piper role
       | Thomas |
 
     When the player or group skips his turn
-    Then the game's current play should be all to vote
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -160,13 +160,13 @@ Feature: 🪈 Pied Piper role
       | Thomas |
 
     When the player or group skips his turn
-    Then the game's current play should be all to vote
+    Then the game's current play should be survivors to vote
 
     When all vote with the following votes
       | source | target |
       | Olivia | Dad    |
       | JB     | Olivia |
       | Thomas | Dad    |
-    Then the player named Dad should be murdered by all from vote
+    Then the player named Dad should be murdered by survivors from vote
     And the game's current play should be werewolves to eat
     And the game's status should be playing

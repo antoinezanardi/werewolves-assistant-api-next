@@ -21,10 +21,10 @@ import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dt
 import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeFoxGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffByAllPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePlayerShotByHunterDeath, createFakePlayerVoteByAllDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteScapegoatedByAllDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAncientAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -93,7 +93,7 @@ describe("Game Play Maker Service", () => {
         dogWolfChoosesSide: jest.SpyInstance;
         scapegoatBansVoting: jest.SpyInstance;
         thiefChoosesCard: jest.SpyInstance;
-        allPlay: jest.SpyInstance;
+        survivorsPlay: jest.SpyInstance;
         ravenMarks: jest.SpyInstance;
         sheriffPlays: jest.SpyInstance;
       };
@@ -116,7 +116,7 @@ describe("Game Play Maker Service", () => {
           dogWolfChoosesSide: jest.spyOn(services.gamePlayMaker as unknown as { dogWolfChoosesSide }, "dogWolfChoosesSide").mockImplementation(),
           scapegoatBansVoting: jest.spyOn(services.gamePlayMaker as unknown as { scapegoatBansVoting }, "scapegoatBansVoting").mockImplementation(),
           thiefChoosesCard: jest.spyOn(services.gamePlayMaker as unknown as { thiefChoosesCard }, "thiefChoosesCard").mockImplementation(),
-          allPlay: jest.spyOn(services.gamePlayMaker as unknown as { allPlay }, "allPlay").mockImplementation(),
+          survivorsPlay: jest.spyOn(services.gamePlayMaker as unknown as { survivorsPlay }, "survivorsPlay").mockImplementation(),
           ravenMarks: jest.spyOn(services.gamePlayMaker as unknown as { ravenMarks }, "ravenMarks").mockImplementation(),
           sheriffPlays: jest.spyOn(services.gamePlayMaker as unknown as { sheriffPlays }, "sheriffPlays").mockImplementation(),
         },
@@ -262,12 +262,12 @@ describe("Game Play Maker Service", () => {
       expect(localMocks.gamePlayMakerService.thiefChoosesCard).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
-    it("should call allPlay method when it's all's turn.", async() => {
+    it("should call survivorsPlay method when it's all's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
-      const game = createFakeGame({ currentPlay: createFakeGamePlayAllVote() });
+      const game = createFakeGame({ currentPlay: createFakeGamePlaySurvivorsVote() });
       await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(localMocks.gamePlayMakerService.allPlay).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.survivorsPlay).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call ravenMarks method when it's raven's turn.", async() => {
@@ -316,7 +316,7 @@ describe("Game Play Maker Service", () => {
     });
 
     it("should remove previous sheriff attribute and add it to the target when called.", () => {
-      const players = bulkCreateFakePlayers(4, [{ attributes: [createFakeSheriffByAllPlayerAttribute()] }]);
+      const players = bulkCreateFakePlayers(4, [{ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }]);
       const play = createFakeMakeGamePlayWithRelationsDto({ targets: [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })] });
       const game = createFakeGameWithCurrentPlay({ players });
       const expectedGame = createFakeGame({
@@ -429,7 +429,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
-      const playerDeath = createFakePlayerVoteScapegoatedByAllDeath();
+      const playerDeath = createFakePlayerVoteScapegoatedBySurvivorsDeath();
       await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[0]._id, game, playerDeath);
@@ -451,7 +451,7 @@ describe("Game Play Maker Service", () => {
 
     it("should not prepend sheriff delegation game play when sheriff is dead.", async() => {
       const players: Player[] = [
-        createFakeSeerAlivePlayer({ isAlive: false, attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ isAlive: false, attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -465,7 +465,7 @@ describe("Game Play Maker Service", () => {
 
     it("should prepend sheriff delegation game play when sheriff is in the game.", async() => {
       const players: Player[] = [
-        createFakeSeerAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -485,10 +485,10 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
-      const gamePlayAllVote = createFakeGamePlayAllVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
       await services.gamePlayMaker["handleTieInVotes"](game);
 
-      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayAllVote, game);
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlaySurvivorsVote, game);
     });
 
     it("should prepend vote game play when there is no game history records.", async() => {
@@ -499,10 +499,10 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
-      const gamePlayAllVote = createFakeGamePlayAllVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
       await services.gamePlayMaker["handleTieInVotes"](game);
 
-      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayAllVote, game);
+      expect(localMocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlaySurvivorsVote, game);
     });
 
     it("should not prepend vote game play when current play is due to a tie.", async() => {
@@ -512,7 +512,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlayAllVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
       const game = createFakeGameWithCurrentPlay({ players, currentPlay });
       const expectedGame = createFakeGame(game);
 
@@ -520,7 +520,7 @@ describe("Game Play Maker Service", () => {
     });
   });
   
-  describe("allVote", () => {
+  describe("survivorsVote", () => {
     let localMocks: {
       gamePlayMakerService: {
         handleTieInVotes: jest.SpyInstance;
@@ -543,7 +543,7 @@ describe("Game Play Maker Service", () => {
       const expectedGame = createFakeGame(game);
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue([]);
 
-      await expect(services.gamePlayMaker["allVote"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["survivorsVote"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
     it("should return game as is when there is no nominated players.", async() => {
@@ -563,7 +563,7 @@ describe("Game Play Maker Service", () => {
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
       const expectedGame = createFakeGame(game);
 
-      await expect(services.gamePlayMaker["allVote"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["survivorsVote"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
       
     it("should call handleTieInVotes method when there are several nominated players.", async() => {
@@ -581,7 +581,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
       const nominatedPlayers = [players[1], players[2]];
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      await services.gamePlayMaker["allVote"](play, game);
+      await services.gamePlayMaker["survivorsVote"](play, game);
 
       expect(localMocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(game);
     });
@@ -602,10 +602,10 @@ describe("Game Play Maker Service", () => {
       const nominatedPlayers = [players[1], players[2]];
       const expectedGame = createFakeGameWithCurrentPlay({
         ...game,
-        upcomingPlays: [createFakeGamePlayAllVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST })],
+        upcomingPlays: [createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST })],
       });
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      await services.gamePlayMaker["allVote"](play, game);
+      await services.gamePlayMaker["survivorsVote"](play, game);
 
       expect(localMocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(expectedGame);
     });
@@ -624,11 +624,11 @@ describe("Game Play Maker Service", () => {
       ];
       const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
       const nominatedPlayers = [players[1]];
-      const playerVoteByAllDeath = createFakePlayerVoteByAllDeath();
+      const playerVoteBySurvivorsDeath = createFakePlayerVoteBySurvivorsDeath();
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      await services.gamePlayMaker["allVote"](play, game);
+      await services.gamePlayMaker["survivorsVote"](play, game);
 
-      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[1]._id, game, playerVoteByAllDeath);
+      expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[1]._id, game, playerVoteBySurvivorsDeath);
     });
   });
 
@@ -646,13 +646,13 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlayAllElectSheriff({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST });
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGameWithCurrentPlay({ currentPlay, players, upcomingPlays });
       const nominatedPlayers = [players[0], players[1]];
       const expectedGame = createFakeGame({
         ...game,
-        upcomingPlays: [createFakeGamePlayAllElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }), ...upcomingPlays],
+        upcomingPlays: [createFakeGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }), ...upcomingPlays],
       });
 
       expect(services.gamePlayMaker["handleTieInSheriffElection"](nominatedPlayers, game)).toStrictEqual<Game>(expectedGame);
@@ -666,7 +666,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       localMocks.lodash.sample.mockReturnValue(players[0]);
-      const currentPlay = createFakeGamePlayAllElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGameWithCurrentPlay({ currentPlay, players, upcomingPlays });
       const nominatedPlayers = [players[0], players[1]];
@@ -675,7 +675,7 @@ describe("Game Play Maker Service", () => {
         players: [
           createFakePlayer({
             ...players[0],
-            attributes: [createFakeSheriffByAllPlayerAttribute()],
+            attributes: [createFakeSheriffBySurvivorsPlayerAttribute()],
           }),
           players[1],
           players[2],
@@ -694,7 +694,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       localMocks.lodash.sample.mockReturnValue(undefined);
-      const currentPlay = createFakeGamePlayAllElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGameWithCurrentPlay({ currentPlay, players, upcomingPlays });
       const nominatedPlayers = [players[0], players[1]];
@@ -704,7 +704,7 @@ describe("Game Play Maker Service", () => {
     });
   });
   
-  describe("allElectSheriff", () => {
+  describe("survivorsElectSheriff", () => {
     let localMocks: {
       gamePlayMakerService: {
         handleTieInSheriffElection: jest.SpyInstance;
@@ -727,7 +727,7 @@ describe("Game Play Maker Service", () => {
       const expectedGame = createFakeGame(game);
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue([]);
 
-      expect(services.gamePlayMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["survivorsElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
     it("should return game as is when there is no nominated players.", () => {
@@ -746,7 +746,7 @@ describe("Game Play Maker Service", () => {
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue([]);
       const expectedGame = createFakeGame(game);
 
-      expect(services.gamePlayMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["survivorsElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
     it("should call handleTieInSheriffElection method when there is a tie in votes.", () => {
@@ -764,7 +764,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ votes });
       const nominatedPlayers = [players[0], players[1]];
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      services.gamePlayMaker["allElectSheriff"](play, game);
+      services.gamePlayMaker["survivorsElectSheriff"](play, game);
 
       expect(localMocks.gamePlayMakerService.handleTieInSheriffElection).toHaveBeenCalledExactlyOnceWith(nominatedPlayers, game);
     });
@@ -787,29 +787,29 @@ describe("Game Play Maker Service", () => {
         ...game,
         players: [
           players[0],
-          createFakePlayer({ ...players[1], attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+          createFakePlayer({ ...players[1], attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
           players[2],
           players[3],
         ],
       });
 
-      expect(services.gamePlayMaker["allElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["survivorsElectSheriff"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
-  describe("allPlay", () => {
+  describe("survivorsPlay", () => {
     let localMocks: {
       gamePlayMakerService: {
-        allElectSheriff: jest.SpyInstance;
-        allVote: jest.SpyInstance;
+        survivorsElectSheriff: jest.SpyInstance;
+        survivorsVote: jest.SpyInstance;
       };
     };
 
     beforeEach(() => {
       localMocks = {
         gamePlayMakerService: {
-          allElectSheriff: jest.spyOn(services.gamePlayMaker as unknown as { allElectSheriff }, "allElectSheriff").mockImplementation(),
-          allVote: jest.spyOn(services.gamePlayMaker as unknown as { allVote }, "allVote").mockImplementation(),
+          survivorsElectSheriff: jest.spyOn(services.gamePlayMaker as unknown as { survivorsElectSheriff }, "survivorsElectSheriff").mockImplementation(),
+          survivorsVote: jest.spyOn(services.gamePlayMaker as unknown as { survivorsVote }, "survivorsVote").mockImplementation(),
         },
       };
     });
@@ -819,23 +819,23 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const expectedGame = createFakeGame(game);
 
-      await expect(services.gamePlayMaker["allPlay"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["survivorsPlay"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should call allElectSheriff method when upcoming play is sheriff role delegation.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayAllElectSheriff() });
+    it("should call survivorsElectSheriff method when upcoming play is sheriff role delegation.", async() => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsElectSheriff() });
       const play = createFakeMakeGamePlayWithRelationsDto();
-      await services.gamePlayMaker["allPlay"](play, game);
+      await services.gamePlayMaker["survivorsPlay"](play, game);
 
-      expect(localMocks.gamePlayMakerService.allElectSheriff).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.survivorsElectSheriff).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
-    it("should call allVote method when upcoming play is sheriff settling vote.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayAllVote() });
+    it("should call survivorsVote method when upcoming play is sheriff settling vote.", async() => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
       const play = createFakeMakeGamePlayWithRelationsDto();
-      await services.gamePlayMaker["allPlay"](play, game);
+      await services.gamePlayMaker["survivorsPlay"](play, game);
 
-      expect(localMocks.gamePlayMakerService.allVote).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(localMocks.gamePlayMakerService.survivorsVote).toHaveBeenCalledExactlyOnceWith(play, game);
     });
   });
 

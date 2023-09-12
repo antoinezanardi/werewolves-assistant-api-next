@@ -1,5 +1,5 @@
 import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
-import { createGamePlayAllElectSheriff, createGamePlayAllVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlayStutteringJudgeChoosesSign, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 
 import { createFakeGamePlaySheriffSettlesVotes } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
@@ -34,15 +34,15 @@ const STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS: Readonly<GamePlayActions[]> 
 
 const GAME_PLAYS_PRIORITY_LIST: Readonly<GamePlay[]> = Object.freeze([
   createGamePlayHunterShoots(),
-  createGamePlayAllElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
-  createGamePlayAllElectSheriff(),
+  createGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
+  createGamePlaySurvivorsElectSheriff(),
   createGamePlaySheriffDelegates(),
   createGamePlayScapegoatBansVoting(),
   createFakeGamePlaySheriffSettlesVotes(),
-  createGamePlayAllVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
-  createGamePlayAllVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
-  createGamePlayAllVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }),
-  createGamePlayAllVote(),
+  createGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
+  createGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+  createGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }),
+  createGamePlaySurvivorsVote(),
   createGamePlayThiefChoosesCard(),
   createGamePlayDogWolfChoosesSide(),
   createGamePlayCupidCharms(),

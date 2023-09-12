@@ -107,7 +107,7 @@ function getLeftToEatByWhiteWerewolfPlayers(game: Game): Player[] {
 }
 
 function getGroupOfPlayers(game: Game, group: PlayerGroups): Player[] {
-  if (group === PlayerGroups.ALL) {
+  if (group === PlayerGroups.SURVIVORS) {
     return game.players;
   }
   if (group === PlayerGroups.LOVERS) {

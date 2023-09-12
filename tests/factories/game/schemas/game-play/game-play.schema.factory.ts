@@ -26,17 +26,17 @@ function createFakeGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}, ov
   }, override);
 }
 
-function createFakeGamePlayAllVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+function createFakeGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: PlayerGroups.ALL }),
+    source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
     action: GamePlayActions.VOTE,
     ...gamePlay,
   }, override);
 }
 
-function createFakeGamePlayAllElectSheriff(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+function createFakeGamePlaySurvivorsElectSheriff(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: PlayerGroups.ALL }),
+    source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
     action: GamePlayActions.ELECT_SHERIFF,
     ...gamePlay,
   }, override);
@@ -214,8 +214,8 @@ function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object =
 export {
   createFakeGamePlaySheriffSettlesVotes,
   createFakeGamePlaySheriffDelegates,
-  createFakeGamePlayAllVote,
-  createFakeGamePlayAllElectSheriff,
+  createFakeGamePlaySurvivorsVote,
+  createFakeGamePlaySurvivorsElectSheriff,
   createFakeGamePlayThiefChoosesCard,
   createFakeGamePlayStutteringJudgeChoosesSign,
   createFakeGamePlayScapegoatBansVoting,

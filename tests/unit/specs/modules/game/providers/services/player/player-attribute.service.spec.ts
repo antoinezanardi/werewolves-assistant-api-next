@@ -10,7 +10,7 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeSeerAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerDiseaseByRustySwordKnightDeath, createFakePlayerEatenByWerewolvesDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeCantVoteByAllPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakePlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakePlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Player Attribute Service", () => {
@@ -98,8 +98,8 @@ describe("Player Attribute Service", () => {
     it("should return player as is when he is dead.", () => {
       const player = createFakeSeerAlivePlayer({
         isAlive: false, attributes: [
-          createFakeCantVoteByAllPlayerAttribute({ remainingPhases: 1 }),
-          createFakeSheriffByAllPlayerAttribute({ remainingPhases: 2 }),
+          createFakeCantVoteBySurvivorsPlayerAttribute({ remainingPhases: 1 }),
+          createFakeSheriffBySurvivorsPlayerAttribute({ remainingPhases: 2 }),
         ],
       });
       const game = createFakeGame();
@@ -110,9 +110,9 @@ describe("Player Attribute Service", () => {
     it("should return player with one decreased attribute and other one removed when called.", () => {
       const player = createFakeSeerAlivePlayer({
         attributes: [
-          createFakeCantVoteByAllPlayerAttribute(),
-          createFakeCantVoteByAllPlayerAttribute({ remainingPhases: 1 }),
-          createFakeSheriffByAllPlayerAttribute({ remainingPhases: 2 }),
+          createFakeCantVoteBySurvivorsPlayerAttribute(),
+          createFakeCantVoteBySurvivorsPlayerAttribute({ remainingPhases: 1 }),
+          createFakeSheriffBySurvivorsPlayerAttribute({ remainingPhases: 2 }),
         ],
       });
       const game = createFakeGame();
@@ -133,9 +133,9 @@ describe("Player Attribute Service", () => {
       const players = [
         createFakeSeerAlivePlayer({
           attributes: [
-            createFakeCantVoteByAllPlayerAttribute(),
-            createFakeCantVoteByAllPlayerAttribute({ remainingPhases: 1 }),
-            createFakeSheriffByAllPlayerAttribute({ remainingPhases: 2 }),
+            createFakeCantVoteBySurvivorsPlayerAttribute(),
+            createFakeCantVoteBySurvivorsPlayerAttribute({ remainingPhases: 1 }),
+            createFakeSheriffBySurvivorsPlayerAttribute({ remainingPhases: 2 }),
           ],
         }),
       ];

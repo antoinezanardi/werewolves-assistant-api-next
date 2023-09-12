@@ -24,18 +24,18 @@ function createFakePlayerBrokenHeartByCupidDeath(playerDeath: Partial<PlayerDeat
   }, override);
 }
 
-function createFakePlayerReconsiderPardonByAllDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
+function createFakePlayerReconsiderPardonBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
     cause: PlayerDeathCauses.RECONSIDER_PARDON,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     ...playerDeath,
   }, override);
 }
 
-function createFakePlayerVoteScapegoatedByAllDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
+function createFakePlayerVoteScapegoatedBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
     cause: PlayerDeathCauses.VOTE_SCAPEGOATED,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     ...playerDeath,
   }, override);
 }
@@ -48,10 +48,10 @@ function createFakePlayerVoteBySheriffDeath(playerDeath: Partial<PlayerDeath> = 
   }, override);
 }
 
-function createFakePlayerVoteByAllDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
+function createFakePlayerVoteBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
     cause: PlayerDeathCauses.VOTE,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     ...playerDeath,
   }, override);
 }
@@ -107,10 +107,10 @@ function createFakePlayerDeath(playerDeath: Partial<PlayerDeath> = {}, override:
 export {
   createFakePlayerDiseaseByRustySwordKnightDeath,
   createFakePlayerBrokenHeartByCupidDeath,
-  createFakePlayerReconsiderPardonByAllDeath,
-  createFakePlayerVoteScapegoatedByAllDeath,
+  createFakePlayerReconsiderPardonBySurvivorsDeath,
+  createFakePlayerVoteScapegoatedBySurvivorsDeath,
   createFakePlayerVoteBySheriffDeath,
-  createFakePlayerVoteByAllDeath,
+  createFakePlayerVoteBySurvivorsDeath,
   createFakePlayerShotByHunterDeath,
   createFakePlayerEatenByWhiteWerewolfDeath,
   createFakePlayerEatenByBigBadWolfDeath,

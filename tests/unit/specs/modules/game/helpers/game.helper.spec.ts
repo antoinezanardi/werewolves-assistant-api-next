@@ -14,7 +14,7 @@ import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/c
 import { bulkCreateFakeGameAdditionalCards } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
@@ -435,7 +435,7 @@ describe("Game Helper", () => {
     const game = createFakeGame({ players });
 
     it("should return all players when group is all.", () => {
-      expect(getGroupOfPlayers(game, PlayerGroups.ALL)).toStrictEqual(players);
+      expect(getGroupOfPlayers(game, PlayerGroups.SURVIVORS)).toStrictEqual(players);
     });
 
     it("should return players in love when group is lovers.", () => {
@@ -461,7 +461,7 @@ describe("Game Helper", () => {
     });
 
     it("should return false when source is group.", () => {
-      expect(isGameSourceRole(PlayerGroups.ALL)).toBe(false);
+      expect(isGameSourceRole(PlayerGroups.SURVIVORS)).toBe(false);
     });
   });
 
@@ -705,7 +705,7 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeWhiteWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
       const interpolations = { gameId: game._id };
@@ -719,7 +719,7 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeWhiteWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players, currentPlay: createFakeGamePlayWerewolvesEat() });
 
@@ -736,7 +736,7 @@ describe("Game Helper", () => {
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeTwoSistersAlivePlayer(),
         createFakeTwoSistersAlivePlayer({ isAlive: false }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players, currentPlay: createFakeGamePlayTwoSistersMeetEachOther() });
 
@@ -750,7 +750,7 @@ describe("Game Helper", () => {
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeTwoSistersAlivePlayer(),
         createFakeTwoSistersAlivePlayer({ isAlive: false }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()], isAlive: false }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()], isAlive: false }),
       ];
       const game = createFakeGame({ players, currentPlay: createFakeGamePlaySheriffSettlesVotes() });
 
@@ -764,7 +764,7 @@ describe("Game Helper", () => {
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeTwoSistersAlivePlayer(),
         createFakeTwoSistersAlivePlayer({ isAlive: false }),
-        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()], isAlive: false }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()], isAlive: false }),
       ];
       const game = createFakeGame({ players, currentPlay: createFakeGamePlaySheriffDelegates() });
 
@@ -778,7 +778,7 @@ describe("Game Helper", () => {
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeTwoSistersAlivePlayer(),
         createFakeTwoSistersAlivePlayer({ isAlive: false }),
-        createFakeHunterAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()], isAlive: false }),
+        createFakeHunterAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()], isAlive: false }),
       ];
       const game = createFakeGame({ players, currentPlay: createFakeGamePlayHunterShoots() });
 
@@ -792,7 +792,7 @@ describe("Game Helper", () => {
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeTwoSistersAlivePlayer(),
         createFakeTwoSistersAlivePlayer({ isAlive: false }),
-        createFakeScapegoatAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()], isAlive: false }),
+        createFakeScapegoatAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()], isAlive: false }),
       ];
       const game = createFakeGame({ players, currentPlay: createFakeGamePlayScapegoatBansVoting() });
 

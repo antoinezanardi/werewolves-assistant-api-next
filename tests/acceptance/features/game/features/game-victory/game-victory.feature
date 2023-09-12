@@ -15,7 +15,7 @@ Feature: 🏆 Game Victory
       | Thomas  | Olivia  |
       | JB      | Antoine |
       | Olivia  | JB      |
-    Then the player named Olivia should have the active sheriff from all attribute
+    Then the player named Olivia should have the active sheriff from survivors attribute
     And the game's tick should be 2
     And the game's turn should be 1
     And the game's phase should be night
@@ -35,14 +35,14 @@ Feature: 🏆 Game Victory
     Then the game's turn should be 1
     And the game's phase should be day
     And the player named Thomas should be alive
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When all vote with the following votes
       | source  | target  |
       | Antoine | Olivia  |
       | Thomas  | Olivia  |
       | JB      | Antoine |
-    Then the player named Olivia should be murdered by all from vote
+    Then the player named Olivia should be murdered by survivors from vote
     And the game's phase should be day
     And the game's current play should be hunter to shoot
 
@@ -69,14 +69,14 @@ Feature: 🏆 Game Victory
       | Thomas  | Olivia  |
       | JB      | Antoine |
       | Olivia  | Antoine |
-    Then the game's current play should be all to elect-sheriff because previous-votes-were-in-ties
-    But nobody should have the active sheriff from all attribute
+    Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
+    But nobody should have the active sheriff from survivors attribute
 
     When all elect sheriff with the following votes
       | source  | target |
       | Antoine | Olivia |
       | Thomas  | Olivia |
-    Then the player named Olivia should have the active sheriff from all attribute
+    Then the player named Olivia should have the active sheriff from survivors attribute
     And the game's current play should be seer to look
 
     When the seer looks at the player named JB
@@ -124,14 +124,14 @@ Feature: 🏆 Game Victory
       | Thomas  | JB      |
       | JB      | Antoine |
       | Olivia  | Antoine |
-    Then the game's current play should be all to elect-sheriff because previous-votes-were-in-ties
-    But nobody should have the active sheriff from all attribute
+    Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
+    But nobody should have the active sheriff from survivors attribute
 
     When all elect sheriff with the following votes
       | source  | target  |
       | Antoine | JB      |
       | Thomas  | Antoine |
-    Then 1 of the following players should have the active sheriff from all attribute
+    Then 1 of the following players should have the active sheriff from survivors attribute
       | name    |
       | Antoine |
       | JB      |
@@ -156,7 +156,7 @@ Feature: 🏆 Game Victory
     And nobody should have the active eaten from werewolves attribute
     And nobody should have the active drank-life-potion from witch attribute
     And the game's phase should be day
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -169,7 +169,7 @@ Feature: 🏆 Game Victory
       | Antoine | Olivia |
       | Thomas  | Olivia |
       | JB      | Olivia |
-    Then the player named Olivia should be murdered by all from vote
+    Then the player named Olivia should be murdered by survivors from vote
     And the game's current play should be hunter to shoot
 
     When the hunter shoots at the player named Thomas
@@ -239,14 +239,14 @@ Feature: 🏆 Game Victory
       | JB      | werewolf |
       | Olivia  | cupid    |
       | Thomas  | angel    |
-    Then the game's current play should be all to vote because angel-presence
+    Then the game's current play should be survivors to vote because angel-presence
 
     When all vote with the following votes
       | source  | target |
       | Antoine | Thomas |
       | Olivia  | Thomas |
       | JB      | Thomas |
-    Then the player named Thomas should be murdered by all from vote
+    Then the player named Thomas should be murdered by survivors from vote
     And the game's status should be over
     And the game's winners should be angel with the following players
       | name   |
@@ -259,14 +259,14 @@ Feature: 🏆 Game Victory
       | JB      | werewolf |
       | Olivia  | cupid    |
       | Thomas  | angel    |
-    Then the game's current play should be all to vote because angel-presence
+    Then the game's current play should be survivors to vote because angel-presence
 
     When all vote with the following votes
       | source  | target |
       | Antoine | Olivia |
       | Thomas  | Olivia |
       | JB      | Olivia |
-    Then the player named Olivia should be murdered by all from vote
+    Then the player named Olivia should be murdered by survivors from vote
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas

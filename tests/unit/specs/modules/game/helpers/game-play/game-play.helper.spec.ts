@@ -14,7 +14,7 @@ import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/gam
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGamePlayAllElectSheriff, createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { bulkCreateFakePlayers } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
@@ -208,14 +208,14 @@ describe("Game Play Helper", () => {
         test: "both sources are not equal",
       },
       {
-        playA: createFakeGamePlayAllVote(),
-        playB: createFakeGamePlayAllElectSheriff(),
+        playA: createFakeGamePlaySurvivorsVote(),
+        playB: createFakeGamePlaySurvivorsElectSheriff(),
         result: false,
         test: "both actions are not equal",
       },
       {
-        playA: createFakeGamePlayAllVote(),
-        playB: createFakeGamePlayAllVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
+        playA: createFakeGamePlaySurvivorsVote(),
+        playB: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
         result: false,
         test: "both causes are not equal",
       },

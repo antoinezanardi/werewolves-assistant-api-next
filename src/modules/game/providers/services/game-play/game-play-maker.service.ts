@@ -4,12 +4,12 @@ import { sample } from "lodash";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createGamePlayAllVote, createGamePlaySheriffSettlesVotes } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlaySurvivorsVote, createGamePlaySheriffSettlesVotes } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
-import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
-import { createPlayerShotByHunterDeath, createPlayerVoteByAllDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedByAllDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
+import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createPlayerShotByHunterDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
@@ -24,7 +24,7 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
-import { createFakeGamePlayAllElectSheriff } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsElectSheriff } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 
 @Injectable()
 export class GamePlayMakerService {
@@ -43,7 +43,7 @@ export class GamePlayMakerService {
     [RoleNames.DOG_WOLF]: (play, game) => this.dogWolfChoosesSide(play, game),
     [RoleNames.SCAPEGOAT]: (play, game) => this.scapegoatBansVoting(play, game),
     [RoleNames.THIEF]: (play, game) => this.thiefChoosesCard(play, game),
-    [PlayerGroups.ALL]: async(play, game) => this.allPlay(play, game),
+    [PlayerGroups.SURVIVORS]: async(play, game) => this.survivorsPlay(play, game),
     [RoleNames.RAVEN]: (play, game) => this.ravenMarks(play, game),
     [PlayerAttributeNames.SHERIFF]: async(play, game) => this.sheriffPlays(play, game),
   };
@@ -108,8 +108,8 @@ export class GamePlayMakerService {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     const scapegoatPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.SCAPEGOAT);
     if (scapegoatPlayer && isPlayerAliveAndPowerful(scapegoatPlayer, game)) {
-      const playerVoteScapegoatedByAllDeath = createPlayerVoteScapegoatedByAllDeath();
-      return this.playerKillerService.killOrRevealPlayer(scapegoatPlayer._id, clonedGame, playerVoteScapegoatedByAllDeath);
+      const playerVoteScapegoatedBySurvivorsDeath = createPlayerVoteScapegoatedBySurvivorsDeath();
+      return this.playerKillerService.killOrRevealPlayer(scapegoatPlayer._id, clonedGame, playerVoteScapegoatedBySurvivorsDeath);
     }
     const sheriffPlayer = getPlayerWithActiveAttributeName(clonedGame, PlayerAttributeNames.SHERIFF);
     if (sheriffPlayer?.isAlive === true) {
@@ -117,25 +117,25 @@ export class GamePlayMakerService {
       return prependUpcomingPlayInGame(gamePlaySheriffSettlesVotes, clonedGame);
     }
     if (clonedGame.currentPlay.cause !== GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES) {
-      const gamePlayAllVote = createGamePlayAllVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
-      return prependUpcomingPlayInGame(gamePlayAllVote, clonedGame);
+      const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      return prependUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame);
     }
     return clonedGame;
   }
 
-  private async allVote({ votes, doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
+  private async survivorsVote({ votes, doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     let clonedGame = createGame(game) as GameWithCurrentPlay;
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
     if (doesJudgeRequestAnotherVote === true) {
-      const gamePlayAllVote = createGamePlayAllVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST });
-      clonedGame = appendUpcomingPlayInGame(gamePlayAllVote, clonedGame) as GameWithCurrentPlay;
+      const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST });
+      clonedGame = appendUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame) as GameWithCurrentPlay;
     }
     if (nominatedPlayers.length > 1) {
       return this.handleTieInVotes(clonedGame);
     }
     if (nominatedPlayers.length === 1) {
-      const playerVoteByAllDeath = createPlayerVoteByAllDeath();
-      return this.playerKillerService.killOrRevealPlayer(nominatedPlayers[0]._id, clonedGame, playerVoteByAllDeath);
+      const playerVoteBySurvivorsDeath = createPlayerVoteBySurvivorsDeath();
+      return this.playerKillerService.killOrRevealPlayer(nominatedPlayers[0]._id, clonedGame, playerVoteBySurvivorsDeath);
     }
     return clonedGame;
   }
@@ -143,18 +143,18 @@ export class GamePlayMakerService {
   private handleTieInSheriffElection(nominatedPlayers: Player[], game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     if (clonedGame.currentPlay.cause !== GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES) {
-      const gamePlayAllElectSheriff = createFakeGamePlayAllElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
-      return prependUpcomingPlayInGame(gamePlayAllElectSheriff, clonedGame);
+      const gamePlaySurvivorsElectSheriff = createFakeGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      return prependUpcomingPlayInGame(gamePlaySurvivorsElectSheriff, clonedGame);
     }
     const randomNominatedPlayer = sample(nominatedPlayers);
     if (randomNominatedPlayer) {
-      const sheriffByAllPlayerAttribute = createSheriffByAllPlayerAttribute();
-      return addPlayerAttributeInGame(randomNominatedPlayer._id, clonedGame, sheriffByAllPlayerAttribute);
+      const sheriffBySurvivorsPlayerAttribute = createSheriffBySurvivorsPlayerAttribute();
+      return addPlayerAttributeInGame(randomNominatedPlayer._id, clonedGame, sheriffBySurvivorsPlayerAttribute);
     }
     return clonedGame;
   }
 
-  private allElectSheriff(play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
+  private survivorsElectSheriff(play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     const { votes } = play;
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
@@ -164,21 +164,21 @@ export class GamePlayMakerService {
     if (nominatedPlayers.length !== 1) {
       return this.handleTieInSheriffElection(nominatedPlayers, clonedGame);
     }
-    const sheriffByAllPlayerAttribute = createSheriffByAllPlayerAttribute();
-    return addPlayerAttributeInGame(nominatedPlayers[0]._id, clonedGame, sheriffByAllPlayerAttribute);
+    const sheriffBySurvivorsPlayerAttribute = createSheriffBySurvivorsPlayerAttribute();
+    return addPlayerAttributeInGame(nominatedPlayers[0]._id, clonedGame, sheriffBySurvivorsPlayerAttribute);
   }
 
-  private async allPlay(play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
+  private async survivorsPlay(play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
-    const allPlayMethods: Partial<Record<GamePlayActions, () => Game | Promise<Game>>> = {
-      [GamePlayActions.ELECT_SHERIFF]: () => this.allElectSheriff(play, clonedGame),
-      [GamePlayActions.VOTE]: async() => this.allVote(play, clonedGame),
+    const survivorsPlayMethods: Partial<Record<GamePlayActions, () => Game | Promise<Game>>> = {
+      [GamePlayActions.ELECT_SHERIFF]: () => this.survivorsElectSheriff(play, clonedGame),
+      [GamePlayActions.VOTE]: async() => this.survivorsVote(play, clonedGame),
     };
-    const allPlayMethod = allPlayMethods[clonedGame.currentPlay.action];
-    if (allPlayMethod === undefined) {
+    const survivorsPlayMethod = survivorsPlayMethods[clonedGame.currentPlay.action];
+    if (survivorsPlayMethod === undefined) {
       return clonedGame;
     }
-    return allPlayMethod();
+    return survivorsPlayMethod();
   }
   
   private thiefChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {

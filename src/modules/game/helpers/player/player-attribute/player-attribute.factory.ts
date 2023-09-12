@@ -36,10 +36,10 @@ function createCharmedByPiedPiperPlayerAttribute(playerAttribute: Partial<Player
   });
 }
 
-function createCantVoteByAllPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createCantVoteBySurvivorsPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.CANT_VOTE,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     ...playerAttribute,
   });
 }
@@ -172,10 +172,10 @@ function createSheriffBySheriffPlayerAttribute(playerAttribute: Partial<PlayerAt
   });
 }
 
-function createSheriffByAllPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createSheriffBySurvivorsPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.SHERIFF,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     doesRemainAfterDeath: true,
     ...playerAttribute,
   });
@@ -189,7 +189,7 @@ export {
   createContaminatedByRustySwordKnightPlayerAttribute,
   createGrowledByBearTamerPlayerAttribute,
   createCharmedByPiedPiperPlayerAttribute,
-  createCantVoteByAllPlayerAttribute,
+  createCantVoteBySurvivorsPlayerAttribute,
   createCantVoteByScapegoatPlayerAttribute,
   createPowerlessByFoxPlayerAttribute,
   createPowerlessByAncientPlayerAttribute,
@@ -204,6 +204,6 @@ export {
   createEatenByWerewolvesPlayerAttribute,
   createSeenBySeerPlayerAttribute,
   createSheriffBySheriffPlayerAttribute,
-  createSheriffByAllPlayerAttribute,
+  createSheriffBySurvivorsPlayerAttribute,
   createPlayerAttribute,
 };

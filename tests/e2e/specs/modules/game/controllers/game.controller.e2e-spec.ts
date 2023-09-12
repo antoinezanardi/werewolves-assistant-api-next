@@ -37,7 +37,7 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayAllVote, createFakeGamePlayCupidCharms, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsVote, createFakeGamePlayCupidCharms, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -556,7 +556,7 @@ describe("Game Controller", () => {
         players: expectedPlayers,
         currentPlay: {
           action: GamePlayActions.ELECT_SHERIFF,
-          source: { name: PlayerGroups.ALL, players: expectedPlayers },
+          source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
         },
         upcomingPlays: toJSON([
           createFakeGamePlayCupidCharms(),
@@ -625,7 +625,7 @@ describe("Game Controller", () => {
         players: expectedPlayers,
         currentPlay: {
           action: GamePlayActions.ELECT_SHERIFF,
-          source: { name: PlayerGroups.ALL, players: expectedPlayers },
+          source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
         },
         upcomingPlays: toJSON([
           createFakeGamePlayThiefChoosesCard(),
@@ -823,7 +823,7 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGameWithCurrentPlay({
         status: GameStatuses.PLAYING,
-        upcomingPlays: [createFakeGamePlayAllVote()],
+        upcomingPlays: [createFakeGamePlaySurvivorsVote()],
         players,
       });
       await models.game.create(game);
@@ -853,7 +853,7 @@ describe("Game Controller", () => {
       const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
       const game = createFakeGame({
         status: GameStatuses.PLAYING,
-        currentPlay: createFakeGamePlayAllVote(),
+        currentPlay: createFakeGamePlaySurvivorsVote(),
         players,
         options,
       });
@@ -882,7 +882,7 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGame({
         status: GameStatuses.PLAYING,
-        currentPlay: createFakeGamePlayAllVote({ source: createFakeGamePlaySource({ name: PlayerGroups.ALL, players }) }),
+        currentPlay: createFakeGamePlaySurvivorsVote({ source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players }) }),
         upcomingPlays: [
           createFakeGamePlaySeerLooks(),
           createFakeGamePlayWerewolvesEat(),
@@ -896,9 +896,9 @@ describe("Game Controller", () => {
           { sourceId: players[1]._id, targetId: players[0]._id },
         ],
       });
-      const expectedCurrentPlay = createFakeGamePlayAllVote({
+      const expectedCurrentPlay = createFakeGamePlaySurvivorsVote({
         cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES,
-        source: createFakeGamePlaySource({ name: PlayerGroups.ALL, players }),
+        source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players }),
       });
       const expectedGame = createFakeGame({
         ...game,
