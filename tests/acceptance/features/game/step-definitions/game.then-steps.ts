@@ -135,6 +135,16 @@ Then(
 );
 
 Then(
+  /^the player named (?<name>.+?) should (?<isHidden>not )?have his role revealed$/u,
+  function(this: CustomWorld, playerName: string, isHidden: string | null): void {
+    const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
+    const isRoleRevealed = isHidden === null;
+
+    expect(player.role.isRevealed).toBe(isRoleRevealed);
+  },
+);
+
+Then(
   /^the player named (?<name>.+?) should be currently a (?<currentRole>.+) and originally a (?<originalRole>.+)$/u,
   function(this: CustomWorld, playerName: string, currentRole: RoleNames, originalRole: RoleNames): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
