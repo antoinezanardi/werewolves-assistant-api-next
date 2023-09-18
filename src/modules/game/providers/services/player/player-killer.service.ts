@@ -24,11 +24,13 @@ export class PlayerKillerService {
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
   
   public async killOrRevealPlayer(playerId: Types.ObjectId, game: Game, death: PlayerDeath): Promise<Game> {
-    const clonedGame = createGame(game);
-    const playerToKill = this.getPlayerToKillInGame(playerId, clonedGame);
+    let clonedGame = createGame(game);
+    let playerToKill = this.getPlayerToKillInGame(playerId, clonedGame);
     if (await this.isPlayerKillable(playerToKill, clonedGame, death.cause)) {
-      return this.killPlayer(playerToKill, clonedGame, death);
+      clonedGame = this.killPlayer(playerToKill, clonedGame, death);
     }
+    const cantFindPlayerException = createCantFindPlayerUnexpectedException("killOrRevealPlayer", { gameId: game._id, playerId: playerToKill._id });
+    playerToKill = getPlayerWithIdOrThrow(playerToKill._id, clonedGame, cantFindPlayerException);
     if (this.doesPlayerRoleMustBeRevealed(playerToKill, death, game)) {
       return this.revealPlayerRole(playerToKill, clonedGame);
     }
@@ -62,8 +64,9 @@ export class PlayerKillerService {
   }
 
   private doesPlayerRoleMustBeRevealed(playerToReveal: Player, death: PlayerDeath, game: Game): boolean {
-    return !playerToReveal.role.isRevealed && playerToReveal.role.current === RoleNames.IDIOT &&
-      isPlayerPowerful(playerToReveal, game) && death.cause === PlayerDeathCauses.VOTE;
+    const doesIdiotRoleMustBeRevealed = isPlayerPowerful(playerToReveal, game) && death.cause === PlayerDeathCauses.VOTE;
+    return !playerToReveal.role.isRevealed && (!playerToReveal.isAlive && game.options.roles.areRevealedOnDeath ||
+      playerToReveal.role.current === RoleNames.IDIOT && doesIdiotRoleMustBeRevealed);
   }
 
   private removePlayerAttributesAfterDeath(player: Player): Player {
@@ -234,7 +237,6 @@ export class PlayerKillerService {
     let clonedPlayerToKill = createPlayer(playerToKill);
     const cantFindPlayerException = createCantFindPlayerUnexpectedException("killPlayer", { gameId: game._id, playerId: playerToKill._id });
     clonedPlayerToKill.isAlive = false;
-    clonedPlayerToKill.role.isRevealed = true;
     clonedPlayerToKill.death = createPlayerDeath(death);
     clonedGame = updatePlayerInGame(clonedPlayerToKill._id, clonedPlayerToKill, clonedGame);
     clonedPlayerToKill = getPlayerWithIdOrThrow(clonedPlayerToKill._id, clonedGame, cantFindPlayerException);
