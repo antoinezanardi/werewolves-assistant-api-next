@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -57,7 +57,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -78,7 +78,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -99,7 +99,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -124,7 +124,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -158,7 +158,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -183,7 +183,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
