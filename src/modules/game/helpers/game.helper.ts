@@ -152,13 +152,10 @@ function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Play
   }, []);
 }
 
-function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: GetNearestPlayerOptions): Player | undefined {
-  const alivePlayers = getAlivePlayers(game);
-  alivePlayers.sort((a, b) => a.position - b.position);
-  const cantFindPlayerException = createCantFindPlayerUnexpectedException("getNearestAliveNeighbor", { gameId: game._id, playerId });
-  const player = getPlayerWithIdOrThrow(playerId, game, cantFindPlayerException);
+function getNearestAliveNeighborInSortedAlivePlayers(player: Player, alivePlayers: Player[], options: GetNearestPlayerOptions): Player | undefined {
   const indexHeading = options.direction === "left" ? -1 : 1;
-  let currentIndex = player.position + indexHeading;
+  const playerIndex = alivePlayers.findIndex(({ _id }) => _id.equals(player._id));
+  let currentIndex = playerIndex + indexHeading;
   let count = 0;
   while (count < alivePlayers.length) {
     if (currentIndex < 0) {
@@ -173,6 +170,17 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
     currentIndex += indexHeading;
     count++;
   }
+}
+
+function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: GetNearestPlayerOptions): Player | undefined {
+  const alivePlayers = getAlivePlayers(game);
+  alivePlayers.sort((a, b) => a.position - b.position);
+  const cantFindPlayerException = createCantFindPlayerUnexpectedException("getNearestAliveNeighbor", { gameId: game._id, playerId });
+  const player = getPlayerWithIdOrThrow(playerId, game, cantFindPlayerException);
+  if (!player.isAlive) {
+    return undefined;
+  }
+  return getNearestAliveNeighborInSortedAlivePlayers(player, alivePlayers, options);
 }
 
 function getExpectedPlayersToPlay(game: Game): Player[] {

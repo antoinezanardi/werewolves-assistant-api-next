@@ -149,10 +149,16 @@ describe("Game Helper", () => {
 
   describe("getPlayerWithName", () => {
     it("should get player with specific name when called with this name.", () => {
-      const players = bulkCreateFakePlayers(6);
+      const players = [
+        createFakePlayer({ name: "player1" }),
+        createFakePlayer({ name: "player2" }),
+        createFakePlayer({ name: "player3" }),
+        createFakePlayer({ name: "player4" }),
+        createFakePlayer({ name: "player5" }),
+      ];
       const game = createFakeGame({ players });
 
-      expect(getPlayerWithName(game, players[2].name)).toStrictEqual(players[2]);
+      expect(getPlayerWithName(game, "player3")).toStrictEqual(players[2]);
     });
 
     it("should return undefined when called with unknown name.", () => {

@@ -90,9 +90,10 @@ export class GameService {
 
   private async handleGamePhaseCompletion(game: Game): Promise<Game> {
     let clonedGame = createGameFromFactory(game);
-    clonedGame = await this.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(clonedGame);
+    clonedGame = await this.gamePhaseService.applyEndingGamePhaseOutcomes(clonedGame);
     clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
     clonedGame = await this.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays(clonedGame);
+    clonedGame = this.gamePhaseService.applyStartingGamePhaseOutcomes(clonedGame);
     return this.gamePlayService.proceedToNextGamePlay(clonedGame);
   }
 
