@@ -57,8 +57,9 @@ describe("Game Service", () => {
     gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.SpyInstance };
     gamePlayMakerService: { makeGamePlay: jest.SpyInstance };
     gamePhaseService: {
-      applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.SpyInstance;
+      applyEndingGamePhaseOutcomes: jest.SpyInstance;
       switchPhaseAndAppendGamePhaseUpcomingPlays: jest.SpyInstance;
+      applyStartingGamePhaseOutcomes: jest.SpyInstance;
     };
     playerAttributeService: {
       decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.SpyInstance;
@@ -92,8 +93,9 @@ describe("Game Service", () => {
       gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.fn() },
       gamePlayMakerService: { makeGamePlay: jest.fn() },
       gamePhaseService: {
-        applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.fn(),
+        applyEndingGamePhaseOutcomes: jest.fn(),
         switchPhaseAndAppendGamePhaseUpcomingPlays: jest.fn(),
+        applyStartingGamePhaseOutcomes: jest.fn(),
       },
       playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
       gameHelper: { getExpectedPlayersToPlay: jest.spyOn(GameHelper, "getExpectedPlayersToPlay").mockReturnValue([]) },
@@ -345,16 +347,17 @@ describe("Game Service", () => {
     const game = createFakeGame();
 
     beforeEach(() => {
-      mocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers.mockResolvedValue(game);
+      mocks.gamePhaseService.applyEndingGamePhaseOutcomes.mockResolvedValue(game);
       mocks.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes.mockReturnValue(game);
       mocks.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays.mockReturnValue(game);
+      mocks.gamePhaseService.applyStartingGamePhaseOutcomes.mockReturnValue(game);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
     });
 
     it("should call apply ending phase outcomes method when called.", async() => {
       await services.game["handleGamePhaseCompletion"](game);
 
-      expect(mocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePhaseService.applyEndingGamePhaseOutcomes).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call decrease remaining phases attributes to players method when called.", async() => {
@@ -367,6 +370,12 @@ describe("Game Service", () => {
       await services.game["handleGamePhaseCompletion"](game);
 
       expect(mocks.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call apply starting phase outcomes method when called.", async() => {
+      await services.game["handleGamePhaseCompletion"](game);
+
+      expect(mocks.gamePhaseService.applyStartingGamePhaseOutcomes).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call proceed to next game play method when called.", async() => {

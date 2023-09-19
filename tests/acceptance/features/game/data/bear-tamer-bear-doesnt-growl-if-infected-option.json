@@ -1,0 +1,7 @@
+{
+  "roles": {
+    "bearTamer": {
+      "doesGrowlIfInfected": false
+    }
+  }
+}
