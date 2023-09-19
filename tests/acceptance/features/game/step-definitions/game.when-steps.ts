@@ -11,7 +11,7 @@ import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 import { makeGamePlayRequest } from "@tests/acceptance/features/game/helpers/game-request.helper";
 import { convertDatatableToMakeGameplayVotes, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 
-When(/^all elect sheriff with the following votes$/u, async function(this: CustomWorld, votesDatatable: DataTable): Promise<void> {
+When(/^the survivors elect sheriff with the following votes$/u, async function(this: CustomWorld, votesDatatable: DataTable): Promise<void> {
   const votes = convertDatatableToMakeGameplayVotes(votesDatatable.rows(), this.game);
   const makeGamePlayDto: MakeGamePlayDto = { votes };
 
@@ -20,7 +20,7 @@ When(/^all elect sheriff with the following votes$/u, async function(this: Custo
 });
 
 When(
-  /^all vote with the following votes(?<stutteringJudgeRequest> and the stuttering judge does his sign)?$/u,
+  /^the survivors vote with the following votes(?<stutteringJudgeRequest> and the stuttering judge does his sign)?$/u,
   async function(this: CustomWorld, stutteringJudgeRequest: string | null, votesDatatable: DataTable): Promise<void> {
     const votes = convertDatatableToMakeGameplayVotes(votesDatatable.rows(), this.game);
     const makeGamePlayDto: MakeGamePlayDto = {

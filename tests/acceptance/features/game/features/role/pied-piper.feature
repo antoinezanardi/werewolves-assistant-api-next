@@ -65,7 +65,7 @@ Feature: 🪈 Pied Piper role
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source  | target |
       | Antoine | Olivia |
       | JB      | Olivia |
@@ -162,7 +162,7 @@ Feature: 🪈 Pied Piper role
     When the player or group skips his turn
     Then the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source | target |
       | Olivia | Dad    |
       | JB     | Olivia |

@@ -12,7 +12,7 @@ Feature: 🐐 Scapegoat role
       | Dad     | stuttering-judge |
     Then the game's current play should be survivors to elect-sheriff
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | voter  | target |
       | JB     | Olivia |
       | Thomas | Olivia |
@@ -25,7 +25,7 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
 
-    When all vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes and the stuttering judge does his sign
       | voter   | target |
       | Antoine | Olivia |
       | Olivia  | Thomas |
@@ -43,7 +43,7 @@ Feature: 🐐 Scapegoat role
       | Thomas |
     And the game's current play should be survivors to vote because stuttering-judge-request
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter  | target |
       | Thomas | Dad    |
       | Olivia | Dad    |
@@ -71,7 +71,7 @@ Feature: 🐐 Scapegoat role
       | Thomas  | werewolf  |
       | Mom     | villager  |
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | Olivia  | Thomas |
@@ -87,7 +87,7 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter   | target  |
       | Antoine | Thomas  |
       | Thomas  | Antoine |
@@ -104,7 +104,7 @@ Feature: 🐐 Scapegoat role
       | Thomas  | werewolf  |
       | Mom     | villager  |
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | Olivia  | Thomas |

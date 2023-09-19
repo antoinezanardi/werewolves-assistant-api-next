@@ -19,7 +19,7 @@ Feature: ⚖️ Stuttering Judge Role
     Then the player named JB should be murdered by werewolves from eaten
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes and the stuttering judge does his sign
       | voter   | target  |
       | Olivia  | Antoine |
       | Camille | Antoine |
@@ -64,7 +64,7 @@ Feature: ⚖️ Stuttering Judge Role
     Then the player named JB should be murdered by werewolves from eaten
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes and the stuttering judge does his sign
       | voter   | target  |
       | Olivia  | Antoine |
       | Camille | Olivia |

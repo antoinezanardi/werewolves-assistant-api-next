@@ -9,7 +9,7 @@ Feature: 🏆 Game Victory
       | Olivia  | hunter   |
       | Thomas  | seer     |
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | source  | target  |
       | Antoine | Olivia  |
       | Thomas  | Olivia  |
@@ -37,7 +37,7 @@ Feature: 🏆 Game Victory
     And the player named Thomas should be alive
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source  | target  |
       | Antoine | Olivia  |
       | Thomas  | Olivia  |
@@ -63,7 +63,7 @@ Feature: 🏆 Game Victory
       | Olivia  | hunter   |
       | Thomas  | seer     |
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | source  | target  |
       | Antoine | Olivia  |
       | Thomas  | Olivia  |
@@ -72,7 +72,7 @@ Feature: 🏆 Game Victory
     Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
     But nobody should have the active sheriff from survivors attribute
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | source  | target |
       | Antoine | Olivia |
       | Thomas  | Olivia |
@@ -118,7 +118,7 @@ Feature: 🏆 Game Victory
       | Olivia  | hunter   |
       | Thomas  | seer     |
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | source  | target  |
       | Antoine | JB      |
       | Thomas  | JB      |
@@ -127,7 +127,7 @@ Feature: 🏆 Game Victory
     Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
     But nobody should have the active sheriff from survivors attribute
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | source  | target  |
       | Antoine | JB      |
       | Thomas  | Antoine |
@@ -164,7 +164,7 @@ Feature: 🏆 Game Victory
       | Olivia  |
       | Thomas  |
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source  | target |
       | Antoine | Olivia |
       | Thomas  | Olivia |
@@ -241,7 +241,7 @@ Feature: 🏆 Game Victory
       | Thomas  | angel    |
     Then the game's current play should be survivors to vote because angel-presence
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source  | target |
       | Antoine | Thomas |
       | Olivia  | Thomas |
@@ -261,7 +261,7 @@ Feature: 🏆 Game Victory
       | Thomas  | angel    |
     Then the game's current play should be survivors to vote because angel-presence
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source  | target |
       | Antoine | Olivia |
       | Thomas  | Olivia |
