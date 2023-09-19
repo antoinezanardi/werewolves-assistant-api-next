@@ -11,7 +11,7 @@ Feature: 👼 Angel role
       | Thomas  | werewolf |
     Then the game's current play should be survivors to vote because angel-presence
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source  | vote   |
       | Antoine | Olivia |
       | JB      | Olivia |
@@ -36,7 +36,7 @@ Feature: 👼 Angel role
       | Thomas  | werewolf |
     Then the game's current play should be survivors to vote because angel-presence
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source  | vote   |
       | Antoine | Olivia |
       | JB      | Olivia |
@@ -47,7 +47,7 @@ Feature: 👼 Angel role
     Then the player named JB should be murdered by werewolves from eaten
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source | vote    |
       | Thomas | Antoine |
     Then the player named Antoine should be murdered by survivors from vote

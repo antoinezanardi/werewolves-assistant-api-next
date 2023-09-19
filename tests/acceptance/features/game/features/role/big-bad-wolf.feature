@@ -33,7 +33,7 @@ Feature: 🐺👹 Big Bad Wolf role
     But the player named Thomas should be alive
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source | target |
       | Olivia | JB     |
       | Thomas | JB     |
@@ -87,7 +87,7 @@ Feature: 🐺👹 Big Bad Wolf role
     But the player named Thomas should be alive
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source | target |
       | Olivia | JB     |
       | Thomas | JB     |
@@ -142,7 +142,7 @@ Feature: 🐺👹 Big Bad Wolf role
     But the player named Antoine should be alive
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source | target |
       | Olivia | Thomas |
       | JB     | Thomas |

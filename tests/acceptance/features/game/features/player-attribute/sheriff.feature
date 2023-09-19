@@ -12,7 +12,7 @@ Feature: 🎖️ Sheriff player attribute
       | Babou   | villager |
     Then the game's current play should be survivors to elect-sheriff
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | JB      | Olivia |
@@ -24,7 +24,7 @@ Feature: 🎖️ Sheriff player attribute
     Then the player named Babou should be murdered by werewolves from eaten
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter  | target |
       | JB     | Thomas |
       | Thomas | JB     |
@@ -46,7 +46,7 @@ Feature: 🎖️ Sheriff player attribute
       | Babou   | villager |
     Then the game's current play should be survivors to elect-sheriff
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | JB      | Olivia |
@@ -58,7 +58,7 @@ Feature: 🎖️ Sheriff player attribute
     Then the player named Babou should be murdered by werewolves from eaten
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter  | target |
       | JB     | Olivia |
       | Olivia | JB     |
@@ -74,7 +74,7 @@ Feature: 🎖️ Sheriff player attribute
       | Babou   | villager |
     Then the game's current play should be survivors to elect-sheriff
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | JB      | Olivia |
@@ -86,7 +86,7 @@ Feature: 🎖️ Sheriff player attribute
     Then the player named Babou should be murdered by werewolves from eaten
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter  | target |
       | JB     | Olivia |
       | Olivia | JB     |
@@ -154,7 +154,7 @@ Feature: 🎖️ Sheriff player attribute
       | Babou   | villager |
     Then the game's current play should be survivors to elect-sheriff
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | voter   | target |
       | Antoine | Thomas |
       | JB      | Thomas |
@@ -179,7 +179,7 @@ Feature: 🎖️ Sheriff player attribute
       | Babou   | villager |
     Then the game's current play should be survivors to elect-sheriff
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | voter   | target |
       | Antoine | Thomas |
       | JB      | Thomas |
@@ -200,7 +200,7 @@ Feature: 🎖️ Sheriff player attribute
       | Olivia  | hunter   |
       | Thomas  | seer     |
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | source  | target  |
       | Antoine | JB      |
       | Thomas  | JB      |
@@ -209,7 +209,7 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
     But nobody should have the active sheriff from survivors attribute
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | source  | target  |
       | Antoine | JB      |
       | Thomas  | Antoine |

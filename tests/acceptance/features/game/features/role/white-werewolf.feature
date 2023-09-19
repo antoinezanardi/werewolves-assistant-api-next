@@ -24,7 +24,7 @@ Feature: 🐺🦴White Werewolf role
     Then the game's current play should be survivors to vote
     And the player named Antoine should be alive
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source  | target  |
       | Antoine | Olaf    |
       | Thomas  | Olaf    |
@@ -40,7 +40,7 @@ Feature: 🐺🦴White Werewolf role
     Then the player named Thomas should be alive
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source | target  |
       | Thomas | Antoine |
       | JB     | Antoine |
@@ -59,7 +59,7 @@ Feature: 🐺🦴White Werewolf role
     Then the player named JB should be murdered by white-werewolf from eaten
     And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | source | target  |
       | Olivia | Patoche |
     Then the player named Patoche should be murdered by survivors from vote
