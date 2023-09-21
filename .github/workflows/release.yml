@@ -13,6 +13,32 @@ env:
   GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
 
 jobs:
+  code-ql:
+    name: CodeQL Scan ❇️
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL ⚙️
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
+      - name: AutoBuild 🌡️
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Perform CodeQL Analysis ❇️
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:javascript"
+
   install:
     name: Install ⚙️
     runs-on: ubuntu-latest
