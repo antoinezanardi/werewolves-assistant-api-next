@@ -28,6 +28,7 @@ jobs:
       - name: Install project dependencies 📦
         run: npm ci --ignore-scripts
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
+
   build:
     name: Build ✨
     runs-on: ubuntu-latest
@@ -49,6 +50,7 @@ jobs:
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Build app ✨
         run: npm run build
+
   lint:
     name: Lint 🔍
     runs-on: ubuntu-latest
@@ -70,6 +72,7 @@ jobs:
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Check and lint code 🔍
         run: npm run lint
+
   unit-tests:
     name: Unit Tests 🧪
     runs-on: ubuntu-latest
@@ -91,6 +94,7 @@ jobs:
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Unit tests 🧪
         run: npm run test:unit:cov
+
   e2e-tests:
     name: E2E Tests ⚗️
     runs-on: ubuntu-latest
@@ -116,6 +120,7 @@ jobs:
         run: npm run test:e2e:cov
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
   all-tests:
     name: All Tests 🧬
     runs-on: ubuntu-latest
@@ -147,6 +152,7 @@ jobs:
           key: ${{ runner.os }}-tests-coverage-v3-${{hashFiles('tests/coverage/lcov.info')}}
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
   mutant-tests:
     name: Mutant Tests 👽
     runs-on: ubuntu-latest
@@ -175,6 +181,7 @@ jobs:
         run: npm run test:stryker
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
   acceptance-tests:
     name: Acceptance Tests 🥒
     runs-on: ubuntu-latest
@@ -200,6 +207,7 @@ jobs:
         run: npm run test:cucumber
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
   sonarcloud:
     name: SonarCloud Analysis 🌥️
     runs-on: ubuntu-latest
@@ -224,19 +232,17 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-  code-ql:
-    name: CodeQL Scan ❇️
-    analyze:
-      name: Analyze
-      runs-on: ubutun-latest
-      timeout-minutes: 360
-      permissions:
-        actions: read
-        contents: read
-        security-events: write
 
-    strategy:
-      fail-fast: false
+  code-ql:
+    needs:
+      - all-tests
+    name: CodeQL Scan ❇️
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     steps:
       - name: Checkout GitHub repository 📡
@@ -247,7 +253,7 @@ jobs:
         with:
           languages: javascript
 
-      - name: Autobuild 🌡️
+      - name: AutoBuild 🌡️
         uses: github/codeql-action/autobuild@v2
 
       - name: Perform CodeQL Analysis ❇️
