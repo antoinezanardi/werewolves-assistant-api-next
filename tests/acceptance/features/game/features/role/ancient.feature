@@ -78,6 +78,80 @@ Feature: 👴🏻 Ancient role
     Then the player named Aurelien should be murdered by werewolves from eaten
     And nobody should have the active contaminated from rusty-sword-night attribute
 
+  Scenario: 👴🏻 Ancient makes all villagers loose powers if he dies from the witch
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | ancient  |
+      | Juju    | werewolf |
+      | Doudou  | witch    |
+      | JB      | guard    |
+      | Thomas  | idiot    |
+    Then the game's current play should be guard to protect
+
+    When the guard protects the player named JB
+    Then the player named JB should have the active protected from guard attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should have the active eaten from werewolves attribute
+    And the game's current play should be witch to use-potions
+
+    When the witch uses death potion on the player named Antoine
+    Then the player named Antoine should be murdered by witch from death-potion
+    And the following players should have the active powerless from ancient attribute
+      | name   |
+      | Doudou |
+      | JB     |
+      | Thomas |
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+  Scenario: 👴🏻 Ancient makes all villagers loose powers if he dies from the hunter
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | ancient  |
+      | Juju    | werewolf |
+      | Doudou  | idiot    |
+      | JB      | guard    |
+      | Thomas  | hunter   |
+    Then the game's current play should be guard to protect
+
+    When the guard protects the player named JB
+    Then the player named JB should have the active protected from guard attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should be murdered by werewolves from eaten
+    And the game's current play should be hunter to shoot
+
+    When the hunter shoots at the player named Antoine
+    Then the player named Antoine should be murdered by hunter from shot
+    And the following players should have the active powerless from ancient attribute
+      | name   |
+      | Doudou |
+      | JB     |
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+
+  Scenario: 👴🏻 Ancient doesn't makes all villagers loose powers if he dies from villagers with the right option
+    Given a created game with options described in file no-sheriff-option.json, ancient-doesnt-take-revenge-option.json and with the following players
+      | name    | role     |
+      | Antoine | ancient  |
+      | Juju    | werewolf |
+      | Doudou  | angel    |
+      | JB      | guard    |
+    Then the game's current play should be survivors to vote because angel-presence
+
+    When the survivors vote with the following votes
+      | voter  | target  |
+      | Doudou | Antoine |
+    Then the player named Antoine should be murdered by survivors from vote
+    And nobody should have the active powerless from ancient attribute
+    And the game's current play should be guard to protect
+
   Scenario: 👴🏻 Ancient has two lives against werewolves
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
@@ -133,3 +207,33 @@ Feature: 👴🏻 Ancient role
 
     When the guard protects the player named JB
     Then the player named JB should have the active protected from guard attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should have the active eaten from werewolves attribute
+    And the game's current play should be witch to use-potions
+
+    When the player or group skips his turn
+    Then the player named Antoine should be murdered by werewolves from eaten
+    And nobody should have the active powerless from ancient attribute
+
+  Scenario: 👴🏻 Ancient has only one life against werewolves with the right option
+
+    Given a created game with options described in file no-sheriff-option.json, ancient-one-life-against-werewolves-option.json and with the following players
+      | name    | role     |
+      | Antoine | ancient  |
+      | Juju    | werewolf |
+      | Doudou  | witch    |
+      | JB      | guard    |
+    Then the game's current play should be guard to protect
+
+    When the guard protects the player named JB
+    Then the player named JB should have the active protected from guard attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should have the active eaten from werewolves attribute
+    And the game's current play should be witch to use-potions
+
+    When the player or group skips his turn
+    Then the player named Antoine should be murdered by werewolves from eaten
