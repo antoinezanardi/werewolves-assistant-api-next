@@ -29,12 +29,13 @@
 1. 🐺 [What is this API ?](#what-is-this-api)
 2. 🃏 [Available roles](#available-roles)
 3. 🔨 [Installation](#installation)
-4. 💯 [Tests](#tests)
-5. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-6. 📈 [Releases & Changelog](#versions)
-7. ✨ [Misc commands](#misc-commands)
-8. ©️ [License](#license)
-9. ❤️ [Contributors](#contributors)
+4. 🚀 [Build](#build)
+5. 💯 [Tests](#tests)
+6. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
+7. 📈 [Releases & Changelog](#versions)
+8. ✨ [Misc commands](#misc-commands)
+9. ©️ [License](#license)
+10. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
@@ -75,6 +76,21 @@ npm run docker:dev:start
 
 # Start test Docker containers (if you want to run the tests)
 npm run docker:test:start
+
+# Run the app in dev mode
+npm run start:dev
+```
+
+## <a name="build">🚀 Build</a>
+
+In order to build the app for production, run the following command :
+
+```bash
+# Build the app
+npm run build
+
+# Run the app in production mode
+npm run start:prod
 ```
 
 ## <a name="tests">💯 Tests</a>

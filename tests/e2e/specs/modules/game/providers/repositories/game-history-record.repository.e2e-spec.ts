@@ -12,13 +12,14 @@ import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-histor
 import type { GameSource } from "@/modules/game/types/game.type";
 import type { RoleSides } from "@/modules/role/enums/role.enum";
 
+import { toJSON } from "@/shared/misc/helpers/object.helper";
+
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { toJSON } from "@tests/helpers/object/object.helper";
 
 describe("Game History Record Repository", () => {
   let app: NestFastifyApplication;

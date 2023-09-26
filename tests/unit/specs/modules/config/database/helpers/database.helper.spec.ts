@@ -6,7 +6,12 @@ import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 import { mongooseModuleFactory } from "@/modules/config/database/helpers/database.helper";
 
 describe("Database Helper", () => {
-  let mocks: { configService: { getOrThrow: jest.SpyInstance } };
+  let mocks: {
+    configService: {
+      getOrThrow: jest.SpyInstance;
+      get: jest.SpyInstance;
+    };
+  };
   let services: { config: ConfigService };
   
   const connectionTimeoutMs = 3000;
@@ -17,7 +22,12 @@ describe("Database Helper", () => {
   const databasePassword = "password";
   
   beforeEach(async() => {
-    mocks = { configService: { getOrThrow: jest.fn() } };
+    mocks = {
+      configService: {
+        getOrThrow: jest.fn(),
+        get: jest.fn(),
+      },
+    };
 
     const module = await Test.createTestingModule({
       providers: [
@@ -31,14 +41,14 @@ describe("Database Helper", () => {
     services = { config: module.get<ConfigService>(ConfigService) };
     
     when(mocks.configService.getOrThrow).calledWith("DATABASE_HOST").mockReturnValue(host);
-    when(mocks.configService.getOrThrow).calledWith("DATABASE_PORT").mockReturnValue(port);
+    when(mocks.configService.get).calledWith("DATABASE_PORT").mockReturnValue(port);
     when(mocks.configService.getOrThrow).calledWith("DATABASE_NAME").mockReturnValue(databaseName);
     when(mocks.configService.getOrThrow).calledWith("DATABASE_USERNAME").mockReturnValue(databaseUserName);
     when(mocks.configService.getOrThrow).calledWith("DATABASE_PASSWORD").mockReturnValue(databasePassword);
   });
 
   describe("mongooseModuleFactory", () => {
-    it("should return connection string when called.", () => {
+    it("should return connection string for local address when called with port.", () => {
       expect(mongooseModuleFactory(services.config)).toStrictEqual<MongooseModuleFactoryOptions>({
         uri: `mongodb://${host}:${port}`,
         dbName: databaseName,
@@ -46,6 +56,31 @@ describe("Database Helper", () => {
         user: databaseUserName,
         pass: encodeURIComponent(databasePassword),
         retryAttempts: 3,
+        serverApi: {
+          version: "1",
+          strict: true,
+          deprecationErrors: true,
+        },
+        retryDelay: connectionTimeoutMs,
+        serverSelectionTimeoutMS: connectionTimeoutMs,
+      });
+    });
+
+    it("should return connection string for remote address when called without port.", () => {
+      when(mocks.configService.get).calledWith("DATABASE_PORT").mockReturnValue(undefined);
+
+      expect(mongooseModuleFactory(services.config)).toStrictEqual<MongooseModuleFactoryOptions>({
+        uri: `mongodb+srv://${host}`,
+        dbName: databaseName,
+        authSource: "admin",
+        user: databaseUserName,
+        pass: encodeURIComponent(databasePassword),
+        retryAttempts: 3,
+        serverApi: {
+          version: "1",
+          strict: true,
+          deprecationErrors: true,
+        },
         retryDelay: connectionTimeoutMs,
         serverSelectionTimeoutMS: connectionTimeoutMs,
       });

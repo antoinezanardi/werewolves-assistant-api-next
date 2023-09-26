@@ -4,7 +4,7 @@ import { sample } from "lodash";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createGamePlaySurvivorsVote, createGamePlaySheriffSettlesVotes } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlaySurvivorsVote, createGamePlaySheriffSettlesVotes, createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
@@ -23,8 +23,6 @@ import { ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
-
-import { createFakeGamePlaySurvivorsElectSheriff } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 
 @Injectable()
 export class GamePlayMakerService {
@@ -143,7 +141,7 @@ export class GamePlayMakerService {
   private handleTieInSheriffElection(nominatedPlayers: Player[], game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     if (clonedGame.currentPlay.cause !== GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES) {
-      const gamePlaySurvivorsElectSheriff = createFakeGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const gamePlaySurvivorsElectSheriff = createGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
       return prependUpcomingPlayInGame(gamePlaySurvivorsElectSheriff, clonedGame);
     }
     const randomNominatedPlayer = sample(nominatedPlayers);

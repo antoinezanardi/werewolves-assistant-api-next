@@ -10,7 +10,7 @@ import { VALIDATION_PIPE_DEFAULT_OPTIONS } from "@/shared/validation/constants/v
 
 import { AppModule } from "@/app.module";
 
-async function bootstrap(port = 3000): Promise<NestFastifyApplication> {
+async function bootstrap(): Promise<NestFastifyApplication> {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(FASTIFY_SERVER_DEFAULT_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_DEFAULT_OPTIONS));
   const documentationPath = "docs";
@@ -19,6 +19,7 @@ async function bootstrap(port = 3000): Promise<NestFastifyApplication> {
     root: `${process.cwd()}/public`,
     prefix: "/public/",
   });
+  const port = process.env.PORT ?? "8080";
   await app.listen(port, "127.0.0.1");
   const appUrl = await app.getUrl();
   Logger.log(`🐺 App is available at ${appUrl}`, "NestApplication");
