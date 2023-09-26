@@ -1,0 +1,43 @@
+name: Test GCP deployment
+on:
+  pull_request:
+    branches:
+      - develop
+jobs:
+  deployment:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: "production"
+      DATABASE_HOST: ${{ secrets.PRODUCTION_DATABASE_HOST }}
+      DATABASE_NAME: ${{ secrets.PRODUCTION_DATABASE_NAME }}
+      DATABASE_USERNAME: ${{ secrets.PRODUCTION_DATABASE_USERNAME }}
+      DATABASE_PASSWORD: ${{ secrets.PRODUCTION_DATABASE_PASSWORD }}
+    steps:
+      - name: Setup GitHub repository 🔧
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ✨
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+
+      - name: Install project dependencies 📦
+        run: npm ci
+
+      - name: Build app ✨
+        run: npm run build
+
+      - name: Auth to GCP ☁️
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
+
+      - name: Deploy 🚀
+        uses: 'google-github-actions/deploy-appengine@v1'
+        with:
+          project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
