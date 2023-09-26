@@ -37,12 +37,12 @@ export class PlayerKillerService {
     return clonedGame;
   }
 
-  public async isAncientKillable(game: Game, cause: PlayerDeathCauses): Promise<boolean> {
+  public async isAncientKillable(game: Game, ancientPlayer: Player, cause: PlayerDeathCauses): Promise<boolean> {
     if (cause !== PlayerDeathCauses.EATEN) {
       return true;
     }
-    const ancientLivesCountAgainstWerewolves = await this.getAncientLivesCountAgainstWerewolves(game);
-    return ancientLivesCountAgainstWerewolves - 1 <= 0;
+    const ancientLivesCountAgainstWerewolves = await this.getAncientLivesCountAgainstWerewolves(game, ancientPlayer);
+    return ancientLivesCountAgainstWerewolves <= 0;
   }
 
   private applyPlayerRoleRevelationOutcomes(revealedPlayer: Player, game: Game): Game {
@@ -75,17 +75,19 @@ export class PlayerKillerService {
     return clonedPlayer;
   }
 
-  private async getAncientLivesCountAgainstWerewolves(game: Game): Promise<number> {
+  private async getAncientLivesCountAgainstWerewolves(game: Game, ancientPlayer: Player): Promise<number> {
     const { livesCountAgainstWerewolves } = game.options.roles.ancient;
     const werewolvesEatAncientRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords(game._id);
+    const werewolvesEatAncientOnPreviousTurnsRecords = werewolvesEatAncientRecords.filter(({ turn }) => turn < game.turn);
     const ancientProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords(game._id);
-    return werewolvesEatAncientRecords.reduce((acc, werewolvesEatAncientRecord) => {
+    const doesAncientLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(ancientPlayer, PlayerAttributeNames.EATEN, game) && this.canPlayerBeEaten(ancientPlayer, game);
+    return werewolvesEatAncientOnPreviousTurnsRecords.reduce((acc, werewolvesEatAncientRecord) => {
       const wasAncientProtectedFromWerewolves = !!ancientProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatAncientRecord.turn);
       if (!wasAncientProtectedFromWerewolves) {
         return acc - 1;
       }
       return acc;
-    }, livesCountAgainstWerewolves);
+    }, doesAncientLooseALifeOnCurrentTurn ? livesCountAgainstWerewolves - 1 : livesCountAgainstWerewolves);
   }
 
   private isIdiotKillable(idiotPlayer: Player, cause: PlayerDeathCauses, game: Game): boolean {
@@ -108,7 +110,7 @@ export class PlayerKillerService {
       return this.isIdiotKillable(player, cause, game);
     }
     if (player.role.current === RoleNames.ANCIENT) {
-      return this.isAncientKillable(game, cause);
+      return this.isAncientKillable(game, player, cause);
     }
     return true;
   }

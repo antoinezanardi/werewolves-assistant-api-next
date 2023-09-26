@@ -353,7 +353,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer, isInfected: isTargetInfected } = targets[0];
     const eatenByWerewolvesPlayerAttribute = createEatenByWerewolvesPlayerAttribute();
-    const isAncientKillable = await this.playerKillerService.isAncientKillable(clonedGame, PlayerDeathCauses.EATEN);
+    const isAncientKillable = await this.playerKillerService.isAncientKillable(clonedGame, targetedPlayer, PlayerDeathCauses.EATEN);
     if (isTargetInfected === true && (targetedPlayer.role.current !== RoleNames.ANCIENT || isAncientKillable)) {
       const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES } };
       return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);

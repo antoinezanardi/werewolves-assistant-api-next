@@ -82,6 +82,27 @@ Then(
 );
 
 Then(
+  /^the following players should(?<shouldMiss> not)? have the (?<isActive>active|inactive) (?<attributeName>\S+) from (?<attributeSource>\S+) attribute$/u,
+  function(
+    this: CustomWorld,
+    shouldMiss: string | null,
+    isActive: "active" | "inactive",
+    attributeName: PlayerAttributeNames,
+    attributeSource: GameSource,
+    expectedPlayersDatatable: DataTable,
+  ): void {
+    const players = convertDatatableToPlayers(expectedPlayersDatatable.rows(), this.game);
+    const playersWithAttribute = players.filter(player => {
+      const attribute = getPlayerAttributeWithNameAndSource(player, attributeName, attributeSource);
+      const isAttributeActive = !!attribute && isPlayerAttributeActive(attribute, this.game);
+      return isAttributeActive === (isActive === "active");
+    });
+
+    expect(playersWithAttribute.length).toBe(shouldMiss === null ? players.length : 0);
+  },
+);
+
+Then(
   /^(?<playerCount>\d) of the following players should have the (?<isActive>active|inactive) (?<attributeName>\S+) from (?<attributeSource>\S+) attribute$/u,
   function(
     this: CustomWorld,
