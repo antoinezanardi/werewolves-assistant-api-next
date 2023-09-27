@@ -24,12 +24,13 @@ jobs:
 
       - name: Write production .env file 📝
         run: |
-          npx rimraf env/.env.production \
-          echo "ENVIRONMENT=\"production\"" >> env/.env.production \
-          echo "DATABASE_HOST=\"${{ secrets.PRODUCTION_DATABASE_HOST }}\"" >> env/.env.production \
-          echo "DATABASE_NAME=\"${{ secrets.PRODUCTION_DATABASE_NAME }}\"" >> env/.env.production \
-          echo "DATABASE_USERNAME=\"${{ secrets.PRODUCTION_DATABASE_USERNAME }}\"" >> env/.env.production \
-          echo "DATABASE_PASSWORD=\"${{ secrets.PRODUCTION_DATABASE_PASSWORD }}\"" >> env/.env.production
+          npx rimraf env/.env.production
+          echo ENVIRONMENT=\"production\" >> env/.env.production
+          echo DATABASE_HOST=\"${{ secrets.PRODUCTION_DATABASE_HOST }}\" >> env/.env.production
+          echo DATABASE_NAME=\"${{ secrets.PRODUCTION_DATABASE_NAME }}\" >> env/.env.production
+          echo DATABASE_USERNAME=\"${{ secrets.PRODUCTION_DATABASE_USERNAME }}\" >> env/.env.production
+          echo DATABASE_PASSWORD=\"${{ secrets.PRODUCTION_DATABASE_PASSWORD }}\" >> env/.env.production
+          cat env/.env.production
 
       - name: Build app ✨
         run: npm run build
