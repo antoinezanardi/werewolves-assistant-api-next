@@ -61,9 +61,16 @@ jobs:
         with:
           credentials_json: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
 
+      - name: Transform and format version ♻️
+        id: format-version-for-gcp
+        run: |
+          version=${{ steps.get-next-version.outputs.new-release-version }}
+          version=${version//./-}
+          echo "::set-output name=formatted-version::${version}"
+
       - name: Deploy to production 🚀
         uses: 'google-github-actions/deploy-appengine@v1'
         with:
           project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
           deliverables: ".appengine/app.yaml"
-          flags: "--version=${{ needs.get-next-version.outputs.new-release-version }}"
+          flags: "--version=${{ steps.format-version-for-gcp.outputs.formatted-version }}"
