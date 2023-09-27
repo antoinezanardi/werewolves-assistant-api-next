@@ -224,6 +224,51 @@ jobs:
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
 
+  deploy:
+    name: Deploy to production 🚀
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Setup GitHub repository 🔧
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ✨
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Restore npm dependencies from cache 🥡
+        uses: actions/cache/restore@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
+      - name: Write production .env file 📝
+        run: |
+          npx rimraf env/.env.production
+          echo ENVIRONMENT="production" >> env/.env.production
+          echo DATABASE_HOST="${{ secrets.PRODUCTION_DATABASE_HOST }}" >> env/.env.production
+          echo DATABASE_NAME="${{ secrets.PRODUCTION_DATABASE_NAME }}" >> env/.env.production
+          echo DATABASE_USERNAME="${{ secrets.PRODUCTION_DATABASE_USERNAME }}" >> env/.env.production
+          echo DATABASE_PASSWORD="${{ secrets.PRODUCTION_DATABASE_PASSWORD }}" >> env/.env.production
+          cat env/.env.production
+
+      - name: Build app ✨
+        run: npm run build
+
+      - name: Auth to GCP ☁️
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
+
+      - name: Deploy to production 🚀
+        uses: 'google-github-actions/deploy-appengine@v1'
+        with:
+          project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
+
   badges:
     name: Generate Badges 💠
     runs-on: ubuntu-latest
