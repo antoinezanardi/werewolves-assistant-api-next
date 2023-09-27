@@ -63,37 +63,6 @@ jobs:
         run: npm ci --ignore-scripts
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
 
-  get-next-release-version:
-    name: Get Next Release Version 🔖️
-    runs-on: ubuntu-latest
-    needs:
-      - install
-    steps:
-      - name: Setup GitHub repository 🔧
-        uses: actions/checkout@v4
-
-      - name: Setup NodeJS ✨
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - name: Restore npm dependencies from cache 🥡
-        uses: actions/cache/restore@v3
-        id: cache-node-modules
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
-
-      - run: npx semantic-release --dry-run --no-ci
-        id: get-next-release-version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    outputs:
-      new-release-published: ${{ steps.get-next-release-version.outputs.new-release-published }}
-      new-release-version: ${{ steps.get-next-release-version.outputs.new-release-version }}
-
   mutant-tests:
     name: Mutant Tests 👽
     runs-on: ubuntu-latest
@@ -153,7 +122,12 @@ jobs:
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
 
       - name: Release 🏷️
+        id: release
         run: npx semantic-release
+
+    outputs:
+      new-release-published: ${{ steps.release.outputs.new-release-published }}
+      new-release-version: ${{ steps.release.outputs.new-release-version }}
 
   all-tests:
     name: All Tests 🧬
@@ -259,7 +233,7 @@ jobs:
     name: Deploy to production 🚀
     runs-on: ubuntu-latest
     needs:
-      - get-next-release-version
+      - release
     steps:
       - name: Setup GitHub repository 🔧
         uses: actions/checkout@v4
@@ -298,7 +272,7 @@ jobs:
       - name: Transform and format version for GCP ♻️
         id: format-version-for-gcp
         run: |
-          version=${{ needs.get-next-release-version.outputs.new-release-version }}
+          version=${{ needs.release.outputs.new-release-version }}
           version=${version//./-}
           echo "FORMATTED_VERSION_FOR_GCP=${version}" >> $GITHUB_OUTPUT
 
