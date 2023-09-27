@@ -11,7 +11,7 @@ const commitGroupsOrder = {
 };
 
 module.exports = {
-  branches: ["main", "feat/deploy-on-gcp"],
+  branches: ["main", "feat/deploy-on-gcp", "refs/pull/521/merge"],
   repositoryUrl: "git@github.com:antoinezanardi/werewolves-assistant-api-next.git",
   plugins: [
     [
