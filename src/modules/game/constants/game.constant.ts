@@ -12,7 +12,7 @@ const GAME_SOURCE_VALUES: Readonly<GameSource[]> = Object.freeze([
 
 const GAME_PLAYS_NIGHT_ORDER: Readonly<(GamePlay & { isFirstNightOnly?: boolean })[]> = Object.freeze([
   {
-    source: { name: PlayerGroups.ALL },
+    source: { name: PlayerGroups.SURVIVORS },
     action: GamePlayActions.VOTE,
     cause: GamePlayCauses.ANGEL_PRESENCE,
     isFirstNightOnly: true,

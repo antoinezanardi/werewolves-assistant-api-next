@@ -1,5 +1,5 @@
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerDeathPotionByWitchDeath, createPlayerDiseaseByRustySwordKnightDeath, createPlayerEatenByBigBadWolfDeath, createPlayerEatenByWerewolvesDeath, createPlayerEatenByWhiteWerewolfDeath, createPlayerReconsiderPardonByAllDeath, createPlayerShotByHunterDeath, createPlayerVoteByAllDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedByAllDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
+import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerDeathPotionByWitchDeath, createPlayerDiseaseByRustySwordKnightDeath, createPlayerEatenByBigBadWolfDeath, createPlayerEatenByWerewolvesDeath, createPlayerEatenByWhiteWerewolfDeath, createPlayerReconsiderPardonBySurvivorsDeath, createPlayerShotByHunterDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -28,25 +28,25 @@ describe("Player Death Factory", () => {
     });
   });
 
-  describe("createPlayerReconsiderPardonByAllDeath", () => {
-    it("should create player reconsider pardon by all death when called.", () => {
+  describe("createPlayerReconsiderPardonBySurvivorsDeath", () => {
+    it("should create player reconsider pardon by survivors death when called.", () => {
       const expectedDeath = createFakePlayerDeath({
         cause: PlayerDeathCauses.RECONSIDER_PARDON,
-        source: PlayerGroups.ALL,
+        source: PlayerGroups.SURVIVORS,
       });
       
-      expect(createPlayerReconsiderPardonByAllDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
+      expect(createPlayerReconsiderPardonBySurvivorsDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
 
-  describe("createPlayerVoteScapegoatedByAllDeath", () => {
-    it("should create player vote scapegoated by all death when called.", () => {
+  describe("createPlayerVoteScapegoatedBySurvivorsDeath", () => {
+    it("should create player vote scapegoated by survivors death when called.", () => {
       const expectedDeath = createFakePlayerDeath({
         cause: PlayerDeathCauses.VOTE_SCAPEGOATED,
-        source: PlayerGroups.ALL,
+        source: PlayerGroups.SURVIVORS,
       });
       
-      expect(createPlayerVoteScapegoatedByAllDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
+      expect(createPlayerVoteScapegoatedBySurvivorsDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
 
@@ -61,14 +61,14 @@ describe("Player Death Factory", () => {
     });
   });
 
-  describe("createPlayerVoteByAllDeath", () => {
-    it("should create player vote by all death when called.", () => {
+  describe("createPlayerVoteBySurvivorsDeath", () => {
+    it("should create player vote by survivors death when called.", () => {
       const expectedDeath = createFakePlayerDeath({
         cause: PlayerDeathCauses.VOTE,
-        source: PlayerGroups.ALL,
+        source: PlayerGroups.SURVIVORS,
       });
       
-      expect(createPlayerVoteByAllDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
+      expect(createPlayerVoteBySurvivorsDeath()).toStrictEqual<PlayerDeath>(expectedDeath);
     });
   });
 

@@ -9,11 +9,11 @@ import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpect
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsVote, createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerVoteByAllDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerVoteBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -407,7 +407,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteByAllDeath() }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
       ];
       const game = createFakeGame({ players, turn: 1 });
 
@@ -433,7 +433,7 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.HUNTER }) }),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const currentPlay = createFakeGamePlayAllVote();
+      const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, upcomingPlays, currentPlay });
 
       expect(isGameOver(game)).toBe(true);
@@ -448,7 +448,7 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayHunterShoots(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const currentPlay = createFakeGamePlayAllVote();
+      const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, upcomingPlays, currentPlay });
 
       expect(isGameOver(game)).toBe(false);
@@ -460,7 +460,7 @@ describe("Game Victory Helper", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayAllVote(),
+        createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
       const currentPlay = createFakeGamePlayHunterShoots();
@@ -480,7 +480,7 @@ describe("Game Victory Helper", () => {
         createFakeGamePlayHunterShoots({ action: GamePlayActions.LOOK }),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const currentPlay = createFakeGamePlayAllVote();
+      const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, currentPlay, upcomingPlays });
 
       expect(isGameOver(game)).toBe(true);
@@ -495,10 +495,10 @@ describe("Game Victory Helper", () => {
       ];
       const upcomingPlays = [
         createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.THIEF }) }),
-        createFakeGamePlayAllVote(),
+        createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const currentPlay = createFakeGamePlayAllVote();
+      const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, currentPlay, upcomingPlays });
 
       expect(isGameOver(game)).toBe(true);
@@ -512,10 +512,10 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayAllVote(),
+        createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const currentPlay = createFakeGamePlayAllVote();
+      const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, upcomingPlays, currentPlay });
 
       expect(isGameOver(game)).toBe(true);
@@ -528,10 +528,10 @@ describe("Game Victory Helper", () => {
         createFakeWhiteWerewolfAlivePlayer({ isAlive: true }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayAllVote(),
+        createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const currentPlay = createFakeGamePlayAllVote();
+      const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, upcomingPlays, currentPlay });
 
       expect(isGameOver(game)).toBe(true);
@@ -545,11 +545,11 @@ describe("Game Victory Helper", () => {
         createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayAllVote(),
+        createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
-      const currentPlay = createFakeGamePlayAllVote();
+      const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, upcomingPlays, currentPlay, options });
 
       expect(isGameOver(game)).toBe(true);
@@ -560,14 +560,14 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteByAllDeath() }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayAllVote(),
+        createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
-      const currentPlay = createFakeGamePlayAllVote();
+      const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, upcomingPlays, currentPlay, options, turn: 1 });
 
       expect(isGameOver(game)).toBe(true);
@@ -595,7 +595,7 @@ describe("Game Victory Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
-        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteByAllDeath() }),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
       const game = createFakeGame({ players, options, turn: 1 });

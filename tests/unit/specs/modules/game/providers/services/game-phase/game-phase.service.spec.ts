@@ -1,16 +1,21 @@
-import { Test } from "@nestjs/testing";
 import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
 
 import { GamePhases } from "@/modules/game/enums/game.enum";
+import * as GameHelper from "@/modules/game/helpers/game.helper";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
-import { createFakeGamePlayAllVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeBearTamerGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeGrowledByBearTamerPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeBearTamerAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { bulkCreateFakePlayers, createFakePlayer, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Phase Service", () => {
   let services: { gamePhase: GamePhaseService };
@@ -23,6 +28,9 @@ describe("Game Phase Service", () => {
     gamePlayService: {
       getUpcomingNightPlays: jest.SpyInstance;
       getUpcomingDayPlays: jest.SpyInstance;
+    };
+    gameHelper: {
+      getNearestAliveNeighbor: jest.SpyInstance;
     };
   };
 
@@ -37,6 +45,7 @@ describe("Game Phase Service", () => {
         getUpcomingNightPlays: jest.fn(),
         getUpcomingDayPlays: jest.fn(),
       },
+      gameHelper: { getNearestAliveNeighbor: jest.spyOn(GameHelper, "getNearestAliveNeighbor").mockImplementation() },
     };
     
     const module: TestingModule = await Test.createTestingModule({
@@ -55,33 +64,28 @@ describe("Game Phase Service", () => {
 
     services = { gamePhase: module.get<GamePhaseService>(GamePhaseService) };
   });
-  
-  describe("applyEndingGamePhasePlayerAttributesOutcomesToPlayers", () => {
+
+  describe("applyEndingGamePhaseOutcomes", () => {
     let localMocks: {
       gamePhaseService: {
-        applyEndingGamePhasePlayerAttributesOutcomesToPlayer: jest.SpyInstance;
+        applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.SpyInstance;
       };
     };
 
     beforeEach(() => {
-      localMocks = { gamePhaseService: { applyEndingGamePhasePlayerAttributesOutcomesToPlayer: jest.spyOn(services.gamePhase as unknown as { applyEndingGamePhasePlayerAttributesOutcomesToPlayer }, "applyEndingGamePhasePlayerAttributesOutcomesToPlayer").mockImplementation() } };
+      localMocks = { gamePhaseService: { applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.spyOn(services.gamePhase as unknown as { applyEndingGamePhasePlayerAttributesOutcomesToPlayers }, "applyEndingGamePhasePlayerAttributesOutcomesToPlayers").mockImplementation() } };
     });
 
-    it("should call ending game phase method for each player when called.", async() => {
-      const players = bulkCreateFakePlayers(4);
-      const game = createFakeGame({ phase: GamePhases.NIGHT, players });
-      localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer.mockResolvedValue(game);
-      await services.gamePhase.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(game);
+    it("should call applyEndingGamePhasePlayerAttributesOutcomesToPlayers method when called.", async() => {
+      const game = createFakeGame();
+      await services.gamePhase.applyEndingGamePhaseOutcomes(game);
 
-      expect(localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer).toHaveBeenNthCalledWith(1, players[0], game);
-      expect(localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer).toHaveBeenNthCalledWith(2, players[1], game);
-      expect(localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer).toHaveBeenNthCalledWith(3, players[2], game);
-      expect(localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer).toHaveBeenNthCalledWith(4, players[3], game);
+      expect(localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers).toHaveBeenCalledExactlyOnceWith(game);
     });
   });
 
   describe("switchPhaseAndAppendGamePhaseUpcomingPlays", () => {
-    const upcomingDayPlays = [createFakeGamePlayAllVote()];
+    const upcomingDayPlays = [createFakeGamePlaySurvivorsVote()];
     const upcomingNightPlays = [createFakeGamePlayWerewolvesEat(), createFakeGamePlaySeerLooks()];
 
     beforeEach(() => {
@@ -113,9 +117,60 @@ describe("Game Phase Service", () => {
     });
   });
 
+  describe("applyStartingGamePhaseOutcomes", () => {
+    let localMocks: {
+      gamePhaseService: {
+        applyStartingDayPlayerRoleOutcomesToPlayers: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = { gamePhaseService: { applyStartingDayPlayerRoleOutcomesToPlayers: jest.spyOn(services.gamePhase as unknown as { applyStartingDayPlayerRoleOutcomesToPlayers }, "applyStartingDayPlayerRoleOutcomesToPlayers").mockImplementation() } };
+    });
+
+    it("should do nothing when game's current phase is NIGHT.", () => {
+      const game = createFakeGame({ phase: GamePhases.NIGHT });
+      const result = services.gamePhase.applyStartingGamePhaseOutcomes(game);
+
+      expect(localMocks.gamePhaseService.applyStartingDayPlayerRoleOutcomesToPlayers).not.toHaveBeenCalled();
+      expect(result).toStrictEqual<Game>(game);
+    });
+
+    it("should call applyStartingDayPlayerRoleOutcomesToPlayers method when game's current phase is DAY.", () => {
+      const game = createFakeGame({ phase: GamePhases.DAY });
+      services.gamePhase.applyStartingGamePhaseOutcomes(game);
+
+      expect(localMocks.gamePhaseService.applyStartingDayPlayerRoleOutcomesToPlayers).toHaveBeenCalledExactlyOnceWith(game);
+    });
+  });
+  
+  describe("applyEndingGamePhasePlayerAttributesOutcomesToPlayers", () => {
+    let localMocks: {
+      gamePhaseService: {
+        applyEndingGamePhasePlayerAttributesOutcomesToPlayer: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = { gamePhaseService: { applyEndingGamePhasePlayerAttributesOutcomesToPlayer: jest.spyOn(services.gamePhase as unknown as { applyEndingGamePhasePlayerAttributesOutcomesToPlayer }, "applyEndingGamePhasePlayerAttributesOutcomesToPlayer").mockImplementation() } };
+    });
+
+    it("should call ending game phase method for each player when called.", async() => {
+      const players = bulkCreateFakePlayers(4);
+      const game = createFakeGame({ phase: GamePhases.NIGHT, players });
+      localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer.mockResolvedValue(game);
+      await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayers"](game);
+
+      expect(localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer).toHaveBeenNthCalledWith(1, players[0], game);
+      expect(localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer).toHaveBeenNthCalledWith(2, players[1], game);
+      expect(localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer).toHaveBeenNthCalledWith(3, players[2], game);
+      expect(localMocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer).toHaveBeenNthCalledWith(4, players[3], game);
+    });
+  });
+
   describe("applyEndingDayPlayerAttributesOutcomesToPlayer", () => {
     it("should do nothing when player doesn't have the contaminated attribute.", async() => {
-      const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] });
+      const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] });
       const game = createFakeGame({ players: [player] });
       
       await expect(services.gamePhase["applyEndingDayPlayerAttributesOutcomesToPlayer"](player, game)).resolves.toStrictEqual(game);
@@ -133,7 +188,7 @@ describe("Game Phase Service", () => {
 
   describe("applyEndingNightPlayerAttributesOutcomesToPlayer", () => {
     it("should do nothing when player doesn't have any ending night attributes.", async() => {
-      const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffByAllPlayerAttribute()] });
+      const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] });
       const game = createFakeGame({ players: [player] });
 
       await expect(services.gamePhase["applyEndingNightPlayerAttributesOutcomesToPlayer"](player, game)).resolves.toStrictEqual(game);
@@ -143,7 +198,7 @@ describe("Game Phase Service", () => {
 
     it("should call all attributes outcomes methods when player has every attributes.", async() => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakeEatenByWerewolvesPlayerAttribute(),
         createFakeDrankDeathPotionByWitchPlayerAttribute(),
       ];
@@ -191,6 +246,133 @@ describe("Game Phase Service", () => {
 
       expect(localMocks.gamePhaseService.applyEndingDayPlayerAttributesOutcomesToPlayer).toHaveBeenCalledExactlyOnceWith(player, game);
       expect(localMocks.gamePhaseService.applyEndingNightPlayerAttributesOutcomesToPlayer).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("applyStartingDayBearTamerRoleOutcomes", () => {
+    it("should return game as is when none of the bear tamer neighbor is a werewolf and bear tamer is not infected.", () => {
+      const bearTamerPlayer = createFakeBearTamerAlivePlayer();
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: true }) }) });
+      const game = createFakeGame({ players: [bearTamerPlayer], options });
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
+      const result = services.gamePhase["applyStartingDayBearTamerRoleOutcomes"](bearTamerPlayer, game);
+
+      expect(result).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when bear tamer is infected but options specify that it doesn't growl if it's the case.", () => {
+      const bearTamerPlayer = createFakeBearTamerAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: false }) }) });
+      const game = createFakeGame({ players: [bearTamerPlayer], options });
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
+      const result = services.gamePhase["applyStartingDayBearTamerRoleOutcomes"](bearTamerPlayer, game);
+
+      expect(result).toStrictEqual<Game>(game);
+    });
+
+    it("should add bear tamer player growled attribute when he is infected, even if none of his neighbors are werewolves.", () => {
+      const bearTamerPlayer = createFakeBearTamerAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: true }) }) });
+      const game = createFakeGame({ players: [bearTamerPlayer], options });
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakeBearTamerAlivePlayer({
+            ...bearTamerPlayer,
+            attributes: [createFakeGrowledByBearTamerPlayerAttribute()],
+          }),
+        ],
+      });
+      const result = services.gamePhase["applyStartingDayBearTamerRoleOutcomes"](bearTamerPlayer, game);
+
+      expect(result).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should add bear tamer player growled attribute when his left neighbor is a werewolf.", () => {
+      const bearTamerPlayer = createFakeBearTamerAlivePlayer();
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: true }) }) });
+      const game = createFakeGame({ players: [bearTamerPlayer], options });
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeBigBadWolfAlivePlayer());
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakeBearTamerAlivePlayer({
+            ...bearTamerPlayer,
+            attributes: [createFakeGrowledByBearTamerPlayerAttribute()],
+          }),
+        ],
+      });
+      const result = services.gamePhase["applyStartingDayBearTamerRoleOutcomes"](bearTamerPlayer, game);
+
+      expect(result).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should add bear tamer player growled attribute when his right neighbor is a werewolf.", () => {
+      const bearTamerPlayer = createFakeBearTamerAlivePlayer();
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: true }) }) });
+      const game = createFakeGame({ players: [bearTamerPlayer], options });
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
+      mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeWhiteWerewolfAlivePlayer());
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakeBearTamerAlivePlayer({
+            ...bearTamerPlayer,
+            attributes: [createFakeGrowledByBearTamerPlayerAttribute()],
+          }),
+        ],
+      });
+      const result = services.gamePhase["applyStartingDayBearTamerRoleOutcomes"](bearTamerPlayer, game);
+
+      expect(result).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("applyStartingDayPlayerRoleOutcomesToPlayers", () => {
+    let localMocks: {
+      gamePhaseService: {
+        applyStartingDayBearTamerRoleOutcomes: jest.SpyInstance;
+      };
+    };
+    
+    beforeEach(() => {
+      localMocks = { gamePhaseService: { applyStartingDayBearTamerRoleOutcomes: jest.spyOn(services.gamePhase as unknown as { applyStartingDayBearTamerRoleOutcomes }, "applyStartingDayBearTamerRoleOutcomes").mockImplementation() } };
+    });
+    
+    it("should call applyStartingDayBearTamerRoleOutcomes method when one player in the game is bear tamer, alive and powerful.", () => {
+      const bearTamerPlayer = createFakeBearTamerAlivePlayer();
+      const game = createFakeGame({ players: [bearTamerPlayer] });
+      services.gamePhase["applyStartingDayPlayerRoleOutcomesToPlayers"](game);
+
+      expect(localMocks.gamePhaseService.applyStartingDayBearTamerRoleOutcomes).toHaveBeenCalledExactlyOnceWith(bearTamerPlayer, game);
+    });
+
+    it("should not call applyStartingDayBearTamerRoleOutcomes method when there is no bear tamer.", () => {
+      const game = createFakeGame({ players: [createFakeWerewolfAlivePlayer()] });
+      services.gamePhase["applyStartingDayPlayerRoleOutcomesToPlayers"](game);
+
+      expect(localMocks.gamePhaseService.applyStartingDayBearTamerRoleOutcomes).not.toHaveBeenCalled();
+    });
+
+    it("should not call applyStartingDayBearTamerRoleOutcomes method when the bear tamer is dead.", () => {
+      const bearTamerPlayer = createFakeBearTamerAlivePlayer({ isAlive: false });
+      const game = createFakeGame({ players: [bearTamerPlayer] });
+      services.gamePhase["applyStartingDayPlayerRoleOutcomesToPlayers"](game);
+
+      expect(localMocks.gamePhaseService.applyStartingDayBearTamerRoleOutcomes).not.toHaveBeenCalled();
+    });
+
+    it("should not call applyStartingDayBearTamerRoleOutcomes method when the bear tamer is powerless.", () => {
+      const bearTamerPlayer = createFakeBearTamerAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] });
+      const game = createFakeGame({ players: [bearTamerPlayer] });
+      services.gamePhase["applyStartingDayPlayerRoleOutcomesToPlayers"](game);
+
+      expect(localMocks.gamePhaseService.applyStartingDayBearTamerRoleOutcomes).not.toHaveBeenCalled();
     });
   });
 });

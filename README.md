@@ -29,12 +29,13 @@
 1. 🐺 [What is this API ?](#what-is-this-api)
 2. 🃏 [Available roles](#available-roles)
 3. 🔨 [Installation](#installation)
-4. 💯 [Tests](#tests)
-5. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-6. 📈 [Releases & Changelog](#versions)
-7. ✨ [Misc commands](#misc-commands)
-8. ©️ [License](#license)
-9. ❤️ [Contributors](#contributors)
+4. 🚀 [Build](#build)
+5. 💯 [Tests](#tests)
+6. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
+7. 📈 [Releases & Changelog](#versions)
+8. ✨ [Misc commands](#misc-commands)
+9. ©️ [License](#license)
+10. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
@@ -75,6 +76,21 @@ npm run docker:dev:start
 
 # Start test Docker containers (if you want to run the tests)
 npm run docker:test:start
+
+# Run the app in dev mode
+npm run start:dev
+```
+
+## <a name="build">🚀 Build</a>
+
+In order to build the app for production, run the following command :
+
+```bash
+# Build the app
+npm run build
+
+# Run the app in production mode
+npm run start:prod
 ```
 
 ## <a name="tests">💯 Tests</a>
@@ -175,28 +191,27 @@ npm run lint:staged
 
 ### 🥇 Project quality scanner
 
+Multiple tools are set up to maintain the best code quality and to prevent vulnerabilities :
+
+![CodeQL](https://img.shields.io/badge/-CodeQL-black?style=for-the-badge&logoColor=white&logo=github&color=2781FE)
+
+You can check the **[CodeQL analysis report here](https://github.com/antoinezanardi/werewolves-assistant-api-next/security/code-scanning)**.
+
 ![SonarCloud](https://img.shields.io/badge/-SonarCloud-black?style=for-the-badge&logoColor=white&logo=sonarcloud&color=F37A3A)
 
+SonarCloud summary is available **[here](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)**.
+
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=coverage)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
 
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
 
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=antoinezanardi_werewolves-assistant-api-next&metric=bugs)](https://sonarcloud.io/summary/new_code?id=antoinezanardi_werewolves-assistant-api-next)
-
-
-
 
 ## <a name="versions">📈 Releases & Changelog</a>
 

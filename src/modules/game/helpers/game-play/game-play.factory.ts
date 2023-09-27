@@ -24,17 +24,17 @@ function createGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}): GameP
   });
 }
 
-function createGamePlayAllVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
+function createGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: createGamePlaySource({ name: PlayerGroups.ALL }),
+    source: createGamePlaySource({ name: PlayerGroups.SURVIVORS }),
     action: GamePlayActions.VOTE,
     ...gamePlay,
   });
 }
 
-function createGamePlayAllElectSheriff(gamePlay: Partial<GamePlay> = {}): GamePlay {
+function createGamePlaySurvivorsElectSheriff(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: createGamePlaySource({ name: PlayerGroups.ALL }),
+    source: createGamePlaySource({ name: PlayerGroups.SURVIVORS }),
     action: GamePlayActions.ELECT_SHERIFF,
     ...gamePlay,
   });
@@ -211,8 +211,8 @@ function createGamePlay(gamePlay: GamePlay): GamePlay {
 export {
   createGamePlaySheriffSettlesVotes,
   createGamePlaySheriffDelegates,
-  createGamePlayAllVote,
-  createGamePlayAllElectSheriff,
+  createGamePlaySurvivorsVote,
+  createGamePlaySurvivorsElectSheriff,
   createGamePlayThiefChoosesCard,
   createGamePlayStutteringJudgeChoosesSign,
   createGamePlayScapegoatBansVoting,

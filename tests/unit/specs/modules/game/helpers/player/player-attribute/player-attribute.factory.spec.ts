@@ -1,6 +1,6 @@
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createCantVoteByAllPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createGrowledByBearTamerPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByAncientPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffByAllPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createCantVoteBySurvivorsPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createGrowledByBearTamerPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByAncientPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -43,14 +43,14 @@ describe("Player Attribute Factory", () => {
     });
   });
 
-  describe("createCantVoteByAllPlayerAttribute", () => {
-    it("should create can't vote attribute by all when called.", () => {
+  describe("createCantVoteBySurvivorsPlayerAttribute", () => {
+    it("should create can't vote attribute by survivors when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
         name: PlayerAttributeNames.CANT_VOTE,
-        source: PlayerGroups.ALL,
+        source: PlayerGroups.SURVIVORS,
       });
       
-      expect(createCantVoteByAllPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
+      expect(createCantVoteBySurvivorsPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
 
@@ -240,15 +240,15 @@ describe("Player Attribute Factory", () => {
     });
   });
 
-  describe("createSheriffByAllPlayerAttribute", () => {
-    it("should create sheriff attribute by all when called.", () => {
+  describe("createSheriffBySurvivorsPlayerAttribute", () => {
+    it("should create sheriff attribute by survivors when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
         name: PlayerAttributeNames.SHERIFF,
-        source: PlayerGroups.ALL,
+        source: PlayerGroups.SURVIVORS,
         doesRemainAfterDeath: true,
       });
       
-      expect(createSheriffByAllPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
+      expect(createSheriffBySurvivorsPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
 

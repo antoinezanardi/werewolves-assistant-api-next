@@ -10,13 +10,13 @@ Feature: 🐐 Scapegoat role
       | Thomas  | werewolf         |
       | Mom     | villager         |
       | Dad     | stuttering-judge |
-    Then the game's current play should be all to elect-sheriff
+    Then the game's current play should be survivors to elect-sheriff
 
-    When all elect sheriff with the following votes
+    When the survivors elect sheriff with the following votes
       | voter  | target |
       | JB     | Olivia |
       | Thomas | Olivia |
-    Then the player named Olivia should have the active sheriff from all attribute
+    Then the player named Olivia should have the active sheriff from survivors attribute
     And the game's current play should be stuttering-judge to choose-sign
 
     When the stuttering judge chooses his sign
@@ -25,12 +25,12 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
 
-    When all vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes and the stuttering judge does his sign
       | voter   | target |
       | Antoine | Olivia |
       | Olivia  | Thomas |
       | Thomas  | Olivia |
-    Then the player named Antoine should be murdered by all from vote-scapegoated
+    Then the player named Antoine should be murdered by survivors from vote-scapegoated
     And the game's current play should be scapegoat to ban-voting
 
     When the scapegoat bans from vote the following players
@@ -41,17 +41,17 @@ Feature: 🐐 Scapegoat role
       | name   |
       | Olivia |
       | Thomas |
-    And the game's current play should be all to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote because stuttering-judge-request
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter  | target |
       | Thomas | Dad    |
       | Olivia | Dad    |
-    Then the player named Dad should be murdered by all from vote
+    Then the player named Dad should be murdered by survivors from vote
 
     When the werewolves eat the player named Mom
     Then the player named Mom should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
     And 2 of the following players should have the active cant-vote from scapegoat attribute
       | name   |
       | Olivia |
@@ -71,12 +71,12 @@ Feature: 🐐 Scapegoat role
       | Thomas  | werewolf  |
       | Mom     | villager  |
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | Olivia  | Thomas |
       | Thomas  | Olivia |
-    Then the player named Olivia should be murdered by all from vote
+    Then the player named Olivia should be murdered by survivors from vote
     And 3 of the following players should have the active powerless from ancient attribute
       | name    |
       | Antoine |
@@ -87,11 +87,11 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter   | target  |
       | Antoine | Thomas  |
       | Thomas  | Antoine |
-    Then the game's current play should be all to vote because previous-votes-were-in-ties
+    Then the game's current play should be survivors to vote because previous-votes-were-in-ties
     And the player named Antoine should be alive
 
   Scenario: 🐐 Scapegoat ban should occur only on next day even if he bans during the night
@@ -104,11 +104,11 @@ Feature: 🐐 Scapegoat role
       | Thomas  | werewolf  |
       | Mom     | villager  |
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | Olivia  | Thomas |
-    Then the player named Antoine should be murdered by all from vote-scapegoated
+    Then the player named Antoine should be murdered by survivors from vote-scapegoated
     And the game's current play should be scapegoat to ban-voting
 
     When the scapegoat bans from vote the following players
@@ -123,7 +123,7 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named Mom
     Then the player named Mom should be murdered by werewolves from eaten
     And the game's phase should be day
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
     And 2 of the following players should have the active cant-vote from scapegoat attribute
       | name   |
       | Olivia |

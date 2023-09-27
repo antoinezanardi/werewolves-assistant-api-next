@@ -20,7 +20,7 @@ Feature: 🦊 Fox role
 
     When the werewolves eat the player named Coco
     Then the player named Coco should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be fox to sniff

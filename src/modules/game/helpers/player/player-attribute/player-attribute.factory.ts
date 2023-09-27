@@ -6,9 +6,8 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
+import { toJSON } from "@/shared/misc/helpers/object.helper";
 import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
-
-import { toJSON } from "@tests/helpers/object/object.helper";
 
 function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
@@ -36,10 +35,10 @@ function createCharmedByPiedPiperPlayerAttribute(playerAttribute: Partial<Player
   });
 }
 
-function createCantVoteByAllPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createCantVoteBySurvivorsPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.CANT_VOTE,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     ...playerAttribute,
   });
 }
@@ -172,10 +171,10 @@ function createSheriffBySheriffPlayerAttribute(playerAttribute: Partial<PlayerAt
   });
 }
 
-function createSheriffByAllPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createSheriffBySurvivorsPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.SHERIFF,
-    source: PlayerGroups.ALL,
+    source: PlayerGroups.SURVIVORS,
     doesRemainAfterDeath: true,
     ...playerAttribute,
   });
@@ -189,7 +188,7 @@ export {
   createContaminatedByRustySwordKnightPlayerAttribute,
   createGrowledByBearTamerPlayerAttribute,
   createCharmedByPiedPiperPlayerAttribute,
-  createCantVoteByAllPlayerAttribute,
+  createCantVoteBySurvivorsPlayerAttribute,
   createCantVoteByScapegoatPlayerAttribute,
   createPowerlessByFoxPlayerAttribute,
   createPowerlessByAncientPlayerAttribute,
@@ -204,6 +203,6 @@ export {
   createEatenByWerewolvesPlayerAttribute,
   createSeenBySeerPlayerAttribute,
   createSheriffBySheriffPlayerAttribute,
-  createSheriffByAllPlayerAttribute,
+  createSheriffBySurvivorsPlayerAttribute,
   createPlayerAttribute,
 };

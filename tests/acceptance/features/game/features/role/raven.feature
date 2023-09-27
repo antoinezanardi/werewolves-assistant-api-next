@@ -18,7 +18,7 @@ Feature: 🐦‍⬛ Raven role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be raven to mark
@@ -40,10 +40,10 @@ Feature: 🐦‍⬛ Raven role
 
     When the werewolves eat the player named Camille
     Then the player named Camille should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
-    Then the player named Antoine should be murdered by all from vote
+    Then the player named Antoine should be murdered by survivors from vote
 
   Scenario: 🐦‍⬛ Raven marks a player with a greater mark than the default one with good option
     Given a created game with options described in file no-sheriff-option.json, raven-mark-penalty-is-three-option.json and with the following players
@@ -61,11 +61,11 @@ Feature: 🐦‍⬛ Raven role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter   | target  |
       | Olivia  | Camille |
       | JB      | Camille |
       | Antoine | Olivia  |
-    Then the player named JB should be murdered by all from vote
+    Then the player named JB should be murdered by survivors from vote

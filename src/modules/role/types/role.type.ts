@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
 
-import { RoleNames, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
+import { RoleNames, RoleOrigins, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
 
 class Role {
   @ApiProperty({ description: "Role's name" })
@@ -19,6 +19,11 @@ class Role {
   @IsEnum(RoleTypes)
   @Expose()
   public type: RoleTypes;
+
+  @ApiProperty({ description: "Role's origin" })
+  @IsEnum(RoleOrigins)
+  @Expose()
+  public origin: RoleOrigins;
 
   @ApiProperty({ description: "If the role is chosen by at least one player, then `minInGame` players must choose it to start the game" })
   @IsOptional()

@@ -29,7 +29,7 @@ import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
-import { createFakeGamePlayAllVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
@@ -57,8 +57,9 @@ describe("Game Service", () => {
     gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.SpyInstance };
     gamePlayMakerService: { makeGamePlay: jest.SpyInstance };
     gamePhaseService: {
-      applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.SpyInstance;
+      applyEndingGamePhaseOutcomes: jest.SpyInstance;
       switchPhaseAndAppendGamePhaseUpcomingPlays: jest.SpyInstance;
+      applyStartingGamePhaseOutcomes: jest.SpyInstance;
     };
     playerAttributeService: {
       decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.SpyInstance;
@@ -92,8 +93,9 @@ describe("Game Service", () => {
       gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.fn() },
       gamePlayMakerService: { makeGamePlay: jest.fn() },
       gamePhaseService: {
-        applyEndingGamePhasePlayerAttributesOutcomesToPlayers: jest.fn(),
+        applyEndingGamePhaseOutcomes: jest.fn(),
         switchPhaseAndAppendGamePhaseUpcomingPlays: jest.fn(),
+        applyStartingGamePhaseOutcomes: jest.fn(),
       },
       playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
       gameHelper: { getExpectedPlayersToPlay: jest.spyOn(GameHelper, "getExpectedPlayersToPlay").mockReturnValue([]) },
@@ -172,11 +174,11 @@ describe("Game Service", () => {
 
     it("should call createGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
-      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlayAllVote()]);
+      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
       await services.game.createGame(toCreateGame);
       const expectedGame = createFakeCreateGameDto({
         ...toCreateGame,
-        currentPlay: createFakeGamePlayAllVote(),
+        currentPlay: createFakeGamePlaySurvivorsVote(),
         upcomingPlays: [],
       });
 
@@ -185,7 +187,7 @@ describe("Game Service", () => {
 
     it("should call updateGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
-      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlayAllVote()]);
+      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
       const expectedPlayersToPlay = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
@@ -235,7 +237,7 @@ describe("Game Service", () => {
       createFakeVillagerAlivePlayer(),
       createFakeVillagerAlivePlayer(),
     ];
-    const game = createFakeGame({ status: GameStatuses.PLAYING, players, currentPlay: createFakeGamePlayAllVote() });
+    const game = createFakeGame({ status: GameStatuses.PLAYING, players, currentPlay: createFakeGamePlaySurvivorsVote() });
     const play = createFakeMakeGamePlayWithRelationsDto();
 
     beforeEach(() => {
@@ -345,16 +347,17 @@ describe("Game Service", () => {
     const game = createFakeGame();
 
     beforeEach(() => {
-      mocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers.mockResolvedValue(game);
+      mocks.gamePhaseService.applyEndingGamePhaseOutcomes.mockResolvedValue(game);
       mocks.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes.mockReturnValue(game);
       mocks.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays.mockReturnValue(game);
+      mocks.gamePhaseService.applyStartingGamePhaseOutcomes.mockReturnValue(game);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
     });
 
     it("should call apply ending phase outcomes method when called.", async() => {
       await services.game["handleGamePhaseCompletion"](game);
 
-      expect(mocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayers).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePhaseService.applyEndingGamePhaseOutcomes).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call decrease remaining phases attributes to players method when called.", async() => {
@@ -367,6 +370,12 @@ describe("Game Service", () => {
       await services.game["handleGamePhaseCompletion"](game);
 
       expect(mocks.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call apply starting phase outcomes method when called.", async() => {
+      await services.game["handleGamePhaseCompletion"](game);
+
+      expect(mocks.gamePhaseService.applyStartingGamePhaseOutcomes).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call proceed to next game play method when called.", async() => {

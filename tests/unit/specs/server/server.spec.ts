@@ -35,8 +35,9 @@ describe("Server", () => {
       };
       NestCommonLogger: { log: jest.SpyInstance };
     };
-    
+
     let app: NestFastifyApplication;
+    const env = process.env;
 
     beforeEach(() => {
       const NestFactoryCreateMockResolvedValue = {
@@ -55,9 +56,11 @@ describe("Server", () => {
         },
         NestCommonLogger: { log: jest.spyOn(NestCommon.Logger, "log").mockImplementation() },
       };
+      process.env = { ...env };
     });
 
     afterEach(async() => {
+      process.env = env;
       await app.close();
     });
 
@@ -67,16 +70,17 @@ describe("Server", () => {
       expect(FastifyAdapter).toHaveBeenCalledExactlyOnceWith(FASTIFY_SERVER_DEFAULT_OPTIONS);
     });
 
+    it("should call listen with specific port when port is in process.env.PORT.", async() => {
+      process.env.PORT = "8081";
+      app = await bootstrap();
+
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8081", "127.0.0.1");
+    });
+
     it("should call listen with the default port when no port is provided.", async() => {
       app = await bootstrap();
       
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith(3000, "127.0.0.1");
-    });
-
-    it("should call listen with 4000 when port 4000 is provided.", async() => {
-      app = await bootstrap(4000);
-      
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith(4000, "127.0.0.1");
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "127.0.0.1");
     });
 
     it("should add validation pipe with transform when Validation Pipe constructor is called.", async() => {
@@ -102,12 +106,11 @@ describe("Server", () => {
     });
 
     it("should print server and docs address with specific port when port is provided.", async() => {
-      const port = 4500;
-      mocks.NestFactory.create.resolvedValue.getUrl.mockReturnValue(`http://127.0.0.1:${port}`);
-      app = await bootstrap(port);
+      mocks.NestFactory.create.resolvedValue.getUrl.mockReturnValue(`http://127.0.0.1:${8080}`);
+      app = await bootstrap();
       
-      expect(mocks.NestCommonLogger.log).toHaveBeenCalledWith("🐺 App is available at http://127.0.0.1:4500", "NestApplication");
-      expect(mocks.NestCommonLogger.log).toHaveBeenCalledWith("📖 API Documentation is available at http://127.0.0.1:4500/docs", "NestApplication");
+      expect(mocks.NestCommonLogger.log).toHaveBeenCalledWith("🐺 App is available at http://127.0.0.1:8080", "NestApplication");
+      expect(mocks.NestCommonLogger.log).toHaveBeenCalledWith("📖 API Documentation is available at http://127.0.0.1:8080/docs", "NestApplication");
     });
   });
 });

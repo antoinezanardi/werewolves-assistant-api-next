@@ -18,11 +18,11 @@ Feature: 🐒 Wild Child role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be all to vote
+    And the game's current play should be survivors to vote
 
-    When all vote with the following votes
+    When the survivors vote with the following votes
       | voter  | target |
       | Maxime | Olivia |
-    Then the player named Olivia should be murdered by all from vote
+    Then the player named Olivia should be murdered by survivors from vote
     And the player named Antoine should be on werewolves current side and originally be on villagers side
     And the game's current play should be werewolves to eat

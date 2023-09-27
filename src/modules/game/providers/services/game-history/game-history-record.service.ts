@@ -21,13 +21,12 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
 
+import { toJSON } from "@/shared/misc/helpers/object.helper";
 import { ApiResources } from "@/shared/api/enums/api.enum";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
 import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
-
-import { toJSON } from "@tests/helpers/object/object.helper";
 
 @Injectable()
 export class GameHistoryRecordService {

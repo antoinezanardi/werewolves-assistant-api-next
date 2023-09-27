@@ -40,4 +40,17 @@ enum RoleTypes {
   AMBIGUOUS = "ambiguous",
 }
 
-export { RoleNames, RoleSides, RoleTypes };
+enum RoleOrigins {
+  CLASSIC = "classic",
+  NEW_MOON = "new-moon",
+  THE_VILLAGE = "the-village",
+  CHARACTERS = "characters",
+  UNCONVENTIONAL = "unconventional",
+}
+
+export {
+  RoleNames,
+  RoleSides,
+  RoleTypes,
+  RoleOrigins,
+};

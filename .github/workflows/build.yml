@@ -8,13 +8,39 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 jobs:
+  code-ql:
+    name: CodeQL Scan ❇️
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL ⚙️
+        uses: github/codeql-action/init@v2
+        with:
+          languages: javascript
+
+      - name: AutoBuild 🌡️
+        uses: github/codeql-action/autobuild@v2
+
+      - name: Perform CodeQL Analysis ❇️
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:javascript"
+
   install:
     name: Install ⚙️
     runs-on: ubuntu-latest
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -28,6 +54,7 @@ jobs:
       - name: Install project dependencies 📦
         run: npm ci --ignore-scripts
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
+
   build:
     name: Build ✨
     runs-on: ubuntu-latest
@@ -36,7 +63,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -47,8 +74,11 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
-      - name: Build app ✨
-        run: npm run build
+      - name: Build app and check main file ✨
+        run: |
+          npm run build \
+          test dist/main.js
+
   lint:
     name: Lint 🔍
     runs-on: ubuntu-latest
@@ -57,7 +87,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -70,6 +100,7 @@ jobs:
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Check and lint code 🔍
         run: npm run lint
+
   unit-tests:
     name: Unit Tests 🧪
     runs-on: ubuntu-latest
@@ -78,7 +109,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -91,6 +122,7 @@ jobs:
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
       - name: Unit tests 🧪
         run: npm run test:unit:cov
+
   e2e-tests:
     name: E2E Tests ⚗️
     runs-on: ubuntu-latest
@@ -99,7 +131,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -116,6 +148,7 @@ jobs:
         run: npm run test:e2e:cov
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
   all-tests:
     name: All Tests 🧬
     runs-on: ubuntu-latest
@@ -124,7 +157,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -147,6 +180,7 @@ jobs:
           key: ${{ runner.os }}-tests-coverage-v3-${{hashFiles('tests/coverage/lcov.info')}}
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
   mutant-tests:
     name: Mutant Tests 👽
     runs-on: ubuntu-latest
@@ -158,7 +192,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -175,6 +209,7 @@ jobs:
         run: npm run test:stryker
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
   acceptance-tests:
     name: Acceptance Tests 🥒
     runs-on: ubuntu-latest
@@ -183,7 +218,7 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
-      - name: Setup NodeJS v20 ⚙️
+      - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -200,6 +235,7 @@ jobs:
         run: npm run test:cucumber
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
+
   sonarcloud:
     name: SonarCloud Analysis 🌥️
     runs-on: ubuntu-latest

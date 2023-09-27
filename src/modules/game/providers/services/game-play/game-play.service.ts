@@ -6,7 +6,7 @@ import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createGamePlay, createGamePlayAllElectSheriff, createGamePlayAllVote } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlay, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { areGamePlaysEqual, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { areAllWerewolvesAlive, getExpectedPlayersToPlay, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
@@ -46,9 +46,9 @@ export class GamePlayService {
   }
 
   public getUpcomingDayPlays(game: Game): GamePlay[] {
-    const upcomingDayPlays: GamePlay[] = [createGamePlayAllVote()];
+    const upcomingDayPlays: GamePlay[] = [createGamePlaySurvivorsVote()];
     if (this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase)) {
-      upcomingDayPlays.unshift(createGamePlayAllElectSheriff());
+      upcomingDayPlays.unshift(createGamePlaySurvivorsElectSheriff());
     }
     return upcomingDayPlays;
   }
@@ -57,7 +57,7 @@ export class GamePlayService {
     const isFirstNight = game.turn === 1;
     const eligibleNightPlays = GAME_PLAYS_NIGHT_ORDER.filter(play => isFirstNight || play.isFirstNightOnly !== true);
     const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase);
-    const upcomingNightPlays: GamePlay[] = isSheriffElectionTime ? [createGamePlayAllElectSheriff()] : [];
+    const upcomingNightPlays: GamePlay[] = isSheriffElectionTime ? [createGamePlaySurvivorsElectSheriff()] : [];
     for (const eligibleNightPlay of eligibleNightPlays) {
       if (await this.isGamePlaySuitableForCurrentPhase(game, eligibleNightPlay)) {
         upcomingNightPlays.push(createGamePlay(eligibleNightPlay));
@@ -132,7 +132,7 @@ export class GamePlayService {
     return !inLovePlayers.length && isPlayerAliveAndPowerful(cupidPlayer, game) || inLovePlayers.length > 0 && inLovePlayers.every(player => player.isAlive);
   }
 
-  private isAllGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): boolean {
+  private isSurvivorsGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): boolean {
     if (gamePlay.cause !== GamePlayCauses.ANGEL_PRESENCE) {
       return true;
     }
@@ -146,7 +146,7 @@ export class GamePlayService {
   private isGroupGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): boolean {
     const source = gamePlay.source.name as PlayerGroups;
     const specificGroupMethods: Record<PlayerGroups, (game: CreateGameDto | Game, gamePlay: GamePlay) => boolean> = {
-      [PlayerGroups.ALL]: this.isAllGamePlaySuitableForCurrentPhase,
+      [PlayerGroups.SURVIVORS]: this.isSurvivorsGamePlaySuitableForCurrentPhase,
       [PlayerGroups.LOVERS]: this.isLoversGamePlaySuitableForCurrentPhase,
       [PlayerGroups.CHARMED]: this.isPiedPiperGamePlaySuitableForCurrentPhase,
       [PlayerGroups.WEREWOLVES]: () => game instanceof CreateGameDto || getGroupOfPlayers(game, source).some(werewolf => isPlayerAliveAndPowerful(werewolf, game)),

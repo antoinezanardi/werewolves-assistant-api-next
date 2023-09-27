@@ -5,7 +5,7 @@ import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attri
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffByAllPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Player Attribute Helper", () => {
@@ -56,7 +56,7 @@ describe("Player Attribute Helper", () => {
   describe("getPlayerAttributeWithName", () => {
     it("should get attribute when player has this attribute.", () => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
@@ -66,7 +66,7 @@ describe("Player Attribute Helper", () => {
 
     it("should return undefined when player doesn't have the attribute.", () => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
@@ -99,7 +99,7 @@ describe("Player Attribute Helper", () => {
     it("should return undefined when player doesn't have the attribute.", () => {
       const game = createFakeGame({ turn: 1, phase: GamePhases.DAY });
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
@@ -110,7 +110,7 @@ describe("Player Attribute Helper", () => {
     it("should return undefined when player has the attribute but not active yet.", () => {
       const game = createFakeGame({ turn: 1, phase: GamePhases.DAY });
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakeInLoveByCupidPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 2, phase: GamePhases.DAY }) }),
       ];
       const player = createFakePlayer({ attributes });
@@ -121,7 +121,7 @@ describe("Player Attribute Helper", () => {
     it("should return the attribute when player has the attribute and is active yet.", () => {
       const game = createFakeGame({ turn: 1, phase: GamePhases.DAY });
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakeInLoveByCupidPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.DAY }) }),
       ];
       const player = createFakePlayer({ attributes });
@@ -134,7 +134,7 @@ describe("Player Attribute Helper", () => {
     it("should return false when player doesn't have the attribute.", () => {
       const game = createFakeGame({ turn: 1, phase: GamePhases.DAY });
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
@@ -145,7 +145,7 @@ describe("Player Attribute Helper", () => {
     it("should return false when player has the attribute but not active yet.", () => {
       const game = createFakeGame({ turn: 1, phase: GamePhases.DAY });
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakeInLoveByCupidPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 2, phase: GamePhases.DAY }) }),
       ];
       const player = createFakePlayer({ attributes });
@@ -156,7 +156,7 @@ describe("Player Attribute Helper", () => {
     it("should return true when player has the attribute and is active yet.", () => {
       const game = createFakeGame({ turn: 1, phase: GamePhases.DAY });
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakeInLoveByCupidPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.DAY }) }),
       ];
       const player = createFakePlayer({ attributes });
@@ -168,7 +168,7 @@ describe("Player Attribute Helper", () => {
   describe("getPlayerAttributeWithNameAndSource", () => {
     it("should get attribute when player has this attribute.", () => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
@@ -178,7 +178,7 @@ describe("Player Attribute Helper", () => {
 
     it("should return undefined when player doesn't have the attribute with correct name.", () => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
@@ -188,7 +188,7 @@ describe("Player Attribute Helper", () => {
 
     it("should return undefined when player doesn't have the attribute with correct source.", () => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
@@ -200,7 +200,7 @@ describe("Player Attribute Helper", () => {
   describe("doesPlayerHaveAttributeWithNameAndSource", () => {
     it("should get attribute when player has this attribute.", () => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
@@ -210,7 +210,7 @@ describe("Player Attribute Helper", () => {
 
     it("should return undefined when player doesn't have the attribute with correct name.", () => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
@@ -220,7 +220,7 @@ describe("Player Attribute Helper", () => {
 
     it("should return undefined when player doesn't have the attribute with correct source.", () => {
       const attributes = [
-        createFakeSheriffByAllPlayerAttribute(),
+        createFakeSheriffBySurvivorsPlayerAttribute(),
         createFakePowerlessByAncientPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
