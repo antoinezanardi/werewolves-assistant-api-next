@@ -65,4 +65,5 @@ jobs:
         uses: 'google-github-actions/deploy-appengine@v1'
         with:
           project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
+          deliverables: ".appengine/app.yaml"
           flags: "--version=${{ needs.get-next-version.outputs.new-release-version }}"
