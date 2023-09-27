@@ -25,11 +25,11 @@ jobs:
       - name: Write production .env file 📝
         run: |
           npx rimraf env/.env.production
-          echo ENVIRONMENT=\"production\" >> env/.env.production
-          echo DATABASE_HOST=\"${{ secrets.PRODUCTION_DATABASE_HOST }}\" >> env/.env.production
-          echo DATABASE_NAME=\"${{ secrets.PRODUCTION_DATABASE_NAME }}\" >> env/.env.production
-          echo DATABASE_USERNAME=\"${{ secrets.PRODUCTION_DATABASE_USERNAME }}\" >> env/.env.production
-          echo DATABASE_PASSWORD=\"${{ secrets.PRODUCTION_DATABASE_PASSWORD }}\" >> env/.env.production
+          echo ENVIRONMENT="production" >> env/.env.production
+          echo DATABASE_HOST="${{ secrets.PRODUCTION_DATABASE_HOST }}" >> env/.env.production
+          echo DATABASE_NAME="${{ secrets.PRODUCTION_DATABASE_NAME }}" >> env/.env.production
+          echo DATABASE_USERNAME="${{ secrets.PRODUCTION_DATABASE_USERNAME }}" >> env/.env.production
+          echo DATABASE_PASSWORD="${{ secrets.PRODUCTION_DATABASE_PASSWORD }}" >> env/.env.production
           cat env/.env.production
 
       - name: Build app ✨
@@ -40,7 +40,7 @@ jobs:
         with:
           credentials_json: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
 
-      - name: Deploy 🚀
+      - name: Deploy to production 🚀
         uses: 'google-github-actions/deploy-appengine@v1'
         with:
           project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
