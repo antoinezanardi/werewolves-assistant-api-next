@@ -23,17 +23,13 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Write production .env file 📝
-        uses: SpicyPizza/create-envfile@v2.0
-        with:
-          envkey_ENVIRONMENT: production
-          envkey_DATABASE_HOST: ${{ secrets.PRODUCTION_DATABASE_HOST }}
-          envkey_DATABASE_NAME: ${{ secrets.PRODUCTION_DATABASE_NAME }}
-          envkey_DATABASE_USERNAME: ${{ secrets.PRODUCTION_DATABASE_USERNAME }}
-          envkey_DATABASE_PASSWORD: ${{ secrets.PRODUCTION_DATABASE_PASSWORD }}
-          directory: env/
-          file_name: .env.production
-          fail_on_empty: false
-          sort_keys: false
+        run: |
+          rimraf env/.env.production \
+          echo "NODE_ENV=\"${{ secrets.PRODUCTION_DATABASE_HOST }}\"" >> env/.env.production \
+          echo "DATABASE_HOST=\"${{ secrets.PRODUCTION_DATABASE_HOST }}\"" >> env/.env.production \
+          echo "DATABASE_NAME=\"${{ secrets.PRODUCTION_DATABASE_NAME }}\"" >> env/.env.production \
+          echo "DATABASE_USERNAME=\"${{ secrets.PRODUCTION_DATABASE_USERNAME }}\"" >> env/.env.production \
+          echo "DATABASE_PASSWORD=\"${{ secrets.PRODUCTION_DATABASE_PASSWORD }}\"" >> env/.env.production
 
       - name: Build app ✨
         run: npm run build
