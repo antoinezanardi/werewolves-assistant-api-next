@@ -24,7 +24,7 @@ jobs:
 
       - name: Write production .env file 📝
         run: |
-          rimraf env/.env.production \
+          npx rimraf env/.env.production \
           echo "NODE_ENV=\"${{ secrets.PRODUCTION_DATABASE_HOST }}\"" >> env/.env.production \
           echo "DATABASE_HOST=\"${{ secrets.PRODUCTION_DATABASE_HOST }}\"" >> env/.env.production \
           echo "DATABASE_NAME=\"${{ secrets.PRODUCTION_DATABASE_NAME }}\"" >> env/.env.production \
