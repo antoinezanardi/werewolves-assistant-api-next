@@ -19,7 +19,7 @@ jobs:
       - name: Install project dependencies 📦
         run: npm ci --ignore-scripts
 
-      - run: npx semantic-release --dry-run
+      - run: npx semantic-release --dry-run --no-ci
         id: get-next-version
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
