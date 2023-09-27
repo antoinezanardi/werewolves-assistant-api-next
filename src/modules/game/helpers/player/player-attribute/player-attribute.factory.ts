@@ -6,9 +6,8 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
+import { toJSON } from "@/shared/misc/helpers/object.helper";
 import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
-
-import { toJSON } from "@tests/helpers/object/object.helper";
 
 function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({

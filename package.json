@@ -17,10 +17,10 @@
     "docker:dev:stop": "docker-compose -f docker/werewolves-assistant-dev/docker-compose.yml down",
     "docker:test:start": "docker-compose -f docker/werewolves-assistant-test/docker-compose.yml up -d",
     "docker:test:stop": "docker-compose -f docker/werewolves-assistant-test/docker-compose.yml down",
-    "start": "nest start",
+    "start": "npm run start:prod",
     "start:dev": "rimraf dist && nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/main.js",
     "lint": "eslint .",
     "lint:staged": "lint-staged -c config/lintstaged/.lintstagedrc.json",
     "lint:fix": "eslint . --fix",
@@ -42,7 +42,8 @@
     "test:cucumber:publish": "NODE_ENV=test cucumber-js --config config/cucumber/cucumber.json --publish",
     "script:create-branch": "./scripts/create-git-branch.sh",
     "script:create-pull-request": "./scripts/create-pull-request.sh",
-    "gource": "gource --load-config config/gource/gource.config"
+    "gource": "gource --load-config config/gource/gource.config",
+    "gcloud:deploy": "gcloud app deploy"
   },
   "repository": {
     "type": "git",
@@ -117,6 +118,7 @@
     "lint-staged": "^14.0.1",
     "rimraf": "^5.0.4",
     "semantic-release": "^22.0.5",
+    "semantic-release-export-data": "^1.0.1",
     "source-map-support": "^0.5.20",
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.4.4",

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 import { ENVIRONMENTS } from "@/modules/config/env/enums/env.enum";
 
@@ -11,6 +11,7 @@ class EnvironmentVariables {
   @IsNotEmpty()
   public DATABASE_HOST: string;
 
+  @IsOptional()
   @IsNumber()
   public DATABASE_PORT: number;
 

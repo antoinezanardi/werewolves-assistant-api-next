@@ -3,6 +3,7 @@ import { HttpStatus } from "@nestjs/common";
 import type { BadRequestException, NotFoundException } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 
@@ -23,6 +24,9 @@ import { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
+import { toJSON } from "@/shared/misc/helpers/object.helper";
+
+import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
@@ -43,11 +47,11 @@ import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schem
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helper";
-import { toJSON } from "@tests/helpers/object/object.helper";
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";
 
 describe("Game Controller", () => {
   let app: NestFastifyApplication;
+  let testingModule: TestingModule;
   let models: {
     game: Model<Game>;
     gameHistoryRecord: Model<GameHistoryRecord>;
@@ -56,17 +60,19 @@ describe("Game Controller", () => {
   beforeAll(async() => {
     const { app: server, module } = await initNestApp();
     app = server;
+    testingModule = module;
     models = {
-      game: module.get<Model<Game>>(getModelToken(Game.name)),
-      gameHistoryRecord: module.get<Model<GameHistoryRecord>>(getModelToken(GameHistoryRecord.name)),
+      game: testingModule.get<Model<Game>>(getModelToken(Game.name)),
+      gameHistoryRecord: testingModule.get<Model<GameHistoryRecord>>(getModelToken(GameHistoryRecord.name)),
     };
   });
 
+  beforeEach(async() => {
+    await truncateAllCollections(testingModule);
+  });
+
   afterEach(async() => {
-    await Promise.all([
-      models.game.deleteMany(),
-      models.gameHistoryRecord.deleteMany(),
-    ]);
+    await truncateAllCollections(testingModule);
   });
 
   afterAll(async() => {

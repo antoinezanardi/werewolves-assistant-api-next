@@ -74,8 +74,10 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
-      - name: Build app ✨
-        run: npm run build
+      - name: Build app and check main file ✨
+        run: |
+          npm run build \
+          test dist/main.js
 
   lint:
     name: Lint 🔍
