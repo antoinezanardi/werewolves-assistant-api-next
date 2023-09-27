@@ -1,0 +1,61 @@
+name: Test GCP deployment
+on:
+  pull_request:
+    branches:
+      - develop
+jobs:
+  get-next-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npx semantic-release --dry-run
+        id: get-next-version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    outputs:
+      new-release-published: ${{ steps.get-next-version.outputs.new-release-published }}
+      new-release-version: ${{ steps.get-next-version.outputs.new-release-version }}
+
+  deployment:
+    needs: get-next-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup GitHub repository 🔧
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ✨
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install project dependencies 📦
+        run: npm ci --ignore-scripts
+
+      - name: Write production .env file 📝
+        run: |
+          npx rimraf env/.env.production
+          echo ENVIRONMENT="production" >> env/.env.production
+          echo DATABASE_HOST="${{ secrets.PRODUCTION_DATABASE_HOST }}" >> env/.env.production
+          echo DATABASE_NAME="${{ secrets.PRODUCTION_DATABASE_NAME }}" >> env/.env.production
+          echo DATABASE_USERNAME="${{ secrets.PRODUCTION_DATABASE_USERNAME }}" >> env/.env.production
+          echo DATABASE_PASSWORD="${{ secrets.PRODUCTION_DATABASE_PASSWORD }}" >> env/.env.production
+          cat env/.env.production
+
+      - name: Build app ✨
+        run: npm run build
+
+      - name: Auth to GCP ☁️
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
+
+      - name: Deploy to production 🚀
+        uses: 'google-github-actions/deploy-appengine@v1'
+        with:
+          project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
+          flags: "--version=${{ needs.get-next-version.outputs.new-release-version }}"
