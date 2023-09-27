@@ -9,12 +9,6 @@ jobs:
       contents: 'read'
       id-token: 'write'
     runs-on: ubuntu-latest
-    env:
-      ENVIRONMENT: "production"
-      DATABASE_HOST: ${{ secrets.PRODUCTION_DATABASE_HOST }}
-      DATABASE_NAME: ${{ secrets.PRODUCTION_DATABASE_NAME }}
-      DATABASE_USERNAME: ${{ secrets.PRODUCTION_DATABASE_USERNAME }}
-      DATABASE_PASSWORD: ${{ secrets.PRODUCTION_DATABASE_PASSWORD }}
     steps:
       - name: Setup GitHub repository 🔧
         uses: actions/checkout@v4
@@ -25,9 +19,21 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-
       - name: Install project dependencies 📦
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      - name: Write production .env file 📝
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_ENVIRONMENT: production
+          envkey_DATABASE_HOST: ${{ secrets.PRODUCTION_DATABASE_HOST }}
+          envkey_DATABASE_NAME: ${{ secrets.PRODUCTION_DATABASE_NAME }}
+          envkey_DATABASE_USERNAME: ${{ secrets.PRODUCTION_DATABASE_USERNAME }}
+          envkey_DATABASE_PASSWORD: ${{ secrets.PRODUCTION_DATABASE_PASSWORD }}
+          directory: env/
+          file_name: .env.production
+          fail_on_empty: false
+          sort_keys: false
 
       - name: Build app ✨
         run: npm run build
