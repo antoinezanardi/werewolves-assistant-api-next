@@ -64,13 +64,13 @@ jobs:
       - name: Transform and format version ♻️
         id: format-version-for-gcp
         run: |
-          version=${{ steps.get-next-version.outputs.new-release-version }}
+          version=${{ needs.get-next-version.outputs.new-release-version }}
           version=${version//./-}
-          echo "::set-output name=formatted-version::${version}"
+          echo "FORMATTED_VERSION_FOR_GCP=${version}" >> $GITHUB_OUTPUT
 
       - name: Deploy to production 🚀
         uses: 'google-github-actions/deploy-appengine@v1'
         with:
           project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
           deliverables: ".appengine/app.yaml"
-          flags: "--version=${{ steps.format-version-for-gcp.outputs.formatted-version }}"
+          flags: "--version=${{ steps.format-version-for-gcp.outputs.FORMATTED_VERSION_FOR_GCP }}"
