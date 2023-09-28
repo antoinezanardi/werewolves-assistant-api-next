@@ -45,6 +45,21 @@ export class PlayerKillerService {
     return ancientLivesCountAgainstWerewolves <= 0;
   }
 
+  public async getAncientLivesCountAgainstWerewolves(game: Game, ancientPlayer: Player): Promise<number> {
+    const { livesCountAgainstWerewolves } = game.options.roles.ancient;
+    const werewolvesEatAncientRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords(game._id);
+    const werewolvesEatAncientOnPreviousTurnsRecords = werewolvesEatAncientRecords.filter(({ turn }) => turn < game.turn);
+    const ancientProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords(game._id);
+    const doesAncientLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(ancientPlayer, PlayerAttributeNames.EATEN, game) && this.canPlayerBeEaten(ancientPlayer, game);
+    return werewolvesEatAncientOnPreviousTurnsRecords.reduce((acc, werewolvesEatAncientRecord) => {
+      const wasAncientProtectedFromWerewolves = !!ancientProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatAncientRecord.turn);
+      if (!wasAncientProtectedFromWerewolves) {
+        return acc - 1;
+      }
+      return acc;
+    }, doesAncientLooseALifeOnCurrentTurn ? livesCountAgainstWerewolves - 1 : livesCountAgainstWerewolves);
+  }
+
   private applyPlayerRoleRevelationOutcomes(revealedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
     if (revealedPlayer.role.current === RoleNames.IDIOT) {
@@ -73,21 +88,6 @@ export class PlayerKillerService {
     const clonedPlayer = createPlayer(player);
     clonedPlayer.attributes = clonedPlayer.attributes.filter(({ doesRemainAfterDeath }) => doesRemainAfterDeath === true);
     return clonedPlayer;
-  }
-
-  private async getAncientLivesCountAgainstWerewolves(game: Game, ancientPlayer: Player): Promise<number> {
-    const { livesCountAgainstWerewolves } = game.options.roles.ancient;
-    const werewolvesEatAncientRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords(game._id);
-    const werewolvesEatAncientOnPreviousTurnsRecords = werewolvesEatAncientRecords.filter(({ turn }) => turn < game.turn);
-    const ancientProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords(game._id);
-    const doesAncientLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(ancientPlayer, PlayerAttributeNames.EATEN, game) && this.canPlayerBeEaten(ancientPlayer, game);
-    return werewolvesEatAncientOnPreviousTurnsRecords.reduce((acc, werewolvesEatAncientRecord) => {
-      const wasAncientProtectedFromWerewolves = !!ancientProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatAncientRecord.turn);
-      if (!wasAncientProtectedFromWerewolves) {
-        return acc - 1;
-      }
-      return acc;
-    }, doesAncientLooseALifeOnCurrentTurn ? livesCountAgainstWerewolves - 1 : livesCountAgainstWerewolves);
   }
 
   private isIdiotKillable(idiotPlayer: Player, cause: PlayerDeathCauses, game: Game): boolean {
