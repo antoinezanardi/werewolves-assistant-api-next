@@ -3,7 +3,7 @@ import { sample } from "lodash";
 
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlaySurvivorsVote, createGamePlaySheriffSettlesVotes, createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
@@ -351,8 +351,8 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer, isInfected: isTargetInfected } = targets[0];
     const eatenByWerewolvesPlayerAttribute = createEatenByWerewolvesPlayerAttribute();
-    const isAncientKillable = await this.playerKillerService.isAncientKillable(clonedGame, targetedPlayer, PlayerDeathCauses.EATEN);
-    if (isTargetInfected === true && (targetedPlayer.role.current !== RoleNames.ANCIENT || isAncientKillable)) {
+    const ancientLivesCount = await this.playerKillerService.getAncientLivesCountAgainstWerewolves(clonedGame, targetedPlayer);
+    if (isTargetInfected === true && (targetedPlayer.role.current !== RoleNames.ANCIENT || ancientLivesCount <= 1)) {
       const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES } };
       return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);
     }
