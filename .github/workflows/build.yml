@@ -1,4 +1,4 @@
-name: Werewolves Assistant API Build Workflow
+name: ⚙️ Build Workflow
 on:
   pull_request:
     branches:

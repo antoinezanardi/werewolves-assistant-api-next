@@ -1,4 +1,4 @@
-name: Werewolves Assistant API Lint Pull Request Name Into Main Workflow
+name: 🏷️ Test release PR
 
 on:
   pull_request:
@@ -10,6 +10,62 @@ on:
       - reopened
       - synchronize
 jobs:
+  install:
+    name: Install ⚙️
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS ⚙️
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Cache npm dependencies 🥡
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
+      - name: Install project dependencies 📦
+        run: npm ci --ignore-scripts
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+
+  release:
+    name: Release 🏷️
+    runs-on: ubuntu-latest
+    needs:
+      - install
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup NodeJS ⚙️
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Restore npm dependencies from cache 🥡
+        uses: actions/cache/restore@v3
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
+      - name: Release 🏷️
+        id: release
+        run: npx semantic-release --dry-run --no-ci
+
+    outputs:
+      new-release-published: ${{ steps.release.outputs.new-release-published }}
+      new-release-version: ${{ steps.release.outputs.new-release-version }}
+
   main-pr-lint:
     runs-on: ubuntu-latest
     env:

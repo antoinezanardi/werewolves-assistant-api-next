@@ -1,4 +1,4 @@
-name: Werewolves Assistant API Lint Pull Request Name Into Develop Workflow
+name: 🔃 Lint Pull Request Name Into Develop Workflow
 
 on:
   pull_request:
