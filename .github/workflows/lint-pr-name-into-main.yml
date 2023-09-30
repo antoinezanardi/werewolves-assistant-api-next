@@ -81,4 +81,4 @@ jobs:
 
       - name: Create Release PR if it doesn't exist
         if: env.OPEN_PR_INTO_MAIN == ''
-        run: gh pr create --title "Release v${{ needs.release.outputs.new-release-version }}" --base main --head develop
+        run: gh pr create --title "Release v${{ needs.get-next-release-version.outputs.new-release-version }}" --body "" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
