@@ -104,4 +104,4 @@ jobs:
 
       - name: Update Release PR if it exists 🔃
         if: env.PR_ACTION == 'update'
-        run: gh pr edit "${{ env.PR_NUMBER }}" --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}"
+        run: gh pr edit ${{ env.PR_NUMBER }} --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}"
