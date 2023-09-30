@@ -13,10 +13,7 @@ jobs:
   main-pr-lint:
     runs-on: ubuntu-latest
     steps:
-      - name: update-pull-request
-        uses: kt3k/update-pr-description@v2
-        with:
-          pr_body: "lol"
-          destination_branch: develop
-          pr_title: "lol title"
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: List open PR into main
+        run: | 
+          OPEN_PR_INTO_MAIN=gh pr list --state open -B main --search "Release in:title"
+          echo $OPEN_PR_INTO_MAIN
