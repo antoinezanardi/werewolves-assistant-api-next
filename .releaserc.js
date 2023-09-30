@@ -11,7 +11,7 @@ const commitGroupsOrder = {
 };
 
 module.exports = {
-  branches: ["main"],
+  branches: ["main", "feat/lint-main-pr-name"],
   repositoryUrl: "git@github.com:antoinezanardi/werewolves-assistant-api-next.git",
   plugins: [
     [
