@@ -1,4 +1,4 @@
-name: Werewolves Assistant API Release Workflow
+name: 🚀 Release Workflow
 
 on:
   push:
