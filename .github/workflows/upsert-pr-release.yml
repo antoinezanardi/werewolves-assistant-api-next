@@ -3,7 +3,7 @@ name: 🔃️ Upsert PR Release Workflow
 on:
   push:
     branches:
-      - "feat/lint-main-pr-name"
+      - "develop"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
