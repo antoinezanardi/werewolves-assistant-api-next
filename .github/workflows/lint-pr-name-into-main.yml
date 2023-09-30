@@ -6,7 +6,7 @@ on:
       - "feat/lint-main-pr-name"
 
 env:
-  GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   install:
