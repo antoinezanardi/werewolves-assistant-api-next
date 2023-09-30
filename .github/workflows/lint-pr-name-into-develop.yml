@@ -1,4 +1,4 @@
-name: Werewolves Assistant API Pull Request Name Lint Workflow
+name: Werewolves Assistant API Lint Pull Request Name Into Develop Workflow
 
 on:
   pull_request:
@@ -10,7 +10,7 @@ on:
       - reopened
       - synchronize
 jobs:
-  pr-lint:
+  develop-pr-lint:
     name: Lint Pull Request Name 🔃
     runs-on: ubuntu-latest
     steps:
