@@ -16,7 +16,7 @@ jobs:
     - uses: tzkhan/pr-update-action@v2
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        base-branch-regex: "*"
+        base-branch-regex: ".*"
         head-branch-regex: "develop"
         title-update-action: "replace"
         title-template: "test"
