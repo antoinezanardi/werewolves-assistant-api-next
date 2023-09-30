@@ -1,4 +1,4 @@
-name: 🏷️ Test release PR
+name: 🔃️ Upsert PR Release Workflow
 
 on:
   push:
