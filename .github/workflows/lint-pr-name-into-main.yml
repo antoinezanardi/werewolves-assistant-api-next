@@ -34,7 +34,7 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
 
   get-next-release-version:
-    name: Release 🏷️
+    name: Get next release version 🏷️
     runs-on: ubuntu-latest
     needs:
       - install
@@ -104,4 +104,4 @@ jobs:
 
       - name: Update Release PR if it exists 🔃
         if: env.PR_ACTION == 'update'
-        run: gh pr edit "$PR_NUMBER" --title "$PR_TITLE" --repo "${{ github.repository }}"
+        run: gh pr edit ${{ env.PR_NUMBER }} --repo "${{ github.repository }}" --title ${{ env.PR_TITLE }}
