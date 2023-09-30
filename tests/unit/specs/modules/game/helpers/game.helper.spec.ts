@@ -15,7 +15,7 @@ import { bulkCreateFakeGameAdditionalCards } from "@tests/factories/game/schemas
 import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
@@ -430,34 +430,37 @@ describe("Game Helper", () => {
   });
 
   describe("getGroupOfPlayers", () => {
-    const players = bulkCreateFakePlayers(6, [
+    const players = [
       createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
       createFakeWerewolfAlivePlayer(),
       createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
       createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }),
       createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
-    ]);
+      createFakeVillagerVillagerAlivePlayer({ isAlive: false }),
+    ];
     const game = createFakeGame({ players });
 
-    it("should return all players when group is all.", () => {
-      expect(getGroupOfPlayers(game, PlayerGroups.SURVIVORS)).toStrictEqual(players);
+    it("should return all alive players when group is survivors.", () => {
+      const expectedPlayers = players.filter(player => player.isAlive);
+
+      expect(getGroupOfPlayers(game, PlayerGroups.SURVIVORS)).toStrictEqual<Player[]>(expectedPlayers);
     });
 
     it("should return players in love when group is lovers.", () => {
-      expect(getGroupOfPlayers(game, PlayerGroups.LOVERS)).toStrictEqual([players[2], players[5]]);
+      expect(getGroupOfPlayers(game, PlayerGroups.LOVERS)).toStrictEqual<Player[]>([players[2], players[5]]);
     });
 
     it("should return charmed players when group is charmed.", () => {
-      expect(getGroupOfPlayers(game, PlayerGroups.CHARMED)).toStrictEqual([players[0], players[3]]);
+      expect(getGroupOfPlayers(game, PlayerGroups.CHARMED)).toStrictEqual<Player[]>([players[0], players[3]]);
     });
 
     it("should return villagers when group is villagers.", () => {
-      expect(getGroupOfPlayers(game, PlayerGroups.VILLAGERS)).toStrictEqual([players[0], players[2], players[4]]);
+      expect(getGroupOfPlayers(game, PlayerGroups.VILLAGERS)).toStrictEqual<Player[]>([players[0], players[2], players[4], players[6]]);
     });
 
     it("should return werewolves when group is werewolves.", () => {
-      expect(getGroupOfPlayers(game, PlayerGroups.WEREWOLVES)).toStrictEqual([players[1], players[3], players[5]]);
+      expect(getGroupOfPlayers(game, PlayerGroups.WEREWOLVES)).toStrictEqual<Player[]>([players[1], players[3], players[5]]);
     });
   });
 

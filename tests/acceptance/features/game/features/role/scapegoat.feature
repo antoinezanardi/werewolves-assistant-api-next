@@ -36,11 +36,9 @@ Feature: 🐐 Scapegoat role
     When the scapegoat bans from vote the following players
       | name   |
       | Olivia |
-      | Thomas |
-    Then 2 of the following players should have the inactive cant-vote from scapegoat attribute
+    Then 1 of the following players should have the inactive cant-vote from scapegoat attribute
       | name   |
       | Olivia |
-      | Thomas |
     And the game's current play should be survivors to vote because stuttering-judge-request
 
     When the survivors vote with the following votes
@@ -52,10 +50,9 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named Mom
     Then the player named Mom should be murdered by werewolves from eaten
     And the game's current play should be survivors to vote
-    And 2 of the following players should have the active cant-vote from scapegoat attribute
+    And the following players should have the active cant-vote from scapegoat attribute
       | name   |
       | Olivia |
-      | Thomas |
 
     When the player or group skips his turn
     Then the game's phase should be night
@@ -114,20 +111,17 @@ Feature: 🐐 Scapegoat role
     When the scapegoat bans from vote the following players
       | name   |
       | Olivia |
-      | Thomas |
-    Then 2 of the following players should have the inactive cant-vote from scapegoat attribute
+    Then the following players should have the inactive cant-vote from scapegoat attribute
       | name   |
       | Olivia |
-      | Thomas |
 
     When the werewolves eat the player named Mom
     Then the player named Mom should be murdered by werewolves from eaten
     And the game's phase should be day
     And the game's current play should be survivors to vote
-    And 2 of the following players should have the active cant-vote from scapegoat attribute
+    And the following players should have the active cant-vote from scapegoat attribute
       | name   |
       | Olivia |
-      | Thomas |
 
     When the player or group skips his turn
     Then the game's phase should be night

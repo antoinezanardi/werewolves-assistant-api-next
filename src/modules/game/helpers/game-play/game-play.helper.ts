@@ -5,7 +5,9 @@ import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game
 import { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
-import { getAdditionalCardWithId, getPlayerWithId } from "@/modules/game/helpers/game.helper";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { getAdditionalCardWithId, getGroupOfPlayers, getPlayerWithId } from "@/modules/game/helpers/game.helper";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -85,6 +87,11 @@ function areGamePlaysEqual(playA: GamePlay, playB: GamePlay): boolean {
   return playA.action === playB.action && playA.cause === playB.cause && playA.source.name === playB.source.name;
 }
 
+function canSurvivorsVote(game: Game): boolean {
+  const survivors = getGroupOfPlayers(game, PlayerGroups.SURVIVORS);
+  return survivors.some(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
+}
+
 export {
   getVotesWithRelationsFromMakeGamePlayDto,
   getTargetsWithRelationsFromMakeGamePlayDto,
@@ -92,4 +99,5 @@ export {
   createMakeGamePlayDtoWithRelations,
   findPlayPriorityIndex,
   areGamePlaysEqual,
+  canSurvivorsVote,
 };

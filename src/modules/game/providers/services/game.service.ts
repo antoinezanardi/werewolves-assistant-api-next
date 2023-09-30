@@ -94,7 +94,11 @@ export class GameService {
     clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
     clonedGame = await this.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays(clonedGame);
     clonedGame = this.gamePhaseService.applyStartingGamePhaseOutcomes(clonedGame);
-    return this.gamePlayService.proceedToNextGamePlay(clonedGame);
+    clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
+    if (isGamePhaseOver(clonedGame)) {
+      clonedGame = await this.handleGamePhaseCompletion(clonedGame);
+    }
+    return clonedGame;
   }
 
   private async updateGame(gameId: Types.ObjectId, gameDataToUpdate: Partial<Game>): Promise<Game> {

@@ -67,7 +67,7 @@ Feature: ⚖️ Stuttering Judge Role
     When the survivors vote with the following votes and the stuttering judge does his sign
       | voter   | target  |
       | Olivia  | Antoine |
-      | Camille | Olivia |
+      | Camille | Olivia  |
     Then the game's current play should be survivors to vote because previous-votes-were-in-ties
 
     When nobody vote and the stuttering judge does his sign
