@@ -1024,9 +1024,9 @@ describe("Game Controller", () => {
       const game = createFakeGameWithCurrentPlay();
       const secondGame = createFakeGameWithCurrentPlay();
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId: game._id }),
-        createFakeGameHistoryRecord({ gameId: game._id }),
-        createFakeGameHistoryRecord({ gameId: game._id }),
+        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2023-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2024-01-01") }),
       ];
       await models.game.insertMany([game, secondGame]);
       await models.gameHistoryRecord.insertMany(gameHistoryRecords);
