@@ -57,7 +57,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
 
-      - name: Release 🏷️
+      - name: Get next release version 🏷️
         id: release
         run: npx semantic-release --dry-run --no-ci
 
@@ -87,7 +87,7 @@ jobs:
       - name: Determine action to perform on PR 🚏
         run: |
           if [[ -n "$OPEN_PR_INTO_MAIN" ]]; then
-            PR_NUMBER=$(echo "$OPEN_PR_INTO_MAIN" | jq -r '.[] | select(.title == "$PR_TITLE") | .number')
+            PR_NUMBER=$(echo "$OPEN_PR_INTO_MAIN" | jq -r '.[0].number')
             if [[ -n "$PR_NUMBER" ]]; then
               echo "PR_ACTION=update" >> $GITHUB_ENV
               echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
