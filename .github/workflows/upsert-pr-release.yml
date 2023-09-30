@@ -86,7 +86,7 @@ jobs:
 
       - name: Determine action to perform on PR 🚏
         run: |
-          if [[ -n "$OPEN_PR_INTO_MAIN" ]]; then
+          if [[ "$OPEN_PR_INTO_MAIN" != "[]" ]]; then
             PR_NUMBER=$(echo "$OPEN_PR_INTO_MAIN" | jq -r '.[0].number')
             if [[ -n "$PR_NUMBER" ]]; then
               echo "PR_ACTION=update" >> $GITHUB_ENV
