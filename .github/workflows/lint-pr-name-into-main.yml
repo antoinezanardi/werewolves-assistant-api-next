@@ -74,11 +74,34 @@ jobs:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
 
-      - name: List open PR into main
+      - name: List open PR into main 📋
         run: | 
           OPEN_PR_INTO_MAIN=$(gh pr list --state open -B main --search "Release in:title")
-          echo 'OPEN_PR_INTO_MAIN='$OPEN_PR_INTO_MAIN >> $GITHUB_ENV
+          echo "OPEN_PR_INTO_MAIN=$OPEN_PR_INTO_MAIN" >> $GITHUB_ENV
 
-      - name: Create Release PR if it doesn't exist
-        if: env.OPEN_PR_INTO_MAIN == ''
-        run: gh pr create --title "Release v${{ needs.get-next-release-version.outputs.new-release-version }}" --body "" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
+      - name: Set PR Title 🔤
+        run: |
+          PR_TITLE="Release v${{ needs.get-next-release-version.outputs.new-release-version }}"
+          echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
+
+      - name: Determine action to perform on PR 🚏
+        run: |
+          if [[ -n "$OPEN_PR_INTO_MAIN" ]]; then
+            PR_NUMBER=$(echo "$OPEN_PR_INTO_MAIN" | jq -r '.[] | select(.title == "$PR_TITLE") | .number')
+            if [[ -n "$PR_NUMBER" ]]; then
+              echo "PR_ACTION=update" >> $GITHUB_ENV
+              echo "PR_NUMBER=$PR_NUMBER" >> $GITHUB_ENV
+            else
+              echo "PR_ACTION=create" >> $GITHUB_ENV
+            fi
+          else
+            echo "PR_ACTION=create" >> $GITHUB_ENV
+          fi
+
+      - name: Create Release PR if it doesn't exist 🔃
+        if: env.PR_ACTION == "create"
+        run: gh pr create --title "$PR_TITLE" --body "" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
+
+      - name: Update Release PR if it exists 🔃
+        if: env.PR_ACTION == "update"
+        run: gh pr edit "$PR_NUMBER" --title "$PR_TITLE"
