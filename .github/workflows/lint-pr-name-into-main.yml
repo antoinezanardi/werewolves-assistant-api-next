@@ -3,7 +3,7 @@ name: 🏷️ Test release PR
 on:
   push:
     branches:
-      - "feat/lint-pr-main-name"
+      - "feat/lint-main-pr-name"
 
 env:
   GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
