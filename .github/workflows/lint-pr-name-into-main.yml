@@ -76,7 +76,7 @@ jobs:
 
       - name: List open PR into main 📋
         run: | 
-          OPEN_PR_INTO_MAIN=$(gh pr list --state open -B main --search "Release in:title")
+          OPEN_PR_INTO_MAIN=$(gh pr list --state open -B main --search "title:'Release*'" --json number,title)
           echo "OPEN_PR_INTO_MAIN=$OPEN_PR_INTO_MAIN" >> $GITHUB_ENV
 
       - name: Set PR Title 🔤
