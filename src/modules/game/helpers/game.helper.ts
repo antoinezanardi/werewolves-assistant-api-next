@@ -108,7 +108,7 @@ function getLeftToEatByWhiteWerewolfPlayers(game: Game): Player[] {
 
 function getGroupOfPlayers(game: Game, group: PlayerGroups): Player[] {
   if (group === PlayerGroups.SURVIVORS) {
-    return game.players;
+    return game.players.filter(({ isAlive }) => isAlive);
   }
   if (group === PlayerGroups.LOVERS) {
     return getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);

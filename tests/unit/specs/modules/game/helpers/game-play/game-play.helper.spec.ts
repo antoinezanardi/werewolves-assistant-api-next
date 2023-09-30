@@ -2,8 +2,9 @@ import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { areGamePlaysEqual, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto } from "@/modules/game/helpers/game-play/game-play.helper";
+import { areGamePlaysEqual, canSurvivorsVote, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto } from "@/modules/game/helpers/game-play/game-play.helper";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
 import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiResources } from "@/shared/api/enums/api.enum";
@@ -16,6 +17,8 @@ import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-p
 import { bulkCreateFakeGameAdditionalCards } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeHunterAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
@@ -221,6 +224,45 @@ describe("Game Play Helper", () => {
       },
     ])("should return $result when $test [#$#].", ({ playA, playB, result }) => {
       expect(areGamePlaysEqual(playA, playB)).toBe(result);
+    });
+  });
+
+  describe("canSurvivorsVote", () => {
+    it.each<{ game: Game; expectedResult: boolean; test: string }>([
+      {
+        game: createFakeGame({
+          players: [
+            createFakeHunterAlivePlayer({ isAlive: false }),
+            createFakeWerewolfAlivePlayer({ isAlive: false }),
+          ],
+        }),
+        expectedResult: false,
+        test: "all players are dead",
+      },
+      {
+        game: createFakeGame({
+          players: [
+            createFakeHunterAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+            createFakeWerewolfAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+            createFakeWerewolfAlivePlayer({ isAlive: false }),
+          ],
+        }),
+        expectedResult: false,
+        test: "all survivors has the cant-vote attribute",
+      },
+      {
+        game: createFakeGame({
+          players: [
+            createFakeHunterAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+            createFakeWerewolfAlivePlayer({ attributes: [] }),
+            createFakeWerewolfAlivePlayer({ isAlive: false }),
+          ],
+        }),
+        expectedResult: true,
+        test: "at least one survivor doesn't have the cant-vote attribute",
+      },
+    ])(`should return $expectedResult when $test [#$#].`, ({ game, expectedResult }) => {
+      expect(canSurvivorsVote(game)).toBe(expectedResult);
     });
   });
 });

@@ -383,6 +383,25 @@ describe("Game Service", () => {
 
       expect(mocks.gamePlayService.proceedToNextGamePlay).toHaveBeenCalledExactlyOnceWith(game);
     });
+
+    it("should not call handle game phase completion method when phase is not ending.", async() => {
+      mocks.gamePhaseHelper.isGamePhaseOver.mockReturnValue(false);
+      const handleGamePhaseCompletionSpy = jest.spyOn(services.game as unknown as { handleGamePhaseCompletion }, "handleGamePhaseCompletion");
+      await services.game["handleGamePhaseCompletion"](game);
+
+      expect(handleGamePhaseCompletionSpy).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call handle game phase completion method when phase is ending.", async() => {
+      mocks.gamePhaseHelper.isGamePhaseOver.mockReturnValue(false);
+      mocks.gamePhaseHelper.isGamePhaseOver.mockReturnValueOnce(true);
+      const handleGamePhaseCompletionSpy = jest.spyOn(services.game as unknown as { handleGamePhaseCompletion }, "handleGamePhaseCompletion");
+      await services.game["handleGamePhaseCompletion"](game);
+
+      expect(handleGamePhaseCompletionSpy).toHaveBeenCalledTimes(2);
+      expect(handleGamePhaseCompletionSpy).toHaveBeenNthCalledWith(1, game);
+      expect(handleGamePhaseCompletionSpy).toHaveBeenNthCalledWith(2, game);
+    });
   });
 
   describe("updateGame", () => {
