@@ -13,10 +13,10 @@ jobs:
   main-pr-lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: tzkhan/pr-update-action@v2
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        base-branch-regex: ".*"
-        head-branch-regex: "develop"
-        title-update-action: "replace"
-        title-template: "test"
+      - name: update-pull-request
+        uses: kt3k/update-pr-description@v2
+        with:
+          pr_body: "lol"
+          destination_branch: develop
+          pr_title: "lol title"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
