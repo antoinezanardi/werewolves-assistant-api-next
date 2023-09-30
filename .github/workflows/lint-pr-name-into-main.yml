@@ -100,8 +100,8 @@ jobs:
 
       - name: Create Release PR if it doesn't exist 🔃
         if: env.PR_ACTION == 'create'
-        run: gh pr create --title "$PR_TITLE" --body "" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
+        run: gh pr create --repo "${{ github.repository }}" --title "$PR_TITLE" --body "" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
 
       - name: Update Release PR if it exists 🔃
         if: env.PR_ACTION == 'update'
-        run: gh pr edit "$PR_NUMBER" --title "$PR_TITLE"
+        run: gh pr edit "$PR_NUMBER" --title "$PR_TITLE" --repo "${{ github.repository }}"
