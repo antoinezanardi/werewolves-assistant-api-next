@@ -3,6 +3,8 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import type { FilterQuery, Types } from "mongoose";
 
+import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mapper";
+import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import type { GamePhases } from "@/modules/game/enums/game.enum";
@@ -14,8 +16,9 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 export class GameHistoryRecordRepository {
   public constructor(@InjectModel(GameHistoryRecord.name) private readonly gameHistoryRecordModel: Model<GameHistoryRecordDocument>) {}
 
-  public async getGameHistory(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordModel.find({ gameId });
+  public async getGameHistory(gameId: Types.ObjectId, getGameHistoryDto: GetGameHistoryDto): Promise<GameHistoryRecord[]> {
+    const queryOptions = convertGetGameHistoryDtoToMongooseQueryOptions(getGameHistoryDto);
+    return this.gameHistoryRecordModel.find({ gameId }, undefined, queryOptions);
   }
 
   public async create(gameHistoryRecord: GameHistoryRecordToInsert): Promise<GameHistoryRecord> {
