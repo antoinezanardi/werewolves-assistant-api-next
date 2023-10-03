@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsOptional, Min } from "class-validator";
+import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
+import { Type } from "class-transformer";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enum";
 
@@ -10,6 +11,8 @@ class GetGameHistoryDto {
     required: false,
   })
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
   @Min(0)
   public limit: number = 0;
 

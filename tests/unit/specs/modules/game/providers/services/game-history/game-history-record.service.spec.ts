@@ -19,6 +19,7 @@ import { ApiResources } from "@/shared/api/enums/api.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
 
+import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { bulkCreateFakePlayers, createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
@@ -317,9 +318,10 @@ describe("Game History Record Service", () => {
   describe("getGameHistory", () => {
     it("should call getGameHistory repository method when called.", async() => {
       const game = createFakeGame();
-      await services.gameHistoryRecord.getGameHistory(game._id);
+      const getGameHistoryDto = createFakeGetGameHistoryDto();
+      await services.gameHistoryRecord.getGameHistory(game._id, getGameHistoryDto);
 
-      expect(mocks.gameHistoryRecordRepository.getGameHistory).toHaveBeenCalledExactlyOnceWith(game._id);
+      expect(mocks.gameHistoryRecordRepository.getGameHistory).toHaveBeenCalledExactlyOnceWith(game._id, getGameHistoryDto);
     });
   });
 
