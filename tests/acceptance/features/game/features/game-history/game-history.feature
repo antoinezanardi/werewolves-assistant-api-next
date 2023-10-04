@@ -40,12 +40,12 @@ Feature: 📜 Game History
   Scenario: 📜 Targets of various roles actions are recorded in the game history
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
-      | Antoine | seer     |
-      | Juju    | witch    |
-      | Doudou  | werewolf |
-      | JB      | guard    |
-      | Thomas  | raven    |
+      | name    | role                  |
+      | Antoine | seer                  |
+      | Juju    | witch                 |
+      | Doudou  | vile-father-of-wolves |
+      | JB      | guard                 |
+      | Thomas  | raven                 |
     Then the game's current play should be seer to look
 
     When the seer looks at the player named Juju
@@ -83,6 +83,30 @@ Feature: 📜 Game History
       | JB      |
     And the play's target named Antoine from the previous history record should have drunk the life potion
     And the play's target named JB from the previous history record should have drunk the death potion
+
+    When the player or group skips his turn
+    And the most recent history record is retrieved
+    Then the play's targets from the previous history record should be undefined
+    And the game's current play should be seer to look
+
+    When the seer looks at the player named Thomas
+    And the most recent history record is retrieved
+    Then the play's targets from the previous history record should be the following players
+      | name   |
+      | Thomas |
+    And the game's current play should be raven to mark
+
+    When the player or group skips his turn
+    And the most recent history record is retrieved
+    Then the play's targets from the previous history record should be undefined
+    And the game's current play should be werewolves to eat
+
+    When the vile father of wolves infects the player named Thomas
+    And the most recent history record is retrieved
+    Then the play's targets from the previous history record should be the following players
+      | name   |
+      | Thomas |
+    And the play's target named Thomas from the previous history record should be infected
 
   Scenario: 📜 Votes of various roles actions are recorded in the game history
 
@@ -143,6 +167,7 @@ Feature: 📜 Game History
       | name   |
       | Juju   |
       | Doudou |
+    And the play's from the previous history record should have the stuttering judge request
     And the game's current play should be sheriff to settle-votes
 
     When the sheriff breaks the tie in votes by choosing the player named Doudou
@@ -161,6 +186,7 @@ Feature: 📜 Game History
     And the play's nominated players from votes of the previous history record should be the following players
       | name |
       | Juju |
+    And the play's from the previous history record should not have the stuttering judge request
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Juju
@@ -221,6 +247,45 @@ Feature: 📜 Game History
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
     And the play's voting result from the previous history record should be skipped
+
+  Scenario: 📜 Chosen cards are recorded in the game history
+    Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | thief    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | witch    |
+    Then the game's current play should be thief to choose-card
+
+    When the thief chooses card with role seer
+    And the most recent history record is retrieved
+    Then the play's chosen card from the previous history record should be the card with role seer
+
+  Scenario: 📜 Chosen cards are not recorded in the game history when the thief does not choose a card
+    Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | thief    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | witch    |
+    Then the game's current play should be thief to choose-card
+
+    When the player or group skips his turn
+    And the most recent history record is retrieved
+    Then the play's chosen card from the previous history record should be undefined
+
+  Scenario: 📜 Chosen side is recorded in the game history
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | dog-wolf |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | witch    |
+    Then the game's current play should be dog-wolf to choose-side
+
+    When the dog wolf chooses the werewolves side
+    And the most recent history record is retrieved
+    Then the play's chosen side from the previous history record should be the werewolves side
 
   Scenario: 📜 Revealed players are recorded in the game history
     Given a created game with options described in file no-sheriff-option.json and with the following players

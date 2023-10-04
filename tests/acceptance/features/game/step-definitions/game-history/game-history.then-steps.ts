@@ -2,6 +2,8 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
+import type { RoleNames } from "@/modules/role/enums/role.enum";
+import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import type { WitchPotions } from "@/modules/game/enums/game-play.enum";
@@ -32,9 +34,15 @@ Then(/^the play's targets from the previous history record should be undefined$/
 });
 
 Then(/^the play's target named (?<name>.+?) from the previous history record should have drunk the (?<potion>life|death) potion$/u, function(this: CustomWorld, playerName: string, potion: WitchPotions): void {
-  const lastTarget = this.lastGameHistoryRecord.play.targets?.find(({ player }) => player.name === playerName);
+  const target = this.lastGameHistoryRecord.play.targets?.find(({ player }) => player.name === playerName);
 
-  expect(lastTarget?.drankPotion).toBe(potion);
+  expect(target?.drankPotion).toBe(potion);
+});
+
+Then(/^the play's target named (?<name>.+?) from the previous history record should be infected$/u, function(this: CustomWorld, playerName: string): void {
+  const target = this.lastGameHistoryRecord.play.targets?.find(({ player }) => player.name === playerName);
+
+  expect(target?.isInfected).toBe(true);
 });
 
 Then(/^the play's votes from the previous history record should be the following votes$/u, function(this: CustomWorld, expectedVotesDatatable: DataTable): void {
@@ -51,10 +59,28 @@ Then(/^the play's voting result from the previous history record should be (?<vo
   expect(this.lastGameHistoryRecord.play.voting?.result).toBe(votingResult);
 });
 
+Then(/^the play's from the previous history record should (?<isNotRequested>not )?have the stuttering judge request$/u, function(this: CustomWorld, notRequested: string | null): void {
+  expect(this.lastGameHistoryRecord.play.didJudgeRequestAnotherVote).toBe(notRequested === null ? true : undefined);
+});
+
 Then(/^the play's nominated players from votes of the previous history record should be the following players$/u, function(this: CustomWorld, expectedNominatedPlayersDatatable: DataTable): void {
   const nominatedPlayers = convertDatatableToPlayers(expectedNominatedPlayersDatatable.rows(), this.gameOnPreviousGamePlay);
 
   expect(this.lastGameHistoryRecord.play.voting?.nominatedPlayers).toStrictEqual(nominatedPlayers);
+});
+
+Then(/^the play's chosen card from the previous history record should be the card with role (?<cardRole>.+)$/u, function(this: CustomWorld, cardRole: RoleNames): void {
+  const chosenCard = this.game.additionalCards?.find(({ roleName }) => roleName === cardRole);
+
+  expect(this.lastGameHistoryRecord.play.chosenCard).toStrictEqual(chosenCard);
+});
+
+Then(/^the play's chosen card from the previous history record should be undefined$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.play.chosenCard).toBeUndefined();
+});
+
+Then(/^the play's chosen side from the previous history record should be the (?<chosenSide>villagers|werewolves) side$/u, function(this: CustomWorld, chosenSide: PlayerSide): void {
+  expect(this.lastGameHistoryRecord.play.chosenSide).toStrictEqual(chosenSide);
 });
 
 Then(/^the revealed players from the previous history record should be the following players$/u, function(this: CustomWorld, expectedRevealedPlayersDatatable: DataTable): void {
