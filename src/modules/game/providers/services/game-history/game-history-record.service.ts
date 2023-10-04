@@ -91,9 +91,7 @@ export class GameHistoryRecordService {
       revealedPlayers: this.generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame, newGame),
       deadPlayers: this.generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame, newGame),
     };
-    if (gameHistoryRecordToInsert.play.votes) {
-      gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
-    }
+    gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
     return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
   }
 
@@ -167,7 +165,7 @@ export class GameHistoryRecordService {
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(gameHistoryRecordToInsert.play.votes, baseGame);
     const gameHistoryRecordPlayVoting: GameHistoryRecordPlayVoting = {
       result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, nominatedPlayers, gameHistoryRecordToInsert),
-      nominatedPlayers,
+      nominatedPlayers: nominatedPlayers.length ? nominatedPlayers : undefined,
     };
     return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
   }

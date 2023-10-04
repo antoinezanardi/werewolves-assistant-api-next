@@ -94,6 +94,8 @@ Feature: 📜 Game History
       | JB      | werewolf         |
       | Thomas  | villager         |
       | Morgan  | villager         |
+      | Damien  | villager         |
+      | Hippo   | villager         |
     Then the game's current play should be survivors to elect-sheriff
 
     When the survivors elect sheriff with the following votes
@@ -117,6 +119,7 @@ Feature: 📜 Game History
     When the stuttering judge chooses his sign
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    Then the play's targets from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -209,3 +212,73 @@ Feature: 📜 Game History
     And the play's nominated players from votes of the previous history record should be the following players
       | name    |
       | Antoine |
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Damien
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    And the most recent history record is retrieved
+    Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be skipped
+
+  Scenario: 📜 Revealed players are recorded in the game history
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | idiot    |
+      | Juju    | villager |
+      | Doudou  | werewolf |
+      | JB      | villager |
+      | Thomas  | villager |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | name | vote    |
+      | JB   | Antoine |
+    And the most recent history record is retrieved
+    Then the play's votes from the previous history record should be the following votes
+      | name | vote    |
+      | JB   | Antoine |
+    And the play's voting result from the previous history record should be inconsequential
+    And the play's nominated players from votes of the previous history record should be the following players
+      | name    |
+      | Antoine |
+    And the revealed players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+    And the dead players from the previous history record should be undefined
+
+  Scenario: 📜 Dead players are recorded in the game history
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Juju    | cupid    |
+      | Doudou  | werewolf |
+      | JB      | villager |
+      | Thomas  | villager |
+    Then the game's current play should be cupid to charm
+
+    When the cupid shoots an arrow at the player named Thomas and the player named JB
+    Then the game's current play should be lovers to meet-each-other
+
+    When the lovers meet each other
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    And the most recent history record is retrieved
+    Then the dead players from the previous history record should be the following players
+      | name |
+      | Juju |
+    And the revealed players from the previous history record should be undefined
+
+    When the survivors vote with the following votes
+      | name    | vote |
+      | Antoine | JB   |
+    And the most recent history record is retrieved
+    Then the dead players from the previous history record should be the following players
+      | name   |
+      | JB     |
+      | Thomas |

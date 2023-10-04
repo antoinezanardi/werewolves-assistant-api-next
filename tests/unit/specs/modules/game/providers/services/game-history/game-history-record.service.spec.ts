@@ -302,17 +302,6 @@ describe("Game History Record Service", () => {
 
       expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame, gameHistoryRecordToInsert);
     });
-
-    it("should not call generateCurrentGameHistoryRecordPlayVotingToInsert method when called without votes.", () => {
-      const baseGame = createFakeGameWithCurrentPlay();
-      const newGame = createFakeGameWithCurrentPlay();
-      const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
-      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
-      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
-
-      expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).not.toHaveBeenCalled();
-    });
   });
 
   describe("getGameHistory", () => {
@@ -713,6 +702,23 @@ describe("Game History Record Service", () => {
         result: GameHistoryRecordVotingResults.DEATH,
         nominatedPlayers,
       });
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert)).toStrictEqual(expectedCurrentGameHistoryRecordPlayVoting);
+    });
+    
+    it("should generate current game history record play voting without nominated players when no nominated players are found.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const newGame = createFakeGameWithCurrentPlay(game);
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
+      const nominatedPlayers = [];
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue(GameHistoryRecordVotingResults.DEATH);
+      const expectedCurrentGameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ result: GameHistoryRecordVotingResults.DEATH });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert)).toStrictEqual(expectedCurrentGameHistoryRecordPlayVoting);
     });

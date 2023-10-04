@@ -56,3 +56,23 @@ Then(/^the play's nominated players from votes of the previous history record sh
 
   expect(this.lastGameHistoryRecord.play.voting?.nominatedPlayers).toStrictEqual(nominatedPlayers);
 });
+
+Then(/^the revealed players from the previous history record should be the following players$/u, function(this: CustomWorld, expectedRevealedPlayersDatatable: DataTable): void {
+  const revealedPlayers = convertDatatableToPlayers(expectedRevealedPlayersDatatable.rows(), this.game);
+
+  expect(this.lastGameHistoryRecord.revealedPlayers).toStrictEqual(revealedPlayers);
+});
+
+Then(/^the revealed players from the previous history record should be undefined$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.revealedPlayers).toBeUndefined();
+});
+
+Then(/^the dead players from the previous history record should be the following players$/u, function(this: CustomWorld, expectedDeadPlayersDatatable: DataTable): void {
+  const revealedPlayers = convertDatatableToPlayers(expectedDeadPlayersDatatable.rows(), this.game);
+
+  expect(this.lastGameHistoryRecord.deadPlayers).toStrictEqual(revealedPlayers);
+});
+
+Then(/^the dead players from the previous history record should be undefined$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.deadPlayers).toBeUndefined();
+});
