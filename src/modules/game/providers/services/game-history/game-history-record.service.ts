@@ -136,6 +136,7 @@ export class GameHistoryRecordService {
   private generateCurrentGameHistoryRecordPlayVotingResultToInsert(
     baseGame: GameWithCurrentPlay,
     newGame: Game,
+    nominatedPlayers: Player[],
     gameHistoryRecordToInsert: GameHistoryRecordToInsert,
   ): GameHistoryRecordVotingResults {
     const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, PlayerAttributeNames.SHERIFF);
@@ -152,7 +153,7 @@ export class GameHistoryRecordService {
     if (areSomePlayersDeadFromCurrentVotes) {
       return GameHistoryRecordVotingResults.DEATH;
     }
-    if (baseGame.currentPlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES) {
+    if (baseGame.currentPlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES || nominatedPlayers.length === 1) {
       return GameHistoryRecordVotingResults.INCONSEQUENTIAL;
     }
     return GameHistoryRecordVotingResults.TIE;
@@ -165,7 +166,7 @@ export class GameHistoryRecordService {
   ): GameHistoryRecordPlayVoting {
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(gameHistoryRecordToInsert.play.votes, baseGame);
     const gameHistoryRecordPlayVoting: GameHistoryRecordPlayVoting = {
-      result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, gameHistoryRecordToInsert),
+      result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, nominatedPlayers, gameHistoryRecordToInsert),
       nominatedPlayers,
     };
     return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);

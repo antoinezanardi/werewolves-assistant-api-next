@@ -474,6 +474,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
+      const nominatedPlayers = [players[2], players[3]];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsElectSheriff() });
       const newGame = createFakeGame({
         ...game,
@@ -486,7 +487,7 @@ describe("Game History Record Service", () => {
       });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
 
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SHERIFF_ELECTION);
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SHERIFF_ELECTION);
     });
 
     it("should return tie when there is no sheriff in the game after election.", () => {
@@ -496,6 +497,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
+      const nominatedPlayers = [players[2], players[3]];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsElectSheriff() });
       const newGame = createFakeGame({
         ...game,
@@ -508,7 +510,7 @@ describe("Game History Record Service", () => {
       });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
 
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.TIE);
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.TIE);
     });
 
     it("should return skipped when there are no vote set.", () => {
@@ -518,6 +520,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
+      const nominatedPlayers = [players[2], players[3]];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
       const newGame = createFakeGame({
         ...game,
@@ -531,7 +534,7 @@ describe("Game History Record Service", () => {
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: undefined });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
 
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SKIPPED);
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SKIPPED);
     });
 
     it("should return skipped when votes are empty.", () => {
@@ -541,6 +544,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
+      const nominatedPlayers = [players[2], players[3]];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
       const newGame = createFakeGame({
         ...game,
@@ -554,7 +558,7 @@ describe("Game History Record Service", () => {
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [] });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
 
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SKIPPED);
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SKIPPED);
     });
 
     it("should return death when there is at least one dead player from votes.", () => {
@@ -564,6 +568,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
+      const nominatedPlayers = [players[2], players[3]];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
       const newGame = createFakeGame({
         ...game,
@@ -581,7 +586,7 @@ describe("Game History Record Service", () => {
       ];
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers });
 
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.DEATH);
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.DEATH);
     });
 
     it("should return death when there is at least one dead player from scapegoat votes.", () => {
@@ -591,6 +596,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
+      const nominatedPlayers = [players[2], players[3]];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
       const newGame = createFakeGame({
         ...game,
@@ -604,7 +610,7 @@ describe("Game History Record Service", () => {
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteScapegoatedBySurvivorsDeath() })] });
 
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.DEATH);
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.DEATH);
     });
 
     it("should return inconsequential when there is no death from votes and current play was already after a tie.", () => {
@@ -614,6 +620,7 @@ describe("Game History Record Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
+      const nominatedPlayers = [players[2], players[3]];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }) });
       const newGame = createFakeGame({
         ...game,
@@ -627,16 +634,17 @@ describe("Game History Record Service", () => {
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
 
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.INCONSEQUENTIAL);
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.INCONSEQUENTIAL);
     });
 
-    it("should return tie when there is no death from votes and current play was not after a tie.", () => {
+    it("should return inconsequential when there is no death from votes, current play was not already after a tie but only one player was nominated.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeHunterAlivePlayer(),
         createFakeSeerAlivePlayer(),
       ];
+      const nominatedPlayers = [players[2]];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }) });
       const newGame = createFakeGame({
         ...game,
@@ -650,7 +658,31 @@ describe("Game History Record Service", () => {
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
 
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.TIE);
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.INCONSEQUENTIAL);
+    });
+
+    it("should return tie when there is no death from votes, current play was not after a tie and there are several nominated players.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const nominatedPlayers = [players[2], players[3]];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }) });
+      const newGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer(players[0]),
+          createFakePlayer(players[1]),
+          createFakePlayer(players[2]),
+          createFakePlayer(players[3]),
+        ],
+      });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
+
+      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.TIE);
     });
   });
 
@@ -733,7 +765,7 @@ describe("Game History Record Service", () => {
       localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue(GameHistoryRecordVotingResults.DEATH);
       services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert);
 
-      expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert).toHaveBeenCalledExactlyOnceWith(game, newGame, gameHistoryRecordToInsert);
+      expect(localMocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert).toHaveBeenCalledExactlyOnceWith(game, newGame, nominatedPlayers, gameHistoryRecordToInsert);
     });
   });
 

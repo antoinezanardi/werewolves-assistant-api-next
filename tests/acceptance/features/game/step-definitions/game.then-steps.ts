@@ -1,6 +1,5 @@
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
-import { parseInt } from "lodash";
 import type { DataTable } from "@cucumber/cucumber";
 
 import type { GamePlayCauses, GamePlayActions } from "@/modules/game/enums/game-play.enum";
