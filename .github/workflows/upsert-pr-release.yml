@@ -60,9 +60,7 @@ jobs:
 
       - name: Get next release version and save release changelog 🏷️
         id: release
-        run: | 
-          RELEASE_CHANGELOG=$(npx semantic-release --dry-run --no-ci | awk '/^## / {if (found) exit; found=1} found {print}')
-          echo "RELEASE_CHANGELOG=$RELEASE_CHANGELOG" >> $GITHUB_ENV
+        run: npx semantic-release --dry-run --no-ci | awk '/^## / {if (found) exit; found=1} found {print}' > RELEASE.md
 
     outputs:
       new-release-published: ${{ steps.release.outputs.new-release-published }}
@@ -103,8 +101,8 @@ jobs:
 
       - name: Create Release PR if it doesn't exist 🔃
         if: env.PR_ACTION == 'create'
-        run: gh pr create --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}" --body "${{ env.RELEASE_CHANGELOG }}" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
+        run: gh pr create --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}" --body "${{ cat RELEASE.md }}" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
 
       - name: Update Release PR if it exists 🔃
         if: env.PR_ACTION == 'update'
-        run: gh pr edit ${{ env.PR_NUMBER }} --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}" --body "${{ env.RELEASE_CHANGELOG }}"
+        run: gh pr edit ${{ env.PR_NUMBER }} --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}" --body "${{ cat RELEASE.md }}"
