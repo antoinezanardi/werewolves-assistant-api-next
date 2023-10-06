@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - "develop"
-      - "feat/release-in-main-pr-body"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
