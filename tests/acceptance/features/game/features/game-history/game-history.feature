@@ -37,6 +37,125 @@ Feature: 📜 Game History
     And the game's phase from the previous history record should be night
     And the game's turn from the previous history record should be 2
 
+  Scenario: 📜 Game play's action, sources and cause are recorded in the game history
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role             |
+      | Antoine | stuttering-judge |
+      | Juju    | angel            |
+      | Doudou  | werewolf         |
+      | Babou   | werewolf         |
+      | JB      | seer             |
+      | Thomas  | raven            |
+    Then the game's current play should be survivors to vote because angel-presence
+
+    When the survivors vote with the following votes
+      | name    | vote   |
+      | JB      | Juju   |
+      | Juju    | Doudou |
+      | Doudou  | Juju   |
+      | Antoine | Doudou |
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be vote
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Doudou  |
+      | Babou   |
+      | JB      |
+      | Thomas  |
+    And the play's source name from the previous history record should be survivors
+    And the play's cause from the previous history record should be angel-presence
+    And the game's current play should be survivors to vote because previous-votes-were-in-ties
+
+    When the survivors vote with the following votes
+      | name    | vote   |
+      | JB      | Juju   |
+      | Juju    | Doudou |
+      | Antoine | Doudou |
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be vote
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Doudou  |
+      | Babou   |
+      | JB      |
+      | Thomas  |
+    And the play's source name from the previous history record should be survivors
+    And the play's cause from the previous history record should be previous-votes-were-in-ties
+    And the game's current play should be seer to look
+
+    When the seer looks at the player named Thomas
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be look
+    And the play's source players from the previous history record should be the following players
+      | name |
+      | JB   |
+    And the play's source name from the previous history record should be seer
+    And the play's cause from the previous history record should be undefined
+    And the game's current play should be stuttering-judge to choose-sign
+
+    When the stuttering judge chooses his sign
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be choose-sign
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+    And the play's source name from the previous history record should be stuttering-judge
+    And the play's cause from the previous history record should be undefined
+    And the game's current play should be raven to mark
+
+    When the player or group skips his turn
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be mark
+    And the play's source players from the previous history record should be the following players
+      | name   |
+      | Thomas |
+    And the play's source name from the previous history record should be raven
+    And the play's cause from the previous history record should be undefined
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be eat
+    And the play's source players from the previous history record should be the following players
+      | name  |
+      | Babou |
+    And the play's source name from the previous history record should be werewolves
+    And the play's cause from the previous history record should be undefined
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes and the stuttering judge does his sign
+      | name    | vote |
+      | Antoine | Juju |
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be vote
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Babou   |
+      | JB      |
+    And the play's source name from the previous history record should be survivors
+    And the play's cause from the previous history record should be undefined
+    And the game's current play should be survivors to vote because stuttering-judge-request
+
+    When the survivors vote with the following votes
+      | name    | vote |
+      | Antoine | JB   |
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be vote
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+      | Babou   |
+      | JB      |
+    And the play's source name from the previous history record should be survivors
+    And the play's cause from the previous history record should be stuttering-judge-request
+
   Scenario: 📜 Targets of various roles actions are recorded in the game history
 
     Given a created game with options described in file no-sheriff-option.json and with the following players

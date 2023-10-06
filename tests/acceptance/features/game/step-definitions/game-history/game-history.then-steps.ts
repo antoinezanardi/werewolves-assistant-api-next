@@ -2,11 +2,12 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
+import type { GameSource } from "@/modules/game/types/game.type";
+import type { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import type { RoleNames } from "@/modules/role/enums/role.enum";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
-import type { WitchPotions } from "@/modules/game/enums/game-play.enum";
 
 import { convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -21,6 +22,28 @@ Then(/^the game's turn from the previous history record should be (?<turn>\d)$/u
 
 Then(/^the game's phase from the previous history record should be (?<phase>night|day)$/u, function(this: CustomWorld, phase: GamePhases): void {
   expect(this.lastGameHistoryRecord.phase).toBe(phase);
+});
+
+Then(/^the play's action from the previous history record should be (?<action>.+)$/u, function(this: CustomWorld, action: GamePlayActions): void {
+  expect(this.lastGameHistoryRecord.play.action).toBe(action);
+});
+
+Then(/^the play's source name from the previous history record should be (?<sourceName>.+)$/u, function(this: CustomWorld, sourceName: GameSource): void {
+  expect(this.lastGameHistoryRecord.play.source.name).toBe(sourceName);
+});
+
+Then(/^the play's source players from the previous history record should be the following players$/u, function(this: CustomWorld, expectedSourcePlayersDatatable: DataTable): void {
+  const players = convertDatatableToPlayers(expectedSourcePlayersDatatable.rows(), this.gameOnPreviousGamePlay);
+
+  expect(this.lastGameHistoryRecord.play.source.players).toStrictEqual(players);
+});
+
+Then(/^the play's cause from the previous history record should be (?<cause>(?!undefined).+)$/u, function(this: CustomWorld, cause: GamePlayCauses): void {
+  expect(this.lastGameHistoryRecord.play.cause).toBe(cause);
+});
+
+Then(/^the play's cause from the previous history record should be undefined$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.play.cause).toBeUndefined();
 });
 
 Then(/^the play's targets from the previous history record should be the following players$/u, function(this: CustomWorld, expectedTargetsDatatable: DataTable): void {
