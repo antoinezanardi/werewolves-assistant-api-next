@@ -60,7 +60,7 @@ jobs:
 
       - name: Get next release version and save release changelog 🏷️
         id: release
-        run: | 
+        run: |
           npx semantic-release --dry-run --no-ci | awk '/^## / {if (found) exit; found=1} found {print}' > RELEASE.md
           awk '/^## /{header=1} header{print; header=0; next} {sub(/^ */, ""); sub(/ \(.+?\)$/, ""); print}' RELEASE.md > RELEASE.md
 
