@@ -58,7 +58,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
 
-      - name: Get next release version and save release changelog 🏷️
+      - name: Get next release version and create release changelog 🏷️
         id: release
         run: |
           npx semantic-release --dry-run --no-ci | awk '/^## / {if (found) exit; found=1} found {print}' > RELEASE.md
