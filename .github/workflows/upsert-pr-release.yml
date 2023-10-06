@@ -62,7 +62,7 @@ jobs:
         id: release
         run: |
           npx semantic-release --dry-run --no-ci | awk '/^## / {if (found) exit; found=1} found {print}' > RELEASE.md
-          awk '/^## /{header=1} header{print; header=0; next} {sub(/^ */, ""); sub(/ \(.+?\)$/, ""); print}' RELEASE.md > RELEASE.md
+          awk '/^## /{header=1} header{print; header=0; next} {sub(/^ */, ""); sub(/ \(.+?\)$/, ""); print}' RELEASE.md > temp.md && mv temp.md RELEASE.md
 
       - name: Cache release changelog 🥡
         uses: actions/cache@v3
