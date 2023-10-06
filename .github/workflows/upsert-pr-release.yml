@@ -57,9 +57,18 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
 
-      - name: Get next release version 🏷️
+      - name: Get next release version and create release changelog 🏷️
         id: release
-        run: npx semantic-release --dry-run --no-ci
+        run: |
+          npx semantic-release --dry-run --no-ci | awk '/^## / {if (found) exit; found=1} found {print}' > RELEASE.md
+          awk '/^## /{header=1} header{print; header=0; next} {sub(/^ */, ""); sub(/ \(.+?\)$/, ""); print}' RELEASE.md > temp.md && mv temp.md RELEASE.md
+
+      - name: Cache release changelog 🥡
+        uses: actions/cache@v3
+        id: cache-release-changelog
+        with:
+          path: RELEASE.md
+          key: ${{ runner.os }}-release-changelog-${{ hashFiles('RELEASE.md') }}
 
     outputs:
       new-release-published: ${{ steps.release.outputs.new-release-published }}
@@ -73,6 +82,15 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+
+      - name: Restore release changelog from cache 🥡
+        uses: actions/cache/restore@v3
+        id: cache-release-changelog
+        with:
+          path: RELEASE.md
+          key: ${{ runner.os }}-release-changelog-
+          restore-keys: |
+            ${{ runner.os }}-release-changelog-
 
       - name: List open PR into main 📋
         run: | 
@@ -100,8 +118,8 @@ jobs:
 
       - name: Create Release PR if it doesn't exist 🔃
         if: env.PR_ACTION == 'create'
-        run: gh pr create --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}" --body "" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
+        run: gh pr create --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}" --body "$(cat RELEASE.md)" --assignee "antoinezanardi" --label "🏷️ release" --base main --head develop
 
       - name: Update Release PR if it exists 🔃
         if: env.PR_ACTION == 'update'
-        run: gh pr edit ${{ env.PR_NUMBER }} --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}"
+        run: gh pr edit ${{ env.PR_NUMBER }} --repo "${{ github.repository }}" --title "${{ env.PR_TITLE }}" --body "$(cat RELEASE.md)"
