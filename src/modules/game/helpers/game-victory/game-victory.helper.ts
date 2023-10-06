@@ -1,17 +1,15 @@
-import { plainToInstance } from "class-transformer";
-
+import { createAngelGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
-import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerDeathCauses } from "@/modules/game/enums/player.enum";
 import { areAllPlayersDead, getLeftToCharmByPiedPiperPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
-import { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
+import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function doWerewolvesWin(game: Game): boolean {
   const werewolvesSidedPlayers = getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES);
@@ -47,10 +45,12 @@ function doesPiedPiperWin(game: Game): boolean {
 
 function doesAngelWin(game: Game): boolean {
   const angelPlayer = getPlayerWithCurrentRole(game, RoleNames.ANGEL);
-  if (!angelPlayer?.death || angelPlayer.isAlive || !isPlayerPowerful(angelPlayer, game) || game.turn > 1) {
+  const { turn, phase } = game;
+  if (!angelPlayer?.death || angelPlayer.isAlive || !isPlayerPowerful(angelPlayer, game) || turn > 1) {
     return false;
   }
-  return [PlayerDeathCauses.VOTE, PlayerDeathCauses.EATEN].includes(angelPlayer.death.cause);
+  const { cause: deathCause } = angelPlayer.death;
+  return deathCause === PlayerDeathCauses.EATEN || deathCause === PlayerDeathCauses.VOTE && phase === GamePhases.NIGHT;
 }
 
 function isGameOver(game: Game): boolean {
@@ -65,31 +65,25 @@ function isGameOver(game: Game): boolean {
 
 function generateGameVictoryData(game: Game): GameVictory | undefined {
   if (areAllPlayersDead(game)) {
-    return plainToInstance(GameVictory, { type: GameVictoryTypes.NONE }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return createNoneGameVictory();
   }
   if (doesAngelWin(game)) {
-    const angelPlayer = getPlayerWithCurrentRole(game, RoleNames.ANGEL);
-    return plainToInstance(GameVictory, { type: GameVictoryTypes.ANGEL, winners: [angelPlayer] }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return createAngelGameVictory(game);
   }
   if (doLoversWin(game)) {
-    const inLovePlayers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
-    return plainToInstance(GameVictory, { type: GameVictoryTypes.LOVERS, winners: inLovePlayers }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return createLoversGameVictory(game);
   }
   if (doesPiedPiperWin(game)) {
-    const piedPiperPlayer = getPlayerWithCurrentRole(game, RoleNames.PIED_PIPER);
-    return plainToInstance(GameVictory, { type: GameVictoryTypes.PIED_PIPER, winners: [piedPiperPlayer] }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return createPiedPiperGameVictory(game);
   }
   if (doesWhiteWerewolfWin(game)) {
-    const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, RoleNames.WHITE_WEREWOLF);
-    return plainToInstance(GameVictory, { type: GameVictoryTypes.WHITE_WEREWOLF, winners: [whiteWerewolfPlayer] }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return createWhiteWerewolfGameVictory(game);
   }
   if (doWerewolvesWin(game)) {
-    const werewolvesSidePlayers = getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES);
-    return plainToInstance(GameVictory, { type: GameVictoryTypes.WEREWOLVES, winners: werewolvesSidePlayers }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return createWerewolvesGameVictory(game);
   }
   if (doVillagersWin(game)) {
-    const villagersSidePlayers = getPlayersWithCurrentSide(game, RoleSides.VILLAGERS);
-    return plainToInstance(GameVictory, { type: GameVictoryTypes.VILLAGERS, winners: villagersSidePlayers }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return createVillagersGameVictory(game);
   }
 }
 

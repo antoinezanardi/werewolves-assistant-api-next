@@ -55,3 +55,42 @@ Feature: 👼 Angel role
     But the game's winners should be werewolves with the following players
       | name   |
       | Thomas |
+
+  Scenario: 👼 Angel doesn't win if he is murdered on the stuttering judge requested vote on first day
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role             |
+      | Antoine | angel            |
+      | Olivia  | villager         |
+      | JB      | villager         |
+      | Thomas  | werewolf         |
+      | Max     | stuttering-judge |
+    Then the game's current play should be survivors to vote because angel-presence
+
+    When the survivors vote with the following votes
+      | source  | vote   |
+      | Antoine | Olivia |
+      | JB      | Olivia |
+    Then the player named Olivia should be murdered by survivors from vote
+
+    When the stuttering judge chooses his sign
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the player named JB should be murdered by werewolves from eaten
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes and the stuttering judge does his sign
+      | source | vote    |
+      | Thomas | Max |
+    Then the player named Max should be murdered by survivors from vote
+    And the game's current play should be survivors to vote because stuttering-judge-request
+
+    When the survivors vote with the following votes
+      | source | vote    |
+      | Thomas | Antoine |
+    Then the player named Antoine should be murdered by survivors from vote
+    And the game's status should be over
+    But the game's winners should be werewolves with the following players
+      | name   |
+      | Thomas |

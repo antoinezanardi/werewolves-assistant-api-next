@@ -17,7 +17,11 @@ class CustomWorld extends World {
 
   public response: Response;
 
+  public gameOnPreviousGamePlay: Game;
+
   public game: Game;
+
+  public lastGameHistoryRecord: GameHistoryRecord;
 
   public constructor(options: IWorldOptions<unknown>) {
     super(options);

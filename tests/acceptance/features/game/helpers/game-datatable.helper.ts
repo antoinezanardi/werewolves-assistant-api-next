@@ -1,5 +1,6 @@
 import { plainToInstance } from "class-transformer";
 
+import type { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { MakeGamePlayVoteDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote.dto";
 import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helper";
@@ -16,6 +17,14 @@ function convertDatatableToMakeGameplayVotes(datatable: string[][], game: Game):
   });
 }
 
+function convertDatatableToGameHistoryRecordPlayVotes(datatable: string[][], game: Game): GameHistoryRecordPlayVote[] {
+  return datatable.map(([voterName, targetName]) => {
+    const source = getPlayerWithNameOrThrow(voterName, game, new Error(`Player with name ${voterName} not found`));
+    const target = getPlayerWithNameOrThrow(targetName, game, new Error(`Player with name ${targetName} not found`));
+    return { source, target } as GameHistoryRecordPlayVote;
+  });
+}
+
 function convertDatatableToPlayers(datatable: string[][], game: Game): Player[] {
   return datatable.map(([playerName]) => getPlayerWithNameOrThrow(playerName, game, new Error(`Player with name ${playerName} not found`)));
 }
@@ -29,6 +38,7 @@ function convertDatatableToCreateGamePlayersDto(datatable: string[][]): CreateGa
 
 export {
   convertDatatableToMakeGameplayVotes,
+  convertDatatableToGameHistoryRecordPlayVotes,
   convertDatatableToPlayers,
   convertDatatableToCreateGamePlayersDto,
 };
