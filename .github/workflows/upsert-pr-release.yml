@@ -61,9 +61,8 @@ jobs:
       - name: Get next release version and save release changelog 🏷️
         id: release
         run: | 
-          RELEASE_CHANGELOG=$(npx semantic-release --dry-run --no-ci | awk '/^## / {if (found) exit; found=1} found {print}')
           echo "RELEASE_CHANGELOG<<EOF" >> $GITHUB_ENV
-          echo $RELEASE_CHANGELOG >> $GITHUB_ENV
+          npx semantic-release --dry-run --no-ci | awk '/^## / {if (found) exit; found=1} found {print}' >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
     outputs:
