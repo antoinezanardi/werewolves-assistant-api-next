@@ -1,5 +1,6 @@
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
+import { GamePhases } from "@/modules/game/enums/game.enum";
 import { doesAngelWin, doesPiedPiperWin, doesWhiteWerewolfWin, doLoversWin, doVillagersWin, doWerewolvesWin, generateGameVictoryData, isGameOver } from "@/modules/game/helpers/game-victory/game-victory.helper";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
@@ -9,7 +10,7 @@ import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpect
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlaySurvivorsVote, createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayHunterShoots, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -390,6 +391,18 @@ describe("Game Victory Helper", () => {
       expect(doesAngelWin(game)).toBe(false);
     });
 
+    it("should return false when angel dead for vote cause but on phase day.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
+      ];
+      const game = createFakeGame({ players, turn: 1, phase: GamePhases.DAY });
+
+      expect(doesAngelWin(game)).toBe(false);
+    });
+
     it("should return true when angel is dead from eaten cause.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
@@ -409,7 +422,7 @@ describe("Game Victory Helper", () => {
         createFakeVillagerAlivePlayer(),
         createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
       ];
-      const game = createFakeGame({ players, turn: 1 });
+      const game = createFakeGame({ players, turn: 1, phase: GamePhases.NIGHT });
 
       expect(doesAngelWin(game)).toBe(true);
     });
@@ -568,7 +581,7 @@ describe("Game Victory Helper", () => {
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
       const currentPlay = createFakeGamePlaySurvivorsVote();
-      const game = createFakeGame({ players, upcomingPlays, currentPlay, options, turn: 1 });
+      const game = createFakeGame({ players, upcomingPlays, currentPlay, options, turn: 1, phase: GamePhases.NIGHT });
 
       expect(isGameOver(game)).toBe(true);
     });
@@ -598,7 +611,7 @@ describe("Game Victory Helper", () => {
         createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
-      const game = createFakeGame({ players, options, turn: 1 });
+      const game = createFakeGame({ players, options, phase: GamePhases.NIGHT, turn: 1 });
       const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.ANGEL, winners: [players[3]] });
 
       expect(generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);

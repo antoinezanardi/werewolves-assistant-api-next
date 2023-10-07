@@ -244,6 +244,121 @@ describe("Player Killer Service", () => {
       await expect(services.playerKiller.isAncientKillable(game, ancientPlayer, PlayerDeathCauses.EATEN)).resolves.toBe(true);
     });
   });
+  
+  describe("getAncientLivesCountAgainstWerewolves", () => {
+    it("should return same amount of lives when no werewolves attack against ancient.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
+      const ancientPlayer = createFakeAncientAlivePlayer();
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() });
+      const ancientProtectedFromWerewolvesRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
+          turn: 1,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue(ancientProtectedFromWerewolvesRecords);
+
+      await expect(services.playerKiller.getAncientLivesCountAgainstWerewolves(game, ancientPlayer)).resolves.toBe(3);
+    });
+
+    it("should return amount of lives minus one when werewolves attacked the ancient on current turn.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
+      const ancientPlayer = createFakeAncientAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: ancientPlayer });
+      const ancientProtectedFromWerewolvesRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
+          turn: 1,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue(ancientProtectedFromWerewolvesRecords);
+
+      await expect(services.playerKiller.getAncientLivesCountAgainstWerewolves(game, ancientPlayer)).resolves.toBe(2);
+    });
+
+    it("should return amount of lives minus two when werewolves attacked the ancient on current turn and also before that.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
+      const ancientPlayer = createFakeAncientAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: ancientPlayer });
+      const werewolvesEatAncientRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
+          turn: 1,
+        }),
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
+          turn: 2,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue(werewolvesEatAncientRecords);
+      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue([]);
+
+      await expect(services.playerKiller.getAncientLivesCountAgainstWerewolves(game, ancientPlayer)).resolves.toBe(1);
+    });
+
+    it("should return amount of lives minus one when ancient was attacked three times but protected once and saved by witch once.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
+      const ancientPlayer = createFakeAncientAlivePlayer();
+      const game = createFakeGame({ turn: 4, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() });
+      const gameHistoryRecordPlayAncientDrankLifePotionTarget = createFakeGameHistoryRecordPlayTarget({ ...gameHistoryRecordPlayAncientTarget, drankPotion: WitchPotions.LIFE });
+      const werewolvesEatAncientRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
+          turn: 1,
+        }),
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
+          turn: 2,
+        }),
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
+          turn: 3,
+        }),
+      ];
+      const ancientProtectedFromWerewolvesRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
+          turn: 1,
+        }),
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: [gameHistoryRecordPlayAncientDrankLifePotionTarget] }),
+          turn: 2,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue(werewolvesEatAncientRecords);
+      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue(ancientProtectedFromWerewolvesRecords);
+
+      await expect(services.playerKiller.getAncientLivesCountAgainstWerewolves(game, ancientPlayer)).resolves.toBe(2);
+    });
+
+    it("should return amount of lives minus 1 when ancient was attacked but not protected or saved by witch.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
+      const ancientPlayer = createFakeAncientAlivePlayer();
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() });
+      const werewolvesEatAncientRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
+          turn: 1,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue(werewolvesEatAncientRecords);
+      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue([]);
+
+      await expect(services.playerKiller.getAncientLivesCountAgainstWerewolves(game, ancientPlayer)).resolves.toBe(2);
+    });
+  });
 
   describe("revealPlayerRole", () => {
     it("should throw error when player to reveal is not found among players.", () => {
@@ -374,121 +489,6 @@ describe("Player Killer Service", () => {
       });
       
       expect(services.playerKiller["removePlayerAttributesAfterDeath"](player)).toStrictEqual<Player>(expectedPlayer);
-    });
-  });
-
-  describe("getAncientLivesCountAgainstWerewolves", () => {
-    it("should return same amount of lives when no werewolves attack against ancient.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
-      const ancientPlayer = createFakeAncientAlivePlayer();
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() });
-      const ancientProtectedFromWerewolvesRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
-          turn: 1,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue(ancientProtectedFromWerewolvesRecords);
-
-      await expect(services.playerKiller["getAncientLivesCountAgainstWerewolves"](game, ancientPlayer)).resolves.toBe(3);
-    });
-
-    it("should return amount of lives minus one when werewolves attacked the ancient on current turn.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
-      const ancientPlayer = createFakeAncientAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: ancientPlayer });
-      const ancientProtectedFromWerewolvesRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
-          turn: 1,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue(ancientProtectedFromWerewolvesRecords);
-
-      await expect(services.playerKiller["getAncientLivesCountAgainstWerewolves"](game, ancientPlayer)).resolves.toBe(2);
-    });
-
-    it("should return amount of lives minus two when werewolves attacked the ancient on current turn and also before that.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
-      const ancientPlayer = createFakeAncientAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: ancientPlayer });
-      const werewolvesEatAncientRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
-          turn: 1,
-        }),
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
-          turn: 2,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue(werewolvesEatAncientRecords);
-      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue([]);
-
-      await expect(services.playerKiller["getAncientLivesCountAgainstWerewolves"](game, ancientPlayer)).resolves.toBe(1);
-    });
-
-    it("should return amount of lives minus one when ancient was attacked three times but protected once and saved by witch once.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
-      const ancientPlayer = createFakeAncientAlivePlayer();
-      const game = createFakeGame({ turn: 4, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() });
-      const gameHistoryRecordPlayAncientDrankLifePotionTarget = createFakeGameHistoryRecordPlayTarget({ ...gameHistoryRecordPlayAncientTarget, drankPotion: WitchPotions.LIFE });
-      const werewolvesEatAncientRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
-          turn: 1,
-        }),
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
-          turn: 2,
-        }),
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
-          turn: 3,
-        }),
-      ];
-      const ancientProtectedFromWerewolvesRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
-          turn: 1,
-        }),
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: [gameHistoryRecordPlayAncientDrankLifePotionTarget] }),
-          turn: 2,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue(werewolvesEatAncientRecords);
-      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue(ancientProtectedFromWerewolvesRecords);
-
-      await expect(services.playerKiller["getAncientLivesCountAgainstWerewolves"](game, ancientPlayer)).resolves.toBe(2);
-    });
-
-    it("should return amount of lives minus 1 when ancient was attacked but not protected or saved by witch.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ ancient: createFakeAncientGameOptions({ livesCountAgainstWerewolves }) }) });
-      const ancientPlayer = createFakeAncientAlivePlayer();
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayAncientTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() });
-      const werewolvesEatAncientRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayAncientTarget] }),
-          turn: 1,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords.mockResolvedValue(werewolvesEatAncientRecords);
-      mocks.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords.mockResolvedValue([]);
-
-      await expect(services.playerKiller["getAncientLivesCountAgainstWerewolves"](game, ancientPlayer)).resolves.toBe(2);
     });
   });
 

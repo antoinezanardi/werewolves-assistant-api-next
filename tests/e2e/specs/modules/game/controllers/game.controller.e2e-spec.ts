@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { HttpStatus } from "@nestjs/common";
 import type { BadRequestException, NotFoundException } from "@nestjs/common";
+import { HttpStatus } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
@@ -24,6 +24,7 @@ import { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
+import { ApiSortOrder } from "@/shared/api/enums/api.enum";
 import { toJSON } from "@/shared/misc/helpers/object.helper";
 
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
@@ -33,6 +34,7 @@ import { createFakeGameOptionsDto } from "@tests/factories/game/dto/create-game/
 import { createFakeCreateThiefGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
 import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
+import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
@@ -41,7 +43,7 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlaySurvivorsVote, createFakeGamePlayCupidCharms, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayCupidCharms, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -975,8 +977,34 @@ describe("Game Controller", () => {
   });
 
   describe("GET /games/:id/history", () => {
-    afterEach(async() => {
-      await models.gameHistoryRecord.deleteMany();
+    it.each<{ query: Record<string, unknown>; test: string; errorMessage: string }>([
+      {
+        query: { limit: -1 },
+        test: "limit is negative",
+        errorMessage: "limit must not be less than 0",
+      },
+      {
+        query: { limit: "lol" },
+        test: "limit is not a number",
+        errorMessage: "limit must be an integer number",
+      },
+      {
+        query: { order: "unknown" },
+        test: "order is not asc nor desc",
+        errorMessage: "order must be one of the following values: asc, desc",
+      },
+    ])("should get bad request error on getting game history when $test [#$#].", async({
+      query,
+      errorMessage,
+    }) => {
+      const response = await app.inject({
+        method: "GET",
+        url: `/games/${faker.database.mongodbObjectId()}/history`,
+        query: stringify(query),
+      });
+
+      expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.json<BadRequestException>().message).toContainEqual(errorMessage);
     });
 
     it("should get a bad request error when id is not mongoId.", async() => {
@@ -1024,9 +1052,9 @@ describe("Game Controller", () => {
       const game = createFakeGameWithCurrentPlay();
       const secondGame = createFakeGameWithCurrentPlay();
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId: game._id }),
-        createFakeGameHistoryRecord({ gameId: game._id }),
-        createFakeGameHistoryRecord({ gameId: game._id }),
+        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2023-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2024-01-01") }),
       ];
       await models.game.insertMany([game, secondGame]);
       await models.gameHistoryRecord.insertMany(gameHistoryRecords);
@@ -1046,6 +1074,33 @@ describe("Game Controller", () => {
           ...toJSON(gameHistoryRecords[1]),
           createdAt: expect.any(String) as Date,
         },
+        {
+          ...toJSON(gameHistoryRecords[2]),
+          createdAt: expect.any(String) as Date,
+        },
+      ] as GameHistoryRecord[]);
+    });
+
+    it("should return last recent game history record when limit is 1 and order is desc.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const getGameHistoryDto = createFakeGetGameHistoryDto({ limit: 1, order: ApiSortOrder.DESC });
+      const secondGame = createFakeGameWithCurrentPlay();
+      const gameHistoryRecords = [
+        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2023-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2024-01-01") }),
+      ];
+      await models.game.insertMany([game, secondGame]);
+      await models.gameHistoryRecord.insertMany(gameHistoryRecords);
+
+      const response = await app.inject({
+        method: "GET",
+        url: `/games/${game._id.toString()}/history`,
+        query: stringify(getGameHistoryDto),
+      });
+
+      expect(response.statusCode).toBe(HttpStatus.OK);
+      expect(response.json<GameHistoryRecord[]>()).toStrictEqual<GameHistoryRecord[]>([
         {
           ...toJSON(gameHistoryRecords[2]),
           createdAt: expect.any(String) as Date,

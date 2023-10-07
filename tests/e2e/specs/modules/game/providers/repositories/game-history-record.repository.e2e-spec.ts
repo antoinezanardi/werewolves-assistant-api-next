@@ -13,11 +13,13 @@ import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-histor
 import type { GameSource } from "@/modules/game/types/game.type";
 import type { RoleSides } from "@/modules/role/enums/role.enum";
 
+import { ApiSortOrder } from "@/shared/api/enums/api.enum";
 import { toJSON } from "@/shared/misc/helpers/object.helper";
 
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
-import { createFakeGameHistoryRecord, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
@@ -57,20 +59,50 @@ describe("Game History Record Repository", () => {
   describe("getGameHistory", () => {
     it("should get nothing when there are no record.", async() => {
       const gameId = createFakeObjectId();
+      const getGameHistoryDto = createFakeGetGameHistoryDto();
 
-      await expect(repositories.gameHistoryRecord.getGameHistory(gameId)).resolves.toStrictEqual<GameHistoryRecord[]>([]);
+      await expect(repositories.gameHistoryRecord.getGameHistory(gameId, getGameHistoryDto)).resolves.toStrictEqual<GameHistoryRecord[]>([]);
     });
 
-    it("should get records when called with gameId with records.", async() => {
+    it("should get all ascending records when called with gameId with records with default get game history dto.", async() => {
       const gameId = createFakeObjectId();
+      const getGameHistoryDto = createFakeGetGameHistoryDto();
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay(), createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2023-01-01") }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistory(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistory(gameId, getGameHistoryDto);
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(gameHistoryRecords) as GameHistoryRecord[]);
+    });
+
+    it("should get only one record when called with get game history dto limit set to 1.", async() => {
+      const gameId = createFakeObjectId();
+      const getGameHistoryDto = createFakeGetGameHistoryDto({ limit: 1 });
+      const gameHistoryRecords = [
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsElectSheriffPlay(), createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay(), createdAt: new Date("2023-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2024-01-01") }),
+      ];
+      await populate(gameHistoryRecords);
+      const records = await repositories.gameHistoryRecord.getGameHistory(gameId, getGameHistoryDto);
+
+      expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([toJSON(gameHistoryRecords[0]) as GameHistoryRecord]);
+    });
+
+    it("should get records in descending order when called with get game history dto order set to DESC.", async() => {
+      const gameId = createFakeObjectId();
+      const getGameHistoryDto = createFakeGetGameHistoryDto({ order: ApiSortOrder.DESC });
+      const gameHistoryRecords = [
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsElectSheriffPlay(), createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay(), createdAt: new Date("2023-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2024-01-01") }),
+      ];
+      await populate(gameHistoryRecords);
+      const records = await repositories.gameHistoryRecord.getGameHistory(gameId, getGameHistoryDto);
+
+      expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(gameHistoryRecords.reverse()) as GameHistoryRecord[]);
     });
   });
 

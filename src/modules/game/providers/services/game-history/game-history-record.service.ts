@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
+import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import type { WitchPotions } from "@/modules/game/enums/game-play.enum";
@@ -90,14 +91,12 @@ export class GameHistoryRecordService {
       revealedPlayers: this.generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame, newGame),
       deadPlayers: this.generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame, newGame),
     };
-    if (gameHistoryRecordToInsert.play.votes) {
-      gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
-    }
+    gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
     return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
   }
 
-  public async getGameHistory(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistory(gameId);
+  public async getGameHistory(gameId: Types.ObjectId, getGameHistoryDto: GetGameHistoryDto): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistory(gameId, getGameHistoryDto);
   }
 
   private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
@@ -135,6 +134,7 @@ export class GameHistoryRecordService {
   private generateCurrentGameHistoryRecordPlayVotingResultToInsert(
     baseGame: GameWithCurrentPlay,
     newGame: Game,
+    nominatedPlayers: Player[],
     gameHistoryRecordToInsert: GameHistoryRecordToInsert,
   ): GameHistoryRecordVotingResults {
     const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, PlayerAttributeNames.SHERIFF);
@@ -151,7 +151,7 @@ export class GameHistoryRecordService {
     if (areSomePlayersDeadFromCurrentVotes) {
       return GameHistoryRecordVotingResults.DEATH;
     }
-    if (baseGame.currentPlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES) {
+    if (baseGame.currentPlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES || nominatedPlayers.length === 1) {
       return GameHistoryRecordVotingResults.INCONSEQUENTIAL;
     }
     return GameHistoryRecordVotingResults.TIE;
@@ -164,8 +164,8 @@ export class GameHistoryRecordService {
   ): GameHistoryRecordPlayVoting {
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(gameHistoryRecordToInsert.play.votes, baseGame);
     const gameHistoryRecordPlayVoting: GameHistoryRecordPlayVoting = {
-      result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, gameHistoryRecordToInsert),
-      nominatedPlayers,
+      result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, nominatedPlayers, gameHistoryRecordToInsert),
+      nominatedPlayers: nominatedPlayers.length ? nominatedPlayers : undefined,
     };
     return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
   }

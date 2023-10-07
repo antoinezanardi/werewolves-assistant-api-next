@@ -7,7 +7,7 @@ import { GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enu
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlay, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
-import { areGamePlaysEqual, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
+import { areGamePlaysEqual, canSurvivorsVote, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { areAllWerewolvesAlive, getExpectedPlayersToPlay, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
@@ -46,9 +46,12 @@ export class GamePlayService {
   }
 
   public getUpcomingDayPlays(game: Game): GamePlay[] {
-    const upcomingDayPlays: GamePlay[] = [createGamePlaySurvivorsVote()];
+    const upcomingDayPlays: GamePlay[] = [];
     if (this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase)) {
-      upcomingDayPlays.unshift(createGamePlaySurvivorsElectSheriff());
+      upcomingDayPlays.push(createGamePlaySurvivorsElectSheriff());
+    }
+    if (canSurvivorsVote(game)) {
+      upcomingDayPlays.push(createGamePlaySurvivorsVote());
     }
     return upcomingDayPlays;
   }

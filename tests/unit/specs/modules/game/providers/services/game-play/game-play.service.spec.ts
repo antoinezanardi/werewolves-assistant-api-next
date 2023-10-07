@@ -25,7 +25,7 @@ import { createFakeRolesGameOptions, createFakeSheriffElectionGameOptions, creat
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -153,15 +153,33 @@ describe("Game Play Service", () => {
   });
 
   describe("getUpcomingDayPlays", () => {
-    it("should get regular upcoming day plays when called.", () => {
-      const game = createFakeGame({ turn: 1, phase: GamePhases.DAY });
+    it("should get empty array when survivors can't vote.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+        createFakeHunterAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+      ];
+      const game = createFakeGame({ players, turn: 1, phase: GamePhases.DAY });
+
+      expect(services.gamePlay.getUpcomingDayPlays(game)).toStrictEqual<GamePlay[]>([]);
+    });
+
+    it("should get survivors vote game play when alive players can vote.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+      ];
+      const game = createFakeGame({ players, turn: 1, phase: GamePhases.DAY });
 
       expect(services.gamePlay.getUpcomingDayPlays(game)).toStrictEqual<GamePlay[]>([createFakeGamePlaySurvivorsVote()]);
     });
 
-    it("should get upcoming day plays with sheriff election when it's sheriff election time.", () => {
+    it("should get upcoming day plays with sheriff election and survivors vote when it's sheriff election time.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeHunterAlivePlayer(),
+      ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ isEnabled: true, electedAt: createFakeSheriffElectionGameOptions({ phase: GamePhases.DAY, turn: 3 }) }) }) });
-      const game = createFakeGame({ turn: 3, phase: GamePhases.DAY, options });
+      const game = createFakeGame({ players, turn: 3, phase: GamePhases.DAY, options });
       const expectedUpcomingPlays = [
         createFakeGamePlaySurvivorsElectSheriff(),
         createFakeGamePlaySurvivorsVote(),

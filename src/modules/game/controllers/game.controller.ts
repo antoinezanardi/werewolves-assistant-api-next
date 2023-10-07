@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+import { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import { ApiGameIdParam } from "@/modules/game/controllers/decorators/api-game-id-param.decorator";
 import { ApiGameNotFoundResponse } from "@/modules/game/controllers/decorators/api-game-not-found-response.decorator";
 import { GetGameByIdPipe } from "@/modules/game/controllers/pipes/get-game-by-id.pipe";
@@ -67,7 +68,10 @@ export class GameController {
   @Post(":id/play")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the \`${GameStatuses.PLAYING}\` status. Body parameters fields are required or optional based on the upcoming game play.` })
-  private async makeGamePlay(@Param("id", GetGameByIdPipe) game: Game, @Body() makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
+  private async makeGamePlay(
+    @Param("id", GetGameByIdPipe) game: Game,
+      @Body() makeGamePlayDto: MakeGamePlayDto,
+  ): Promise<Game> {
     return this.gameService.makeGamePlay(game, makeGamePlayDto);
   }
 
@@ -76,7 +80,10 @@ export class GameController {
   @ApiGameIdParam()
   @ApiResponse({ status: HttpStatus.OK, type: [GameHistoryRecord] })
   @ApiGameNotFoundResponse()
-  private async getGameHistory(@Param("id", GetGameByIdPipe) game: Game): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordService.getGameHistory(game._id);
+  private async getGameHistory(
+    @Param("id", GetGameByIdPipe) game: Game,
+      @Query() getGameHistoryDto: GetGameHistoryDto,
+  ): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordService.getGameHistory(game._id, getGameHistoryDto);
   }
 }

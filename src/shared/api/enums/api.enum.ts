@@ -6,4 +6,12 @@ enum ApiResources {
   HEALTH = "health",
 }
 
-export { ApiResources };
+enum ApiSortOrder {
+  ASC = "asc",
+  DESC = "desc",
+}
+
+export {
+  ApiResources,
+  ApiSortOrder,
+};

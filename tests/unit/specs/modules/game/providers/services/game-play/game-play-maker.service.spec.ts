@@ -34,6 +34,7 @@ describe("Game Play Maker Service", () => {
     playerKillerService: {
       killOrRevealPlayer: jest.SpyInstance;
       isAncientKillable: jest.SpyInstance;
+      getAncientLivesCountAgainstWerewolves: jest.SpyInstance;
     };
     gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
     unexpectedExceptionFactory: {
@@ -46,6 +47,7 @@ describe("Game Play Maker Service", () => {
       playerKillerService: {
         killOrRevealPlayer: jest.fn(),
         isAncientKillable: jest.fn(),
+        getAncientLivesCountAgainstWerewolves: jest.fn(),
       },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
       unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
@@ -1665,7 +1667,7 @@ describe("Game Play Maker Service", () => {
       const game = createFakeGameWithCurrentPlay({ players });
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.isAncientKillable.mockReturnValue(false);
+      mocks.playerKillerService.getAncientLivesCountAgainstWerewolves.mockReturnValue(2);
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },
@@ -1683,7 +1685,7 @@ describe("Game Play Maker Service", () => {
       await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should change target side to werewolves when he's infected and killable as ancient.", async() => {
+    it("should change target side to werewolves when he's infected and ancient with only one life left.", async() => {
       const players: Player[] = [
         createFakeFoxAlivePlayer(),
         createFakeAncientAlivePlayer(),
@@ -1693,7 +1695,35 @@ describe("Game Play Maker Service", () => {
       const game = createFakeGameWithCurrentPlay({ players });
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.isAncientKillable.mockReturnValue(true);
+      mocks.playerKillerService.getAncientLivesCountAgainstWerewolves.mockReturnValue(1);
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should change target side to werewolves when he's infected and ancient with zero one life left.", async() => {
+      const players: Player[] = [
+        createFakeFoxAlivePlayer(),
+        createFakeAncientAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      mocks.playerKillerService.getAncientLivesCountAgainstWerewolves.mockReturnValue(0);
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },
