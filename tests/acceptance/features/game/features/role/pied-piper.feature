@@ -1,7 +1,9 @@
 @pied-piper-role
+
 Feature: 🪈 Pied Piper role
 
   Scenario: 🪈 Pied Piper charms but not call anymore nor doesn't win because he's infected
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
@@ -14,6 +16,9 @@ Feature: 🪈 Pied Piper role
     When the werewolves eat the player named Thomas
     Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be pied-piper to charm
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the pied piper charms the following players
       | name   |
@@ -87,6 +92,9 @@ Feature: 🪈 Pied Piper role
     When the vile father of wolves infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the game's current play should be pied-piper to charm
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the pied piper charms the following players
       | name   |

@@ -1,4 +1,5 @@
 @fox-role
+
 Feature: 🦊 Fox role
 
   Scenario: 🦊 Fox is powerless if he misses a werewolf of any kind
@@ -13,6 +14,9 @@ Feature: 🦊 Fox role
       | Thomas  | villager              |
       | Coco    | idiot                 |
     Then the game's current play should be fox to sniff
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the fox sniffs the player named Doudou
     Then the player named Antoine should not have the active powerless from fox attribute
@@ -56,6 +60,9 @@ Feature: 🦊 Fox role
       | Thomas  | villager              |
       | Coco    | idiot                 |
     Then the game's current play should be fox to sniff
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the fox sniffs the player named Juju
     Then the player named Antoine should not have the active powerless from fox attribute

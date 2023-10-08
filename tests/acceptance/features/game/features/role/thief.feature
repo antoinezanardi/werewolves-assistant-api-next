@@ -1,7 +1,9 @@
 @thief-role
+
 Feature: 👺 Thief role
 
   Scenario: 👺 Thief steals the seer role
+
     Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -9,6 +11,9 @@ Feature: 👺 Thief role
       | JB      | werewolf |
       | Thomas  | witch    |
     Then the game's current play should be thief to choose-card
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the thief chooses card with role seer
     Then the player named Antoine should be currently a seer and originally a thief
@@ -19,6 +24,7 @@ Feature: 👺 Thief role
     And the game's current play should be werewolves to eat
 
   Scenario: 👺 Thief can skip his turn if he wants
+
     Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -26,11 +32,15 @@ Feature: 👺 Thief role
       | JB      | werewolf |
       | Thomas  | witch    |
     Then the game's current play should be thief to choose-card
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
   Scenario: 👺 Thief can skip his turn if he wants even if all his cards are werewolves with good option
+
     Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with options described in file no-sheriff-option.json, thief-can-skip-even-with-full-werewolves-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -38,11 +48,15 @@ Feature: 👺 Thief role
       | JB      | werewolf |
       | Thomas  | witch    |
     Then the game's current play should be thief to choose-card
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
   Scenario: 👺 Thief can choose between more than two cards with good options
+
     Given a created game with additional cards described in file five-additional-cards-for-thief.json and with options described in file no-sheriff-option.json, thief-has-five-additional-cards-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |

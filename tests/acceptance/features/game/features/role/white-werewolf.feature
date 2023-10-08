@@ -1,7 +1,9 @@
 @white-werewolf-role
+
 Feature: 🐺🦴White Werewolf role
 
   Scenario: 🐺🦴White Werewolf can eat or skip every other night an ally
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role              |
       | Antoine | villager          |
@@ -19,6 +21,9 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Antoine
     Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
+    And the game's current play should be played by the following players
+      | name    |
+      | Olivia  |
 
     When the player or group skips his turn
     Then the game's current play should be survivors to vote
@@ -54,6 +59,9 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Elsa
     Then the player named Elsa should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
+    And the game's current play should be played by the following players
+      | name    |
+      | Olivia  |
 
     When the white werewolf eats the player named JB
     Then the player named JB should be murdered by white-werewolf from eaten
@@ -83,6 +91,9 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Thomas
     Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
+    And the game's current play should be played by the following players
+      | name    |
+      | Olivia  |
 
     When the player or group skips his turn
     Then the player named Thomas should be murdered by werewolves from eaten
@@ -106,6 +117,9 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Antoine
     Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
+    And the game's current play should be played by the following players
+      | name    |
+      | Olivia  |
 
     When the player or group skips his turn
     Then the game's current play should be survivors to vote
@@ -121,6 +135,9 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Antoine
     Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
+    And the game's current play should be played by the following players
+      | name    |
+      | Olivia  |
 
     When the white werewolf eats the player named JB
     Then the player named Antoine should be murdered by werewolves from eaten

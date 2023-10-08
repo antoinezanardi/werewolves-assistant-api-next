@@ -1,4 +1,5 @@
 @dog-wolf-role
+
 Feature: 🐶 Dog Wolf role
 
   Scenario: 🐶 Dog Wolf chooses the villagers side
@@ -10,6 +11,9 @@ Feature: 🐶 Dog Wolf role
       | Cecile  | villager |
       | David   | werewolf |
     Then the game's current play should be dog-wolf to choose-side
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
     And the player named Antoine should be on villagers current side and originally be on villagers side
 
     When the dog wolf chooses the villagers side
@@ -24,6 +28,9 @@ Feature: 🐶 Dog Wolf role
       | Cecile  | villager |
       | David   | werewolf |
     Then the game's current play should be dog-wolf to choose-side
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
     And the player named Antoine should be on villagers current side and originally be on villagers side
 
     When the dog wolf chooses the werewolves side
