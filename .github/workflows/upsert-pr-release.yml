@@ -46,6 +46,7 @@ jobs:
 
       - name: Merge main branch into develop branch 🤝
         run: |
+          git fetch --all
           git checkout main
           git pull origin main
           git checkout develop
