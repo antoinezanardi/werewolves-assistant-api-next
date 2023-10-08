@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - "develop"
-      - "fix/fix-upsert-pr-release-merge"
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
