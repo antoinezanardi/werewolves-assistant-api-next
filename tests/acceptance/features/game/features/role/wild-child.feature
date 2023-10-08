@@ -1,4 +1,5 @@
 @wild-child-role
+
 Feature: 🐒 Wild Child role
 
   Scenario: 🐒 Wild Child changes his side when his model dies
@@ -11,6 +12,9 @@ Feature: 🐒 Wild Child role
       | Maxime  | villager   |
     Then the game's current play should be wild-child to choose-model
     And the player named Antoine should be on villagers current side and originally be on villagers side
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the wild child chooses the player named Olivia as a model
     Then the player named Olivia should have the active worshiped from wild-child attribute

@@ -1,7 +1,9 @@
 @ancient-role
+
 Feature: 👴🏻 Ancient role
 
   Scenario: 👴🏻 Ancient makes all villagers loose powers if he dies from votes
+
     Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name      | role                  |
       | Antoine   | ancient               |
@@ -79,6 +81,7 @@ Feature: 👴🏻 Ancient role
     And nobody should have the active contaminated from rusty-sword-night attribute
 
   Scenario: 👴🏻 Ancient makes all villagers loose powers if he dies from the witch
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | ancient  |
@@ -108,6 +111,7 @@ Feature: 👴🏻 Ancient role
     Then the game's current play should be werewolves to eat
 
   Scenario: 👴🏻 Ancient makes all villagers loose powers if he dies from the hunter
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | ancient  |
@@ -137,6 +141,7 @@ Feature: 👴🏻 Ancient role
 
 
   Scenario: 👴🏻 Ancient doesn't makes all villagers loose powers if he dies from villagers with the right option
+
     Given a created game with options described in file no-sheriff-option.json, ancient-doesnt-take-revenge-option.json and with the following players
       | name    | role     |
       | Antoine | ancient  |
@@ -153,6 +158,7 @@ Feature: 👴🏻 Ancient role
     And the game's current play should be guard to protect
 
   Scenario: 👴🏻 Ancient has two lives against werewolves
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | ancient  |

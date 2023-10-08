@@ -3,6 +3,7 @@
 Feature: ⚖️ Stuttering Judge Role
 
   Scenario: ⚖️ Stuttering Judge chooses his sign and can ask for another vote when all voted
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -11,6 +12,9 @@ Feature: ⚖️ Stuttering Judge Role
       | Camille | villager         |
       | Thomas  | villager         |
     Then the game's current play should be stuttering-judge to choose-sign
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat
@@ -28,6 +32,7 @@ Feature: ⚖️ Stuttering Judge Role
 
 
   Scenario: ⚖️ Stuttering Judge chooses his sign and can ask for another vote even if all did not vote
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -36,6 +41,9 @@ Feature: ⚖️ Stuttering Judge Role
       | Camille | villager         |
       | Thomas  | villager         |
     Then the game's current play should be stuttering-judge to choose-sign
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat
@@ -48,6 +56,7 @@ Feature: ⚖️ Stuttering Judge Role
     Then the game's current play should be survivors to vote because stuttering-judge-request
 
   Scenario: ⚖️ Stuttering Judge can request more votes if options allow him
+
     Given a created game with options described in file no-sheriff-option.json, stuttering-judge-two-vote-requests-option.json and with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -56,6 +65,9 @@ Feature: ⚖️ Stuttering Judge Role
       | Camille | villager         |
       | Thomas  | villager         |
     Then the game's current play should be stuttering-judge to choose-sign
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat

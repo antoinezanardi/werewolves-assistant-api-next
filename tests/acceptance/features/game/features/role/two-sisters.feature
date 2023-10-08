@@ -1,7 +1,9 @@
 @two-sisters-role
+
 Feature: 👯‍ Two sisters role
 
   Scenario: 👯‍ Two sisters are called every other night and not called anymore if one dies
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role        |
       | Antoine | two-sisters |
@@ -11,6 +13,10 @@ Feature: 👯‍ Two sisters role
       | Maxime  | villager    |
       | Julien  | villager    |
     Then the game's current play should be two-sisters to meet-each-other
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+      | Olivia  |
 
     When the two sisters meet each other
     Then the game's current play should be werewolves to eat
@@ -28,6 +34,10 @@ Feature: 👯‍ Two sisters role
 
     When the player or group skips his turn
     Then the game's current play should be two-sisters to meet-each-other
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+      | Olivia  |
 
     When the two sisters meet each other
     Then the game's current play should be werewolves to eat
@@ -40,6 +50,7 @@ Feature: 👯‍ Two sisters role
     Then the game's current play should be werewolves to eat
 
   Scenario: 👯‍ Two sisters are called never called when options say they are not called at all
+
     Given a created game with options described in file no-sheriff-option.json, two-sisters-never-waking-up-option.json and with the following players
       | name    | role        |
       | Antoine | two-sisters |
@@ -51,6 +62,7 @@ Feature: 👯‍ Two sisters role
     Then the game's current play should be werewolves to eat
 
   Scenario: 👯‍ Two sisters wake up every night when options say they are called every night
+
     Given a created game with options described in file no-sheriff-option.json, two-sisters-waking-up-every-night-option.json and with the following players
       | name    | role        |
       | Antoine | two-sisters |
