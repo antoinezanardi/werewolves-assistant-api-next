@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
@@ -14,7 +15,7 @@ import { doesArrayRespectBounds } from "@/shared/validation/helpers/validation.h
   _id: false,
 })
 class GameHistoryRecordPlaySource {
-  @ApiProperty(GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES.name)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES.name as ApiPropertyOptions)
   @Prop({
     required: GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.name.required,
     enum: GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.name.enum,
@@ -22,7 +23,7 @@ class GameHistoryRecordPlaySource {
   @Expose()
   public name: GamePlaySourceName;
 
-  @ApiProperty(GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES.players)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES.players as ApiPropertyOptions)
   @Prop({
     required: GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.players.required,
     validate: [(players: Player[]): boolean => doesArrayRespectBounds(players, { minItems: GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.players.minItems }), "Path `play.source.players` length is less than minimum allowed value (1)."],
