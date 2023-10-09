@@ -1,17 +1,18 @@
 import { plainToInstance } from "class-transformer";
+import type { ReadonlyDeep } from "type-fest";
 
 import { RoleNames, RoleOrigins, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
 import { Role } from "@/modules/role/types/role.type";
 
-const DEFAULT_WEREWOLF_ROLE: Readonly<Role> = Object.freeze(plainToInstance(Role, {
+const DEFAULT_WEREWOLF_ROLE: ReadonlyDeep<Role> = plainToInstance(Role, {
   name: RoleNames.WEREWOLF,
   side: RoleSides.WEREWOLVES,
   type: RoleTypes.WEREWOLF,
   origin: RoleOrigins.CLASSIC,
   maxInGame: 99,
-}));
+});
 
-const WEREWOLF_ROLES: Readonly<Role[]> = plainToInstance(Role, [
+const WEREWOLF_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
   DEFAULT_WEREWOLF_ROLE,
   {
     name: RoleNames.BIG_BAD_WOLF,
@@ -37,17 +38,17 @@ const WEREWOLF_ROLES: Readonly<Role[]> = plainToInstance(Role, [
     maxInGame: 1,
     recommendedMinPlayers: 12,
   },
-]).map(role => Object.freeze(role));
+]);
 
-const DEFAULT_VILLAGER_ROLE: Readonly<Role> = Object.freeze(plainToInstance(Role, {
+const DEFAULT_VILLAGER_ROLE: ReadonlyDeep<Role> = plainToInstance(Role, {
   name: RoleNames.VILLAGER,
   side: RoleSides.VILLAGERS,
   type: RoleTypes.VILLAGER,
   origin: RoleOrigins.CLASSIC,
   maxInGame: 99,
-}));
+});
 
-const VILLAGER_ROLES: Readonly<Role[]> = plainToInstance(Role, [
+const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
   DEFAULT_VILLAGER_ROLE,
   {
     name: RoleNames.VILLAGER_VILLAGER,
@@ -209,12 +210,12 @@ const VILLAGER_ROLES: Readonly<Role[]> = plainToInstance(Role, [
     origin: RoleOrigins.THE_VILLAGE,
     maxInGame: 1,
   },
-]).map(role => Object.freeze(role));
+]);
 
-const ROLES: Readonly<Role[]> = plainToInstance(Role, [
+const ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
   ...WEREWOLF_ROLES,
   ...VILLAGER_ROLES,
-]).map(role => Object.freeze(role));
+]);
 
 export {
   ROLES,

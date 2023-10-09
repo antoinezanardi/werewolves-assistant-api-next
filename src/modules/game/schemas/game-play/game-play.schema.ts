@@ -30,6 +30,11 @@ class GamePlay {
   @Prop()
   @Expose()
   public cause?: GamePlayCauses;
+
+  @ApiProperty(GAME_PLAY_API_PROPERTIES.canBeSkipped)
+  @Prop()
+  @Expose()
+  public canBeSkipped?: boolean;
 }
 
 const GAME_PLAY_SCHEMA = SchemaFactory.createForClass(GamePlay);

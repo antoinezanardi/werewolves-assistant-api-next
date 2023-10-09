@@ -1,12 +1,13 @@
 import type { HydratedDocument } from "mongoose";
+import type { TupleToUnion } from "type-fest";
 
-import type { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
+import type { GAME_SOURCES } from "@/modules/game/constants/game.constant";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { RoleSides, RoleNames } from "@/modules/role/enums/role.enum";
+import type { RoleSides } from "@/modules/role/enums/role.enum";
 
 type GameDocument = HydratedDocument<Game>;
 
-type GameSource = PlayerAttributeNames.SHERIFF | PlayerGroups | RoleNames;
+type GameSource = TupleToUnion<typeof GAME_SOURCES>;
 
 type GetNearestPlayerOptions = { direction: "left" | "right"; playerSide?: RoleSides };
 

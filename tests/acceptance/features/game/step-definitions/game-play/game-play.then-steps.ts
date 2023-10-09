@@ -2,15 +2,15 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import type { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
-import type { GameSource } from "@/modules/game/types/game.type";
 
 import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 
 Then(
   /^the game's current play should be (?<source>.+?) to (?<action>.+?)(?: because (?<cause>.+?))?$/u,
-  function(this: CustomWorld, source: GameSource, action: GamePlayActions, cause: GamePlayCauses | null): void {
+  function(this: CustomWorld, source: GamePlaySourceName, action: GamePlayActions, cause: GamePlayCauses | null): void {
     expect(this.game.currentPlay?.source.name).toBe(source);
     expect(this.game.currentPlay?.action).toBe(action);
     if (cause !== null) {
@@ -26,3 +26,7 @@ Then(
     expect(this.game.currentPlay?.source.players).toStrictEqual(players);
   },
 );
+
+Then(/^the game's current play can(?<cantBeSkipped>not)? be skipped$/u, function(this: CustomWorld, canBeSkipped: string | null): void {
+  expect(this.game.currentPlay?.canBeSkipped).toStrictEqual(canBeSkipped === null);
+});

@@ -2,9 +2,9 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
+import { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import { GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema.constant";
 import { PLAYER_SCHEMA, Player } from "@/modules/game/schemas/player/player.schema";
-import { GameSource } from "@/modules/game/types/game.type";
 
 import { doesArrayRespectBounds } from "@/shared/validation/helpers/validation.helper";
 
@@ -20,7 +20,7 @@ class GameHistoryRecordPlaySource {
     enum: GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.name.enum,
   })
   @Expose()
-  public name: GameSource;
+  public name: GamePlaySourceName;
 
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES.players)
   @Prop({

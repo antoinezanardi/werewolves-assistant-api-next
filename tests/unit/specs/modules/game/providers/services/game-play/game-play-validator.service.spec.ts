@@ -24,7 +24,7 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions, createFakeThiefGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlay, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeDogWolfAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -1135,24 +1135,6 @@ describe("Game Play Validator Service", () => {
           validateGamePlayWitchTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWitchTargets }, "validateGamePlayWitchTargets").mockImplementation(),
         },
       };
-    });
-
-    it("should do nothing when game source doesn't have a validation method.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlay({ source: createFakeGamePlaySource({ name: RoleNames.IDIOT }) }) });
-      await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
-
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call sheriff validator when game current play is for the sheriff.", async() => {

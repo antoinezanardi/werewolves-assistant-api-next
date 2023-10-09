@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_SOURCE_VALUES } from "@/modules/game/constants/game.constant";
+import { GAME_SOURCES } from "@/modules/game/constants/game.constant";
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
@@ -98,7 +98,7 @@ function createFakePlayerDeathPotionByWitchDeath(playerDeath: Partial<PlayerDeat
 
 function createFakePlayerDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return plainToInstance(PlayerDeath, {
-    source: playerDeath.source ?? faker.helpers.arrayElement(Object.values(GAME_SOURCE_VALUES)),
+    source: playerDeath.source ?? faker.helpers.arrayElement(Object.values(GAME_SOURCES)),
     cause: playerDeath.cause ?? faker.helpers.arrayElement(Object.values(PlayerDeathCauses)),
     ...override,
   }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);

@@ -58,7 +58,7 @@ export class GamePlayService {
 
   public async getUpcomingNightPlays(game: CreateGameDto | Game): Promise<GamePlay[]> {
     const isFirstNight = game.turn === 1;
-    const eligibleNightPlays = GAME_PLAYS_NIGHT_ORDER.filter(play => isFirstNight || play.isFirstNightOnly !== true);
+    const eligibleNightPlays = GAME_PLAYS_NIGHT_ORDER.filter(play => isFirstNight || play.isFirstNightOnly !== true) as GamePlay[];
     const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase);
     const upcomingNightPlays: GamePlay[] = isSheriffElectionTime ? [createGamePlaySurvivorsElectSheriff()] : [];
     for (const eligibleNightPlay of eligibleNightPlays) {

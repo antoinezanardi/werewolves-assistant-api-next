@@ -1,6 +1,6 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { GAME_SOURCE_VALUES } from "@/modules/game/constants/game.constant";
+import { GAME_SOURCES } from "@/modules/game/constants/game.constant";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 
 const PLAYER_ATTRIBUTE_FIELDS_SPECS = Object.freeze({
@@ -12,7 +12,7 @@ const PLAYER_ATTRIBUTE_API_PROPERTIES: Record<keyof PlayerAttribute, ApiProperty
   name: { description: "Attribute's name on the player." },
   source: {
     description: "Which entity gave this attribute to the player",
-    enum: GAME_SOURCE_VALUES,
+    enum: GAME_SOURCES,
   },
   remainingPhases: {
     description: "Remaining time for this attribute before disappear. If not set, the attribute will remain forever on the player. Else, decreases after each `phase` if `activeAt` conditions are met or if `activeAt` is not set",

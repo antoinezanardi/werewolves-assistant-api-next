@@ -284,7 +284,7 @@ describe("Game Play Factory", () => {
         tata: "toto",
       };
 
-      expect(createGamePlaySource(gamePlaySource)).toStrictEqual<GamePlaySource>(plainToInstance(GamePlaySource, {
+      expect(createGamePlaySource(gamePlaySource as GamePlaySource)).toStrictEqual<GamePlaySource>(plainToInstance(GamePlaySource, {
         name: RoleNames.SEER,
         players: gamePlaySource.players,
       }));

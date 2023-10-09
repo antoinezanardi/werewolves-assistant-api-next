@@ -21,7 +21,7 @@ import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dt
 import { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeFoxGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayThiefChoosesCard, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayCharmedMeetEachOther } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
@@ -159,6 +159,28 @@ describe("Game Play Maker Service", () => {
       
       expect(localMocks.gamePlayMakerService.werewolvesEat).toHaveBeenCalledExactlyOnceWith(play, game);
     });
+    
+    it("should return game as is when it's lovers turn.", async() => {
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const game = createFakeGame({ currentPlay: createFakeGamePlayLoversMeetEachOther() });
+
+      await expect(services.gamePlayMaker.makeGamePlay(play, game)).resolves.toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when it's charmed people turn.", async() => {
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const game = createFakeGame({ currentPlay: createFakeGamePlayCharmedMeetEachOther() });
+
+      await expect(services.gamePlayMaker.makeGamePlay(play, game)).resolves.toStrictEqual<Game>(game);
+    });
+    
+    it("should call sheriffPlays method when it's sheriff's turn.", async() => {
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const game = createFakeGame({ currentPlay: createFakeGamePlaySheriffDelegates() });
+      await services.gamePlayMaker.makeGamePlay(play, game);
+
+      expect(localMocks.gamePlayMakerService.sheriffPlays).toHaveBeenCalledExactlyOnceWith(play, game);
+    });
 
     it("should call bigBadWolfEats method when it's big bad wolf's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
@@ -280,12 +302,25 @@ describe("Game Play Maker Service", () => {
       expect(localMocks.gamePlayMakerService.ravenMarks).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
-    it("should call sheriffPlays method when it's sheriff's turn.", async() => {
+    it("should return game as is when it's two sisters turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
-      const game = createFakeGame({ currentPlay: createFakeGamePlaySheriffDelegates() });
-      await services.gamePlayMaker.makeGamePlay(play, game);
+      const game = createFakeGame({ currentPlay: createFakeGamePlayTwoSistersMeetEachOther() });
 
-      expect(localMocks.gamePlayMakerService.sheriffPlays).toHaveBeenCalledExactlyOnceWith(play, game);
+      await expect(services.gamePlayMaker.makeGamePlay(play, game)).resolves.toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when it's three brothers turn.", async() => {
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const game = createFakeGame({ currentPlay: createFakeGamePlayThreeBrothersMeetEachOther() });
+
+      await expect(services.gamePlayMaker.makeGamePlay(play, game)).resolves.toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when it's stuttering judge turn.", async() => {
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const game = createFakeGame({ currentPlay: createFakeGamePlayStutteringJudgeChoosesSign() });
+
+      await expect(services.gamePlayMaker.makeGamePlay(play, game)).resolves.toStrictEqual<Game>(game);
     });
   });
 

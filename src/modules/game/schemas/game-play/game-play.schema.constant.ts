@@ -10,6 +10,7 @@ const GAME_PLAY_API_PROPERTIES: Readonly<Record<keyof GamePlay, ApiPropertyOptio
     example: GamePlayActions.VOTE,
   },
   cause: { description: "Why this play needs to be performed" },
+  canBeSkipped: { description: "Whether this play can be skipped or not. Only set for the current game play (first in the upcoming game plays)" },
 });
 
 export { GAME_PLAY_API_PROPERTIES };
