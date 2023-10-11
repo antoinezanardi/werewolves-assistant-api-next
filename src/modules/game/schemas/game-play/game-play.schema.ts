@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
+import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { GamePlaySource, GAME_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import { GAME_PLAY_API_PROPERTIES } from "@/modules/game/schemas/game-play/game-play.schema.constant";
 
@@ -30,6 +30,16 @@ class GamePlay {
   @Prop()
   @Expose()
   public cause?: GamePlayCauses;
+
+  @ApiProperty(GAME_PLAY_API_PROPERTIES.canBeSkipped)
+  @Prop()
+  @Expose()
+  public canBeSkipped?: boolean;
+
+  @ApiProperty(GAME_PLAY_API_PROPERTIES.occurrence)
+  @Prop({ required: true })
+  @Expose()
+  public occurrence: GamePlayOccurrences;
 }
 
 const GAME_PLAY_SCHEMA = SchemaFactory.createForClass(GamePlay);

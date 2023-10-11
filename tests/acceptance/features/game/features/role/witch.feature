@@ -17,6 +17,7 @@ Feature: 🪄 Witch role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play occurrence should be on-nights
 
     When the witch uses life potion on the player named Juju
     Then the player named Juju should be alive

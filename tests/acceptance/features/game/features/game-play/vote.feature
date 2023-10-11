@@ -20,6 +20,7 @@ Feature: 🗳️ Vote Game Play
       | Antoine |
       | JB      |
       | Thomas  |
+    And the game's current play occurrence should be on-days
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -57,6 +58,7 @@ Feature: 🗳️ Vote Game Play
       | Antoine |
       | JB      |
       | Thomas  |
+    And the game's current play occurrence should be consequential
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -184,6 +186,7 @@ Feature: 🗳️ Vote Game Play
     Then the player named JB should be murdered by survivors from vote
 
   Scenario: 🗳 Scapegoat is murdered in case of tie and makes the next votes skipped by banning everyone from voting
+
     Given a created game with the following players
       | name    | role      |
       | Antoine | werewolf  |
@@ -259,6 +262,7 @@ Feature: 🗳️ Vote Game Play
     Then the player named JB should be alive
     And the player named Thomas should be alive
     And the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play occurrence should be consequential
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -267,6 +271,7 @@ Feature: 🗳️ Vote Game Play
     Then the player named JB should be alive
     And the player named Thomas should be alive
     And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play occurrence should be consequential
 
     When the survivors vote with the following votes
       | voter | target |

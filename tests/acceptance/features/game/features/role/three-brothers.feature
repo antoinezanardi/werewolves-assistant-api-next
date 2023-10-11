@@ -18,6 +18,7 @@ Feature: 👨‍👨‍👦 Three Brothers role
       | Antoine |
       | Olivia  |
       | Thomas  |
+    And the game's current play occurrence should be on-nights
 
     When the three brothers meet each other
     Then the game's current play should be werewolves to eat

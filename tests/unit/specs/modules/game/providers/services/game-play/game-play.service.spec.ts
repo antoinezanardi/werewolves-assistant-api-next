@@ -2,17 +2,17 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import { GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
-import { PlayerGroups } from "@/modules/game/enums/player.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helper";
 import * as PlayerHelper from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -772,18 +772,18 @@ describe("Game Play Service", () => {
       expect(localMocks.gamePlayService.isPiedPiperGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
+    it("should return false when game plays source group is villagers.", () => {
+      const gameDto = createFakeCreateGameDto();
+      const gamePlay = createFakeGamePlay({ source: createFakeGamePlaySource({ name: RoleSides.VILLAGERS as unknown as GamePlaySourceName }) });
+
+      expect(services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).toBe(false);
+    });
+
     it("should return true when game plays source group is werewolves and game is dto.", () => {
       const gameDto = createFakeCreateGameDto();
       const gamePlay = createFakeGamePlayWerewolvesEat();
 
       expect(services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).toBe(true);
-    });
-
-    it("should return false when game plays source group is villagers and game is dto.", () => {
-      const gameDto = createFakeCreateGameDto();
-      const gamePlay = createFakeGamePlayWerewolvesEat({ source: createFakeGamePlaySource({ name: PlayerGroups.VILLAGERS }) });
-
-      expect(services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](gameDto, gamePlay)).toBe(false);
     });
 
     it("should return false when game plays source group is werewolves and all are powerless.", () => {

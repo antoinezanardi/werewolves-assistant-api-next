@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
 
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
@@ -18,7 +19,6 @@ import type { PlayerRole } from "@/modules/game/schemas/player/player-role/playe
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
-import type { GameSource } from "@/modules/game/types/game.type";
 import { ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
@@ -26,8 +26,12 @@ import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/h
 
 @Injectable()
 export class GamePlayMakerService {
-  private readonly gameSourcePlayMethods: Partial<Record<GameSource, (play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay) => Game | Promise<Game>>> = {
+  private readonly gameSourcePlayMethods: Record<GamePlaySourceName, (play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay) => Game | Promise<Game>> = {
     [PlayerGroups.WEREWOLVES]: async(play, game) => this.werewolvesEat(play, game),
+    [PlayerGroups.SURVIVORS]: async(play, game) => this.survivorsPlay(play, game),
+    [PlayerGroups.LOVERS]: (play, game) => game,
+    [PlayerGroups.CHARMED]: (play, game) => game,
+    [PlayerAttributeNames.SHERIFF]: async(play, game) => this.sheriffPlays(play, game),
     [RoleNames.BIG_BAD_WOLF]: (play, game) => this.bigBadWolfEats(play, game),
     [RoleNames.WHITE_WEREWOLF]: (play, game) => this.whiteWerewolfEats(play, game),
     [RoleNames.SEER]: (play, game) => this.seerLooks(play, game),
@@ -41,9 +45,10 @@ export class GamePlayMakerService {
     [RoleNames.DOG_WOLF]: (play, game) => this.dogWolfChoosesSide(play, game),
     [RoleNames.SCAPEGOAT]: (play, game) => this.scapegoatBansVoting(play, game),
     [RoleNames.THIEF]: (play, game) => this.thiefChoosesCard(play, game),
-    [PlayerGroups.SURVIVORS]: async(play, game) => this.survivorsPlay(play, game),
     [RoleNames.RAVEN]: (play, game) => this.ravenMarks(play, game),
-    [PlayerAttributeNames.SHERIFF]: async(play, game) => this.sheriffPlays(play, game),
+    [RoleNames.TWO_SISTERS]: (play, game) => game,
+    [RoleNames.THREE_BROTHERS]: (play, game) => game,
+    [RoleNames.STUTTERING_JUDGE]: (play, game) => game,
   };
 
   public constructor(
@@ -57,9 +62,6 @@ export class GamePlayMakerService {
     }
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     const gameSourcePlayMethod = this.gameSourcePlayMethods[clonedGame.currentPlay.source.name];
-    if (gameSourcePlayMethod === undefined) {
-      return clonedGame;
-    }
     return gameSourcePlayMethod(play, clonedGame);
   }
 

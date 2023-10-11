@@ -14,6 +14,7 @@ Feature: 👺 Thief role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play occurrence should be first-night-only
 
     When the thief chooses card with role seer
     Then the player named Antoine should be currently a seer and originally a thief

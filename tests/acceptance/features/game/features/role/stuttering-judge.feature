@@ -15,6 +15,7 @@ Feature: ⚖️ Stuttering Judge Role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play occurrence should be first-night-only
 
     When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat
@@ -29,7 +30,7 @@ Feature: ⚖️ Stuttering Judge Role
       | Camille | Antoine |
     Then the player named Antoine should be murdered by survivors from vote
     And the game's current play should be survivors to vote because stuttering-judge-request
-
+    And the game's current play occurrence should be consequential
 
   Scenario: ⚖️ Stuttering Judge chooses his sign and can ask for another vote even if all did not vote
 

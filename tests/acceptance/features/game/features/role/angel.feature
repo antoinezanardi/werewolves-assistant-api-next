@@ -17,6 +17,7 @@ Feature: 👼 Angel role
       | Olivia  |
       | JB      |
       | Thomas  |
+    And the game's current play occurrence should be first-night-only
 
     When the survivors vote with the following votes
       | source  | vote   |

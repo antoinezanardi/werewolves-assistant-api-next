@@ -13,7 +13,7 @@ import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
-import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
+import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
 import { PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
@@ -37,13 +37,13 @@ import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "@te
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGameHistoryRecord } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeCompositionGameOptions } from "@tests/factories/game/schemas/game-options/composition-game-options.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayCupidCharms, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -94,9 +94,9 @@ describe("Game Controller", () => {
 
     it("should get 3 games when 3 games were created.", async() => {
       const games = [
-        createFakeGameWithCurrentPlay(),
-        createFakeGameWithCurrentPlay(),
-        createFakeGameWithCurrentPlay(),
+        createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() }),
+        createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() }),
+        createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() }),
       ];
       await models.game.create(games);
       const response = await app.inject({
@@ -266,7 +266,7 @@ describe("Game Controller", () => {
     });
 
     it("should get a game when id exists in base.", async() => {
-      const game = createFakeGameWithCurrentPlay();
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
       await models.game.create(game);
       const response = await app.inject({
         method: "GET",
@@ -565,6 +565,7 @@ describe("Game Controller", () => {
         currentPlay: {
           action: GamePlayActions.ELECT_SHERIFF,
           source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
+          occurrence: GamePlayOccurrences.ANYTIME,
         },
         upcomingPlays: toJSON([
           createFakeGamePlayCupidCharms(),
@@ -634,6 +635,7 @@ describe("Game Controller", () => {
         currentPlay: {
           action: GamePlayActions.ELECT_SHERIFF,
           source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
+          occurrence: GamePlayOccurrences.ANYTIME,
         },
         upcomingPlays: toJSON([
           createFakeGamePlayThiefChoosesCard(),
@@ -737,7 +739,7 @@ describe("Game Controller", () => {
     });
 
     it("should get a bad request error when game doesn't have playing status.", async() => {
-      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.CANCELED });
+      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.CANCELED, currentPlay: createFakeGamePlayDogWolfChoosesSide() });
       await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
@@ -753,7 +755,7 @@ describe("Game Controller", () => {
     });
 
     it("should update game status to canceled when called.", async() => {
-      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.PLAYING });
+      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.PLAYING, currentPlay: createFakeGamePlayDogWolfChoosesSide() });
       await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
@@ -831,6 +833,7 @@ describe("Game Controller", () => {
       ]);
       const game = createFakeGameWithCurrentPlay({
         status: GameStatuses.PLAYING,
+        currentPlay: createFakeGamePlayDogWolfChoosesSide(),
         upcomingPlays: [createFakeGamePlaySurvivorsVote()],
         players,
       });
@@ -1029,12 +1032,13 @@ describe("Game Controller", () => {
     });
 
     it("should return no game history records when game doesn't have any.", async() => {
-      const game = createFakeGameWithCurrentPlay();
-      const secondGame = createFakeGameWithCurrentPlay();
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const secondGame = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.BIG_BAD_WOLF }) });
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId: game._id }),
-        createFakeGameHistoryRecord({ gameId: game._id }),
-        createFakeGameHistoryRecord({ gameId: game._id }),
+        createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay }),
+        createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay }),
       ];
       await models.game.insertMany([game, secondGame]);
       await models.gameHistoryRecord.insertMany(gameHistoryRecords);
@@ -1049,12 +1053,13 @@ describe("Game Controller", () => {
     });
 
     it("should return 3 game history records when game have 3 records.", async() => {
-      const game = createFakeGameWithCurrentPlay();
-      const secondGame = createFakeGameWithCurrentPlay();
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const secondGame = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.BIG_BAD_WOLF }) });
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2022-01-01") }),
-        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2023-01-01") }),
-        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2024-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay, createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay, createdAt: new Date("2023-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay, createdAt: new Date("2024-01-01") }),
       ];
       await models.game.insertMany([game, secondGame]);
       await models.gameHistoryRecord.insertMany(gameHistoryRecords);
@@ -1082,13 +1087,14 @@ describe("Game Controller", () => {
     });
 
     it("should return last recent game history record when limit is 1 and order is desc.", async() => {
-      const game = createFakeGameWithCurrentPlay();
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
       const getGameHistoryDto = createFakeGetGameHistoryDto({ limit: 1, order: ApiSortOrder.DESC });
-      const secondGame = createFakeGameWithCurrentPlay();
+      const secondGame = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.BIG_BAD_WOLF }) });
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2022-01-01") }),
-        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2023-01-01") }),
-        createFakeGameHistoryRecord({ gameId: game._id, createdAt: new Date("2024-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay, createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay, createdAt: new Date("2023-01-01") }),
+        createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay, createdAt: new Date("2024-01-01") }),
       ];
       await models.game.insertMany([game, secondGame]);
       await models.gameHistoryRecord.insertMany(gameHistoryRecords);
