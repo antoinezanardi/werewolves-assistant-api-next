@@ -17,6 +17,7 @@
 /node_modules/
 
 /.idea/
+/.run/
 /.github/
 /.husky/
 /config/

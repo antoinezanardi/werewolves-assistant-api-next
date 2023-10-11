@@ -245,6 +245,12 @@ npm run script:create-branch
 npm run script:create-pull-request
 ```
 
+### 📣 To all IntelliJ IDEs users (IntelliJ, Webstorm, PHPStorm, etc.)
+
+All the above commands are available in the **.run directory** at the root of the project. 
+
+You can add them as **run configurations** in your IDE.
+
 ## <a name="license">©️ License</a>
 
 This project is licensed under the [MIT License](http://opensource.org/licenses/MIT).
