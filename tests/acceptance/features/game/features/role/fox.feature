@@ -17,6 +17,7 @@ Feature: 🦊 Fox role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play occurrence should be on-nights
 
     When the fox sniffs the player named Doudou
     Then the player named Antoine should not have the active powerless from fox attribute

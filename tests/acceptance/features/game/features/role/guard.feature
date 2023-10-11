@@ -32,6 +32,7 @@ Feature: 🛡️ Guard role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play occurrence should be on-nights
 
     When the guard protects the player named Nana
     Then the player named Nana should have the active protected from guard attribute

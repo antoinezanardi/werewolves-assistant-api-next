@@ -24,6 +24,7 @@ Feature: 🐺👹 Big Bad Wolf role
     And the game's current play should be played by the following players
       | name   |
       | Olivia |
+    And the game's current play occurrence should be on-nights
 
     When the big bad wolf eats the player named Thomas
     Then the player named Thomas should have the active eaten from big-bad-wolf attribute

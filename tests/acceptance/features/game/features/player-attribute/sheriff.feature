@@ -19,6 +19,7 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  |
       | JB      |
       | Babou   |
+    And the game's current play occurrence should be anytime
 
     When the survivors elect sheriff with the following votes
       | voter   | target |
@@ -186,6 +187,7 @@ Feature: 🎖️ Sheriff player attribute
     And the game's current play should be played by the following players
       | name   |
       | Thomas |
+    And the game's current play occurrence should be consequential
 
     When the sheriff delegates his role to the player named Olivia
     Then the player named Olivia should have the active sheriff from sheriff attribute

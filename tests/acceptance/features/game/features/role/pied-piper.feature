@@ -19,6 +19,7 @@ Feature: 🪈 Pied Piper role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play occurrence should be on-nights
 
     When the pied piper charms the following players
       | name   |
@@ -33,6 +34,7 @@ Feature: 🪈 Pied Piper role
       | name   |
       | Olivia |
       | Thomas |
+    And the game's current play occurrence should be on-nights
 
     When the player or group skips his turn
     Then the game's current play should be survivors to vote

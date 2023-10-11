@@ -2,8 +2,8 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
+import type { GamePlayOccurrences, GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
-import type { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 
 import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -27,6 +27,10 @@ Then(
   },
 );
 
+Then(/^the game's current play occurrence should be (?<occurrence>first-night-only|on-nights|on-days|anytime|consequential)$/u, function(this: CustomWorld, occurrence: GamePlayOccurrences): void {
+  expect(this.game.currentPlay?.occurrence).toBe(occurrence);
+});
+
 Then(/^the game's current play can(?<cantBeSkipped>not)? be skipped$/u, function(this: CustomWorld, canBeSkipped: string | null): void {
-  expect(this.game.currentPlay?.canBeSkipped).toStrictEqual(canBeSkipped === null);
+  expect(this.game.currentPlay?.canBeSkipped).toBe(canBeSkipped === null);
 });

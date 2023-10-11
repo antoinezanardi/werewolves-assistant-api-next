@@ -15,6 +15,7 @@ Feature: 🐒 Wild Child role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play occurrence should be first-night-only
 
     When the wild child chooses the player named Olivia as a model
     Then the player named Olivia should have the active worshiped from wild-child attribute

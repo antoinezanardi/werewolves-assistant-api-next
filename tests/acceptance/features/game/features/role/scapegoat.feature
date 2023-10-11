@@ -37,6 +37,7 @@ Feature: 🐐 Scapegoat role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play occurrence should be consequential
 
     When the scapegoat bans from vote the following players
       | name   |
