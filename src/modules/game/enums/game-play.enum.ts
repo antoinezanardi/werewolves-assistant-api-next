@@ -25,6 +25,14 @@ enum GamePlayCauses {
   ANGEL_PRESENCE = "angel-presence",
 }
 
+enum GamePlayOccurrences {
+  FIRST_NIGHT_ONLY = "first-night-only",
+  ON_NIGHTS = "on-night",
+  ON_DAYS = "on-days",
+  ANYTIME = "anytime",
+  CONSEQUENTIAL = "consequential",
+}
+
 enum WitchPotions {
   LIFE = "life",
   DEATH = "death",
@@ -33,5 +41,6 @@ enum WitchPotions {
 export {
   GamePlayActions,
   GamePlayCauses,
+  GamePlayOccurrences,
   WitchPotions,
 };

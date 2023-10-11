@@ -13,7 +13,7 @@ import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
-import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
+import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
 import { PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
@@ -565,6 +565,7 @@ describe("Game Controller", () => {
         currentPlay: {
           action: GamePlayActions.ELECT_SHERIFF,
           source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
+          occurrence: GamePlayOccurrences.ANYTIME,
         },
         upcomingPlays: toJSON([
           createFakeGamePlayCupidCharms(),
@@ -634,6 +635,7 @@ describe("Game Controller", () => {
         currentPlay: {
           action: GamePlayActions.ELECT_SHERIFF,
           source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
+          occurrence: GamePlayOccurrences.ANYTIME,
         },
         upcomingPlays: toJSON([
           createFakeGamePlayThiefChoosesCard(),
