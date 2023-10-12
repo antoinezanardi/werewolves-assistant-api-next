@@ -1,10 +1,11 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
 import { GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema.constant";
 import { WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { Player, PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
+import { Player } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
   versionKey: false,
@@ -12,25 +13,19 @@ import { Player, PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.sche
   _id: false,
 })
 class GameHistoryRecordPlayTarget {
-  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.player)
-  @Prop({
-    required: GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.player.required,
-    type: PLAYER_SCHEMA,
-  })
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.player as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.player)
   @Type(() => Player)
   @Expose()
   public player: Player;
 
-  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.isInfected)
-  @Prop({ required: GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.isInfected.required })
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.isInfected as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.isInfected)
   @Expose()
   public isInfected?: boolean;
 
-  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.drankPotion)
-  @Prop({
-    required: GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.drankPotion.required,
-    enum: GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.drankPotion.enum,
-  })
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.drankPotion as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.drankPotion)
   @Expose()
   public drankPotion?: WitchPotions;
 }

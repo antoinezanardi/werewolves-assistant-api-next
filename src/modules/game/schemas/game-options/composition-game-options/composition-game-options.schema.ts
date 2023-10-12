@@ -1,4 +1,6 @@
+import type { PropOptions } from "@nestjs/mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,8 +12,8 @@ import { COMPOSITION_GAME_OPTIONS_API_PROPERTIES, COMPOSITION_GAME_OPTIONS_FIELD
   _id: false,
 })
 class CompositionGameOptions {
-  @ApiProperty(COMPOSITION_GAME_OPTIONS_API_PROPERTIES.isHidden)
-  @Prop({ default: COMPOSITION_GAME_OPTIONS_FIELDS_SPECS.isHidden.default })
+  @ApiProperty(COMPOSITION_GAME_OPTIONS_API_PROPERTIES.isHidden as ApiPropertyOptions)
+  @Prop(COMPOSITION_GAME_OPTIONS_FIELDS_SPECS.isHidden as PropOptions)
   @Expose()
   public isHidden: boolean;
 }

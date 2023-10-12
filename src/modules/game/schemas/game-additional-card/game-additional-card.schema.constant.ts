@@ -1,14 +1,17 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
+import type { ReadonlyDeep } from "type-fest";
 
 import { GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-const GAME_ADDITIONAL_CARDS_FIELDS_SPECS: Readonly<Record<keyof GameAdditionalCard, ApiPropertyOptions>> = Object.freeze({
+import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helper";
+
+const GAME_ADDITIONAL_CARDS_FIELDS_SPECS = {
   _id: { required: true },
   roleName: {
     required: true,
-    enum: RoleNames,
+    enum: Object.values(RoleNames),
   },
   recipient: {
     required: true,
@@ -18,26 +21,26 @@ const GAME_ADDITIONAL_CARDS_FIELDS_SPECS: Readonly<Record<keyof GameAdditionalCa
     required: true,
     default: false,
   },
-});
+} satisfies Record<keyof GameAdditionalCard, ApiPropertyOptions>;
 
-const GAME_ADDITIONAL_CARDS_API_PROPERTIES: Readonly<Record<keyof GameAdditionalCard, ApiPropertyOptions>> = Object.freeze({
+const GAME_ADDITIONAL_CARDS_API_PROPERTIES: ReadonlyDeep<Record<keyof GameAdditionalCard, ApiPropertyOptions>> = {
   _id: {
     description: "Game additional card Mongo Object Id",
-    ...GAME_ADDITIONAL_CARDS_FIELDS_SPECS._id,
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_ADDITIONAL_CARDS_FIELDS_SPECS._id),
   },
   roleName: {
     description: `Game additional card role name. If \`recipient\` is \`${RoleNames.THIEF}\`, possible values are : ${GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES.toString()}`,
-    ...GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName,
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName),
   },
   recipient: {
     description: "Game additional card recipient",
-    ...GAME_ADDITIONAL_CARDS_FIELDS_SPECS.recipient,
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.recipient),
   },
   isUsed: {
     description: "If set to `true`, the card has been used by its recipient",
-    ...GAME_ADDITIONAL_CARDS_FIELDS_SPECS.isUsed,
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.isUsed),
   },
-});
+};
 
 export {
   GAME_ADDITIONAL_CARDS_FIELDS_SPECS,
