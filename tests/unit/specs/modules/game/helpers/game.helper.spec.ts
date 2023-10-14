@@ -692,6 +692,21 @@ describe("Game Helper", () => {
       expect(getNearestAliveNeighbor(players[4]._id, game, options)).toBeUndefined();
     });
 
+    it("should return undefined when the player is dead.", () => {
+      const players = [
+        createFakeVillagerAlivePlayer({ position: 5, isAlive: false }),
+        createFakeVillagerAlivePlayer({ position: 3 }),
+        createFakeWerewolfAlivePlayer({ position: 0, isAlive: false }),
+        createFakeVillagerAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 4 }),
+        createFakeWerewolfAlivePlayer({ position: 2, isAlive: false }),
+      ];
+      const game = createFakeGame({ players });
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
+
+      expect(getNearestAliveNeighbor(players[2]._id, game, options)).toBeUndefined();
+    });
+
     it("should return undefined when there are no alive players.", () => {
       const players = [
         createFakeVillagerAlivePlayer({ position: 5, isAlive: false }),
