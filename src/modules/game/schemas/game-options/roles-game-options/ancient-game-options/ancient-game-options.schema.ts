@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,17 +11,13 @@ import { ANCIENT_GAME_OPTIONS_API_PROPERTIES, ANCIENT_GAME_OPTIONS_FIELDS_SPECS 
   _id: false,
 })
 class AncientGameOptions {
-  @ApiProperty(ANCIENT_GAME_OPTIONS_API_PROPERTIES.livesCountAgainstWerewolves)
-  @Prop({
-    default: ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves.default,
-    min: ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves.minimum,
-    max: ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves.maximum,
-  })
+  @ApiProperty(ANCIENT_GAME_OPTIONS_API_PROPERTIES.livesCountAgainstWerewolves as ApiPropertyOptions)
+  @Prop(ANCIENT_GAME_OPTIONS_FIELDS_SPECS.livesCountAgainstWerewolves)
   @Expose()
   public livesCountAgainstWerewolves: number;
 
-  @ApiProperty(ANCIENT_GAME_OPTIONS_API_PROPERTIES.doesTakeHisRevenge)
-  @Prop({ default: ANCIENT_GAME_OPTIONS_FIELDS_SPECS.doesTakeHisRevenge.default })
+  @ApiProperty(ANCIENT_GAME_OPTIONS_API_PROPERTIES.doesTakeHisRevenge as ApiPropertyOptions)
+  @Prop(ANCIENT_GAME_OPTIONS_FIELDS_SPECS.doesTakeHisRevenge)
   @Expose()
   public doesTakeHisRevenge: boolean;
 }

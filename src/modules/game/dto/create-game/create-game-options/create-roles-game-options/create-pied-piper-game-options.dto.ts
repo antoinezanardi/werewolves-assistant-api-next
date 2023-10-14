@@ -1,3 +1,4 @@
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsInt, IsOptional, Max, Min } from "class-validator";
 
@@ -7,17 +8,17 @@ class CreatePiedPiperGameOptionsDto {
   @ApiProperty({
     ...PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.charmedPeopleCountPerNight,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @IsInt()
-  @Min(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight.minimum)
-  @Max(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight.maximum)
+  @Min(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight.min)
+  @Max(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight.max)
   public charmedPeopleCountPerNight: number = PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight.default;
 
   @ApiProperty({
     ...PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfInfected,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
   public isPowerlessIfInfected: boolean = PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected.default;

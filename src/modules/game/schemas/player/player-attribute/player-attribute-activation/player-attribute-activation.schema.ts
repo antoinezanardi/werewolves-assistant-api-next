@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -11,16 +12,13 @@ import { GamePhases } from "@/modules/game/enums/game.enum";
   _id: false,
 })
 class PlayerAttributeActivation {
-  @ApiProperty(PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES.turn)
-  @Prop({
-    required: true,
-    min: PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS.turn.minimum,
-  })
+  @ApiProperty(PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES.turn as ApiPropertyOptions)
+  @Prop(PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS.turn)
   @Expose()
   public turn: number;
 
-  @ApiProperty(PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES.phase)
-  @Prop({ required: true })
+  @ApiProperty(PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES.phase as ApiPropertyOptions)
+  @Prop(PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS.phase)
   @Expose()
   public phase: GamePhases;
 }

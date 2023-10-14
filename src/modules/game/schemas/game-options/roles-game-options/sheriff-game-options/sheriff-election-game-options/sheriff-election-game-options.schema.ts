@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -11,16 +12,13 @@ import { GamePhases } from "@/modules/game/enums/game.enum";
   _id: false,
 })
 class SheriffElectionGameOptions {
-  @ApiProperty(SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES.turn)
-  @Prop({
-    default: SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.turn.default,
-    min: SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.turn.minimum,
-  })
+  @ApiProperty(SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES.turn as ApiPropertyOptions)
+  @Prop(SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.turn)
   @Expose()
   public turn: number;
 
-  @ApiProperty(SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES.phase)
-  @Prop({ default: SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.phase.default })
+  @ApiProperty(SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES.phase as ApiPropertyOptions)
+  @Prop(SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.phase)
   @Expose()
   public phase: GamePhases;
 }

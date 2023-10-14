@@ -1,29 +1,36 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
+import type { ReadonlyDeep } from "type-fest";
 
+import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 import { GAME_PLAY_SOURCE_NAMES } from "@/modules/game/constants/game-play/game-play.constant";
 import type { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 
-const GAME_PLAY_SOURCE_FIELDS_SPECS = Object.freeze<Record<keyof GamePlaySource, ApiPropertyOptions>>({
+import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helper";
+import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
+
+const GAME_PLAY_SOURCE_FIELDS_SPECS = {
   name: {
     required: true,
-    enum: GAME_PLAY_SOURCE_NAMES,
+    enum: Object.values(GAME_PLAY_SOURCE_NAMES),
   },
   players: {
     required: false,
+    type: [PLAYER_SCHEMA],
+    minItems: 1,
     default: undefined,
   },
-});
+} as const satisfies Record<keyof GamePlaySource, MongoosePropOptions>;
 
-const GAME_PLAY_SOURCE_API_PROPERTIES = Object.freeze<Record<keyof GamePlaySource, ApiPropertyOptions>>({
+const GAME_PLAY_SOURCE_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePlaySource, ApiPropertyOptions>> = {
   name: {
     description: "Source's name of the play",
-    ...GAME_PLAY_SOURCE_FIELDS_SPECS.name,
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SOURCE_FIELDS_SPECS.name),
   },
   players: {
     description: "Expected players who will make the play. Only set for the current play, not the upcoming one",
-    ...GAME_PLAY_SOURCE_FIELDS_SPECS.players,
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SOURCE_FIELDS_SPECS.players),
   },
-});
+};
 
 export {
   GAME_PLAY_SOURCE_FIELDS_SPECS,

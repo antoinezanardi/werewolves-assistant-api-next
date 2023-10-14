@@ -1,3 +1,4 @@
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
@@ -9,7 +10,7 @@ class CreateSheriffGameOptionsDto {
   @ApiProperty({
     ...SHERIFF_GAME_OPTIONS_API_PROPERTIES.isEnabled,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
   public isEnabled: boolean = SHERIFF_GAME_OPTIONS_FIELDS_SPECS.isEnabled.default;
@@ -17,7 +18,7 @@ class CreateSheriffGameOptionsDto {
   @ApiProperty({
     ...SHERIFF_GAME_OPTIONS_API_PROPERTIES.electedAt,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateSheriffElectionGameOptionsDto)
   @ValidateNested()
@@ -26,7 +27,7 @@ class CreateSheriffGameOptionsDto {
   @ApiProperty({
     ...SHERIFF_GAME_OPTIONS_API_PROPERTIES.hasDoubledVote,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
   public hasDoubledVote: boolean = SHERIFF_GAME_OPTIONS_FIELDS_SPECS.hasDoubledVote.default;

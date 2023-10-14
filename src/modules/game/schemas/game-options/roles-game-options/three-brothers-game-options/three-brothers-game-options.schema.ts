@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,12 +11,8 @@ import { THREE_BROTHERS_GAME_OPTIONS_API_PROPERTIES, THREE_BROTHERS_GAME_OPTIONS
   _id: false,
 })
 class ThreeBrothersGameOptions {
-  @ApiProperty(THREE_BROTHERS_GAME_OPTIONS_API_PROPERTIES.wakingUpInterval)
-  @Prop({
-    default: THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.default,
-    min: THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.minimum,
-    max: THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.maximum,
-  })
+  @ApiProperty(THREE_BROTHERS_GAME_OPTIONS_API_PROPERTIES.wakingUpInterval as ApiPropertyOptions)
+  @Prop(THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval)
   @Expose()
   public wakingUpInterval: number;
 }

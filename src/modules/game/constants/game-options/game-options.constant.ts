@@ -47,6 +47,6 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     },
     raven: { markPenalty: 2 },
   },
-} as const;
+};
 
 export { DEFAULT_GAME_OPTIONS };

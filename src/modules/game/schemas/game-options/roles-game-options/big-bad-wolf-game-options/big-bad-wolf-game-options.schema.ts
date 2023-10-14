@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,8 +11,8 @@ import { BIG_BAD_WOLF_GAME_OPTIONS_API_PROPERTIES, BIG_BAD_WOLF_GAME_OPTIONS_FIE
   _id: false,
 })
 class BigBadWolfGameOptions {
-  @ApiProperty(BIG_BAD_WOLF_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfWerewolfDies)
-  @Prop({ default: BIG_BAD_WOLF_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfWerewolfDies.default })
+  @ApiProperty(BIG_BAD_WOLF_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfWerewolfDies as ApiPropertyOptions)
+  @Prop(BIG_BAD_WOLF_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfWerewolfDies)
   @Expose()
   public isPowerlessIfWerewolfDies: boolean;
 }

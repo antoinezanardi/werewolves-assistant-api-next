@@ -1,31 +1,39 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
+import type { ReadonlyDeep } from "type-fest";
 
+import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 import { WitchPotions } from "@/modules/game/enums/game-play.enum";
 import type { GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
 
-const GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS = Object.freeze<Record<keyof GameHistoryRecordPlayTarget, ApiPropertyOptions>>({
-  player: { required: true },
+import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helper";
+import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
+
+const GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS = {
+  player: {
+    required: true,
+    type: PLAYER_SCHEMA,
+  },
   isInfected: { required: false },
   drankPotion: {
-    enum: WitchPotions,
     required: false,
+    enum: Object.values(WitchPotions),
   },
-});
+} as const satisfies Record<keyof GameHistoryRecordPlayTarget, MongoosePropOptions>;
 
-const GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES = Object.freeze<Record<keyof GameHistoryRecordPlayTarget, ApiPropertyOptions>>({
+const GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryRecordPlayTarget, ApiPropertyOptions>> = {
   player: {
     description: "Targeted player of this play",
-    ...GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.player,
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.player),
   },
   isInfected: {
     description: "Only if there is the `vile father of wolves` in the game and the action is eat from werewolves. If set to `true`, the target joined the werewolves side",
-    ...GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.isInfected,
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.isInfected),
   },
   drankPotion: {
     description: "Only if there is the `witch` in the game. The consequences depends on the type of potion",
-    ...GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.drankPotion,
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.drankPotion),
   },
-});
+};
 
 export {
   GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS,

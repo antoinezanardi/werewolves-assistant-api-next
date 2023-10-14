@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform, Type } from "class-transformer";
-import { SchemaTypes, Types } from "mongoose";
+import { Types } from "mongoose";
 
 import { GAME_HISTORY_RECORD_API_PROPERTIES, GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record.schema.constant";
 import { GamePhases } from "@/modules/game/enums/game.enum";
-import { GameHistoryRecordPlay, GAME_HISTORY_RECORD_PLAY_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import { PLAYER_SCHEMA, Player } from "@/modules/game/schemas/player/player.schema";
+import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+import { Player } from "@/modules/game/schemas/player/player.schema";
 
 import { toObjectId } from "@/shared/validation/transformers/validation.transformer";
 
@@ -15,21 +16,18 @@ import { toObjectId } from "@/shared/validation/transformers/validation.transfor
   versionKey: false,
 })
 class GameHistoryRecord {
-  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES._id)
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES._id as ApiPropertyOptions)
   @Transform(toObjectId)
   @Expose()
   public _id: Types.ObjectId;
 
-  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.gameId)
-  @Prop({
-    type: SchemaTypes.ObjectId,
-    required: GAME_HISTORY_RECORD_FIELDS_SPECS.gameId.required,
-  })
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.gameId as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.gameId)
   @Type(() => String)
   @Expose()
   public gameId: Types.ObjectId;
 
-  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.turn)
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.turn as ApiPropertyOptions)
   @Prop({
     min: GAME_HISTORY_RECORD_API_PROPERTIES.turn.minimum,
     required: GAME_HISTORY_RECORD_FIELDS_SPECS.turn.required,
@@ -37,49 +35,35 @@ class GameHistoryRecord {
   @Expose()
   public turn: number;
 
-  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.phase)
-  @Prop({
-    enum: GAME_HISTORY_RECORD_FIELDS_SPECS.phase.enum,
-    required: GAME_HISTORY_RECORD_FIELDS_SPECS.phase.required,
-  })
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.phase as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.phase)
   @Expose()
   public phase: GamePhases;
 
-  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.tick)
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.tick as ApiPropertyOptions)
   @Prop({ min: GAME_HISTORY_RECORD_API_PROPERTIES.tick.minimum })
   @Expose()
   public tick: number;
 
-  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.play)
-  @Prop({
-    required: GAME_HISTORY_RECORD_FIELDS_SPECS.play.required,
-    type: GAME_HISTORY_RECORD_PLAY_SCHEMA,
-  })
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.play as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.play)
   @Type(() => GameHistoryRecordPlay)
   @Expose()
   public play: GameHistoryRecordPlay;
 
-  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.revealedPlayers)
-  @Prop({
-    required: GAME_HISTORY_RECORD_FIELDS_SPECS.revealedPlayers.required,
-    type: [PLAYER_SCHEMA],
-    default: undefined,
-  })
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.revealedPlayers as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.revealedPlayers)
   @Type(() => Player)
   @Expose()
   public revealedPlayers?: Player[];
 
-  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.deadPlayers)
-  @Prop({
-    required: GAME_HISTORY_RECORD_FIELDS_SPECS.deadPlayers.required,
-    type: [PLAYER_SCHEMA],
-    default: undefined,
-  })
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.deadPlayers as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.deadPlayers)
   @Type(() => Player)
   @Expose()
   public deadPlayers?: Player[];
 
-  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.createdAt)
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.createdAt as ApiPropertyOptions)
   @Type(() => Date)
   @Expose()
   public createdAt: Date;

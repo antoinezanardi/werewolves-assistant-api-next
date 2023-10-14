@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform } from "class-transformer";
 import { Types } from "mongoose";
@@ -10,29 +11,23 @@ import { toObjectId } from "@/shared/validation/transformers/validation.transfor
 
 @Schema({ versionKey: false })
 class GameAdditionalCard {
-  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES._id)
+  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES._id as ApiPropertyOptions)
   @Transform(toObjectId)
   @Expose()
   public _id: Types.ObjectId;
 
-  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.roleName)
-  @Prop({
-    required: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName.required,
-    enum: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName.enum,
-  })
+  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.roleName as ApiPropertyOptions)
+  @Prop(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName)
   @Expose()
   public roleName: RoleNames;
 
-  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.recipient)
-  @Prop({
-    required: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.recipient.required,
-    enum: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.recipient.enum,
-  })
+  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.recipient as ApiPropertyOptions)
+  @Prop(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.recipient)
   @Expose()
   public recipient: RoleNames.THIEF;
 
-  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.isUsed)
-  @Prop({ default: GAME_ADDITIONAL_CARDS_FIELDS_SPECS.isUsed.default as boolean })
+  @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.isUsed as ApiPropertyOptions)
+  @Prop(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.isUsed)
   @Expose()
   public isUsed: boolean;
 }

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,8 +11,8 @@ import { LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES, LITTLE_GIRL_GAME_OPTIONS_SPECS
   _id: false,
 })
 class LittleGirlGameOptions {
-  @ApiProperty(LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES.isProtectedByGuard)
-  @Prop({ default: LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS.isProtectedByGuard.default })
+  @ApiProperty(LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES.isProtectedByGuard as ApiPropertyOptions)
+  @Prop(LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS.isProtectedByGuard)
   @Expose()
   public isProtectedByGuard: boolean;
 }

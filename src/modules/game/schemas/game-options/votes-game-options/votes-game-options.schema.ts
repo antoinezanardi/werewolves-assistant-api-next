@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,8 +11,8 @@ import { VOTES_GAME_OPTIONS_API_PROPERTIES, VOTES_GAME_OPTIONS_FIELDS_SPECS } fr
   _id: false,
 })
 class VotesGameOptions {
-  @ApiProperty(VOTES_GAME_OPTIONS_API_PROPERTIES.canBeSkipped)
-  @Prop({ default: VOTES_GAME_OPTIONS_FIELDS_SPECS.canBeSkipped.default })
+  @ApiProperty(VOTES_GAME_OPTIONS_API_PROPERTIES.canBeSkipped as ApiPropertyOptions)
+  @Prop(VOTES_GAME_OPTIONS_FIELDS_SPECS.canBeSkipped)
   @Expose()
   public canBeSkipped: boolean;
 }
