@@ -1,3 +1,4 @@
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
@@ -11,7 +12,7 @@ class CreateGameOptionsDto {
   @ApiProperty({
     ...GAME_OPTIONS_API_PROPERTIES.composition,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateCompositionGameOptionsDto)
   @ValidateNested()
@@ -20,7 +21,7 @@ class CreateGameOptionsDto {
   @ApiProperty({
     ...GAME_OPTIONS_API_PROPERTIES.votes,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateVotesGameOptionsDto)
   @ValidateNested()
@@ -29,7 +30,7 @@ class CreateGameOptionsDto {
   @ApiProperty({
     ...GAME_OPTIONS_API_PROPERTIES.roles,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateRolesGameOptionsDto)
   @ValidateNested()

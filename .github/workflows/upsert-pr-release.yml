@@ -43,6 +43,15 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+          fetch-depth: 0
+
+      - name: Merge main branch into develop branch 🤝
+        run: |
+          git fetch --all
+          git checkout main
+          git pull origin main
+          git checkout develop
+          git merge main
 
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3

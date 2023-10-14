@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
-import { ENVIRONMENTS } from "@/modules/config/env/enums/env.enum";
+import { Environnements } from "@/modules/config/env/enums/env.enum";
 
 class EnvironmentVariables {
-  @IsEnum(ENVIRONMENTS)
-  public ENVIRONMENT: ENVIRONMENTS;
+  @IsEnum(Environnements)
+  public ENVIRONMENT: Environnements;
 
   @IsString()
   @IsNotEmpty()

@@ -3,14 +3,15 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 
+import { RoleNames } from "@/modules/role/enums/role.enum";
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
-import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
-import type { GameSource } from "@/modules/game/types/game.type";
 import type { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enum";
@@ -129,7 +130,7 @@ describe("Game History Record Repository", () => {
         test: "players in play's source is empty",
       },
       {
-        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ source: { name: "Bad source" as GameSource, players: bulkCreateFakePlayers(1) } }) }),
+        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ source: { name: "Bad source" as GamePlaySourceName, players: bulkCreateFakePlayers(1) } }) }),
         errorMessage: "GameHistoryRecord validation failed: play.source.name: `Bad source` is not a valid enum value for path `name`.",
         test: "source in play's source is not in enum",
       },
@@ -155,7 +156,7 @@ describe("Game History Record Repository", () => {
     });
 
     it("should create history record when called.", async() => {
-      const gameHistoryRecordPlayToInsert = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ players: [createFakePlayer()] }) });
+      const gameHistoryRecordPlayToInsert = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.SEER, players: [createFakePlayer()] }) });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlayToInsert });
       const gameHistoryRecord = await repositories.gameHistoryRecord.create(gameHistoryRecordToInsert);
 
@@ -553,13 +554,14 @@ describe("Game History Record Repository", () => {
     it("should get 3 records when called with gameId, turn and phase.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
+      const play = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: PlayerGroups.WEREWOLVES }) });
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.DAY }),
-        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.NIGHT }),
-        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.DAY }),
-        createFakeGameHistoryRecord({ gameId, turn: 2, phase: GamePhases.DAY }),
-        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.DAY }),
-        createFakeGameHistoryRecord({ gameId: otherGameId, phase: GamePhases.DAY, turn: 1 }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.DAY, play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.NIGHT, play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.DAY, play }),
+        createFakeGameHistoryRecord({ gameId, turn: 2, phase: GamePhases.DAY, play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: GamePhases.DAY, play }),
+        createFakeGameHistoryRecord({ gameId: otherGameId, phase: GamePhases.DAY, turn: 1, play }),
       ];
       await populate(gameHistoryRecords);
       const records = await repositories.gameHistoryRecord.getGameHistoryPhaseRecords(gameId, 1, GamePhases.DAY);

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,12 +11,8 @@ import { RAVEN_GAME_OPTIONS_API_PROPERTIES, RAVEN_GAME_OPTIONS_FIELDS_SPECS } fr
   _id: false,
 })
 class RavenGameOptions {
-  @ApiProperty(RAVEN_GAME_OPTIONS_API_PROPERTIES.markPenalty)
-  @Prop({
-    default: RAVEN_GAME_OPTIONS_FIELDS_SPECS.markPenalty.default,
-    min: RAVEN_GAME_OPTIONS_FIELDS_SPECS.markPenalty.minimum,
-    max: RAVEN_GAME_OPTIONS_FIELDS_SPECS.markPenalty.maximum,
-  })
+  @ApiProperty(RAVEN_GAME_OPTIONS_API_PROPERTIES.markPenalty as ApiPropertyOptions)
+  @Prop(RAVEN_GAME_OPTIONS_FIELDS_SPECS.markPenalty)
   @Expose()
   public markPenalty: number;
 }

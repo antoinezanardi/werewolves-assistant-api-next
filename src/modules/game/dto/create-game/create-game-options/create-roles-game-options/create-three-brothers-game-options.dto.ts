@@ -1,3 +1,4 @@
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsOptional, Max, Min } from "class-validator";
 
@@ -7,11 +8,11 @@ class CreateThreeBrothersGameOptionsDto {
   @ApiProperty({
     ...THREE_BROTHERS_GAME_OPTIONS_API_PROPERTIES.wakingUpInterval,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @IsInt()
-  @Min(THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.minimum)
-  @Max(THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.maximum)
+  @Min(THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.min)
+  @Max(THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.max)
   public wakingUpInterval: number = THREE_BROTHERS_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.default;
 }
 

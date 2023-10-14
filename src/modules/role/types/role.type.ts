@@ -5,22 +5,34 @@ import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
 import { RoleNames, RoleOrigins, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
 
 class Role {
-  @ApiProperty({ description: "Role's name" })
+  @ApiProperty({
+    description: "Role's name",
+    enum: RoleNames,
+  })
   @IsEnum(RoleNames)
   @Expose()
   public name: RoleNames;
 
-  @ApiProperty({ description: "Role's side" })
+  @ApiProperty({
+    description: "Role's side",
+    enum: RoleSides,
+  })
   @IsEnum(RoleSides)
   @Expose()
   public side: RoleSides;
 
-  @ApiProperty({ description: "Role's type" })
+  @ApiProperty({
+    description: "Role's type",
+    enum: RoleTypes,
+  })
   @IsEnum(RoleTypes)
   @Expose()
   public type: RoleTypes;
 
-  @ApiProperty({ description: "Role's origin" })
+  @ApiProperty({
+    description: "Role's origin",
+    enum: RoleOrigins,
+  })
   @IsEnum(RoleOrigins)
   @Expose()
   public origin: RoleOrigins;

@@ -1,6 +1,6 @@
 import { plainToInstance } from "class-transformer";
 
-import { GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game-play/game-play.constant";
+import { GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constant";
 import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";

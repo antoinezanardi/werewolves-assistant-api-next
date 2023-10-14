@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Scapegoat Role" type="js.build_tools.npm" folderName="Cucumber Tags">
+    <package-json value="$PROJECT_DIR$/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="test:cucumber" />
+    </scripts>
+    <arguments value="-- --tags &quot;@scapegoat-role&quot;" />
+    <node-interpreter value="project" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,3 +1,4 @@
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, Equals, IsArray, IsOptional, ValidateNested } from "class-validator";
@@ -32,7 +33,7 @@ class CreateGameDto {
   @Equals(GAME_FIELDS_SPECS.phase.default)
   public phase: GamePhases = GAME_FIELDS_SPECS.phase.default;
 
-  @ApiProperty(GAME_API_PROPERTIES.players)
+  @ApiProperty(GAME_API_PROPERTIES.players as ApiPropertyOptions)
   @Transform(gamePlayersPositionTransformer)
   @Type(() => CreateGamePlayerDto)
   @ValidateNested({ each: true })
@@ -59,7 +60,7 @@ class CreateGameDto {
   @ApiProperty({
     ...GAME_API_PROPERTIES.additionalCards,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @Type(() => CreateGameAdditionalCardDto)
   @ValidateNested({ each: true })
   @AdditionalCardsPresence()
@@ -71,7 +72,7 @@ class CreateGameDto {
   @ApiProperty({
     ...GAME_API_PROPERTIES.options,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @Type(() => CreateGameOptionsDto)
   @ValidateNested()
   public options: CreateGameOptionsDto = new CreateGameOptionsDto();

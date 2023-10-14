@@ -9,6 +9,8 @@ import { PlayerAttributeService } from "@/modules/game/providers/services/player
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { RoleSides } from "@/modules/role/enums/role.enum";
 
+import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
+
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeBearTamerGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
@@ -32,6 +34,9 @@ describe("Game Phase Service", () => {
     gameHelper: {
       getNearestAliveNeighbor: jest.SpyInstance;
     };
+    unexpectedExceptionFactory: {
+      createCantFindPlayerUnexpectedException: jest.SpyInstance;
+    };
   };
 
   beforeEach(async() => {
@@ -46,6 +51,7 @@ describe("Game Phase Service", () => {
         getUpcomingDayPlays: jest.fn(),
       },
       gameHelper: { getNearestAliveNeighbor: jest.spyOn(GameHelper, "getNearestAliveNeighbor").mockImplementation() },
+      unexpectedExceptionFactory: { createCantFindPlayerUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerUnexpectedException").mockImplementation() },
     };
     
     const module: TestingModule = await Test.createTestingModule({
@@ -187,6 +193,15 @@ describe("Game Phase Service", () => {
   });
 
   describe("applyEndingNightPlayerAttributesOutcomesToPlayer", () => {
+    it("should create cant find player exception in case player is not found in game when called.", async() => {
+      const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] });
+      const game = createFakeGame({ players: [player] });
+      const interpolations = { gameId: game._id, playerId: player._id };
+      await services.gamePhase["applyEndingNightPlayerAttributesOutcomesToPlayer"](player, game);
+
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyEndingNightPlayerAttributesOutcomesToPlayer", interpolations);
+    });
+
     it("should do nothing when player doesn't have any ending night attributes.", async() => {
       const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] });
       const game = createFakeGame({ players: [player] });

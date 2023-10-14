@@ -2,6 +2,7 @@
 Feature: 🐺👹 Big Bad Wolf role
 
   Scenario: 🐺👹Big Bad Wolf eats every night but powerless if one werewolf dies
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |
@@ -23,6 +24,7 @@ Feature: 🐺👹 Big Bad Wolf role
     And the game's current play should be played by the following players
       | name   |
       | Olivia |
+    And the game's current play occurrence should be on-nights
 
     When the big bad wolf eats the player named Thomas
     Then the player named Thomas should have the active eaten from big-bad-wolf attribute
@@ -56,6 +58,7 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia |
 
   Scenario: 🐺👹Big Bad Wolf eats every night and not powerless if one werewolf dies
+
     Given a created game with options described in file no-sheriff-option.json, big-bad-wolf-not-powerless-if-werewolf-dies-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |
@@ -114,6 +117,7 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia |
 
   Scenario: 🐺👹Big Bad Wolf eats every night but his role is skipped if no targets
+
     Given a created game with options described in file no-sheriff-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |

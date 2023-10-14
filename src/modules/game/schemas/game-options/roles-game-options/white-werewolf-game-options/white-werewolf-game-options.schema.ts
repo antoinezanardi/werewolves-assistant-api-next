@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,12 +11,8 @@ import { WHITE_WEREWOLF_GAME_OPTIONS_API_PROPERTIES, WHITE_WEREWOLF_GAME_OPTIONS
   _id: false,
 })
 class WhiteWerewolfGameOptions {
-  @ApiProperty(WHITE_WEREWOLF_GAME_OPTIONS_API_PROPERTIES.wakingUpInterval)
-  @Prop({
-    default: WHITE_WEREWOLF_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.default,
-    min: WHITE_WEREWOLF_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.minimum,
-    max: WHITE_WEREWOLF_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval.maximum,
-  })
+  @ApiProperty(WHITE_WEREWOLF_GAME_OPTIONS_API_PROPERTIES.wakingUpInterval as ApiPropertyOptions)
+  @Prop(WHITE_WEREWOLF_GAME_OPTIONS_FIELDS_SPECS.wakingUpInterval)
   @Expose()
   public wakingUpInterval: number;
 }

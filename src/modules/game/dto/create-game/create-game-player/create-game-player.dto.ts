@@ -1,3 +1,4 @@
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiHideProperty, ApiProperty, IntersectionType, PartialType, PickType } from "@nestjs/swagger";
 import { Expose, Transform, Type } from "class-transformer";
 import { ValidateNested } from "class-validator";
@@ -14,7 +15,7 @@ class CreateGamePlayerDto extends IntersectionType(
   PickType(PartialType(GamePlayerBaseDto), ["position"] as const),
 ) {
   @Transform(playerRoleTransformer)
-  @ApiProperty(PLAYER_API_PROPERTIES.role)
+  @ApiProperty(PLAYER_API_PROPERTIES.role as ApiPropertyOptions)
   @Type(() => CreateGamePlayerRoleDto)
   @ValidateNested()
   @Expose()

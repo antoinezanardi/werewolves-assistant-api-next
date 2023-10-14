@@ -1,23 +1,33 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
+import type { ReadonlyDeep } from "type-fest";
 
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { SeerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options/seer-game-options.schema";
 
-const SEER_GAME_OPTIONS_FIELDS_SPECS = Object.freeze({
-  isTalkative: { default: DEFAULT_GAME_OPTIONS.roles.seer.isTalkative },
-  canSeeRoles: { default: DEFAULT_GAME_OPTIONS.roles.seer.canSeeRoles },
-});
+import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helper";
+import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
-const SEER_GAME_OPTIONS_API_PROPERTIES: Record<keyof SeerGameOptions, ApiPropertyOptions> = Object.freeze({
+const SEER_GAME_OPTIONS_FIELDS_SPECS = {
+  isTalkative: {
+    required: true,
+    default: DEFAULT_GAME_OPTIONS.roles.seer.isTalkative,
+  },
+  canSeeRoles: {
+    required: true,
+    default: DEFAULT_GAME_OPTIONS.roles.seer.canSeeRoles,
+  },
+} as const satisfies Record<keyof SeerGameOptions, MongoosePropOptions>;
+
+const SEER_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof SeerGameOptions, ApiPropertyOptions>> = {
   isTalkative: {
     description: "If set to `true`, the game master must say out loud what the `seer` saw during her night, otherwise, he must mime the seen role to the `seer`",
-    ...SEER_GAME_OPTIONS_FIELDS_SPECS.isTalkative,
+    ...convertMongoosePropOptionsToApiPropertyOptions(SEER_GAME_OPTIONS_FIELDS_SPECS.isTalkative),
   },
   canSeeRoles: {
     description: "If set to `true`, the seer can see the exact `role` of the target, otherwise, she only sees the `side`",
-    ...SEER_GAME_OPTIONS_FIELDS_SPECS.canSeeRoles,
+    ...convertMongoosePropOptionsToApiPropertyOptions(SEER_GAME_OPTIONS_FIELDS_SPECS.canSeeRoles),
   },
-});
+};
 
 export {
   SEER_GAME_OPTIONS_API_PROPERTIES,

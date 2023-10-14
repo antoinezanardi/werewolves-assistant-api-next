@@ -1,26 +1,27 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
 import { ROLES_GAME_OPTIONS_API_PROPERTIES, ROLES_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema.constant";
-import { AncientGameOptions, ANCIENT_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/ancient-game-options/ancient-game-options.schema";
-import { BearTamerGameOptions, BEAR_TAMER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
-import { BigBadWolfGameOptions, BIG_BAD_WOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
-import { DogWolfGameOptions, DOG_WOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
-import { FoxGameOptions, FOX_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options/fox-game-options.schema";
-import { GuardGameOptions, GUARD_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/guard-game-options/guard-game-options.schema";
-import { IdiotGameOptions, IDIOT_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
-import { LittleGirlGameOptions, LITTLE_GIRL_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options/little-girl-game-options.schema";
-import { PiedPiperGameOptions, PIED_PIPER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options/pied-piper-game-options.schema";
-import { RavenGameOptions, RAVEN_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/raven-game-options/raven-game-options.schema";
-import { SeerGameOptions, SEER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options/seer-game-options.schema";
-import { SheriffGameOptions, SHERIFF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
-import { StutteringJudgeGameOptions, STUTTERING_JUDGE_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/stuttering-judge-game-options/stuttering-judge-game-options.schema";
-import { ThiefGameOptions, THIEF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/thief-game-options/thief-game-options.schema";
-import { ThreeBrothersGameOptions, THREE_BROTHERS_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/three-brothers-game-options/three-brothers-game-options.schema";
-import { TwoSistersGameOptions, TWO_SISTERS_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/two-sisters-game-options/two-sisters-game-options.schema";
-import { WhiteWerewolfGameOptions, WHITE_WEREWOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/white-werewolf-game-options/white-werewolf-game-options.schema";
-import { WildChildGameOptions, WILD_CHILD_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options/wild-child-game-options.schema";
+import { AncientGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/ancient-game-options/ancient-game-options.schema";
+import { BearTamerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
+import { BigBadWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
+import { DogWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
+import { FoxGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options/fox-game-options.schema";
+import { GuardGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/guard-game-options/guard-game-options.schema";
+import { IdiotGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
+import { LittleGirlGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options/little-girl-game-options.schema";
+import { PiedPiperGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options/pied-piper-game-options.schema";
+import { RavenGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/raven-game-options/raven-game-options.schema";
+import { SeerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options/seer-game-options.schema";
+import { SheriffGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
+import { StutteringJudgeGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/stuttering-judge-game-options/stuttering-judge-game-options.schema";
+import { ThiefGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/thief-game-options/thief-game-options.schema";
+import { ThreeBrothersGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/three-brothers-game-options/three-brothers-game-options.schema";
+import { TwoSistersGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/two-sisters-game-options/two-sisters-game-options.schema";
+import { WhiteWerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/white-werewolf-game-options/white-werewolf-game-options.schema";
+import { WildChildGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options/wild-child-game-options.schema";
 
 @Schema({
   versionKey: false,
@@ -28,174 +29,120 @@ import { WildChildGameOptions, WILD_CHILD_GAME_OPTIONS_SCHEMA } from "@/modules/
   _id: false,
 })
 class RolesGameOptions {
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.doSkipCallIfNoTarget)
-  @Prop({ default: ROLES_GAME_OPTIONS_FIELDS_SPECS.doSkipCallIfNoTarget.default })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.doSkipCallIfNoTarget as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.doSkipCallIfNoTarget)
   @Expose()
   public doSkipCallIfNoTarget: boolean;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.areRevealedOnDeath)
-  @Prop({ default: ROLES_GAME_OPTIONS_FIELDS_SPECS.areRevealedOnDeath.default })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.areRevealedOnDeath as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.areRevealedOnDeath)
   @Expose()
   public areRevealedOnDeath: boolean;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.sheriff)
-  @Prop({
-    type: SHERIFF_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.sheriff as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.sheriff)
   @Type(() => SheriffGameOptions)
   @Expose()
   public sheriff: SheriffGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.bigBadWolf)
-  @Prop({
-    type: BIG_BAD_WOLF_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.bigBadWolf as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.bigBadWolf)
   @Type(() => BigBadWolfGameOptions)
   @Expose()
   public bigBadWolf: BigBadWolfGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.whiteWerewolf)
-  @Prop({
-    type: WHITE_WEREWOLF_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.whiteWerewolf as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.whiteWerewolf)
   @Type(() => WhiteWerewolfGameOptions)
   @Expose()
   public whiteWerewolf: WhiteWerewolfGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.seer)
-  @Prop({
-    type: SEER_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.seer as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.seer)
   @Type(() => SeerGameOptions)
   @Expose()
   public seer: SeerGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.littleGirl)
-  @Prop({
-    type: LITTLE_GIRL_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.littleGirl as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.littleGirl)
   @Type(() => LittleGirlGameOptions)
   @Expose()
   public littleGirl: LittleGirlGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.guard)
-  @Prop({
-    type: GUARD_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.guard as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.guard)
   @Type(() => GuardGameOptions)
   @Expose()
   public guard: GuardGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.ancient)
-  @Prop({
-    type: ANCIENT_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.ancient as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.ancient)
   @Type(() => AncientGameOptions)
   @Expose()
   public ancient: AncientGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.idiot)
-  @Prop({
-    type: IDIOT_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.idiot as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.idiot)
   @Type(() => IdiotGameOptions)
   @Expose()
   public idiot: IdiotGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.twoSisters)
-  @Prop({
-    type: TWO_SISTERS_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.twoSisters as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.twoSisters)
   @Type(() => TwoSistersGameOptions)
   @Expose()
   public twoSisters: TwoSistersGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.threeBrothers)
-  @Prop({
-    type: THREE_BROTHERS_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.threeBrothers as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.threeBrothers)
   @Type(() => ThreeBrothersGameOptions)
   @Expose()
   public threeBrothers: ThreeBrothersGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.fox)
-  @Prop({
-    type: FOX_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.fox as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.fox)
   @Type(() => FoxGameOptions)
   @Expose()
   public fox: FoxGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.bearTamer)
-  @Prop({
-    type: BEAR_TAMER_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.bearTamer as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.bearTamer)
   @Type(() => BearTamerGameOptions)
   @Expose()
   public bearTamer: BearTamerGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.stutteringJudge)
-  @Prop({
-    type: STUTTERING_JUDGE_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.stutteringJudge as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.stutteringJudge)
   @Type(() => StutteringJudgeGameOptions)
   @Expose()
   public stutteringJudge: StutteringJudgeGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.wildChild)
-  @Prop({
-    type: WILD_CHILD_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.wildChild as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.wildChild)
   @Type(() => WildChildGameOptions)
   @Expose()
   public wildChild: WildChildGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.dogWolf)
-  @Prop({
-    type: DOG_WOLF_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.dogWolf as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.dogWolf)
   @Type(() => DogWolfGameOptions)
   @Expose()
   public dogWolf: DogWolfGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.thief)
-  @Prop({
-    type: THIEF_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.thief as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.thief)
   @Type(() => ThiefGameOptions)
   @Expose()
   public thief: ThiefGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.piedPiper)
-  @Prop({
-    type: PIED_PIPER_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.piedPiper as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.piedPiper)
   @Type(() => PiedPiperGameOptions)
   @Expose()
   public piedPiper: PiedPiperGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.raven)
-  @Prop({
-    type: RAVEN_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.raven as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.raven)
   @Type(() => RavenGameOptions)
   @Expose()
   public raven: RavenGameOptions;

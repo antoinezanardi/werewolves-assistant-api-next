@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,12 +11,8 @@ import { STUTTERING_JUDGE_GAME_OPTIONS_API_PROPERTIES, STUTTERING_JUDGE_GAME_OPT
   _id: false,
 })
 class StutteringJudgeGameOptions {
-  @ApiProperty(STUTTERING_JUDGE_GAME_OPTIONS_API_PROPERTIES.voteRequestsCount)
-  @Prop({
-    default: STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS.voteRequestsCount.default,
-    min: STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS.voteRequestsCount.minimum,
-    max: STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS.voteRequestsCount.maximum,
-  })
+  @ApiProperty(STUTTERING_JUDGE_GAME_OPTIONS_API_PROPERTIES.voteRequestsCount as ApiPropertyOptions)
+  @Prop(STUTTERING_JUDGE_GAME_OPTIONS_FIELDS_SPECS.voteRequestsCount)
   @Expose()
   public voteRequestsCount: number;
 }

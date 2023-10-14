@@ -1,11 +1,12 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GAME_OPTIONS_API_PROPERTIES } from "@/modules/game/schemas/game-options/game-options.schema.constant";
-import { CompositionGameOptions, COMPOSITION_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/composition-game-options/composition-game-options.schema";
-import { RolesGameOptions, ROLES_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema";
-import { VotesGameOptions, VOTES_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/votes-game-options/votes-game-options.schema";
+import { GAME_OPTIONS_API_PROPERTIES, GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/game-options.schema.constant";
+import { CompositionGameOptions } from "@/modules/game/schemas/game-options/composition-game-options/composition-game-options.schema";
+import { RolesGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema";
+import { VotesGameOptions } from "@/modules/game/schemas/game-options/votes-game-options/votes-game-options.schema";
 
 @Schema({
   versionKey: false,
@@ -13,29 +14,20 @@ import { VotesGameOptions, VOTES_GAME_OPTIONS_SCHEMA } from "@/modules/game/sche
   _id: false,
 })
 class GameOptions {
-  @ApiProperty(GAME_OPTIONS_API_PROPERTIES.composition)
-  @Prop({
-    type: COMPOSITION_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(GAME_OPTIONS_API_PROPERTIES.composition as ApiPropertyOptions)
+  @Prop(GAME_OPTIONS_FIELDS_SPECS.composition)
   @Type(() => CompositionGameOptions)
   @Expose()
   public composition: CompositionGameOptions;
 
-  @ApiProperty(GAME_OPTIONS_API_PROPERTIES.votes)
-  @Prop({
-    type: VOTES_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(GAME_OPTIONS_API_PROPERTIES.votes as ApiPropertyOptions)
+  @Prop(GAME_OPTIONS_FIELDS_SPECS.votes)
   @Type(() => VotesGameOptions)
   @Expose()
   public votes: VotesGameOptions;
 
-  @ApiProperty(GAME_OPTIONS_API_PROPERTIES.roles)
-  @Prop({
-    type: ROLES_GAME_OPTIONS_SCHEMA,
-    default: () => ({}),
-  })
+  @ApiProperty(GAME_OPTIONS_API_PROPERTIES.roles as ApiPropertyOptions)
+  @Prop(GAME_OPTIONS_FIELDS_SPECS.roles)
   @Type(() => RolesGameOptions)
   @Expose()
   public roles: RolesGameOptions;

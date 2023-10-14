@@ -1,3 +1,4 @@
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsOptional } from "class-validator";
 
@@ -7,7 +8,7 @@ class CreateLittleGirlGameOptionsDto {
   @ApiProperty({
     ...LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES.isProtectedByGuard,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
   public isProtectedByGuard: boolean = LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS.isProtectedByGuard.default;

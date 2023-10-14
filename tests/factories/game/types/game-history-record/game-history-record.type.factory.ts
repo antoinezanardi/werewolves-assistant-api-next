@@ -14,8 +14,8 @@ import { createFakeGameHistoryRecordPlay } from "@tests/factories/game/schemas/g
 function createFakeGameHistoryRecordToInsert(gameHistoryRecordToInsert: Partial<GameHistoryRecordToInsert> = {}, override: object = {}): GameHistoryRecordToInsert {
   return plainToInstance(GameHistoryRecordToInsert, {
     gameId: gameHistoryRecordToInsert.gameId ?? createFakeObjectId(),
-    tick: gameHistoryRecordToInsert.tick ?? faker.number.int({ min: GAME_HISTORY_RECORD_FIELDS_SPECS.tick.minimum }),
-    turn: gameHistoryRecordToInsert.turn ?? faker.number.int({ min: GAME_HISTORY_RECORD_FIELDS_SPECS.turn.minimum }),
+    tick: gameHistoryRecordToInsert.tick ?? faker.number.int({ min: GAME_HISTORY_RECORD_FIELDS_SPECS.tick.min }),
+    turn: gameHistoryRecordToInsert.turn ?? faker.number.int({ min: GAME_HISTORY_RECORD_FIELDS_SPECS.turn.min }),
     phase: gameHistoryRecordToInsert.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
     play: createFakeGameHistoryRecordPlay(gameHistoryRecordToInsert.play),
     revealedPlayers: gameHistoryRecordToInsert.revealedPlayers ?? undefined,

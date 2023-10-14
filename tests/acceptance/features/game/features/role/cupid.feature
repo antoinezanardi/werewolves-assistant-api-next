@@ -1,4 +1,5 @@
 @cupid-role
+
 Feature: 💘 Cupid role
 
   Scenario: 💘 Cupid makes two people fall in love and they die if one of them dies
@@ -9,6 +10,11 @@ Feature: 💘 Cupid role
       | Olivia  | werewolf |
       | JB      | villager |
       | Thomas  | idiot    |
+    And the game's current play should be cupid to charm
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be first-night-only
 
     When the cupid shoots an arrow at the player named JB and the player named Thomas
     Then 2 of the following players should have the active in-love from cupid attribute
@@ -20,6 +26,7 @@ Feature: 💘 Cupid role
       | name   |
       | JB     |
       | Thomas |
+    And the game's current play occurrence should be first-night-only
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat

@@ -1,3 +1,4 @@
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
@@ -26,7 +27,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.doSkipCallIfNoTarget,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
   public doSkipCallIfNoTarget: boolean = ROLES_GAME_OPTIONS_FIELDS_SPECS.doSkipCallIfNoTarget.default;
@@ -34,7 +35,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.areRevealedOnDeath,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
   public areRevealedOnDeath: boolean = ROLES_GAME_OPTIONS_FIELDS_SPECS.areRevealedOnDeath.default;
@@ -42,7 +43,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.sheriff,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateSheriffGameOptionsDto)
   @ValidateNested()
@@ -51,7 +52,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.bigBadWolf,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateBigBadWolfGameOptionsDto)
   @ValidateNested()
@@ -60,7 +61,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.whiteWerewolf,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateWhiteWerewolfGameOptionsDto)
   @ValidateNested()
@@ -69,7 +70,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.seer,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateSeerGameOptionsDto)
   @ValidateNested()
@@ -78,7 +79,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.littleGirl,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateLittleGirlGameOptionsDto)
   @ValidateNested()
@@ -87,7 +88,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.guard,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateGuardGameOptionsDto)
   @ValidateNested()
@@ -96,7 +97,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.ancient,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateAncientGameOptionsDto)
   @ValidateNested()
@@ -105,7 +106,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.idiot,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateIdiotGameOptionsDto)
   @ValidateNested()
@@ -114,7 +115,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.twoSisters,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateTwoSistersGameOptionsDto)
   @ValidateNested()
@@ -123,7 +124,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.threeBrothers,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateThreeBrothersGameOptionsDto)
   @ValidateNested()
@@ -132,7 +133,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.fox,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateFoxGameOptionsDto)
   @ValidateNested()
@@ -141,7 +142,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.bearTamer,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateBearTamerGameOptionsDto)
   @ValidateNested()
@@ -150,7 +151,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.stutteringJudge,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateStutteringJudgeGameOptionsDto)
   @ValidateNested()
@@ -159,7 +160,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.wildChild,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateWildChildGameOptionsDto)
   @ValidateNested()
@@ -168,7 +169,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.dogWolf,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateDogWolfGameOptionsDto)
   @ValidateNested()
@@ -177,7 +178,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.thief,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateThiefGameOptionsDto)
   @ValidateNested()
@@ -186,7 +187,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.piedPiper,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreatePiedPiperGameOptionsDto)
   @ValidateNested()
@@ -195,7 +196,7 @@ class CreateRolesGameOptionsDto {
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.raven,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateRavenGameOptionsDto)
   @ValidateNested()

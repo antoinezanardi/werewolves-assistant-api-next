@@ -3,6 +3,7 @@
 Feature: 🤪 Idiot role
 
   Scenario: 🤪 Idiot doesn't die if his death is from votes but his role is revealed
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -22,6 +23,7 @@ Feature: 🤪 Idiot role
     And the player named Antoine should have his role revealed
 
   Scenario: 🤪 Idiot doesn't die if his death is from settle votes but his role is revealed
+
     Given a created game with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -50,6 +52,7 @@ Feature: 🤪 Idiot role
     And the player named Antoine should have his role revealed
 
   Scenario: 🤪 Idiot doesn't die if his role is not revealed and ancient dies
+
     Given a created game with options described in file no-sheriff-option.json, ancient-one-life-against-werewolves-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -69,6 +72,7 @@ Feature: 🤪 Idiot role
     And the player named Antoine should have his role revealed
 
   Scenario: 🤪 Idiot dies if his role is revealed and ancient dies
+
     Given a created game with options described in file no-sheriff-option.json, ancient-one-life-against-werewolves-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -93,6 +97,7 @@ Feature: 🤪 Idiot role
     And the player named Antoine should be murdered by survivors from reconsider-pardon
 
   Scenario: 🤪 Idiot doesn't die if his role is revealed and ancient dies with the right option
+
     Given a created game with options described in file no-sheriff-option.json, ancient-one-life-against-werewolves-option.json, idiot-doesnt-die-on-ancient-death-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |

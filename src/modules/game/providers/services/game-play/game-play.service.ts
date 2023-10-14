@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { GAME_PLAYS_NIGHT_ORDER } from "@/modules/game/constants/game.constant";
+import { ON_FIRST_AND_LATER_NIGHTS_GAME_PLAYS_PRIORITY_LIST, ON_NIGHTS_GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constant";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
@@ -58,12 +58,12 @@ export class GamePlayService {
 
   public async getUpcomingNightPlays(game: CreateGameDto | Game): Promise<GamePlay[]> {
     const isFirstNight = game.turn === 1;
-    const eligibleNightPlays = GAME_PLAYS_NIGHT_ORDER.filter(play => isFirstNight || play.isFirstNightOnly !== true);
+    const eligibleNightPlays = isFirstNight ? ON_FIRST_AND_LATER_NIGHTS_GAME_PLAYS_PRIORITY_LIST : ON_NIGHTS_GAME_PLAYS_PRIORITY_LIST;
     const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase);
     const upcomingNightPlays: GamePlay[] = isSheriffElectionTime ? [createGamePlaySurvivorsElectSheriff()] : [];
     for (const eligibleNightPlay of eligibleNightPlays) {
-      if (await this.isGamePlaySuitableForCurrentPhase(game, eligibleNightPlay)) {
-        upcomingNightPlays.push(createGamePlay(eligibleNightPlay));
+      if (await this.isGamePlaySuitableForCurrentPhase(game, eligibleNightPlay as GamePlay)) {
+        upcomingNightPlays.push(createGamePlay(eligibleNightPlay as GamePlay));
       }
     }
     return upcomingNightPlays;
@@ -84,8 +84,9 @@ export class GamePlayService {
   private isUpcomingPlayNewForCurrentPhase(upcomingPlay: GamePlay, game: Game, gameHistoryPhaseRecords: GameHistoryRecord[]): boolean {
     const { currentPlay } = game;
     const isAlreadyPlayed = gameHistoryPhaseRecords.some(({ play }) => {
+      const { occurrence } = upcomingPlay;
       const { source, action, cause } = play;
-      return areGamePlaysEqual({ source, action, cause }, upcomingPlay);
+      return areGamePlaysEqual({ source, action, cause, occurrence }, upcomingPlay);
     });
     const isInUpcomingPlays = game.upcomingPlays.some(gamePlay => areGamePlaysEqual(gamePlay, upcomingPlay));
     const isCurrentPlay = !!currentPlay && areGamePlaysEqual(currentPlay, upcomingPlay);

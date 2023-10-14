@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_SOURCE_VALUES } from "@/modules/game/constants/game.constant";
+import { GAME_SOURCES } from "@/modules/game/constants/game.constant";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -195,7 +195,7 @@ function createFakePlayerAttributeActivation(attributeActivation: Partial<Player
 function createFakePlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return plainToInstance(PlayerAttribute, {
     name: attribute.name ?? faker.helpers.arrayElement(Object.values(PlayerAttributeNames)),
-    source: attribute.source ?? faker.helpers.arrayElement(GAME_SOURCE_VALUES),
+    source: attribute.source ?? faker.helpers.arrayElement(GAME_SOURCES),
     remainingPhases: attribute.remainingPhases ?? undefined,
     activeAt: attribute.activeAt ?? undefined,
     doesRemainAfterDeath: attribute.doesRemainAfterDeath ?? undefined,

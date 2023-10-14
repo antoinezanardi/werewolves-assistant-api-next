@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import { OPTIONAL_TARGET_ACTIONS, REQUIRED_TARGET_ACTIONS, REQUIRED_VOTE_ACTIONS, STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
@@ -14,7 +15,6 @@ import { GameHistoryRecordService } from "@/modules/game/providers/services/game
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
-import type { GameSource } from "@/modules/game/types/game.type";
 import { WEREWOLF_ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -109,7 +109,7 @@ export class GamePlayValidatorService {
     const leftToEatByWhiteWerewolfPlayers = getLeftToEatByWhiteWerewolfPlayers(game);
     const bigBadWolfExpectedTargetsCount = leftToEatByWerewolvesPlayers.length ? 1 : 0;
     const whiteWerewolfMaxTargetsCount = leftToEatByWhiteWerewolfPlayers.length ? 1 : 0;
-    const werewolvesSourceTargetsBoundaries: Partial<Record<GameSource, { min: number; max: number }>> = {
+    const werewolvesSourceTargetsBoundaries: Partial<Record<GamePlaySourceName, { min: number; max: number }>> = {
       [PlayerGroups.WEREWOLVES]: { min: 1, max: 1 },
       [RoleNames.BIG_BAD_WOLF]: { min: bigBadWolfExpectedTargetsCount, max: bigBadWolfExpectedTargetsCount },
       [RoleNames.WHITE_WEREWOLF]: { min: 0, max: whiteWerewolfMaxTargetsCount },
@@ -244,7 +244,7 @@ export class GamePlayValidatorService {
   }
 
   private async validateGamePlaySourceTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
-    const gamePlaySourceValidationMethods: Partial<Record<GameSource, () => Promise<void> | void>> = {
+    const gamePlaySourceValidationMethods: Partial<Record<GamePlaySourceName, () => Promise<void> | void>> = {
       [PlayerAttributeNames.SHERIFF]: async() => this.validateGamePlaySheriffTargets(playTargets, game),
       [PlayerGroups.WEREWOLVES]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.BIG_BAD_WOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
@@ -280,12 +280,14 @@ export class GamePlayValidatorService {
 
   private async validateGamePlayTargetsWithRelationsDto(playTargets: MakeGamePlayTargetWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Promise<void> {
     if (playTargets === undefined || playTargets.length === 0) {
-      if (REQUIRED_TARGET_ACTIONS.includes(game.currentPlay.action)) {
+      const requiredTargetActions: GamePlayActions[] = [...REQUIRED_TARGET_ACTIONS];
+      if (requiredTargetActions.includes(game.currentPlay.action)) {
         throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_TARGETS);
       }
       return;
     }
-    if (![...REQUIRED_TARGET_ACTIONS, ...OPTIONAL_TARGET_ACTIONS].includes(game.currentPlay.action)) {
+    const expectedTargetActions: GamePlayActions[] = [...REQUIRED_TARGET_ACTIONS, ...OPTIONAL_TARGET_ACTIONS];
+    if (!expectedTargetActions.includes(game.currentPlay.action)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_TARGETS);
     }
     this.validateInfectedTargetsAndPotionUsage(playTargets, game);
@@ -318,7 +320,8 @@ export class GamePlayValidatorService {
     const isCurrentPlayVoteCauseOfAngelPresence = currentPlayAction === GamePlayActions.VOTE && currentPlayCause === GamePlayCauses.ANGEL_PRESENCE;
     const isCurrentPlayVoteInevitable = currentPlayAction === GamePlayActions.ELECT_SHERIFF || isCurrentPlayVoteCauseOfAngelPresence;
     const canSomePlayerVote = game.players.some(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
-    if (canSomePlayerVote && (!canVotesBeSkipped && REQUIRED_VOTE_ACTIONS.includes(currentPlayAction) || canVotesBeSkipped && isCurrentPlayVoteInevitable)) {
+    const requiredVoteActions: GamePlayActions[] = [...REQUIRED_VOTE_ACTIONS];
+    if (canSomePlayerVote && (!canVotesBeSkipped && requiredVoteActions.includes(currentPlayAction) || canVotesBeSkipped && isCurrentPlayVoteInevitable)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_VOTES);
     }
   }
@@ -328,7 +331,8 @@ export class GamePlayValidatorService {
       this.validateUnsetGamePlayVotesWithRelationsDto(game);
       return;
     }
-    if (!REQUIRED_VOTE_ACTIONS.includes(game.currentPlay.action)) {
+    const requiredVoteActions: GamePlayActions[] = [...REQUIRED_VOTE_ACTIONS];
+    if (!requiredVoteActions.includes(game.currentPlay.action)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_VOTES);
     }
     this.validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes, game);
@@ -353,7 +357,8 @@ export class GamePlayValidatorService {
     const { voteRequestsCount } = game.options.roles.stutteringJudge;
     const gameHistoryJudgeRequestRecords = await this.gameHistoryRecordService.getGameHistoryJudgeRequestRecords(game._id);
     const stutteringJudgePlayer = getPlayerWithCurrentRole(game, RoleNames.STUTTERING_JUDGE);
-    if (!STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS.includes(game.currentPlay.action) ||
+    const stutteringJudgeRequestOpportunityActions: GamePlayActions[] = [...STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS];
+    if (!stutteringJudgeRequestOpportunityActions.includes(game.currentPlay.action) ||
         !stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer, game) ||
         gameHistoryJudgeRequestRecords.length >= voteRequestsCount) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);

@@ -1,7 +1,9 @@
 @scapegoat-role
+
 Feature: 🐐 Scapegoat role
 
   Scenario: 🐐 Scapegoat bans from votes after a tie in votes, even if the active sheriff is here
+
     Given a created game with the following players
       | name    | role             |
       | Antoine | scapegoat        |
@@ -32,6 +34,10 @@ Feature: 🐐 Scapegoat role
       | Thomas  | Olivia |
     Then the player named Antoine should be murdered by survivors from vote-scapegoated
     And the game's current play should be scapegoat to ban-voting
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be consequential
 
     When the scapegoat bans from vote the following players
       | name   |
@@ -91,7 +97,7 @@ Feature: 🐐 Scapegoat role
     Then the game's current play should be survivors to vote because previous-votes-were-in-ties
     And the player named Antoine should be alive
 
-  Scenario: 🐐 Scapegoat ban should occur only on next day even if he bans during the night
+  Scenario: 🐐 Scapegoat ban occurs only on next day even if he bans during the night
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |

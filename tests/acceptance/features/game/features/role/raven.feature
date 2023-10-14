@@ -3,6 +3,7 @@
 Feature: 🐦‍⬛ Raven role
 
   Scenario: 🐦‍⬛ Raven marks a player but can also skip
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | raven    |
@@ -11,6 +12,10 @@ Feature: 🐦‍⬛ Raven role
       | Camille | villager |
       | Thomas  | villager |
     Then the game's current play should be raven to mark
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be on-nights
 
     When the player or group skips his turn
     Then nobody should have the active raven-marked from raven attribute
@@ -22,6 +27,9 @@ Feature: 🐦‍⬛ Raven role
 
     When the player or group skips his turn
     Then the game's current play should be raven to mark
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the raven marks the player named JB
     Then the player named JB should have the active raven-marked from raven attribute
@@ -33,6 +41,9 @@ Feature: 🐦‍⬛ Raven role
 
     When the player or group skips his turn
     Then the game's current play should be raven to mark
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the raven marks the player named Antoine
     Then the player named Antoine should have the active raven-marked from raven attribute
@@ -46,6 +57,7 @@ Feature: 🐦‍⬛ Raven role
     Then the player named Antoine should be murdered by survivors from vote
 
   Scenario: 🐦‍⬛ Raven marks a player with a greater mark than the default one with good option
+
     Given a created game with options described in file no-sheriff-option.json, raven-mark-penalty-is-three-option.json and with the following players
       | name    | role     |
       | Antoine | raven    |
@@ -54,6 +66,9 @@ Feature: 🐦‍⬛ Raven role
       | Camille | villager |
       | Thomas  | villager |
     Then the game's current play should be raven to mark
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
 
     When the raven marks the player named JB
     Then the player named JB should have the active raven-marked from raven attribute

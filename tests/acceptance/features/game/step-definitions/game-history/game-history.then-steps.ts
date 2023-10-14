@@ -2,7 +2,7 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-import type { GameSource } from "@/modules/game/types/game.type";
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import type { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import type { RoleNames } from "@/modules/role/enums/role.enum";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
@@ -28,7 +28,7 @@ Then(/^the play's action from the previous history record should be (?<action>.+
   expect(this.lastGameHistoryRecord.play.action).toBe(action);
 });
 
-Then(/^the play's source name from the previous history record should be (?<sourceName>.+)$/u, function(this: CustomWorld, sourceName: GameSource): void {
+Then(/^the play's source name from the previous history record should be (?<sourceName>.+)$/u, function(this: CustomWorld, sourceName: GamePlaySourceName): void {
   expect(this.lastGameHistoryRecord.play.source.name).toBe(sourceName);
 });
 

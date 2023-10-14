@@ -1,4 +1,5 @@
 @little-girl-role
+
 Feature: 👧 Little Girl role
 
   Scenario: 👧 Little Girl is protected by the guard with the right game option
@@ -9,6 +10,7 @@ Feature: 👧 Little Girl role
       | Olivia  | little-girl |
       | JB      | guard       |
       | Thomas  | villager    |
+    Then the game's current play should be guard to protect
 
     When the guard protects the player named Olivia
     Then the player named Olivia should have the active protected from guard attribute

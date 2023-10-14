@@ -1,7 +1,9 @@
+import type { ReadonlyDeep } from "type-fest";
+
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 
-const DEFAULT_GAME_OPTIONS: Readonly<GameOptions> = Object.freeze({
+const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
   composition: { isHidden: false },
   votes: { canBeSkipped: true },
   roles: {
@@ -45,6 +47,6 @@ const DEFAULT_GAME_OPTIONS: Readonly<GameOptions> = Object.freeze({
     },
     raven: { markPenalty: 2 },
   },
-});
+};
 
 export { DEFAULT_GAME_OPTIONS };
