@@ -16,7 +16,7 @@ const PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS = {
     required: true,
     enum: Object.values(GamePhases),
   },
-} satisfies Record<keyof PlayerAttributeActivation, MongoosePropOptions>;
+} as const satisfies Record<keyof PlayerAttributeActivation, MongoosePropOptions>;
 
 const PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES: ReadonlyDeep<Record<keyof PlayerAttributeActivation, ApiPropertyOptions>> = {
   turn: {

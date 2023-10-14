@@ -17,7 +17,7 @@ const PLAYER_ROLE_FIELDS_SPECS = {
     enum: Object.values(RoleNames),
   },
   isRevealed: { required: true },
-} satisfies Record<keyof PlayerRole, MongoosePropOptions>;
+} as const satisfies Record<keyof PlayerRole, MongoosePropOptions>;
 
 const PLAYER_ROLE_API_PROPERTIES: ReadonlyDeep<Record<keyof PlayerRole, ApiPropertyOptions>> = {
   original: {

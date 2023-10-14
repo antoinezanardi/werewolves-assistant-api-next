@@ -10,27 +10,27 @@ import { CreateVotesGameOptionsDto } from "@/modules/game/dto/create-game/create
 
 class CreateGameOptionsDto {
   @ApiProperty({
-    ...GAME_OPTIONS_API_PROPERTIES.composition as ApiPropertyOptions,
+    ...GAME_OPTIONS_API_PROPERTIES.composition,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateCompositionGameOptionsDto)
   @ValidateNested()
   public composition: CreateCompositionGameOptionsDto = new CreateCompositionGameOptionsDto();
 
   @ApiProperty({
-    ...GAME_OPTIONS_API_PROPERTIES.votes as ApiPropertyOptions,
+    ...GAME_OPTIONS_API_PROPERTIES.votes,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateVotesGameOptionsDto)
   @ValidateNested()
   public votes: CreateVotesGameOptionsDto = new CreateVotesGameOptionsDto();
 
   @ApiProperty({
-    ...GAME_OPTIONS_API_PROPERTIES.roles as ApiPropertyOptions,
+    ...GAME_OPTIONS_API_PROPERTIES.roles,
     required: false,
-  })
+  } as ApiPropertyOptions)
   @IsOptional()
   @Type(() => CreateRolesGameOptionsDto)
   @ValidateNested()

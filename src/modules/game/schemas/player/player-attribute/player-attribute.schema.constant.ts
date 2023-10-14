@@ -28,7 +28,7 @@ const PLAYER_ATTRIBUTE_FIELDS_SPECS = {
     default: undefined,
   },
   doesRemainAfterDeath: { required: false },
-} satisfies Record<keyof PlayerAttribute, MongoosePropOptions>;
+} as const satisfies Record<keyof PlayerAttribute, MongoosePropOptions>;
 
 const PLAYER_ATTRIBUTE_API_PROPERTIES: ReadonlyDeep<Record<keyof PlayerAttribute, ApiPropertyOptions>> = {
   name: {

@@ -18,7 +18,7 @@ const GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS = {
     required: false,
     enum: Object.values(WitchPotions),
   },
-} satisfies Record<keyof GameHistoryRecordPlayTarget, MongoosePropOptions>;
+} as const satisfies Record<keyof GameHistoryRecordPlayTarget, MongoosePropOptions>;
 
 const GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryRecordPlayTarget, ApiPropertyOptions>> = {
   player: {

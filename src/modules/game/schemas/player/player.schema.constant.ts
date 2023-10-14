@@ -42,7 +42,7 @@ const PLAYER_FIELDS_SPECS = {
     required: false,
     type: PLAYER_DEATH_SCHEMA,
   },
-} satisfies Record<keyof Player, MongoosePropOptions>;
+} as const satisfies Record<keyof Player, MongoosePropOptions>;
 
 const PLAYER_API_PROPERTIES: ReadonlyDeep<Record<keyof Player, ApiPropertyOptions>> = Object.freeze({
   _id: {

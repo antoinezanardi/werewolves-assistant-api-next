@@ -16,7 +16,7 @@ const GAME_HISTORY_RECORD_PLAY_VOTE_FIELDS_SPECS = {
     required: true,
     type: PLAYER_SCHEMA,
   },
-} satisfies Record<keyof GameHistoryRecordPlayVote, MongoosePropOptions>;
+} as const satisfies Record<keyof GameHistoryRecordPlayVote, MongoosePropOptions>;
 
 const GAME_HISTORY_RECORD_PLAY_VOTE_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryRecordPlayVote, ApiPropertyOptions>> = {
   source: {

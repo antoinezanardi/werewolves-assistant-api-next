@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,8 +11,8 @@ import { DOG_WOLF_GAME_OPTIONS_API_PROPERTIES, DOG_WOLF_GAME_OPTIONS_FIELDS_SPEC
   _id: false,
 })
 class DogWolfGameOptions {
-  @ApiProperty(DOG_WOLF_GAME_OPTIONS_API_PROPERTIES.isChosenSideRevealed)
-  @Prop({ default: DOG_WOLF_GAME_OPTIONS_FIELDS_SPECS.isChosenSideRevealed.default })
+  @ApiProperty(DOG_WOLF_GAME_OPTIONS_API_PROPERTIES.isChosenSideRevealed as ApiPropertyOptions)
+  @Prop(DOG_WOLF_GAME_OPTIONS_FIELDS_SPECS.isChosenSideRevealed)
   @Expose()
   public isChosenSideRevealed: boolean;
 }

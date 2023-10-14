@@ -5,6 +5,7 @@ import { GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES } from "@/modules/game/constants
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
+import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helper";
 
 const GAME_ADDITIONAL_CARDS_FIELDS_SPECS = {
@@ -21,7 +22,7 @@ const GAME_ADDITIONAL_CARDS_FIELDS_SPECS = {
     required: true,
     default: false,
   },
-} satisfies Record<keyof GameAdditionalCard, ApiPropertyOptions>;
+} as const satisfies Record<keyof GameAdditionalCard, MongoosePropOptions>;
 
 const GAME_ADDITIONAL_CARDS_API_PROPERTIES: ReadonlyDeep<Record<keyof GameAdditionalCard, ApiPropertyOptions>> = {
   _id: {

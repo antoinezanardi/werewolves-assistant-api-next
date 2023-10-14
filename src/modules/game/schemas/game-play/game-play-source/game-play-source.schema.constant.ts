@@ -19,7 +19,7 @@ const GAME_PLAY_SOURCE_FIELDS_SPECS = {
     minItems: 1,
     default: undefined,
   },
-} satisfies Record<keyof GamePlaySource, MongoosePropOptions>;
+} as const satisfies Record<keyof GamePlaySource, MongoosePropOptions>;
 
 const GAME_PLAY_SOURCE_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePlaySource, ApiPropertyOptions>> = {
   name: {

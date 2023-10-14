@@ -18,7 +18,7 @@ const GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS = {
     type: [PLAYER_SCHEMA],
     default: undefined,
   },
-} satisfies Record<keyof GameHistoryRecordPlayVoting, MongoosePropOptions>;
+} as const satisfies Record<keyof GameHistoryRecordPlayVoting, MongoosePropOptions>;
 
 const GAME_HISTORY_RECORD_PLAY_VOTING_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryRecordPlayVoting, ApiPropertyOptions>> = {
   result: {

@@ -25,7 +25,7 @@ const GAME_OPTIONS_FIELDS_SPECS = {
     type: ROLES_GAME_OPTIONS_SCHEMA,
     default: {},
   },
-} satisfies Record<keyof GameOptions, MongoosePropOptions>;
+} as const satisfies Record<keyof GameOptions, MongoosePropOptions>;
 
 const GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof GameOptions, ApiPropertyOptions>> = {
   composition: {

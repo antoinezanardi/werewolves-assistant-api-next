@@ -19,7 +19,7 @@ const GAME_VICTORY_FIELDS_SPECS = {
     minItems: 1,
     default: undefined,
   },
-} satisfies Record<keyof GameVictory, MongoosePropOptions>;
+} as const satisfies Record<keyof GameVictory, MongoosePropOptions>;
 
 const GAME_VICTORY_API_PROPERTIES: ReadonlyDeep<Record<keyof GameVictory, ApiPropertyOptions>> = {
   type: {

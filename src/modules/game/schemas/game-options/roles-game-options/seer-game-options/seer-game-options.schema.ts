@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,13 +11,13 @@ import { SEER_GAME_OPTIONS_API_PROPERTIES, SEER_GAME_OPTIONS_FIELDS_SPECS } from
   _id: false,
 })
 class SeerGameOptions {
-  @ApiProperty(SEER_GAME_OPTIONS_API_PROPERTIES.isTalkative)
-  @Prop({ default: SEER_GAME_OPTIONS_FIELDS_SPECS.isTalkative.default })
+  @ApiProperty(SEER_GAME_OPTIONS_API_PROPERTIES.isTalkative as ApiPropertyOptions)
+  @Prop(SEER_GAME_OPTIONS_FIELDS_SPECS.isTalkative)
   @Expose()
   public isTalkative: boolean;
 
-  @ApiProperty(SEER_GAME_OPTIONS_API_PROPERTIES.canSeeRoles)
-  @Prop({ default: SEER_GAME_OPTIONS_FIELDS_SPECS.canSeeRoles.default })
+  @ApiProperty(SEER_GAME_OPTIONS_API_PROPERTIES.canSeeRoles as ApiPropertyOptions)
+  @Prop(SEER_GAME_OPTIONS_FIELDS_SPECS.isTalkative)
   @Expose()
   public canSeeRoles: boolean;
 }

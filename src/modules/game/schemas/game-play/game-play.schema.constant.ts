@@ -26,7 +26,7 @@ const GAME_PLAY_SPECS_FIELDS = {
     required: true,
     enum: Object.values(GamePlayOccurrences),
   },
-} satisfies Record<keyof GamePlay, MongoosePropOptions>;
+} as const satisfies Record<keyof GamePlay, MongoosePropOptions>;
 
 const GAME_PLAY_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePlay, ApiPropertyOptions>> = Object.freeze({
   source: {

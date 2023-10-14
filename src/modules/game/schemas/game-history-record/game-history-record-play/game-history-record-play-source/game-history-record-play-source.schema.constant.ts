@@ -20,7 +20,7 @@ const GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS = {
     type: [PLAYER_SCHEMA],
     validate: [(players: Player[]): boolean => doesArrayRespectBounds(players, { minItems: 1 }), "Path `play.source.players` length is less than minimum allowed value (1)."],
   },
-} satisfies Record<keyof GameHistoryRecordPlaySource, MongoosePropOptions>;
+} as const satisfies Record<keyof GameHistoryRecordPlaySource, MongoosePropOptions>;
 
 const GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryRecordPlaySource, ApiPropertyOptions>> = {
   name: {

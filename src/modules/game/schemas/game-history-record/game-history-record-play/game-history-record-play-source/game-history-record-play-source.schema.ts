@@ -1,3 +1,4 @@
+import type { PropOptions } from "@nestjs/mongoose";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
@@ -19,7 +20,7 @@ class GameHistoryRecordPlaySource {
   public name: GamePlaySourceName;
 
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES.players as ApiPropertyOptions)
-  @Prop(GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.players)
+  @Prop(GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.players as PropOptions)
   @Type(() => Player)
   @Expose()
   public players: Player[];

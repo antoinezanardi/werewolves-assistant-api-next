@@ -16,7 +16,7 @@ const PLAYER_SIDE_FIELDS_SPECS = {
     required: true,
     enum: Object.values(RoleSides),
   },
-} satisfies Record<keyof PlayerSide, MongoosePropOptions>;
+} as const satisfies Record<keyof PlayerSide, MongoosePropOptions>;
 
 const PLAYER_SIDE_API_PROPERTIES: ReadonlyDeep<Record<keyof PlayerSide, ApiPropertyOptions>> = {
   original: {

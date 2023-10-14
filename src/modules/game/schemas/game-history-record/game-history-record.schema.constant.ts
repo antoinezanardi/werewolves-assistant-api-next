@@ -43,7 +43,7 @@ const GAME_HISTORY_RECORD_FIELDS_SPECS = {
     default: undefined,
   },
   createdAt: { required: true },
-} satisfies Record<keyof GameHistoryRecord, MongoosePropOptions>;
+} as const satisfies Record<keyof GameHistoryRecord, MongoosePropOptions>;
 
 const GAME_HISTORY_RECORD_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryRecord, ApiPropertyOptions>> = {
   _id: {

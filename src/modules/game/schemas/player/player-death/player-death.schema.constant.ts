@@ -17,7 +17,7 @@ const PLAYER_DEATH_FIELDS_SPECS = {
     required: true,
     enum: Object.values(PlayerDeathCauses),
   },
-} satisfies Record<keyof PlayerDeath, MongoosePropOptions>;
+} as const satisfies Record<keyof PlayerDeath, MongoosePropOptions>;
 
 const PLAYER_DEATH_API_PROPERTIES: ReadonlyDeep<Record<keyof PlayerDeath, ApiPropertyOptions>> = {
   source: {

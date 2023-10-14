@@ -49,7 +49,7 @@ const GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS = {
     required: false,
     enum: Object.values(RoleSides),
   },
-} satisfies Record<keyof GameHistoryRecordPlay, MongoosePropOptions>;
+} as const satisfies Record<keyof GameHistoryRecordPlay, MongoosePropOptions>;
 
 const GAME_HISTORY_RECORD_PLAY_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryRecordPlay, ApiPropertyOptions>> = {
   action: {

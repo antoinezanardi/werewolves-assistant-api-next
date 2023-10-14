@@ -26,6 +26,7 @@ const JEST_UNIT_CONFIG: Config = {
     "!src/**/*.repository.ts",
     "!src/**/*.dto.ts",
     "!src/**/*.schema.ts",
+    "!src/**/*.constant.ts",
   ],
   coverageDirectory: "tests/unit/coverage",
   coverageThreshold: {

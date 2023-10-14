@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import { GAME_ADDITIONAL_CARD_SCHEMA } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/game-options.schema";
 import { GAME_PLAY_SCHEMA } from "@/modules/game/schemas/game-play/game-play.schema";
@@ -51,7 +52,7 @@ const GAME_FIELDS_SPECS = {
   options: {
     required: true,
     type: GAME_OPTIONS_SCHEMA,
-    default: {},
+    default: DEFAULT_GAME_OPTIONS,
   },
   additionalCards: {
     required: false,
@@ -65,7 +66,7 @@ const GAME_FIELDS_SPECS = {
   },
   createdAt: { required: true },
   updatedAt: { required: true },
-} satisfies Record<keyof Game, MongoosePropOptions>;
+} as const satisfies Record<keyof Game, MongoosePropOptions>;
 
 const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> = {
   _id: {

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
@@ -10,17 +11,13 @@ import { THIEF_GAME_OPTIONS_API_PROPERTIES, THIEF_GAME_OPTIONS_FIELDS_SPECS } fr
   _id: false,
 })
 class ThiefGameOptions {
-  @ApiProperty(THIEF_GAME_OPTIONS_API_PROPERTIES.mustChooseBetweenWerewolves)
-  @Prop({ default: THIEF_GAME_OPTIONS_FIELDS_SPECS.mustChooseBetweenWerewolves.default })
+  @ApiProperty(THIEF_GAME_OPTIONS_API_PROPERTIES.mustChooseBetweenWerewolves as ApiPropertyOptions)
+  @Prop(THIEF_GAME_OPTIONS_FIELDS_SPECS.mustChooseBetweenWerewolves)
   @Expose()
   public mustChooseBetweenWerewolves: boolean;
 
-  @ApiProperty(THIEF_GAME_OPTIONS_API_PROPERTIES.additionalCardsCount)
-  @Prop({
-    default: THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount.default,
-    min: THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount.minimum,
-    max: THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount.maximum,
-  })
+  @ApiProperty(THIEF_GAME_OPTIONS_API_PROPERTIES.additionalCardsCount as ApiPropertyOptions)
+  @Prop(THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount)
   @Expose()
   public additionalCardsCount: number;
 }
