@@ -1,13 +1,14 @@
 #!/bin/bash
-PS3="Are you starting a feature or a fix ? "
-select option in "feat" "fix"; do
+PS3="What kind of job are your starting ? "
+select option in "feat" "fix" "docs" "style" "refactor" "test" "perf" "build" "ci" "chore" "revert";
+do
   case $option in
-  feat | fix)
+  feat | fix | docs | style | refactor | test | perf | build | ci | chore | revert)
     SELECTED_OPTION=$option
     break
     ;;
   *)
-    echo "❌  Invalid option: \"$REPLY\". Please choose between 1 or 2 you ding-dong."
+    echo "❌  Invalid option: \"$REPLY\". Please choose between 1 to 11."
     ;;
   esac
 done
