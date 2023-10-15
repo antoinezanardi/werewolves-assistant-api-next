@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
+import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { DatabaseModule } from "@/modules/config/database/database.module";
 import { GameController } from "@/modules/game/controllers/game.controller";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
@@ -35,6 +36,7 @@ import { Game, GAME_SCHEMA } from "@/modules/game/schemas/game.schema";
     GamePlayMakerService,
     GamePlayVoteService,
     GamePhaseService,
+    GameVictoryService,
     GameRepository,
     GameHistoryRecordService,
     GameHistoryRecordRepository,
