@@ -19,7 +19,6 @@ jobs:
       actions: read
       contents: read
       security-events: write
-
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
@@ -43,17 +42,20 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Cache npm dependencies 🥡
         uses: actions/cache@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Install project dependencies 📦
         run: npm ci --ignore-scripts
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -66,17 +68,20 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Build app and check main file ✨
         run: |
           npm run build \
@@ -90,17 +95,20 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Check and lint code 🔍
         run: npm run lint
 
@@ -112,17 +120,20 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Unit tests 🧪
         run: npm run test:unit:cov
 
@@ -134,21 +145,26 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
+
       - name: E2E tests ⚗️
         run: npm run test:e2e:cov
+
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
 
@@ -160,27 +176,33 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
+
       - name: All tests 🧬
         run: npm run test:cov
+
       - name: Save tests coverage in cache 🥡
         uses: actions/cache/save@v3
         id: cache-tests-coverage
         with:
           path: tests/coverage
           key: ${{ runner.os }}-tests-coverage-v3-${{hashFiles('tests/coverage/lcov.info')}}
+
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
 
@@ -195,21 +217,26 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
+
       - name: Mutant tests 👽
         run: npm run test:stryker
+
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
 
@@ -221,21 +248,26 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+
       - name: Start Docker containers 🐳
         run: npm run docker:test:start
+
       - name: Acceptance Tests 🥒
         run: npm run test:cucumber
+
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
 
@@ -246,20 +278,22 @@ jobs:
       - all-tests
     if: "!startsWith(github.head_ref, 'dependabot/')"
     steps:
-    - name: Checkout GitHub repository 📡
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Restore tests coverage from cache 🥡
-      uses: actions/cache/restore@v3
-      id: cache-tests-coverage
-      with:
-        path: tests/coverage
-        key: ${{ runner.os }}-tests-coverage-v3-
-        restore-keys: |
-          ${{ runner.os }}-tests-coverage-v3-
-    - name: SonarCloud Scan 🌥️
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore tests coverage from cache 🥡
+        uses: actions/cache/restore@v3
+        id: cache-tests-coverage
+        with:
+          path: tests/coverage
+          key: ${{ runner.os }}-tests-coverage-v3-
+          restore-keys: |
+            ${{ runner.os }}-tests-coverage-v3-
+
+      - name: SonarCloud Scan 🌥️
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
