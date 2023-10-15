@@ -1,10 +1,10 @@
 import { Test } from "@nestjs/testing";
 import type { TestingModule } from "@nestjs/testing";
 
+import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { GameStatuses } from "@/modules/game/enums/game.enum";
 import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helper";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helper";
-import * as GameVictoryHelper from "@/modules/game/helpers/game-victory/game-victory.helper";
 import * as GameHelper from "@/modules/game/helpers/game.helper";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
@@ -61,14 +61,16 @@ describe("Game Service", () => {
       switchPhaseAndAppendGamePhaseUpcomingPlays: jest.SpyInstance;
       applyStartingGamePhaseOutcomes: jest.SpyInstance;
     };
+    gameVictoryService: {
+      isGameOver: jest.SpyInstance;
+      generateGameVictoryData: jest.SpyInstance;
+    };
     playerAttributeService: {
       decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.SpyInstance;
     };
     gameHelper: { getExpectedPlayersToPlay: jest.SpyInstance };
     gamePhaseHelper: { isGamePhaseOver: jest.SpyInstance };
     gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
-    gameVictoryHelper: { isGameOver: jest.SpyInstance };
-
   };
   let services: { game: GameService };
   let repositories: { game: GameRepository };
@@ -97,11 +99,14 @@ describe("Game Service", () => {
         switchPhaseAndAppendGamePhaseUpcomingPlays: jest.fn(),
         applyStartingGamePhaseOutcomes: jest.fn(),
       },
+      gameVictoryService: {
+        isGameOver: jest.fn(),
+        generateGameVictoryData: jest.fn(),
+      },
       playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
       gameHelper: { getExpectedPlayersToPlay: jest.spyOn(GameHelper, "getExpectedPlayersToPlay").mockReturnValue([]) },
       gamePhaseHelper: { isGamePhaseOver: jest.spyOn(GamePhaseHelper, "isGamePhaseOver").mockImplementation() },
       gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
-      gameVictoryHelper: { isGameOver: jest.spyOn(GameVictoryHelper, "isGameOver").mockImplementation() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -129,6 +134,10 @@ describe("Game Service", () => {
         {
           provide: GamePhaseService,
           useValue: mocks.gamePhaseService,
+        },
+        {
+          provide: GameVictoryService,
+          useValue: mocks.gameVictoryService,
         },
         {
           provide: PlayerAttributeService,
@@ -245,7 +254,7 @@ describe("Game Service", () => {
       mocks.gamePlayMakerService.makeGamePlay.mockResolvedValue(game);
       mocks.gamePlayService.refreshUpcomingPlays.mockReturnValue(game);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
-      mocks.gameVictoryHelper.isGameOver.mockReturnValue(false);
+      mocks.gameVictoryService.isGameOver.mockReturnValue(false);
       localMocks = {
         gameService: {
           handleGamePhaseCompletion: jest.spyOn(services.game as unknown as { handleGamePhaseCompletion }, "handleGamePhaseCompletion").mockResolvedValue(game),
@@ -332,8 +341,8 @@ describe("Game Service", () => {
     it("should call set game over method when the game is done.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const gameVictoryData = createFakeGameVictory();
-      jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
-      mocks.gameVictoryHelper.isGameOver.mockReturnValue(true);
+      mocks.gameVictoryService.isGameOver.mockReturnValue(true);
+      mocks.gameVictoryService.generateGameVictoryData.mockReturnValue(gameVictoryData);
       mocks.gamePlayMakerService.makeGamePlay.mockReturnValue(game);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
       mocks.gamePlayService.refreshUpcomingPlays.mockReturnValue(game.upcomingPlays);
@@ -427,7 +436,7 @@ describe("Game Service", () => {
     it("should set game as over when called.", () => {
       const game = createFakeGame({ status: GameStatuses.PLAYING });
       const gameVictoryData = createFakeGameVictory();
-      jest.spyOn(GameVictoryHelper, "generateGameVictoryData").mockReturnValue(gameVictoryData);
+      mocks.gameVictoryService.generateGameVictoryData.mockReturnValue(gameVictoryData);
       const expectedGame = createFakeGame({
         ...game,
         status: GameStatuses.OVER,

@@ -7,7 +7,7 @@ import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-gam
 import { GameStatuses } from "@/modules/game/enums/game.enum";
 import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.helper";
 import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-play/game-play.helper";
-import { generateGameVictoryData, isGameOver } from "@/modules/game/helpers/game-victory/game-victory.helper";
+import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { createGame as createGameFromFactory } from "@/modules/game/helpers/game.factory";
 import { getExpectedPlayersToPlay } from "@/modules/game/helpers/game.helper";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
@@ -33,6 +33,7 @@ export class GameService {
     private readonly gamePlayValidatorService: GamePlayValidatorService,
     private readonly gamePlayMakerService: GamePlayMakerService,
     private readonly gamePhaseService: GamePhaseService,
+    private readonly gameVictoryService: GameVictoryService,
     private readonly gameRepository: GameRepository,
     private readonly playerAttributeService: PlayerAttributeService,
     private readonly gameHistoryRecordService: GameHistoryRecordService,
@@ -82,7 +83,7 @@ export class GameService {
     }
     const gameHistoryRecordToInsert = this.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert(game, clonedGame, play);
     await this.gameHistoryRecordService.createGameHistoryRecord(gameHistoryRecordToInsert);
-    if (isGameOver(clonedGame)) {
+    if (this.gameVictoryService.isGameOver(clonedGame)) {
       clonedGame = this.setGameAsOver(clonedGame);
     }
     return this.updateGame(clonedGame._id, clonedGame);
@@ -112,7 +113,7 @@ export class GameService {
   private setGameAsOver(game: Game): Game {
     const clonedGame = createGameFromFactory(game);
     clonedGame.status = GameStatuses.OVER;
-    clonedGame.victory = generateGameVictoryData(clonedGame);
+    clonedGame.victory = this.gameVictoryService.generateGameVictoryData(clonedGame);
     return clonedGame;
   }
 }
