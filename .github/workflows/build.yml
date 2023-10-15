@@ -46,15 +46,6 @@ jobs:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
 
-      - name: Merge main branch into develop branch 🤝
-        run: |
-          git config user.name "GitHub Actions"
-          git fetch --all
-          git checkout main
-          git pull origin main
-          git checkout develop
-          git merge main
-
       - name: Setup NodeJS ⚙️
         uses: actions/setup-node@v3
         with:
