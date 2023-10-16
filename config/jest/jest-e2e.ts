@@ -14,7 +14,7 @@ const JEST_E2E_CONFIG: Config = {
   transform: { "^.+\\.(t|j)s$": "ts-jest" },
   resetMocks: true,
   restoreMocks: true,
-  maxWorkers: 4,
+  maxWorkers: "50%",
   clearMocks: true,
   setupFilesAfterEnv: ["jest-extended/all"],
   coverageReporters: ["clover", "json", "lcov", "text", "text-summary"],
