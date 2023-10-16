@@ -30,6 +30,7 @@
     "test:cov": "NODE_ENV=test jest --coverage --config config/jest/jest-global.ts",
     "test:stryker": "NODE_ENV=test rimraf tests/stryker/coverage && stryker run config/stryker/stryker.conf.js",
     "test:stryker:force": "NODE_ENV=test rimraf tests/stryker/incremental.json tests/stryker/coverage && stryker run config/stryker/stryker.conf.js --force",
+    "test:stryker:ci": "NODE_ENV=test rimraf tests/stryker/coverage && stryker run config/stryker/stryker-ci.conf.js",
     "test:unit": "NODE_ENV=test jest --config config/jest/jest-unit.ts",
     "test:unit:watch": "NODE_ENV=test jest --watch --config config/jest/jest-unit.ts",
     "test:unit:cov": "NODE_ENV=test rimraf tests/unit/coverage && jest --coverage --config config/jest/jest-unit.ts",
