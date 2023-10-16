@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 
-import { mongooseModuleFactory } from "@/modules/config/database/helpers/database.helper";
+import { getDatabasePort, mongooseModuleFactory } from "@/modules/config/database/helpers/database.helper";
 
 describe("Database Helper", () => {
   let mocks: {
@@ -47,8 +47,60 @@ describe("Database Helper", () => {
     when(mocks.configService.getOrThrow).calledWith("DATABASE_PASSWORD").mockReturnValue(databasePassword);
   });
 
+  describe("getDatabasePort", () => {
+    const env = process.env;
+
+    beforeEach(() => {
+      process.env = { ...env };
+    });
+
+    afterEach(() => {
+      process.env = env;
+    });
+
+    it("should return undefined when port in env is undefined.", () => {
+      when(mocks.configService.get).calledWith("DATABASE_PORT").mockReturnValue(undefined);
+
+      expect(getDatabasePort(services.config)).toBeUndefined();
+    });
+
+    it("should return port without modifying it when port in env is defined and JEST_WORKER_ID and CUCUMBER_WORKER_ID are undefined.", () => {
+      when(mocks.configService.get).calledWith("DATABASE_PORT").mockReturnValue(port);
+      process.env.JEST_WORKER_ID = undefined;
+
+      expect(getDatabasePort(services.config)).toBe(parseInt(port));
+    });
+
+    it("should return port with worker id multiplier when port in env is defined and JEST_WORKER_ID is defined.", () => {
+      when(mocks.configService.get).calledWith("DATABASE_PORT").mockReturnValue(port);
+      process.env.JEST_WORKER_ID = "2";
+
+      expect(getDatabasePort(services.config)).toBe(parseInt(port) + 2);
+    });
+
+    it("should return port with worker id multiplier when port in env is defined and CUCUMBER_WORKER_ID is defined.", () => {
+      when(mocks.configService.get).calledWith("DATABASE_PORT").mockReturnValue(port);
+      process.env.JEST_WORKER_ID = undefined;
+      process.env.CUCUMBER_WORKER_ID = "2";
+
+      expect(getDatabasePort(services.config)).toBe(parseInt(port) + 4);
+    });
+  });
+
   describe("mongooseModuleFactory", () => {
+    const env = process.env;
+
+    beforeEach(() => {
+      process.env = { ...env };
+    });
+
+    afterEach(() => {
+      process.env = env;
+    });
+
     it("should return connection string for local address when called with port.", () => {
+      process.env.JEST_WORKER_ID = "1";
+
       expect(mongooseModuleFactory(services.config)).toStrictEqual<MongooseModuleFactoryOptions>({
         uri: `mongodb://${host}:${port}`,
         dbName: databaseName,

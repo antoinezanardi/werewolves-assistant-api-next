@@ -18,6 +18,7 @@
       "junit:tests/acceptance/reports/junit.xml",
       "json:tests/acceptance/reports/report.json",
       "message:tests/acceptance/reports/message.json"
-    ]
+    ],
+    "parallel": 4
   }
 }
