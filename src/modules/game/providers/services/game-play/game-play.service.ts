@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
 import { ON_FIRST_AND_LATER_NIGHTS_GAME_PLAYS_PRIORITY_LIST, ON_NIGHTS_GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constant";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
@@ -22,7 +23,10 @@ import { createNoGamePlayPriorityUnexpectedException } from "@/shared/exception/
 
 @Injectable()
 export class GamePlayService {
-  public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
+  public constructor(
+    private readonly gamePlayAugmenterService: GamePlayAugmenterService,
+    private readonly gameHistoryRecordService: GameHistoryRecordService,
+  ) {}
 
   public async refreshUpcomingPlays(game: Game): Promise<Game> {
     let clonedGame = createGame(game);
@@ -40,6 +44,7 @@ export class GamePlayService {
       return clonedGame;
     }
     clonedGame.currentPlay = clonedGame.upcomingPlays[0];
+    clonedGame.currentPlay = this.gamePlayAugmenterService.setGamePlayCanBeSkipped(clonedGame.currentPlay, clonedGame);
     clonedGame.currentPlay.source.players = getExpectedPlayersToPlay(clonedGame);
     clonedGame.upcomingPlays.shift();
     return clonedGame;

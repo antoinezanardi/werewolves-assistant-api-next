@@ -238,6 +238,7 @@ function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object =
     source: createFakeGamePlaySource(gamePlay.source),
     cause: gamePlay.cause ?? undefined,
     occurrence: gamePlay.occurrence ?? faker.helpers.arrayElement(Object.values(GamePlayOccurrences)),
+    canBeSkipped: gamePlay.canBeSkipped ?? undefined,
     ...override,
   }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }

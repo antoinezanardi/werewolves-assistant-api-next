@@ -2,6 +2,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 
+import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import { GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
@@ -32,6 +33,9 @@ import { bulkCreateFakePlayers } from "@tests/factories/game/schemas/player/play
 describe("Game Play Service", () => {
   let services: { gamePlay: GamePlayService };
   let mocks: {
+    gamePlayAugmenterService: {
+      setGamePlayCanBeSkipped: jest.SpyInstance;
+    };
     gameHistoryRecordService: {
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryPhaseRecords: jest.SpyInstance;
@@ -48,6 +52,7 @@ describe("Game Play Service", () => {
 
   beforeEach(async() => {
     mocks = {
+      gamePlayAugmenterService: { setGamePlayCanBeSkipped: jest.fn() },
       gameHistoryRecordService: {
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn().mockResolvedValue([]),
         getGameHistoryPhaseRecords: jest.fn().mockResolvedValue([]),
@@ -61,6 +66,10 @@ describe("Game Play Service", () => {
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        {
+          provide: GamePlayAugmenterService,
+          useValue: mocks.gamePlayAugmenterService,
+        },
         {
           provide: GameHistoryRecordService,
           useValue: mocks.gameHistoryRecordService,
@@ -137,15 +146,18 @@ describe("Game Play Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const expectedPlayersToPlay = [players[1], players[3]];
-      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
       const game = createFakeGame({ upcomingPlays: [createFakeGamePlaySurvivorsVote()], currentPlay: createFakeGamePlayFoxSniffs() });
+      const expectedCurrentPlay = createFakeGamePlay({
+        ...game.upcomingPlays[0],
+        source: createFakeGamePlaySource({ ...game.upcomingPlays[0].source, players: expectedPlayersToPlay }),
+        canBeSkipped: true,
+      });
+      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
+      mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(expectedCurrentPlay);
       const expectedGame = createFakeGame({
         ...game,
         upcomingPlays: [],
-        currentPlay: createFakeGamePlay({
-          ...game.upcomingPlays[0],
-          source: createFakeGamePlaySource({ ...game.upcomingPlays[0].source, players: expectedPlayersToPlay }),
-        }),
+        currentPlay: expectedCurrentPlay,
       });
 
       expect(services.gamePlay.proceedToNextGamePlay(game)).toStrictEqual<Game>(expectedGame);
