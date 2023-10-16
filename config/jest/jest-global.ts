@@ -15,7 +15,7 @@ const JEST_GLOBAL_CONFIG: Config = {
   resetMocks: true,
   restoreMocks: true,
   clearMocks: true,
-  maxWorkers: "50%",
+  maxWorkers: 4,
   setupFiles: ["<rootDir>/tests/global-setup.ts"],
   setupFilesAfterEnv: ["jest-extended/all"],
   coverageReporters: ["clover", "json-summary", "lcov", "text", "text-summary"],
