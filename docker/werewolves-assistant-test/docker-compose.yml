@@ -1,7 +1,7 @@
 version: "3.8"
 services:
-  mongo:
-    container_name: "mongo-test"
+  mongo-1:
+    container_name: "mongo-test-1"
     image: mongo:latest
     environment:
       MONGO_INITDB_ROOT_USERNAME: test
@@ -10,7 +10,46 @@ services:
     ports:
       - "27018:27017"
     volumes:
-      - mongodb_data_container:/data/db
+      - mongodb_data_container_1:/data/db
+
+  mongo-2:
+    container_name: "mongo-test-2"
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: speed_burger_is_the_best
+      MONGO_INITDB_DATABASE: werewolves-assistant
+    ports:
+      - "27020:27017"
+    volumes:
+      - mongodb_data_container_2:/data/db
+
+  mongo-3:
+    container_name: "mongo-test-3"
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: speed_burger_is_the_best
+      MONGO_INITDB_DATABASE: werewolves-assistant
+    ports:
+      - "27022:27017"
+    volumes:
+      - mongodb_data_container_3:/data/db
+
+  mongo-4:
+    container_name: "mongo-test-4"
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: speed_burger_is_the_best
+      MONGO_INITDB_DATABASE: werewolves-assistant
+    ports:
+      - "27024:27017"
+    volumes:
+      - mongodb_data_container_4:/data/db
 
 volumes:
-  mongodb_data_container:
+  mongodb_data_container_1:
+  mongodb_data_container_2:
+  mongodb_data_container_3:
+  mongodb_data_container_4:
