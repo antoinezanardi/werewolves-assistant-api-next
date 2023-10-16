@@ -8,8 +8,13 @@ function getDatabasePort(configService: ConfigService): number | undefined {
   }
   if (process.env.JEST_WORKER_ID !== undefined) {
     const portMultiplier = 2;
-    const workerId = (parseInt(process.env.JEST_WORKER_ID) - 1) * portMultiplier;
-    return parseInt(port) + workerId;
+    const portAdjuster = (parseInt(process.env.JEST_WORKER_ID) - 1) * portMultiplier;
+    return parseInt(port) + portAdjuster;
+  }
+  if (process.env.CUCUMBER_WORKER_ID !== undefined) {
+    const portMultiplier = 2;
+    const portAdjuster = parseInt(process.env.CUCUMBER_WORKER_ID) * portMultiplier;
+    return parseInt(port) + portAdjuster;
   }
   return parseInt(port);
 }

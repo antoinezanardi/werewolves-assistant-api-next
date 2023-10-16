@@ -64,7 +64,7 @@ describe("Database Helper", () => {
       expect(getDatabasePort(services.config)).toBeUndefined();
     });
 
-    it("should return port without modifying it when port in env is defined and JEST_WORKER_ID is undefined.", () => {
+    it("should return port without modifying it when port in env is defined and JEST_WORKER_ID and CUCUMBER_WORKER_ID are undefined.", () => {
       when(mocks.configService.get).calledWith("DATABASE_PORT").mockReturnValue(port);
       process.env.JEST_WORKER_ID = undefined;
 
@@ -76,6 +76,14 @@ describe("Database Helper", () => {
       process.env.JEST_WORKER_ID = "2";
 
       expect(getDatabasePort(services.config)).toBe(parseInt(port) + 2);
+    });
+
+    it("should return port with worker id multiplier when port in env is defined and CUCUMBER_WORKER_ID is defined.", () => {
+      when(mocks.configService.get).calledWith("DATABASE_PORT").mockReturnValue(port);
+      process.env.JEST_WORKER_ID = undefined;
+      process.env.CUCUMBER_WORKER_ID = "2";
+
+      expect(getDatabasePort(services.config)).toBe(parseInt(port) + 4);
     });
   });
 
