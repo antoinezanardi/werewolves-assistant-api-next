@@ -92,7 +92,7 @@ jobs:
         run: npm run docker:test:start
 
       - name: Mutant tests 👽
-        run: npm run test:stryker
+        run: npm run test:stryker:ci
 
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
