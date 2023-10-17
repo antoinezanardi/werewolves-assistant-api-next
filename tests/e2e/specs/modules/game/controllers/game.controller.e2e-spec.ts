@@ -566,6 +566,7 @@ describe("Game Controller", () => {
           action: GamePlayActions.ELECT_SHERIFF,
           source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
           occurrence: GamePlayOccurrences.ANYTIME,
+          canBeSkipped: false,
         },
         upcomingPlays: toJSON([
           createFakeGamePlayCupidCharms(),
@@ -636,6 +637,7 @@ describe("Game Controller", () => {
           action: GamePlayActions.ELECT_SHERIFF,
           source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
           occurrence: GamePlayOccurrences.ANYTIME,
+          canBeSkipped: false,
         },
         upcomingPlays: toJSON([
           createFakeGamePlayThiefChoosesCard(),
@@ -864,7 +866,7 @@ describe("Game Controller", () => {
       const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
       const game = createFakeGame({
         status: GameStatuses.PLAYING,
-        currentPlay: createFakeGamePlaySurvivorsVote(),
+        currentPlay: createFakeGamePlaySurvivorsVote({ canBeSkipped: false }),
         players,
         options,
       });

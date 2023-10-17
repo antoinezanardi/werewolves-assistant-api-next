@@ -31,6 +31,6 @@ Then(/^the game's current play occurrence should be (?<occurrence>first-night-on
   expect(this.game.currentPlay?.occurrence).toBe(occurrence);
 });
 
-Then(/^the game's current play can(?<cantBeSkipped>not)? be skipped$/u, function(this: CustomWorld, canBeSkipped: string | null): void {
+Then(/^the game's current play can(?<cantBeSkipped> not)? be skipped$/u, function(this: CustomWorld, canBeSkipped: string | null): void {
   expect(this.game.currentPlay?.canBeSkipped).toBe(canBeSkipped === null);
 });

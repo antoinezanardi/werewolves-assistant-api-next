@@ -21,6 +21,7 @@ Feature: 🗳️ Vote Game Play
       | JB      |
       | Thomas  |
     And the game's current play occurrence should be on-days
+    And the game's current play can be skipped
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -47,6 +48,7 @@ Feature: 🗳️ Vote Game Play
       | Antoine |
       | JB      |
       | Thomas  |
+    And the game's current play can be skipped
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -59,6 +61,7 @@ Feature: 🗳️ Vote Game Play
       | JB      |
       | Thomas  |
     And the game's current play occurrence should be consequential
+    And the game's current play can be skipped
 
     When the survivors vote with the following votes
       | voter   | target |

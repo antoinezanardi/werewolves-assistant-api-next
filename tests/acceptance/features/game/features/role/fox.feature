@@ -29,6 +29,11 @@ Feature: 🦊 Fox role
 
     When the player or group skips his turn
     Then the game's current play should be fox to sniff
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
 
     When the player or group skips his turn
     Then the player named Antoine should not have the active powerless from fox attribute

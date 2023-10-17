@@ -15,6 +15,7 @@ Feature: 💘 Cupid role
       | name    |
       | Antoine |
     And the game's current play occurrence should be first-night-only
+    And the game's current play can not be skipped
 
     When the cupid shoots an arrow at the player named JB and the player named Thomas
     Then 2 of the following players should have the active in-love from cupid attribute
@@ -27,6 +28,7 @@ Feature: 💘 Cupid role
       | JB     |
       | Thomas |
     And the game's current play occurrence should be first-night-only
+    And the game's current play can be skipped
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat

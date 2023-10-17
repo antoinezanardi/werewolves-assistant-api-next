@@ -27,7 +27,7 @@ const GAME_PLAY_SOURCE_NAMES = [
   RoleNames.WITCH,
 ] as const satisfies Readonly<(PlayerAttributeNames | PlayerGroups | RoleNames)[]>;
 
-const REQUIRED_TARGET_ACTIONS = [
+const TARGET_ACTIONS = [
   GamePlayActions.LOOK,
   GamePlayActions.CHARM,
   GamePlayActions.SHOOT,
@@ -35,9 +35,6 @@ const REQUIRED_TARGET_ACTIONS = [
   GamePlayActions.CHOOSE_MODEL,
   GamePlayActions.DELEGATE,
   GamePlayActions.SETTLE_VOTES,
-] as const satisfies Readonly<GamePlayActions[]>;
-
-const OPTIONAL_TARGET_ACTIONS = [
   GamePlayActions.EAT,
   GamePlayActions.USE_POTIONS,
   GamePlayActions.MARK,
@@ -45,7 +42,7 @@ const OPTIONAL_TARGET_ACTIONS = [
   GamePlayActions.BAN_VOTING,
 ] as const satisfies Readonly<GamePlayActions[]>;
 
-const REQUIRED_VOTE_ACTIONS = [
+const VOTE_ACTIONS = [
   GamePlayActions.VOTE,
   GamePlayActions.ELECT_SHERIFF,
 ] as const satisfies Readonly<GamePlayActions[]>;
@@ -57,8 +54,7 @@ const STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS = [
 
 export {
   GAME_PLAY_SOURCE_NAMES,
-  REQUIRED_TARGET_ACTIONS,
-  OPTIONAL_TARGET_ACTIONS,
-  REQUIRED_VOTE_ACTIONS,
+  TARGET_ACTIONS,
+  VOTE_ACTIONS,
   STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS,
 };

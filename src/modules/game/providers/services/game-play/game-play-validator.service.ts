@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
-import { OPTIONAL_TARGET_ACTIONS, REQUIRED_TARGET_ACTIONS, REQUIRED_VOTE_ACTIONS, STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
+import { VOTE_ACTIONS, STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS, TARGET_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
@@ -279,16 +279,18 @@ export class GamePlayValidatorService {
   }
 
   private async validateGamePlayTargetsWithRelationsDto(playTargets: MakeGamePlayTargetWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Promise<void> {
-    if (playTargets === undefined || playTargets.length === 0) {
-      const requiredTargetActions: GamePlayActions[] = [...REQUIRED_TARGET_ACTIONS];
-      if (requiredTargetActions.includes(game.currentPlay.action)) {
-        throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_TARGETS);
+    const targetActions: GamePlayActions[] = [...TARGET_ACTIONS];
+    if (!targetActions.includes(game.currentPlay.action)) {
+      if (playTargets !== undefined && playTargets.length > 0) {
+        throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_TARGETS);
       }
       return;
     }
-    const expectedTargetActions: GamePlayActions[] = [...REQUIRED_TARGET_ACTIONS, ...OPTIONAL_TARGET_ACTIONS];
-    if (!expectedTargetActions.includes(game.currentPlay.action)) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_TARGETS);
+    if (playTargets === undefined || playTargets.length === 0) {
+      if (game.currentPlay.canBeSkipped === false) {
+        throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_TARGETS);
+      }
+      return;
     }
     this.validateInfectedTargetsAndPotionUsage(playTargets, game);
     await this.validateGamePlaySourceTargets(playTargets, game);
@@ -313,27 +315,21 @@ export class GamePlayValidatorService {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.SAME_SOURCE_AND_TARGET_VOTE);
     }
   }
-
-  private validateUnsetGamePlayVotesWithRelationsDto(game: GameWithCurrentPlay): void {
-    const { action: currentPlayAction, cause: currentPlayCause } = game.currentPlay;
-    const { canBeSkipped: canVotesBeSkipped } = game.options.votes;
-    const isCurrentPlayVoteCauseOfAngelPresence = currentPlayAction === GamePlayActions.VOTE && currentPlayCause === GamePlayCauses.ANGEL_PRESENCE;
-    const isCurrentPlayVoteInevitable = currentPlayAction === GamePlayActions.ELECT_SHERIFF || isCurrentPlayVoteCauseOfAngelPresence;
-    const canSomePlayerVote = game.players.some(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
-    const requiredVoteActions: GamePlayActions[] = [...REQUIRED_VOTE_ACTIONS];
-    if (canSomePlayerVote && (!canVotesBeSkipped && requiredVoteActions.includes(currentPlayAction) || canVotesBeSkipped && isCurrentPlayVoteInevitable)) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_VOTES);
-    }
-  }
   
   private async validateGamePlayVotesWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Promise<void> {
-    if (!playVotes || playVotes.length === 0) {
-      this.validateUnsetGamePlayVotesWithRelationsDto(game);
+    const { currentPlay } = game;
+    const voteActions: GamePlayActions[] = [...VOTE_ACTIONS];
+    if (!voteActions.includes(currentPlay.action)) {
+      if (playVotes !== undefined && playVotes.length > 0) {
+        throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_VOTES);
+      }
       return;
     }
-    const requiredVoteActions: GamePlayActions[] = [...REQUIRED_VOTE_ACTIONS];
-    if (!requiredVoteActions.includes(game.currentPlay.action)) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_VOTES);
+    if (playVotes === undefined || playVotes.length === 0) {
+      if (game.currentPlay.canBeSkipped === false) {
+        throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_VOTES);
+      }
+      return;
     }
     this.validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes, game);
     if (game.currentPlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES) {

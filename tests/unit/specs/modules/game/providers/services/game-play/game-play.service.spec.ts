@@ -25,7 +25,7 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakeRolesGameOptions, createFakeSheriffElectionGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers } from "@tests/factories/game/schemas/player/player.schema.factory";
@@ -132,6 +132,16 @@ describe("Game Play Service", () => {
   });
 
   describe("proceedToNextGamePlay", () => {
+    let localMocks: {
+      gamePlayService: {
+        augmentCurrentGamePlay: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      localMocks = { gamePlayService: { augmentCurrentGamePlay: jest.spyOn(services.gamePlay, "augmentCurrentGamePlay").mockImplementation() } };
+    });
+
     it("should return game as is when there is no upcoming plays.", () => {
       const game = createFakeGame();
 
@@ -150,17 +160,57 @@ describe("Game Play Service", () => {
       const expectedCurrentPlay = createFakeGamePlay({
         ...game.upcomingPlays[0],
         source: createFakeGamePlaySource({ ...game.upcomingPlays[0].source, players: expectedPlayersToPlay }),
-        canBeSkipped: true,
       });
       mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
-      mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(expectedCurrentPlay);
       const expectedGame = createFakeGame({
         ...game,
         upcomingPlays: [],
         currentPlay: expectedCurrentPlay,
       });
+      localMocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(expectedGame);
 
       expect(services.gamePlay.proceedToNextGamePlay(game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("augmentCurrentGamePlay", () => {
+    it("should call setGamePlayCanBeSkipped method when called.", () => {
+      const currentPlay = createFakeGamePlay();
+      const game = createFakeGameWithCurrentPlay({ currentPlay });
+      mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(currentPlay);
+      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(undefined);
+      services.gamePlay.augmentCurrentGamePlay(game);
+
+      expect(mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped).toHaveBeenCalledExactlyOnceWith(game.currentPlay, game);
+    });
+
+    it("should call getExpectedPlayersToPlay method when called.", () => {
+      const currentPlay = createFakeGamePlay();
+      const game = createFakeGameWithCurrentPlay({ currentPlay });
+      mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(currentPlay);
+      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(undefined);
+      services.gamePlay.augmentCurrentGamePlay(game);
+
+      expect(mocks.gameHelper.getExpectedPlayersToPlay).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should return game with augmented current play when called.", () => {
+      const currentPlay = createFakeGamePlay();
+      const game = createFakeGameWithCurrentPlay({ currentPlay });
+      const augmentedCurrentPlay = createFakeGamePlay({ ...currentPlay, canBeSkipped: true });
+      const expectedPlayersToPlay = [createFakeWerewolfAlivePlayer(), createFakeVillagerAlivePlayer()];
+      mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(augmentedCurrentPlay);
+      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
+      const expectedAugmentedCurrentPlay = createFakeGamePlay({
+        ...augmentedCurrentPlay,
+        source: createFakeGamePlaySource({ ...augmentedCurrentPlay.source, players: expectedPlayersToPlay }),
+      });
+      const expectedGame = createFakeGameWithCurrentPlay({
+        ...game,
+        currentPlay: expectedAugmentedCurrentPlay,
+      });
+
+      expect(services.gamePlay.augmentCurrentGamePlay(game)).toStrictEqual<Game>(expectedGame);
     });
   });
 

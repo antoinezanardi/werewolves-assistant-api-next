@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
+import { WEREWOLF_ROLES } from "@/modules/role/constants/role.constant";
+import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import { PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
-import { getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers } from "@/modules/game/helpers/game.helper";
+import { getLeftToEatByWerewolvesPlayers } from "@/modules/game/helpers/game.helper";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
@@ -19,10 +20,10 @@ export class GamePlayAugmenterService {
     [RoleNames.FOX]: () => true,
     [RoleNames.RAVEN]: () => true,
     [RoleNames.SCAPEGOAT]: () => true,
-    [RoleNames.THIEF]: () => true,
+    [RoleNames.THIEF]: (gamePlay: GamePlay, game: Game) => this.canThiefSkipGamePlay(game),
     [RoleNames.TWO_SISTERS]: () => true,
     [RoleNames.THREE_BROTHERS]: () => true,
-    [RoleNames.WHITE_WEREWOLF]: (gamePlay: GamePlay, game: Game) => this.canWhiteWerewolfSkipGamePlay(game),
+    [RoleNames.WHITE_WEREWOLF]: () => true,
     [RoleNames.WITCH]: () => true,
   };
 
@@ -34,7 +35,8 @@ export class GamePlayAugmenterService {
 
   private canSurvivorsSkipGamePlay(gamePlay: GamePlay, game: Game): boolean {
     const { canBeSkipped } = game.options.votes;
-    if (gamePlay.action === GamePlayActions.ELECT_SHERIFF) {
+    const isGamePlayVoteCauseAngelPresence = gamePlay.action === GamePlayActions.VOTE && gamePlay.cause === GamePlayCauses.ANGEL_PRESENCE;
+    if (gamePlay.action === GamePlayActions.ELECT_SHERIFF || isGamePlayVoteCauseAngelPresence) {
       return false;
     }
     return canBeSkipped;
@@ -45,9 +47,13 @@ export class GamePlayAugmenterService {
     return leftToEatByWerewolvesPlayers.length === 0;
   }
 
-  private canWhiteWerewolfSkipGamePlay(game: Game): boolean {
-    const leftToEatByWhiteWerewolfPlayers = getLeftToEatByWhiteWerewolfPlayers(game);
-    return leftToEatByWhiteWerewolfPlayers.length === 0;
+  private canThiefSkipGamePlay(game: Game): boolean {
+    const { mustChooseBetweenWerewolves } = game.options.roles.thief;
+    if (game.additionalCards === undefined || game.additionalCards.length === 0) {
+      return true;
+    }
+    const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => WEREWOLF_ROLES.find(role => role.name === roleName));
+    return !areAllAdditionalCardsWerewolves || !mustChooseBetweenWerewolves;
   }
 
   private canGamePlayBeSkipped(gamePlay: GamePlay, game: Game): boolean {

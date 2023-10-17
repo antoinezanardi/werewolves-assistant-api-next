@@ -1,15 +1,20 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
-import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
-import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
+import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helper";
+import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
+import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeRolesGameOptions, createFakeThiefGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayFoxSniffs, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeAngelAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Augmenter Service", () => {
@@ -65,8 +70,23 @@ describe("Game Play Augmenter Service", () => {
       expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](gamePlay, game)).toBe(false);
     });
 
+    it("should return false when game play action is vote and game play cause is angel presence.", () => {
+      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE });
+      const game = createFakeGame();
+
+      expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](gamePlay, game)).toBe(false);
+    });
+
     it("should return true when game play action is not elect sheriff and game options say that votes can be skipped.", () => {
       const gamePlay = createFakeGamePlay({ action: GamePlayActions.VOTE });
+      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) });
+      const game = createFakeGame({ options });
+
+      expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](gamePlay, game)).toBe(true);
+    });
+
+    it("should return true when game play action is not vote but because angel presence.", () => {
+      const gamePlay = createFakeGamePlayRavenMarks({ cause: GamePlayCauses.ANGEL_PRESENCE });
       const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) });
       const game = createFakeGame({ options });
 
@@ -76,7 +96,12 @@ describe("Game Play Augmenter Service", () => {
     it("should return false when game play action is not elect sheriff and game options say that votes can't be skipped.", () => {
       const gamePlay = createFakeGamePlay({ action: GamePlayActions.VOTE });
       const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
-      const game = createFakeGame({ options });
+      const players = [
+        createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+        createFakeAngelAlivePlayer(),
+        createFakeWitchAlivePlayer({ isAlive: false }),
+      ];
+      const game = createFakeGame({ players, options });
 
       expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](gamePlay, game)).toBe(false);
     });
@@ -98,19 +123,51 @@ describe("Game Play Augmenter Service", () => {
     });
   });
 
-  describe("canWhiteWerewolfSkipGamePlay", () => {
-    it("should return true when there are no players left to eat by white werewolf.", () => {
-      mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValueOnce([]);
+  describe("canThiefSkipGamePlay", () => {
+    it("should return true when game has undefined additional cards.", () => {
       const game = createFakeGame();
 
-      expect(services.gamePlayAugmenter["canWhiteWerewolfSkipGamePlay"](game)).toBe(true);
+      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(true);
     });
 
-    it("should return false when there are players left to eat by white werewolf.", () => {
-      mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValueOnce([createFakePlayer()]);
-      const game = createFakeGame();
+    it("should return true when game has no additional cards.", () => {
+      const additionalCards = [];
+      const game = createFakeGame({ additionalCards });
 
-      expect(services.gamePlayAugmenter["canWhiteWerewolfSkipGamePlay"](game)).toBe(false);
+      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(true);
+    });
+
+    it("should return true when thief doesn't have to choose between werewolves cards.", () => {
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: RoleNames.SEER }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const game = createFakeGame({ additionalCards, options });
+
+      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(true);
+    });
+
+    it("should return true when thief has to choose between werewolves cards but game options allow to skip.", () => {
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: false }) }) });
+      const game = createFakeGame({ additionalCards, options });
+
+      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(true);
+    });
+
+    it("should return false when thief has to choose between werewolves cards and game options don't allow to skip.", () => {
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const game = createFakeGame({ additionalCards, options });
+
+      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(false);
     });
   });
 
@@ -119,7 +176,7 @@ describe("Game Play Augmenter Service", () => {
       gamePlayAugmenterService: {
         canSurvivorsSkipGamePlay: jest.SpyInstance;
         canBigBadWolfSkipGamePlay: jest.SpyInstance;
-        canWhiteWerewolfSkipGamePlay: jest.SpyInstance;
+        canThiefSkipGamePlay: jest.SpyInstance;
       };
     };
 
@@ -128,7 +185,7 @@ describe("Game Play Augmenter Service", () => {
         gamePlayAugmenterService: {
           canSurvivorsSkipGamePlay: jest.spyOn(services.gamePlayAugmenter as unknown as { canSurvivorsSkipGamePlay }, "canSurvivorsSkipGamePlay").mockImplementation(),
           canBigBadWolfSkipGamePlay: jest.spyOn(services.gamePlayAugmenter as unknown as { canBigBadWolfSkipGamePlay }, "canBigBadWolfSkipGamePlay").mockImplementation(),
-          canWhiteWerewolfSkipGamePlay: jest.spyOn(services.gamePlayAugmenter as unknown as { canWhiteWerewolfSkipGamePlay }, "canWhiteWerewolfSkipGamePlay").mockImplementation(),
+          canThiefSkipGamePlay: jest.spyOn(services.gamePlayAugmenter as unknown as { canThiefSkipGamePlay }, "canThiefSkipGamePlay").mockImplementation(),
         },
       };
     });
@@ -165,16 +222,16 @@ describe("Game Play Augmenter Service", () => {
         test: "game play source name is scapegoat.",
       },
       {
-        gamePlay: createFakeGamePlayThiefChoosesCard(),
-        test: "game play source name is thief.",
-      },
-      {
         gamePlay: createFakeGamePlayTwoSistersMeetEachOther(),
         test: "game play source name are two sisters.",
       },
       {
         gamePlay: createFakeGamePlayThreeBrothersMeetEachOther(),
         test: "game play source name are three brothers.",
+      },
+      {
+        gamePlay: createFakeGamePlayWhiteWerewolfEats(),
+        test: "game play source name is white werewolf.",
       },
       {
         gamePlay: createFakeGamePlayWitchUsesPotions(),
@@ -202,12 +259,12 @@ describe("Game Play Augmenter Service", () => {
       expect(localMocks.gamePlayAugmenterService.canBigBadWolfSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should call canWhiteWerewolfSkipGamePlay method when game play source name is white werewolf.", () => {
-      const gamePlay = createFakeGamePlayWhiteWerewolfEats();
+    it("should call canThiefSkipGamePlay method when game play source name is thief.", () => {
+      const gamePlay = createFakeGamePlayThiefChoosesCard();
       const game = createFakeGame();
       services.gamePlayAugmenter["canGamePlayBeSkipped"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.canWhiteWerewolfSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
+      expect(localMocks.gamePlayAugmenterService.canThiefSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
     });
   });
 });

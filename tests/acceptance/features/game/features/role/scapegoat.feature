@@ -38,6 +38,7 @@ Feature: 🐐 Scapegoat role
       | name    |
       | Antoine |
     And the game's current play occurrence should be consequential
+    And the game's current play can be skipped
 
     When the scapegoat bans from vote the following players
       | name   |
