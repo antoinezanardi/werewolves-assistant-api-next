@@ -25,6 +25,7 @@ Feature: 🐺🦴White Werewolf role
       | name    |
       | Olivia  |
     And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
 
     When the player or group skips his turn
     Then the game's current play should be survivors to vote
@@ -63,6 +64,7 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be played by the following players
       | name    |
       | Olivia  |
+    And the game's current play can be skipped
 
     When the white werewolf eats the player named JB
     Then the player named JB should be murdered by white-werewolf from eaten

@@ -18,6 +18,7 @@ Feature: 👼 Angel role
       | JB      |
       | Thomas  |
     And the game's current play occurrence should be first-night-only
+    And the game's current play can not be skipped
 
     When the survivors vote with the following votes
       | source  | vote   |

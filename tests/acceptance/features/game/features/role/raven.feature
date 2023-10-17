@@ -16,6 +16,7 @@ Feature: 🐦‍⬛ Raven role
       | name    |
       | Antoine |
     And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
 
     When the player or group skips his turn
     Then nobody should have the active raven-marked from raven attribute

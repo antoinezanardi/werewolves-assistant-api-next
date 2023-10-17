@@ -20,6 +20,7 @@ Feature: 🎖️ Sheriff player attribute
       | JB      |
       | Babou   |
     And the game's current play occurrence should be anytime
+    And the game's current play can not be skipped
 
     When the survivors elect sheriff with the following votes
       | voter   | target |
@@ -43,6 +44,7 @@ Feature: 🎖️ Sheriff player attribute
     And the game's current play should be played by the following players
       | name   |
       | Olivia |
+    And the game's current play can not be skipped
 
     When the sheriff breaks the tie in votes by choosing the player named Thomas
     Then the player named JB should be alive
@@ -143,6 +145,7 @@ Feature: 🎖️ Sheriff player attribute
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
     And the game's current play should be survivors to elect-sheriff
+    And the game's current play can not be skipped
 
   Scenario: 🎖️ Sheriff can be elected on second night instead of first night with right option
 
@@ -188,6 +191,7 @@ Feature: 🎖️ Sheriff player attribute
       | name   |
       | Thomas |
     And the game's current play occurrence should be consequential
+    And the game's current play can not be skipped
 
     When the sheriff delegates his role to the player named Olivia
     Then the player named Olivia should have the active sheriff from sheriff attribute

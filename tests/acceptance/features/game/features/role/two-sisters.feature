@@ -18,6 +18,7 @@ Feature: 👯‍ Two sisters role
       | Antoine |
       | Olivia  |
     And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
 
     When the two sisters meet each other
     Then the game's current play should be werewolves to eat

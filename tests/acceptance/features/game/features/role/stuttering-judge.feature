@@ -16,6 +16,7 @@ Feature: ⚖️ Stuttering Judge Role
       | name    |
       | Antoine |
     And the game's current play occurrence should be first-night-only
+    And the game's current play can not be skipped
 
     When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat

@@ -19,6 +19,7 @@ Feature: 👨‍👨‍👦 Three Brothers role
       | Olivia  |
       | Thomas  |
     And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
 
     When the three brothers meet each other
     Then the game's current play should be werewolves to eat

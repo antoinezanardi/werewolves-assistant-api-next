@@ -16,6 +16,7 @@ Feature: 🐺 Werewolf role
       | Doudou |
       | Thom   |
     And the game's current play occurrence should be on-nights
+    And the game's current play can not be skipped
 
     When the werewolves eat the player named Juju
     Then the player named Juju should have the active eaten from werewolves attribute

@@ -15,6 +15,7 @@ Feature: 👺 Thief role
       | name    |
       | Antoine |
     And the game's current play occurrence should be first-night-only
+    And the game's current play can be skipped
 
     When the thief chooses card with role seer
     Then the player named Antoine should be currently a seer and originally a thief
@@ -36,9 +37,24 @@ Feature: 👺 Thief role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play can be skipped
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
+
+  Scenario: 👺 Thief can't skip his turn if all his cards are werewolves
+
+    Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | thief    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | witch    |
+    Then the game's current play should be thief to choose-card
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play can not be skipped
 
   Scenario: 👺 Thief can skip his turn if he wants even if all his cards are werewolves with good option
 
@@ -52,6 +68,7 @@ Feature: 👺 Thief role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play can be skipped
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat

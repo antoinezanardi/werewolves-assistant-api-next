@@ -53,6 +53,7 @@ describe("Game Service", () => {
       getUpcomingNightPlays: jest.SpyInstance;
       proceedToNextGamePlay: jest.SpyInstance;
       refreshUpcomingPlays: jest.SpyInstance;
+      augmentCurrentGamePlay: jest.SpyInstance;
     };
     gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.SpyInstance };
     gamePlayMakerService: { makeGamePlay: jest.SpyInstance };
@@ -91,6 +92,7 @@ describe("Game Service", () => {
         getUpcomingNightPlays: jest.fn(),
         proceedToNextGamePlay: jest.fn(),
         refreshUpcomingPlays: jest.fn(),
+        augmentCurrentGamePlay: jest.fn(),
       },
       gamePlayValidatorService: { validateGamePlayWithRelationsDto: jest.fn() },
       gamePlayMakerService: { makeGamePlay: jest.fn() },
@@ -169,6 +171,7 @@ describe("Game Service", () => {
     const createdGame = createFakeGameWithCurrentPlay();
     
     beforeEach(() => {
+      mocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(createdGame);
       mocks.gameRepository.create.mockResolvedValue(createdGame);
       localMocks = { gameService: { updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockResolvedValue(createdGame) } };
     });
@@ -194,6 +197,14 @@ describe("Game Service", () => {
       expect(repositories.game.create).toHaveBeenCalledExactlyOnceWith(expectedGame);
     });
 
+    it("should call augmentCurrentGamePlay method when called.", async() => {
+      const toCreateGame = createFakeCreateGameDto();
+      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
+      await services.game.createGame(toCreateGame);
+
+      expect(mocks.gamePlayService.augmentCurrentGamePlay).toHaveBeenCalledExactlyOnceWith(createdGame);
+    });
+
     it("should call updateGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
       mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
@@ -203,10 +214,8 @@ describe("Game Service", () => {
       ];
       mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
       await services.game.createGame(toCreateGame);
-      const expectedGame = createFakeGameWithCurrentPlay(createdGame);
-      expectedGame.currentPlay.source.players = expectedPlayersToPlay;
 
-      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, expectedGame);
+      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, createdGame);
     });
   });
 

@@ -18,6 +18,7 @@ Feature: 🪄 Witch role
       | name    |
       | Antoine |
     And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
 
     When the witch uses life potion on the player named Juju
     Then the player named Juju should be alive

@@ -9,7 +9,6 @@ import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.he
 import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-play/game-play.helper";
 import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { createGame as createGameFromFactory } from "@/modules/game/helpers/game.factory";
-import { getExpectedPlayersToPlay } from "@/modules/game/helpers/game.helper";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
@@ -55,8 +54,8 @@ export class GameService {
       currentPlay,
       upcomingPlays,
     });
-    const createdGame = await this.gameRepository.create(gameToCreate) as GameWithCurrentPlay;
-    createdGame.currentPlay.source.players = getExpectedPlayersToPlay(createdGame);
+    let createdGame = await this.gameRepository.create(gameToCreate) as GameWithCurrentPlay;
+    createdGame = this.gamePlayService.augmentCurrentGamePlay(createdGame);
     return this.updateGame(createdGame._id, createdGame);
   }
 
