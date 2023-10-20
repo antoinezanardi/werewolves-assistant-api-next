@@ -10,6 +10,8 @@ Feature: 🤪 Idiot role
       | Olivia  | villager |
       | JB      | villager |
       | Thomas  | werewolf |
+    Then the request should have succeeded with status code 201
+    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten

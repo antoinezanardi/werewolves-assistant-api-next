@@ -13,9 +13,12 @@ Feature: 🛡️ Guard role
       | Nana    | little-girl  |
       | Juju    | villager     |
       | Cari    | villager     |
+    Then the request should have succeeded with status code 201
+    And the game's current play should be guard to protect
 
     When the guard protects the player named Antoine
-    Then the player named Antoine should have the active protected from guard attribute
+    Then the request should have succeeded with status code 200
+    And the player named Antoine should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -63,7 +66,111 @@ Feature: 🛡️ Guard role
     Then the player named Cari should be alive
     And the player named Antoine should be murdered by werewolves from eaten
 
-  Scenario: 🛡️ Guard can't protect from other attack than werewolves
+  Scenario: 🛡️ Guard can't skip his turn
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | guard    |
+      | Olivia  | werewolf |
+      | JB      | villager |
+      | Thomas  | villager |
+    Then the game's current play should be guard to protect
+    And the game's current play can not be skipped
+
+    When the player or group skips his turn
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "`targets` is required on this current game's state"
+
+  Scenario: 🛡️ Guard can't protect an unknown player
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | guard    |
+      | Olivia  | werewolf |
+      | JB      | villager |
+      | Thomas  | villager |
+    Then the game's current play should be guard to protect
+
+    When the player or group targets an unknown player
+    Then the request should have failed with status code 404
+    And the request exception status code should be 404
+    And the request exception message should be "Player with id "4c1b96d4dfe5af0ddfa19e35" not found"
+    And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
+
+  Scenario: 🛡️ Guard can't protect an dead player
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | guard    |
+      | Olivia  | werewolf |
+      | JB      | angel    |
+      | Thomas  | villager |
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | name    | vote   |
+      | Olivia  | Thomas |
+      | JB      | Thomas |
+    Then the game's current play should be guard to protect
+
+    When the guard protects the player named Thomas
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Guard can't protect this target"
+
+  Scenario: 🛡️ Guard can't protect twice in a row the same player
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | guard    |
+      | Olivia  | werewolf |
+      | JB      | villager |
+      | Thomas  | villager |
+    Then the game's current play should be guard to protect
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+
+    When the guard protects the player named Thomas
+    Then the player named Thomas should have the active protected from guard attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should be alive
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be guard to protect
+
+    When the guard protects the player named Thomas
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Guard can't protect this target"
+
+  Scenario: 🛡️ Guard can't protect more than one player
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | guard    |
+      | Olivia  | werewolf |
+      | JB      | villager |
+      | Thomas  | villager |
+    Then the game's current play should be guard to protect
+
+    When the player or group targets the following players
+      | name    |
+      | Thomas  |
+      | Olivia  |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "There are too much targets for this current game's state"
+
+  Scenario: 🛡️ Guard doesn't protect from other attack than werewolves
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
