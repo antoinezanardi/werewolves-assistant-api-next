@@ -11,7 +11,8 @@ Feature: 🐻 Bear Tamer role
       | JB      | villager   |
       | Thomas  | werewolf   |
       | Doudou  | villager   |
-    Then the game's current play should be werewolves to eat
+    Then the request should have succeeded with status code 201
+    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten

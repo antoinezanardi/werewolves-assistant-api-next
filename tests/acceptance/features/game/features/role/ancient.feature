@@ -26,7 +26,8 @@ Feature: 👴🏻 Ancient role
       | Ali       | angel                 |
       | Pedro     | pied-piper            |
       | Pierre    | raven                 |
-    Then the game's current play should be survivors to vote because angel-presence
+    Then the request should have succeeded with status code 201
+    And the game's current play should be survivors to vote because angel-presence
 
     When the survivors vote with the following votes
       | voter  | target  |

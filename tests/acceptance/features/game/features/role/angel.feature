@@ -10,7 +10,8 @@ Feature: 👼 Angel role
       | Olivia  | ancient  |
       | JB      | villager |
       | Thomas  | werewolf |
-    Then the game's current play should be survivors to vote because angel-presence
+    Then the request should have succeeded with status code 201
+    And the game's current play should be survivors to vote because angel-presence
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
