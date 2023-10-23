@@ -12,7 +12,8 @@ Feature: 🐐 Scapegoat role
       | Thomas  | werewolf         |
       | Mom     | villager         |
       | Dad     | stuttering-judge |
-    Then the game's current play should be survivors to elect-sheriff
+    Then the request should have succeeded with status code 201
+    And the game's current play should be survivors to elect-sheriff
 
     When the survivors elect sheriff with the following votes
       | voter  | target |
@@ -43,7 +44,8 @@ Feature: 🐐 Scapegoat role
     When the scapegoat bans from vote the following players
       | name   |
       | Olivia |
-    Then 1 of the following players should have the inactive cant-vote from scapegoat attribute
+    Then the request should have succeeded with status code 200
+    And 1 of the following players should have the inactive cant-vote from scapegoat attribute
       | name   |
       | Olivia |
     And the game's current play should be survivors to vote because stuttering-judge-request
@@ -133,3 +135,59 @@ Feature: 🐐 Scapegoat role
     When the player or group skips his turn
     Then the game's phase should be night
     And nobody should have the active cant-vote from scapegoat attribute
+
+  Scenario: 🐐 Scapegoat can't ban from votes an unknown player
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role      |
+      | Antoine | scapegoat |
+      | Olivia  | ancient   |
+      | JB      | angel     |
+      | Thomas  | werewolf  |
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Antoine | Olivia |
+      | Olivia  | Thomas |
+    Then the player named Antoine should be murdered by survivors from vote-scapegoated
+    And the game's current play should be scapegoat to ban-voting
+
+    When the player or group targets an unknown player
+    Then the request should have failed with status code 404
+    And the request exception status code should be 404
+    And the request exception message should be "Player with id "4c1b96d4dfe5af0ddfa19e35" not found"
+    And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
+
+  Scenario: 🐐 Scapegoat can't ban from votes a dead player
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role      |
+      | Antoine | scapegoat |
+      | Olivia  | villager  |
+      | JB      | angel     |
+      | Thomas  | werewolf  |
+      | Juju    | villager  |
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Antoine | Juju   |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Antoine | Thomas |
+      | Thomas  | Antoine |
+    Then the player named Antoine should be murdered by survivors from vote-scapegoated
+    And the game's current play should be scapegoat to ban-voting
+
+    When the scapegoat bans from vote the following players
+      | name   |
+      | Olivia |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "At least one of the scapegoat targets can't be banned from voting"

@@ -62,6 +62,11 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords(gameId);
   }
 
+  public async didJudgeMakeHisSign(gameId: Types.ObjectId): Promise<boolean> {
+    const records = await this.gameHistoryRecordRepository.getGameHistoryJudgeChoosesHisSignRecords(gameId);
+    return records.length > 0;
+  }
+
   public async getGameHistoryWerewolvesEatAncientRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordRepository.getGameHistoryWerewolvesEatAncientRecords(gameId);
   }

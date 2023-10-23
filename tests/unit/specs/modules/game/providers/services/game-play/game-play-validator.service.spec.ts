@@ -49,6 +49,7 @@ describe("Game Play Validator Service", () => {
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
+      didJudgeMakeHisSign: jest.SpyInstance;
     };
   };
   let services: { gamePlayValidator: GamePlayValidatorService };
@@ -71,6 +72,7 @@ describe("Game Play Validator Service", () => {
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
+        didJudgeMakeHisSign: jest.fn(),
       },
     };
     
@@ -1758,6 +1760,10 @@ describe("Game Play Validator Service", () => {
   });
 
   describe("validateGamePlayWithRelationsDtoJudgeRequest", () => {
+    beforeEach(() => {
+      mocks.gameHistoryRecordService.didJudgeMakeHisSign.mockResolvedValue(true);
+    });
+
     it("should do nothing when doesJudgeRequestAnotherVote is undefined.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
@@ -1768,6 +1774,21 @@ describe("Game Play Validator Service", () => {
     it("should throw error when judge request another vote but upcoming action is not vote.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
+
+      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toReject();
+      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`doesJudgeRequestAnotherVote` can't be set on this current game's state");
+    });
+
+    it("should throw error when judge request another vote but he didn't make his sign.", async() => {
+      const players = bulkCreateFakePlayers(4, [
+        createFakeWitchAlivePlayer(),
+        createFakeDogWolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeStutteringJudgeAlivePlayer(),
+      ]);
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), players });
+      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
+      mocks.gameHistoryRecordService.didJudgeMakeHisSign.mockResolvedValue(false);
 
       await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toReject();
       expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`doesJudgeRequestAnotherVote` can't be set on this current game's state");

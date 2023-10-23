@@ -84,6 +84,14 @@ When(/^the vile father of wolves infects the player named (?<name>.+)$/u, async 
   setGameInContext(this.response, this);
 });
 
+When(/^the vile father of wolves infects the following players$/u, async function(this: CustomWorld, targetsDatatable: DataTable): Promise<void> {
+  const makeGamePlayDto = { targets: convertDatatableToMakeGamePlayTargets(targetsDatatable.rows(), this.game) };
+  makeGamePlayDto.targets = makeGamePlayDto.targets.map(target => ({ ...target, isInfected: true }));
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  setGameInContext(this.response, this);
+});
+
 When(/^the big bad wolf eats the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
@@ -207,6 +215,12 @@ When(/^the stuttering judge chooses his sign$/u, async function(this: CustomWorl
 When(/^the thief chooses card with role (?<cardRole>.+)$/u, async function(this: CustomWorld, cardRole: RoleNames): Promise<void> {
   const chosenCard = this.game.additionalCards?.find(({ roleName }) => roleName === cardRole);
   this.response = await makeGamePlayRequest({ chosenCardId: chosenCard?._id }, this.game, this.app);
+  setGameInContext(this.response, this);
+});
+
+When(/^the thief chooses an unknown card$/u, async function(this: CustomWorld): Promise<void> {
+  const unknownCardId = createFakeObjectId("4c1b96d4dfe5af0ddfa19e35");
+  this.response = await makeGamePlayRequest({ chosenCardId: unknownCardId }, this.game, this.app);
   setGameInContext(this.response, this);
 });
 

@@ -465,7 +465,6 @@ Feature: 🗳️ Vote Game Play
 
     When the survivors vote with the following votes
       | voter   | target  |
-      | Antoine | Juju    |
       | Juju    | Antoine |
     Then the request should have failed with status code 400
     And the request exception status code should be 400

@@ -12,7 +12,8 @@ Feature: 👯‍ Two sisters role
       | Thomas  | villager    |
       | Maxime  | villager    |
       | Julien  | villager    |
-    Then the game's current play should be two-sisters to meet-each-other
+    Then the request should have succeeded with status code 201
+    And the game's current play should be two-sisters to meet-each-other
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -21,7 +22,8 @@ Feature: 👯‍ Two sisters role
     And the game's current play can be skipped
 
     When the two sisters meet each other
-    Then the game's current play should be werewolves to eat
+    Then the request should have succeeded with status code 200
+    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Julien
     Then the player named Julien should be murdered by werewolves from eaten

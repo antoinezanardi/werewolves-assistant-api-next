@@ -12,7 +12,8 @@ Feature: 👨‍👨‍👦 Three Brothers role
       | JB      | werewolf       |
       | Maxime  | villager       |
       | Julien  | villager       |
-    Then the game's current play should be three-brothers to meet-each-other
+    Then the request should have succeeded with status code 201
+    And the game's current play should be three-brothers to meet-each-other
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -22,7 +23,8 @@ Feature: 👨‍👨‍👦 Three Brothers role
     And the game's current play can be skipped
 
     When the three brothers meet each other
-    Then the game's current play should be werewolves to eat
+    Then the request should have succeeded with status code 200
+    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten

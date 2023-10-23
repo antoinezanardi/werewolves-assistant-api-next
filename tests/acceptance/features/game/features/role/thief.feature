@@ -10,7 +10,8 @@ Feature: 👺 Thief role
       | Olivia  | villager |
       | JB      | werewolf |
       | Thomas  | witch    |
-    Then the game's current play should be thief to choose-card
+    Then the request should have succeeded with status code 201
+    And the game's current play should be thief to choose-card
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -42,6 +43,26 @@ Feature: 👺 Thief role
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
+  Scenario: 👺 Thief can't steal an unknown card
+
+    Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | thief    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | witch    |
+    Then the game's current play should be thief to choose-card
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play can be skipped
+
+    When the thief chooses an unknown card
+    Then the request should have failed with status code 404
+    And the request exception status code should be 404
+    And the request exception message should be "Additional card with id "4c1b96d4dfe5af0ddfa19e35" not found"
+    And the request exception error should be "Game Play - Chosen card is not in the game additional cards"
+
   Scenario: 👺 Thief can't skip his turn if all his cards are werewolves
 
     Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
@@ -55,6 +76,12 @@ Feature: 👺 Thief role
       | name    |
       | Antoine |
     And the game's current play can not be skipped
+
+    When the player or group skips his turn
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Thief must choose a card (`chosenCard`)"
 
   Scenario: 👺 Thief can skip his turn if he wants even if all his cards are werewolves with good option
 
