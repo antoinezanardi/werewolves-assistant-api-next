@@ -141,9 +141,9 @@ Feature: 🐺 Vile Father of Wolves role
     Then the game's current play should be werewolves to eat
 
     When the vile father of wolves infects the following players
-      | name    |
-      | Olivia  |
-      | Thomas  |
+      | name   |
+      | Olivia |
+      | Thomas |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"

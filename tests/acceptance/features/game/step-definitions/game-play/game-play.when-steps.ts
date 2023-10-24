@@ -114,6 +114,13 @@ When(
   },
 );
 
+When(/^the witch uses (?<potion>life|death) potion on an unknown player$/u, async function(this: CustomWorld, potion: WitchPotions): Promise<void> {
+  const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: createFakeObjectId("4c1b96d4dfe5af0ddfa19e35"), drankPotion: potion }] };
+
+  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
+  setGameInContext(this.response, this);
+});
+
 When(/^the hunter shoots at the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };

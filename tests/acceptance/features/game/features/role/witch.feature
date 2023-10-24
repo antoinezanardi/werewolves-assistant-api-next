@@ -2,7 +2,7 @@
 
 Feature: 🪄 Witch role
 
-  Scenario: 🪄 Witch uses healing potion when the target is dying from werewolves
+  Scenario: 🪄 Witch uses lide potion when the target is dying from werewolves
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
@@ -10,7 +10,8 @@ Feature: 🪄 Witch role
       | Juju    | villager |
       | Doudou  | villager |
       | Thom    | werewolf |
-    Then the game's current play should be werewolves to eat
+    Then the request should have succeeded with status code 201
+    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Juju
     Then the game's current play should be witch to use-potions
@@ -21,7 +22,8 @@ Feature: 🪄 Witch role
     And the game's current play can be skipped
 
     When the witch uses life potion on the player named Juju
-    Then the player named Juju should be alive
+    Then the request should have succeeded with status code 200
+    And the player named Juju should be alive
 
   Scenario: 🪄 Witch uses death potion to kill someone
 
@@ -40,7 +42,8 @@ Feature: 🪄 Witch role
       | Antoine |
 
     When the witch uses death potion on the player named Doudou
-    Then the player named Juju should be murdered by werewolves from eaten
+    Then the request should have succeeded with status code 200
+    And the player named Juju should be murdered by werewolves from eaten
     And the player named Doudou should be murdered by witch from death-potion
 
   Scenario: 🪄 Witch can skip her turn
@@ -60,7 +63,8 @@ Feature: 🪄 Witch role
       | Antoine |
 
     When the player or group skips his turn
-    Then the player named Juju should be murdered by werewolves from eaten
+    Then the request should have succeeded with status code 200
+    And the player named Juju should be murdered by werewolves from eaten
     And the game's current play should be survivors to vote
 
   Scenario: 🪄 Witch use both potions at the same time
@@ -80,7 +84,8 @@ Feature: 🪄 Witch role
       | Antoine |
 
     When the witch uses life potion on the player named Juju and death potion on the player named Doudou
-    Then the player named Juju should be alive
+    Then the request should have succeeded with status code 200
+    And the player named Juju should be alive
     And the player named Doudou should be murdered by witch from death-potion
     And the game's current play should be survivors to vote
 
@@ -116,3 +121,144 @@ Feature: 🪄 Witch role
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be survivors to vote
+
+  Scenario: 🪄 Witch can't use her life potion on an unknown target
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Juju    | villager |
+      | Doudou  | villager |
+      | Thom    | werewolf |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses life potion on an unknown player
+    Then the request should have failed with status code 404
+    And the request exception status code should be 404
+    And the request exception message should be "Player with id "4c1b96d4dfe5af0ddfa19e35" not found"
+    And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
+
+  Scenario: 🪄 Witch can't use her death potion on an unknown target
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Juju    | villager |
+      | Doudou  | villager |
+      | Thom    | werewolf |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses death potion on an unknown player
+    Then the request should have failed with status code 404
+    And the request exception status code should be 404
+    And the request exception message should be "Player with id "4c1b96d4dfe5af0ddfa19e35" not found"
+    And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
+
+  Scenario: 🪄 Witch can't use her life potion on a target which is not dying from werewolves
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Juju    | villager |
+      | Doudou  | werewolf |
+      | Thom    | werewolf |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses life potion on the player named Antoine
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Life potion can't be applied to this target (`targets.drankPotion`)"
+
+  Scenario: 🪄 Witch can't use her death potion on a dead target
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Juju    | angel    |
+      | Doudou  | villager |
+      | Thom    | werewolf |
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter | against |
+      | Juju  | Doudou  |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses death potion on the player named Doudou
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Death potion can't be applied to this target (`targets.drankPotion`)"
+
+  Scenario: 🪄 Witch can't use her life potion more than once
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Juju    | villager |
+      | Doudou  | villager |
+      | Thom    | werewolf |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses life potion on the player named Juju
+    Then the player named Juju should be alive
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses life potion on the player named Antoine
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "`targets.drankPotion` can't be set on this current game's state"
+
+  Scenario: 🪄 Witch can't use her death potion more than once
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Juju    | villager |
+      | Doudou  | villager |
+      | Thom    | werewolf |
+      | Mum     | villager |
+      | Dad     | villager |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses death potion on the player named Doudou
+    Then the player named Doudou should be murdered by witch from death-potion
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses death potion on the player named Thom
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "`targets.drankPotion` can't be set on this current game's state"

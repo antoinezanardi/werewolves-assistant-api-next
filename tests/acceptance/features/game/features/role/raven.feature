@@ -142,9 +142,9 @@ Feature: 🐦‍⬛ Raven role
     Then the game's current play should be raven to mark
 
     When the player or group targets the following players
-      | player  |
-      | Olivia  |
-      | JB      |
+      | player |
+      | Olivia |
+      | JB     |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"

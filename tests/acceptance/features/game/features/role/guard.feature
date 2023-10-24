@@ -110,9 +110,9 @@ Feature: 🛡️ Guard role
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
-      | name    | vote   |
-      | Olivia  | Thomas |
-      | JB      | Thomas |
+      | name   | vote   |
+      | Olivia | Thomas |
+      | JB     | Thomas |
     Then the game's current play should be guard to protect
 
     When the guard protects the player named Thomas
@@ -162,9 +162,9 @@ Feature: 🛡️ Guard role
     Then the game's current play should be guard to protect
 
     When the player or group targets the following players
-      | name    |
-      | Thomas  |
-      | Olivia  |
+      | name   |
+      | Thomas |
+      | Olivia |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"

@@ -178,8 +178,8 @@ Feature: 🐐 Scapegoat role
     And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
-      | voter   | target |
-      | Antoine | Thomas |
+      | voter   | target  |
+      | Antoine | Thomas  |
       | Thomas  | Antoine |
     Then the player named Antoine should be murdered by survivors from vote-scapegoated
     And the game's current play should be scapegoat to ban-voting
