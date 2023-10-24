@@ -262,3 +262,53 @@ Feature: 🪄 Witch role
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "`targets.drankPotion` can't be set on this current game's state"
+
+  Scenario: 🪄 Witch can't use life potion on multiple targets
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role         |
+      | Antoine | witch        |
+      | Doudou  | villager     |
+      | Thom    | werewolf     |
+      | Mum     | villager     |
+      | Dad     | villager     |
+      | Sis     | big-bad-wolf |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Doudou
+    Then the game's current play should be big-bad-wolf to eat
+
+    When the big bad wolf eats the player named Dad
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses life potion on the following players
+      | player |
+      | Doudou |
+      | Dad    |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "There are too much targets which drank life potion (`targets.drankPotion`)"
+
+  Scenario: 🪄 Witch can't use death potion on multiple targets
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Doudou  | villager |
+      | Thom    | werewolf |
+      | Mum     | villager |
+      | Dad     | villager |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Doudou
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses death potion on the following players
+      | player  |
+      | Antoine |
+      | Thom    |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "There are too much targets which drank death potion (`targets.drankPotion`)"
