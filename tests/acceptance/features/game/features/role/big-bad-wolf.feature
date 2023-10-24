@@ -9,6 +9,8 @@ Feature: 🐺👹 Big Bad Wolf role
       | JB      | werewolf     |
       | Olivia  | big-bad-wolf |
       | Thomas  | seer         |
+    Then the request should have succeeded with status code 201
+    And the game's current play should be seer to look
 
     When the seer looks at the player named Antoine
     Then the player named Antoine should have the active seen from seer attribute
@@ -28,7 +30,8 @@ Feature: 🐺👹 Big Bad Wolf role
     And the game's current play can not be skipped
 
     When the big bad wolf eats the player named Thomas
-    Then the player named Thomas should have the active eaten from big-bad-wolf attribute
+    Then the request should have succeeded with status code 200
+    And the player named Thomas should have the active eaten from big-bad-wolf attribute
     And the game's current play should be witch to use-potions
 
     When the witch uses life potion on the player named Thomas
@@ -57,6 +60,130 @@ Feature: 🐺👹 Big Bad Wolf role
       | name   |
       | JB     |
       | Olivia |
+
+  Scenario: 🐺👹Big Bad Wolf can't eat an unknown player
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role         |
+      | Antoine | villager     |
+      | JB      | werewolf     |
+      | Olivia  | big-bad-wolf |
+      | Thomas  | villager     |
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be big-bad-wolf to eat
+
+    When the player or group targets an unknown player
+    Then the request should have failed with status code 404
+    And the request exception status code should be 404
+    And the request exception message should be "Player with id "4c1b96d4dfe5af0ddfa19e35" not found"
+    And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
+
+  Scenario: 🐺👹Big Bad Wolf can't eat a dead player
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role         |
+      | Antoine | angel        |
+      | JB      | werewolf     |
+      | Olivia  | big-bad-wolf |
+      | Thomas  | villager     |
+      | Babou   | villager     |
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | source | target |
+      | Olivia | Thomas |
+      | JB     | Thomas |
+    Then the player named Thomas should be murdered by survivors from vote
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be big-bad-wolf to eat
+
+    When the big bad wolf eats the player named Thomas
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Big bad wolf can't eat this target"
+
+  Scenario: 🐺👹Big Bad Wolf can't skip his turn if he has available targets
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role         |
+      | Antoine | villager     |
+      | JB      | werewolf     |
+      | Olivia  | big-bad-wolf |
+      | Thomas  | villager     |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be big-bad-wolf to eat
+    And the game's current play can not be skipped
+
+    When the player or group skips his turn
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "`targets` is required on this current game's state"
+
+  Scenario: 🐺👹Big Bad Wolf can't eat another wolf
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role         |
+      | Antoine | angel        |
+      | JB      | werewolf     |
+      | Olivia  | big-bad-wolf |
+      | Thomas  | villager     |
+      | Babou   | villager     |
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | source | target |
+      | Olivia | Thomas |
+      | JB     | Thomas |
+    Then the player named Thomas should be murdered by survivors from vote
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be big-bad-wolf to eat
+
+    When the big bad wolf eats the player named JB
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Big bad wolf can't eat this target"
+
+  Scenario: 🐺👹Big Bad Wolf can't eat more than one target
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role         |
+      | Antoine | angel        |
+      | JB      | werewolf     |
+      | Olivia  | big-bad-wolf |
+      | Thomas  | villager     |
+      | Babou   | villager     |
+      | Juju    | villager     |
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | source | target |
+      | Olivia | Thomas |
+      | JB     | Thomas |
+    Then the player named Thomas should be murdered by survivors from vote
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be big-bad-wolf to eat
+
+    When the player or group targets the following players
+      | name  |
+      | Babou |
+      | Juju  |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🐺👹Big Bad Wolf eats every night and not powerless if one werewolf dies
 
@@ -206,3 +333,6 @@ Feature: 🐺👹 Big Bad Wolf role
     When the werewolves eat the player named Antoine
     Then the game's current play should be big-bad-wolf to eat
     And the game's current play can be skipped
+
+    When the player or group skips his turn
+    Then the request should have succeeded with status code 200

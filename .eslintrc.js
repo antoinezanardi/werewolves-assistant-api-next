@@ -14,6 +14,7 @@ const { serviceFilesOverride } = require("./config/eslint/rules/overrides/servic
 const { testFilesOverride } = require("./config/eslint/rules/overrides/test-files");
 const { standardRules } = require("./config/eslint/rules/standard");
 const { typescriptRules } = require("./config/eslint/rules/typescript");
+const { cucumberContextHelperFile } = require("./config/eslint/rules/overrides/cucumber-context-helper-file");
 
 module.exports = {
   root: true,
@@ -50,5 +51,6 @@ module.exports = {
     controllerFilesOverride,
     serviceFilesOverride,
     cucumberStepsAndHooksFilesOverride,
+    cucumberContextHelperFile,
   ],
 };

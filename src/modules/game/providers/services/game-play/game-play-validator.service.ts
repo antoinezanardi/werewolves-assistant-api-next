@@ -351,10 +351,11 @@ export class GamePlayValidatorService {
       return;
     }
     const { voteRequestsCount } = game.options.roles.stutteringJudge;
+    const didJudgeMakeHisSign = await this.gameHistoryRecordService.didJudgeMakeHisSign(game._id);
     const gameHistoryJudgeRequestRecords = await this.gameHistoryRecordService.getGameHistoryJudgeRequestRecords(game._id);
     const stutteringJudgePlayer = getPlayerWithCurrentRole(game, RoleNames.STUTTERING_JUDGE);
     const stutteringJudgeRequestOpportunityActions: GamePlayActions[] = [...STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS];
-    if (!stutteringJudgeRequestOpportunityActions.includes(game.currentPlay.action) ||
+    if (!stutteringJudgeRequestOpportunityActions.includes(game.currentPlay.action) || !didJudgeMakeHisSign ||
         !stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer, game) ||
         gameHistoryJudgeRequestRecords.length >= voteRequestsCount) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
