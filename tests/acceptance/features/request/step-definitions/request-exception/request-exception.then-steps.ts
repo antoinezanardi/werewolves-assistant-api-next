@@ -1,3 +1,4 @@
+import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
@@ -5,6 +6,12 @@ import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 
 Then(/^the request exception message should be "(?<message>.+)"$/u, function(this: CustomWorld, message: string): void {
   expect(this.responseException.message).toBe(message);
+});
+
+Then(/^the request exception messages should be$/u, function(this: CustomWorld, messagesDatatable: DataTable): void {
+  const messages: string[] = messagesDatatable.rows().map(([message]) => message);
+
+  expect(this.responseException.message).toStrictEqual(messages);
 });
 
 Then(/^the request exception error should be "(?<error>.+)"$/u, function(this: CustomWorld, error: string): void {
