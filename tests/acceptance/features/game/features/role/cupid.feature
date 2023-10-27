@@ -17,6 +17,7 @@ Feature: 💘 Cupid role
       | Antoine |
     And the game's current play occurrence should be first-night-only
     And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 2 to 2
 
     When the cupid shoots an arrow at the player named JB and the player named Thomas
     Then the request should have succeeded with status code 200
@@ -31,6 +32,7 @@ Feature: 💘 Cupid role
       | Thomas |
     And the game's current play occurrence should be first-night-only
     And the game's current play can be skipped
+    And the game's current play should not have eligible targets boundaries
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200

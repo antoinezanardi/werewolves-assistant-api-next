@@ -27,6 +27,7 @@ Feature: 🐺🦴White Werewolf role
       | Olivia |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
+    And the game's current play should have eligible targets boundaries from 0 to 1
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
@@ -109,6 +110,7 @@ Feature: 🐺🦴White Werewolf role
       | Olivia |
 
   Scenario: 🐺🦴White Werewolf can eat an ally or skip every night and his role is skipped if no targets
+
     Given a created game with options described in file no-sheriff-option.json, white-werewolf-waking-up-every-night-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role           |
       | Antoine | villager       |
@@ -160,6 +162,24 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be alive
     And the game's current play should be survivors to vote
+
+  Scenario: 🐺🦴White Werewolf can skip if he has no other wolves to eat
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role           |
+      | Antoine | villager       |
+      | JB      | villager       |
+      | Olivia  | white-werewolf |
+      | Thomas  | villager       |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be white-werewolf to eat
+    And the game's current play can be skipped
+    And the game's current play should have eligible targets boundaries from 0 to 0
+
+    When the player or group skips his turn
+    Then the game's current play should be survivors to vote
 
   Scenario: 🐺🦴White Werewolf can't eat an unknown target
 

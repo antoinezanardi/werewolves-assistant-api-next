@@ -956,6 +956,12 @@ describe("Game Controller", () => {
           name: PlayerGroups.WEREWOLVES,
           players: [createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }), players[3]],
         }),
+        eligibleTargets: {
+          boundaries: {
+            min: 1,
+            max: 1,
+          },
+        },
         canBeSkipped: false,
       });
       const expectedGame = createFakeGame({

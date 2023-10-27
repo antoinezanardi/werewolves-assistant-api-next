@@ -18,6 +18,7 @@ Feature: 🐶 Dog Wolf role
     And the player named Antoine should be on villagers current side and originally be on villagers side
     And the game's current play occurrence should be first-night-only
     And the game's current play can not be skipped
+    And the game's current play should not have eligible targets boundaries
 
     When the dog wolf chooses the villagers side
     Then the request should have succeeded with status code 200

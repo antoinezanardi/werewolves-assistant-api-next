@@ -22,6 +22,7 @@ Feature: 🎖️ Sheriff player attribute
       | Babou   |
     And the game's current play occurrence should be anytime
     And the game's current play can not be skipped
+    And the game's current play should not have eligible targets boundaries
 
     When the survivors elect sheriff with the following votes
       | voter   | target |
@@ -47,6 +48,7 @@ Feature: 🎖️ Sheriff player attribute
       | name   |
       | Olivia |
     And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 1 to 1
 
     When the sheriff breaks the tie in votes by choosing the player named Thomas
     Then the request should have succeeded with status code 200
@@ -349,6 +351,7 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas |
     And the game's current play occurrence should be consequential
     And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 1 to 1
 
     When the sheriff delegates his role to the player named Olivia
     Then the request should have succeeded with status code 200
