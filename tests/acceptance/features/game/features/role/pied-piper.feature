@@ -23,6 +23,7 @@ Feature: 🪈 Pied Piper role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 2 to 2
 
     When the pied piper charms the following players
       | name   |
@@ -40,6 +41,7 @@ Feature: 🪈 Pied Piper role
       | Thomas |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
+    And the game's current play should not have eligible targets boundaries
 
     When the charmed people meet each other
     Then the request should have succeeded with status code 200
@@ -280,6 +282,7 @@ Feature: 🪈 Pied Piper role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play should have eligible targets boundaries from 3 to 3
 
     When the pied piper charms the following players
       | name   |
@@ -307,6 +310,7 @@ Feature: 🪈 Pied Piper role
     When the werewolves eat the player named Thomas
     Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be pied-piper to charm
+    And the game's current play should have eligible targets boundaries from 1 to 1
 
     When the pied piper charms the following players
       | name |

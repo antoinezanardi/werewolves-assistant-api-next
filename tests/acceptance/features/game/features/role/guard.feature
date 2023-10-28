@@ -37,6 +37,7 @@ Feature: 🛡️ Guard role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 1 to 1
 
     When the guard protects the player named Nana
     Then the player named Nana should have the active protected from guard attribute

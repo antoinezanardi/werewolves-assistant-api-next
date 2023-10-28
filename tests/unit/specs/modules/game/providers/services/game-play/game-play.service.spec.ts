@@ -35,6 +35,7 @@ describe("Game Play Service", () => {
   let mocks: {
     gamePlayAugmenterService: {
       setGamePlayCanBeSkipped: jest.SpyInstance;
+      setGamePlayEligibleTargets: jest.SpyInstance;
     };
     gameHistoryRecordService: {
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
@@ -52,7 +53,10 @@ describe("Game Play Service", () => {
 
   beforeEach(async() => {
     mocks = {
-      gamePlayAugmenterService: { setGamePlayCanBeSkipped: jest.fn() },
+      gamePlayAugmenterService: {
+        setGamePlayCanBeSkipped: jest.fn(),
+        setGamePlayEligibleTargets: jest.fn(),
+      },
       gameHistoryRecordService: {
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn().mockResolvedValue([]),
         getGameHistoryPhaseRecords: jest.fn().mockResolvedValue([]),
@@ -142,13 +146,13 @@ describe("Game Play Service", () => {
       localMocks = { gamePlayService: { augmentCurrentGamePlay: jest.spyOn(services.gamePlay, "augmentCurrentGamePlay").mockImplementation() } };
     });
 
-    it("should return game as is when there is no upcoming plays.", () => {
+    it("should return game as is when there is no upcoming plays.", async() => {
       const game = createFakeGame();
 
-      expect(services.gamePlay.proceedToNextGamePlay(game)).toStrictEqual<Game>(game);
+      await expect(services.gamePlay.proceedToNextGamePlay(game)).resolves.toStrictEqual<Game>(game);
     });
 
-    it("should make proceed to next game play when called.", () => {
+    it("should make proceed to next game play when called.", async() => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
@@ -169,37 +173,51 @@ describe("Game Play Service", () => {
       });
       localMocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(expectedGame);
 
-      expect(services.gamePlay.proceedToNextGamePlay(game)).toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlay.proceedToNextGamePlay(game)).resolves.toStrictEqual<Game>(expectedGame);
     });
   });
 
   describe("augmentCurrentGamePlay", () => {
-    it("should call setGamePlayCanBeSkipped method when called.", () => {
+    it("should call setGamePlayCanBeSkipped method when called.", async() => {
       const currentPlay = createFakeGamePlay();
       const game = createFakeGameWithCurrentPlay({ currentPlay });
       mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(currentPlay);
+      mocks.gamePlayAugmenterService.setGamePlayEligibleTargets.mockResolvedValue(currentPlay);
       mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(undefined);
-      services.gamePlay.augmentCurrentGamePlay(game);
+      await services.gamePlay.augmentCurrentGamePlay(game);
 
       expect(mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped).toHaveBeenCalledExactlyOnceWith(game.currentPlay, game);
     });
 
-    it("should call getExpectedPlayersToPlay method when called.", () => {
+    it("should call setGamePlayEligibleTargets method when called.", async() => {
       const currentPlay = createFakeGamePlay();
       const game = createFakeGameWithCurrentPlay({ currentPlay });
       mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(currentPlay);
+      mocks.gamePlayAugmenterService.setGamePlayEligibleTargets.mockResolvedValue(currentPlay);
       mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(undefined);
-      services.gamePlay.augmentCurrentGamePlay(game);
+      await services.gamePlay.augmentCurrentGamePlay(game);
+
+      expect(mocks.gamePlayAugmenterService.setGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game.currentPlay, game);
+    });
+
+    it("should call getExpectedPlayersToPlay method when called.", async() => {
+      const currentPlay = createFakeGamePlay();
+      const game = createFakeGameWithCurrentPlay({ currentPlay });
+      mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(currentPlay);
+      mocks.gamePlayAugmenterService.setGamePlayEligibleTargets.mockResolvedValue(currentPlay);
+      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(undefined);
+      await services.gamePlay.augmentCurrentGamePlay(game);
 
       expect(mocks.gameHelper.getExpectedPlayersToPlay).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should return game with augmented current play when called.", () => {
+    it("should return game with augmented current play when called.", async() => {
       const currentPlay = createFakeGamePlay();
       const game = createFakeGameWithCurrentPlay({ currentPlay });
       const augmentedCurrentPlay = createFakeGamePlay({ ...currentPlay, canBeSkipped: true });
       const expectedPlayersToPlay = [createFakeWerewolfAlivePlayer(), createFakeVillagerAlivePlayer()];
       mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(augmentedCurrentPlay);
+      mocks.gamePlayAugmenterService.setGamePlayEligibleTargets.mockResolvedValue(augmentedCurrentPlay);
       mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
       const expectedAugmentedCurrentPlay = createFakeGamePlay({
         ...augmentedCurrentPlay,
@@ -210,7 +228,7 @@ describe("Game Play Service", () => {
         currentPlay: expectedAugmentedCurrentPlay,
       });
 
-      expect(services.gamePlay.augmentCurrentGamePlay(game)).toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlay.augmentCurrentGamePlay(game)).resolves.toStrictEqual<Game>(expectedGame);
     });
   });
 

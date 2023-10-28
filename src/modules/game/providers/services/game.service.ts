@@ -55,7 +55,7 @@ export class GameService {
       upcomingPlays,
     });
     let createdGame = await this.gameRepository.create(gameToCreate) as GameWithCurrentPlay;
-    createdGame = this.gamePlayService.augmentCurrentGamePlay(createdGame);
+    createdGame = await this.gamePlayService.augmentCurrentGamePlay(createdGame);
     return this.updateGame(createdGame._id, createdGame);
   }
 
@@ -75,7 +75,7 @@ export class GameService {
     await this.gamePlayValidatorService.validateGamePlayWithRelationsDto(play, clonedGame);
     clonedGame = await this.gamePlayMakerService.makeGamePlay(play, clonedGame);
     clonedGame = await this.gamePlayService.refreshUpcomingPlays(clonedGame);
-    clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
+    clonedGame = await this.gamePlayService.proceedToNextGamePlay(clonedGame);
     clonedGame.tick++;
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
@@ -94,7 +94,7 @@ export class GameService {
     clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
     clonedGame = await this.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays(clonedGame);
     clonedGame = this.gamePhaseService.applyStartingGamePhaseOutcomes(clonedGame);
-    clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
+    clonedGame = await this.gamePlayService.proceedToNextGamePlay(clonedGame);
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }

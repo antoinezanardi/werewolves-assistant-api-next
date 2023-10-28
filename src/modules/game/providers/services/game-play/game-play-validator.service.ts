@@ -103,26 +103,8 @@ export class GamePlayValidatorService {
     }
     this.validateGamePlayTargetsBoundaries(infectedTargets, { min: 1, max: 1 });
   }
-  
-  private validateWerewolvesTargetsBoundaries(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
-    const leftToEatByWerewolvesPlayers = getLeftToEatByWerewolvesPlayers(game);
-    const leftToEatByWhiteWerewolfPlayers = getLeftToEatByWhiteWerewolfPlayers(game);
-    const bigBadWolfExpectedTargetsCount = leftToEatByWerewolvesPlayers.length ? 1 : 0;
-    const whiteWerewolfMaxTargetsCount = leftToEatByWhiteWerewolfPlayers.length ? 1 : 0;
-    const werewolvesSourceTargetsBoundaries: Partial<Record<GamePlaySourceName, { min: number; max: number }>> = {
-      [PlayerGroups.WEREWOLVES]: { min: 1, max: 1 },
-      [RoleNames.BIG_BAD_WOLF]: { min: bigBadWolfExpectedTargetsCount, max: bigBadWolfExpectedTargetsCount },
-      [RoleNames.WHITE_WEREWOLF]: { min: 0, max: whiteWerewolfMaxTargetsCount },
-    };
-    const targetsBoundaries = werewolvesSourceTargetsBoundaries[game.currentPlay.source.name];
-    if (!targetsBoundaries) {
-      return;
-    }
-    this.validateGamePlayTargetsBoundaries(playTargets, targetsBoundaries);
-  }
 
   private async validateGamePlayWerewolvesTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
-    this.validateWerewolvesTargetsBoundaries(playTargets, game);
     if (!playTargets.length) {
       return;
     }
@@ -144,29 +126,25 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayHunterTargets(playTargets: MakeGamePlayTargetWithRelationsDto[]): void {
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: 1, max: 1 });
     const targetedPlayer = playTargets[0].player;
     if (!targetedPlayer.isAlive) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_HUNTER_TARGET);
     }
   }
 
-  private validateGamePlayScapegoatTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: 0, max: game.players.length });
+  private validateGamePlayScapegoatTargets(playTargets: MakeGamePlayTargetWithRelationsDto[]): void {
     if (playTargets.some(({ player }) => !player.isAlive)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SCAPEGOAT_TARGETS);
     }
   }
 
   private validateGamePlayCupidTargets(playTargets: MakeGamePlayTargetWithRelationsDto[]): void {
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: 2, max: 2 });
     if (playTargets.some(({ player }) => !player.isAlive)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_CUPID_TARGETS);
     }
   }
 
   private validateGamePlayFoxTargets(playTargets: MakeGamePlayTargetWithRelationsDto[]): void {
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: 0, max: 1 });
     const targetedPlayer = playTargets[0].player;
     if (!targetedPlayer.isAlive) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_FOX_TARGET);
@@ -174,7 +152,6 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlaySeerTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: 1, max: 1 });
     const seerPlayer = getPlayerWithCurrentRole(game, RoleNames.SEER);
     const targetedPlayer = playTargets[0].player;
     if (!targetedPlayer.isAlive || seerPlayer?._id.equals(targetedPlayer._id) === true) {
@@ -183,14 +160,12 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayRavenTargets(playTargets: MakeGamePlayTargetWithRelationsDto[]): void {
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: 0, max: 1 });
     if (playTargets.length && !playTargets[0].player.isAlive) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_RAVEN_TARGET);
     }
   }
 
   private validateGamePlayWildChildTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: 1, max: 1 });
     const wildChildPlayer = getPlayerWithCurrentRole(game, RoleNames.WILD_CHILD);
     const targetedPlayer = playTargets[0].player;
     if (!targetedPlayer.isAlive || wildChildPlayer?._id.equals(targetedPlayer._id) === true) {
@@ -199,11 +174,7 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayPiedPiperTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): void {
-    const { charmedPeopleCountPerNight } = game.options.roles.piedPiper;
     const leftToCharmByPiedPiperPlayers = getLeftToCharmByPiedPiperPlayers(game);
-    const leftToCharmByPiedPiperPlayersCount = leftToCharmByPiedPiperPlayers.length;
-    const countToCharm = Math.min(charmedPeopleCountPerNight, leftToCharmByPiedPiperPlayersCount);
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: countToCharm, max: countToCharm });
     if (playTargets.some(({ player }) => !leftToCharmByPiedPiperPlayers.find(({ _id }) => player._id.equals(_id)))) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_PIED_PIPER_TARGETS);
     }
@@ -211,7 +182,6 @@ export class GamePlayValidatorService {
 
   private async validateGamePlayGuardTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): Promise<void> {
     const { canProtectTwice } = game.options.roles.guard;
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: 1, max: 1 });
     const lastGuardHistoryRecord = await this.gameHistoryRecordService.getLastGameHistoryGuardProtectsRecord(game._id);
     const lastProtectedPlayer = lastGuardHistoryRecord?.play.targets?.[0].player;
     const targetedPlayer = playTargets[0].player;
@@ -221,7 +191,6 @@ export class GamePlayValidatorService {
   }
 
   private async validateGamePlaySheriffTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
-    this.validateGamePlayTargetsBoundaries(playTargets, { min: 1, max: 1 });
     const targetedPlayer = playTargets[0].player;
     if (game.currentPlay.action === GamePlayActions.DELEGATE && !targetedPlayer.isAlive) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SHERIFF_DELEGATE_TARGET);
@@ -256,7 +225,7 @@ export class GamePlayValidatorService {
       [RoleNames.SEER]: () => this.validateGamePlaySeerTargets(playTargets, game),
       [RoleNames.FOX]: () => this.validateGamePlayFoxTargets(playTargets),
       [RoleNames.CUPID]: () => this.validateGamePlayCupidTargets(playTargets),
-      [RoleNames.SCAPEGOAT]: () => this.validateGamePlayScapegoatTargets(playTargets, game),
+      [RoleNames.SCAPEGOAT]: () => this.validateGamePlayScapegoatTargets(playTargets),
       [RoleNames.HUNTER]: () => this.validateGamePlayHunterTargets(playTargets),
       [RoleNames.WITCH]: async() => this.validateGamePlayWitchTargets(playTargets, game),
     };
@@ -280,6 +249,7 @@ export class GamePlayValidatorService {
 
   private async validateGamePlayTargetsWithRelationsDto(playTargets: MakeGamePlayTargetWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Promise<void> {
     const targetActions: GamePlayActions[] = [...TARGET_ACTIONS];
+    const { currentPlay } = game;
     if (!targetActions.includes(game.currentPlay.action)) {
       if (playTargets !== undefined && playTargets.length > 0) {
         throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_TARGETS);
@@ -287,10 +257,13 @@ export class GamePlayValidatorService {
       return;
     }
     if (playTargets === undefined || playTargets.length === 0) {
-      if (game.currentPlay.canBeSkipped === false) {
+      if (currentPlay.canBeSkipped === false) {
         throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_TARGETS);
       }
       return;
+    }
+    if (currentPlay.eligibleTargets?.boundaries) {
+      this.validateGamePlayTargetsBoundaries(playTargets, currentPlay.eligibleTargets.boundaries);
     }
     this.validateInfectedTargetsAndPotionUsage(playTargets, game);
     await this.validateGamePlaySourceTargets(playTargets, game);
@@ -303,7 +276,7 @@ export class GamePlayValidatorService {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_TARGET_FOR_TIE_BREAKER);
     }
   }
-  
+
   private validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes: MakeGamePlayVoteWithRelationsDto[], game: Game): void {
     if (playVotes.some(({ source }) => !source.isAlive || doesPlayerHaveActiveAttributeWithName(source, PlayerAttributeNames.CANT_VOTE, game))) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_SOURCE);
@@ -315,7 +288,7 @@ export class GamePlayValidatorService {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.SAME_SOURCE_AND_TARGET_VOTE);
     }
   }
-  
+
   private async validateGamePlayVotesWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Promise<void> {
     const { currentPlay } = game;
     const voteActions: GamePlayActions[] = [...VOTE_ACTIONS];

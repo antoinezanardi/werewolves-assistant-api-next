@@ -38,7 +38,7 @@ export class GamePlayService {
     return clonedGame;
   }
 
-  public proceedToNextGamePlay(game: Game): Game {
+  public async proceedToNextGamePlay(game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     if (!clonedGame.upcomingPlays.length) {
       clonedGame.currentPlay = null;
@@ -46,13 +46,14 @@ export class GamePlayService {
     }
     clonedGame.currentPlay = clonedGame.upcomingPlays[0];
     clonedGame.upcomingPlays.shift();
-    clonedGame = this.augmentCurrentGamePlay(clonedGame as GameWithCurrentPlay);
+    clonedGame = await this.augmentCurrentGamePlay(clonedGame as GameWithCurrentPlay);
     return clonedGame;
   }
 
-  public augmentCurrentGamePlay(game: GameWithCurrentPlay): GameWithCurrentPlay {
+  public async augmentCurrentGamePlay(game: GameWithCurrentPlay): Promise<GameWithCurrentPlay> {
     const clonedGame = createGameWithCurrentGamePlay(game);
     clonedGame.currentPlay = this.gamePlayAugmenterService.setGamePlayCanBeSkipped(clonedGame.currentPlay, clonedGame);
+    clonedGame.currentPlay = await this.gamePlayAugmenterService.setGamePlayEligibleTargets(clonedGame.currentPlay, clonedGame);
     clonedGame.currentPlay.source.players = getExpectedPlayersToPlay(clonedGame);
     return clonedGame;
   }

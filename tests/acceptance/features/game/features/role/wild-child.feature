@@ -18,6 +18,7 @@ Feature: 🐒 Wild Child role
       | Antoine |
     And the game's current play occurrence should be first-night-only
     And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 1 to 1
 
     When the wild child chooses the player named Olivia as a model
     Then the request should have succeeded with status code 200

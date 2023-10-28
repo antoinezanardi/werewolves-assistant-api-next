@@ -23,12 +23,25 @@ Then(
   /^the game's current play should be played by the following players$/u,
   function(this: CustomWorld, expectedPlayersDatatable: DataTable): void {
     const players = convertDatatableToPlayers(expectedPlayersDatatable.rows(), this.game);
+
     expect(this.game.currentPlay?.source.players).toStrictEqual(players);
   },
 );
 
 Then(/^the game's current play occurrence should be (?<occurrence>first-night-only|on-nights|on-days|anytime|consequential)$/u, function(this: CustomWorld, occurrence: GamePlayOccurrences): void {
   expect(this.game.currentPlay?.occurrence).toBe(occurrence);
+});
+
+Then(/^the game's current play should have eligible targets boundaries from (?<min>[0-9]+) to (?<max>[0-9]+)$/u, function(this: CustomWorld, min: string, max: string): void {
+  const expectedMin = parseInt(min);
+  const expectedMax = parseInt(max);
+
+  expect(this.game.currentPlay?.eligibleTargets?.boundaries?.min).toBe(expectedMin);
+  expect(this.game.currentPlay?.eligibleTargets?.boundaries?.max).toBe(expectedMax);
+});
+
+Then(/^the game's current play should not have eligible targets boundaries$/u, function(this: CustomWorld): void {
+  expect(this.game.currentPlay?.eligibleTargets?.boundaries).toBeUndefined();
 });
 
 Then(/^the game's current play can(?<cantBeSkipped> not)? be skipped$/u, function(this: CustomWorld, canBeSkipped: string | null): void {

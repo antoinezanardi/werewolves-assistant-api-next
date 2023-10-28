@@ -19,6 +19,8 @@ Feature: 🦊 Fox role
       | name    |
       | Antoine |
     And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
+    And the game's current play should have eligible targets boundaries from 0 to 1
 
     When the fox sniffs the player named Doudou
     Then the request should have succeeded with status code 200

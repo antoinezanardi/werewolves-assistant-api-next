@@ -2,7 +2,7 @@
 
 Feature: 🪄 Witch role
 
-  Scenario: 🪄 Witch uses lide potion when the target is dying from werewolves
+  Scenario: 🪄 Witch uses life potion when the target is dying from werewolves
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
@@ -20,10 +20,18 @@ Feature: 🪄 Witch role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
+    And the game's current play should have eligible targets boundaries from 0 to 2
 
     When the witch uses life potion on the player named Juju
     Then the request should have succeeded with status code 200
     And the player named Juju should be alive
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+    And the game's current play should have eligible targets boundaries from 0 to 1
 
   Scenario: 🪄 Witch uses death potion to kill someone
 
@@ -40,11 +48,19 @@ Feature: 🪄 Witch role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play should have eligible targets boundaries from 0 to 2
 
     When the witch uses death potion on the player named Doudou
     Then the request should have succeeded with status code 200
     And the player named Juju should be murdered by werewolves from eaten
     And the player named Doudou should be murdered by witch from death-potion
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be witch to use-potions
+    And the game's current play should have eligible targets boundaries from 0 to 1
 
   Scenario: 🪄 Witch can skip her turn
 
@@ -61,6 +77,7 @@ Feature: 🪄 Witch role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play can be skipped
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
@@ -94,6 +111,7 @@ Feature: 🪄 Witch role
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be witch to use-potions
+    And the game's current play should have eligible targets boundaries from 0 to 0
 
   Scenario: 🪄 Witch is not called anymore if she used all of her potions with the right option
 

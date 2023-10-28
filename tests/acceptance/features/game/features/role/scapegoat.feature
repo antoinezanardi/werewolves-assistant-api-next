@@ -40,6 +40,7 @@ Feature: 🐐 Scapegoat role
       | Antoine |
     And the game's current play occurrence should be consequential
     And the game's current play can be skipped
+    And the game's current play should have eligible targets boundaries from 0 to 4
 
     When the scapegoat bans from vote the following players
       | name   |
@@ -116,6 +117,7 @@ Feature: 🐐 Scapegoat role
       | Olivia  | Thomas |
     Then the player named Antoine should be murdered by survivors from vote-scapegoated
     And the game's current play should be scapegoat to ban-voting
+    And the game's current play should have eligible targets boundaries from 0 to 4
 
     When the scapegoat bans from vote the following players
       | name   |

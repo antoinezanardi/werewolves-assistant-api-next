@@ -18,6 +18,7 @@ Feature: 🐺 Werewolf role
       | Thom   |
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 1 to 1
 
     When the werewolves eat the player named Juju
     Then the request should have succeeded with status code 200
