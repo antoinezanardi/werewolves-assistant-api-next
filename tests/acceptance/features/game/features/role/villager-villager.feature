@@ -10,4 +10,5 @@ Feature: 🧑🏻‍🌾 Villager-Villager role
       | Juju    | witch             |
       | Doudou  | villager-villager |
       | Thom    | werewolf          |
-    Then the player named Doudou should have his role revealed
+    Then the request should have succeeded with status code 201
+    And the player named Doudou should have his role revealed

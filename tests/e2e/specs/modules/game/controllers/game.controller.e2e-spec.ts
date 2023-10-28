@@ -566,6 +566,7 @@ describe("Game Controller", () => {
           action: GamePlayActions.ELECT_SHERIFF,
           source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
           occurrence: GamePlayOccurrences.ANYTIME,
+          canBeSkipped: false,
         },
         upcomingPlays: toJSON([
           createFakeGamePlayCupidCharms(),
@@ -636,6 +637,7 @@ describe("Game Controller", () => {
           action: GamePlayActions.ELECT_SHERIFF,
           source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
           occurrence: GamePlayOccurrences.ANYTIME,
+          canBeSkipped: false,
         },
         upcomingPlays: toJSON([
           createFakeGamePlayThiefChoosesCard(),
@@ -864,7 +866,7 @@ describe("Game Controller", () => {
       const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
       const game = createFakeGame({
         status: GameStatuses.PLAYING,
-        currentPlay: createFakeGamePlaySurvivorsVote(),
+        currentPlay: createFakeGamePlaySurvivorsVote({ canBeSkipped: false }),
         players,
         options,
       });
@@ -891,6 +893,7 @@ describe("Game Controller", () => {
         createFakeVillagerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ]);
+      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
       const game = createFakeGame({
         status: GameStatuses.PLAYING,
         currentPlay: createFakeGamePlaySurvivorsVote({ source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players }) }),
@@ -899,6 +902,7 @@ describe("Game Controller", () => {
           createFakeGamePlayWerewolvesEat(),
         ],
         players,
+        options,
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({
@@ -910,6 +914,7 @@ describe("Game Controller", () => {
       const expectedCurrentPlay = createFakeGamePlaySurvivorsVote({
         cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES,
         source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players }),
+        canBeSkipped: false,
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -951,6 +956,13 @@ describe("Game Controller", () => {
           name: PlayerGroups.WEREWOLVES,
           players: [createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }), players[3]],
         }),
+        eligibleTargets: {
+          boundaries: {
+            min: 1,
+            max: 1,
+          },
+        },
+        canBeSkipped: false,
       });
       const expectedGame = createFakeGame({
         ...game,

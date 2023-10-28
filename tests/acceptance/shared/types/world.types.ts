@@ -1,5 +1,6 @@
 import { World } from "@cucumber/cucumber";
 import type { IWorldOptions } from "@cucumber/cucumber";
+import type { HttpExceptionBody } from "@nestjs/common";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { Response } from "light-my-request";
 import type { Model } from "mongoose";
@@ -16,6 +17,8 @@ class CustomWorld extends World {
   };
 
   public response: Response;
+
+  public responseException: HttpExceptionBody;
 
   public gameOnPreviousGamePlay: Game;
 

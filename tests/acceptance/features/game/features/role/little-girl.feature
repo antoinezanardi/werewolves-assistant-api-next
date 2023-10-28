@@ -10,11 +10,13 @@ Feature: 👧 Little Girl role
       | Olivia  | little-girl |
       | JB      | guard       |
       | Thomas  | villager    |
-    Then the game's current play should be guard to protect
+    Then the request should have succeeded with status code 201
+    And the game's current play should be guard to protect
 
     When the guard protects the player named Olivia
     Then the player named Olivia should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia
-    Then the player named Olivia should be alive
+    Then the request should have succeeded with status code 200
+    And the player named Olivia should be alive

@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup NodeJS ⚙️
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -76,7 +76,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup NodeJS ⚙️
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -92,7 +92,7 @@ jobs:
         run: npm run docker:test:start
 
       - name: Mutant tests 👽
-        run: npm run test:stryker
+        run: npm run test:stryker:ci
 
       - name: Stop Docker containers 🐳
         run: npm run docker:test:stop
@@ -109,7 +109,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup NodeJS ⚙️
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -149,7 +149,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup NodeJS ⚙️
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -204,7 +204,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup NodeJS ⚙️
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -239,7 +239,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup NodeJS ✨
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'

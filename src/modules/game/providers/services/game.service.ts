@@ -7,9 +7,8 @@ import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-gam
 import { GameStatuses } from "@/modules/game/enums/game.enum";
 import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.helper";
 import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-play/game-play.helper";
-import { generateGameVictoryData, isGameOver } from "@/modules/game/helpers/game-victory/game-victory.helper";
+import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { createGame as createGameFromFactory } from "@/modules/game/helpers/game.factory";
-import { getExpectedPlayersToPlay } from "@/modules/game/helpers/game.helper";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
@@ -33,6 +32,7 @@ export class GameService {
     private readonly gamePlayValidatorService: GamePlayValidatorService,
     private readonly gamePlayMakerService: GamePlayMakerService,
     private readonly gamePhaseService: GamePhaseService,
+    private readonly gameVictoryService: GameVictoryService,
     private readonly gameRepository: GameRepository,
     private readonly playerAttributeService: PlayerAttributeService,
     private readonly gameHistoryRecordService: GameHistoryRecordService,
@@ -54,8 +54,8 @@ export class GameService {
       currentPlay,
       upcomingPlays,
     });
-    const createdGame = await this.gameRepository.create(gameToCreate) as GameWithCurrentPlay;
-    createdGame.currentPlay.source.players = getExpectedPlayersToPlay(createdGame);
+    let createdGame = await this.gameRepository.create(gameToCreate) as GameWithCurrentPlay;
+    createdGame = await this.gamePlayService.augmentCurrentGamePlay(createdGame);
     return this.updateGame(createdGame._id, createdGame);
   }
 
@@ -75,14 +75,14 @@ export class GameService {
     await this.gamePlayValidatorService.validateGamePlayWithRelationsDto(play, clonedGame);
     clonedGame = await this.gamePlayMakerService.makeGamePlay(play, clonedGame);
     clonedGame = await this.gamePlayService.refreshUpcomingPlays(clonedGame);
-    clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
+    clonedGame = await this.gamePlayService.proceedToNextGamePlay(clonedGame);
     clonedGame.tick++;
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }
     const gameHistoryRecordToInsert = this.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert(game, clonedGame, play);
     await this.gameHistoryRecordService.createGameHistoryRecord(gameHistoryRecordToInsert);
-    if (isGameOver(clonedGame)) {
+    if (this.gameVictoryService.isGameOver(clonedGame)) {
       clonedGame = this.setGameAsOver(clonedGame);
     }
     return this.updateGame(clonedGame._id, clonedGame);
@@ -94,7 +94,7 @@ export class GameService {
     clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
     clonedGame = await this.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays(clonedGame);
     clonedGame = this.gamePhaseService.applyStartingGamePhaseOutcomes(clonedGame);
-    clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
+    clonedGame = await this.gamePlayService.proceedToNextGamePlay(clonedGame);
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }
@@ -112,7 +112,7 @@ export class GameService {
   private setGameAsOver(game: Game): Game {
     const clonedGame = createGameFromFactory(game);
     clonedGame.status = GameStatuses.OVER;
-    clonedGame.victory = generateGameVictoryData(clonedGame);
+    clonedGame.victory = this.gameVictoryService.generateGameVictoryData(clonedGame);
     return clonedGame;
   }
 }

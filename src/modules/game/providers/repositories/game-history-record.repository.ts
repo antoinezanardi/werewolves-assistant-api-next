@@ -69,6 +69,15 @@ export class GameHistoryRecordRepository {
     };
     return this.gameHistoryRecordModel.find(filter);
   }
+
+  public async getGameHistoryJudgeChoosesHisSignRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    const filter: FilterQuery<GameHistoryRecord> = {
+      gameId,
+      "play.action": GamePlayActions.CHOOSE_SIGN,
+      "play.source.name": RoleNames.STUTTERING_JUDGE,
+    };
+    return this.gameHistoryRecordModel.find(filter);
+  }
   
   public async getGameHistoryWerewolvesEatAncientRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {

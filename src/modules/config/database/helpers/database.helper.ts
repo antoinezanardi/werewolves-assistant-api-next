@@ -1,10 +1,28 @@
 import type { ConfigService } from "@nestjs/config";
 import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 
+function getDatabasePort(configService: ConfigService): number | undefined {
+  const port = configService.get<string>("DATABASE_PORT");
+  if (port === undefined) {
+    return undefined;
+  }
+  if (process.env.JEST_WORKER_ID !== undefined) {
+    const portMultiplier = 2;
+    const portAdjuster = (parseInt(process.env.JEST_WORKER_ID) - 1) * portMultiplier;
+    return parseInt(port) + portAdjuster;
+  }
+  if (process.env.CUCUMBER_WORKER_ID !== undefined) {
+    const portMultiplier = 2;
+    const portAdjuster = parseInt(process.env.CUCUMBER_WORKER_ID) * portMultiplier;
+    return parseInt(port) + portAdjuster;
+  }
+  return parseInt(port);
+}
+
 function mongooseModuleFactory(configService: ConfigService): MongooseModuleFactoryOptions {
   const connectionTimeoutMs = 3000;
   const host = configService.getOrThrow<string>("DATABASE_HOST");
-  const port = configService.get<string>("DATABASE_PORT");
+  const port = getDatabasePort(configService);
   const databaseName = configService.getOrThrow<string>("DATABASE_NAME");
   const username = configService.getOrThrow<string>("DATABASE_USERNAME");
   const password = configService.getOrThrow<string>("DATABASE_PASSWORD");
@@ -26,4 +44,7 @@ function mongooseModuleFactory(configService: ConfigService): MongooseModuleFact
   };
 }
 
-export { mongooseModuleFactory };
+export {
+  getDatabasePort,
+  mongooseModuleFactory,
+};

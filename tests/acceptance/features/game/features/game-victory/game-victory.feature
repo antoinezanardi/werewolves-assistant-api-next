@@ -3,6 +3,7 @@
 Feature: 🏆 Game Victory
 
   Scenario: 🧑🏻‍🌾 Villagers win the game
+
     Given a created game with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -57,6 +58,7 @@ Feature: 🏆 Game Victory
       | Thomas  |
 
   Scenario: 🐺 Werewolves win the game
+
     Given a created game with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -112,6 +114,7 @@ Feature: 🏆 Game Victory
       | JB   |
 
   Scenario: ☠️ Nobody wins the game
+
     Given a created game with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -192,6 +195,7 @@ Feature: 🏆 Game Victory
       | name |
 
   Scenario: 💞Lovers win the game
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -234,6 +238,7 @@ Feature: 🏆 Game Victory
       | Olivia |
 
   Scenario: 👼 Angel wins the game with the first votes
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -254,6 +259,7 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 👼 Angel wins the game with first murder of wolves
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -282,6 +288,7 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 🐺🦴 White werewolf wins the game
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | witch          |
@@ -311,6 +318,7 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 🪈Pied Piper wins the game
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | witch      |
@@ -349,3 +357,38 @@ Feature: 🏆 Game Victory
     And the game's winners should be pied-piper with the following players
       | name   |
       | Thomas |
+
+  Scenario: 🏆 No more game plays can be made when game is over
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | JB      | werewolf |
+      | Olivia  | cupid    |
+      | Thomas  | angel    |
+    Then the game's current play should be survivors to vote because angel-presence
+
+    When the survivors vote with the following votes
+      | source  | target |
+      | Antoine | Olivia |
+      | Thomas  | Olivia |
+      | JB      | Olivia |
+    Then the player named Olivia should be murdered by survivors from vote
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should have the active eaten from werewolves attribute
+    And the game's current play should be witch to use-potions
+
+    When the player or group skips his turn
+    Then the player named Thomas should be murdered by werewolves from eaten
+    And the game's status should be over
+
+    When the survivors vote with the following votes
+      | source  | target |
+      | Antoine | Olivia |
+      | Thomas  | Olivia |
+      | JB      | Olivia |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Game doesn't have status with value "playing""

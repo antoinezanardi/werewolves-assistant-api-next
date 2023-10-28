@@ -44,6 +44,7 @@ describe("Game History Record Service", () => {
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
+      getGameHistoryJudgeChoosesHisSignRecords: jest.SpyInstance;
       getGameHistoryWerewolvesEatAncientRecords: jest.SpyInstance;
       getGameHistoryAncientProtectedFromWerewolvesRecords: jest.SpyInstance;
       getPreviousGameHistoryRecord: jest.SpyInstance;
@@ -68,6 +69,7 @@ describe("Game History Record Service", () => {
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
+        getGameHistoryJudgeChoosesHisSignRecords: jest.fn(),
         getGameHistoryWerewolvesEatAncientRecords: jest.fn(),
         getGameHistoryAncientProtectedFromWerewolvesRecords: jest.fn(),
         getPreviousGameHistoryRecord: jest.fn(),
@@ -163,6 +165,20 @@ describe("Game History Record Service", () => {
       await services.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId);
 
       expect(repositories.gameHistoryRecord.getGameHistoryJudgeRequestRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+    });
+  });
+
+  describe("didJudgeMakeHisSign", () => {
+    it("should return true when there are records of stuttering judge make his sign.", async() => {
+      mocks.gameHistoryRecordRepository.getGameHistoryJudgeChoosesHisSignRecords.mockResolvedValueOnce([createFakeGameHistoryRecordPlay()]);
+
+      await expect(services.gameHistoryRecord.didJudgeMakeHisSign(createFakeObjectId())).resolves.toBe(true);
+    });
+
+    it("should return false when there are no records of stuttering judge make his sign.", async() => {
+      mocks.gameHistoryRecordRepository.getGameHistoryJudgeChoosesHisSignRecords.mockResolvedValueOnce([]);
+
+      await expect(services.gameHistoryRecord.didJudgeMakeHisSign(createFakeObjectId())).resolves.toBe(false);
     });
   });
   

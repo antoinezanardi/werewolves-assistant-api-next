@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup NodeJS ⚙️
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -47,6 +47,7 @@ jobs:
 
       - name: Merge main branch into develop branch 🤝
         run: |
+          git config user.name "GitHub Actions"
           git fetch --all
           git checkout main
           git pull origin main
@@ -54,7 +55,7 @@ jobs:
           git merge main
 
       - name: Setup NodeJS ⚙️
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'

@@ -6,10 +6,10 @@ import type { DataTable } from "@cucumber/cucumber";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
-import type { Game } from "@/modules/game/schemas/game.schema";
 
 import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
+import { setGameInContext } from "@tests/acceptance/shared/helpers/context.helper";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 import { readJsonFile } from "@tests/acceptance/shared/helpers/file.helper";
 import { createGameRequest } from "@tests/acceptance/features/game/helpers/game-request.helper";
@@ -19,7 +19,7 @@ Given(/^a created game described in file (?<filename>.+\.json)$/u, async functio
   const createGameDto = readJsonFile<CreateGameDto>("game", fileName);
 
   this.response = await createGameRequest(createGameDto, this.app);
-  this.game = this.response.json<Game>();
+  setGameInContext(this.response, this);
 });
 
 Given(
@@ -45,6 +45,6 @@ Given(
     }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 
     this.response = await createGameRequest(createGameDto, this.app);
-    this.game = this.response.json<Game>();
+    setGameInContext(this.response, this);
   },
 );

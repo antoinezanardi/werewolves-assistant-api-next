@@ -134,7 +134,7 @@ Before testing, you must follow the **[installation steps](#installation)**.
 Then, run one of the following commands :
 
 ```bash
-# Assure you started test Docker containers
+# Assure you started test Docker containers (4 databases are created to parallelize tests)
 npm run docker:test:start
 
 # Run unit tests with coverage
