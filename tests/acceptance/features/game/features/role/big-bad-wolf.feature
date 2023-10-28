@@ -265,6 +265,7 @@ Feature: 🐺👹 Big Bad Wolf role
     And the game's current play should be played by the following players
       | name   |
       | Olivia |
+    And the game's current play should have eligible targets boundaries from 1 to 1
 
     When the big bad wolf eats the player named Doudou
     Then the player named Doudou should have the active eaten from big-bad-wolf attribute

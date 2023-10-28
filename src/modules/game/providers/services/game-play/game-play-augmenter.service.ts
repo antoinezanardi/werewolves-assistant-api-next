@@ -65,7 +65,7 @@ export class GamePlayAugmenterService {
 
   private getBigBadWolfGamePlayEligibleTargets(gamePlay: GamePlay, game: Game): GamePlayEligibleTargets {
     const leftToEatByBigBadWolfPlayers = getLeftToEatByWerewolvesPlayers(game);
-    const leftToEatByBigBadWolfPlayersCount = leftToEatByBigBadWolfPlayers.length;
+    const leftToEatByBigBadWolfPlayersCount = leftToEatByBigBadWolfPlayers.length ? 1 : 0;
     return createGamePlayEligibleTargets({ boundaries: { min: leftToEatByBigBadWolfPlayersCount, max: leftToEatByBigBadWolfPlayersCount } });
   }
 

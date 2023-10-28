@@ -105,7 +105,7 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getBigBadWolfGamePlayEligibleTargets", () => {
-    it("should return target boundaries based on left to eat by werewolves targets when called.", () => {
+    it("should return target boundaries from 1 to 1 when there are still left to eat targets.", () => {
       const gamePlay = createFakeGamePlayBigBadWolfEats();
       const players = [
         createFakeWerewolfAlivePlayer(),
@@ -116,7 +116,21 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame({ players });
       mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValueOnce([players[0], players[1]]);
 
-      expect(services.gamePlayAugmenter["getBigBadWolfGamePlayEligibleTargets"](gamePlay, game)).toStrictEqual<GamePlayEligibleTargets>(createFakeGamePlayEligibleTargets({ boundaries: { min: 2, max: 2 } }));
+      expect(services.gamePlayAugmenter["getBigBadWolfGamePlayEligibleTargets"](gamePlay, game)).toStrictEqual<GamePlayEligibleTargets>(createFakeGamePlayEligibleTargets({ boundaries: { min: 1, max: 1 } }));
+    });
+
+    it("should return target boundaries from 0 to 0 when there are no left to eat targets.", () => {
+      const gamePlay = createFakeGamePlayBigBadWolfEats();
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValueOnce([]);
+
+      expect(services.gamePlayAugmenter["getBigBadWolfGamePlayEligibleTargets"](gamePlay, game)).toStrictEqual<GamePlayEligibleTargets>(createFakeGamePlayEligibleTargets({ boundaries: { min: 0, max: 0 } }));
     });
   });
 
