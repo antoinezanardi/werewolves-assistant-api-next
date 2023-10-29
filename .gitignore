@@ -42,6 +42,10 @@ env/*
 !env/.env.development
 !env/.env.test
 
+# Docker
+docker/werewolves-assistant-api-dev/node_modules
+docker/werewolves-assistant-api-production/node_modules
+
 # Stryker
 .stryker-tmp
 

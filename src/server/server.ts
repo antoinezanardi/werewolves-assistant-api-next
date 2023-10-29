@@ -20,7 +20,8 @@ async function bootstrap(): Promise<NestFastifyApplication> {
     prefix: "/public/",
   });
   const port = process.env.PORT ?? "8080";
-  await app.listen(port, "127.0.0.1");
+  const host = process.env.HOST ?? "127.0.0.1";
+  await app.listen(port, host);
   const appUrl = await app.getUrl();
   Logger.log(`🐺 App is available at ${appUrl}`, "NestApplication");
   Logger.log(`📖 API Documentation is available at ${appUrl}/${documentationPath}`, "NestApplication");
