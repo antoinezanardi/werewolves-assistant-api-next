@@ -11,6 +11,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  upload-to-docker-hub:
+    name: Upload image with develop tag to Docker Hub 🐳
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub 🔐
+        uses: docker/login-action@3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Build and push Docker image 🐳
+        uses: docker/build-push-action@5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: develop
+
   code-ql:
     name: CodeQL Scan ❇️
     runs-on: ubuntu-latest
