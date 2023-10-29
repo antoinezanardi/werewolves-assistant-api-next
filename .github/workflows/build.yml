@@ -30,7 +30,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: develop
+          tags: antoinezanardi/werewolves-assistant-api:develop
 
   code-ql:
     name: CodeQL Scan ❇️
