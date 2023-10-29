@@ -1,5 +1,12 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.21.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.21.0...v1.21.1) (2023-10-28)
+
+
+### 🐛 Bug Fixes
+
+* **gcp:** use node20 instead of node21 ([#614](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/614)) ([98425dc](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/98425dcda25a4bb3a224ed28a6ba53e38e7d9dd8))
+
 ## [1.21.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.20.0...v1.21.0) (2023-10-28)
 
 
