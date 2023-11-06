@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { createGamePlayEligibleTargetsBoundaries } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.factory";
 import { createInteractablePlayer } from "@/modules/game/helpers/game-play/game-play-eligible-targets/interactable-player/interactable-player.factory";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
@@ -82,7 +83,7 @@ export class GamePlayAugmenterService {
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
-  private getSheriffDelegateGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getSheriffDelegatesGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
     const alivePlayers = getAlivePlayers(game);
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE, source: PlayerAttributeNames.SHERIFF }];
     const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
@@ -92,7 +93,7 @@ export class GamePlayAugmenterService {
 
   private async getSheriffGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets> {
     if (gamePlay.action === GamePlayActions.DELEGATE) {
-      return this.getSheriffDelegateGamePlayEligibleTargets(game);
+      return this.getSheriffDelegatesGamePlayEligibleTargets(game);
     }
     if (gamePlay.action === GamePlayActions.SETTLE_VOTES) {
       return this.getSheriffSettlesVotesGamePlayEligibleTargets(game);
@@ -155,7 +156,7 @@ export class GamePlayAugmenterService {
     const alivePlayers = getAlivePlayers(game);
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.SNIFF, source: RoleNames.FOX }];
     const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
+    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
@@ -165,7 +166,7 @@ export class GamePlayAugmenterService {
     const lastGuardProtectRecord = await this.gameHistoryRecordService.getLastGameHistoryGuardProtectsRecord(game._id);
     const lastProtectedPlayer = lastGuardProtectRecord?.play.targets?.[0].player;
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.PROTECT, source: RoleNames.GUARD }];
-    const possibleGuardTargets = canProtectTwice || !lastProtectedPlayer ? alivePlayers : alivePlayers.filter(player => player._id.equals(lastProtectedPlayer._id));
+    const possibleGuardTargets = canProtectTwice || !lastProtectedPlayer ? alivePlayers : alivePlayers.filter(player => !player._id.equals(lastProtectedPlayer._id));
     const interactablePlayers: InteractablePlayer[] = possibleGuardTargets.map(player => ({ player, interactions }));
     const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
@@ -194,7 +195,7 @@ export class GamePlayAugmenterService {
     const alivePlayers = getAlivePlayers(game);
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.MARK, source: RoleNames.RAVEN }];
     const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
+    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
@@ -241,7 +242,7 @@ export class GamePlayAugmenterService {
     if (hasWitchUsedDeathPotion) {
       max--;
     }
-    return { min: 0, max };
+    return createGamePlayEligibleTargetsBoundaries({ min: 0, max });
   }
 
   private getWitchGamePlayEligibleTargetsInteractablePlayers(game: Game, hasWitchUsedLifePotion: boolean, hasWitchUsedDeathPotion: boolean): InteractablePlayer[] {
