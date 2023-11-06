@@ -1,7 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import type { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligibile-targets-boudaries/game-play-eligible-targets-boundaries.schema";
+import type { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema";
 
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helper";
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";

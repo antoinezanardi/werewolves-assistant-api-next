@@ -7,6 +7,7 @@ import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants
 
 function createFakeGamePlayEligibleTargets(gamePlayEligibleTargets: Partial<GamePlayEligibleTargets> = {}, override: object = {}): GamePlayEligibleTargets {
   return plainToInstance(GamePlayEligibleTargets, {
+    interactablePlayers: gamePlayEligibleTargets.interactablePlayers ?? undefined,
     boundaries: {
       min: gamePlayEligibleTargets.boundaries?.min ?? faker.number.int({ min: 1 }),
       max: gamePlayEligibleTargets.boundaries?.max ?? faker.number.int({ min: 1 }),

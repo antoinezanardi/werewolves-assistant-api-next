@@ -957,6 +957,7 @@ describe("Game Controller", () => {
           players: [createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }), players[3]],
         }),
         eligibleTargets: {
+          interactablePlayers: [],
           boundaries: {
             min: 1,
             max: 1,

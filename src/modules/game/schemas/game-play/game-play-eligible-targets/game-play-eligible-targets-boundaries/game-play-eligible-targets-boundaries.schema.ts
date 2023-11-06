@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_API_PROPERTIES, GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_SPECS_FIELDS } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligibile-targets-boudaries/game-play-eligible-targets-boundaries.schema.constant";
+import { GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_API_PROPERTIES, GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_SPECS_FIELDS } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema.constant";
 
 @Schema({
   versionKey: false,

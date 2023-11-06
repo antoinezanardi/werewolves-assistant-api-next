@@ -60,22 +60,18 @@ export class GameService {
   }
 
   public async cancelGame(game: Game): Promise<Game> {
-    if (game.status !== GameStatuses.PLAYING) {
-      throw new BadResourceMutationException(ApiResources.GAMES, game._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
-    }
+    this.validateGameIsPlaying(game);
     return this.updateGame(game._id, { status: GameStatuses.CANCELED });
   }
 
   public async makeGamePlay(game: Game, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
     let clonedGame = createGameFromFactory(game);
-    if (clonedGame.status !== GameStatuses.PLAYING) {
-      throw new BadResourceMutationException(ApiResources.GAMES, clonedGame._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
-    }
+    this.validateGameIsPlaying(clonedGame);
     const play = createMakeGamePlayDtoWithRelations(makeGamePlayDto, clonedGame);
     await this.gamePlayValidatorService.validateGamePlayWithRelationsDto(play, clonedGame);
     clonedGame = await this.gamePlayMakerService.makeGamePlay(play, clonedGame);
     clonedGame = await this.gamePlayService.refreshUpcomingPlays(clonedGame);
-    clonedGame = await this.gamePlayService.proceedToNextGamePlay(clonedGame);
+    clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
     clonedGame.tick++;
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
@@ -83,9 +79,16 @@ export class GameService {
     const gameHistoryRecordToInsert = this.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert(game, clonedGame, play);
     await this.gameHistoryRecordService.createGameHistoryRecord(gameHistoryRecordToInsert);
     if (this.gameVictoryService.isGameOver(clonedGame)) {
-      clonedGame = this.setGameAsOver(clonedGame);
+      return this.updateGameAsOver(clonedGame);
     }
+    clonedGame = await this.gamePlayService.augmentCurrentGamePlay(clonedGame as GameWithCurrentPlay);
     return this.updateGame(clonedGame._id, clonedGame);
+  }
+
+  private validateGameIsPlaying(game: Game): void {
+    if (game.status !== GameStatuses.PLAYING) {
+      throw new BadResourceMutationException(ApiResources.GAMES, game._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
+    }
   }
 
   private async handleGamePhaseCompletion(game: Game): Promise<Game> {
@@ -94,7 +97,7 @@ export class GameService {
     clonedGame = this.playerAttributeService.decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(clonedGame);
     clonedGame = await this.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays(clonedGame);
     clonedGame = this.gamePhaseService.applyStartingGamePhaseOutcomes(clonedGame);
-    clonedGame = await this.gamePlayService.proceedToNextGamePlay(clonedGame);
+    clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }
@@ -114,5 +117,10 @@ export class GameService {
     clonedGame.status = GameStatuses.OVER;
     clonedGame.victory = this.gameVictoryService.generateGameVictoryData(clonedGame);
     return clonedGame;
+  }
+
+  private async updateGameAsOver(game: Game): Promise<Game> {
+    const clonedGame = this.setGameAsOver(game);
+    return this.updateGame(clonedGame._id, clonedGame);
   }
 }
