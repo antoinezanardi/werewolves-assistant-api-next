@@ -5,7 +5,10 @@ import { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-p
 
 import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
-function createFakeGamePlayEligibleTargetsBoundaries(gamePlayEligibleTargetsBoundaries: Partial<GamePlayEligibleTargetsBoundaries> = {}, override: object = {}): GamePlayEligibleTargetsBoundaries {
+function createFakeGamePlayEligibleTargetsBoundaries(
+  gamePlayEligibleTargetsBoundaries: Partial<GamePlayEligibleTargetsBoundaries> = {},
+  override: object = {},
+): GamePlayEligibleTargetsBoundaries {
   return plainToInstance(GamePlayEligibleTargetsBoundaries, {
     min: gamePlayEligibleTargetsBoundaries.min ?? faker.number.int({ min: 1 }),
     max: gamePlayEligibleTargetsBoundaries.max ?? faker.number.int({ min: 1 }),

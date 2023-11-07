@@ -5,7 +5,6 @@ import { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-p
 import { toJSON } from "@/shared/misc/helpers/object.helper";
 import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
-// TODO: to test
 function createGamePlayEligibleTargetsBoundaries(gamePlayEligibleTargetsBoundaries: GamePlayEligibleTargetsBoundaries): GamePlayEligibleTargetsBoundaries {
   return plainToInstance(GamePlayEligibleTargetsBoundaries, toJSON(gamePlayEligibleTargetsBoundaries), PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
 }

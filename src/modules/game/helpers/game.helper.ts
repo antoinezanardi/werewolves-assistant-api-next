@@ -180,6 +180,10 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
   return getNearestAliveNeighborInSortedPlayers(player, sortedPlayers, options);
 }
 
+function getAllowedToVotePlayers(game: Game): Player[] {
+  return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
+}
+
 function getExpectedPlayersToPlay(game: Game): Player[] {
   const { currentPlay } = game;
   const mustIncludeDeadPlayersGamePlayActions = [GamePlayActions.SHOOT, GamePlayActions.BAN_VOTING, GamePlayActions.DELEGATE];
@@ -228,5 +232,6 @@ export {
   getNonexistentPlayer,
   getFoxSniffedPlayers,
   getNearestAliveNeighbor,
+  getAllowedToVotePlayers,
   getExpectedPlayersToPlay,
 };

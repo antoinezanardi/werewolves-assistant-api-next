@@ -291,14 +291,16 @@ describe("Game Play Augmenter Service", () => {
   });
 
   // TODO: Add tests for getGamePlayEligibleTargets
+  // TODO: mock can skip game play
   describe("getSurvivorsVoteGamePlayEligibleTargets", () => {
-    it("should return all alive villagers as interactable players with 1 to alive players length when called.", () => {
+    it("should return all alive villagers as interactable players with 1 to alive players length when called .", () => {
       const players = [
         createFakeAngelAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeWitchAlivePlayer(),
       ];
+      const gamePlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players });
       const expectedInteraction = createFakePlayerInteraction({
         source: PlayerGroups.SURVIVORS,
@@ -326,7 +328,7 @@ describe("Game Play Augmenter Service", () => {
         },
       });
 
-      expect(services.gamePlayAugmenter["getSurvivorsVoteGamePlayEligibleTargets"](game)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
+      expect(services.gamePlayAugmenter["getSurvivorsVoteGamePlayEligibleTargets"](game, gamePlay)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
     });
   });
 
@@ -400,7 +402,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       services.gamePlayAugmenter["getSurvivorsGamePlayEligibleTargets"](game, gamePlay);
 
-      expect(localMocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(localMocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
       expect(localMocks.gamePlayAugmenterService.getSurvivorsElectSheriffGamePlayEligibleTargets).not.toHaveBeenCalled();
     });
 
