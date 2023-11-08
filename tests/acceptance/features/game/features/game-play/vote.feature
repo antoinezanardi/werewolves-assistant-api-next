@@ -23,7 +23,7 @@ Feature: 🗳️ Vote Game Play
       | Thomas  |
     And the game's current play occurrence should be on-days
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets boundaries
+    And the game's current play should have eligible targets boundaries from 0 to 3
 
     When the survivors vote with the following votes
       | voter   | target |

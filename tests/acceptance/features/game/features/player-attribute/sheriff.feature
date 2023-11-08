@@ -22,7 +22,7 @@ Feature: 🎖️ Sheriff player attribute
       | Babou   |
     And the game's current play occurrence should be anytime
     And the game's current play can not be skipped
-    And the game's current play should not have eligible targets boundaries
+    And the game's current play should have eligible targets boundaries from 1 to 5
 
     When the survivors elect sheriff with the following votes
       | voter   | target |

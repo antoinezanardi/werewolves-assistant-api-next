@@ -20,7 +20,7 @@ Feature: 👼 Angel role
       | Thomas  |
     And the game's current play occurrence should be first-night-only
     And the game's current play can not be skipped
-    And the game's current play should not have eligible targets boundaries
+    And the game's current play should have eligible targets boundaries from 1 to 4
 
     When the survivors vote with the following votes
       | source  | vote   |

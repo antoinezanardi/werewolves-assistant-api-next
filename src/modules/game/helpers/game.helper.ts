@@ -157,15 +157,14 @@ function getNearestAliveNeighborInSortedPlayers(seekingNeighborPlayer: Player, s
   const seekingNeighborPlayerIndex = sortedPlayers.findIndex(({ _id }) => _id.equals(seekingNeighborPlayer._id));
   let currentIndex = seekingNeighborPlayerIndex + indexHeading;
   let count = 0;
-  while (count < sortedPlayers.length) {
+  while (count < sortedPlayers.length - 1) {
     if (currentIndex < 0) {
       currentIndex = sortedPlayers.length - 1;
     } else if (currentIndex >= sortedPlayers.length) {
       currentIndex = 0;
     }
     const checkingNeighbor = sortedPlayers[currentIndex];
-    if (checkingNeighbor.position !== seekingNeighborPlayer.position && checkingNeighbor.isAlive &&
-      (options.playerSide === undefined || checkingNeighbor.side.current === options.playerSide)) {
+    if (checkingNeighbor.isAlive && (options.playerSide === undefined || checkingNeighbor.side.current === options.playerSide)) {
       return checkingNeighbor;
     }
     currentIndex += indexHeading;

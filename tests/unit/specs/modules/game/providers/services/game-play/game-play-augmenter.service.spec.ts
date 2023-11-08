@@ -159,7 +159,8 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gameHistoryRecord = createFakeGameHistoryRecord();
+      const gameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [] });
+      const gameHistoryRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: gameHistoryRecordPlayVoting }) });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(gameHistoryRecord);
 
       await expect(async() => services.gamePlayAugmenter["getSheriffSettlesVotesGamePlayEligibleTargets"](game)).rejects.toThrow(undefined);
@@ -286,10 +287,10 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should throw error when game play action is not delegate nor settles votes.", async() => {
-      const gamePlay = createFakeGamePlay();
+      const gamePlay = createFakeGamePlayRavenMarks();
       const game = createFakeGame();
 
-      await expect(async() => services.gamePlayAugmenter["getSheriffGamePlayEligibleTargets"](game, gamePlay)).rejects.toThrow(undefined);
+      await expect(services.gamePlayAugmenter["getSheriffGamePlayEligibleTargets"](game, gamePlay)).rejects.toThrow(undefined);
       expect(mocks.unexpectedExceptionFactory.createMalformedCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSheriffGamePlayEligibleTargets", gamePlay, game._id);
     });
   });
@@ -1209,6 +1210,25 @@ describe("Game Play Augmenter Service", () => {
 
       expect(localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(false, true);
     });
+
+    it("should return eligible targets with interactable players and boundaries when called.", async() => {
+      const game = createFakeGame();
+      const expectedBoundaries = createFakeGamePlayEligibleTargetsBoundaries();
+      const expectedInteractablePlayers = [
+        createFakeInteractablePlayer(),
+        createFakeInteractablePlayer(),
+        createFakeInteractablePlayer(),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValue([]);
+      localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries.mockReturnValueOnce(expectedBoundaries);
+      localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers.mockReturnValueOnce(expectedInteractablePlayers);
+      const expectedGamePlayEligibleTargets = createFakeGamePlayEligibleTargets({
+        interactablePlayers: expectedInteractablePlayers,
+        boundaries: expectedBoundaries,
+      });
+
+      await expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game)).resolves.toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
+    });
   });
 
   describe("getGamePlayEligibleTargets", () => {
@@ -1422,7 +1442,8 @@ describe("Game Play Augmenter Service", () => {
 
     it("should return false when game play action is vote and game play cause is angel presence.", () => {
       const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE });
-      const game = createFakeGame();
+      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) });
+      const game = createFakeGame({ options });
 
       expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](game, gamePlay)).toBe(false);
     });
