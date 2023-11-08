@@ -31,7 +31,10 @@ describe("Game Play Augmenter Service", () => {
   let services: { gamePlayAugmenter: GamePlayAugmenterService };
   let mocks: {
     gameHelper: {
-      getLeftToEatByWerewolvesPlayers: jest.SpyInstance; getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance; getLeftToCharmByPiedPiperPlayers: jest.SpyInstance;
+      getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
+      getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
+      getLeftToCharmByPiedPiperPlayers: jest.SpyInstance;
+      getAllowedToVotePlayers: jest.SpyInstance;
     };
     gameHistoryRecordService: {
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
@@ -50,6 +53,7 @@ describe("Game Play Augmenter Service", () => {
         getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers"),
         getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers"),
         getLeftToCharmByPiedPiperPlayers: jest.spyOn(GameHelper, "getLeftToCharmByPiedPiperPlayers"),
+        getAllowedToVotePlayers: jest.spyOn(GameHelper, "getAllowedToVotePlayers"),
       },
       gameHistoryRecordService: {
         getLastGameHistoryTieInVotesRecord: jest.fn(),
@@ -290,10 +294,19 @@ describe("Game Play Augmenter Service", () => {
     });
   });
 
-  // TODO: Add tests for getGamePlayEligibleTargets
-  // TODO: mock can skip game play
   describe("getSurvivorsVoteGamePlayEligibleTargets", () => {
-    it("should return all alive villagers as interactable players with 1 to alive players length when called .", () => {
+    let localMocks: {
+      gamePlayAugmenterService: {
+        canSurvivorsSkipGamePlay: jest.SpyInstance;
+      };
+    };
+
+    beforeEach(() => {
+      mocks.gameHelper.getAllowedToVotePlayers.mockReturnValue([]);
+      localMocks = { gamePlayAugmenterService: { canSurvivorsSkipGamePlay: jest.spyOn(services.gamePlayAugmenter as unknown as { canSurvivorsSkipGamePlay }, "canSurvivorsSkipGamePlay").mockImplementation() } };
+    });
+
+    it("should return all alive villagers as interactable players with 1 to alive players length when votes can't be skipped.", () => {
       const players = [
         createFakeAngelAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -327,6 +340,48 @@ describe("Game Play Augmenter Service", () => {
           max: 3,
         },
       });
+      mocks.gameHelper.getAllowedToVotePlayers.mockReturnValueOnce([players[0], players[1], players[3]]);
+      localMocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay.mockReturnValueOnce(false);
+
+      expect(services.gamePlayAugmenter["getSurvivorsVoteGamePlayEligibleTargets"](game, gamePlay)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
+    });
+
+    it("should return alive players as interactable targets with boundaries from 0 to alive players length when votes can be skipped.", () => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeWitchAlivePlayer(),
+      ];
+      const gamePlay = createFakeGamePlaySurvivorsVote();
+      const game = createFakeGame({ players });
+      const expectedInteraction = createFakePlayerInteraction({
+        source: PlayerGroups.SURVIVORS,
+        type: PlayerInteractionTypes.VOTE,
+      });
+      const expectedInteractablePlayers = [
+        createFakeInteractablePlayer({
+          player: players[0],
+          interactions: [expectedInteraction],
+        }),
+        createFakeInteractablePlayer({
+          player: players[1],
+          interactions: [expectedInteraction],
+        }),
+        createFakeInteractablePlayer({
+          player: players[3],
+          interactions: [expectedInteraction],
+        }),
+      ];
+      const expectedGamePlayEligibleTargets = createFakeGamePlayEligibleTargets({
+        interactablePlayers: expectedInteractablePlayers,
+        boundaries: {
+          min: 0,
+          max: 3,
+        },
+      });
+      mocks.gameHelper.getAllowedToVotePlayers.mockReturnValueOnce([players[0], players[1], players[3]]);
+      localMocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay.mockReturnValueOnce(true);
 
       expect(services.gamePlayAugmenter["getSurvivorsVoteGamePlayEligibleTargets"](game, gamePlay)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
     });

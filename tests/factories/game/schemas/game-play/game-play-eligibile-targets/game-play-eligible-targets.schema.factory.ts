@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
 import { GamePlayEligibleTargets } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets.schema";

@@ -7,6 +7,7 @@ import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 
+import type { PlayerInteraction } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema";
 import { GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
@@ -15,7 +16,7 @@ import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-ra
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
-import { PlayerGroups } from "@/modules/game/enums/player.enum";
+import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
@@ -42,6 +43,8 @@ import { createFakeCompositionGameOptions } from "@tests/factories/game/schemas/
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
+import { createFakeGamePlayEligibleTargetsBoundaries } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema.factory";
+import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
@@ -555,6 +558,48 @@ describe("Game Controller", () => {
         position: index,
         isAlive: true,
       }));
+      const interaction: PlayerInteraction = {
+        source: PlayerGroups.SURVIVORS,
+        type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF,
+      };
+      const expectedCurrentPlay: GamePlay = {
+        action: GamePlayActions.ELECT_SHERIFF,
+        source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
+        occurrence: GamePlayOccurrences.ANYTIME,
+        eligibleTargets: {
+          boundaries: {
+            min: 1,
+            max: 6,
+          },
+          interactablePlayers: [
+            {
+              player: expectedPlayers[0],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[1],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[2],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[3],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[4],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[5],
+              interactions: [interaction],
+            },
+          ],
+        },
+        canBeSkipped: false,
+      };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
         phase: GamePhases.NIGHT,
@@ -562,12 +607,7 @@ describe("Game Controller", () => {
         turn: 1,
         tick: 1,
         players: expectedPlayers,
-        currentPlay: {
-          action: GamePlayActions.ELECT_SHERIFF,
-          source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
-          occurrence: GamePlayOccurrences.ANYTIME,
-          canBeSkipped: false,
-        },
+        currentPlay: expectedCurrentPlay,
         upcomingPlays: toJSON([
           createFakeGamePlayCupidCharms(),
           createFakeGamePlaySeerLooks(),
@@ -626,6 +666,48 @@ describe("Game Controller", () => {
         recipient: additionalCard.recipient,
         isUsed: false,
       }));
+      const interaction: PlayerInteraction = {
+        source: PlayerGroups.SURVIVORS,
+        type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF,
+      };
+      const expectedCurrentPlay: GamePlay = {
+        action: GamePlayActions.ELECT_SHERIFF,
+        source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
+        occurrence: GamePlayOccurrences.ANYTIME,
+        eligibleTargets: {
+          boundaries: {
+            min: 1,
+            max: 6,
+          },
+          interactablePlayers: [
+            {
+              player: expectedPlayers[0],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[1],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[2],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[3],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[4],
+              interactions: [interaction],
+            },
+            {
+              player: expectedPlayers[5],
+              interactions: [interaction],
+            },
+          ],
+        },
+        canBeSkipped: false,
+      };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
         phase: GamePhases.NIGHT,
@@ -633,12 +715,7 @@ describe("Game Controller", () => {
         turn: 1,
         tick: 1,
         players: expectedPlayers,
-        currentPlay: {
-          action: GamePlayActions.ELECT_SHERIFF,
-          source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
-          occurrence: GamePlayOccurrences.ANYTIME,
-          canBeSkipped: false,
-        },
+        currentPlay: expectedCurrentPlay,
         upcomingPlays: toJSON([
           createFakeGamePlayThiefChoosesCard(),
           createFakeGamePlayCupidCharms(),
@@ -911,9 +988,37 @@ describe("Game Controller", () => {
           { sourceId: players[1]._id, targetId: players[0]._id },
         ],
       });
+      const interaction = createFakePlayerInteraction({
+        source: PlayerGroups.SURVIVORS,
+        type: PlayerInteractionTypes.VOTE,
+      });
       const expectedCurrentPlay = createFakeGamePlaySurvivorsVote({
         cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES,
         source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players }),
+        eligibleTargets: {
+          boundaries: createFakeGamePlayEligibleTargetsBoundaries({
+            min: 1,
+            max: 4,
+          }),
+          interactablePlayers: [
+            {
+              player: players[0],
+              interactions: [interaction],
+            },
+            {
+              player: players[1],
+              interactions: [interaction],
+            },
+            {
+              player: players[2],
+              interactions: [interaction],
+            },
+            {
+              player: players[3],
+              interactions: [interaction],
+            },
+          ],
+        },
         canBeSkipped: false,
       });
       const expectedGame = createFakeGame({
@@ -951,13 +1056,26 @@ describe("Game Controller", () => {
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
+      const interaction = createFakePlayerInteraction({
+        source: PlayerGroups.WEREWOLVES,
+        type: PlayerInteractionTypes.EAT,
+      });
       const expectedCurrentPlay = createFakeGamePlayWerewolvesEat({
         source: createFakeGamePlaySource({
           name: PlayerGroups.WEREWOLVES,
           players: [createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }), players[3]],
         }),
         eligibleTargets: {
-          interactablePlayers: [],
+          interactablePlayers: [
+            {
+              player: players[1],
+              interactions: [interaction],
+            },
+            {
+              player: players[2],
+              interactions: [interaction],
+            },
+          ],
           boundaries: {
             min: 1,
             max: 1,

@@ -6,7 +6,7 @@ import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/pl
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { createGamePlayEligibleTargets } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets.factory";
-import { createGamePlay, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
 import { getAlivePlayers, getAliveVillagerSidedPlayers, getAllowedToVotePlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers } from "@/modules/game/helpers/game.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema";

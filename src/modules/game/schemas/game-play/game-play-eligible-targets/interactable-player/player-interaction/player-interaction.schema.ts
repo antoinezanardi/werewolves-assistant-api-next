@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
+import { Expose } from "class-transformer";
 
 import { PLAYER_INTERACTION_API_PROPERTIES, PLAYER_INTERACTION_SPECS_FIELDS } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema.constant";
 import { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
