@@ -372,6 +372,22 @@ describe("Game Play Augmenter Service", () => {
       await expect(async() => services.gamePlayAugmenter["getSurvivorsVoteGamePlayInteractablePlayers"](game, gamePlay)).rejects.toThrow(undefined);
       expect(mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSurvivorsVoteGamePlayInteractablePlayers", { gameId: game._id });
     });
+
+    it("should throw error when there is no nominated players in last tie in votes record.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const gameRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [] });
+      mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: gameRecordPlayVoting }) }));
+
+      await expect(async() => services.gamePlayAugmenter["getSurvivorsVoteGamePlayInteractablePlayers"](game, gamePlay)).rejects.toThrow(undefined);
+      expect(mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSurvivorsVoteGamePlayInteractablePlayers", { gameId: game._id });
+    });
   });
 
   describe("getSurvivorsVoteGamePlayEligibleTargets", () => {
