@@ -21,6 +21,36 @@ Feature: 🦊 Fox role
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
     And the game's current play should have eligible targets boundaries from 0 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Doudou  |
+      | JB      |
+      | Olivia  |
+      | Thomas  |
+      | Coco    |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source | interaction |
+      | fox    | sniff       |
+    And the game's current play eligible targets interactable player named Juju should have the following interactions
+      | source | interaction |
+      | fox    | sniff       |
+    And the game's current play eligible targets interactable player named Doudou should have the following interactions
+      | source | interaction |
+      | fox    | sniff       |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source | interaction |
+      | fox    | sniff       |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source | interaction |
+      | fox    | sniff       |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source | interaction |
+      | fox    | sniff       |
+    And the game's current play eligible targets interactable player named Coco should have the following interactions
+      | source | interaction |
+      | fox    | sniff       |
 
     When the fox sniffs the player named Doudou
     Then the request should have succeeded with status code 200

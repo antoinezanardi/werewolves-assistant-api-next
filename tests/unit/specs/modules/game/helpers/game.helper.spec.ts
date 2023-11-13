@@ -12,7 +12,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsVote, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -856,6 +856,20 @@ describe("Game Helper", () => {
       const game = createFakeGame({ players, currentPlay: createFakeGamePlayScapegoatBansVoting() });
 
       expect(getExpectedPlayersToPlay(game)).toStrictEqual<Player[]>([players[5]]);
+    });
+
+    it("should return alive players capable of vote when action is vote.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ isAlive: false }),
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeTwoSistersAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+        createFakeTwoSistersAlivePlayer({ isAlive: false }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()], isAlive: false }),
+      ];
+      const game = createFakeGame({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
+
+      expect(getExpectedPlayersToPlay(game)).toStrictEqual<Player[]>([players[0], players[2]]);
     });
   });
 });

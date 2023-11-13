@@ -24,6 +24,20 @@ Feature: 🗳️ Vote Game Play
     And the game's current play occurrence should be on-days
     And the game's current play can be skipped
     And the game's current play should have eligible targets boundaries from 0 to 3
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | JB      |
+      | Thomas  |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source    | interaction |
+      | survivors | vote        |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source    | interaction |
+      | survivors | vote        |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source    | interaction |
+      | survivors | vote        |
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -207,6 +221,7 @@ Feature: 🗳️ Vote Game Play
       | JB      |
       | Thomas  |
     And the game's current play can be skipped
+    And the game's current play should have eligible targets boundaries from 0 to 3
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -252,6 +267,12 @@ Feature: 🗳️ Vote Game Play
       | JB     | Thomas |
       | Thomas | JB     |
     Then the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play can be skipped
+    And the game's current play should have eligible targets boundaries from 0 to 3
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | JB     |
+      | Thomas |
 
     When the survivors vote with the following votes
       | voter  | target  |
@@ -463,10 +484,19 @@ Feature: 🗳️ Vote Game Play
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
     And the game's current play should be survivors to vote
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play should have eligible targets boundaries from 0 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Doudou  |
 
     When the survivors vote with the following votes
-      | voter   | target  |
-      | Juju    | Antoine |
+      | voter | target  |
+      | Juju  | Antoine |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"

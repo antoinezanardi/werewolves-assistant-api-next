@@ -23,6 +23,25 @@ Feature: 🤪 Idiot role
       | Thomas | Antoine |
     Then the player named Antoine should be alive
     And the player named Antoine should have his role revealed
+    And the player named Antoine should have the active cant-vote from survivors attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the game's current play should be survivors to vote
+    And the game's current play should have eligible targets boundaries from 0 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    | interaction |
+      | Antoine | vote        |
+      | Thomas  | vote        |
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Antoine | Thomas |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "One source is not able to vote because he's dead or doesn't have the ability to do so"
 
   Scenario: 🤪 Idiot doesn't die if his death is from settle votes but his role is revealed
 

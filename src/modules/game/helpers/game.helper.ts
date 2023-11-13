@@ -1,5 +1,6 @@
 import type { Types } from "mongoose";
 
+import { VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
@@ -186,6 +187,7 @@ function getAllowedToVotePlayers(game: Game): Player[] {
 function getExpectedPlayersToPlay(game: Game): Player[] {
   const { currentPlay } = game;
   const mustIncludeDeadPlayersGamePlayActions = [GamePlayActions.SHOOT, GamePlayActions.BAN_VOTING, GamePlayActions.DELEGATE];
+  const voteActions: GamePlayActions[] = [...VOTE_ACTIONS];
   let expectedPlayersToPlay: Player[] = [];
   if (currentPlay === null) {
     throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
@@ -199,6 +201,9 @@ function getExpectedPlayersToPlay(game: Game): Player[] {
   }
   if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
     expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);
+  }
+  if (voteActions.includes(currentPlay.action)) {
+    expectedPlayersToPlay = expectedPlayersToPlay.filter(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
   }
   return expectedPlayersToPlay.map(player => createPlayer(player));
 }

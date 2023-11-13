@@ -27,7 +27,7 @@ export class GamePlayAugmenterService {
   Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlayEligibleTargets | Promise<GamePlayEligibleTargets>>
   > = {
       [PlayerAttributeNames.SHERIFF]: async(game, gamePlay) => this.getSheriffGamePlayEligibleTargets(game, gamePlay),
-      [PlayerGroups.SURVIVORS]: (game, gamePlay) => this.getSurvivorsGamePlayEligibleTargets(game, gamePlay),
+      [PlayerGroups.SURVIVORS]: async(game, gamePlay) => this.getSurvivorsGamePlayEligibleTargets(game, gamePlay),
       [PlayerGroups.WEREWOLVES]: game => this.getWerewolvesGamePlayEligibleTargets(game),
       [RoleNames.BIG_BAD_WOLF]: game => this.getBigBadWolfGamePlayEligibleTargets(game),
       [RoleNames.CUPID]: game => this.getCupidGamePlayEligibleTargets(game),
@@ -101,11 +101,25 @@ export class GamePlayAugmenterService {
     throw createMalformedCurrentGamePlayUnexpectedException("getSheriffGamePlayEligibleTargets", gamePlay, game._id);
   }
 
-  private getSurvivorsVoteGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): GamePlayEligibleTargets {
-    const canSurvivorsSkipVotes = this.canSurvivorsSkipGamePlay(game, gamePlay);
+  private async getSurvivorsVoteGamePlayInteractablePlayers(game: Game, gamePlay: GamePlay): Promise<InteractablePlayer[]> {
     const alivePlayers = getAlivePlayers(game);
+    const isVoteCauseOfTie = gamePlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES;
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.VOTE, source: PlayerGroups.SURVIVORS }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
+    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => createInteractablePlayer({ player, interactions }));
+    if (isVoteCauseOfTie) {
+      const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, GamePlayActions.VOTE);
+      if (lastTieInVotesRecord?.play.voting?.nominatedPlayers === undefined || lastTieInVotesRecord.play.voting.nominatedPlayers.length === 0) {
+        throw createCantFindLastNominatedPlayersUnexpectedException("getSurvivorsVoteGamePlayInteractablePlayers", { gameId: game._id });
+      }
+      const { nominatedPlayers } = lastTieInVotesRecord.play.voting;
+      return interactablePlayers.filter(({ player }) => nominatedPlayers.some(nominatedPlayer => nominatedPlayer._id.equals(player._id)));
+    }
+    return interactablePlayers;
+  }
+
+  private async getSurvivorsVoteGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets> {
+    const canSurvivorsSkipVotes = this.canSurvivorsSkipGamePlay(game, gamePlay);
+    const interactablePlayers = await this.getSurvivorsVoteGamePlayInteractablePlayers(game, gamePlay);
     const minBoundaries = canSurvivorsSkipVotes ? 0 : 1;
     const maxBoundaries = getAllowedToVotePlayers(game).length;
     const boundaries: GamePlayEligibleTargetsBoundaries = { min: minBoundaries, max: maxBoundaries };
@@ -121,7 +135,7 @@ export class GamePlayAugmenterService {
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
-  private getSurvivorsGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): GamePlayEligibleTargets {
+  private async getSurvivorsGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets> {
     if (gamePlay.action === GamePlayActions.VOTE) {
       return this.getSurvivorsVoteGamePlayEligibleTargets(game, gamePlay);
     }
@@ -251,7 +265,7 @@ export class GamePlayAugmenterService {
 
   private getWitchGamePlayEligibleTargetsInteractablePlayers(game: Game, hasWitchUsedLifePotion: boolean, hasWitchUsedDeathPotion: boolean): InteractablePlayer[] {
     const alivePlayers = getAlivePlayers(game);
-    return alivePlayers.map(player => {
+    return alivePlayers.reduce<InteractablePlayer[]>((acc, player) => {
       const interactions: PlayerInteraction[] = [];
       if (!hasWitchUsedLifePotion && doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.EATEN, game)) {
         interactions.push({ type: PlayerInteractionTypes.GIVE_LIFE_POTION, source: RoleNames.WITCH });
@@ -259,8 +273,8 @@ export class GamePlayAugmenterService {
       if (!hasWitchUsedDeathPotion && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.EATEN, game)) {
         interactions.push({ type: PlayerInteractionTypes.GIVE_DEATH_POTION, source: RoleNames.WITCH });
       }
-      return createInteractablePlayer({ player, interactions });
-    });
+      return interactions.length === 0 ? acc : [...acc, createInteractablePlayer({ player, interactions })];
+    }, []);
   }
 
   private async getWitchGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets> {
@@ -280,7 +294,9 @@ export class GamePlayAugmenterService {
     if (!eligibleTargetsPlayMethod) {
       return undefined;
     }
-    return eligibleTargetsPlayMethod(game, gamePlay);
+    const eligibleTargets = await eligibleTargetsPlayMethod(game, gamePlay);
+    const areEligibleTargetsRelevant = eligibleTargets.interactablePlayers !== undefined && eligibleTargets.interactablePlayers.length > 0;
+    return areEligibleTargetsRelevant ? eligibleTargets : undefined;
   }
 
   private canSurvivorsSkipGamePlay(game: Game, gamePlay: GamePlay): boolean {

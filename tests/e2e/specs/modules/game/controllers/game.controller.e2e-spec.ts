@@ -1009,14 +1009,6 @@ describe("Game Controller", () => {
               player: players[1],
               interactions: [interaction],
             },
-            {
-              player: players[2],
-              interactions: [interaction],
-            },
-            {
-              player: players[3],
-              interactions: [interaction],
-            },
           ],
         },
         canBeSkipped: false,

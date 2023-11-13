@@ -2,7 +2,7 @@
 
 Feature: 🛡️ Guard role
 
-  Scenario: 🛡️ Guard protects against every kind of werewolves but nor for the little girl
+  Scenario: 🛡️ Guard protects against every kind of werewolves but not for the little girl
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
@@ -15,6 +15,38 @@ Feature: 🛡️ Guard role
       | Cari    | villager     |
     Then the request should have succeeded with status code 201
     And the game's current play should be guard to protect
+    And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | JB      |
+      | Thomas  |
+      | Nana    |
+      | Juju    |
+      | Cari    |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source | interaction |
+      | guard  | protect     |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source | interaction |
+      | guard  | protect     |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source | interaction |
+      | guard  | protect     |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source | interaction |
+      | guard  | protect     |
+    And the game's current play eligible targets interactable player named Nana should have the following interactions
+      | source | interaction |
+      | guard  | protect     |
+    And the game's current play eligible targets interactable player named Juju should have the following interactions
+      | source | interaction |
+      | guard  | protect     |
+    And the game's current play eligible targets interactable player named Cari should have the following interactions
+      | source | interaction |
+      | guard  | protect     |
 
     When the guard protects the player named Antoine
     Then the request should have succeeded with status code 200
@@ -38,6 +70,13 @@ Feature: 🛡️ Guard role
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Olivia  |
+      | JB      |
+      | Thomas  |
+      | Nana    |
+      | Cari    |
 
     When the guard protects the player named Nana
     Then the player named Nana should have the active protected from guard attribute
@@ -100,7 +139,7 @@ Feature: 🛡️ Guard role
     And the request exception message should be "Player with id "4c1b96d4dfe5af0ddfa19e35" not found"
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
-  Scenario: 🛡️ Guard can't protect an dead player
+  Scenario: 🛡️ Guard can't protect a dead player
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
@@ -219,6 +258,12 @@ Feature: 🛡️ Guard role
 
     When the player or group skips his turn
     Then the game's current play should be guard to protect
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | JB      |
+      | Thomas  |
 
     When the guard protects the player named Thomas
     Then the player named Thomas should have the active protected from guard attribute

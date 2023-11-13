@@ -32,7 +32,11 @@ Then(/^the game's current play occurrence should be (?<occurrence>first-night-on
   expect(this.game.currentPlay?.occurrence).toBe(occurrence);
 });
 
-Then(/^the game's current play should have eligible targets interactable players$/u, function(this: CustomWorld, expectedPlayersDatatable: DataTable): void {
+Then(/^the game's current play should not have eligible targets$/u, function(this: CustomWorld): void {
+  expect(this.game.currentPlay?.eligibleTargets).toBeUndefined();
+});
+
+Then(/^the game's current play should have the following eligible targets interactable players$/u, function(this: CustomWorld, expectedPlayersDatatable: DataTable): void {
   const expectedInteractablePlayers = convertDatatableToPlayers(expectedPlayersDatatable.rows(), this.game);
   const interactablePlayers = this.game.currentPlay?.eligibleTargets?.interactablePlayers?.map(interactablePlayer => interactablePlayer.player);
 

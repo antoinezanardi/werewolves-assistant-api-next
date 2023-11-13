@@ -19,6 +19,16 @@ Feature: 🐺 Werewolf role
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Juju    |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source     | interaction |
+      | werewolves | eat         |
+    And the game's current play eligible targets interactable player named Juju should have the following interactions
+      | source     | interaction |
+      | werewolves | eat         |
 
     When the werewolves eat the player named Juju
     Then the request should have succeeded with status code 200

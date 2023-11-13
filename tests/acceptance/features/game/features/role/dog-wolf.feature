@@ -19,6 +19,7 @@ Feature: 🐶 Dog Wolf role
     And the game's current play occurrence should be first-night-only
     And the game's current play can not be skipped
     And the game's current play should not have eligible targets boundaries
+    And the game's current play should not have eligible targets interactable players
 
     When the dog wolf chooses the villagers side
     Then the request should have succeeded with status code 200

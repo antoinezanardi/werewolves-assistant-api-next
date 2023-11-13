@@ -19,6 +19,20 @@ Feature: 🐒 Wild Child role
     And the game's current play occurrence should be first-night-only
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Olivia |
+      | JB     |
+      | Maxime |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source     | interaction     |
+      | wild-child | choose-as-model |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source     | interaction     |
+      | wild-child | choose-as-model |
+    And the game's current play eligible targets interactable player named Maxime should have the following interactions
+      | source     | interaction     |
+      | wild-child | choose-as-model |
 
     When the wild child chooses the player named Olivia as a model
     Then the request should have succeeded with status code 200
@@ -66,6 +80,10 @@ Feature: 🐒 Wild Child role
       | voter  | target |
       | Maxime | JB     |
     Then the game's current play should be wild-child to choose-model
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Olivia |
+      | Maxime |
 
     When the wild child chooses the player named JB as a model
     Then the request should have failed with status code 400
