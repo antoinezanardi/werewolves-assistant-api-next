@@ -7,7 +7,6 @@ import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 
-import type { PlayerInteraction } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema";
 import { GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
@@ -20,6 +19,7 @@ import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/playe
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
+import type { PlayerInteraction } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
@@ -44,6 +44,7 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlayEligibleTargetsBoundaries } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema.factory";
+import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
@@ -971,9 +972,28 @@ describe("Game Controller", () => {
         createFakeWerewolfAlivePlayer(),
       ]);
       const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
+      const currentPlay = createFakeGamePlaySurvivorsVote({
+        source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players }),
+        eligibleTargets: {
+          boundaries: createFakeGamePlayEligibleTargetsBoundaries({
+            min: 1,
+            max: 4,
+          }),
+          interactablePlayers: [
+            {
+              player: players[0],
+              interactions: [createFakePlayerInteraction({ type: PlayerInteractionTypes.VOTE })],
+            },
+            {
+              player: players[1],
+              interactions: [createFakePlayerInteraction({ type: PlayerInteractionTypes.VOTE })],
+            },
+          ],
+        },
+      });
       const game = createFakeGame({
         status: GameStatuses.PLAYING,
-        currentPlay: createFakeGamePlaySurvivorsVote({ source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players }) }),
+        currentPlay,
         upcomingPlays: [
           createFakeGamePlaySeerLooks(),
           createFakeGamePlayWerewolvesEat(),
@@ -1039,10 +1059,28 @@ describe("Game Controller", () => {
         createFakeVillagerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ]);
+      const currentPlay = createFakeGamePlaySeerLooks({
+        source: createFakeGamePlaySource({
+          name: RoleNames.SEER,
+          players: [players[1]],
+        }),
+        eligibleTargets: createFakeGamePlayEligibleTargets({
+          boundaries: createFakeGamePlayEligibleTargetsBoundaries({
+            min: 1,
+            max: 1,
+          }),
+          interactablePlayers: [
+            {
+              player: players[0],
+              interactions: [createFakePlayerInteraction({ type: PlayerInteractionTypes.LOOK })],
+            },
+          ],
+        }),
+      });
       const game = createFakeGame({
         phase: GamePhases.NIGHT,
         status: GameStatuses.PLAYING,
-        currentPlay: createFakeGamePlaySeerLooks({ source: createFakeGamePlaySource({ name: RoleNames.SEER, players: [players[1]] }) }),
+        currentPlay,
         upcomingPlays: [createFakeGamePlayWerewolvesEat()],
         players,
       });

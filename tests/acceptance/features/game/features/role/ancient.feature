@@ -90,14 +90,15 @@ Feature: 👴🏻 Ancient role
       | Doudou  | witch    |
       | JB      | guard    |
       | Thomas  | idiot    |
+      | Bobo    | villager    |
     Then the game's current play should be guard to protect
 
     When the guard protects the player named JB
     Then the player named JB should have the active protected from guard attribute
     And the game's current play should be werewolves to eat
 
-    When the werewolves eat the player named Antoine
-    Then the player named Antoine should have the active eaten from werewolves attribute
+    When the werewolves eat the player named Bobo
+    Then the player named Bobo should have the active eaten from werewolves attribute
     And the game's current play should be witch to use-potions
 
     When the witch uses death potion on the player named Antoine

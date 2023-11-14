@@ -259,6 +259,25 @@ Feature: 🪄 Witch role
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "Death potion can't be applied to this target (`targets.drankPotion`)"
 
+  Scenario: 🪄 Witch can't use her death potion on a eaten target
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Juju    | villager |
+      | Doudou  | villager |
+      | Thom    | werewolf |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses death potion on the player named Juju
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Death potion can't be applied to this target (`targets.drankPotion`)"
+
   Scenario: 🪄 Witch can't use her life potion more than once
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
