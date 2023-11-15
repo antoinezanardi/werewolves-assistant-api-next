@@ -21,6 +21,24 @@ Feature: 🪄 Witch role
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
     And the game's current play should have eligible targets boundaries from 0 to 2
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Doudou  |
+      | Thom    |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source | interaction       |
+      | witch  | give-death-potion |
+    And the game's current play eligible targets interactable player named Juju should have the following interactions
+      | source | interaction      |
+      | witch  | give-life-potion |
+    And the game's current play eligible targets interactable player named Doudou should have the following interactions
+      | source | interaction       |
+      | witch  | give-death-potion |
+    And the game's current play eligible targets interactable player named Thom should have the following interactions
+      | source | interaction       |
+      | witch  | give-death-potion |
 
     When the witch uses life potion on the player named Juju
     Then the request should have succeeded with status code 200
@@ -32,6 +50,20 @@ Feature: 🪄 Witch role
     When the werewolves eat the player named Juju
     Then the game's current play should be witch to use-potions
     And the game's current play should have eligible targets boundaries from 0 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Doudou  |
+      | Thom    |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source | interaction       |
+      | witch  | give-death-potion |
+    And the game's current play eligible targets interactable player named Doudou should have the following interactions
+      | source | interaction       |
+      | witch  | give-death-potion |
+    And the game's current play eligible targets interactable player named Thom should have the following interactions
+      | source | interaction       |
+      | witch  | give-death-potion |
 
   Scenario: 🪄 Witch uses death potion to kill someone
 
@@ -61,6 +93,12 @@ Feature: 🪄 Witch role
     When the werewolves eat the player named Antoine
     Then the game's current play should be witch to use-potions
     And the game's current play should have eligible targets boundaries from 0 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source | interaction      |
+      | witch  | give-life-potion |
 
   Scenario: 🪄 Witch can skip her turn
 
@@ -111,7 +149,7 @@ Feature: 🪄 Witch role
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be witch to use-potions
-    And the game's current play should have eligible targets boundaries from 0 to 0
+    And the game's current play should not have eligible targets
 
   Scenario: 🪄 Witch is not called anymore if she used all of her potions with the right option
 
@@ -216,6 +254,25 @@ Feature: 🪄 Witch role
     Then the game's current play should be witch to use-potions
 
     When the witch uses death potion on the player named Doudou
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Death potion can't be applied to this target (`targets.drankPotion`)"
+
+  Scenario: 🪄 Witch can't use her death potion on a eaten target
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Juju    | villager |
+      | Doudou  | villager |
+      | Thom    | werewolf |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses death potion on the player named Juju
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
@@ -330,3 +387,31 @@ Feature: 🪄 Witch role
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "There are too much targets which drank death potion (`targets.drankPotion`)"
+
+  Scenario: 🪄 Witch can only skip when she used all of her potions
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | witch    |
+      | Juju    | villager |
+      | Doudou  | villager |
+      | Thom    | werewolf |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be witch to use-potions
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+
+    When the witch uses life potion on the player named Juju and death potion on the player named Doudou
+    Then the player named Juju should be alive
+    And the player named Doudou should be murdered by witch from death-potion
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be witch to use-potions
+    And the game's current play should not have eligible targets

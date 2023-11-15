@@ -83,6 +83,19 @@ describe("Server", () => {
       expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "127.0.0.1");
     });
 
+    it("should call listen with specific host when host is in process.env.HOST.", async() => {
+      process.env.HOST = "0.0.0.0";
+      app = await bootstrap();
+
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "0.0.0.0");
+    });
+
+    it("should call listen with the default host when no host is provided.", async() => {
+      app = await bootstrap();
+
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "127.0.0.1");
+    });
+
     it("should add validation pipe with transform when Validation Pipe constructor is called.", async() => {
       app = await bootstrap();
       
@@ -106,7 +119,7 @@ describe("Server", () => {
     });
 
     it("should print server and docs address with specific port when port is provided.", async() => {
-      mocks.NestFactory.create.resolvedValue.getUrl.mockReturnValue(`http://127.0.0.1:${8080}`);
+      mocks.NestFactory.create.resolvedValue.getUrl.mockReturnValue(`http://127.0.0.1:8080`);
       app = await bootstrap();
       
       expect(mocks.NestCommonLogger.log).toHaveBeenCalledWith("🐺 App is available at http://127.0.0.1:8080", "NestApplication");

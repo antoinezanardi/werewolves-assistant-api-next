@@ -5,24 +5,82 @@ import { EnvironmentVariables } from "@/modules/config/env/types/env.type";
 
 describe("Config Env Helper", () => {
   describe("validate", () => {
-    it("should return the validated config when there is no error in env variables.", () => {
-      const brutEnvVariables: Record<string, unknown> = {
-        ENVIRONMENT: "test",
-        DATABASE_HOST: "localhost",
-        DATABASE_PORT: 666,
-        DATABASE_NAME: "db",
-        DATABASE_USERNAME: "john",
-        DATABASE_PASSWORD: "doe",
-      };
-      const validatedEnvVariables = plainToInstance(EnvironmentVariables, brutEnvVariables, { enableImplicitConversion: true });
+    const validEnvVariables: Record<string, unknown> = {
+      ENVIRONMENT: "test",
+      HOST: "0.0.0.0",
+      PORT: "1234",
+      DATABASE_HOST: "localhost",
+      DATABASE_PORT: "27001",
+      DATABASE_NAME: "db",
+      DATABASE_USERNAME: "john",
+      DATABASE_PASSWORD: "doe",
+    };
 
-      expect(validate(brutEnvVariables)).toStrictEqual(validatedEnvVariables);
+    it("should return the validated config when there is no error in env variables.", () => {
+      const validatedEnvVariables = plainToInstance(EnvironmentVariables, validEnvVariables, { enableImplicitConversion: true });
+
+      expect(validate(validEnvVariables)).toStrictEqual(validatedEnvVariables);
     });
 
-    it("should throw error when env variables is not valid.", () => {
-      const brutEnvVariables: Record<string, unknown> = { ENVIRONMENT: "test" };
-
-      expect(() => validate(brutEnvVariables)).toThrow("An instance of EnvironmentVariables has failed the validation");
+    it.each<{ badEnvVariables: Record<string, unknown>; test: string }>([
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          ENVIRONMENT: "bad-env",
+        },
+        test: "ENVIRONMENT is not a valid enum value",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          HOST: "",
+        },
+        test: "HOST is empty",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          PORT: "bad-port",
+        },
+        test: "PORT is not a number",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          DATABASE_HOST: "",
+        },
+        test: "DATABASE_HOST is empty",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          DATABASE_PORT: "bad-port",
+        },
+        test: "DATABASE_PORT is not a number",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          DATABASE_NAME: "",
+        },
+        test: "DATABASE_NAME is empty",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          DATABASE_USERNAME: "",
+        },
+        test: "DATABASE_USERNAME is empty",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          DATABASE_PASSWORD: "",
+        },
+        test: "DATABASE_PASSWORD is empty",
+      },
+    ])("should throw validate error when $test [#$#].", ({ badEnvVariables }) => {
+      expect(() => validate(badEnvVariables)).toThrow("An instance of EnvironmentVariables has failed the validation");
     });
   });
 

@@ -30,12 +30,13 @@
 2. 🃏 [Available roles](#available-roles)
 3. 🔨 [Installation](#installation)
 4. 🚀 [Build](#build)
-5. 💯 [Tests](#tests)
-6. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-7. 📈 [Releases & Changelog](#versions)
-8. ✨ [Misc commands](#misc-commands)
-9. ©️ [License](#license)
-10. ❤️ [Contributors](#contributors)
+5. 🐳 [Docker](#docker)
+6. 💯 [Tests](#tests)
+7. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
+8. 📈 [Releases & Changelog](#versions)
+9. ✨ [Misc commands](#misc-commands)
+10. ©️ [License](#license)
+11. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
@@ -71,15 +72,13 @@ Then, run the following commands :
 # Install dependencies and Husky hooks
 npm install
 
-# Start dev Docker containers
-npm run docker:dev:start
-
-# Start test Docker containers (if you want to run the tests)
-npm run docker:test:start
-
 # Run the app in dev mode
 npm run start:dev
 ```
+
+The above command will start the app in development mode and watch for changes on local.
+
+You can also run the app in development mode with Docker, more information in the **[Docker section](#docker)**.
 
 ## <a name="build">🚀 Build</a>
 
@@ -92,6 +91,73 @@ npm run build
 # Run the app in production mode
 npm run start:prod
 ```
+
+You can also run the app in production mode with Docker, more information in the **[Docker section](#docker)**.
+
+## <a name="docker">🐳 Docker</a>
+
+This app is Docker ready !
+
+The Dockerfile is available at the root of the project.
+
+### 🔨 Development mode
+
+To run the app in development mode with Docker, multiple commands are available :
+
+```bash
+# Run the app in development mode with Docker
+npm run docker:dev:start
+
+# Stop the app in development mode with Docker
+npm run docker:dev:stop
+
+# Reset the app in development mode with Docker (stop, remove image, containers and volumes, then start)
+npm run docker:dev:reset
+```
+
+When starting the app in development mode with Docker, a container for the API and a container for the MongoDB database are created.
+
+Docker compose will use the `development` step of the Dockerfile to build the image.
+
+For more information, please check the **[docker-compose.yml file](https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/docker/werewolves-assistant-api-dev/docker-compose.yml)**.
+
+### 🚀 Production mode
+
+To run the app in production mode with Docker, multiple commands are available :
+
+```bash
+# Run the app in production mode with Docker
+npm run docker:production:start
+
+# Stop the app in production mode with Docker
+npm run docker:production:stop
+
+# Reset the app in production mode with Docker (stop, remove image, containers and volumes, then start)
+npm run docker:production:reset
+```
+
+When starting the app in production mode with Docker, a container for the API and a container for the MongoDB database are created.
+
+Docker compose will use the `production` step of the Dockerfile to build the image.
+
+For more information, please check the **[docker-compose.yml file](https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/docker/werewolves-assistant-api-production/docker-compose.yml)**.
+
+### 🧪 Test mode
+
+To run the tests available in this project thanks to Docker, multiple commands are available :
+
+```bash
+# Deploy test containers (4 databases are created to parallelize tests)
+npm run docker:test:start
+
+# Stop test containers
+npm run docker:test:stop
+
+# Reset test containers (stop, remove image, containers and volumes, then start)
+npm run docker:test:reset
+```
+
+For more information, please check the **[docker-compose.yml file](https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/docker/werewolves-assistant-api-test/docker-compose.yml)**.
 
 ## <a name="tests">💯 Tests</a>
 
@@ -185,7 +251,7 @@ npm run lint
 # Lint and fix
 npm run lint:fix
 
-# Lint and fix only on staged files (run on pre-commit)
+# Lint and fix only on staged files (runs on pre-commit)
 npm run lint:staged
 ```
 

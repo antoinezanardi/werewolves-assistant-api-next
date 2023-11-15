@@ -34,8 +34,27 @@ enum PlayerDeathCauses {
   DISEASE = "disease",
 }
 
+enum PlayerInteractionTypes {
+  EAT = "eat",
+  LOOK = "look",
+  CHARM = "charm",
+  GIVE_LIFE_POTION = "give-life-potion",
+  GIVE_DEATH_POTION = "give-death-potion",
+  SHOOT = "shoot",
+  PROTECT = "protect",
+  MARK = "mark",
+  VOTE = "vote",
+  CHOOSE_AS_MODEL = "choose-as-model",
+  CHOOSE_AS_SHERIFF = "choose-as-sheriff",
+  SNIFF = "sniff",
+  BAN_VOTING = "ban-voting",
+  TRANSFER_SHERIFF_ROLE = "transfer-sheriff-role",
+  SENTENCE_TO_DEATH = "sentence-to-death",
+}
+
 export {
   PlayerGroups,
   PlayerAttributeNames,
   PlayerDeathCauses,
+  PlayerInteractionTypes,
 };

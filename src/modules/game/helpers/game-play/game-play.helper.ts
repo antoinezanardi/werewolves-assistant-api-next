@@ -1,10 +1,13 @@
 import { plainToInstance } from "class-transformer";
+import type { Types } from "mongoose";
 
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
 import { GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constant";
 import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
+import type { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { getAdditionalCardWithId, getGroupOfPlayers, getPlayerWithId } from "@/modules/game/helpers/game.helper";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
@@ -92,6 +95,14 @@ function canSurvivorsVote(game: Game): boolean {
   return survivors.some(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
 }
 
+function isPlayerInteractableWithInteractionType(playerId: Types.ObjectId, interactionType: PlayerInteractionTypes, game: GameWithCurrentPlay): boolean {
+  const { eligibleTargets } = game.currentPlay;
+  return !!eligibleTargets?.interactablePlayers?.find(({ player, interactions }) => {
+    const doesPlayerHaveInteraction = interactions.find(({ type }) => type === interactionType);
+    return player._id.equals(playerId) && doesPlayerHaveInteraction !== undefined;
+  });
+}
+
 export {
   getVotesWithRelationsFromMakeGamePlayDto,
   getTargetsWithRelationsFromMakeGamePlayDto,
@@ -100,4 +111,5 @@ export {
   findPlayPriorityIndex,
   areGamePlaysEqual,
   canSurvivorsVote,
+  isPlayerInteractableWithInteractionType,
 };

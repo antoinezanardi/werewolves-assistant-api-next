@@ -41,6 +41,24 @@ Feature: 🐐 Scapegoat role
     And the game's current play occurrence should be consequential
     And the game's current play can be skipped
     And the game's current play should have eligible targets boundaries from 0 to 4
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Olivia |
+      | Thomas |
+      | Mom    |
+      | Dad    |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source    | interaction |
+      | scapegoat | ban-voting  |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source    | interaction |
+      | scapegoat | ban-voting  |
+    And the game's current play eligible targets interactable player named Mom should have the following interactions
+      | source    | interaction |
+      | scapegoat | ban-voting  |
+    And the game's current play eligible targets interactable player named Dad should have the following interactions
+      | source    | interaction |
+      | scapegoat | ban-voting  |
 
     When the scapegoat bans from vote the following players
       | name   |
@@ -50,6 +68,13 @@ Feature: 🐐 Scapegoat role
       | name   |
       | Olivia |
     And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should have eligible targets boundaries from 0 to 4
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Olivia |
+      | Thomas |
+      | Mom    |
+      | Dad    |
 
     When the survivors vote with the following votes
       | voter  | target |

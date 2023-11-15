@@ -28,6 +28,12 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
     And the game's current play should have eligible targets boundaries from 0 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name |
+      | JB   |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source         | interaction |
+      | white-werewolf | eat         |
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
@@ -101,6 +107,8 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be played by the following players
       | name   |
       | Olivia |
+    And the game's current play can be skipped
+    And the game's current play should not have eligible targets
 
     When the player or group skips his turn
     Then the player named Thomas should be murdered by werewolves from eaten
@@ -176,7 +184,7 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Antoine
     Then the game's current play should be white-werewolf to eat
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 0
+    And the game's current play should not have eligible targets
 
     When the player or group skips his turn
     Then the game's current play should be survivors to vote

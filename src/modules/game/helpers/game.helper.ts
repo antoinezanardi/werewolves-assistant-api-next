@@ -2,17 +2,15 @@ import type { Types } from "mongoose";
 
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
-import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameSource, GetNearestPlayerOptions } from "@/modules/game/types/game.type";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { createCantFindPlayerUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 function getPlayerDtoWithRole(game: CreateGameDto, role: RoleNames): CreateGamePlayerDto | undefined {
   return game.players.find(player => player.role.name === role);
@@ -157,15 +155,14 @@ function getNearestAliveNeighborInSortedPlayers(seekingNeighborPlayer: Player, s
   const seekingNeighborPlayerIndex = sortedPlayers.findIndex(({ _id }) => _id.equals(seekingNeighborPlayer._id));
   let currentIndex = seekingNeighborPlayerIndex + indexHeading;
   let count = 0;
-  while (count < sortedPlayers.length) {
+  while (count < sortedPlayers.length - 1) {
     if (currentIndex < 0) {
       currentIndex = sortedPlayers.length - 1;
     } else if (currentIndex >= sortedPlayers.length) {
       currentIndex = 0;
     }
     const checkingNeighbor = sortedPlayers[currentIndex];
-    if (checkingNeighbor.position !== seekingNeighborPlayer.position && checkingNeighbor.isAlive &&
-      (options.playerSide === undefined || checkingNeighbor.side.current === options.playerSide)) {
+    if (checkingNeighbor.isAlive && (options.playerSide === undefined || checkingNeighbor.side.current === options.playerSide)) {
       return checkingNeighbor;
     }
     currentIndex += indexHeading;
@@ -180,24 +177,8 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
   return getNearestAliveNeighborInSortedPlayers(player, sortedPlayers, options);
 }
 
-function getExpectedPlayersToPlay(game: Game): Player[] {
-  const { currentPlay } = game;
-  const mustIncludeDeadPlayersGamePlayActions = [GamePlayActions.SHOOT, GamePlayActions.BAN_VOTING, GamePlayActions.DELEGATE];
-  let expectedPlayersToPlay: Player[] = [];
-  if (currentPlay === null) {
-    throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
-  }
-  if (isGameSourceGroup(currentPlay.source.name)) {
-    expectedPlayersToPlay = getGroupOfPlayers(game, currentPlay.source.name);
-  } else if (isGameSourceRole(currentPlay.source.name)) {
-    expectedPlayersToPlay = getPlayersWithCurrentRole(game, currentPlay.source.name);
-  } else {
-    expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.SHERIFF);
-  }
-  if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
-    expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);
-  }
-  return expectedPlayersToPlay.map(player => createPlayer(player));
+function getAllowedToVotePlayers(game: Game): Player[] {
+  return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
 }
 
 export {
@@ -228,5 +209,5 @@ export {
   getNonexistentPlayer,
   getFoxSniffedPlayers,
   getNearestAliveNeighbor,
-  getExpectedPlayersToPlay,
+  getAllowedToVotePlayers,
 };

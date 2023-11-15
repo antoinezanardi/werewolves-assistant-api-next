@@ -7,6 +7,15 @@ class EnvironmentVariables {
   @IsEnum(Environnements)
   public ENVIRONMENT: Environnements;
 
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  public HOST: string;
+
+  @IsOptional()
+  @IsNumber()
+  public PORT: number;
+
   @IsString()
   @IsNotEmpty()
   public DATABASE_HOST: string;

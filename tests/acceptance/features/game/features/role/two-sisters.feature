@@ -20,7 +20,7 @@ Feature: 👯‍ Two sisters role
       | Olivia  |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets boundaries
+    And the game's current play should not have eligible targets
 
     When the two sisters meet each other
     Then the request should have succeeded with status code 200

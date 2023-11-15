@@ -5,7 +5,6 @@ import { GameVictoryService } from "@/modules/game/providers/services/game-victo
 import { GameStatuses } from "@/modules/game/enums/game.enum";
 import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helper";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helper";
-import * as GameHelper from "@/modules/game/helpers/game.helper";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
@@ -26,7 +25,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
-import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
@@ -69,7 +68,6 @@ describe("Game Service", () => {
     playerAttributeService: {
       decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.SpyInstance;
     };
-    gameHelper: { getExpectedPlayersToPlay: jest.SpyInstance };
     gamePhaseHelper: { isGamePhaseOver: jest.SpyInstance };
     gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
   };
@@ -106,7 +104,6 @@ describe("Game Service", () => {
         generateGameVictoryData: jest.fn(),
       },
       playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
-      gameHelper: { getExpectedPlayersToPlay: jest.spyOn(GameHelper, "getExpectedPlayersToPlay").mockReturnValue([]) },
       gamePhaseHelper: { isGamePhaseOver: jest.spyOn(GamePhaseHelper, "isGamePhaseOver").mockImplementation() },
       gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
     };
@@ -208,11 +205,6 @@ describe("Game Service", () => {
     it("should call updateGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
       mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
-      const expectedPlayersToPlay = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
       await services.game.createGame(toCreateGame);
 
       expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, createdGame);
@@ -263,6 +255,7 @@ describe("Game Service", () => {
       mocks.gamePlayMakerService.makeGamePlay.mockResolvedValue(game);
       mocks.gamePlayService.refreshUpcomingPlays.mockReturnValue(game);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
+      mocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(game);
       mocks.gameVictoryService.isGameOver.mockReturnValue(false);
       localMocks = {
         gameService: {
@@ -359,6 +352,36 @@ describe("Game Service", () => {
 
       expect(localMocks.gameService.setGameAsOver).toHaveBeenCalledExactlyOnceWith(game);
     });
+
+    it("should augment current game play when the game is not over.", async() => {
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      await services.game.makeGamePlay(game, makeGamePlayDto);
+
+      expect(mocks.gamePlayService.augmentCurrentGamePlay).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should not augment current game play when the game is over.", async() => {
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      mocks.gameVictoryService.isGameOver.mockReturnValue(true);
+      await services.game.makeGamePlay(game, makeGamePlayDto);
+
+      expect(mocks.gamePlayService.augmentCurrentGamePlay).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("validateGameIsPlaying", () => {
+    it("should throw error when game is not playing.", () => {
+      const game = createFakeGame({ status: GameStatuses.CANCELED });
+
+      expect(() => services.game["validateGameIsPlaying"](game)).toThrow("");
+      expect(BadResourceMutationException).toHaveBeenCalledExactlyOnceWith(ApiResources.GAMES, game._id.toString(), `Game doesn't have status with value "playing"`);
+    });
+
+    it("should not throw error when game is playing.", () => {
+      const game = createFakeGame({ status: GameStatuses.PLAYING });
+
+      expect(() => services.game["validateGameIsPlaying"](game)).not.toThrow();
+    });
   });
 
   describe("handleGamePhaseCompletion", () => {
@@ -453,6 +476,40 @@ describe("Game Service", () => {
       });
 
       expect(services.game["setGameAsOver"](game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("updateGameAsOver", () => {
+    let localMocks: {
+      gameService: {
+        setGameAsOver: jest.SpyInstance;
+        updateGame: jest.SpyInstance;
+      };
+    };
+    
+    beforeEach(() => {
+      localMocks = {
+        gameService: {
+          setGameAsOver: jest.spyOn(services.game as unknown as { setGameAsOver }, "setGameAsOver").mockImplementation(),
+          updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockImplementation(),
+        },
+      };
+    });
+
+    it("should set game as over when called.", async() => {
+      const game = createFakeGame();
+      localMocks.gameService.setGameAsOver.mockReturnValue(game);
+      await services.game["updateGameAsOver"](game);
+
+      expect(localMocks.gameService.setGameAsOver).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call update game when called.", async() => {
+      const game = createFakeGame();
+      localMocks.gameService.setGameAsOver.mockReturnValue(game);
+      await services.game["updateGameAsOver"](game);
+
+      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(game._id, game);
     });
   });
 });

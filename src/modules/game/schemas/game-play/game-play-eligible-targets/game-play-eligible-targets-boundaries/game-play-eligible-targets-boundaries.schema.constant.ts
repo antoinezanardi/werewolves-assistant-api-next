@@ -1,7 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import type { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligibile-targets-boudaries/game-play-eligible-targets-boundaries.schema";
+import type { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema";
 
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helper";
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
@@ -19,11 +19,11 @@ const GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_SPECS_FIELDS = {
 
 const GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePlayEligibleTargetsBoundaries, ApiPropertyOptions>> = {
   min: {
-    description: "Minimum number of eligible targets for this play",
+    description: "Minimum number of eligible targets for this play. In case of votes, this is the minimum number of votes required.",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_SPECS_FIELDS.min),
   },
   max: {
-    description: "Maximum number of eligible targets for this play",
+    description: "Maximum number of eligible targets for this play. In case of votes, this is the maximum number of votes allowed.",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_SPECS_FIELDS.max),
   },
 };
