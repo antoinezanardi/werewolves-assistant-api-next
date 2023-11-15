@@ -11,7 +11,7 @@ import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.
 import { createGamePlay, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { areGamePlaysEqual, canSurvivorsVote, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
-import { areAllWerewolvesAlive, getExpectedPlayersToPlay, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { areAllWerewolvesAlive, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -53,7 +53,7 @@ export class GamePlayService {
     const clonedGame = createGameWithCurrentGamePlay(game);
     clonedGame.currentPlay = this.gamePlayAugmenterService.setGamePlayCanBeSkipped(clonedGame.currentPlay, clonedGame);
     clonedGame.currentPlay = await this.gamePlayAugmenterService.setGamePlayEligibleTargets(clonedGame.currentPlay, clonedGame);
-    clonedGame.currentPlay.source.players = getExpectedPlayersToPlay(clonedGame);
+    clonedGame.currentPlay = this.gamePlayAugmenterService.setGamePlaySourcePlayers(clonedGame.currentPlay, clonedGame);
     return clonedGame;
   }
 

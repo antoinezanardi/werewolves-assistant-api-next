@@ -36,6 +36,7 @@ describe("Game Play Service", () => {
     gamePlayAugmenterService: {
       setGamePlayCanBeSkipped: jest.SpyInstance;
       setGamePlayEligibleTargets: jest.SpyInstance;
+      setGamePlaySourcePlayers: jest.SpyInstance;
     };
     gameHistoryRecordService: {
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
@@ -44,7 +45,6 @@ describe("Game Play Service", () => {
     gameHelper: {
       getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
       getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
-      getExpectedPlayersToPlay: jest.SpyInstance;
     };
     unexpectedExceptionFactory: {
       createNoGamePlayPriorityUnexpectedException: jest.SpyInstance;
@@ -56,6 +56,7 @@ describe("Game Play Service", () => {
       gamePlayAugmenterService: {
         setGamePlayCanBeSkipped: jest.fn(),
         setGamePlayEligibleTargets: jest.fn(),
+        setGamePlaySourcePlayers: jest.fn(),
       },
       gameHistoryRecordService: {
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn().mockResolvedValue([]),
@@ -64,7 +65,6 @@ describe("Game Play Service", () => {
       gameHelper: {
         getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers").mockReturnValue([]),
         getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers").mockReturnValue([]),
-        getExpectedPlayersToPlay: jest.spyOn(GameHelper, "getExpectedPlayersToPlay").mockReturnValue([]),
       },
       unexpectedExceptionFactory: { createNoGamePlayPriorityUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoGamePlayPriorityUnexpectedException").mockImplementation() },
     };
@@ -153,16 +153,8 @@ describe("Game Play Service", () => {
     });
 
     it("should make proceed to next game play when called.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-        createFakeThiefAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-      ];
-      const expectedPlayersToPlay = [players[1], players[3]];
       const game = createFakeGame({ upcomingPlays: [createFakeGamePlaySurvivorsVote()], currentPlay: createFakeGamePlayFoxSniffs() });
       const expectedCurrentPlay = createFakeGamePlay(game.upcomingPlays[0]);
-      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
       const expectedGame = createFakeGame({
         ...game,
         upcomingPlays: [],
@@ -180,7 +172,7 @@ describe("Game Play Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay });
       mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(currentPlay);
       mocks.gamePlayAugmenterService.setGamePlayEligibleTargets.mockResolvedValue(currentPlay);
-      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(undefined);
+      mocks.gamePlayAugmenterService.setGamePlaySourcePlayers.mockReturnValue(currentPlay);
       await services.gamePlay.augmentCurrentGamePlay(game);
 
       expect(mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped).toHaveBeenCalledExactlyOnceWith(game.currentPlay, game);
@@ -191,7 +183,7 @@ describe("Game Play Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay });
       mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(currentPlay);
       mocks.gamePlayAugmenterService.setGamePlayEligibleTargets.mockResolvedValue(currentPlay);
-      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(undefined);
+      mocks.gamePlayAugmenterService.setGamePlaySourcePlayers.mockReturnValue(currentPlay);
       await services.gamePlay.augmentCurrentGamePlay(game);
 
       expect(mocks.gamePlayAugmenterService.setGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game.currentPlay, game);
@@ -202,27 +194,28 @@ describe("Game Play Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay });
       mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(currentPlay);
       mocks.gamePlayAugmenterService.setGamePlayEligibleTargets.mockResolvedValue(currentPlay);
-      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(undefined);
+      mocks.gamePlayAugmenterService.setGamePlaySourcePlayers.mockReturnValue(currentPlay);
       await services.gamePlay.augmentCurrentGamePlay(game);
 
-      expect(mocks.gameHelper.getExpectedPlayersToPlay).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.setGamePlaySourcePlayers).toHaveBeenCalledExactlyOnceWith(game.currentPlay, game);
     });
 
     it("should return game with augmented current play when called.", async() => {
       const currentPlay = createFakeGamePlay();
       const game = createFakeGameWithCurrentPlay({ currentPlay });
-      const augmentedCurrentPlay = createFakeGamePlay({ ...currentPlay, canBeSkipped: true });
       const expectedPlayersToPlay = [createFakeWerewolfAlivePlayer(), createFakeVillagerAlivePlayer()];
+      const augmentedCurrentPlay = createFakeGamePlay({
+        ...currentPlay,
+        source: createFakeGamePlaySource({ players: expectedPlayersToPlay }),
+        canBeSkipped: true,
+      });
       mocks.gamePlayAugmenterService.setGamePlayCanBeSkipped.mockReturnValue(augmentedCurrentPlay);
       mocks.gamePlayAugmenterService.setGamePlayEligibleTargets.mockResolvedValue(augmentedCurrentPlay);
-      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
-      const expectedAugmentedCurrentPlay = createFakeGamePlay({
-        ...augmentedCurrentPlay,
-        source: createFakeGamePlaySource({ ...augmentedCurrentPlay.source, players: expectedPlayersToPlay }),
-      });
+      mocks.gamePlayAugmenterService.setGamePlayEligibleTargets.mockResolvedValue(augmentedCurrentPlay);
+      mocks.gamePlayAugmenterService.setGamePlaySourcePlayers.mockReturnValue(augmentedCurrentPlay);
       const expectedGame = createFakeGameWithCurrentPlay({
         ...game,
-        currentPlay: expectedAugmentedCurrentPlay,
+        currentPlay: augmentedCurrentPlay,
       });
 
       await expect(services.gamePlay.augmentCurrentGamePlay(game)).resolves.toStrictEqual<Game>(expectedGame);

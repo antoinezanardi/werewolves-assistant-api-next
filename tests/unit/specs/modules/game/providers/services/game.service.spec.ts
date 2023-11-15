@@ -5,7 +5,6 @@ import { GameVictoryService } from "@/modules/game/providers/services/game-victo
 import { GameStatuses } from "@/modules/game/enums/game.enum";
 import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helper";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helper";
-import * as GameHelper from "@/modules/game/helpers/game.helper";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
@@ -26,7 +25,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
-import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
@@ -69,7 +68,6 @@ describe("Game Service", () => {
     playerAttributeService: {
       decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.SpyInstance;
     };
-    gameHelper: { getExpectedPlayersToPlay: jest.SpyInstance };
     gamePhaseHelper: { isGamePhaseOver: jest.SpyInstance };
     gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
   };
@@ -106,7 +104,6 @@ describe("Game Service", () => {
         generateGameVictoryData: jest.fn(),
       },
       playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
-      gameHelper: { getExpectedPlayersToPlay: jest.spyOn(GameHelper, "getExpectedPlayersToPlay").mockReturnValue([]) },
       gamePhaseHelper: { isGamePhaseOver: jest.spyOn(GamePhaseHelper, "isGamePhaseOver").mockImplementation() },
       gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
     };
@@ -208,11 +205,6 @@ describe("Game Service", () => {
     it("should call updateGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
       mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
-      const expectedPlayersToPlay = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
       await services.game.createGame(toCreateGame);
 
       expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, createdGame);
