@@ -97,14 +97,7 @@ Feature: 🏆 Game Victory
     Then the game's phase should be day
     And the player named Olivia should be murdered by witch from death-potion
     And the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be sheriff to delegate
-
-    When the sheriff delegates his role to the player named Antoine
-    Then the player named Antoine should have the active sheriff from sheriff attribute
     And the game's current play should be hunter to shoot
-    And the game's current play should be played by the following players
-      | name   |
-      | Olivia |
 
     When the hunter shoots at the player named Antoine
     Then the player named Antoine should be murdered by hunter from shot

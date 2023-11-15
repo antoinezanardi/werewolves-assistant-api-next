@@ -8,6 +8,16 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
+// TODO: To test
+function createGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {}): GamePlay {
+  return createGamePlay({
+    source: createGamePlaySource({ name: PlayerGroups.SURVIVORS }),
+    action: GamePlayActions.BURY_DEAD_BODIES,
+    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+    ...gamePlay,
+  });
+}
+
 function createGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
     source: createGamePlaySource({ name: PlayerAttributeNames.SHERIFF }),
@@ -239,6 +249,7 @@ function createGamePlay(gamePlay: GamePlay): GamePlay {
 }
 
 export {
+  createGamePlaySurvivorsBuryDeadBodies,
   createGamePlaySheriffSettlesVotes,
   createGamePlaySheriffDelegates,
   createGamePlaySurvivorsVote,

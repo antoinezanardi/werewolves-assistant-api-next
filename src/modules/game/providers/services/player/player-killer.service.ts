@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import type { Types } from "mongoose";
 
-import { PlayerAttributeNames, PlayerDeathCauses } from "@/modules/game/enums/player.enum";
-import { createGamePlayHunterShoots, createGamePlayScapegoatBansVoting, createGamePlaySheriffDelegates } from "@/modules/game/helpers/game-play/game-play.factory";
+import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
+import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { createGamePlayHunterShoots, createGamePlayScapegoatBansVoting, createGamePlaySheriffDelegates, createGamePlaySurvivorsBuryDeadBodies } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
-import { getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
+import { doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
 import { createCantVoteBySurvivorsPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByAncientPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
@@ -231,7 +232,11 @@ export class PlayerKillerService {
     const cantFindPlayerException = createCantFindPlayerUnexpectedException("applyPlayerDeathOutcomes", { gameId: game._id, playerId: killedPlayer._id });
     clonedGame = this.applyPlayerRoleDeathOutcomes(clonedPlayerToKill, clonedGame, death);
     clonedPlayerToKill = getPlayerWithIdOrThrow(clonedPlayerToKill._id, clonedGame, cantFindPlayerException);
-    return this.applyPlayerAttributesDeathOutcomes(clonedPlayerToKill, clonedGame);
+    clonedGame = this.applyPlayerAttributesDeathOutcomes(clonedPlayerToKill, clonedGame);
+    if (!doesGameHaveCurrentOrUpcomingPlaySourceAndAction(clonedGame, PlayerGroups.SURVIVORS, GamePlayActions.BURY_DEAD_BODIES)) {
+      clonedGame = prependUpcomingPlayInGame(createGamePlaySurvivorsBuryDeadBodies(), clonedGame);
+    }
+    return clonedGame;
   }
 
   private killPlayer(playerToKill: Player, game: Game, death: PlayerDeath): Game {
