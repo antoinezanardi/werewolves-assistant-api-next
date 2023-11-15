@@ -1,5 +1,5 @@
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getExpectedPlayersToPlay, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getExpectedPlayersToPlay, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GetNearestPlayerOptions } from "@/modules/game/types/game.type";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
@@ -12,9 +12,9 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { bulkCreateFakeGameAdditionalCards } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsVote, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
@@ -677,6 +677,18 @@ describe("Game Helper", () => {
       expect(getNearestAliveNeighbor(players[1]._id, game, options)).toStrictEqual<Player>(players[0]);
     });
 
+    it("should return the other alive player when there are only two alive players.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ position: 0 }),
+        createFakeVillagerAlivePlayer({ position: 1 }),
+        createFakeVillagerAlivePlayer({ position: 2, isAlive: false }),
+      ];
+      const game = createFakeGame({ players });
+      const options: GetNearestPlayerOptions = { direction: "left" };
+
+      expect(getNearestAliveNeighbor(players[0]._id, game, options)).toStrictEqual<Player>(players[1]);
+    });
+
     it("should return undefined when can't find player with conditions.", () => {
       const players = [
         createFakeVillagerAlivePlayer({ position: 5, isAlive: false }),
@@ -705,6 +717,44 @@ describe("Game Helper", () => {
       const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
       
       expect(getNearestAliveNeighbor(players[4]._id, game, options)).toBeUndefined();
+    });
+
+    it("should return undefined when there is no alive werewolf to find.", () => {
+      const players = [
+        createFakeVillagerAlivePlayer({ position: 5, isAlive: false }),
+        createFakeVillagerAlivePlayer({ position: 3 }),
+        createFakeWerewolfAlivePlayer({ position: 0, isAlive: false }),
+        createFakeVillagerAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 4 }),
+        createFakeWerewolfAlivePlayer({ position: 2, isAlive: false }),
+      ];
+      const game = createFakeGame({ players });
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
+
+      expect(getNearestAliveNeighbor(players[4]._id, game, options)).toBeUndefined();
+    });
+
+    it("should return undefined when player is alone.", () => {
+      const players = [createFakeVillagerAlivePlayer({ position: 1 })];
+      const game = createFakeGame({ players });
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
+
+      expect(getNearestAliveNeighbor(players[0]._id, game, options)).toBeUndefined();
+    });
+  });
+
+  describe("getAllowedToVotePlayers", () => {
+    it("should return all alive players which can vote when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ attributes: [] }),
+      ];
+      const game = createFakeGame({ players });
+      const expectedAllowedToVotePlayers = [players[0], players[3]];
+
+      expect(getAllowedToVotePlayers(game)).toStrictEqual<Player[]>(expectedAllowedToVotePlayers);
     });
   });
 
@@ -799,13 +849,27 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeWhiteWerewolfAlivePlayer(),
-        createFakeTwoSistersAlivePlayer(),
+        createFakeTwoSistersAlivePlayer({}),
         createFakeTwoSistersAlivePlayer({ isAlive: false }),
-        createFakeScapegoatAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()], isAlive: false }),
+        createFakeScapegoatAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakeCantVoteBySurvivorsPlayerAttribute()], isAlive: false }),
       ];
       const game = createFakeGame({ players, currentPlay: createFakeGamePlayScapegoatBansVoting() });
 
       expect(getExpectedPlayersToPlay(game)).toStrictEqual<Player[]>([players[5]]);
+    });
+
+    it("should return alive players capable of vote when action is vote.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ isAlive: false }),
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeTwoSistersAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+        createFakeTwoSistersAlivePlayer({ isAlive: false }),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()], isAlive: false }),
+      ];
+      const game = createFakeGame({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
+
+      expect(getExpectedPlayersToPlay(game)).toStrictEqual<Player[]>([players[0], players[2]]);
     });
   });
 });

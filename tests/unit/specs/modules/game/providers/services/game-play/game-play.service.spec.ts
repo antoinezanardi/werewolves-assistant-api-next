@@ -146,13 +146,13 @@ describe("Game Play Service", () => {
       localMocks = { gamePlayService: { augmentCurrentGamePlay: jest.spyOn(services.gamePlay, "augmentCurrentGamePlay").mockImplementation() } };
     });
 
-    it("should return game as is when there is no upcoming plays.", async() => {
+    it("should return game as is when there is no upcoming plays.", () => {
       const game = createFakeGame();
 
-      await expect(services.gamePlay.proceedToNextGamePlay(game)).resolves.toStrictEqual<Game>(game);
+      expect(services.gamePlay.proceedToNextGamePlay(game)).toStrictEqual<Game>(game);
     });
 
-    it("should make proceed to next game play when called.", async() => {
+    it("should make proceed to next game play when called.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
@@ -161,10 +161,7 @@ describe("Game Play Service", () => {
       ];
       const expectedPlayersToPlay = [players[1], players[3]];
       const game = createFakeGame({ upcomingPlays: [createFakeGamePlaySurvivorsVote()], currentPlay: createFakeGamePlayFoxSniffs() });
-      const expectedCurrentPlay = createFakeGamePlay({
-        ...game.upcomingPlays[0],
-        source: createFakeGamePlaySource({ ...game.upcomingPlays[0].source, players: expectedPlayersToPlay }),
-      });
+      const expectedCurrentPlay = createFakeGamePlay(game.upcomingPlays[0]);
       mocks.gameHelper.getExpectedPlayersToPlay.mockReturnValue(expectedPlayersToPlay);
       const expectedGame = createFakeGame({
         ...game,
@@ -173,7 +170,7 @@ describe("Game Play Service", () => {
       });
       localMocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(expectedGame);
 
-      await expect(services.gamePlay.proceedToNextGamePlay(game)).resolves.toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlay.proceedToNextGamePlay(game)).toStrictEqual<Game>(expectedGame);
     });
   });
 

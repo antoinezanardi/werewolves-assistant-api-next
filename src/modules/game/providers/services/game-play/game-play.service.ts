@@ -38,15 +38,14 @@ export class GamePlayService {
     return clonedGame;
   }
 
-  public async proceedToNextGamePlay(game: Game): Promise<Game> {
-    let clonedGame = createGame(game);
+  public proceedToNextGamePlay(game: Game): Game {
+    const clonedGame = createGame(game);
     if (!clonedGame.upcomingPlays.length) {
       clonedGame.currentPlay = null;
       return clonedGame;
     }
     clonedGame.currentPlay = clonedGame.upcomingPlays[0];
     clonedGame.upcomingPlays.shift();
-    clonedGame = await this.augmentCurrentGamePlay(clonedGame as GameWithCurrentPlay);
     return clonedGame;
   }
 

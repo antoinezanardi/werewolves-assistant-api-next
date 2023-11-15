@@ -1,4 +1,5 @@
 @big-bad-wolf-role
+
 Feature: 🐺👹 Big Bad Wolf role
 
   Scenario: 🐺👹Big Bad Wolf eats every night but powerless if one werewolf dies
@@ -29,6 +30,12 @@ Feature: 🐺👹 Big Bad Wolf role
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Thomas |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source       | interaction |
+      | big-bad-wolf | eat         |
 
     When the big bad wolf eats the player named Thomas
     Then the request should have succeeded with status code 200
@@ -116,11 +123,17 @@ Feature: 🐺👹 Big Bad Wolf role
       | JB      | werewolf     |
       | Olivia  | big-bad-wolf |
       | Thomas  | villager     |
+      | Babou   | villager     |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be big-bad-wolf to eat
     And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Thomas |
+      | Babou  |
 
     When the player or group skips his turn
     Then the request should have failed with status code 400
@@ -335,7 +348,7 @@ Feature: 🐺👹 Big Bad Wolf role
     When the werewolves eat the player named Antoine
     Then the game's current play should be big-bad-wolf to eat
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 0
+    And the game's current play should not have eligible targets
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200

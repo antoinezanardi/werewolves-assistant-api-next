@@ -22,7 +22,27 @@ Feature: 🎖️ Sheriff player attribute
       | Babou   |
     And the game's current play occurrence should be anytime
     And the game's current play can not be skipped
-    And the game's current play should not have eligible targets boundaries
+    And the game's current play should have eligible targets boundaries from 1 to 5
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | Thomas  |
+      | JB      |
+      | Babou   |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source    | interaction       |
+      | survivors | choose-as-sheriff |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source    | interaction       |
+      | survivors | choose-as-sheriff |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source    | interaction       |
+      | survivors | choose-as-sheriff |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source    | interaction       |
+      | survivors | choose-as-sheriff |
+
 
     When the survivors elect sheriff with the following votes
       | voter   | target |
@@ -49,6 +69,16 @@ Feature: 🎖️ Sheriff player attribute
       | Olivia |
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Thomas |
+      | JB     |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source  | interaction       |
+      | sheriff | sentence-to-death |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source  | interaction       |
+      | sheriff | sentence-to-death |
 
     When the sheriff breaks the tie in votes by choosing the player named Thomas
     Then the request should have succeeded with status code 200
@@ -305,6 +335,13 @@ Feature: 🎖️ Sheriff player attribute
     Then the player named Babou should be murdered by werewolves from eaten
     And the game's current play should be survivors to elect-sheriff
     And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 1 to 4
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | Thomas  |
+      | JB      |
 
   Scenario: 🎖️ Sheriff can be elected on second night instead of first night with right option
 
@@ -352,6 +389,24 @@ Feature: 🎖️ Sheriff player attribute
     And the game's current play occurrence should be consequential
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | JB      |
+      | Babou   |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source  | interaction           |
+      | sheriff | transfer-sheriff-role |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source  | interaction           |
+      | sheriff | transfer-sheriff-role |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source  | interaction           |
+      | sheriff | transfer-sheriff-role |
+    And the game's current play eligible targets interactable player named Babou should have the following interactions
+      | source  | interaction           |
+      | sheriff | transfer-sheriff-role |
 
     When the sheriff delegates his role to the player named Olivia
     Then the request should have succeeded with status code 200

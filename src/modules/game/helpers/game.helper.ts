@@ -1,5 +1,6 @@
 import type { Types } from "mongoose";
 
+import { VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
@@ -157,15 +158,14 @@ function getNearestAliveNeighborInSortedPlayers(seekingNeighborPlayer: Player, s
   const seekingNeighborPlayerIndex = sortedPlayers.findIndex(({ _id }) => _id.equals(seekingNeighborPlayer._id));
   let currentIndex = seekingNeighborPlayerIndex + indexHeading;
   let count = 0;
-  while (count < sortedPlayers.length) {
+  while (count < sortedPlayers.length - 1) {
     if (currentIndex < 0) {
       currentIndex = sortedPlayers.length - 1;
     } else if (currentIndex >= sortedPlayers.length) {
       currentIndex = 0;
     }
     const checkingNeighbor = sortedPlayers[currentIndex];
-    if (checkingNeighbor.position !== seekingNeighborPlayer.position && checkingNeighbor.isAlive &&
-      (options.playerSide === undefined || checkingNeighbor.side.current === options.playerSide)) {
+    if (checkingNeighbor.isAlive && (options.playerSide === undefined || checkingNeighbor.side.current === options.playerSide)) {
       return checkingNeighbor;
     }
     currentIndex += indexHeading;
@@ -180,9 +180,14 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
   return getNearestAliveNeighborInSortedPlayers(player, sortedPlayers, options);
 }
 
+function getAllowedToVotePlayers(game: Game): Player[] {
+  return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
+}
+
 function getExpectedPlayersToPlay(game: Game): Player[] {
   const { currentPlay } = game;
   const mustIncludeDeadPlayersGamePlayActions = [GamePlayActions.SHOOT, GamePlayActions.BAN_VOTING, GamePlayActions.DELEGATE];
+  const voteActions: GamePlayActions[] = [...VOTE_ACTIONS];
   let expectedPlayersToPlay: Player[] = [];
   if (currentPlay === null) {
     throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
@@ -196,6 +201,9 @@ function getExpectedPlayersToPlay(game: Game): Player[] {
   }
   if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
     expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);
+  }
+  if (voteActions.includes(currentPlay.action)) {
+    expectedPlayersToPlay = expectedPlayersToPlay.filter(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
   }
   return expectedPlayersToPlay.map(player => createPlayer(player));
 }
@@ -228,5 +236,6 @@ export {
   getNonexistentPlayer,
   getFoxSniffedPlayers,
   getNearestAliveNeighbor,
+  getAllowedToVotePlayers,
   getExpectedPlayersToPlay,
 };

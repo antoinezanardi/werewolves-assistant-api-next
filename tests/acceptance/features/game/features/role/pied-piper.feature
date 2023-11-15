@@ -24,6 +24,28 @@ Feature: 🪈 Pied Piper role
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 2 to 2
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Olivia |
+      | JB     |
+      | Thomas |
+      | Dad    |
+      | Mom    |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source     | interaction |
+      | pied-piper | charm       |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source     | interaction |
+      | pied-piper | charm       |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source     | interaction |
+      | pied-piper | charm       |
+    And the game's current play eligible targets interactable player named Dad should have the following interactions
+      | source     | interaction |
+      | pied-piper | charm       |
+    And the game's current play eligible targets interactable player named Mom should have the following interactions
+      | source     | interaction |
+      | pied-piper | charm       |
 
     When the pied piper charms the following players
       | name   |
@@ -41,7 +63,7 @@ Feature: 🪈 Pied Piper role
       | Thomas |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets boundaries
+    And the game's current play should not have eligible targets
 
     When the charmed people meet each other
     Then the request should have succeeded with status code 200
@@ -53,6 +75,17 @@ Feature: 🪈 Pied Piper role
     When the werewolves eat the player named Dad
     Then the player named Dad should have the active eaten from werewolves attribute
     And the game's current play should be pied-piper to charm
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be on-nights
+    And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 2 to 2
+    And the game's current play should have the following eligible targets interactable players
+      | name |
+      | JB   |
+      | Dad  |
+      | Mom  |
 
     When the pied piper charms the following players
       | name |
@@ -311,6 +344,9 @@ Feature: 🪈 Pied Piper role
     Then the player named Thomas should have the active eaten from werewolves attribute
     And the game's current play should be pied-piper to charm
     And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name |
+      | Dad  |
 
     When the pied piper charms the following players
       | name |

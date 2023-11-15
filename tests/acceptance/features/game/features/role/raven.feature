@@ -19,6 +19,28 @@ Feature: 🐦‍⬛ Raven role
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
     And the game's current play should have eligible targets boundaries from 0 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | JB      |
+      | Camille |
+      | Thomas  |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source | interaction |
+      | raven  | mark        |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source | interaction |
+      | raven  | mark        |
+    And the game's current play eligible targets interactable player named JB should have the following interactions
+      | source | interaction |
+      | raven  | mark        |
+    And the game's current play eligible targets interactable player named Camille should have the following interactions
+      | source | interaction |
+      | raven  | mark        |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source | interaction |
+      | raven  | mark        |
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
@@ -49,6 +71,11 @@ Feature: 🐦‍⬛ Raven role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | Camille |
 
     When the raven marks the player named Antoine
     Then the player named Antoine should have the active raven-marked from raven attribute

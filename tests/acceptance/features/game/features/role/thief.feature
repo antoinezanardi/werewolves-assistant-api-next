@@ -17,7 +17,7 @@ Feature: 👺 Thief role
       | Antoine |
     And the game's current play occurrence should be first-night-only
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets boundaries
+    And the game's current play should not have eligible targets
 
     When the thief chooses card with role seer
     Then the player named Antoine should be currently a seer and originally a thief

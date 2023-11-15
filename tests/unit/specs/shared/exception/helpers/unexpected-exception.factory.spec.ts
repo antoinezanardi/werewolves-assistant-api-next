@@ -1,4 +1,4 @@
-import { createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindLastNominatedPlayersUnexpectedException, createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
@@ -13,7 +13,7 @@ describe("Unexpected Exception Factory", () => {
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 500,
         message: "Unexpected exception in werewolvesEat",
-        error: `Can't find player with id "${interpolations.playerId.toString()}" in game "${interpolations.gameId.toString()}"`,
+        error: `Can't find player with id "${interpolations.playerId.toString()}" for game with id "${interpolations.gameId.toString()}"`,
       });
     });
   });
@@ -26,7 +26,7 @@ describe("Unexpected Exception Factory", () => {
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 500,
         message: "Unexpected exception in killPlayer",
-        error: `Player with id "${interpolations.playerId.toString()}" is dead in game "${interpolations.gameId.toString()}"`,
+        error: `Player with id "${interpolations.playerId.toString()}" is dead in game with id "${interpolations.gameId.toString()}"`,
       });
     });
   });
@@ -65,6 +65,33 @@ describe("Unexpected Exception Factory", () => {
         statusCode: 500,
         message: "Unexpected exception in makePlay",
         error: `Game play "${JSON.stringify(gamePlay)}" doesn't have a set priority`,
+      });
+    });
+  });
+
+  describe("createMalformedCurrentGamePlayUnexpectedException", () => {
+    it("should create malformed current game play unexpected exception when called.", () => {
+      const gamePlay = createFakeGamePlay();
+      const interpolations = { gameId: createFakeObjectId(), gamePlay };
+      const exception = createMalformedCurrentGamePlayUnexpectedException("makePlay", gamePlay, interpolations.gameId);
+
+      expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
+        statusCode: 500,
+        message: "Unexpected exception in makePlay",
+        error: `Current game play with action "${interpolations.gamePlay.action}" and source "${interpolations.gamePlay.source.name}" are not consistent for game with id "${interpolations.gameId.toString()}"`,
+      });
+    });
+  });
+
+  describe("createCantFindLastNominatedPlayersUnexpectedException", () => {
+    it("should create can't find last nominated players unexpected exception when called.", () => {
+      const interpolations = { gameId: createFakeObjectId() };
+      const exception = createCantFindLastNominatedPlayersUnexpectedException("makePlay", interpolations);
+
+      expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
+        statusCode: 500,
+        message: "Unexpected exception in makePlay",
+        error: `Can't find last nominated players for game with id "${interpolations.gameId.toString()}"`,
       });
     });
   });

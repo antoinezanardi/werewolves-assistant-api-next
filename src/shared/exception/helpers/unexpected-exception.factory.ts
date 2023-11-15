@@ -28,10 +28,22 @@ function createNoGamePlayPriorityUnexpectedException(scope: string, gamePlay: Ga
   return new UnexpectedException(scope, UnexpectedExceptionReasons.NO_GAME_PLAY_PRIORITY, { gamePlay: JSON.stringify(gamePlay) });
 }
 
+function createMalformedCurrentGamePlayUnexpectedException(scope: string, gamePlay: GamePlay, gameId: Types.ObjectId): UnexpectedException {
+  const interpolations = { action: gamePlay.action, source: gamePlay.source.name, gameId: gameId.toString() };
+  return new UnexpectedException(scope, UnexpectedExceptionReasons.MALFORMED_CURRENT_GAME_PLAY, interpolations);
+}
+
+function createCantFindLastNominatedPlayersUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId }): UnexpectedException {
+  const { gameId } = interpolations;
+  return new UnexpectedException(scope, UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: gameId.toString() });
+}
+
 export {
   createCantFindPlayerUnexpectedException,
   createPlayerIsDeadUnexpectedException,
   createCantGenerateGamePlaysUnexpectedException,
   createNoCurrentGamePlayUnexpectedException,
   createNoGamePlayPriorityUnexpectedException,
+  createMalformedCurrentGamePlayUnexpectedException,
+  createCantFindLastNominatedPlayersUnexpectedException,
 };
