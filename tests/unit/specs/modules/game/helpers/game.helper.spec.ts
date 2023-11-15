@@ -849,9 +849,9 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeWhiteWerewolfAlivePlayer(),
-        createFakeTwoSistersAlivePlayer(),
+        createFakeTwoSistersAlivePlayer({}),
         createFakeTwoSistersAlivePlayer({ isAlive: false }),
-        createFakeScapegoatAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()], isAlive: false }),
+        createFakeScapegoatAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakeCantVoteBySurvivorsPlayerAttribute()], isAlive: false }),
       ];
       const game = createFakeGame({ players, currentPlay: createFakeGamePlayScapegoatBansVoting() });
 
