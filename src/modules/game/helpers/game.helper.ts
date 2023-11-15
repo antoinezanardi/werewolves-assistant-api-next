@@ -1,19 +1,16 @@
 import type { Types } from "mongoose";
 
-import { VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
-import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameSource, GetNearestPlayerOptions } from "@/modules/game/types/game.type";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { createCantFindPlayerUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 function getPlayerDtoWithRole(game: CreateGameDto, role: RoleNames): CreateGamePlayerDto | undefined {
   return game.players.find(player => player.role.name === role);
@@ -184,30 +181,6 @@ function getAllowedToVotePlayers(game: Game): Player[] {
   return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
 }
 
-function getExpectedPlayersToPlay(game: Game): Player[] {
-  const { currentPlay } = game;
-  const mustIncludeDeadPlayersGamePlayActions = [GamePlayActions.SHOOT, GamePlayActions.BAN_VOTING, GamePlayActions.DELEGATE];
-  const voteActions: GamePlayActions[] = [...VOTE_ACTIONS];
-  let expectedPlayersToPlay: Player[] = [];
-  if (currentPlay === null) {
-    throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
-  }
-  if (isGameSourceGroup(currentPlay.source.name)) {
-    expectedPlayersToPlay = getGroupOfPlayers(game, currentPlay.source.name);
-  } else if (isGameSourceRole(currentPlay.source.name)) {
-    expectedPlayersToPlay = getPlayersWithCurrentRole(game, currentPlay.source.name);
-  } else {
-    expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.SHERIFF);
-  }
-  if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
-    expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);
-  }
-  if (voteActions.includes(currentPlay.action)) {
-    expectedPlayersToPlay = expectedPlayersToPlay.filter(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
-  }
-  return expectedPlayersToPlay.map(player => createPlayer(player));
-}
-
 export {
   getPlayerDtoWithRole,
   getPlayerWithCurrentRole,
@@ -237,5 +210,4 @@ export {
   getFoxSniffedPlayers,
   getNearestAliveNeighbor,
   getAllowedToVotePlayers,
-  getExpectedPlayersToPlay,
 };

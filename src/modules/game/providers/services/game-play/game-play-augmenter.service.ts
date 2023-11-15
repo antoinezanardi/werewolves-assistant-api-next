@@ -1,5 +1,8 @@
 import { Injectable } from "@nestjs/common";
 
+import { VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
+import { createPlayer } from "@/modules/game/helpers/player/player.factory";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { createGamePlayEligibleTargetsBoundaries } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.factory";
 import { createInteractablePlayer } from "@/modules/game/helpers/game-play/game-play-eligible-targets/interactable-player/interactable-player.factory";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
@@ -7,7 +10,7 @@ import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/en
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { createGamePlayEligibleTargets } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
-import { getAlivePlayers, getAliveVillagerSidedPlayers, getAllowedToVotePlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers } from "@/modules/game/helpers/game.helper";
+import { getAlivePlayers, getAliveVillagerSidedPlayers, getAllowedToVotePlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema";
 import type { GamePlayEligibleTargets } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets.schema";
@@ -19,7 +22,7 @@ import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import { WEREWOLF_ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { createCantFindLastNominatedPlayersUnexpectedException, createMalformedCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindLastNominatedPlayersUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 @Injectable()
 export class GamePlayAugmenterService {
@@ -69,6 +72,12 @@ export class GamePlayAugmenterService {
   public async setGamePlayEligibleTargets(gamePlay: GamePlay, game: Game): Promise<GamePlay> {
     const clonedGamePlay = createGamePlay(gamePlay);
     clonedGamePlay.eligibleTargets = await this.getGamePlayEligibleTargets(gamePlay, game);
+    return clonedGamePlay;
+  }
+
+  public setGamePlaySourcePlayers(gamePlay: GamePlay, game: Game): GamePlay {
+    const clonedGamePlay = createGamePlay(gamePlay);
+    clonedGamePlay.source.players = this.getExpectedPlayersToPlay(game);
     return clonedGamePlay;
   }
 
@@ -328,5 +337,29 @@ export class GamePlayAugmenterService {
       return false;
     }
     return canBeSkippedGamePlayMethod(game, gamePlay);
+  }
+
+  private getExpectedPlayersToPlay(game: Game): Player[] {
+    const { currentPlay } = game;
+    const mustIncludeDeadPlayersGamePlayActions = [GamePlayActions.SHOOT, GamePlayActions.BAN_VOTING, GamePlayActions.DELEGATE];
+    const voteActions: GamePlayActions[] = [...VOTE_ACTIONS];
+    let expectedPlayersToPlay: Player[] = [];
+    if (currentPlay === null) {
+      throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
+    }
+    if (isGameSourceGroup(currentPlay.source.name)) {
+      expectedPlayersToPlay = getGroupOfPlayers(game, currentPlay.source.name);
+    } else if (isGameSourceRole(currentPlay.source.name)) {
+      expectedPlayersToPlay = getPlayersWithCurrentRole(game, currentPlay.source.name);
+    } else {
+      expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.SHERIFF);
+    }
+    if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
+      expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);
+    }
+    if (voteActions.includes(currentPlay.action)) {
+      expectedPlayersToPlay = expectedPlayersToPlay.filter(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
+    }
+    return expectedPlayersToPlay.map(player => createPlayer(player));
   }
 }
