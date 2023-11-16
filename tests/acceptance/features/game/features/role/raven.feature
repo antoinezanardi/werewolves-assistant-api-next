@@ -49,7 +49,10 @@ Feature: 🐦‍⬛ Raven role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be raven to mark
@@ -65,6 +68,10 @@ Feature: 🐦‍⬛ Raven role
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
     And the player named JB should not have the active raven-marked from raven attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be raven to mark
@@ -83,7 +90,10 @@ Feature: 🐦‍⬛ Raven role
 
     When the werewolves eat the player named Camille
     Then the player named Camille should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the player named Antoine should be murdered by survivors from vote
@@ -108,7 +118,10 @@ Feature: 🐦‍⬛ Raven role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter   | target  |
@@ -150,6 +163,9 @@ Feature: 🐦‍⬛ Raven role
       | Olivia  | Camille |
       | JB      | Camille |
       | Antoine | Olivia  |
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the player named Camille should be murdered by survivors from vote
 
     When the raven marks the player named Camille

@@ -59,7 +59,10 @@ Feature: 🦊 Fox role
 
     When the werewolves eat the player named Coco
     Then the player named Coco should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be fox to sniff
@@ -74,6 +77,10 @@ Feature: 🦊 Fox role
 
     When the werewolves eat the player named Juju
     Then the player named Juju should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be fox to sniff
@@ -84,6 +91,10 @@ Feature: 🦊 Fox role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -136,6 +147,9 @@ Feature: 🦊 Fox role
     When the survivors vote with the following votes
       | vote | target |
       | Juju | Doudou |
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be fox to sniff
 
     When the fox sniffs the player named Doudou

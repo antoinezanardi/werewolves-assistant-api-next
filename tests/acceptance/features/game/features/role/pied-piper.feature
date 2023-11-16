@@ -67,7 +67,10 @@ Feature: 🪈 Pied Piper role
 
     When the charmed people meet each other
     Then the request should have succeeded with status code 200
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -104,6 +107,9 @@ Feature: 🪈 Pied Piper role
       | Mom    |
 
     When the charmed people meet each other
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
@@ -117,11 +123,17 @@ Feature: 🪈 Pied Piper role
       | source  | target |
       | Antoine | Olivia |
       | JB      | Olivia |
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's status should be playing
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be playing
 
   Scenario: 🪈 Pied Piper can't skip his turn
 
@@ -179,7 +191,10 @@ Feature: 🪈 Pied Piper role
       | source | target |
       | Olivia | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Babou
     Then the game's current play should be pied-piper to charm
@@ -237,6 +252,9 @@ Feature: 🪈 Pied Piper role
     Then the game's current play should be charmed to meet-each-other
 
     When the charmed people meet each other
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
@@ -393,6 +411,9 @@ Feature: 🪈 Pied Piper role
       | Thomas |
 
     When the charmed people meet each other
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -401,5 +422,8 @@ Feature: 🪈 Pied Piper role
       | JB     | Olivia |
       | Thomas | Dad    |
     Then the player named Dad should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
     And the game's status should be playing

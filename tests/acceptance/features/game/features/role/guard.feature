@@ -60,7 +60,10 @@ Feature: 🛡️ Guard role
     When the big bad wolf eats the player named Juju
     Then the player named Juju should be murdered by big-bad-wolf from eaten
     And the player named Antoine should be alive
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be guard to protect
@@ -89,7 +92,10 @@ Feature: 🛡️ Guard role
     When the big bad wolf eats the player named Thomas
     Then the player named Thomas should be murdered by big-bad-wolf from eaten
     But the player named Nana should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be guard to protect
@@ -153,6 +159,9 @@ Feature: 🛡️ Guard role
       | name   | vote   |
       | Olivia | Thomas |
       | JB     | Thomas |
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be guard to protect
 
     When the guard protects the player named Thomas

@@ -15,7 +15,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -60,7 +63,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the werewolves eat the player named JB
     Then the request should have failed with status code 400
@@ -81,7 +87,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the request should have failed with status code 400
@@ -94,7 +103,7 @@ Feature: 🗳️ Vote Game Play
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
-      | Olivia  | villager |
+      | Olivia  | angel    |
       | JB      | villager |
       | Thomas  | villager |
 
@@ -113,7 +122,7 @@ Feature: 🗳️ Vote Game Play
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
-      | Olivia  | villager |
+      | Olivia  | angel    |
       | JB      | villager |
       | Thomas  | villager |
 
@@ -140,7 +149,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter   | target  |
@@ -165,7 +177,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target  |
@@ -190,7 +205,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -214,7 +232,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -254,7 +275,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -294,7 +318,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -331,7 +358,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -360,7 +390,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -393,7 +426,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -410,7 +446,7 @@ Feature: 🗳️ Vote Game Play
       | JB      | scapegoat |
       | Thomas  | villager  |
       | Juju    | villager  |
-      | Doudou  | villager  |
+      | Doudou  | witch     |
     Then the game's current play should be survivors to elect-sheriff
 
     When the survivors elect sheriff with the following votes
@@ -423,15 +459,24 @@ Feature: 🗳️ Vote Game Play
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia
+    And the game's current play should be witch to use-potions
+
+    When the player or group skips his turn
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
       | Doudou | Juju   |
       | Juju   | Doudou |
     Then the player named JB should be murdered by survivors from vote-scapegoated
-    And the game's current play should be scapegoat to ban-voting
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be scapegoat to ban-voting
     And the game's current play should be played by the following players
       | name |
       | JB   |
@@ -446,7 +491,10 @@ Feature: 🗳️ Vote Game Play
     And nobody should have the active cant-vote from scapegoat attribute
 
     When the werewolves eat the player named Thomas
-    Then the player named Thomas should be murdered by werewolves from eaten
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses life potion on the player named Thomas
+    Then the player named Thomas should be alive
     And the game's current play should be werewolves to eat
     And the game's turn should be 3
     And the game's phase should be night
@@ -465,14 +513,20 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
       | Doudou | Juju   |
       | Juju   | Doudou |
     Then the player named JB should be murdered by survivors from vote-scapegoated
-    And the game's current play should be scapegoat to ban-voting
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be scapegoat to ban-voting
 
     When the scapegoat bans from vote the following players
       | name   |
@@ -483,7 +537,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -520,7 +577,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
       | voter  | target |
@@ -544,7 +604,10 @@ Feature: 🗳️ Vote Game Play
       | voter | target |
       | JB    | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
   Scenario: 🗳 Multiple votes can happen during the day with stuttering judge requests and ties
 
@@ -561,7 +624,10 @@ Feature: 🗳️ Vote Game Play
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
       | voter  | target |
@@ -591,7 +657,10 @@ Feature: 🗳️ Vote Game Play
       | voter | target |
       | JB    | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote because stuttering-judge-request
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat

@@ -45,14 +45,20 @@ Feature: 🐺👹 Big Bad Wolf role
     When the witch uses life potion on the player named Thomas
     Then the player named Antoine should be murdered by werewolves from eaten
     But the player named Thomas should be alive
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | source | target |
       | Olivia | JB     |
       | Thomas | JB     |
     Then the player named JB should be murdered by survivors from vote
-    And the game's current play should be seer to look
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be seer to look
 
     When the seer looks at the player named Olivia
     Then the player named Olivia should have the active seen from seer attribute
@@ -63,7 +69,10 @@ Feature: 🐺👹 Big Bad Wolf role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be werewolves with the following players
       | name   |
       | JB     |
@@ -104,7 +113,10 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia | Thomas |
       | JB     | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be big-bad-wolf to eat
@@ -157,7 +169,10 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia | Thomas |
       | JB     | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be big-bad-wolf to eat
@@ -185,7 +200,10 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia | Thomas |
       | JB     | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be big-bad-wolf to eat
@@ -230,14 +248,20 @@ Feature: 🐺👹 Big Bad Wolf role
     When the witch uses life potion on the player named Thomas
     Then the player named Antoine should be murdered by werewolves from eaten
     But the player named Thomas should be alive
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | source | target |
       | Olivia | JB     |
       | Thomas | JB     |
     Then the player named JB should be murdered by survivors from vote
-    And the game's current play should be seer to look
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be seer to look
 
     When the seer looks at the player named Olivia
     Then the player named Olivia should have the active seen from seer attribute
@@ -252,7 +276,10 @@ Feature: 🐺👹 Big Bad Wolf role
 
     When the player or group skips his turn
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be werewolves with the following players
       | name   |
       | JB     |
@@ -287,21 +314,30 @@ Feature: 🐺👹 Big Bad Wolf role
     When the player or group skips his turn
     Then the player named Doudou should be murdered by big-bad-wolf from eaten
     But the player named Antoine should be alive
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | source | target |
       | Olivia | Thomas |
       | JB     | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+   And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be witch to use-potions
 
     When the player or group skips his turn
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be werewolves with the following players
       | name   |
       | JB     |
@@ -336,14 +372,20 @@ Feature: 🐺👹 Big Bad Wolf role
     When the player or group skips his turn
     Then the player named Doudou should be murdered by big-bad-wolf from eaten
     But the player named Antoine should be alive
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | source | target |
       | Olivia | Thomas |
       | JB     | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be big-bad-wolf to eat
