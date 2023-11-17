@@ -86,6 +86,10 @@ Feature: 🪄 Witch role
     Then the request should have succeeded with status code 200
     And the player named Juju should be murdered by werewolves from eaten
     And the player named Doudou should be murdered by witch from death-potion
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -120,7 +124,10 @@ Feature: 🪄 Witch role
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
     And the player named Juju should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
   Scenario: 🪄 Witch use both potions at the same time
 
@@ -142,7 +149,10 @@ Feature: 🪄 Witch role
     Then the request should have succeeded with status code 200
     And the player named Juju should be alive
     And the player named Doudou should be murdered by witch from death-potion
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -170,12 +180,18 @@ Feature: 🪄 Witch role
     When the witch uses life potion on the player named Juju and death potion on the player named Doudou
     Then the player named Juju should be alive
     And the player named Doudou should be murdered by witch from death-potion
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
   Scenario: 🪄 Witch can't use her life potion on an unknown target
@@ -248,6 +264,9 @@ Feature: 🪄 Witch role
     When the survivors vote with the following votes
       | voter | against |
       | Juju  | Doudou  |
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Juju
@@ -324,7 +343,10 @@ Feature: 🪄 Witch role
 
     When the witch uses death potion on the player named Doudou
     Then the player named Doudou should be murdered by witch from death-potion
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -387,31 +409,3 @@ Feature: 🪄 Witch role
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "There are too much targets which drank death potion (`targets.drankPotion`)"
-
-  Scenario: 🪄 Witch can only skip when she used all of her potions
-
-    Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
-      | Antoine | witch    |
-      | Juju    | villager |
-      | Doudou  | villager |
-      | Thom    | werewolf |
-    Then the game's current play should be werewolves to eat
-
-    When the werewolves eat the player named Juju
-    Then the game's current play should be witch to use-potions
-    And the game's current play should be played by the following players
-      | name    |
-      | Antoine |
-
-    When the witch uses life potion on the player named Juju and death potion on the player named Doudou
-    Then the player named Juju should be alive
-    And the player named Doudou should be murdered by witch from death-potion
-    And the game's current play should be survivors to vote
-
-    When the player or group skips his turn
-    Then the game's current play should be werewolves to eat
-
-    When the werewolves eat the player named Antoine
-    Then the game's current play should be witch to use-potions
-    And the game's current play should not have eligible targets

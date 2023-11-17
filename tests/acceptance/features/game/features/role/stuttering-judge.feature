@@ -24,7 +24,10 @@ Feature: ⚖️ Stuttering Judge Role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
       | voter   | target  |
@@ -32,7 +35,10 @@ Feature: ⚖️ Stuttering Judge Role
       | Camille | Antoine |
     Then the request should have succeeded with status code 200
     And the player named Antoine should be murdered by survivors from vote
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote because stuttering-judge-request
     And the game's current play occurrence should be consequential
 
   Scenario: ⚖️ Stuttering Judge chooses his sign and can ask for another vote even if all did not vote
@@ -54,7 +60,10 @@ Feature: ⚖️ Stuttering Judge Role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When nobody vote and the stuttering judge does his sign
     Then the game's current play should be survivors to vote because stuttering-judge-request
@@ -78,7 +87,10 @@ Feature: ⚖️ Stuttering Judge Role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
       | voter   | target  |
@@ -123,7 +135,10 @@ Feature: ⚖️ Stuttering Judge Role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
       | voter   | target  |
@@ -149,14 +164,20 @@ Feature: ⚖️ Stuttering Judge Role
       | voter  | target  |
       | Olivia | Camille |
     Then the player named Camille should be murdered by survivors from vote
-    And the game's current play should be stuttering-judge to choose-sign
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be stuttering-judge to choose-sign
 
     When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
       | voter  | target |
@@ -183,6 +204,9 @@ Feature: ⚖️ Stuttering Judge Role
     Then the game's current play should be witch to use-potions
 
     When the witch uses death potion on the player named Camille
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
@@ -208,6 +232,10 @@ Feature: ⚖️ Stuttering Judge Role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When nobody vote and the stuttering judge does his sign
     Then the game's current play should be survivors to vote because stuttering-judge-request

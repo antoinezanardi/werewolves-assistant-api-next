@@ -196,7 +196,7 @@ describe("Game Play Helper", () => {
     it("should return index when play is found in priority list.", () => {
       const gamePlay = createFakeGamePlayHunterShoots();
 
-      expect(findPlayPriorityIndex(gamePlay)).toBe(0);
+      expect(findPlayPriorityIndex(gamePlay)).toBe(1);
     });
   });
 

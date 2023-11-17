@@ -41,14 +41,20 @@ Feature: 🐒 Wild Child role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
       | Maxime | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
     And the player named Antoine should be on werewolves current side and originally be on villagers side
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
   Scenario: 🐒 Wild Child can't choose an unknown player
 
@@ -79,6 +85,9 @@ Feature: 🐒 Wild Child role
     When the survivors vote with the following votes
       | voter  | target |
       | Maxime | JB     |
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be wild-child to choose-model
     And the game's current play should have the following eligible targets interactable players
       | name   |
