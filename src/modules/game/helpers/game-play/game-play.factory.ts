@@ -8,7 +8,6 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
-// TODO: To test
 function createGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
     source: createGamePlaySource({ name: PlayerGroups.SURVIVORS }),

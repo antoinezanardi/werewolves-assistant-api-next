@@ -182,7 +182,6 @@ function getAllowedToVotePlayers(game: Game): Player[] {
   return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
 }
 
-// TODO: to test
 function doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game: Game, source: GameSource, action: GamePlayActions): boolean {
   const { currentPlay, upcomingPlays } = game;
   const gamePlays = currentPlay ? [currentPlay, ...upcomingPlays] : upcomingPlays;

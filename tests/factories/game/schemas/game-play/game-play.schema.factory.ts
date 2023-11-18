@@ -10,7 +10,7 @@ import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants
 
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 
-function createFakeSurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+function createFakeGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
     action: GamePlayActions.BURY_DEAD_BODIES,
@@ -253,7 +253,7 @@ function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object =
 }
 
 export {
-  createFakeSurvivorsBuryDeadBodies,
+  createFakeGamePlaySurvivorsBuryDeadBodies,
   createFakeGamePlaySheriffSettlesVotes,
   createFakeGamePlaySheriffDelegates,
   createFakeGamePlaySurvivorsVote,
