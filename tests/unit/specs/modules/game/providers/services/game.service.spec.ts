@@ -393,6 +393,7 @@ describe("Game Service", () => {
       mocks.gamePhaseService.switchPhaseAndAppendGamePhaseUpcomingPlays.mockReturnValue(game);
       mocks.gamePhaseService.applyStartingGamePhaseOutcomes.mockReturnValue(game);
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
+      mocks.gamePlayService.refreshUpcomingPlays.mockReturnValue(game);
     });
 
     it("should call apply ending phase outcomes method when called.", async() => {

@@ -17,7 +17,10 @@ Feature: 🐻 Bear Tamer role
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
     And the player named Antoine should not have the active growled from bear-tamer attribute
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat

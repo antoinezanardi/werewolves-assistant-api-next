@@ -49,7 +49,10 @@ Feature: 👼 Angel role
       | name    |
       | Antoine |
       | JB      |
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
@@ -76,17 +79,26 @@ Feature: 👼 Angel role
       | Antoine | Olivia |
       | JB      | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | source | vote    |
       | Thomas | Antoine |
     Then the player named Antoine should be murdered by survivors from vote
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     But the game's winners should be werewolves with the following players
       | name   |
       | Thomas |
@@ -114,25 +126,38 @@ Feature: 👼 Angel role
       | Antoine | Olivia |
       | JB      | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be stuttering-judge to choose-sign
 
     When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
       | source | vote |
       | Thomas | Max  |
     Then the player named Max should be murdered by survivors from vote
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote because stuttering-judge-request
 
     When the survivors vote with the following votes
       | source | vote    |
       | Thomas | Antoine |
     Then the player named Antoine should be murdered by survivors from vote
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     But the game's winners should be werewolves with the following players
       | name   |
       | Thomas |

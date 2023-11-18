@@ -62,7 +62,10 @@ Feature: 💘 Cupid role
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | source | target |
@@ -70,7 +73,10 @@ Feature: 💘 Cupid role
       | Thomas | JB     |
     Then the player named JB should be murdered by survivors from vote
     And the player named Thomas should be murdered by cupid from broken-heart
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
 
   Scenario: 💘 Cupid can't skip his turn
 
@@ -160,7 +166,10 @@ Feature: 💘 Cupid role
       | Olivia | JB     |
       | Thomas | JB     |
     Then the player named JB should be murdered by survivors from vote
-    And the game's current play should be cupid to charm
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be cupid to charm
 
     When the player or group targets the following players
       | name   |

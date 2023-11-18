@@ -46,11 +46,17 @@ Feature: 🏆 Game Victory
       | JB      | Antoine |
     Then the player named Olivia should be murdered by survivors from vote
     And the game's phase should be day
-    And the game's current play should be hunter to shoot
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be hunter to shoot
 
     When the hunter shoots at the player named JB
     Then the player named JB should be murdered by hunter from shot
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be villagers with the following players
       | name    |
       | Antoine |
@@ -97,18 +103,17 @@ Feature: 🏆 Game Victory
     Then the game's phase should be day
     And the player named Olivia should be murdered by witch from death-potion
     And the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be sheriff to delegate
+    And the game's current play should be survivors to bury-dead-bodies
 
-    When the sheriff delegates his role to the player named Antoine
-    Then the player named Antoine should have the active sheriff from sheriff attribute
-    And the game's current play should be hunter to shoot
-    And the game's current play should be played by the following players
-      | name   |
-      | Olivia |
+    When the survivors bury dead bodies
+    Then the game's current play should be hunter to shoot
 
     When the hunter shoots at the player named Antoine
     Then the player named Antoine should be murdered by hunter from shot
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be werewolves with the following players
       | name |
       | JB   |
@@ -174,13 +179,19 @@ Feature: 🏆 Game Victory
       | Thomas  | Olivia |
       | JB      | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
-    And the game's current play should be hunter to shoot
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be hunter to shoot
 
     When the hunter shoots at the player named Thomas
     Then the player named Thomas should be murdered by hunter from shot
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
     And the game's phase should be night
     And the game's turn should be 2
-    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should have the active eaten from werewolves attribute
@@ -190,6 +201,9 @@ Feature: 🏆 Game Victory
       | Antoine |
 
     When the witch uses death potion on the player named JB
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's status should be over
     And the game's winners should be none with the following players
       | name |
@@ -231,7 +245,10 @@ Feature: 🏆 Game Victory
     When the witch uses death potion on the player named Antoine
     Then the player named Thomas should be murdered by werewolves from eaten
     And the player named Antoine should be murdered by witch from death-potion
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be lovers with the following players
       | name   |
       | JB     |
@@ -253,7 +270,10 @@ Feature: 🏆 Game Victory
       | Olivia  | Thomas |
       | JB      | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be angel with the following players
       | name   |
       | Thomas |
@@ -274,7 +294,10 @@ Feature: 🏆 Game Victory
       | Thomas  | Olivia |
       | JB      | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should have the active eaten from werewolves attribute
@@ -282,7 +305,10 @@ Feature: 🏆 Game Victory
 
     When the player or group skips his turn
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be angel with the following players
       | name   |
       | Thomas |
@@ -312,7 +338,10 @@ Feature: 🏆 Game Victory
     Then the player named Antoine should be murdered by werewolves from eaten
     And the player named JB should be murdered by white-werewolf from eaten
     And the player named Olivia should be murdered by witch from death-potion
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be white-werewolf with the following players
       | name   |
       | Thomas |
@@ -353,7 +382,10 @@ Feature: 🏆 Game Victory
 
     When the charmed people meet each other
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be pied-piper with the following players
       | name   |
       | Thomas |
@@ -374,7 +406,10 @@ Feature: 🏆 Game Victory
       | Thomas  | Olivia |
       | JB      | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should have the active eaten from werewolves attribute
@@ -382,7 +417,10 @@ Feature: 🏆 Game Victory
 
     When the player or group skips his turn
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
 
     When the survivors vote with the following votes
       | source  | target |

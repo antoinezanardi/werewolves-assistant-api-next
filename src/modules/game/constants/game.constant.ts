@@ -13,6 +13,11 @@ const GAME_SOURCES = [
 
 const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
   {
+    source: { name: PlayerGroups.SURVIVORS },
+    action: GamePlayActions.BURY_DEAD_BODIES,
+    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+  },
+  {
     source: { name: RoleNames.HUNTER },
     action: GamePlayActions.SHOOT,
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,

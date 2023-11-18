@@ -18,7 +18,10 @@ Feature: 🤺 Rusty Sword Knight role
     Then the player named Antoine should be murdered by werewolves from eaten
     And the player named Babou should have the active contaminated from rusty-sword-knight attribute
     And the player named Babou should be alive
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the player named Babou should be murdered by rusty-sword-knight from disease
@@ -39,7 +42,10 @@ Feature: 🤺 Rusty Sword Knight role
     Then the player named Antoine should be murdered by werewolves from eaten
     And the player named Babou should have the active contaminated from rusty-sword-knight attribute
     And the player named Babou should be alive
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |

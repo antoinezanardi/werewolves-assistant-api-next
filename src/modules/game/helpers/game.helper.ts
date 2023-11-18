@@ -1,5 +1,6 @@
 import type { Types } from "mongoose";
 
+import type { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
@@ -181,6 +182,12 @@ function getAllowedToVotePlayers(game: Game): Player[] {
   return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
 }
 
+function doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game: Game, source: GameSource, action: GamePlayActions): boolean {
+  const { currentPlay, upcomingPlays } = game;
+  const gamePlays = currentPlay ? [currentPlay, ...upcomingPlays] : upcomingPlays;
+  return gamePlays.some(play => play.source.name === source && play.action === action);
+}
+
 export {
   getPlayerDtoWithRole,
   getPlayerWithCurrentRole,
@@ -210,4 +217,5 @@ export {
   getFoxSniffedPlayers,
   getNearestAliveNeighbor,
   getAllowedToVotePlayers,
+  doesGameHaveCurrentOrUpcomingPlaySourceAndAction,
 };

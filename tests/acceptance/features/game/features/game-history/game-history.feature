@@ -18,6 +18,13 @@ Feature: 📜 Game History
     Then the game's tick from the previous history record should be 1
     And the game's phase from the previous history record should be night
     And the game's turn from the previous history record should be 1
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the game's tick from the previous history record should be 2
+    And the game's phase from the previous history record should be day
+    And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -26,14 +33,21 @@ Feature: 📜 Game History
       | Juju   | Doudou |
       | Doudou | Juju   |
     And the most recent history record is retrieved
-    Then the game's tick from the previous history record should be 2
+    Then the game's tick from the previous history record should be 3
+    And the game's phase from the previous history record should be day
+    And the game's turn from the previous history record should be 1
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the game's tick from the previous history record should be 4
     And the game's phase from the previous history record should be day
     And the game's turn from the previous history record should be 1
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
     And the most recent history record is retrieved
-    Then the game's tick from the previous history record should be 3
+    Then the game's tick from the previous history record should be 5
     And the game's phase from the previous history record should be night
     And the game's turn from the previous history record should be 2
 
@@ -86,6 +100,20 @@ Feature: 📜 Game History
       | Thomas  |
     And the play's source name from the previous history record should be survivors
     And the play's cause from the previous history record should be previous-votes-were-in-ties
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be bury-dead-bodies
+    And the play's source name from the previous history record should be survivors
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Babou   |
+      | JB      |
+      | Thomas  |
+    And the play's cause from the previous history record should be undefined
     And the game's current play should be seer to look
 
     When the seer looks at the player named Thomas
@@ -126,6 +154,18 @@ Feature: 📜 Game History
       | Babou |
     And the play's source name from the previous history record should be werewolves
     And the play's cause from the previous history record should be undefined
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be bury-dead-bodies
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Babou   |
+      | JB      |
+    And the play's source name from the previous history record should be survivors
     And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
@@ -141,6 +181,17 @@ Feature: 📜 Game History
       | JB      |
     And the play's source name from the previous history record should be survivors
     And the play's cause from the previous history record should be undefined
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be bury-dead-bodies
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+      | Babou   |
+      | JB      |
+    And the play's source name from the previous history record should be survivors
     And the game's current play should be survivors to vote because stuttering-judge-request
 
     When the survivors vote with the following votes
@@ -202,6 +253,12 @@ Feature: 📜 Game History
       | JB      |
     And the play's target named Antoine from the previous history record should have drunk the life potion
     And the play's target named JB from the previous history record should have drunk the death potion
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the play's targets from the previous history record should be undefined
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     And the most recent history record is retrieved
@@ -268,6 +325,11 @@ Feature: 📜 Game History
     When the werewolves eat the player named Thomas
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the play's votes from the previous history record should be undefined
     And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
@@ -292,6 +354,11 @@ Feature: 📜 Game History
     When the sheriff breaks the tie in votes by choosing the player named Doudou
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the play's votes from the previous history record should be undefined
     And the game's current play should be survivors to vote because stuttering-judge-request
 
     When the survivors vote with the following votes
@@ -309,6 +376,9 @@ Feature: 📜 Game History
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Juju
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -344,6 +414,9 @@ Feature: 📜 Game History
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Morgan
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -357,9 +430,15 @@ Feature: 📜 Game History
     And the play's nominated players from votes of the previous history record should be the following players
       | name    |
       | Antoine |
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Damien
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
@@ -368,6 +447,7 @@ Feature: 📜 Game History
     And the play's voting result from the previous history record should be skipped
 
   Scenario: 📜 Chosen cards are recorded in the game history
+
     Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -407,6 +487,7 @@ Feature: 📜 Game History
     Then the play's chosen side from the previous history record should be the werewolves side
 
   Scenario: 📜 Revealed players are recorded in the game history
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -417,6 +498,9 @@ Feature: 📜 Game History
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Juju
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -436,6 +520,7 @@ Feature: 📜 Game History
     And the dead players from the previous history record should be undefined
 
   Scenario: 📜 Dead players are recorded in the game history
+
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -457,6 +542,10 @@ Feature: 📜 Game History
       | name |
       | Juju |
     And the revealed players from the previous history record should be undefined
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | name    | vote |

@@ -247,6 +247,11 @@ When(/^the raven marks the player named (?<name>.+)$/u, async function(this: Cus
   setGameInContext(this.response, this);
 });
 
+When(/^the survivors bury dead bodies$/u, async function(this: CustomWorld): Promise<void> {
+  this.response = await makeGamePlayRequest({}, this.game, this.app);
+  setGameInContext(this.response, this);
+});
+
 When(/^the player or group skips his turn$/u, async function(this: CustomWorld): Promise<void> {
   this.response = await makeGamePlayRequest({}, this.game, this.app);
   setGameInContext(this.response, this);

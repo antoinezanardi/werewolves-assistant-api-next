@@ -37,8 +37,8 @@ Feature: 🐺🦴White Werewolf role
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
-    And the game's current play should be survivors to vote
     And the player named Antoine should be alive
+    And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | source  | target  |
@@ -46,7 +46,10 @@ Feature: 🐺🦴White Werewolf role
       | Thomas  | Olaf    |
       | JB      | Antoine |
     Then the player named Olaf should be murdered by survivors from vote
-    And the game's current play should be guard to protect
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be guard to protect
 
     When the guard protects the player named Thomas
     Then the player named Thomas should have the active protected from guard attribute
@@ -61,7 +64,10 @@ Feature: 🐺🦴White Werewolf role
       | Thomas | Antoine |
       | JB     | Antoine |
     Then the player named Antoine should be murdered by survivors from vote
-    And the game's current play should be guard to protect
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be guard to protect
 
     When the guard protects the player named Olivia
     Then the player named Olivia should have the active protected from guard attribute
@@ -78,13 +84,19 @@ Feature: 🐺🦴White Werewolf role
     When the white werewolf eats the player named JB
     Then the request should have succeeded with status code 200
     And the player named JB should be murdered by white-werewolf from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | source | target  |
       | Olivia | Patoche |
     Then the player named Patoche should be murdered by survivors from vote
-    And the game's current play should be guard to protect
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be guard to protect
 
     When the guard protects the player named Thomas
     Then the player named Thomas should have the active protected from guard attribute
@@ -112,7 +124,10 @@ Feature: 🐺🦴White Werewolf role
 
     When the player or group skips his turn
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's status should be over
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
     And the game's winners should be white-werewolf with the following players
       | name   |
       | Olivia |
@@ -158,7 +173,10 @@ Feature: 🐺🦴White Werewolf role
     When the white werewolf eats the player named JB
     Then the player named Antoine should be murdered by werewolves from eaten
     And the player named JB should be murdered by white-werewolf from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be guard to protect
@@ -187,6 +205,9 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should not have eligible targets
 
     When the player or group skips his turn
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
   Scenario: 🐺🦴White Werewolf can't eat an unknown target
@@ -221,6 +242,9 @@ Feature: 🐺🦴White Werewolf role
       | source  | target |
       | Antoine | JB     |
       | Thomas  | JB     |
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
