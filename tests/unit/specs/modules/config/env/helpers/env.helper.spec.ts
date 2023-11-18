@@ -22,7 +22,32 @@ describe("Config Env Helper", () => {
       expect(validate(validEnvVariables)).toStrictEqual(validatedEnvVariables);
     });
 
+    it("should return the validated config with default values when there is no error in env variables.", () => {
+      const validEnvVariablesWithoutOptional = {
+        ENVIRONMENT: "test",
+        DATABASE_HOST: "localhost",
+        DATABASE_NAME: "db",
+        DATABASE_USERNAME: "john",
+        DATABASE_PASSWORD: "doe",
+      };
+      const expectedValidatedEnvVariables = plainToInstance(EnvironmentVariables, {
+        ...validEnvVariablesWithoutOptional,
+        HOST: "127.0.0.1",
+        PORT: 8080,
+        DATABASE_PORT: undefined,
+      }, { enableImplicitConversion: true });
+
+      expect(validate(validEnvVariablesWithoutOptional)).toStrictEqual(expectedValidatedEnvVariables);
+    });
+
     it.each<{ badEnvVariables: Record<string, unknown>; test: string }>([
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          ENVIRONMENT: undefined,
+        },
+        test: "ENVIRONMENT is not defined",
+      },
       {
         badEnvVariables: {
           ...validEnvVariables,
@@ -47,6 +72,27 @@ describe("Config Env Helper", () => {
       {
         badEnvVariables: {
           ...validEnvVariables,
+          PORT: "-1",
+        },
+        test: "PORT is less than min value",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          PORT: "65536",
+        },
+        test: "PORT is greater than max value",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          DATABASE_HOST: undefined,
+        },
+        test: "DATABASE_HOST is not defined",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
           DATABASE_HOST: "",
         },
         test: "DATABASE_HOST is empty",
@@ -61,6 +107,27 @@ describe("Config Env Helper", () => {
       {
         badEnvVariables: {
           ...validEnvVariables,
+          DATABASE_PORT: "-1",
+        },
+        test: "DATABASE_PORT is less than min value",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          DATABASE_PORT: "65536",
+        },
+        test: "DATABASE_PORT is greater than max value",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          DATABASE_NAME: undefined,
+        },
+        test: "DATABASE_NAME is not defined",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
           DATABASE_NAME: "",
         },
         test: "DATABASE_NAME is empty",
@@ -68,9 +135,23 @@ describe("Config Env Helper", () => {
       {
         badEnvVariables: {
           ...validEnvVariables,
+          DATABASE_USERNAME: undefined,
+        },
+        test: "DATABASE_USERNAME is not defined",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
           DATABASE_USERNAME: "",
         },
         test: "DATABASE_USERNAME is empty",
+      },
+      {
+        badEnvVariables: {
+          ...validEnvVariables,
+          DATABASE_PASSWORD: undefined,
+        },
+        test: "DATABASE_PASSWORD is not defined",
       },
       {
         badEnvVariables: {

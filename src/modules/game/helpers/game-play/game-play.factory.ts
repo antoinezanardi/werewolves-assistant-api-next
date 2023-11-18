@@ -6,7 +6,7 @@ import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-sourc
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
@@ -240,11 +240,11 @@ function createGamePlayWerewolvesEat(gamePlay: Partial<GamePlay> = {}): GamePlay
 }
 
 function createGamePlaySource(gamePlaySource: GamePlaySource): GamePlaySource {
-  return plainToInstance(GamePlaySource, gamePlaySource, { ...PLAIN_TO_INSTANCE_DEFAULT_OPTIONS, excludeExtraneousValues: true });
+  return plainToInstance(GamePlaySource, gamePlaySource, { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true });
 }
 
 function createGamePlay(gamePlay: GamePlay): GamePlay {
-  return plainToInstance(GamePlay, gamePlay, { ...PLAIN_TO_INSTANCE_DEFAULT_OPTIONS, excludeExtraneousValues: true });
+  return plainToInstance(GamePlay, gamePlay, { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true });
 }
 
 export {

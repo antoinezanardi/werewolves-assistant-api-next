@@ -7,7 +7,7 @@ import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { toJSON } from "@/shared/misc/helpers/object.helper";
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
@@ -181,7 +181,7 @@ function createSheriffBySurvivorsPlayerAttribute(playerAttribute: Partial<Player
 }
 
 function createPlayerAttribute(playerAttribute: PlayerAttribute): PlayerAttribute {
-  return plainToInstance(PlayerAttribute, toJSON(playerAttribute), PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  return plainToInstance(PlayerAttribute, toJSON(playerAttribute), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

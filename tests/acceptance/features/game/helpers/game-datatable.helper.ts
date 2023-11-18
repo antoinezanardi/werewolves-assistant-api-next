@@ -9,7 +9,7 @@ import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helper";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
@@ -65,7 +65,7 @@ function convertDatatableToCreateGamePlayersDto(datatable: string[][]): CreateGa
   return datatable.map(([playerName, playerRole]) => plainToInstance(CreateGamePlayerDto, {
     name: playerName,
     role: { name: playerRole },
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS));
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS));
 }
 
 export {

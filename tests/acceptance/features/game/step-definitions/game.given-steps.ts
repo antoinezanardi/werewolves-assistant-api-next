@@ -7,7 +7,7 @@ import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { setGameInContext } from "@tests/acceptance/shared/helpers/context.helper";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -42,7 +42,7 @@ Given(
       players,
       options,
       additionalCards: additionalCards.length ? additionalCards : undefined,
-    }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 
     this.response = await createGameRequest(createGameDto, this.app);
     setGameInContext(this.response, this);

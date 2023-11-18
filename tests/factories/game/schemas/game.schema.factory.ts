@@ -5,7 +5,7 @@ import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
 import { Game } from "@/modules/game/schemas/game.schema";
 import { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
@@ -16,7 +16,7 @@ function createFakeGameWithCurrentPlay(game: Partial<GameWithCurrentPlay> = {}, 
     ...createFakeGame(game, override),
     currentPlay: game.currentPlay ?? createFakeGamePlay(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
@@ -35,7 +35,7 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
     createdAt: game.createdAt ?? faker.date.recent(),
     updatedAt: game.updatedAt ?? faker.date.recent(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

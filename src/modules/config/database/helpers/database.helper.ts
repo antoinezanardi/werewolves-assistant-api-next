@@ -1,8 +1,10 @@
 import type { ConfigService } from "@nestjs/config";
 import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 
-function getDatabasePort(configService: ConfigService): number | undefined {
-  const port = configService.get<string>("DATABASE_PORT");
+import type { EnvironmentVariables } from "@/modules/config/env/types/env.type";
+
+function getDatabasePort(configService: ConfigService<EnvironmentVariables, true>): number | undefined {
+  const port = configService.get<string | undefined>("DATABASE_PORT");
   if (port === undefined) {
     return undefined;
   }
@@ -19,7 +21,7 @@ function getDatabasePort(configService: ConfigService): number | undefined {
   return parseInt(port);
 }
 
-function mongooseModuleFactory(configService: ConfigService): MongooseModuleFactoryOptions {
+function mongooseModuleFactory(configService: ConfigService<EnvironmentVariables, true>): MongooseModuleFactoryOptions {
   const connectionTimeoutMs = 3000;
   const host = configService.getOrThrow<string>("DATABASE_HOST");
   const port = getDatabasePort(configService);

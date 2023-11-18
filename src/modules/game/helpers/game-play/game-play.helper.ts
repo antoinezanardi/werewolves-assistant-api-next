@@ -18,7 +18,7 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import { ApiResources } from "@/shared/api/enums/api.enum";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayDto, game: Game): MakeGamePlayVoteWithRelationsDto[] | undefined {
   if (makeGamePlayDto.votes === undefined) {
@@ -33,7 +33,7 @@ function getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayD
     if (target === undefined) {
       throw new ResourceNotFoundException(ApiResources.PLAYERS, vote.targetId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
     }
-    const plainToInstanceOptions = { ...PLAIN_TO_INSTANCE_DEFAULT_OPTIONS, excludeExtraneousValues: true };
+    const plainToInstanceOptions = { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true };
     const voteWithRelations = plainToInstance(MakeGamePlayVoteWithRelationsDto, vote, plainToInstanceOptions);
     voteWithRelations.source = source;
     voteWithRelations.target = target;
@@ -50,7 +50,7 @@ function getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePla
     if (player === undefined) {
       throw new ResourceNotFoundException(ApiResources.PLAYERS, target.playerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
     }
-    const plainToInstanceOptions = { ...PLAIN_TO_INSTANCE_DEFAULT_OPTIONS, excludeExtraneousValues: true };
+    const plainToInstanceOptions = { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true };
     const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, target, plainToInstanceOptions);
     targetWithRelations.player = player;
     return [...acc, targetWithRelations];
@@ -72,7 +72,7 @@ function createMakeGamePlayDtoWithRelations(makeGamePlayDto: MakeGamePlayDto, ga
   const chosenCard = getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game);
   const targets = getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game);
   const votes = getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game);
-  const makeGamePlayWithRelationsDto = plainToInstance(MakeGamePlayWithRelationsDto, makeGamePlayDto, { ...PLAIN_TO_INSTANCE_DEFAULT_OPTIONS, excludeExtraneousValues: true });
+  const makeGamePlayWithRelationsDto = plainToInstance(MakeGamePlayWithRelationsDto, makeGamePlayDto, { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true });
   makeGamePlayWithRelationsDto.chosenCard = chosenCard;
   makeGamePlayWithRelationsDto.targets = targets;
   makeGamePlayWithRelationsDto.votes = votes;
