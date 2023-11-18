@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { CreateGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-game-options.dto";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeCompositionGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-composition-game-options/create-composition-game-options.dto.factory";
 import { createFakeRolesGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
@@ -14,7 +14,7 @@ function createFakeGameOptionsDto(createGameOptionsDto: Partial<CreateGameOption
     votes: createFakeVotesGameOptionsDto(createGameOptionsDto.votes),
     roles: createFakeRolesGameOptionsDto(createGameOptionsDto.roles),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export { createFakeGameOptionsDto };

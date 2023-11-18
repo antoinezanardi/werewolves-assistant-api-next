@@ -5,7 +5,7 @@ import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
@@ -31,7 +31,7 @@ function createFakeCreateGameDto(createGameDto: Partial<CreateGameDto> = {}, ove
     additionalCards: createGameDto.additionalCards ?? undefined,
     options: createGameDto.options ?? DEFAULT_GAME_OPTIONS,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

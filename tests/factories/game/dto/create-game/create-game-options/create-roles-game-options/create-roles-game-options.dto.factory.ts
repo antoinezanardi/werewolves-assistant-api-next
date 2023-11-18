@@ -23,13 +23,13 @@ import { CreateWhiteWerewolfGameOptionsDto } from "@/modules/game/dto/create-gam
 import { CreateWildChildGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-wild-child-game-options.dto";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createFakeCreateRavenGameOptionsDto(ravenGameOptions: Partial<CreateRavenGameOptionsDto> = {}, override: object = {}): CreateRavenGameOptionsDto {
   return plainToInstance(CreateRavenGameOptionsDto, {
     markPenalty: ravenGameOptions.markPenalty ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreatePiedPiperGameOptionsDto(piedPiperGameOptions: Partial<CreatePiedPiperGameOptionsDto> = {}, override: object = {}): CreatePiedPiperGameOptionsDto {
@@ -37,7 +37,7 @@ function createFakeCreatePiedPiperGameOptionsDto(piedPiperGameOptions: Partial<C
     charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.number.int({ min: 1, max: 5 }),
     isPowerlessIfInfected: piedPiperGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateThiefGameOptionsDto(thiefGameOptions: Partial<CreateThiefGameOptionsDto> = {}, override: object = {}): CreateThiefGameOptionsDto {
@@ -45,21 +45,21 @@ function createFakeCreateThiefGameOptionsDto(thiefGameOptions: Partial<CreateThi
     mustChooseBetweenWerewolves: thiefGameOptions.mustChooseBetweenWerewolves ?? faker.datatype.boolean(),
     additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateDogWolfGameOptionsDto(dogWolfGameOptions: Partial<CreateDogWolfGameOptionsDto> = {}, override: object = {}): CreateDogWolfGameOptionsDto {
   return plainToInstance(CreateDogWolfGameOptionsDto, {
     isChosenSideRevealed: dogWolfGameOptions.isChosenSideRevealed ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateWildChildGameOptionsDto(wildChildGameOptions: Partial<CreateWildChildGameOptionsDto> = {}, override: object = {}): CreateWildChildGameOptionsDto {
   return plainToInstance(CreateWildChildGameOptionsDto, {
     isTransformationRevealed: wildChildGameOptions.isTransformationRevealed ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateStutteringJudgeGameOptionsDto(
@@ -69,21 +69,21 @@ function createFakeCreateStutteringJudgeGameOptionsDto(
   return plainToInstance(CreateStutteringJudgeGameOptionsDto, {
     voteRequestsCount: stutteringJudgeGameOptions.voteRequestsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateBearTamerGameOptionsDto(bearTamerGameOptions: Partial<CreateBearTamerGameOptionsDto> = {}, override: object = {}): CreateBearTamerGameOptionsDto {
   return plainToInstance(CreateBearTamerGameOptionsDto, {
     doesGrowlIfInfected: bearTamerGameOptions.doesGrowlIfInfected ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateFoxGameOptionsDto(foxGameOptions: Partial<CreateFoxGameOptionsDto> = {}, override: object = {}): CreateFoxGameOptionsDto {
   return plainToInstance(CreateFoxGameOptionsDto, {
     isPowerlessIfMissesWerewolf: foxGameOptions.isPowerlessIfMissesWerewolf ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateThreeBrothersGameOptionsDto(
@@ -93,21 +93,21 @@ function createFakeCreateThreeBrothersGameOptionsDto(
   return plainToInstance(CreateThreeBrothersGameOptionsDto, {
     wakingUpInterval: threeBrothersGameOptions.wakingUpInterval ?? faker.number.int({ min: 0, max: 5 }),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateTwoSistersGameOptionsDto(twoSistersGameOptions: Partial<CreateTwoSistersGameOptionsDto> = {}, override: object = {}): CreateTwoSistersGameOptionsDto {
   return plainToInstance(CreateTwoSistersGameOptionsDto, {
     wakingUpInterval: twoSistersGameOptions.wakingUpInterval ?? faker.number.int({ min: 0, max: 5 }),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateIdiotGameOptionsDto(idiotGameOptions: Partial<CreateIdiotGameOptionsDto> = {}, override: object = {}): CreateIdiotGameOptionsDto {
   return plainToInstance(CreateIdiotGameOptionsDto, {
     doesDieOnAncientDeath: idiotGameOptions.doesDieOnAncientDeath ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateAncientGameOptionsDto(ancientGameOptions: Partial<CreateAncientGameOptionsDto> = {}, override: object = {}): CreateAncientGameOptionsDto {
@@ -115,21 +115,21 @@ function createFakeCreateAncientGameOptionsDto(ancientGameOptions: Partial<Creat
     livesCountAgainstWerewolves: ancientGameOptions.livesCountAgainstWerewolves ?? faker.number.int({ min: 1, max: 5 }),
     doesTakeHisRevenge: ancientGameOptions.doesTakeHisRevenge ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateGuardGameOptionsDto(guardGameOptions: Partial<CreateGuardGameOptionsDto> = {}, override: object = {}): CreateGuardGameOptionsDto {
   return plainToInstance(CreateGuardGameOptionsDto, {
     canProtectTwice: guardGameOptions.canProtectTwice ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateLittleGirlGameOptionsDto(littleGirlGameOptions: Partial<CreateLittleGirlGameOptionsDto> = {}, override: object = {}): CreateLittleGirlGameOptionsDto {
   return plainToInstance(CreateLittleGirlGameOptionsDto, {
     isProtectedByGuard: littleGirlGameOptions.isProtectedByGuard ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateSeerGameOptionsDto(seerGameOptions: Partial<CreateSeerGameOptionsDto> = {}, override: object = {}): CreateSeerGameOptionsDto {
@@ -137,7 +137,7 @@ function createFakeCreateSeerGameOptionsDto(seerGameOptions: Partial<CreateSeerG
     isTalkative: seerGameOptions.isTalkative ?? faker.datatype.boolean(),
     canSeeRoles: seerGameOptions.canSeeRoles ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateWhiteWerewolfGameOptionsDto(
@@ -147,14 +147,14 @@ function createFakeCreateWhiteWerewolfGameOptionsDto(
   return plainToInstance(CreateWhiteWerewolfGameOptionsDto, {
     wakingUpInterval: whiteWerewolfOptions.wakingUpInterval ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateBigBadWolfGameOptionsDto(bigBadWolfOptions: Partial<CreateBigBadWolfGameOptionsDto> = {}, override: object = {}): CreateBigBadWolfGameOptionsDto {
   return plainToInstance(CreateBigBadWolfGameOptionsDto, {
     isPowerlessIfWerewolfDies: bigBadWolfOptions.isPowerlessIfWerewolfDies ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateSheriffElectionGameOptionsDto(
@@ -165,7 +165,7 @@ function createFakeCreateSheriffElectionGameOptionsDto(
     turn: sheriffElectionGameOptions.turn ?? faker.number.int({ min: 1 }),
     phase: sheriffElectionGameOptions.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateSheriffGameOptionsDto(sheriffGameOptions: Partial<CreateSheriffGameOptionsDto> = {}, override: object = {}): CreateSheriffGameOptionsDto {
@@ -174,7 +174,7 @@ function createFakeCreateSheriffGameOptionsDto(sheriffGameOptions: Partial<Creat
     electedAt: createFakeCreateSheriffElectionGameOptionsDto(sheriffGameOptions.electedAt),
     hasDoubledVote: sheriffGameOptions.hasDoubledVote ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGameOptionsDto> = {}, override: object = {}): CreateRolesGameOptionsDto {
@@ -200,7 +200,7 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     piedPiper: createFakeCreatePiedPiperGameOptionsDto(rolesGameOptions.piedPiper),
     raven: createFakeCreateRavenGameOptionsDto(rolesGameOptions.raven),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

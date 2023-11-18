@@ -8,7 +8,7 @@ import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
 import { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 
 import { toJSON } from "@/shared/misc/helpers/object.helper";
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createNoneGameVictory(gameVictory: Partial<GameVictory> = {}): GameVictory {
   return createGameVictory({
@@ -72,7 +72,7 @@ function createVillagersGameVictory(game: Game, gameVictory: Partial<GameVictory
 }
 
 function createGameVictory(gameVictory: GameVictory): GameVictory {
-  return plainToInstance(GameVictory, toJSON(gameVictory), PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  return plainToInstance(GameVictory, toJSON(gameVictory), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

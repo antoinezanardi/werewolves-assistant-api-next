@@ -27,7 +27,7 @@ import { ApiResources } from "@/shared/api/enums/api.enum";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 @Injectable()
 export class GameHistoryRecordService {
@@ -97,7 +97,7 @@ export class GameHistoryRecordService {
       deadPlayers: this.generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame, newGame),
     };
     gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
-    return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }
 
   public async getGameHistory(gameId: Types.ObjectId, getGameHistoryDto: GetGameHistoryDto): Promise<GameHistoryRecord[]> {
@@ -133,7 +133,7 @@ export class GameHistoryRecordService {
       chosenCard: play.chosenCard,
       chosenSide: play.chosenSide,
     };
-    return plainToInstance(GameHistoryRecordPlay, toJSON(gameHistoryRecordPlayToInsert), PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return plainToInstance(GameHistoryRecordPlay, toJSON(gameHistoryRecordPlayToInsert), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }
   
   private generateCurrentGameHistoryRecordPlayVotingResultToInsert(
@@ -172,11 +172,11 @@ export class GameHistoryRecordService {
       result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, nominatedPlayers, gameHistoryRecordToInsert),
       nominatedPlayers: nominatedPlayers.length ? nominatedPlayers : undefined,
     };
-    return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }
   
   private generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame: GameWithCurrentPlay): GameHistoryRecordPlaySource {
-    return plainToInstance(GameHistoryRecordPlaySource, toJSON(baseGame.currentPlay.source), PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+    return plainToInstance(GameHistoryRecordPlaySource, toJSON(baseGame.currentPlay.source), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }
 
   private validateGameHistoryRecordToInsertPlayData(play: GameHistoryRecordPlay, game: Game): void {

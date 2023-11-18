@@ -14,7 +14,7 @@ import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-recor
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
@@ -284,7 +284,7 @@ function createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlaySource: Part
     name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(GAME_SOURCES),
     players: gameHistoryRecordPlaySource.players ?? [createFakePlayer()],
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeGameHistoryRecordPlayVote(gameHistoryRecordPlayVote: Partial<GameHistoryRecordPlayVote> = {}, override: object = {}): GameHistoryRecordPlayVote {
@@ -292,7 +292,7 @@ function createFakeGameHistoryRecordPlayVote(gameHistoryRecordPlayVote: Partial<
     source: gameHistoryRecordPlayVote.source ?? createFakePlayer(),
     target: gameHistoryRecordPlayVote.target ?? createFakePlayer(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Partial<GameHistoryRecordPlayTarget> = {}, override: object = {}): GameHistoryRecordPlayTarget {
@@ -301,7 +301,7 @@ function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Part
     isInfected: gameHistoryRecordPlayTarget.isInfected ?? undefined,
     drankPotion: gameHistoryRecordPlayTarget.drankPotion ?? undefined,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlayVoting: Partial<GameHistoryRecordPlayVoting> = {}, override: object = {}): GameHistoryRecordPlayVoting {
@@ -309,7 +309,7 @@ function createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlayVoting: Part
     result: gameHistoryRecordPlayVoting.result ?? faker.helpers.arrayElement(Object.values(GameHistoryRecordVotingResults)),
     nominatedPlayers: gameHistoryRecordPlayVoting.nominatedPlayers ?? undefined,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
@@ -323,7 +323,7 @@ function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHist
     chosenSide: gameHistoryRecordPlay.chosenSide ?? undefined,
     chosenCard: gameHistoryRecordPlay.chosenCard ?? undefined,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecord> = {}, override: object = {}): GameHistoryRecord {
@@ -338,7 +338,7 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
     deadPlayers: gameHistoryRecord.deadPlayers ?? undefined,
     createdAt: gameHistoryRecord.createdAt ?? faker.date.recent(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function bulkCreateFakeGameHistoryRecords(length: number, gameHistoryRecords: Partial<GameHistoryRecord>[] = [], overrides: object[] = []): GameHistoryRecord[] {

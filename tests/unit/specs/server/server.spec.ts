@@ -78,9 +78,10 @@ describe("Server", () => {
     });
 
     it("should call listen with the default port when no port is provided.", async() => {
+      process.env.PORT = undefined;
       app = await bootstrap();
-      
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "127.0.0.1");
+
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledWith(8080, "127.0.0.1");
     });
 
     it("should call listen with specific host when host is in process.env.HOST.", async() => {
@@ -91,6 +92,7 @@ describe("Server", () => {
     });
 
     it("should call listen with the default host when no host is provided.", async() => {
+      process.env.HOST = undefined;
       app = await bootstrap();
 
       expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "127.0.0.1");

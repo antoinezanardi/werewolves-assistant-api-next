@@ -6,7 +6,7 @@ import { PlayerSide } from "@/modules/game/schemas/player/player-side/player-sid
 import { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
@@ -17,7 +17,7 @@ function createFakePlayerSide(playerSide: Partial<PlayerSide> = {}, override: ob
     current: playerSide.current ?? faker.helpers.arrayElement(Object.values(RoleSides)),
     original: playerSide.original ?? faker.helpers.arrayElement(Object.values(RoleSides)),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakePlayerRole(playerRole: Partial<PlayerRole> = {}, override: object = {}): PlayerRole {
@@ -26,7 +26,7 @@ function createFakePlayerRole(playerRole: Partial<PlayerRole> = {}, override: ob
     original: playerRole.original ?? faker.helpers.arrayElement(Object.values(RoleNames)),
     isRevealed: playerRole.isRevealed ?? faker.datatype.boolean(),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakePlayer(player: Partial<Player> = {}, override: object = {}): Player {
@@ -40,7 +40,7 @@ function createFakePlayer(player: Partial<Player> = {}, override: object = {}): 
     position: player.position ?? faker.number.int({ min: 0 }),
     death: player.death ? createFakePlayerDeath(player.death) : undefined,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function bulkCreateFakePlayers(length: number, players: Partial<Player>[] = [], overrides: object[] = []): Player[] {

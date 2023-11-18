@@ -4,7 +4,7 @@ import { plainToInstance } from "class-transformer";
 import { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
@@ -16,7 +16,7 @@ function createFakeGameAdditionalCard(gameAdditionalCard: Partial<GameAdditional
     isUsed: gameAdditionalCard.isUsed ?? faker.datatype.boolean(),
     recipient: gameAdditionalCard.recipient ?? faker.helpers.arrayElement(Object.values([RoleNames.THIEF])),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function bulkCreateFakeGameAdditionalCards(length: number, gameAdditionalCards: Partial<GameAdditionalCard>[] = [], overrides: object[] = []): GameAdditionalCard[] {
