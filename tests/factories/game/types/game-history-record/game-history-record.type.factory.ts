@@ -8,7 +8,6 @@ import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-rec
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 import { createFakeGameHistoryRecordPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 
 function createFakeGameHistoryRecordToInsert(gameHistoryRecordToInsert: Partial<GameHistoryRecordToInsert> = {}, override: object = {}): GameHistoryRecordToInsert {
@@ -24,15 +23,4 @@ function createFakeGameHistoryRecordToInsert(gameHistoryRecordToInsert: Partial<
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function bulkCreateFakeGameHistoryRecordsToInsert(
-  length: number,
-  gameHistoryRecordToInserts: Partial<GameHistoryRecordToInsert>[] = [],
-  overrides: object[] = [],
-): GameHistoryRecordToInsert[] {
-  return bulkCreate(length, createFakeGameHistoryRecordToInsert, gameHistoryRecordToInserts, overrides);
-}
-
-export {
-  createFakeGameHistoryRecordToInsert,
-  bulkCreateFakeGameHistoryRecordsToInsert,
-};
+export { createFakeGameHistoryRecordToInsert };

@@ -22,11 +22,11 @@ describe("Player Attribute Service", () => {
     
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PlayerAttributeService,
         {
           provide: PlayerKillerService,
           useValue: mocks.playerKillerService,
         },
+        PlayerAttributeService,
       ],
     }).compile();
 

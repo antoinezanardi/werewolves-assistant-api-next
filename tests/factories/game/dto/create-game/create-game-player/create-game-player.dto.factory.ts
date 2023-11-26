@@ -17,8 +17,8 @@ function createFakeCreateGamePlayerDto(createGamePlayerDto: Partial<CreateGamePl
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function bulkCreateFakeCreateGamePlayerDto(length: number, createGamePlayersDto: Partial<CreateGamePlayerDto>[] = [], overrides: object[] = []): CreateGamePlayerDto[] {
-  return bulkCreate(length, createFakeCreateGamePlayerDto, createGamePlayersDto, overrides);
+function bulkCreateFakeCreateGamePlayerDto(length: number): CreateGamePlayerDto[] {
+  return bulkCreate(length, createFakeCreateGamePlayerDto);
 }
 
 export { createFakeCreateGamePlayerDto, bulkCreateFakeCreateGamePlayerDto };

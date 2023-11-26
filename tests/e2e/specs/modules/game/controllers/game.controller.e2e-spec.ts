@@ -33,7 +33,7 @@ import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
 import { createFakeCreateThiefGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
-import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { bulkCreateFakeCreateGamePlayerDto, createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
@@ -114,67 +114,85 @@ describe("Game Controller", () => {
   });
 
   describe("GET /games/random-composition", () => {
-    it.each<{ query: Record<string, unknown>; test: string; errorMessage: string }>([
+    it.each<{
+      test: string;
+      query: Record<string, unknown>;
+      errorMessage: string;
+    }>([
       {
+        test: "should not allow getting random game composition when there is not enough players.",
         query: { players: undefined },
-        test: "there is not enough players",
         errorMessage: "players must contain at least 4 elements",
       },
       {
+        test: "should not allow getting random game composition when there is not enough players.",
         query: { players: [{ name: "Antoine" }] },
-        test: "there is not enough players",
         errorMessage: "players must contain at least 4 elements",
       },
       {
+        test: "should not allow getting random game composition when the maximum of players is reached.",
         query: { players: bulkCreateFakeCreateGamePlayerDto(45) },
-        test: "the maximum of players is reached",
         errorMessage: "players must contain no more than 40 elements",
       },
       {
-        query: { players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: "" }]) },
-        test: "one of the player name is too short",
+        test: "should not allow getting random game composition when one of the player name is too short.",
+        query: {
+          players: [
+            createFakeCreateGamePlayerDto({ name: "" }),
+            createFakeCreateGamePlayerDto({ name: "JB" }),
+            createFakeCreateGamePlayerDto({ name: "Olivia" }),
+            createFakeCreateGamePlayerDto({ name: "Thomas" }),
+          ],
+        },
         errorMessage: "players.0.name must be longer than or equal to 1 characters",
       },
       {
-        query: { players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: faker.string.sample(31) }]) },
-        test: "one of the player name is too long",
+        test: "should not allow getting random game composition when one of the player name is too long.",
+        query: {
+          players: [
+            createFakeCreateGamePlayerDto({ name: faker.string.sample(31) }),
+            createFakeCreateGamePlayerDto({ name: "JB" }),
+            createFakeCreateGamePlayerDto({ name: "Olivia" }),
+            createFakeCreateGamePlayerDto({ name: "Thomas" }),
+          ],
+        },
         errorMessage: "players.0.name must be shorter than or equal to 30 characters",
       },
       {
+        test: "should not allow getting random game composition when two players have the same name.",
         query: {
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { name: "John" },
-            { name: "John" },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ name: "JB" }),
+            createFakeCreateGamePlayerDto({ name: "JB" }),
+          ],
         },
-        test: "two players have the same name",
         errorMessage: "players.name must be unique",
       },
       {
+        test: "should not allow getting random game composition when werewolf is in excluded roles",
         query: {
           "players": bulkCreateFakeCreateGamePlayerDto(4),
           "excluded-roles": [RoleNames.WEREWOLF, RoleNames.SEER],
         },
-        test: "werewolf is in excluded roles",
         errorMessage: "excludedRoles should not contain villager, werewolf values",
       },
       {
+        test: "should not allow getting random game composition when villager is in excluded roles.",
         query: {
           players: bulkCreateFakeCreateGamePlayerDto(4),
           excludedRoles: [RoleNames.VILLAGER, RoleNames.SEER],
         },
-        test: "villager is in excluded roles",
         errorMessage: "excludedRoles should not contain villager, werewolf values",
       },
       {
+        test: "should not allow getting random game composition when there is twice the same excluded role.",
         query: {
           players: bulkCreateFakeCreateGamePlayerDto(4),
           excludedRoles: [RoleNames.SEER, RoleNames.SEER],
         },
-        test: "there is twice the same excluded role",
         errorMessage: "excluded roles must be unique",
       },
-    ])("should not allow getting random game composition when $test [#$#].", async({
+    ])("$test", async({
       query,
       errorMessage,
     }) => {
@@ -190,48 +208,48 @@ describe("Game Controller", () => {
 
     it("should get random composition when called.", async() => {
       const query: Partial<GetGameRandomCompositionDto> = {
-        players: bulkCreateFakeCreateGamePlayerDto(40, [
-          { name: "1" },
-          { name: "2" },
-          { name: "3" },
-          { name: "4" },
-          { name: "5" },
-          { name: "6" },
-          { name: "7" },
-          { name: "8" },
-          { name: "9" },
-          { name: "10" },
-          { name: "11" },
-          { name: "12" },
-          { name: "13" },
-          { name: "14" },
-          { name: "15" },
-          { name: "16" },
-          { name: "17" },
-          { name: "18" },
-          { name: "19" },
-          { name: "20" },
-          { name: "21" },
-          { name: "22" },
-          { name: "23" },
-          { name: "24" },
-          { name: "25" },
-          { name: "26" },
-          { name: "27" },
-          { name: "28" },
-          { name: "29" },
-          { name: "30" },
-          { name: "31" },
-          { name: "32" },
-          { name: "33" },
-          { name: "34" },
-          { name: "35" },
-          { name: "36" },
-          { name: "37" },
-          { name: "38" },
-          { name: "39" },
-          { name: "40" },
-        ]), arePowerfulVillagerRolesPrioritized: false,
+        players: [
+          createFakeCreateGamePlayerDto({ name: "1" }),
+          createFakeCreateGamePlayerDto({ name: "2" }),
+          createFakeCreateGamePlayerDto({ name: "3" }),
+          createFakeCreateGamePlayerDto({ name: "4" }),
+          createFakeCreateGamePlayerDto({ name: "5" }),
+          createFakeCreateGamePlayerDto({ name: "6" }),
+          createFakeCreateGamePlayerDto({ name: "7" }),
+          createFakeCreateGamePlayerDto({ name: "8" }),
+          createFakeCreateGamePlayerDto({ name: "9" }),
+          createFakeCreateGamePlayerDto({ name: "10" }),
+          createFakeCreateGamePlayerDto({ name: "11" }),
+          createFakeCreateGamePlayerDto({ name: "12" }),
+          createFakeCreateGamePlayerDto({ name: "13" }),
+          createFakeCreateGamePlayerDto({ name: "14" }),
+          createFakeCreateGamePlayerDto({ name: "15" }),
+          createFakeCreateGamePlayerDto({ name: "16" }),
+          createFakeCreateGamePlayerDto({ name: "17" }),
+          createFakeCreateGamePlayerDto({ name: "18" }),
+          createFakeCreateGamePlayerDto({ name: "19" }),
+          createFakeCreateGamePlayerDto({ name: "20" }),
+          createFakeCreateGamePlayerDto({ name: "21" }),
+          createFakeCreateGamePlayerDto({ name: "22" }),
+          createFakeCreateGamePlayerDto({ name: "23" }),
+          createFakeCreateGamePlayerDto({ name: "24" }),
+          createFakeCreateGamePlayerDto({ name: "25" }),
+          createFakeCreateGamePlayerDto({ name: "26" }),
+          createFakeCreateGamePlayerDto({ name: "27" }),
+          createFakeCreateGamePlayerDto({ name: "28" }),
+          createFakeCreateGamePlayerDto({ name: "29" }),
+          createFakeCreateGamePlayerDto({ name: "30" }),
+          createFakeCreateGamePlayerDto({ name: "31" }),
+          createFakeCreateGamePlayerDto({ name: "32" }),
+          createFakeCreateGamePlayerDto({ name: "33" }),
+          createFakeCreateGamePlayerDto({ name: "34" }),
+          createFakeCreateGamePlayerDto({ name: "35" }),
+          createFakeCreateGamePlayerDto({ name: "36" }),
+          createFakeCreateGamePlayerDto({ name: "37" }),
+          createFakeCreateGamePlayerDto({ name: "38" }),
+          createFakeCreateGamePlayerDto({ name: "39" }),
+          createFakeCreateGamePlayerDto({ name: "40" }),
+        ], arePowerfulVillagerRolesPrioritized: false,
       };
       const response = await app.inject({
         method: "GET",
@@ -287,7 +305,10 @@ describe("Game Controller", () => {
   });
 
   describe("POST /games", () => {
-    it.each<{ payload: CreateGameDto; test: string; errorMessage: string }>([
+    it.each<{
+      test: string;
+      payload: CreateGameDto;
+      errorMessage: string; }>([
       {
         payload: createFakeCreateGameDto({}, { players: undefined }),
         test: "no players are provided",
@@ -304,108 +325,129 @@ describe("Game Controller", () => {
         errorMessage: "players must contain no more than 40 elements",
       },
       {
-        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: "" }]) }),
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ name: "" }),
+            createFakeCreateGamePlayerDto({ name: "JB" }),
+            createFakeCreateGamePlayerDto({ name: "Olivia" }),
+            createFakeCreateGamePlayerDto({ name: "Thomas" }),
+          ],
+        }),
         test: "one of the player name is too short",
         errorMessage: "players.0.name must be longer than or equal to 1 characters",
       },
       {
-        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ name: faker.string.sample(31) }]) }),
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ name: faker.string.sample(31) }),
+            createFakeCreateGamePlayerDto({ name: "JB" }),
+            createFakeCreateGamePlayerDto({ name: "Olivia" }),
+            createFakeCreateGamePlayerDto({ name: "Thomas" }),
+          ],
+        }),
         test: "one of the player name is too long",
         errorMessage: "players.0.name must be shorter than or equal to 30 characters",
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { name: "John", role: { name: RoleNames.THREE_BROTHERS } },
-            { name: "John" },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ name: "John", role: { name: RoleNames.THREE_BROTHERS } }),
+            createFakeCreateGamePlayerDto({ name: "John" }),
+          ],
         }),
         test: "two players have the same name",
         errorMessage: "players.name must be unique",
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.THREE_BROTHERS } },
-            { role: { name: RoleNames.VILLAGER_VILLAGER } },
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.SEER } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THREE_BROTHERS } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER_VILLAGER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
+          ],
         }),
         test: "there is only one brother in the same game",
         errorMessage: "players.role minimum occurrences in game must be reached. Please check `minInGame` property of roles",
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.WITCH } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+          ],
         }),
         test: "there is two witches in the same game",
         errorMessage: "players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles",
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.WHITE_WEREWOLF } },
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.WEREWOLF } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WHITE_WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+          ],
         }),
         test: "there is no villager in game's composition",
         errorMessage: "one of the players.role must have at least one role from `villagers` side",
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.VILLAGER } },
-            { role: { name: RoleNames.PIED_PIPER } },
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.SEER } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
+          ],
         }),
         test: "there is no werewolf in game's composition",
         errorMessage: "one of the players.role must have at least one role from `werewolves` side",
       },
       {
-        payload: createFakeCreateGameDto({ players: bulkCreateFakeCreateGamePlayerDto(4, [{ position: -1 }]) }),
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, position: -1 }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
+          ],
+        }),
         test: "one of the player position is lower than 0",
         errorMessage: "players.0.position must not be less than 0",
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.VILLAGER }, position: 0 },
-            { role: { name: RoleNames.PIED_PIPER }, position: 1 },
-            { role: { name: RoleNames.WITCH }, position: 2 },
-            { role: { name: RoleNames.SEER }, position: 666 },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, position: 0 }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER }, position: 1 }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, position: 2 }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER }, position: 666 }),
+          ],
         }),
         test: "one of the player position is not consistent faced to others",
         errorMessage: "players.position must be all set or all undefined. Please check that every player has unique position, from 0 to players.length - 1",
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.PIED_PIPER } },
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.THIEF } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
+          ],
         }),
         test: "thief is in the game but additional cards are not set",
         errorMessage: "additionalCards must be set if there is a player with role `thief`",
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.PIED_PIPER } },
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.VILLAGER } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+          ],
           additionalCards: [
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
@@ -416,12 +458,12 @@ describe("Game Controller", () => {
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.PIED_PIPER } },
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.THIEF } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
+          ],
           additionalCards: [
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
@@ -434,12 +476,12 @@ describe("Game Controller", () => {
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.PIED_PIPER } },
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.THIEF } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
+          ],
           additionalCards: [
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
@@ -451,12 +493,12 @@ describe("Game Controller", () => {
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.PIED_PIPER } },
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.THIEF } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
+          ],
           additionalCards: [
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.THIEF, recipient: RoleNames.THIEF }),
@@ -467,12 +509,12 @@ describe("Game Controller", () => {
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.PIED_PIPER } },
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.THIEF } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
+          ],
           additionalCards: [
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.TWO_SISTERS, recipient: RoleNames.THIEF }),
@@ -483,12 +525,12 @@ describe("Game Controller", () => {
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.PIED_PIPER } },
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.THIEF } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
+          ],
           additionalCards: [
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.DOG_WOLF, recipient: RoleNames.THIEF }),
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.DOG_WOLF, recipient: RoleNames.THIEF }),
@@ -499,12 +541,12 @@ describe("Game Controller", () => {
       },
       {
         payload: createFakeCreateGameDto({
-          players: bulkCreateFakeCreateGamePlayerDto(4, [
-            { role: { name: RoleNames.WEREWOLF } },
-            { role: { name: RoleNames.PIED_PIPER } },
-            { role: { name: RoleNames.WITCH } },
-            { role: { name: RoleNames.THIEF } },
-          ]),
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
+          ],
           additionalCards: [
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WITCH, recipient: RoleNames.THIEF }),
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
@@ -529,14 +571,14 @@ describe("Game Controller", () => {
 
     it(`should create game when called.`, async() => {
       const payload = createFakeCreateGameDto({
-        players: bulkCreateFakeCreateGamePlayerDto(6, [
-          { role: { name: RoleNames.VILLAGER }, name: "Antoine" },
-          { role: { name: RoleNames.WEREWOLF }, name: "Mathis" },
-          { role: { name: RoleNames.VILLAGER_VILLAGER }, name: "Virgil" },
-          { role: { name: RoleNames.WHITE_WEREWOLF }, name: "JB" },
-          { role: { name: RoleNames.CUPID }, name: "Doudou" },
-          { role: { name: RoleNames.SEER }, name: "Juju" },
-        ]),
+        players: [
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, name: "Antoine" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, name: "Mathis" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER_VILLAGER }, name: "Virgil" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.WHITE_WEREWOLF }, name: "JB" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.CUPID }, name: "Doudou" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER }, name: "Juju" }),
+        ],
       }, { options: undefined });
       const response = await app.inject({
         method: "POST",
@@ -627,14 +669,14 @@ describe("Game Controller", () => {
     
     it(`should create game with additional cards when thief is in the game.`, async() => {
       const payload = createFakeCreateGameDto({
-        players: bulkCreateFakeCreateGamePlayerDto(6, [
-          { role: { name: RoleNames.THIEF }, name: "Antoine" },
-          { role: { name: RoleNames.WEREWOLF }, name: "Mathis" },
-          { role: { name: RoleNames.VILLAGER_VILLAGER }, name: "Virgil" },
-          { role: { name: RoleNames.WHITE_WEREWOLF }, name: "JB" },
-          { role: { name: RoleNames.CUPID }, name: "Doudou" },
-          { role: { name: RoleNames.SEER }, name: "Juju" },
-        ]),
+        players: [
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF }, name: "Antoine" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, name: "Mathis" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER_VILLAGER }, name: "Virgil" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.WHITE_WEREWOLF }, name: "JB" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.CUPID }, name: "Doudou" }),
+          createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER }, name: "Juju" }),
+        ],
         additionalCards: [
           createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
           createFakeGameAdditionalCard({ roleName: RoleNames.VILE_FATHER_OF_WOLVES, recipient: RoleNames.THIEF }),
@@ -863,23 +905,27 @@ describe("Game Controller", () => {
       expect(response.json<BadRequestException>().message).toBe("Validation failed (Mongo ObjectId is expected)");
     });
 
-    it.each<{ payload: MakeGamePlayDto; test: string; errorMessage: string }>([
+    it.each<{
+      test: string;
+      payload: MakeGamePlayDto;
+      errorMessage: string;
+    }>([
       {
+        test: "should not allow game play when player ids in targets must be unique.",
         payload: createFakeMakeGamePlayDto({ targets: [{ playerId: createObjectIdFromString("507f1f77bcf86cd799439011") }, { playerId: createObjectIdFromString("507f1f77bcf86cd799439011") }] }),
-        test: "player ids in targets must be unique",
         errorMessage: "targets.playerId must be unique",
       },
       {
+        test: "should not allow game play when player ids in targets must be unique.",
         payload: createFakeMakeGamePlayDto({
           votes: [
             { sourceId: createObjectIdFromString("507f1f77bcf86cd799439011"), targetId: createObjectIdFromString("507f1f77bcf86cd799439012") },
             { sourceId: createObjectIdFromString("507f1f77bcf86cd799439011"), targetId: createObjectIdFromString("507f1f77bcf86cd799439012") },
           ],
         }),
-        test: "player ids in targets must be unique",
         errorMessage: "votes.sourceId must be unique",
       },
-    ])("should not allow game play when $test [#$#].", async({
+    ])("$test", async({
       payload,
       errorMessage,
     }) => {
@@ -1141,23 +1187,27 @@ describe("Game Controller", () => {
   });
 
   describe("GET /games/:id/history", () => {
-    it.each<{ query: Record<string, unknown>; test: string; errorMessage: string }>([
+    it.each<{
+      test: string;
+      query: Record<string, unknown>;
+      errorMessage: string;
+    }>([
       {
+        test: "should get bad request error on getting game history when limit is negative.",
         query: { limit: -1 },
-        test: "limit is negative",
         errorMessage: "limit must not be less than 0",
       },
       {
+        test: "should get bad request error on getting game history when limit is not a number.",
         query: { limit: "lol" },
-        test: "limit is not a number",
         errorMessage: "limit must be an integer number",
       },
       {
+        test: "should get bad request error on getting game history when order is not asc nor desc.",
         query: { order: "unknown" },
-        test: "order is not asc nor desc",
         errorMessage: "order must be one of the following values: asc, desc",
       },
-    ])("should get bad request error on getting game history when $test [#$#].", async({
+    ])("$test", async({
       query,
       errorMessage,
     }) => {

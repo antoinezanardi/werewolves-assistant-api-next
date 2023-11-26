@@ -4,18 +4,20 @@ import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { areGamePlaysEqual, canSurvivorsVote, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto, isPlayerInteractableWithInteractionType } from "@/modules/game/helpers/game-play/game-play.helper";
+import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
 
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
-import { bulkCreateFakeGameAdditionalCards } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
 import { createFakeInteractablePlayer } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/interactable-player.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
@@ -23,10 +25,8 @@ import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVot
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeHunterAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-
-jest.mock("@/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game Play Helper", () => {
   describe("getVotesWithRelationsFromMakeGamePlayDto", () => {
@@ -38,7 +38,13 @@ describe("Game Play Helper", () => {
     });
 
     it("should throw error when votes contains one unknown source.", () => {
-      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
+      const players = [
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+      ];
+      const game = createFakeGame({ players });
       const fakePlayerId = createFakeObjectId();
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
@@ -46,13 +52,19 @@ describe("Game Play Helper", () => {
           { sourceId: fakePlayerId, targetId: game.players[0]._id },
         ],
       });
+      const expectedException = new ResourceNotFoundException(ApiResources.PLAYERS, fakePlayerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
 
-      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(ApiResources.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.source` is not in the game players");
+      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(expectedException);
     });
 
     it("should throw error when votes contains one unknown target.", () => {
-      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
+      const players = [
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+      ];
+      const game = createFakeGame({ players });
       const fakePlayerId = createFakeObjectId();
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
@@ -60,13 +72,19 @@ describe("Game Play Helper", () => {
           { sourceId: game.players[1]._id, targetId: fakePlayerId },
         ],
       });
+      const expectedException = new ResourceNotFoundException(ApiResources.PLAYERS, fakePlayerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
 
-      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(ApiResources.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `votes.target` is not in the game players");
+      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(expectedException);
     });
 
     it("should fill votes with game players when called.", () => {
-      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
+      const players = [
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+      ];
+      const game = createFakeGame({ players });
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
           { sourceId: game.players[0]._id, targetId: game.players[1]._id },
@@ -92,7 +110,13 @@ describe("Game Play Helper", () => {
     });
 
     it("should throw error when targets contains one unknown player.", () => {
-      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
+      const players = [
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+      ];
+      const game = createFakeGame({ players });
       const fakePlayerId = createFakeObjectId();
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         targets: [
@@ -101,13 +125,19 @@ describe("Game Play Helper", () => {
           { playerId: fakePlayerId },
         ],
       });
+      const expectedException = new ResourceNotFoundException(ApiResources.PLAYERS, fakePlayerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
 
-      expect(() => getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(ApiResources.PLAYERS, fakePlayerId.toString(), "Game Play - Player in `targets.player` is not in the game players");
+      expect(() => getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(expectedException);
     });
 
     it("should fill targets with game players when called.", () => {
-      const game = createFakeGame({ players: bulkCreateFakePlayers(4) });
+      const players = [
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+      ];
+      const game = createFakeGame({ players });
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         targets: [
           { playerId: game.players[0]._id, isInfected: true },
@@ -134,25 +164,49 @@ describe("Game Play Helper", () => {
     });
 
     it("should throw error when chosen card is unknown from game cards.", () => {
-      const game = createFakeGame({ additionalCards: bulkCreateFakeGameAdditionalCards(4) });
+      const additionalCards = [
+        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard(),
+      ];
+      const game = createFakeGame({ additionalCards });
       const fakeCardId = createFakeObjectId();
       const makeGamePlayDto = createFakeMakeGamePlayDto({ chosenCardId: fakeCardId });
+      const expectedException = new ResourceNotFoundException(ApiResources.GAME_ADDITIONAL_CARDS, fakeCardId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
 
-      expect(() => getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(ResourceNotFoundException);
-      expect(ResourceNotFoundException).toHaveBeenCalledExactlyOnceWith(ApiResources.GAME_ADDITIONAL_CARDS, fakeCardId.toString(), "Game Play - Chosen card is not in the game additional cards");
+      expect(() => getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(expectedException);
     });
 
     it("should return chosen card when called.", () => {
-      const game = createFakeGame({ additionalCards: bulkCreateFakeGameAdditionalCards(4) });
+      const additionalCards = [
+        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard(),
+      ];
+      const game = createFakeGame({ additionalCards });
       const makeGamePlayDto = createFakeMakeGamePlayDto({ chosenCardId: game.additionalCards?.[3]._id });
 
-      expect(getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toStrictEqual(game.additionalCards?.[3]);
+      expect(getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toStrictEqual<GameAdditionalCard>(additionalCards[3]);
     });
   });
 
   describe("createMakeGamePlayDtoWithRelations", () => {
     it("should return same dto with relations when called.", () => {
-      const game = createFakeGame({ players: bulkCreateFakePlayers(4), additionalCards: bulkCreateFakeGameAdditionalCards(4) });
+      const players = [
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+      ];
+      const additionalCards = [
+        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard(),
+      ];
+      const game = createFakeGame({ players, additionalCards });
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         votes: [
           { sourceId: game.players[0]._id, targetId: game.players[1]._id },
@@ -201,49 +255,59 @@ describe("Game Play Helper", () => {
   });
 
   describe("areGamePlaysEqual", () => {
-    it.each<{ playA: GamePlay; playB: GamePlay; result: boolean; test: string }>([
+    it.each<{
+      test: string;
+      playA: GamePlay;
+      playB: GamePlay;
+      expected: boolean;
+    }>([
       {
+        test: "should return true when both plays are equal.",
         playA: createFakeGamePlaySeerLooks(),
         playB: createFakeGamePlaySeerLooks(),
-        result: true,
-        test: "both plays are equal",
+        expected: true,
       },
       {
+        test: "should return false when both sources are not equal.",
         playA: createFakeGamePlayWerewolvesEat(),
         playB: createFakeGamePlayWhiteWerewolfEats(),
-        result: false,
-        test: "both sources are not equal",
+        expected: false,
       },
       {
+        test: "should return false when both actions are not equal.",
         playA: createFakeGamePlaySurvivorsVote(),
         playB: createFakeGamePlaySurvivorsElectSheriff(),
-        result: false,
-        test: "both actions are not equal",
+        expected: false,
       },
       {
+        test: "should return false when both causes are not equal.",
         playA: createFakeGamePlaySurvivorsVote(),
         playB: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
-        result: false,
-        test: "both causes are not equal",
+        expected: false,
       },
-    ])("should return $result when $test [#$#].", ({ playA, playB, result }) => {
-      expect(areGamePlaysEqual(playA, playB)).toBe(result);
+    ])("$test", ({ playA, playB, expected }) => {
+      expect(areGamePlaysEqual(playA, playB)).toBe(expected);
     });
   });
 
   describe("canSurvivorsVote", () => {
-    it.each<{ game: Game; expectedResult: boolean; test: string }>([
+    it.each<{
+      test: string;
+      game: Game;
+      expected: boolean;
+    }>([
       {
+        test: "should return false when all players are dead.",
         game: createFakeGame({
           players: [
             createFakeHunterAlivePlayer({ isAlive: false }),
             createFakeWerewolfAlivePlayer({ isAlive: false }),
           ],
         }),
-        expectedResult: false,
-        test: "all players are dead",
+        expected: false,
       },
       {
+        test: "should return false when all survivors has the cant-vote attribute.",
         game: createFakeGame({
           players: [
             createFakeHunterAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
@@ -251,10 +315,10 @@ describe("Game Play Helper", () => {
             createFakeWerewolfAlivePlayer({ isAlive: false }),
           ],
         }),
-        expectedResult: false,
-        test: "all survivors has the cant-vote attribute",
+        expected: false,
       },
       {
+        test: "should return true when at least one survivor doesn't have the cant-vote attribute.",
         game: createFakeGame({
           players: [
             createFakeHunterAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
@@ -262,11 +326,10 @@ describe("Game Play Helper", () => {
             createFakeWerewolfAlivePlayer({ isAlive: false }),
           ],
         }),
-        expectedResult: true,
-        test: "at least one survivor doesn't have the cant-vote attribute",
+        expected: true,
       },
-    ])(`should return $expectedResult when $test [#$#].`, ({ game, expectedResult }) => {
-      expect(canSurvivorsVote(game)).toBe(expectedResult);
+    ])(`$test`, ({ game, expected }) => {
+      expect(canSurvivorsVote(game)).toBe(expected);
     });
   });
 

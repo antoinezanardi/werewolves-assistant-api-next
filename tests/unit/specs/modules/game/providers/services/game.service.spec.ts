@@ -38,6 +38,11 @@ jest.mock("@/shared/exception/types/resource-not-found-exception.type");
 
 describe("Game Service", () => {
   let mocks: {
+    gameService: {
+      handleGamePhaseCompletion: jest.SpyInstance;
+      updateGame: jest.SpyInstance;
+      setGameAsOver: jest.SpyInstance;
+    };
     gameRepository: {
       find: jest.SpyInstance;
       findOne: jest.SpyInstance;
@@ -76,6 +81,11 @@ describe("Game Service", () => {
 
   beforeEach(async() => {
     mocks = {
+      gameService: {
+        handleGamePhaseCompletion: jest.fn(),
+        updateGame: jest.fn(),
+        setGameAsOver: jest.fn(),
+      },
       gameRepository: {
         find: jest.fn(),
         findOne: jest.fn(),
@@ -164,13 +174,12 @@ describe("Game Service", () => {
   });
 
   describe("createGame", () => {
-    let localMocks: { gameService: { updateGame: jest.SpyInstance } };
     const createdGame = createFakeGameWithCurrentPlay();
     
     beforeEach(() => {
       mocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(createdGame);
       mocks.gameRepository.create.mockResolvedValue(createdGame);
-      localMocks = { gameService: { updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockResolvedValue(createdGame) } };
+      mocks.gameService.updateGame = jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockResolvedValue(createdGame);
     });
 
     it("should throw error when can't generate upcoming plays.", async() => {
@@ -207,16 +216,15 @@ describe("Game Service", () => {
       mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
       await services.game.createGame(toCreateGame);
 
-      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, createdGame);
+      expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, createdGame);
     });
   });
 
   describe("cancelGame", () => {
-    let localMocks: { gameService: { updateGame: jest.SpyInstance } };
     const existingPlayingGame = createFakeGame({ status: GameStatuses.PLAYING });
 
     beforeEach(() => {
-      localMocks = { gameService: { updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockReturnValue(existingPlayingGame) } };
+      mocks.gameService.updateGame = jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockResolvedValue(existingPlayingGame);
     });
 
     it("should throw error when game is not playing.", async() => {
@@ -229,18 +237,11 @@ describe("Game Service", () => {
     it("should call update method when game can be canceled.", async() => {
       await services.game.cancelGame(existingPlayingGame);
 
-      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(existingPlayingGame._id, { status: GameStatuses.CANCELED });
+      expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(existingPlayingGame._id, { status: GameStatuses.CANCELED });
     });
   });
 
   describe("makeGamePlay", () => {
-    let localMocks: {
-      gameService: {
-        handleGamePhaseCompletion: jest.SpyInstance ;
-        updateGame: jest.SpyInstance;
-        setGameAsOver: jest.SpyInstance;
-      };
-    };
     const players = [
       createFakeWerewolfAlivePlayer(),
       createFakeWerewolfAlivePlayer(),
@@ -257,13 +258,9 @@ describe("Game Service", () => {
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
       mocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(game);
       mocks.gameVictoryService.isGameOver.mockReturnValue(false);
-      localMocks = {
-        gameService: {
-          handleGamePhaseCompletion: jest.spyOn(services.game as unknown as { handleGamePhaseCompletion }, "handleGamePhaseCompletion").mockResolvedValue(game),
-          updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockReturnValue(game),
-          setGameAsOver: jest.spyOn(services.game as unknown as { setGameAsOver }, "setGameAsOver").mockReturnValue(game),
-        },
-      };
+      mocks.gameService.handleGamePhaseCompletion = jest.spyOn(services.game as unknown as { handleGamePhaseCompletion }, "handleGamePhaseCompletion").mockResolvedValue(game);
+      mocks.gameService.updateGame = jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockReturnValue(game);
+      mocks.gameService.setGameAsOver = jest.spyOn(services.game as unknown as { setGameAsOver }, "setGameAsOver").mockReturnValue(game);
     });
 
     it("should throw an error when game is not playing.", async() => {
@@ -312,7 +309,7 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
-      expect(localMocks.gameService.handleGamePhaseCompletion).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gameService.handleGamePhaseCompletion).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call generate current game history record method when called.", async() => {
@@ -337,7 +334,7 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
-      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(game._id, game);
+      expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(game._id, game);
     });
 
     it("should call set game over method when the game is done.", async() => {
@@ -350,7 +347,7 @@ describe("Game Service", () => {
       mocks.gamePlayService.refreshUpcomingPlays.mockReturnValue(game.upcomingPlays);
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
-      expect(localMocks.gameService.setGameAsOver).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gameService.setGameAsOver).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should augment current game play when the game is not over.", async() => {
@@ -481,36 +478,25 @@ describe("Game Service", () => {
   });
 
   describe("updateGameAsOver", () => {
-    let localMocks: {
-      gameService: {
-        setGameAsOver: jest.SpyInstance;
-        updateGame: jest.SpyInstance;
-      };
-    };
-    
     beforeEach(() => {
-      localMocks = {
-        gameService: {
-          setGameAsOver: jest.spyOn(services.game as unknown as { setGameAsOver }, "setGameAsOver").mockImplementation(),
-          updateGame: jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockImplementation(),
-        },
-      };
+      mocks.gameService.setGameAsOver = jest.spyOn(services.game as unknown as { setGameAsOver }, "setGameAsOver").mockImplementation();
+      mocks.gameService.updateGame = jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockImplementation();
     });
 
     it("should set game as over when called.", async() => {
       const game = createFakeGame();
-      localMocks.gameService.setGameAsOver.mockReturnValue(game);
+      mocks.gameService.setGameAsOver.mockReturnValue(game);
       await services.game["updateGameAsOver"](game);
 
-      expect(localMocks.gameService.setGameAsOver).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gameService.setGameAsOver).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call update game when called.", async() => {
       const game = createFakeGame();
-      localMocks.gameService.setGameAsOver.mockReturnValue(game);
+      mocks.gameService.setGameAsOver.mockReturnValue(game);
       await services.game["updateGameAsOver"](game);
 
-      expect(localMocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(game._id, game);
+      expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(game._id, game);
     });
   });
 });
