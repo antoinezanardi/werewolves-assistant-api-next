@@ -9,7 +9,6 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 
 function createFakePlayerSide(playerSide: Partial<PlayerSide> = {}, override: object = {}): PlayerSide {
@@ -43,13 +42,8 @@ function createFakePlayer(player: Partial<Player> = {}, override: object = {}): 
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function bulkCreateFakePlayers(length: number, players: Partial<Player>[] = [], overrides: object[] = []): Player[] {
-  return bulkCreate(length, createFakePlayer, players, overrides);
-}
-
 export {
   createFakePlayerSide,
   createFakePlayerRole,
   createFakePlayer,
-  bulkCreateFakePlayers,
 };

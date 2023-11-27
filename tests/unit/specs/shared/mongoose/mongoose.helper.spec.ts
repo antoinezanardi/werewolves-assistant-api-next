@@ -3,12 +3,23 @@ import { getMongooseSortValueFromApiSortOrder } from "@/shared/mongoose/helpers/
 
 describe("Mongoose Helper", () => {
   describe("getMongooseSortValueFromApiSortOrder", () => {
-    it("should return 1 when order is ASC.", () => {
-      expect(getMongooseSortValueFromApiSortOrder(ApiSortOrder.ASC)).toBe(1);
-    });
-
-    it("should return -1 when order is DESC.", () => {
-      expect(getMongooseSortValueFromApiSortOrder(ApiSortOrder.DESC)).toBe(-1);
+    it.each<{
+      test: string;
+      sortOrder: ApiSortOrder;
+      expected: number;
+    }>([
+      {
+        test: "should return 1 when order is ASC.",
+        sortOrder: ApiSortOrder.ASC,
+        expected: 1,
+      },
+      {
+        test: "should return -1 when order is DESC.",
+        sortOrder: ApiSortOrder.DESC,
+        expected: -1,
+      },
+    ])("$test", ({ sortOrder, expected }) => {
+      expect(getMongooseSortValueFromApiSortOrder(sortOrder)).toBe(expected);
     });
   });
 });

@@ -26,11 +26,9 @@ import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/h
 
 @Injectable()
 export class GamePlayMakerService {
-  private readonly gameSourcePlayMethods: Record<GamePlaySourceName, (play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay) => Game | Promise<Game>> = {
+  private readonly gameSourcePlayMethods: Partial<Record<GamePlaySourceName, (play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay) => Game | Promise<Game>>> = {
     [PlayerGroups.WEREWOLVES]: async(play, game) => this.werewolvesEat(play, game),
     [PlayerGroups.SURVIVORS]: async(play, game) => this.survivorsPlay(play, game),
-    [PlayerGroups.LOVERS]: (play, game) => game,
-    [PlayerGroups.CHARMED]: (play, game) => game,
     [PlayerAttributeNames.SHERIFF]: async(play, game) => this.sheriffPlays(play, game),
     [RoleNames.BIG_BAD_WOLF]: (play, game) => this.bigBadWolfEats(play, game),
     [RoleNames.WHITE_WEREWOLF]: (play, game) => this.whiteWerewolfEats(play, game),
@@ -46,9 +44,6 @@ export class GamePlayMakerService {
     [RoleNames.SCAPEGOAT]: (play, game) => this.scapegoatBansVoting(play, game),
     [RoleNames.THIEF]: (play, game) => this.thiefChoosesCard(play, game),
     [RoleNames.RAVEN]: (play, game) => this.ravenMarks(play, game),
-    [RoleNames.TWO_SISTERS]: (play, game) => game,
-    [RoleNames.THREE_BROTHERS]: (play, game) => game,
-    [RoleNames.STUTTERING_JUDGE]: (play, game) => game,
   };
 
   public constructor(
@@ -62,7 +57,7 @@ export class GamePlayMakerService {
     }
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     const gameSourcePlayMethod = this.gameSourcePlayMethods[clonedGame.currentPlay.source.name];
-    return gameSourcePlayMethod(play, clonedGame);
+    return gameSourcePlayMethod ? gameSourcePlayMethod(play, clonedGame) : clonedGame;
   }
 
   private async sheriffSettlesVotes({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {

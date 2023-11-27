@@ -4,7 +4,7 @@ import {
 } from "@/modules/game/dto/base/decorators/composition/composition-positions-consistency.decorator";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
+import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 describe("Composition Positions Consistency Decorator", () => {
   describe("doesCompositionHaveConsistentPositions", () => {
@@ -17,78 +17,78 @@ describe("Composition Positions Consistency Decorator", () => {
     });
 
     it("should return false when one of the players is not an object.", () => {
-      const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: RoleNames.TWO_SISTERS } },
-        { role: { name: RoleNames.TWO_SISTERS } },
-        { role: { name: RoleNames.WEREWOLF } },
-        { role: { name: RoleNames.VILLAGER } },
-      ]);
+      const players = [
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+      ];
 
       expect(doesCompositionHaveConsistentPositions([...players, "toto"])).toBe(false);
     });
 
     it("should return true when there is no position set in composition.", () => {
-      const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: RoleNames.VILLAGER } },
-        { role: { name: RoleNames.WITCH } },
-        { role: { name: RoleNames.SEER } },
-        { role: { name: RoleNames.WEREWOLF } },
-      ]);
+      const players = [
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+      ];
 
       expect(doesCompositionHaveConsistentPositions(players)).toBe(true);
     });
 
     it("should return false when there is one position set in composition but not the others.", () => {
-      const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: RoleNames.VILLAGER }, position: 0 },
-        { role: { name: RoleNames.WITCH } },
-        { role: { name: RoleNames.SEER } },
-        { role: { name: RoleNames.WEREWOLF } },
-      ]);
+      const players = [
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, position: 0 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+      ];
 
       expect(doesCompositionHaveConsistentPositions(players)).toBe(false);
     });
 
     it("should return false when there is twice the same position in composition.", () => {
-      const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: RoleNames.VILLAGER }, position: 0 },
-        { role: { name: RoleNames.WITCH }, position: 1 },
-        { role: { name: RoleNames.SEER }, position: 3 },
-        { role: { name: RoleNames.WEREWOLF }, position: 3 },
-      ]);
+      const players = [
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, position: 0 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, position: 1 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER }, position: 3 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, position: 3 }),
+      ];
 
       expect(doesCompositionHaveConsistentPositions(players)).toBe(false);
     });
 
     it("should return false when positions sequence starts at 1.", () => {
-      const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: RoleNames.VILLAGER }, position: 1 },
-        { role: { name: RoleNames.WITCH }, position: 2 },
-        { role: { name: RoleNames.SEER }, position: 3 },
-        { role: { name: RoleNames.WEREWOLF }, position: 4 },
-      ]);
+      const players = [
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, position: 1 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, position: 2 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER }, position: 3 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, position: 4 }),
+      ];
 
       expect(doesCompositionHaveConsistentPositions(players)).toBe(false);
     });
 
     it("should return false when there is one too high position in composition.", () => {
-      const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: RoleNames.VILLAGER }, position: 0 },
-        { role: { name: RoleNames.WITCH }, position: 1 },
-        { role: { name: RoleNames.SEER }, position: 2 },
-        { role: { name: RoleNames.WEREWOLF }, position: 666 },
-      ]);
+      const players = [
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, position: 0 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, position: 1 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER }, position: 2 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, position: 666 }),
+      ];
 
       expect(doesCompositionHaveConsistentPositions(players)).toBe(false);
     });
 
     it("should return true when all positions are sequence in composition.", () => {
-      const players = bulkCreateFakeCreateGamePlayerDto(4, [
-        { role: { name: RoleNames.VILLAGER }, position: 0 },
-        { role: { name: RoleNames.WITCH }, position: 1 },
-        { role: { name: RoleNames.SEER }, position: 2 },
-        { role: { name: RoleNames.WEREWOLF }, position: 3 },
-      ]);
+      const players = [
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, position: 0 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, position: 1 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER }, position: 2 }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, position: 3 }),
+      ];
 
       expect(doesCompositionHaveConsistentPositions(players)).toBe(true);
     });

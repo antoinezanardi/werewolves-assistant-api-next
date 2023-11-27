@@ -2,20 +2,38 @@ import { doesArrayRespectBounds } from "@/shared/validation/helpers/validation.h
 
 describe("Validation Helper", () => {
   describe("doesArrayRespectBounds", () => {
-    it("should return true when no bounds are provided.", () => {
-      expect(doesArrayRespectBounds([], {})).toBe(true);
-    });
-
-    it("should return false when min bound is not respected.", () => {
-      expect(doesArrayRespectBounds([], { minItems: 1 })).toBe(false);
-    });
-
-    it("should return false when max bound is not respected.", () => {
-      expect(doesArrayRespectBounds([1, 2], { maxItems: 1 })).toBe(false);
-    });
-
-    it("should return true when min and max bounds are respected.", () => {
-      expect(doesArrayRespectBounds([1, 2], { minItems: 1, maxItems: 2 })).toBe(true);
+    it.each<{
+      test: string;
+      array: number[];
+      bounds: { minItems?: number; maxItems?: number };
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when no bounds are provided.",
+        array: [],
+        bounds: {},
+        expected: true,
+      },
+      {
+        test: "should return false when min bound is not respected.",
+        array: [],
+        bounds: { minItems: 1 },
+        expected: false,
+      },
+      {
+        test: "should return false when max bound is not respected.",
+        array: [1, 2],
+        bounds: { maxItems: 1 },
+        expected: false,
+      },
+      {
+        test: "should return false when min and max bounds are respected.",
+        array: [1, 2],
+        bounds: { minItems: 1, maxItems: 2 },
+        expected: true,
+      },
+    ])("$test", ({ array, bounds, expected }) => {
+      expect(doesArrayRespectBounds(array, bounds)).toBe(expected);
     });
   });
 });

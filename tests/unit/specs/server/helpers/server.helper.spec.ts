@@ -12,6 +12,7 @@ describe("Server Helper", () => {
 
     it("should call qs parse method with specific options when called.", () => {
       queryStringParser("test");
+
       expect(mocks.qs.parse).toHaveBeenCalledExactlyOnceWith("test", {
         arrayLimit: 100,
         parameterLimit: 3000,

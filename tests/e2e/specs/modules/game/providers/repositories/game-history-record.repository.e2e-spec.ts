@@ -22,7 +22,7 @@ import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordStutteringJudgeChooseSignPlay, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
@@ -108,48 +108,52 @@ describe("Game History Record Repository", () => {
   });
 
   describe("create", () => {
-    it.each<{ toInsert: GameHistoryRecordToInsert; errorMessage: string; test: string }>([
+    it.each<{
+      test: string;
+      toInsert: GameHistoryRecordToInsert;
+      errorMessage: string;
+    }>([
       {
+        test: "should not create history record when turn is lower than 1.",
         toInsert: createFakeGameHistoryRecord({ turn: 0 }),
         errorMessage: "GameHistoryRecord validation failed: turn: Path `turn` (0) is less than minimum allowed value (1).",
-        test: "turn is lower than 1",
       },
       {
+        test: "should not create history record when tick is lower than 1.",
         toInsert: createFakeGameHistoryRecord({ tick: -1 }),
         errorMessage: "GameHistoryRecord validation failed: tick: Path `tick` (-1) is less than minimum allowed value (1).",
-        test: "tick is lower than 1",
       },
       {
+        test: "should not create history record when phase is not in enum.",
         toInsert: createFakeGameHistoryRecord({ phase: "Noon" as GamePhases }),
         errorMessage: "GameHistoryRecord validation failed: phase: `Noon` is not a valid enum value for path `phase`.",
-        test: "phase is not in enum",
       },
       {
+        test: "should not create history record when players in play's source is empty.",
         toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ source: { name: PlayerAttributeNames.SHERIFF, players: [] } }) }),
         errorMessage: "GameHistoryRecord validation failed: play.source.players: Path `play.source.players` length is less than minimum allowed value (1).",
-        test: "players in play's source is empty",
       },
       {
-        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ source: { name: "Bad source" as GamePlaySourceName, players: bulkCreateFakePlayers(1) } }) }),
+        test: "should not create history record when source in play's source is not in enum.",
+        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ source: { name: "Bad source" as GamePlaySourceName, players: [createFakePlayer()] } }) }),
         errorMessage: "GameHistoryRecord validation failed: play.source.name: `Bad source` is not a valid enum value for path `name`.",
-        test: "source in play's source is not in enum",
       },
       {
+        test: "should not create history record when potion in play's target is not in enum.",
         toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ targets: [{ player: createFakePlayer(), drankPotion: "Love Potion" as WitchPotions }] }) }),
         errorMessage: "GameHistoryRecord validation failed: play.targets.0.drankPotion: `Love Potion` is not a valid enum value for path `drankPotion`.",
-        test: "potion in play's target is not in enum",
       },
       {
+        test: "should not create history record when voting result is not in enum.",
         toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: createFakeGameHistoryRecordPlayVoting({ result: "President election" as GameHistoryRecordVotingResults }) }) }),
         errorMessage: "GameHistoryRecord validation failed: play.voting.result: `President election` is not a valid enum value for path `result`.",
-        test: "voting result is not in enum",
       },
       {
+        test: "should not create history record when chosen side is not in enum.",
         toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ chosenSide: "Dark side" as RoleSides }) }),
         errorMessage: "GameHistoryRecord validation failed: play.chosenSide: `Dark side` is not a valid enum value for path `chosenSide`.",
-        test: "chosen side is not in enum",
       },
-    ])("should not create history record when $test [#$#].", async({ toInsert, errorMessage }) => {
+    ])("$test", async({ toInsert, errorMessage }) => {
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert(toInsert);
 
       await expect(repositories.gameHistoryRecord.create(gameHistoryRecordToInsert)).rejects.toThrow(errorMessage);

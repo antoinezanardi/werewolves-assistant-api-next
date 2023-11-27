@@ -61,7 +61,7 @@ const testFilesOverride = Object.freeze({
     "jest/valid-describe-callback": ERROR,
     "jest/valid-expect": ERROR,
     "jest/valid-expect-in-promise": ERROR,
-    "jest/valid-title": [ERROR, { mustMatch: { it: new RegExp(/^should .+ when .+\S\.$/u, "u").source } }],
+    "jest/valid-title": [ERROR, { mustMatch: { it: new RegExp(/^should .+ when .+\S\.$|^\$test$/u, "u").source } }],
     "jest/unbound-method": ERROR,
   },
 });

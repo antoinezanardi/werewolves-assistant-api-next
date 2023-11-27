@@ -40,127 +40,130 @@ describe("Config Env Helper", () => {
       expect(validate(validEnvVariablesWithoutOptional)).toStrictEqual(expectedValidatedEnvVariables);
     });
 
-    it.each<{ badEnvVariables: Record<string, unknown>; test: string }>([
+    it.each<{
+      test: string;
+      badEnvVariables: Record<string, unknown>;
+    }>([
       {
+        test: "should throw validate error when ENVIRONMENT is not defined.",
         badEnvVariables: {
           ...validEnvVariables,
           ENVIRONMENT: undefined,
         },
-        test: "ENVIRONMENT is not defined",
       },
       {
+        test: "should throw validate error when ENVIRONMENT is not a valid enum value.",
         badEnvVariables: {
           ...validEnvVariables,
           ENVIRONMENT: "bad-env",
         },
-        test: "ENVIRONMENT is not a valid enum value",
       },
       {
+        test: "should throw validate error when HOST is empty.",
         badEnvVariables: {
           ...validEnvVariables,
           HOST: "",
         },
-        test: "HOST is empty",
       },
       {
+        test: "should throw validate error when PORT is not a number.",
         badEnvVariables: {
           ...validEnvVariables,
           PORT: "bad-port",
         },
-        test: "PORT is not a number",
       },
       {
+        test: "should throw validate error when PORT is less than min value.",
         badEnvVariables: {
           ...validEnvVariables,
           PORT: "-1",
         },
-        test: "PORT is less than min value",
       },
       {
+        test: "should throw validate error when PORT is greater than max value.",
         badEnvVariables: {
           ...validEnvVariables,
           PORT: "65536",
         },
-        test: "PORT is greater than max value",
       },
       {
+        test: "should throw validate error when DATABASE_HOST is not defined.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_HOST: undefined,
         },
-        test: "DATABASE_HOST is not defined",
       },
       {
+        test: "should throw validate error when DATABASE_HOST is empty.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_HOST: "",
         },
-        test: "DATABASE_HOST is empty",
       },
       {
+        test: "should throw validate error when DATABASE_PORT is not a number.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_PORT: "bad-port",
         },
-        test: "DATABASE_PORT is not a number",
       },
       {
+        test: "should throw validate error when DATABASE_PORT is less than min value.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_PORT: "-1",
         },
-        test: "DATABASE_PORT is less than min value",
       },
       {
+        test: "should throw validate error when DATABASE_PORT is greater than max value.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_PORT: "65536",
         },
-        test: "DATABASE_PORT is greater than max value",
       },
       {
+        test: "should throw validate error when DATABASE_NAME is not defined.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_NAME: undefined,
         },
-        test: "DATABASE_NAME is not defined",
       },
       {
+        test: "should throw validate error when DATABASE_NAME is empty.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_NAME: "",
         },
-        test: "DATABASE_NAME is empty",
       },
       {
+        test: "should throw validate error when DATABASE_USERNAME is not defined.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_USERNAME: undefined,
         },
-        test: "DATABASE_USERNAME is not defined",
       },
       {
+        test: "should throw validate error when DATABASE_USERNAME is empty.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_USERNAME: "",
         },
-        test: "DATABASE_USERNAME is empty",
       },
       {
+        test: "should throw validate error when DATABASE_PASSWORD is not defined.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_PASSWORD: undefined,
         },
-        test: "DATABASE_PASSWORD is not defined",
       },
       {
+        test: "should throw validate error when DATABASE_PASSWORD is empty.",
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_PASSWORD: "",
         },
-        test: "DATABASE_PASSWORD is empty",
       },
-    ])("should throw validate error when $test [#$#].", ({ badEnvVariables }) => {
+    ])("$test", ({ badEnvVariables }) => {
       expect(() => validate(badEnvVariables)).toThrow("An instance of EnvironmentVariables has failed the validation");
     });
   });
@@ -189,7 +192,7 @@ describe("Config Env Helper", () => {
 
   describe("getEnvPaths", () => {
     it("should return default and local test env paths when function is called.", () => {
-      expect(getEnvPaths()).toStrictEqual(["env/.env.test", "env/.env.test.local"]);
+      expect(getEnvPaths()).toStrictEqual<string[]>(["env/.env.test", "env/.env.test.local"]);
     });
   });
 });

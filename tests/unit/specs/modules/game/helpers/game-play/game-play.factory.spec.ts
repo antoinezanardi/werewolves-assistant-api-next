@@ -49,47 +49,51 @@ describe("Game Play Factory", () => {
   });
 
   describe("createGamePlaySurvivorsVote", () => {
-    it.each<{ expectedGamePlay: GamePlay; cause: GamePlayCauses | undefined; test: string }>([
+    it.each<{
+      test: string;
+      expectedGamePlay: GamePlay;
+      cause: GamePlayCauses | undefined;
+    }>([
       {
+        test: "should create game play survivors vote when called with cause of angel presence.",
         expectedGamePlay: createFakeGamePlay({
           source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
           action: GamePlayActions.VOTE,
           cause: GamePlayCauses.ANGEL_PRESENCE,
           occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
         }),
-        test: "called with cause of angel presence",
         cause: GamePlayCauses.ANGEL_PRESENCE,
       },
       {
+        test: "should create game play survivors vote when called with cause of previous votes were in ties.",
         expectedGamePlay: createFakeGamePlay({
           source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
           action: GamePlayActions.VOTE,
           cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES,
           occurrence: GamePlayOccurrences.CONSEQUENTIAL,
         }),
-        test: "called with cause of previous votes were in ties",
         cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES,
       },
       {
+        test: "should create game play survivors vote when called with cause of stuttering judge request.",
         expectedGamePlay: createFakeGamePlay({
           source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
           action: GamePlayActions.VOTE,
           cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST,
           occurrence: GamePlayOccurrences.CONSEQUENTIAL,
         }),
-        test: "called with cause of stuttering judge request",
         cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST,
       },
       {
+        test: "should create game play survivors vote when called with undefined cause.",
         expectedGamePlay: createFakeGamePlay({
           source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
           action: GamePlayActions.VOTE,
           occurrence: GamePlayOccurrences.ON_DAYS,
         }),
-        test: "called with undefined cause",
         cause: undefined,
       },
-    ])("should create game play survivors vote when $test [#$#].", ({ expectedGamePlay, cause }) => {
+    ])("$test", ({ expectedGamePlay, cause }) => {
       expect(createGamePlaySurvivorsVote({ cause })).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });

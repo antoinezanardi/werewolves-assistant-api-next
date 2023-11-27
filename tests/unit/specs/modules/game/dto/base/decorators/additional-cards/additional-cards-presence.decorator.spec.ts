@@ -9,108 +9,116 @@ import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/c
 
 describe("Additional Cards Presence Decorator", () => {
   describe("isAdditionalCardsPresenceRespected", () => {
-    it("should return false when additional cards are set but there is no thief in game.", () => {
-      const additionalCards = [
-        createFakeCreateGameAdditionalCardDto(),
-        createFakeCreateGameAdditionalCardDto(),
-      ];
-      const createGameDto = createFakeCreateGameDto({
-        players: [
-          createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-          createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-          createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.SEER } }),
+    it.each<{
+      test: string;
+      additionalCards: unknown;
+      validationArguments: ValidationArguments;
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when additional cards are set but there is no thief in game.",
+        additionalCards: [
+          createFakeCreateGameAdditionalCardDto(),
+          createFakeCreateGameAdditionalCardDto(),
         ],
-        additionalCards,
-      });
-      const validationArguments: ValidationArguments = {
-        value: additionalCards,
-        object: createGameDto,
-        constraints: [],
-        targetName: "",
-        property: "additionalCards",
-      };
-
-      expect(isAdditionalCardsPresenceRespected(additionalCards, validationArguments)).toBe(false);
-    });
-
-    it("should return false when additional cards are not set but there is thief in game.", () => {
-      const createGameDto = createFakeCreateGameDto({
-        players: [
-          createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-          createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-          createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
+        validationArguments: {
+          value: [
+            createFakeCreateGameAdditionalCardDto(),
+            createFakeCreateGameAdditionalCardDto(),
+          ],
+          object: createFakeCreateGameDto({
+            players: [
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.SEER } }),
+            ],
+          }),
+          constraints: [],
+          targetName: "",
+          property: "additionalCards",
+        },
+        expected: false,
+      },
+      {
+        test: "should return false when additional cards are not set but there is thief in game.",
+        additionalCards: undefined,
+        validationArguments: {
+          value: undefined,
+          object: createFakeCreateGameDto({
+            players: [
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
+            ],
+          }),
+          constraints: [],
+          targetName: "",
+          property: "additionalCards",
+        },
+        expected: false,
+      },
+      {
+        test: "should return false when additional cards are not an array.",
+        additionalCards: "coucou",
+        validationArguments: {
+          value: "coucou",
+          object: createFakeCreateGameDto({
+            players: [
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
+            ],
+          }),
+          constraints: [],
+          targetName: "",
+          property: "additionalCards",
+        },
+        expected: false,
+      },
+      {
+        test: "should return true when additional cards are set and a thief is in the game.",
+        additionalCards: [
+          createFakeCreateGameAdditionalCardDto(),
+          createFakeCreateGameAdditionalCardDto(),
         ],
-      });
-      const validationArguments: ValidationArguments = {
-        value: undefined,
-        object: createGameDto,
-        constraints: [],
-        targetName: "",
-        property: "additionalCards",
-      };
-
-      expect(isAdditionalCardsPresenceRespected(undefined, validationArguments)).toBe(false);
-    });
-
-    it("should return false when additional cards are not an array.", () => {
-      const createGameDto = createFakeCreateGameDto({
-        players: [
-          createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-          createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-          createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
-        ],
-      });
-      const validationArguments: ValidationArguments = {
-        value: "coucou",
-        object: createGameDto,
-        constraints: [],
-        targetName: "",
-        property: "additionalCards",
-      };
-
-      expect(isAdditionalCardsPresenceRespected("coucou", validationArguments)).toBe(false);
-    });
-
-    it("should return true when additional cards are set and a thief is in the game.", () => {
-      const additionalCards = [
-        createFakeCreateGameAdditionalCardDto(),
-        createFakeCreateGameAdditionalCardDto(),
-      ];
-      const createGameDto = createFakeCreateGameDto({
-        players: [
-          createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-          createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-          createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
-        ],
-      });
-      const validationArguments: ValidationArguments = {
-        value: additionalCards,
-        object: createGameDto,
-        constraints: [],
-        targetName: "",
-        property: "additionalCards",
-      };
-
-      expect(isAdditionalCardsPresenceRespected(additionalCards, validationArguments)).toBe(true);
-    });
-
-    it("should return true when additional cards are not set and there is no thief is in the game.", () => {
-      const createGameDto = createFakeCreateGameDto({
-        players: [
-          createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-          createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-          createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.SEER } }),
-        ],
-      });
-      const validationArguments: ValidationArguments = {
-        value: undefined,
-        object: createGameDto,
-        constraints: [],
-        targetName: "",
-        property: "additionalCards",
-      };
-
-      expect(isAdditionalCardsPresenceRespected(undefined, validationArguments)).toBe(true);
+        validationArguments: {
+          value: [
+            createFakeCreateGameAdditionalCardDto(),
+            createFakeCreateGameAdditionalCardDto(),
+          ],
+          object: createFakeCreateGameDto({
+            players: [
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
+            ],
+          }),
+          constraints: [],
+          targetName: "",
+          property: "additionalCards",
+        },
+        expected: true,
+      },
+      {
+        test: "should return true when additional cards are not set and there is no thief is in the game.",
+        additionalCards: undefined,
+        validationArguments: {
+          value: undefined,
+          object: createFakeCreateGameDto({
+            players: [
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.SEER } }),
+            ],
+          }),
+          constraints: [],
+          targetName: "",
+          property: "additionalCards",
+        },
+        expected: true,
+      },
+    ])("$test", ({ additionalCards, validationArguments, expected }) => {
+      expect(isAdditionalCardsPresenceRespected(additionalCards, validationArguments)).toBe(expected);
     });
   });
 

@@ -1,7 +1,6 @@
 import { ROLES, VILLAGER_ROLES, WEREWOLF_ROLES } from "@/modules/role/constants/role.constant";
 import { RoleSides } from "@/modules/role/enums/role.enum";
-
-import { bulkCreateFakeRoles } from "@tests/factories/role/types/role.type.factory";
+import type { Role } from "@/modules/role/types/role.type";
 
 describe("Role Constant", () => {
   describe("werewolvesRoles", () => {
@@ -20,7 +19,7 @@ describe("Role Constant", () => {
 
   describe("roles", () => {
     it("should contain all roles when called.", () => {
-      expect(ROLES).toStrictEqual(bulkCreateFakeRoles([...WEREWOLF_ROLES, ...VILLAGER_ROLES].length, [...WEREWOLF_ROLES, ...VILLAGER_ROLES]));
+      expect(ROLES).toStrictEqual<Role[]>([...WEREWOLF_ROLES, ...VILLAGER_ROLES]);
     });
   });
 });

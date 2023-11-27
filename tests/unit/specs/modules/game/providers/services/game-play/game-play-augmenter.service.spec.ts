@@ -1,18 +1,22 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
 import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
+import type { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema";
 import type { GamePlayEligibleTargets } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets.schema";
 import type { InteractablePlayer } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/interactable-player.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
@@ -33,6 +37,58 @@ import { createFakePlayer } from "@tests/factories/game/schemas/player/player.sc
 describe("Game Play Augmenter Service", () => {
   let services: { gamePlayAugmenter: GamePlayAugmenterService };
   let mocks: {
+    gamePlayAugmenterService: {
+      canGamePlayBeSkipped: jest.SpyInstance;
+      getGamePlayEligibleTargets: jest.SpyInstance;
+      getExpectedPlayersToPlay: jest.SpyInstance;
+      getSheriffSettlesVotesGamePlayEligibleTargets: jest.SpyInstance;
+      getSheriffDelegatesGamePlayEligibleTargets: jest.SpyInstance;
+      getSheriffGamePlayEligibleTargets: jest.SpyInstance;
+      getSurvivorsVoteGamePlayInteractablePlayers: jest.SpyInstance;
+      getSurvivorsVoteGamePlayEligibleTargets: jest.SpyInstance;
+      getSurvivorsElectSheriffGamePlayEligibleTargets: jest.SpyInstance;
+      getSurvivorsGamePlayEligibleTargets: jest.SpyInstance;
+      getWerewolvesEatGamePlayEligibleTargets: jest.SpyInstance;
+      getWerewolvesGamePlayEligibleTargets: jest.SpyInstance;
+      getWhiteWerewolfEatGamePlayEligibleTargets: jest.SpyInstance;
+      getWhiteWerewolfGamePlayEligibleTargets: jest.SpyInstance;
+      getWitchUsesPotionsGamePlayEligibleTargets: jest.SpyInstance;
+      getWitchGamePlayEligibleTargets: jest.SpyInstance;
+      getBigBadWolfEatGamePlayEligibleTargets: jest.SpyInstance;
+      getBigBadWolfGamePlayEligibleTargets: jest.SpyInstance;
+      getFoxSniffsGamePlayEligibleTargets: jest.SpyInstance;
+      getFoxGamePlayEligibleTargets: jest.SpyInstance;
+      getGuardProtectsGamePlayEligibleTargets: jest.SpyInstance;
+      getGuardGamePlayEligibleTargets: jest.SpyInstance;
+      getHunterShootsGamePlayEligibleTargets: jest.SpyInstance;
+      getHunterGamePlayEligibleTargets: jest.SpyInstance;
+      getLoversMeetEachOtherGamePlayEligibleTargets: jest.SpyInstance;
+      getLoversGamePlayEligibleTargets: jest.SpyInstance;
+      getPiedPiperCharmsGamePlayEligibleTargets: jest.SpyInstance;
+      getPiedPiperGamePlayEligibleTargets: jest.SpyInstance;
+      getRavenMarksGamePlayEligibleTargets: jest.SpyInstance;
+      getRavenGamePlayEligibleTargets: jest.SpyInstance;
+      getScapegoatBansVotingGamePlayEligibleTargets: jest.SpyInstance;
+      getScapegoatGamePlayEligibleTargets: jest.SpyInstance;
+      getSeerLooksGamePlayEligibleTargets: jest.SpyInstance;
+      getSeerGamePlayEligibleTargets: jest.SpyInstance;
+      getThiefChoosesCardGamePlayEligibleTargets: jest.SpyInstance;
+      getThiefGamePlayEligibleTargets: jest.SpyInstance;
+      getThreeBrothersMeetEachOtherGamePlayEligibleTargets: jest.SpyInstance;
+      getThreeBrothersGamePlayEligibleTargets: jest.SpyInstance;
+      getTwoSistersMeetEachOtherGamePlayEligibleTargets: jest.SpyInstance;
+      getTwoSistersGamePlayEligibleTargets: jest.SpyInstance;
+      getWildChildChoosesModelGamePlayEligibleTargets: jest.SpyInstance;
+      getWildChildGamePlayEligibleTargets: jest.SpyInstance;
+      getCharmedMeetEachOtherGamePlayEligibleTargets: jest.SpyInstance;
+      getCharmedGamePlayEligibleTargets: jest.SpyInstance;
+      canSurvivorsSkipGamePlay: jest.SpyInstance;
+      getWitchGamePlayEligibleTargetsBoundaries: jest.SpyInstance;
+      getWitchGamePlayEligibleTargetsInteractablePlayers: jest.SpyInstance;
+      getCupidGamePlayEligibleTargets: jest.SpyInstance;
+      canBigBadWolfSkipGamePlay: jest.SpyInstance;
+      canThiefSkipGamePlay: jest.SpyInstance;
+    };
     gameHelper: {
       getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
       getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
@@ -53,6 +109,58 @@ describe("Game Play Augmenter Service", () => {
 
   beforeEach(async() => {
     mocks = {
+      gamePlayAugmenterService: {
+        canGamePlayBeSkipped: jest.fn(),
+        getGamePlayEligibleTargets: jest.fn(),
+        getExpectedPlayersToPlay: jest.fn(),
+        getSheriffSettlesVotesGamePlayEligibleTargets: jest.fn(),
+        getSheriffDelegatesGamePlayEligibleTargets: jest.fn(),
+        getSheriffGamePlayEligibleTargets: jest.fn(),
+        getSurvivorsVoteGamePlayInteractablePlayers: jest.fn(),
+        getSurvivorsVoteGamePlayEligibleTargets: jest.fn(),
+        getSurvivorsElectSheriffGamePlayEligibleTargets: jest.fn(),
+        getSurvivorsGamePlayEligibleTargets: jest.fn(),
+        getWerewolvesEatGamePlayEligibleTargets: jest.fn(),
+        getWerewolvesGamePlayEligibleTargets: jest.fn(),
+        getWhiteWerewolfEatGamePlayEligibleTargets: jest.fn(),
+        getWhiteWerewolfGamePlayEligibleTargets: jest.fn(),
+        getWitchUsesPotionsGamePlayEligibleTargets: jest.fn(),
+        getWitchGamePlayEligibleTargets: jest.fn(),
+        getBigBadWolfEatGamePlayEligibleTargets: jest.fn(),
+        getBigBadWolfGamePlayEligibleTargets: jest.fn(),
+        getFoxSniffsGamePlayEligibleTargets: jest.fn(),
+        getFoxGamePlayEligibleTargets: jest.fn(),
+        getGuardProtectsGamePlayEligibleTargets: jest.fn(),
+        getGuardGamePlayEligibleTargets: jest.fn(),
+        getHunterShootsGamePlayEligibleTargets: jest.fn(),
+        getHunterGamePlayEligibleTargets: jest.fn(),
+        getLoversMeetEachOtherGamePlayEligibleTargets: jest.fn(),
+        getLoversGamePlayEligibleTargets: jest.fn(),
+        getPiedPiperCharmsGamePlayEligibleTargets: jest.fn(),
+        getPiedPiperGamePlayEligibleTargets: jest.fn(),
+        getRavenMarksGamePlayEligibleTargets: jest.fn(),
+        getRavenGamePlayEligibleTargets: jest.fn(),
+        getScapegoatBansVotingGamePlayEligibleTargets: jest.fn(),
+        getScapegoatGamePlayEligibleTargets: jest.fn(),
+        getSeerLooksGamePlayEligibleTargets: jest.fn(),
+        getSeerGamePlayEligibleTargets: jest.fn(),
+        getThiefChoosesCardGamePlayEligibleTargets: jest.fn(),
+        getThiefGamePlayEligibleTargets: jest.fn(),
+        getThreeBrothersMeetEachOtherGamePlayEligibleTargets: jest.fn(),
+        getThreeBrothersGamePlayEligibleTargets: jest.fn(),
+        getTwoSistersMeetEachOtherGamePlayEligibleTargets: jest.fn(),
+        getTwoSistersGamePlayEligibleTargets: jest.fn(),
+        getWildChildChoosesModelGamePlayEligibleTargets: jest.fn(),
+        getWildChildGamePlayEligibleTargets: jest.fn(),
+        getCharmedMeetEachOtherGamePlayEligibleTargets: jest.fn(),
+        getCharmedGamePlayEligibleTargets: jest.fn(),
+        canSurvivorsSkipGamePlay: jest.fn(),
+        getWitchGamePlayEligibleTargetsBoundaries: jest.fn(),
+        getWitchGamePlayEligibleTargetsInteractablePlayers: jest.fn(),
+        getCupidGamePlayEligibleTargets: jest.fn(),
+        canBigBadWolfSkipGamePlay: jest.fn(),
+        canThiefSkipGamePlay: jest.fn(),
+      },
       gameHelper: {
         getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers"),
         getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers"),
@@ -84,20 +192,14 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("setGamePlayCanBeSkipped", () => {
-    let localMocks: {
-      gamePlayAugmenterService: {
-        canGamePlayBeSkipped: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = { gamePlayAugmenterService: { canGamePlayBeSkipped: jest.spyOn(services.gamePlayAugmenter as unknown as { canGamePlayBeSkipped }, "canGamePlayBeSkipped") } };
+      mocks.gamePlayAugmenterService.canGamePlayBeSkipped = jest.spyOn(services.gamePlayAugmenter as unknown as { canGamePlayBeSkipped }, "canGamePlayBeSkipped");
     });
 
     it("should return game play with canBeSkipped when called.", () => {
       const gamePlay = createFakeGamePlay();
       const game = createFakeGame();
-      localMocks.gamePlayAugmenterService.canGamePlayBeSkipped.mockReturnValueOnce(true);
+      mocks.gamePlayAugmenterService.canGamePlayBeSkipped.mockReturnValueOnce(true);
       const expectedGamePlay = createFakeGamePlay({
         ...gamePlay,
         canBeSkipped: true,
@@ -108,20 +210,8 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("setGamePlayEligibleTargets", () => {
-    let localMocks: {
-      gamePlayAugmenterService: {
-        getGamePlayEligibleTargets: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = {
-        gamePlayAugmenterService: {
-          getGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getGamePlayEligibleTargets;
-          }, "getGamePlayEligibleTargets"),
-        },
-      };
+      mocks.gamePlayAugmenterService.getGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as { getGamePlayEligibleTargets }, "getGamePlayEligibleTargets");
     });
 
     it("should return game play with eligibleTargets when called.", async() => {
@@ -131,21 +221,15 @@ describe("Game Play Augmenter Service", () => {
         ...gamePlay,
         eligibleTargets: createFakeGamePlayEligibleTargets(),
       });
-      localMocks.gamePlayAugmenterService.getGamePlayEligibleTargets.mockResolvedValueOnce(expectedGamePlay.eligibleTargets);
+      mocks.gamePlayAugmenterService.getGamePlayEligibleTargets.mockResolvedValueOnce(expectedGamePlay.eligibleTargets);
 
       await expect(services.gamePlayAugmenter.setGamePlayEligibleTargets(gamePlay, game)).resolves.toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
 
   describe("setGamePlaySourcePlayers", () => {
-    let localMocks: {
-      gamePlayAugmenterService: {
-        getExpectedPlayersToPlay: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = { gamePlayAugmenterService: { getExpectedPlayersToPlay: jest.spyOn(services.gamePlayAugmenter as unknown as { getExpectedPlayersToPlay }, "getExpectedPlayersToPlay") } };
+      mocks.gamePlayAugmenterService.getExpectedPlayersToPlay = jest.spyOn(services.gamePlayAugmenter as unknown as { getExpectedPlayersToPlay }, "getExpectedPlayersToPlay");
     });
 
     it("should return game play with source players when called.", () => {
@@ -159,7 +243,7 @@ describe("Game Play Augmenter Service", () => {
           players: expectedGamePlaySourcePlayers,
         }),
       });
-      localMocks.gamePlayAugmenterService.getExpectedPlayersToPlay.mockReturnValue(expectedGamePlaySourcePlayers);
+      mocks.gamePlayAugmenterService.getExpectedPlayersToPlay.mockReturnValue(expectedGamePlaySourcePlayers);
 
       expect(services.gamePlayAugmenter.setGamePlaySourcePlayers(gamePlay, game)).toStrictEqual<GamePlay>(expectedGamePlay);
     });
@@ -178,9 +262,11 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const game = createFakeGame({ players });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: game._id.toString() });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(null);
+      mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException.mockReturnValue(mockedError);
 
-      await expect(async() => services.gamePlayAugmenter["getSheriffSettlesVotesGamePlayEligibleTargets"](game)).rejects.toThrow(undefined);
+      await expect(services.gamePlayAugmenter["getSheriffSettlesVotesGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
       expect(mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSheriffSettlesVotesGamePlayEligibleTargets", { gameId: game._id });
     });
 
@@ -194,9 +280,11 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame({ players });
       const gameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [] });
       const gameHistoryRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: gameHistoryRecordPlayVoting }) });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: game._id.toString() });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(gameHistoryRecord);
+      mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException.mockReturnValue(mockedError);
 
-      await expect(async() => services.gamePlayAugmenter["getSheriffSettlesVotesGamePlayEligibleTargets"](game)).rejects.toThrow(undefined);
+      await expect(services.gamePlayAugmenter["getSheriffSettlesVotesGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
       expect(mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSheriffSettlesVotesGamePlayEligibleTargets", { gameId: game._id });
     });
 
@@ -285,20 +373,9 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getSheriffGamePlayEligibleTargets", () => {
-    let localMocks: {
-      gamePlayAugmenterService: {
-        getSheriffSettlesVotesGamePlayEligibleTargets: jest.SpyInstance;
-        getSheriffDelegatesGamePlayEligibleTargets: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = {
-        gamePlayAugmenterService: {
-          getSheriffSettlesVotesGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as { getSheriffSettlesVotesGamePlayEligibleTargets }, "getSheriffSettlesVotesGamePlayEligibleTargets").mockImplementation(),
-          getSheriffDelegatesGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as { getSheriffDelegatesGamePlayEligibleTargets }, "getSheriffDelegatesGamePlayEligibleTargets").mockImplementation(),
-        },
-      };
+      mocks.gamePlayAugmenterService.getSheriffSettlesVotesGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as { getSheriffSettlesVotesGamePlayEligibleTargets }, "getSheriffSettlesVotesGamePlayEligibleTargets").mockImplementation();
+      mocks.gamePlayAugmenterService.getSheriffDelegatesGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as { getSheriffDelegatesGamePlayEligibleTargets }, "getSheriffDelegatesGamePlayEligibleTargets").mockImplementation();
     });
 
     it("should call get sheriff delegate game play eligible targets when game play action is delegate.", async() => {
@@ -306,8 +383,8 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getSheriffGamePlayEligibleTargets"](game, gamePlay);
 
-      expect(localMocks.gamePlayAugmenterService.getSheriffDelegatesGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
-      expect(localMocks.gamePlayAugmenterService.getSheriffSettlesVotesGamePlayEligibleTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayAugmenterService.getSheriffDelegatesGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getSheriffSettlesVotesGamePlayEligibleTargets).not.toHaveBeenCalled();
     });
 
     it("should call get sheriff settles votes game play eligible targets when game play action is settles votes.", async() => {
@@ -315,15 +392,17 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getSheriffGamePlayEligibleTargets"](game, gamePlay);
 
-      expect(localMocks.gamePlayAugmenterService.getSheriffSettlesVotesGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
-      expect(localMocks.gamePlayAugmenterService.getSheriffDelegatesGamePlayEligibleTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayAugmenterService.getSheriffSettlesVotesGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getSheriffDelegatesGamePlayEligibleTargets).not.toHaveBeenCalled();
     });
 
     it("should throw error when game play action is not delegate nor settles votes.", async() => {
       const gamePlay = createFakeGamePlayRavenMarks();
       const game = createFakeGame();
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.MALFORMED_CURRENT_GAME_PLAY, { gamePlayAction: gamePlay.action });
+      mocks.unexpectedExceptionFactory.createMalformedCurrentGamePlayUnexpectedException.mockReturnValue(mockedError);
 
-      await expect(services.gamePlayAugmenter["getSheriffGamePlayEligibleTargets"](game, gamePlay)).rejects.toThrow(undefined);
+      await expect(services.gamePlayAugmenter["getSheriffGamePlayEligibleTargets"](game, gamePlay)).rejects.toThrow(mockedError);
       expect(mocks.unexpectedExceptionFactory.createMalformedCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSheriffGamePlayEligibleTargets", gamePlay, game._id);
     });
   });
@@ -399,9 +478,11 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: game._id.toString() });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(null);
+      mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException.mockReturnValue(mockedError);
 
-      await expect(async() => services.gamePlayAugmenter["getSurvivorsVoteGamePlayInteractablePlayers"](game, gamePlay)).rejects.toThrow(undefined);
+      await expect(async() => services.gamePlayAugmenter["getSurvivorsVoteGamePlayInteractablePlayers"](game, gamePlay)).rejects.toStrictEqual<UnexpectedException>(mockedError);
       expect(mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSurvivorsVoteGamePlayInteractablePlayers", { gameId: game._id });
     });
 
@@ -415,29 +496,20 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame({ players });
       const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
       const gameRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [] });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: game._id.toString() });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: gameRecordPlayVoting }) }));
+      mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException.mockReturnValue(mockedError);
 
-      await expect(async() => services.gamePlayAugmenter["getSurvivorsVoteGamePlayInteractablePlayers"](game, gamePlay)).rejects.toThrow(undefined);
+      await expect(async() => services.gamePlayAugmenter["getSurvivorsVoteGamePlayInteractablePlayers"](game, gamePlay)).rejects.toStrictEqual<UnexpectedException>(mockedError);
       expect(mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSurvivorsVoteGamePlayInteractablePlayers", { gameId: game._id });
     });
   });
 
   describe("getSurvivorsVoteGamePlayEligibleTargets", () => {
-    let localMocks: {
-      gamePlayAugmenterService: {
-        canSurvivorsSkipGamePlay: jest.SpyInstance;
-        getSurvivorsVoteGamePlayInteractablePlayers: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
       mocks.gameHelper.getAllowedToVotePlayers.mockReturnValue([]);
-      localMocks = {
-        gamePlayAugmenterService: {
-          canSurvivorsSkipGamePlay: jest.spyOn(services.gamePlayAugmenter as unknown as { canSurvivorsSkipGamePlay }, "canSurvivorsSkipGamePlay").mockImplementation(),
-          getSurvivorsVoteGamePlayInteractablePlayers: jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsVoteGamePlayInteractablePlayers }, "getSurvivorsVoteGamePlayInteractablePlayers").mockImplementation(),
-        },
-      };
+      mocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canSurvivorsSkipGamePlay }, "canSurvivorsSkipGamePlay").mockImplementation();
+      mocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayInteractablePlayers = jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsVoteGamePlayInteractablePlayers }, "getSurvivorsVoteGamePlayInteractablePlayers").mockImplementation();
     });
 
     it("should return all alive villagers as interactable players with 1 to alive players length when votes can't be skipped.", async() => {
@@ -457,8 +529,8 @@ describe("Game Play Augmenter Service", () => {
         },
       });
       mocks.gameHelper.getAllowedToVotePlayers.mockReturnValueOnce([players[0], players[1], players[3]]);
-      localMocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay.mockReturnValueOnce(false);
-      localMocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayInteractablePlayers.mockResolvedValueOnce([]);
+      mocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay.mockReturnValueOnce(false);
+      mocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayInteractablePlayers.mockResolvedValueOnce([]);
 
       await expect(services.gamePlayAugmenter["getSurvivorsVoteGamePlayEligibleTargets"](game, gamePlay)).resolves.toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
     });
@@ -480,8 +552,8 @@ describe("Game Play Augmenter Service", () => {
         },
       });
       mocks.gameHelper.getAllowedToVotePlayers.mockReturnValueOnce([players[0], players[1], players[3]]);
-      localMocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay.mockReturnValueOnce(true);
-      localMocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayInteractablePlayers.mockResolvedValueOnce([]);
+      mocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay.mockReturnValueOnce(true);
+      mocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayInteractablePlayers.mockResolvedValueOnce([]);
 
       await expect(services.gamePlayAugmenter["getSurvivorsVoteGamePlayEligibleTargets"](game, gamePlay)).resolves.toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
     });
@@ -527,20 +599,9 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getSurvivorsGamePlayEligibleTargets", () => {
-    let localMocks: {
-      gamePlayAugmenterService: {
-        getSurvivorsElectSheriffGamePlayEligibleTargets: jest.SpyInstance;
-        getSurvivorsVoteGamePlayEligibleTargets: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = {
-        gamePlayAugmenterService: {
-          getSurvivorsElectSheriffGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsElectSheriffGamePlayEligibleTargets }, "getSurvivorsElectSheriffGamePlayEligibleTargets").mockImplementation(),
-          getSurvivorsVoteGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsVoteGamePlayEligibleTargets }, "getSurvivorsVoteGamePlayEligibleTargets").mockImplementation(),
-        },
-      };
+      mocks.gamePlayAugmenterService.getSurvivorsElectSheriffGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsElectSheriffGamePlayEligibleTargets }, "getSurvivorsElectSheriffGamePlayEligibleTargets").mockImplementation();
+      mocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsVoteGamePlayEligibleTargets }, "getSurvivorsVoteGamePlayEligibleTargets").mockImplementation();
     });
 
     it("should return undefined when game play action is bury dead bodies.", async() => {
@@ -554,8 +615,8 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getSurvivorsGamePlayEligibleTargets"](game, gamePlay);
 
-      expect(localMocks.gamePlayAugmenterService.getSurvivorsElectSheriffGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
-      expect(localMocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayEligibleTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayAugmenterService.getSurvivorsElectSheriffGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayEligibleTargets).not.toHaveBeenCalled();
     });
 
     it("should call get survivors vote game play eligible targets when game play action is vote.", async() => {
@@ -563,15 +624,17 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getSurvivorsGamePlayEligibleTargets"](game, gamePlay);
 
-      expect(localMocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
-      expect(localMocks.gamePlayAugmenterService.getSurvivorsElectSheriffGamePlayEligibleTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(mocks.gamePlayAugmenterService.getSurvivorsElectSheriffGamePlayEligibleTargets).not.toHaveBeenCalled();
     });
 
     it("should throw error when game play action is not elect sheriff nor vote.", async() => {
       const gamePlay = createFakeGamePlayWildChildChoosesModel();
       const game = createFakeGame();
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.MALFORMED_CURRENT_GAME_PLAY, { gamePlayAction: gamePlay.action });
+      mocks.unexpectedExceptionFactory.createMalformedCurrentGamePlayUnexpectedException.mockReturnValue(mockedError);
 
-      await expect(services.gamePlayAugmenter["getSurvivorsGamePlayEligibleTargets"](game, gamePlay)).rejects.toThrow(undefined);
+      await expect(services.gamePlayAugmenter["getSurvivorsGamePlayEligibleTargets"](game, gamePlay)).rejects.toStrictEqual<UnexpectedException>(mockedError);
       expect(mocks.unexpectedExceptionFactory.createMalformedCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSurvivorsGamePlayEligibleTargets", gamePlay, game._id);
     });
   });
@@ -1169,40 +1232,50 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getWitchGamePlayEligibleTargetsBoundaries", () => {
-    it("should return boundaries from 0 to 2 when the witch didn't use any potion.", () => {
-      const expectedBoundaries = createFakeGamePlayEligibleTargetsBoundaries({
-        min: 0,
-        max: 2,
-      });
-
-      expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargetsBoundaries"](false, false)).toStrictEqual<typeof expectedBoundaries>(expectedBoundaries);
-    });
-
-    it("should return boundaries from 0 to 1 when the witch used life potion.", () => {
-      const expectedBoundaries = createFakeGamePlayEligibleTargetsBoundaries({
-        min: 0,
-        max: 1,
-      });
-
-      expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargetsBoundaries"](true, false)).toStrictEqual<typeof expectedBoundaries>(expectedBoundaries);
-    });
-
-    it("should return boundaries from 0 to 1 when the witch used death potion.", () => {
-      const expectedBoundaries = createFakeGamePlayEligibleTargetsBoundaries({
-        min: 0,
-        max: 1,
-      });
-
-      expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargetsBoundaries"](false, true)).toStrictEqual<typeof expectedBoundaries>(expectedBoundaries);
-    });
-
-    it("should return boundaries from 0 to 0 when the witch used life potion and death potion.", () => {
-      const expectedBoundaries = createFakeGamePlayEligibleTargetsBoundaries({
-        min: 0,
-        max: 0,
-      });
-
-      expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargetsBoundaries"](true, true)).toStrictEqual<typeof expectedBoundaries>(expectedBoundaries);
+    it.each<{
+      test: string;
+      hasWitchUsedLifePotion: boolean;
+      hasWitchUsedDeathPotion: boolean;
+      expected: GamePlayEligibleTargetsBoundaries;
+    }>([
+      {
+        test: "should return boundaries from 0 to 2 when the witch didn't use any potion.",
+        hasWitchUsedLifePotion: false,
+        hasWitchUsedDeathPotion: false,
+        expected: createFakeGamePlayEligibleTargetsBoundaries({
+          min: 0,
+          max: 2,
+        }),
+      },
+      {
+        test: "should return boundaries from 0 to 1 when the witch used life potion.",
+        hasWitchUsedLifePotion: true,
+        hasWitchUsedDeathPotion: false,
+        expected: createFakeGamePlayEligibleTargetsBoundaries({
+          min: 0,
+          max: 1,
+        }),
+      },
+      {
+        test: "should return boundaries from 0 to 1 when the witch used death potion.",
+        hasWitchUsedLifePotion: false,
+        hasWitchUsedDeathPotion: true,
+        expected: createFakeGamePlayEligibleTargetsBoundaries({
+          min: 0,
+          max: 1,
+        }),
+      },
+      {
+        test: "should return boundaries from 0 to 0 when the witch used life potion and death potion.",
+        hasWitchUsedLifePotion: true,
+        hasWitchUsedDeathPotion: true,
+        expected: createFakeGamePlayEligibleTargetsBoundaries({
+          min: 0,
+          max: 0,
+        }),
+      },
+    ])("$test", ({ hasWitchUsedLifePotion, hasWitchUsedDeathPotion, expected }) => {
+      expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargetsBoundaries"](hasWitchUsedLifePotion, hasWitchUsedDeathPotion)).toStrictEqual<GamePlayEligibleTargetsBoundaries>(expected);
     });
   });
 
@@ -1238,7 +1311,7 @@ describe("Game Play Augmenter Service", () => {
         }),
       ];
 
-      expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargetsInteractablePlayers"](game, false, false)).toStrictEqual<typeof expectedInteractablePlayers>(expectedInteractablePlayers);
+      expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargetsInteractablePlayers"](game, false, false)).toStrictEqual<InteractablePlayer[]>(expectedInteractablePlayers);
     });
 
     it("should not get interactable players when witch used both potions.", () => {
@@ -1250,28 +1323,14 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
 
-      expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargetsInteractablePlayers"](game, true, true)).toStrictEqual([]);
+      expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargetsInteractablePlayers"](game, true, true)).toStrictEqual<InteractablePlayer[]>([]);
     });
   });
 
   describe("getWitchGamePlayEligibleTargets", () => {
-    let localMocks: {
-      gamePlayAugmenterService: {
-        getWitchGamePlayEligibleTargetsBoundaries: jest.SpyInstance; getWitchGamePlayEligibleTargetsInteractablePlayers: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = {
-        gamePlayAugmenterService: {
-          getWitchGamePlayEligibleTargetsBoundaries: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getWitchGamePlayEligibleTargetsBoundaries;
-          }, "getWitchGamePlayEligibleTargetsBoundaries").mockImplementation(),
-          getWitchGamePlayEligibleTargetsInteractablePlayers: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getWitchGamePlayEligibleTargetsInteractablePlayers;
-          }, "getWitchGamePlayEligibleTargetsInteractablePlayers").mockImplementation(),
-        },
-      };
+      mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries = jest.spyOn(services.gamePlayAugmenter as unknown as { getWitchGamePlayEligibleTargetsBoundaries }, "getWitchGamePlayEligibleTargetsBoundaries").mockImplementation();
+      mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers = jest.spyOn(services.gamePlayAugmenter as unknown as { getWitchGamePlayEligibleTargetsInteractablePlayers }, "getWitchGamePlayEligibleTargetsInteractablePlayers").mockImplementation();
     });
 
     it("should get interactable players from game when called and there is no history for life potion and death potion.", async() => {
@@ -1280,7 +1339,7 @@ describe("Game Play Augmenter Service", () => {
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
 
-      expect(localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers).toHaveBeenCalledExactlyOnceWith(game, false, false);
+      expect(mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers).toHaveBeenCalledExactlyOnceWith(game, false, false);
     });
 
     it("should get interactable players from game with life potion used when called and there is history for life potion.", async() => {
@@ -1289,7 +1348,7 @@ describe("Game Play Augmenter Service", () => {
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
 
-      expect(localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers).toHaveBeenCalledExactlyOnceWith(game, true, false);
+      expect(mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers).toHaveBeenCalledExactlyOnceWith(game, true, false);
     });
 
     it("should get interactable players from game with death potion used when called and there is history for death potion.", async() => {
@@ -1298,7 +1357,7 @@ describe("Game Play Augmenter Service", () => {
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
 
-      expect(localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers).toHaveBeenCalledExactlyOnceWith(game, false, true);
+      expect(mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers).toHaveBeenCalledExactlyOnceWith(game, false, true);
     });
 
     it("should get targets boundaries for witch when called and no potions are used.", async() => {
@@ -1307,7 +1366,7 @@ describe("Game Play Augmenter Service", () => {
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
 
-      expect(localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(false, false);
+      expect(mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(false, false);
     });
 
     it("should get targets boundaries for witch when called and life potion is used.", async() => {
@@ -1316,7 +1375,7 @@ describe("Game Play Augmenter Service", () => {
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
 
-      expect(localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(true, false);
+      expect(mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(true, false);
     });
 
     it("should get targets boundaries for witch when called and death potion is used.", async() => {
@@ -1325,7 +1384,7 @@ describe("Game Play Augmenter Service", () => {
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
 
-      expect(localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(false, true);
+      expect(mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(false, true);
     });
 
     it("should return eligible targets with interactable players and boundaries when called.", async() => {
@@ -1337,8 +1396,8 @@ describe("Game Play Augmenter Service", () => {
         createFakeInteractablePlayer(),
       ];
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValue([]);
-      localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries.mockReturnValueOnce(expectedBoundaries);
-      localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers.mockReturnValueOnce(expectedInteractablePlayers);
+      mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsBoundaries.mockReturnValueOnce(expectedBoundaries);
+      mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers.mockReturnValueOnce(expectedInteractablePlayers);
       const expectedGamePlayEligibleTargets = createFakeGamePlayEligibleTargets({
         interactablePlayers: expectedInteractablePlayers,
         boundaries: expectedBoundaries,
@@ -1349,76 +1408,52 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getGamePlayEligibleTargets", () => {
-    let localMocks: {
-      gamePlayAugmenterService: {
-        getSheriffGamePlayEligibleTargets: jest.SpyInstance;
-        getSurvivorsGamePlayEligibleTargets: jest.SpyInstance;
-        getWerewolvesGamePlayEligibleTargets: jest.SpyInstance;
-        getBigBadWolfGamePlayEligibleTargets: jest.SpyInstance;
-        getCupidGamePlayEligibleTargets: jest.SpyInstance;
-        getFoxGamePlayEligibleTargets: jest.SpyInstance;
-        getGuardGamePlayEligibleTargets: jest.SpyInstance;
-        getHunterGamePlayEligibleTargets: jest.SpyInstance;
-        getPiedPiperGamePlayEligibleTargets: jest.SpyInstance;
-        getRavenGamePlayEligibleTargets: jest.SpyInstance;
-        getScapegoatGamePlayEligibleTargets: jest.SpyInstance;
-        getSeerGamePlayEligibleTargets: jest.SpyInstance;
-        getWhiteWerewolfGamePlayEligibleTargets: jest.SpyInstance;
-        getWildChildGamePlayEligibleTargets: jest.SpyInstance;
-        getWitchGamePlayEligibleTargets: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = {
-        gamePlayAugmenterService: {
-          getSheriffGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getSheriffGamePlayEligibleTargets;
-          }, "getSheriffGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getSurvivorsGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getSurvivorsGamePlayEligibleTargets;
-          }, "getSurvivorsGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getWerewolvesGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getWerewolvesGamePlayEligibleTargets;
-          }, "getWerewolvesGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getBigBadWolfGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getBigBadWolfGamePlayEligibleTargets;
-          }, "getBigBadWolfGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getCupidGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getCupidGamePlayEligibleTargets;
-          }, "getCupidGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getFoxGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getFoxGamePlayEligibleTargets;
-          }, "getFoxGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getGuardGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getGuardGamePlayEligibleTargets;
-          }, "getGuardGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getHunterGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getHunterGamePlayEligibleTargets;
-          }, "getHunterGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getPiedPiperGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getPiedPiperGamePlayEligibleTargets;
-          }, "getPiedPiperGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getRavenGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getRavenGamePlayEligibleTargets;
-          }, "getRavenGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getScapegoatGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getScapegoatGamePlayEligibleTargets;
-          }, "getScapegoatGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getSeerGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getSeerGamePlayEligibleTargets;
-          }, "getSeerGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getWhiteWerewolfGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getWhiteWerewolfGamePlayEligibleTargets;
-          }, "getWhiteWerewolfGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getWildChildGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getWildChildGamePlayEligibleTargets;
-          }, "getWildChildGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-          getWitchGamePlayEligibleTargets: jest.spyOn(services.gamePlayAugmenter as unknown as {
-            getWitchGamePlayEligibleTargets;
-          }, "getWitchGamePlayEligibleTargets").mockImplementation().mockReturnValue({}),
-        },
-      };
+      mocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getSheriffGamePlayEligibleTargets;
+      }, "getSheriffGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getSurvivorsGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getSurvivorsGamePlayEligibleTargets;
+      }, "getSurvivorsGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getWerewolvesGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getWerewolvesGamePlayEligibleTargets;
+      }, "getWerewolvesGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getBigBadWolfGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getBigBadWolfGamePlayEligibleTargets;
+      }, "getBigBadWolfGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getCupidGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getCupidGamePlayEligibleTargets;
+      }, "getCupidGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getFoxGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getFoxGamePlayEligibleTargets;
+      }, "getFoxGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getGuardGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getGuardGamePlayEligibleTargets;
+      }, "getGuardGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getHunterGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getHunterGamePlayEligibleTargets;
+      }, "getHunterGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getPiedPiperGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getPiedPiperGamePlayEligibleTargets;
+      }, "getPiedPiperGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getRavenGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getRavenGamePlayEligibleTargets;
+      }, "getRavenGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getScapegoatGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getScapegoatGamePlayEligibleTargets;
+      }, "getScapegoatGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getSeerGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getSeerGamePlayEligibleTargets;
+      }, "getSeerGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getWhiteWerewolfGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getWhiteWerewolfGamePlayEligibleTargets;
+      }, "getWhiteWerewolfGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getWildChildGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getWildChildGamePlayEligibleTargets;
+      }, "getWildChildGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getWitchGamePlayEligibleTargets;
+      }, "getWitchGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
     });
 
     it("should return undefined when game play source name is not in getGamePlayEligibleTargetsMethods.", async() => {
@@ -1431,7 +1466,7 @@ describe("Game Play Augmenter Service", () => {
     it("should return undefined when interactable players are undefined.", async() => {
       const gamePlay = createFakeGamePlaySheriffDelegates();
       const game = createFakeGame();
-      localMocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets.mockReturnValueOnce(createFakeGamePlayEligibleTargets({}, { interactablePlayers: undefined }));
+      mocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets.mockReturnValueOnce(createFakeGamePlayEligibleTargets({}, { interactablePlayers: undefined }));
 
       await expect(services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game)).resolves.toBeUndefined();
     });
@@ -1439,7 +1474,7 @@ describe("Game Play Augmenter Service", () => {
     it("should return undefined when game play method returns empty array of interactable players.", async() => {
       const gamePlay = createFakeGamePlaySheriffDelegates();
       const game = createFakeGame();
-      localMocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets.mockReturnValueOnce(createFakeGamePlayEligibleTargets({ interactablePlayers: [] }));
+      mocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets.mockReturnValueOnce(createFakeGamePlayEligibleTargets({ interactablePlayers: [] }));
 
       await expect(services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game)).resolves.toBeUndefined();
     });
@@ -1452,7 +1487,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeInteractablePlayer(),
       ];
       const expectedGamePlayEligibleTargets = createFakeGamePlayEligibleTargets({ interactablePlayers });
-      localMocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets.mockReturnValueOnce(expectedGamePlayEligibleTargets);
+      mocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets.mockReturnValueOnce(expectedGamePlayEligibleTargets);
 
       await expect(services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game)).resolves.toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
     });
@@ -1462,7 +1497,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(mocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
     it("should call get game play eligible targets for survivors when game play source name is survivors.", async() => {
@@ -1470,7 +1505,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getSurvivorsGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(mocks.gamePlayAugmenterService.getSurvivorsGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
     it("should call get game play eligible targets for werewolves when game play source name is werewolves.", async() => {
@@ -1478,7 +1513,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getWerewolvesGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getWerewolvesGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for big bad wolf when game play source name is big bad wolf.", async() => {
@@ -1486,7 +1521,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getBigBadWolfGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getBigBadWolfGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for cupid when game play source name is cupid.", async() => {
@@ -1494,7 +1529,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getCupidGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getCupidGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for fox when game play source name is fox.", async() => {
@@ -1502,7 +1537,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getFoxGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getFoxGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for guard when game play source name is guard.", async() => {
@@ -1510,7 +1545,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getGuardGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getGuardGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for hunter when game play source name is hunter.", async() => {
@@ -1518,7 +1553,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getHunterGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getHunterGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for pied piper when game play source name is pied piper.", async() => {
@@ -1526,7 +1561,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getPiedPiperGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getPiedPiperGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for raven when game play source name is raven.", async() => {
@@ -1534,7 +1569,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getRavenGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getRavenGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for scapegoat when game play source name is scapegoat.", async() => {
@@ -1542,7 +1577,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getScapegoatGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getScapegoatGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for see when game play source name is see.", async() => {
@@ -1550,7 +1585,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getSeerGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getSeerGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for white werewolf when game play source name is white werewolf.", async() => {
@@ -1558,7 +1593,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getWhiteWerewolfGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getWhiteWerewolfGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for wild child when game play source name is wild child.", async() => {
@@ -1566,7 +1601,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getWildChildGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getWildChildGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for witch when game play source name is witch.", async() => {
@@ -1574,147 +1609,139 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(localMocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
   });
 
   describe("canSurvivorsSkipGamePlay", () => {
-    it("should return false when game play action is elect sheriff.", () => {
-      const gamePlay = createFakeGamePlay({ action: GamePlayActions.ELECT_SHERIFF });
-      const game = createFakeGame();
-
-      expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](game, gamePlay)).toBe(false);
-    });
-
-    it("should return false when game play action is vote and game play cause is angel presence.", () => {
-      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE });
-      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) });
-      const game = createFakeGame({ options });
-
-      expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](game, gamePlay)).toBe(false);
-    });
-
-    it("should return true when game play action is not elect sheriff and game options say that votes can be skipped.", () => {
-      const gamePlay = createFakeGamePlay({ action: GamePlayActions.VOTE });
-      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) });
-      const game = createFakeGame({ options });
-
-      expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](game, gamePlay)).toBe(true);
-    });
-
-    it("should return true when game play action is not vote but because angel presence.", () => {
-      const gamePlay = createFakeGamePlayRavenMarks({ cause: GamePlayCauses.ANGEL_PRESENCE });
-      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) });
-      const game = createFakeGame({ options });
-
-      expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](game, gamePlay)).toBe(true);
-    });
-
-    it("should return false when game play action is not elect sheriff and game options say that votes can't be skipped.", () => {
-      const gamePlay = createFakeGamePlay({ action: GamePlayActions.VOTE });
-      const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
-      const players = [
-        createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
-        createFakeAngelAlivePlayer(),
-        createFakeWitchAlivePlayer({ isAlive: false }),
-      ];
-      const game = createFakeGame({
-        players,
-        options,
-      });
-
-      expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](game, gamePlay)).toBe(false);
+    it.each<{
+      test: string;
+      gamePlay: GamePlay;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when game play action is elect sheriff.",
+        gamePlay: createFakeGamePlay({ action: GamePlayActions.ELECT_SHERIFF }),
+        game: createFakeGame(),
+        expected: false,
+      },
+      {
+        test: "should return false when game play action is vote and game play cause is angel presence.",
+        gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
+        expected: false,
+      },
+      {
+        test: "should return true when game play action is not elect sheriff and game options say that votes can be skipped.",
+        gamePlay: createFakeGamePlay({ action: GamePlayActions.VOTE }),
+        game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
+        expected: true,
+      },
+      {
+        test: "should return true when game play action is not vote but because angel presence.",
+        gamePlay: createFakeGamePlayRavenMarks({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
+        expected: true,
+      },
+      {
+        test: "should return false when game play action is not elect sheriff and game options say that votes can't be skipped.",
+        gamePlay: createFakeGamePlay({ action: GamePlayActions.VOTE }),
+        game: createFakeGame({
+          options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) }),
+          players: [
+            createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
+            createFakeAngelAlivePlayer(),
+            createFakeWitchAlivePlayer({ isAlive: false }),
+          ],
+        }),
+        expected: false,
+      },
+    ])("$test", ({ gamePlay, game, expected }) => {
+      expect(services.gamePlayAugmenter["canSurvivorsSkipGamePlay"](game, gamePlay)).toBe(expected);
     });
   });
 
   describe("canBigBadWolfSkipGamePlay", () => {
-    it("should return true when there are no players left to eat by werewolves.", () => {
-      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValueOnce([]);
-      const game = createFakeGame();
-
-      expect(services.gamePlayAugmenter["canBigBadWolfSkipGamePlay"](game)).toBe(true);
-    });
-
-    it("should return false when there are players left to eat by werewolves.", () => {
-      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValueOnce([createFakePlayer()]);
-      const game = createFakeGame();
-
-      expect(services.gamePlayAugmenter["canBigBadWolfSkipGamePlay"](game)).toBe(false);
+    it.each<{
+      test: string;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when there are no players left to eat by werewolves.",
+        game: createFakeGame({ players: [createFakeWerewolfAlivePlayer()] }),
+        expected: true,
+      },
+      {
+        test: "should return false when there are players left to eat by werewolves.",
+        game: createFakeGame({ players: [createFakeVillagerAlivePlayer()] }),
+        expected: false,
+      },
+    ])("$test", ({ game, expected }) => {
+      expect(services.gamePlayAugmenter["canBigBadWolfSkipGamePlay"](game)).toBe(expected);
     });
   });
 
   describe("canThiefSkipGamePlay", () => {
-    it("should return true when game has undefined additional cards.", () => {
-      const game = createFakeGame();
-
-      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(true);
-    });
-
-    it("should return true when game has no additional cards.", () => {
-      const additionalCards = [];
-      const game = createFakeGame({ additionalCards });
-
-      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(true);
-    });
-
-    it("should return true when thief doesn't have to choose between werewolves cards.", () => {
-      const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.SEER }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
-      const game = createFakeGame({
-        additionalCards,
-        options,
-      });
-
-      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(true);
-    });
-
-    it("should return true when thief has to choose between werewolves cards but game options allow to skip.", () => {
-      const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: false }) }) });
-      const game = createFakeGame({
-        additionalCards,
-        options,
-      });
-
-      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(true);
-    });
-
-    it("should return false when thief has to choose between werewolves cards and game options don't allow to skip.", () => {
-      const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
-      const game = createFakeGame({
-        additionalCards,
-        options,
-      });
-
-      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(false);
+    it.each<{
+      test: string;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when game has undefined additional cards.",
+        game: createFakeGame(),
+        expected: true,
+      },
+      {
+        test: "should return true when game has no additional cards.",
+        game: createFakeGame({ additionalCards: [] }),
+        expected: true,
+      },
+      {
+        test: "should return true when thief doesn't have to choose between werewolves cards.",
+        game: createFakeGame({
+          additionalCards: [
+            createFakeGameAdditionalCard({ roleName: RoleNames.SEER }),
+            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+          ],
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) }),
+        }),
+        expected: true,
+      },
+      {
+        test: "should return true when thief has to choose between werewolves cards but game options allow to skip.",
+        game: createFakeGame({
+          additionalCards: [
+            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+          ],
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: false }) }) }),
+        }),
+        expected: true,
+      },
+      {
+        test: "should return false when thief has to choose between werewolves cards and game options don't allow to skip.",
+        game: createFakeGame({
+          additionalCards: [
+            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+          ],
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) }),
+        }),
+        expected: false,
+      },
+    ])("$test", ({ game, expected }) => {
+      expect(services.gamePlayAugmenter["canThiefSkipGamePlay"](game)).toBe(expected);
     });
   });
 
   describe("canGamePlayBeSkipped", () => {
-    let localMocks: {
-      gamePlayAugmenterService: {
-        canSurvivorsSkipGamePlay: jest.SpyInstance; canBigBadWolfSkipGamePlay: jest.SpyInstance; canThiefSkipGamePlay: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = {
-        gamePlayAugmenterService: {
-          canSurvivorsSkipGamePlay: jest.spyOn(services.gamePlayAugmenter as unknown as { canSurvivorsSkipGamePlay }, "canSurvivorsSkipGamePlay").mockImplementation(),
-          canBigBadWolfSkipGamePlay: jest.spyOn(services.gamePlayAugmenter as unknown as { canBigBadWolfSkipGamePlay }, "canBigBadWolfSkipGamePlay").mockImplementation(),
-          canThiefSkipGamePlay: jest.spyOn(services.gamePlayAugmenter as unknown as { canThiefSkipGamePlay }, "canThiefSkipGamePlay").mockImplementation(),
-        },
-      };
+      mocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canSurvivorsSkipGamePlay }, "canSurvivorsSkipGamePlay").mockImplementation();
+      mocks.gamePlayAugmenterService.canBigBadWolfSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canBigBadWolfSkipGamePlay }, "canBigBadWolfSkipGamePlay").mockImplementation();
+      mocks.gamePlayAugmenterService.canThiefSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canThiefSkipGamePlay }, "canThiefSkipGamePlay").mockImplementation();
     });
 
     it("should return false when game play source name is not in canBeSkippedPlayMethods.", () => {
@@ -1725,45 +1752,46 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it.each<{
-      gamePlay: GamePlay; test: string;
+      test: string;
+      gamePlay: GamePlay;
     }>([
       {
         gamePlay: createFakeGamePlayLoversMeetEachOther(),
-        test: "game play source name are lovers.",
+        test: "should return true when game play source name are lovers.",
       },
       {
         gamePlay: createFakeGamePlayCharmedMeetEachOther(),
-        test: "game play source name are charmed.",
+        test: "should return true when game play source name are charmed.",
       },
       {
         gamePlay: createFakeGamePlayFoxSniffs(),
-        test: "game play source name is fox.",
+        test: "should return true when game play source name is fox.",
       },
       {
         gamePlay: createFakeGamePlayRavenMarks(),
-        test: "game play source name is raven.",
+        test: "should return true when game play source name is raven.",
       },
       {
         gamePlay: createFakeGamePlayScapegoatBansVoting(),
-        test: "game play source name is scapegoat.",
+        test: "should return true when game play source name is scapegoat.",
       },
       {
         gamePlay: createFakeGamePlayTwoSistersMeetEachOther(),
-        test: "game play source name are two sisters.",
+        test: "should return true when game play source name are two sisters.",
       },
       {
         gamePlay: createFakeGamePlayThreeBrothersMeetEachOther(),
-        test: "game play source name are three brothers.",
+        test: "should return true when game play source name are three brothers.",
       },
       {
         gamePlay: createFakeGamePlayWhiteWerewolfEats(),
-        test: "game play source name is white werewolf.",
+        test: "should return true when game play source name is white werewolf.",
       },
       {
         gamePlay: createFakeGamePlayWitchUsesPotions(),
-        test: "game play source name is witch.",
+        test: "should return true when game play source name is witch.",
       },
-    ])("should return true when $test [#$#].", ({ gamePlay }) => {
+    ])("$test", ({ gamePlay }) => {
       const game = createFakeGame();
 
       expect(services.gamePlayAugmenter["canGamePlayBeSkipped"](game, gamePlay)).toBe(true);
@@ -1774,7 +1802,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       services.gamePlayAugmenter["canGamePlayBeSkipped"](game, gamePlay);
 
-      expect(localMocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(mocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
     it("should call canBigBadWolfSkipGamePlay method when game play source name is big bad wolf.", () => {
@@ -1782,7 +1810,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       services.gamePlayAugmenter["canGamePlayBeSkipped"](game, gamePlay);
 
-      expect(localMocks.gamePlayAugmenterService.canBigBadWolfSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.canBigBadWolfSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call canThiefSkipGamePlay method when game play source name is thief.", () => {
@@ -1790,7 +1818,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       services.gamePlayAugmenter["canGamePlayBeSkipped"](game, gamePlay);
 
-      expect(localMocks.gamePlayAugmenterService.canThiefSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.canThiefSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
     });
   });
 
@@ -1804,8 +1832,10 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const interpolations = { gameId: game._id };
+      const mockedError = new UnexpectedException("getExpectedPlayersToPlay", UnexpectedExceptionReasons.NO_CURRENT_GAME_PLAY, { gameId: game._id.toString() });
+      mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException.mockReturnValueOnce(mockedError);
 
-      expect(() => services.gamePlayAugmenter["getExpectedPlayersToPlay"](game)).toThrow(undefined);
+      expect(() => services.gamePlayAugmenter["getExpectedPlayersToPlay"](game)).toThrow(mockedError);
       expect(mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("getExpectedPlayersToPlay", interpolations);
     });
 

@@ -17,7 +17,6 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -341,10 +340,6 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function bulkCreateFakeGameHistoryRecords(length: number, gameHistoryRecords: Partial<GameHistoryRecord>[] = [], overrides: object[] = []): GameHistoryRecord[] {
-  return bulkCreate(length, createFakeGameHistoryRecord, gameHistoryRecords, overrides);
-}
-
 export {
   createFakeGameHistoryRecordWerewolvesEatPlay,
   createFakeGameHistoryRecordBigBadWolfEatPlay,
@@ -375,5 +370,4 @@ export {
   createFakeGameHistoryRecordPlayVoting,
   createFakeGameHistoryRecordPlay,
   createFakeGameHistoryRecord,
-  bulkCreateFakeGameHistoryRecords,
 };

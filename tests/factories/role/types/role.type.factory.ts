@@ -6,8 +6,6 @@ import { Role } from "@/modules/role/types/role.type";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
-import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
-
 function createFakeRole(role: Partial<Role> = {}, override: object = {}): Role {
   return plainToInstance(Role, {
     name: role.name ?? faker.helpers.arrayElement(Object.values(RoleNames)),
@@ -21,11 +19,4 @@ function createFakeRole(role: Partial<Role> = {}, override: object = {}): Role {
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function bulkCreateFakeRoles(length: number, roles: Partial<Role>[] = [], overrides: object[] = []): Role[] {
-  return bulkCreate(length, createFakeRole, roles, overrides);
-}
-
-export {
-  createFakeRole,
-  bulkCreateFakeRoles,
-};
+export { createFakeRole };
