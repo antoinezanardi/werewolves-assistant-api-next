@@ -7,7 +7,6 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 
 function createFakeGameAdditionalCard(gameAdditionalCard: Partial<GameAdditionalCard> = {}, override: object = {}): GameAdditionalCard {
   return plainToInstance(GameAdditionalCard, {
@@ -19,8 +18,4 @@ function createFakeGameAdditionalCard(gameAdditionalCard: Partial<GameAdditional
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function bulkCreateFakeGameAdditionalCards(length: number, gameAdditionalCards: Partial<GameAdditionalCard>[] = [], overrides: object[] = []): GameAdditionalCard[] {
-  return bulkCreate(length, createFakeGameAdditionalCard, gameAdditionalCards, overrides);
-}
-
-export { bulkCreateFakeGameAdditionalCards, createFakeGameAdditionalCard };
+export { createFakeGameAdditionalCard };

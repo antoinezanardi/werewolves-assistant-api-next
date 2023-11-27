@@ -21,4 +21,7 @@ function bulkCreateFakeCreateGamePlayerDto(length: number): CreateGamePlayerDto[
   return bulkCreate(length, createFakeCreateGamePlayerDto);
 }
 
-export { createFakeCreateGamePlayerDto, bulkCreateFakeCreateGamePlayerDto };
+export {
+  createFakeCreateGamePlayerDto,
+  bulkCreateFakeCreateGamePlayerDto,
+};

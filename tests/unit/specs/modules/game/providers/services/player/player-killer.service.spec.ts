@@ -589,15 +589,21 @@ describe("Player Killer Service", () => {
         expected: false,
       },
       {
+        test: "should return false when player is protected by guard, is little girl but game options allows guard to protect her.",
+        player: createFakeLittleGirlAlivePlayer({ attributes: [createFakeProtectedByGuardPlayerAttribute()] }),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByGuard: true }) }) }) }),
+        expected: false,
+      },
+      {
         test: "should return true when player is protected by guard, is little girl but game options doesn't allow guard to protect her.",
         player: createFakeLittleGirlAlivePlayer({ attributes: [createFakeProtectedByGuardPlayerAttribute()] }),
         game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByGuard: false }) }) }) }),
         expected: true,
       },
       {
-        test: "should return false when player is protected by guard, is little girl but game options allows guard to protect her.",
-        player: createFakeLittleGirlAlivePlayer({ attributes: [createFakeProtectedByGuardPlayerAttribute()] }),
-        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByGuard: true }) }) }) }),
+        test: "should return false when little girl is saved by the witch.",
+        player: createFakeLittleGirlAlivePlayer({ attributes: [createFakeDrankLifePotionByWitchPlayerAttribute()] }),
+        game: createFakeGame(),
         expected: false,
       },
       {
@@ -608,6 +614,14 @@ describe("Player Killer Service", () => {
       },
     ])("$test", ({ player, game, expected }) => {
       expect(services.playerKiller["canPlayerBeEaten"](player, game)).toBe(expected);
+    });
+
+    it("should return false when player is protected by guard and is not little girl.", () => {
+      const player = createFakeSeerAlivePlayer({ attributes: [createFakeProtectedByGuardPlayerAttribute()] });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByGuard: false }) }) });
+      const game = createFakeGame({ options });
+
+      expect(services.playerKiller["canPlayerBeEaten"](player, game)).toBe(false);
     });
   });
 

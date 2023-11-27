@@ -3,7 +3,8 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { ROLES } from "@/modules/role/constants/role.constant";
 import type { Role } from "@/modules/role/types/role.type";
 
-import { bulkCreateFakeRoles } from "@tests/factories/role/types/role.type.factory";
+import { toJSON } from "@/shared/misc/helpers/object.helper";
+
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 
 describe("Role Controller", () => {
@@ -24,7 +25,7 @@ describe("Role Controller", () => {
       const respondedRoles = response.json<Role[]>();
 
       expect(response.statusCode).toBe(200);
-      expect(bulkCreateFakeRoles(respondedRoles.length, respondedRoles)).toStrictEqual(ROLES);
+      expect(respondedRoles).toStrictEqual(toJSON(ROLES));
     });
   });
 });
