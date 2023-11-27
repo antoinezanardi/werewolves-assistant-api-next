@@ -1,5 +1,13 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.23.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.23.0...v1.23.1) (2023-11-27)
+
+
+### 🔁 CI
+
+* **deploy-to-production:** deployment to production is triggered on tag creation ([#667](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/667)) ([b269b11](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/b269b1171fcc26f68c8d3d6103d4286bdf2383c7)), closes [#571](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/571)
+* **deploy:** deployment to docker hub on tag creation with version ([#669](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/669)) ([d25605e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d25605e1e768eee9192c6fa9bf4766eb576a032f))
+
 ## [1.23.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.22.0...v1.23.0) (2023-11-27)
 
 
