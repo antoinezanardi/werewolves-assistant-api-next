@@ -1,4 +1,4 @@
-name: ⛵️ Push on develop branch Workflow
+name: ⛵️ Push On Develop Branch Workflow
 
 on:
   push:
