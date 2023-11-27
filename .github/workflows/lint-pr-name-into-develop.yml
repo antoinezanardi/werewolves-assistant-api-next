@@ -1,4 +1,4 @@
-name: 🔃 Lint Pull Request Name Into Develop Workflow
+name: 🔃 Lint PR Name Into Develop Workflow
 
 on:
   pull_request:
@@ -9,6 +9,7 @@ on:
       - edited
       - reopened
       - synchronize
+
 jobs:
   develop-pr-lint:
     name: Lint Pull Request Name 🔃
