@@ -1,4 +1,6 @@
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerOnVillagersSide, isPlayerOnWerewolvesSide } from "@/modules/game/helpers/player/player.helper";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
@@ -10,67 +12,74 @@ import { createFakePlayer, createFakePlayerSide } from "@tests/factories/game/sc
 
 describe("Player Helper", () => {
   describe("canPiedPiperCharm", () => {
-    it("should return false when pied piper is powerless.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
-      const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] });
-      
-      expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(false);
-    });
-
-    it("should return false when pied piper is dead.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
-      const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ attributes: [], isAlive: false });
-      
-      expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(false);
-    });
-
-    it("should return false when pied piper is infected and thus is powerless.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
-      const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
-      
-      expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(false);
-    });
-
-    it("should return true when pied piper is infected but original rule is not respected.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
-      const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
-      
-      expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(true);
-    });
-
-    it("should return true when pied piper is not powerless and currently a villager.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
-      const game = createFakeGame({ options });
-      const piedPiperPlayer = createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.VILLAGERS }) });
-      
-      expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(true);
+    it.each<{
+      test: string;
+      piedPiperPlayer: Player;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when pied piper is powerless.",
+        piedPiperPlayer: createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        game: createFakeGame(),
+        expected: false,
+      },
+      {
+        test: "should return false when pied piper is dead.",
+        piedPiperPlayer: createFakePiedPiperAlivePlayer({ attributes: [], isAlive: false }),
+        game: createFakeGame(),
+        expected: false,
+      },
+      {
+        test: "should return false when pied piper is infected and thus is powerless.",
+        piedPiperPlayer: createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) }) }),
+        expected: false,
+      },
+      {
+        test: "should return true when pied piper is infected but original rule is not respected.",
+        piedPiperPlayer: createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) }) }),
+        expected: true,
+      },
+      {
+        test: "should return true when pied piper is not powerless and currently a villager.",
+        piedPiperPlayer: createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.VILLAGERS }) }),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) }) }),
+        expected: true,
+      },
+    ])("$test", ({ piedPiperPlayer, game, expected }) => {
+      expect(canPiedPiperCharm(piedPiperPlayer, game)).toBe(expected);
     });
   });
 
   describe("isPlayerAliveAndPowerful", () => {
-    it("should return false when player is dead.", () => {
-      const game = createFakeGame();
-      const player = createFakePlayer({ isAlive: false, attributes: [] });
-
-      expect(isPlayerAliveAndPowerful(player, game)).toBe(false);
-    });
-
-    it("should return false when player is powerless.", () => {
-      const game = createFakeGame();
-      const player = createFakePlayer({ isAlive: true, attributes: [createFakePowerlessByAncientPlayerAttribute()] });
-
-      expect(isPlayerAliveAndPowerful(player, game)).toBe(false);
-    });
-
-    it("should return true when player is alive and powerful.", () => {
-      const game = createFakeGame();
-      const player = createFakePlayer({ isAlive: true, attributes: [] });
-      
-      expect(isPlayerAliveAndPowerful(player, game)).toBe(true);
+    it.each<{
+      test: string;
+      player: Player;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when player is dead.",
+        player: createFakePlayer({ isAlive: false, attributes: [] }),
+        game: createFakeGame(),
+        expected: false,
+      },
+      {
+        test: "should return false when player is powerless.",
+        player: createFakePlayer({ isAlive: true, attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        game: createFakeGame(),
+        expected: false,
+      },
+      {
+        test: "should return true when player is alive and powerful.",
+        player: createFakePlayer({ isAlive: true, attributes: [] }),
+        game: createFakeGame(),
+        expected: true,
+      },
+    ])("$test", ({ player, game, expected }) => {
+      expect(isPlayerAliveAndPowerful(player, game)).toBe(expected);
     });
   });
 

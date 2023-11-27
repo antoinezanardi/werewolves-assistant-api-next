@@ -3,6 +3,7 @@ import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 import type { MongooseModuleFactoryOptions } from "@nestjs/mongoose";
 
+import type { EnvironmentVariables } from "@/modules/config/env/types/env.type";
 import { getDatabasePort, mongooseModuleFactory } from "@/modules/config/database/helpers/database.helper";
 
 describe("Database Helper", () => {
@@ -12,7 +13,7 @@ describe("Database Helper", () => {
       get: jest.SpyInstance;
     };
   };
-  let services: { config: ConfigService };
+  let services: { config: ConfigService<EnvironmentVariables, true> };
   
   const connectionTimeoutMs = 3000;
   const host = "localhost";
@@ -38,7 +39,7 @@ describe("Database Helper", () => {
       ],
     }).compile();
     
-    services = { config: module.get<ConfigService>(ConfigService) };
+    services = { config: module.get<ConfigService<EnvironmentVariables, true>>(ConfigService<EnvironmentVariables, true>) };
     
     when(mocks.configService.getOrThrow).calledWith("DATABASE_HOST").mockReturnValue(host);
     when(mocks.configService.get).calledWith("DATABASE_PORT").mockReturnValue(port);

@@ -6,7 +6,7 @@ import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules
 import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createFakePlayerDiseaseByRustySwordKnightDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
@@ -101,7 +101,7 @@ function createFakePlayerDeath(playerDeath: Partial<PlayerDeath> = {}, override:
     source: playerDeath.source ?? faker.helpers.arrayElement(Object.values(GAME_SOURCES)),
     cause: playerDeath.cause ?? faker.helpers.arrayElement(Object.values(PlayerDeathCauses)),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

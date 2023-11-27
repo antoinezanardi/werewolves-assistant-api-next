@@ -4,9 +4,7 @@ import { plainToInstance } from "class-transformer";
 import { RoleNames, RoleOrigins, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
 import { Role } from "@/modules/role/types/role.type";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
-
-import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createFakeRole(role: Partial<Role> = {}, override: object = {}): Role {
   return plainToInstance(Role, {
@@ -18,14 +16,7 @@ function createFakeRole(role: Partial<Role> = {}, override: object = {}): Role {
     maxInGame: role.maxInGame ?? undefined,
     recommendedMinPlayers: role.recommendedMinPlayers ?? undefined,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function bulkCreateFakeRoles(length: number, roles: Partial<Role>[] = [], overrides: object[] = []): Role[] {
-  return bulkCreate(length, createFakeRole, roles, overrides);
-}
-
-export {
-  createFakeRole,
-  bulkCreateFakeRoles,
-};
+export { createFakeRole };

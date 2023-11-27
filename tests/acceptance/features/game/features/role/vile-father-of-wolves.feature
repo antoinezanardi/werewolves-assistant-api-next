@@ -84,6 +84,9 @@ Feature: 🐺 Vile Father of Wolves role
     When the survivors vote with the following votes
       | voter  | against |
       | Olivia | Antoine |
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
 
     When the vile father of wolves infects the player named Thomas

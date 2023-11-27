@@ -2,6 +2,9 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 
+import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helper";
@@ -11,8 +14,11 @@ import { GameHistoryRecordService } from "@/modules/game/providers/services/game
 import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
+import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.type";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
@@ -29,12 +35,39 @@ import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, create
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeDogWolfAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { bulkCreateFakePlayers, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-
-jest.mock("@/shared/exception/types/bad-game-play-payload-exception.type");
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Validator Service", () => {
   let mocks: {
+    gamePlayValidatorService: {
+      validateGamePlayWithRelationsDtoJudgeRequest: jest.SpyInstance;
+      validateGamePlayWithRelationsDtoChosenSide: jest.SpyInstance;
+      validateGamePlayVotesWithRelationsDto: jest.SpyInstance;
+      validateGamePlayTargetsWithRelationsDto: jest.SpyInstance;
+      validateGamePlayWithRelationsDtoChosenCard: jest.SpyInstance;
+      validateGamePlayWitchTargets: jest.SpyInstance;
+      validateGamePlayWithRelationsDto: jest.SpyInstance;
+      validateGamePlayThiefChosenCard: jest.SpyInstance;
+      validateDrankLifePotionTargets: jest.SpyInstance;
+      validateDrankDeathPotionTargets: jest.SpyInstance;
+      validateGamePlayInfectedTargets: jest.SpyInstance;
+      validateGamePlaySheriffTargets: jest.SpyInstance;
+      validateGamePlayGuardTargets: jest.SpyInstance;
+      validateGamePlayPiedPiperTargets: jest.SpyInstance;
+      validateGamePlayWildChildTargets: jest.SpyInstance;
+      validateGamePlayRavenTargets: jest.SpyInstance;
+      validateGamePlaySeerTargets: jest.SpyInstance;
+      validateGamePlayFoxTargets: jest.SpyInstance;
+      validateGamePlayCupidTargets: jest.SpyInstance;
+      validateGamePlayScapegoatTargets: jest.SpyInstance;
+      validateGamePlayHunterTargets: jest.SpyInstance;
+      validateGamePlayWerewolvesTargets: jest.SpyInstance;
+      validateGamePlayTargetsBoundaries: jest.SpyInstance;
+      validateInfectedTargetsAndPotionUsage: jest.SpyInstance;
+      validateGamePlaySourceTargets: jest.SpyInstance;
+      validateGamePlayVotesTieBreakerWithRelationsDto: jest.SpyInstance;
+      validateGamePlayVotesWithRelationsDtoSourceAndTarget: jest.SpyInstance;
+    };
     gameRepository: {
       find: jest.SpyInstance;
       findOne: jest.SpyInstance;
@@ -56,11 +89,43 @@ describe("Game Play Validator Service", () => {
     gamePlayHelper: {
       isPlayerInteractableWithInteractionType: jest.SpyInstance;
     };
+    unexpectedExceptionFactory: {
+      createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
+    };
   };
   let services: { gamePlayValidator: GamePlayValidatorService };
 
   beforeEach(async() => {
     mocks = {
+      gamePlayValidatorService: {
+        validateGamePlayWithRelationsDtoJudgeRequest: jest.fn(),
+        validateGamePlayWithRelationsDtoChosenSide: jest.fn(),
+        validateGamePlayVotesWithRelationsDto: jest.fn(),
+        validateGamePlayTargetsWithRelationsDto: jest.fn(),
+        validateGamePlayWithRelationsDtoChosenCard: jest.fn(),
+        validateGamePlayWitchTargets: jest.fn(),
+        validateGamePlayWithRelationsDto: jest.fn(),
+        validateGamePlayThiefChosenCard: jest.fn(),
+        validateDrankLifePotionTargets: jest.fn(),
+        validateDrankDeathPotionTargets: jest.fn(),
+        validateGamePlayInfectedTargets: jest.fn(),
+        validateGamePlaySheriffTargets: jest.fn(),
+        validateGamePlayGuardTargets: jest.fn(),
+        validateGamePlayPiedPiperTargets: jest.fn(),
+        validateGamePlayWildChildTargets: jest.fn(),
+        validateGamePlayRavenTargets: jest.fn(),
+        validateGamePlaySeerTargets: jest.fn(),
+        validateGamePlayFoxTargets: jest.fn(),
+        validateGamePlayCupidTargets: jest.fn(),
+        validateGamePlayScapegoatTargets: jest.fn(),
+        validateGamePlayHunterTargets: jest.fn(),
+        validateGamePlayWerewolvesTargets: jest.fn(),
+        validateGamePlayTargetsBoundaries: jest.fn(),
+        validateInfectedTargetsAndPotionUsage: jest.fn(),
+        validateGamePlaySourceTargets: jest.fn(),
+        validateGamePlayVotesTieBreakerWithRelationsDto: jest.fn(),
+        validateGamePlayVotesWithRelationsDtoSourceAndTarget: jest.fn(),
+      },
       gameRepository: {
         find: jest.fn(),
         findOne: jest.fn(),
@@ -80,11 +145,11 @@ describe("Game Play Validator Service", () => {
         didJudgeMakeHisSign: jest.fn(),
       },
       gamePlayHelper: { isPlayerInteractableWithInteractionType: jest.spyOn(GamePlayHelper, "isPlayerInteractableWithInteractionType").mockImplementation() },
+      unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
     };
     
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        GamePlayValidatorService,
         {
           provide: GameHistoryRecordService,
           useValue: mocks.gameHistoryRecordService,
@@ -97,6 +162,7 @@ describe("Game Play Validator Service", () => {
           provide: GameHistoryRecordRepository,
           useValue: mocks.gameHistoryRecordRepository,
         },
+        GamePlayValidatorService,
       ],
     }).compile();
     
@@ -104,37 +170,23 @@ describe("Game Play Validator Service", () => {
   });
   
   describe("validateGamePlayWithRelationsDto", () => {
-    let localMocks: {
-      gamePlayValidatorService: {
-        validateGamePlayWithRelationsDtoJudgeRequest: jest.SpyInstance;
-        validateGamePlayWithRelationsDtoChosenSide: jest.SpyInstance;
-        validateGamePlayVotesWithRelationsDto: jest.SpyInstance;
-        validateGamePlayTargetsWithRelationsDto: jest.SpyInstance;
-        validateGamePlayWithRelationsDtoChosenCard: jest.SpyInstance;
-      };
-      unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.SpyInstance };
-    };
-
     beforeEach(() => {
-      localMocks = {
-        gamePlayValidatorService: {
-          validateGamePlayWithRelationsDtoJudgeRequest: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoJudgeRequest }, "validateGamePlayWithRelationsDtoJudgeRequest").mockImplementation(),
-          validateGamePlayWithRelationsDtoChosenSide: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoChosenSide }, "validateGamePlayWithRelationsDtoChosenSide").mockImplementation(),
-          validateGamePlayVotesWithRelationsDto: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayVotesWithRelationsDto }, "validateGamePlayVotesWithRelationsDto").mockImplementation(),
-          validateGamePlayTargetsWithRelationsDto: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayTargetsWithRelationsDto }, "validateGamePlayTargetsWithRelationsDto").mockImplementation(),
-          validateGamePlayWithRelationsDtoChosenCard: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoChosenCard }, "validateGamePlayWithRelationsDtoChosenCard").mockImplementation(),
-        },
-        unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
-      };
+      mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoJudgeRequest = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoJudgeRequest }, "validateGamePlayWithRelationsDtoJudgeRequest").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoChosenSide = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoChosenSide }, "validateGamePlayWithRelationsDtoChosenSide").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayVotesWithRelationsDto = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayVotesWithRelationsDto }, "validateGamePlayVotesWithRelationsDto").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayTargetsWithRelationsDto = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayTargetsWithRelationsDto }, "validateGamePlayTargetsWithRelationsDto").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoChosenCard = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoChosenCard }, "validateGamePlayWithRelationsDtoChosenCard").mockImplementation();
     });
     
     it("should throw error when game's current play is not set.", async() => {
       const game = createFakeGame();
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
       const interpolations = { gameId: game._id };
-      
-      await expect(services.gamePlayValidator.validateGamePlayWithRelationsDto(makeGamePlayWithRelationsDto, game)).toReject();
-      expect(localMocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("validateGamePlayWithRelationsDto", interpolations);
+      const mockedError = new UnexpectedException("validateGamePlayWithRelationsDto", UnexpectedExceptionReasons.NO_CURRENT_GAME_PLAY, { gameId: game._id.toString() });
+      mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException.mockReturnValue(mockedError);
+
+      await expect(services.gamePlayValidator.validateGamePlayWithRelationsDto(makeGamePlayWithRelationsDto, game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("validateGamePlayWithRelationsDto", interpolations);
     });
 
     it("should call validators when called.", async() => {
@@ -142,11 +194,11 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
       await services.gamePlayValidator.validateGamePlayWithRelationsDto(makeGamePlayWithRelationsDto, game);
       
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoJudgeRequest).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoChosenSide).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayVotesWithRelationsDto).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayTargetsWithRelationsDto).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoChosenCard).toHaveBeenCalledOnce();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoJudgeRequest).toHaveBeenCalledOnce();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoChosenSide).toHaveBeenCalledOnce();
+      expect(mocks.gamePlayValidatorService.validateGamePlayVotesWithRelationsDto).toHaveBeenCalledOnce();
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsWithRelationsDto).toHaveBeenCalledOnce();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoChosenCard).toHaveBeenCalledOnce();
     });
   });
 
@@ -203,21 +255,15 @@ describe("Game Play Validator Service", () => {
         createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.THIEF_MUST_CHOOSE_CARD);
 
-      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Thief must choose a card (`chosenCard`)");
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).toThrow(expectedError);
     });
   });
 
   describe("validateGamePlayWithRelationsDtoChosenCard", () => {
-    let localMocks: {
-      gamePlayValidatorService: {
-        validateGamePlayThiefChosenCard: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = { gamePlayValidatorService: { validateGamePlayThiefChosenCard: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayThiefChosenCard }, "validateGamePlayThiefChosenCard").mockImplementation() } };
+      mocks.gamePlayValidatorService.validateGamePlayThiefChosenCard = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayThiefChosenCard }, "validateGamePlayThiefChosenCard").mockImplementation();
     });
 
     it("should do nothing when chosen card is not defined and not expected.", () => {
@@ -230,9 +276,9 @@ describe("Game Play Validator Service", () => {
     it("should throw error when chosen card is defined but not expected.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenCard: createFakeGameAdditionalCard() });
-      
-      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`chosenCard` can't be set on this current game's state");
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_CHOSEN_CARD);
+
+      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should call validateGamePlayThiefChosenCard method when action is choose card.", () => {
@@ -241,7 +287,7 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenCard });
       services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlayThiefChosenCard).toHaveBeenCalledExactlyOnceWith(chosenCard, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayThiefChosenCard).toHaveBeenCalledExactlyOnceWith(chosenCard, game);
     });
   });
 
@@ -252,9 +298,10 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
       ];
+      mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(true);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.TOO_MUCH_DRANK_LIFE_POTION_TARGETS);
 
-      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("There are too much targets which drank life potion (`targets.drankPotion`)");
+      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game)).toThrow(expectedError);
     });
 
     it("should throw error when life potion target can't drink it.", () => {
@@ -262,9 +309,9 @@ describe("Game Play Validator Service", () => {
       const targetedPlayer = createFakePlayer({ isAlive: true, attributes: [] });
       const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WitchPotions.LIFE })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_LIFE_POTION_TARGET);
 
-      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Life potion can't be applied to this target (`targets.drankPotion`)");
+      expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game)).toThrow(expectedError);
     });
 
     it("should do nothing when there is no life potion target.", () => {
@@ -291,9 +338,10 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
       ];
+      mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(true);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.TOO_MUCH_DRANK_DEATH_POTION_TARGETS);
 
-      expect(() => services.gamePlayValidator["validateDrankDeathPotionTargets"](drankDeathPotionTargets, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("There are too much targets which drank death potion (`targets.drankPotion`)");
+      expect(() => services.gamePlayValidator["validateDrankDeathPotionTargets"](drankDeathPotionTargets, game)).toThrow(expectedError);
     });
 
     it("should throw error when death potion target can't drink it.", () => {
@@ -301,9 +349,9 @@ describe("Game Play Validator Service", () => {
       const targetedPlayer = createFakePlayer({ isAlive: false });
       const drankDeathPotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WitchPotions.DEATH })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_DEATH_POTION_TARGET);
 
-      expect(() => services.gamePlayValidator["validateDrankDeathPotionTargets"](drankDeathPotionTargets, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Death potion can't be applied to this target (`targets.drankPotion`)");
+      expect(() => services.gamePlayValidator["validateDrankDeathPotionTargets"](drankDeathPotionTargets, game)).toThrow(expectedError);
     });
 
     it("should do nothing when there is no death potion target.", () => {
@@ -324,20 +372,9 @@ describe("Game Play Validator Service", () => {
   });
 
   describe("validateGamePlayWitchTargets", () => {
-    let localMocks: {
-      gamePlayValidatorService: {
-        validateDrankLifePotionTargets: jest.SpyInstance;
-        validateDrankDeathPotionTargets: jest.SpyInstance;
-      };
-    };
-    
     beforeEach(() => {
-      localMocks = {
-        gamePlayValidatorService: {
-          validateDrankLifePotionTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateDrankLifePotionTargets }, "validateDrankLifePotionTargets").mockImplementation(),
-          validateDrankDeathPotionTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateDrankDeathPotionTargets }, "validateDrankDeathPotionTargets").mockImplementation(),
-        },
-      };
+      mocks.gamePlayValidatorService.validateDrankLifePotionTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateDrankLifePotionTargets }, "validateDrankLifePotionTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateDrankDeathPotionTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateDrankDeathPotionTargets }, "validateDrankDeathPotionTargets").mockImplementation();
     });
     
     it("should throw error when witch targeted someone with life potion but already used it with death potion before.", async() => {
@@ -356,9 +393,9 @@ describe("Game Play Validator Service", () => {
       ];
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.LIFE).mockResolvedValue(gameHistoryRecords);
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue(gameHistoryRecords);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.drankPotion` can't be set on this current game's state");
+      await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should throw error when witch targeted someone with life potion but already used it alone before.", async() => {
@@ -374,9 +411,9 @@ describe("Game Play Validator Service", () => {
       ];
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.LIFE).mockResolvedValue(gameHistoryRecords);
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue([]);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.drankPotion` can't be set on this current game's state");
+      await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should throw error when witch targeted someone with death potion but already used it with life potion before.", async() => {
@@ -395,9 +432,9 @@ describe("Game Play Validator Service", () => {
       ];
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.LIFE).mockResolvedValue(gameHistoryRecords);
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue(gameHistoryRecords);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.drankPotion` can't be set on this current game's state");
+      await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should throw error when witch targeted someone with death potion but already used it alone before.", async() => {
@@ -413,9 +450,9 @@ describe("Game Play Validator Service", () => {
       ];
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.LIFE).mockResolvedValue([]);
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue(gameHistoryRecords);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.drankPotion` can't be set on this current game's state");
+      await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should call potions validators without players when called with valid data but no target drank potions.", async() => {
@@ -425,8 +462,8 @@ describe("Game Play Validator Service", () => {
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
     });
 
     it("should call potions validators with players when called without bad data and without witch history.", async() => {
@@ -439,8 +476,8 @@ describe("Game Play Validator Service", () => {
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
-      expect(localMocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[1]], game);
+      expect(mocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
+      expect(mocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[1]], game);
     });
 
     it("should call potions validators with players when called for valid life potion data and some witch history.", async() => {
@@ -452,8 +489,8 @@ describe("Game Play Validator Service", () => {
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue(gameHistoryRecords);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
-      expect(localMocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
+      expect(mocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
     });
 
     it("should call potions validators with players when called for valid death potion data and some witch history.", async() => {
@@ -465,52 +502,52 @@ describe("Game Play Validator Service", () => {
       when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
+      expect(mocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateDrankDeathPotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
     });
   });
 
   describe("validateGamePlayInfectedTargets", () => {
     it("should throw error when vile father of wolves is not in the game.", async() => {
-      const players = bulkCreateFakePlayers(4, [
+      const players = [
         createFakeWitchAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-      ]);
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
       const gameHistoryRecords = [];
       mocks.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords.mockResolvedValue(gameHistoryRecords);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.isInfected` can't be set on this current game's state");
+      await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should throw error when vile father of wolves is dead.", async() => {
-      const players = bulkCreateFakePlayers(4, [
+      const players = [
         createFakeWitchAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer({ isAlive: false }),
-      ]);
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
       const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];
       const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: gameHistoryRecordTargets }) })];
       mocks.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords.mockResolvedValue(gameHistoryRecords);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.isInfected` can't be set on this current game's state");
+      await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should throw error when vile father of wolves has already infected and some targets are infected.", async() => {
-      const players = bulkCreateFakePlayers(4, [
+      const players = [
         createFakeWitchAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-      ]);
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];
       const gameHistoryRecordTargets = [
@@ -519,9 +556,9 @@ describe("Game Play Validator Service", () => {
       ];
       const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: gameHistoryRecordTargets }) })];
       mocks.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords.mockResolvedValue(gameHistoryRecords);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.isInfected` can't be set on this current game's state");
+      await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should do nothing when there is no infected target.", async() => {
@@ -532,12 +569,12 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when infected target data is valid.", async() => {
-      const players = bulkCreateFakePlayers(4, [
+      const players = [
         createFakeWitchAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-      ]);
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
       mocks.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords.mockResolvedValue([]);
@@ -547,14 +584,8 @@ describe("Game Play Validator Service", () => {
   });
 
   describe("validateGamePlayWerewolvesTargets", () => {
-    let localMocks: {
-      validateGamePlayInfectedTargets: {
-        validateGamePlayInfectedTargets: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = { validateGamePlayInfectedTargets: { validateGamePlayInfectedTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayInfectedTargets }, "validateGamePlayInfectedTargets").mockImplementation() } };
+      mocks.gamePlayValidatorService.validateGamePlayInfectedTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayInfectedTargets }, "validateGamePlayInfectedTargets").mockImplementation();
     });
 
     it("should do nothing when there is no target.", async() => {
@@ -575,9 +606,9 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WEREWOLVES_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Werewolves can't eat this target");
+      await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should throw error when source is BIG_BAD_WOLF and targeted player can't be eaten by him.", async() => {
@@ -590,24 +621,34 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayBigBadWolfEats(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_BIG_BAD_WOLF_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Big bad wolf can't eat this target");
+      await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should throw error when source is WHITE_WEREWOLF and targeted player can't be eaten by him.", async() => {
       const whiteWerewolfPlayer = createFakeWhiteWerewolfAlivePlayer();
-      const players = bulkCreateFakePlayers(4, [whiteWerewolfPlayer]);
+      const players = [
+        whiteWerewolfPlayer,
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWhiteWerewolfEats(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: whiteWerewolfPlayer })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WHITE_WEREWOLF_TARGET);
 
-      await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("White werewolf can't eat this target");
+      await expect(services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should do nothing when white werewolf eaten target is valid.", async() => {
-      const players = [createFakeWerewolfAlivePlayer()];
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWhiteWerewolfEats(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[0] })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(true);
@@ -634,18 +675,18 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should validate game play infected targets when called.", async() => {
-      const players = bulkCreateFakePlayers(4, [
+      const players = [
         createFakeWitchAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-      ]);
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayFoxSniffs(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
       await services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(localMocks.validateGamePlayInfectedTargets.validateGamePlayInfectedTargets).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayInfectedTargets).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, game);
     });
   });
 
@@ -654,9 +695,9 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayHunterShoots() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_HUNTER_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlayHunterTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Hunter can't shoot this target");
+      expect(() => services.gamePlayValidator["validateGamePlayHunterTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when targeted player for hunter is valid.", () => {
@@ -678,9 +719,9 @@ describe("Game Play Validator Service", () => {
       ];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(true);
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SCAPEGOAT_TARGETS);
 
-      expect(() => services.gamePlayValidator["validateGamePlayScapegoatTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("At least one of the scapegoat targets can't be banned from voting");
+      expect(() => services.gamePlayValidator["validateGamePlayScapegoatTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when all scapegoat's targets are valid.", () => {
@@ -705,9 +746,9 @@ describe("Game Play Validator Service", () => {
       ];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(true);
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_CUPID_TARGETS);
 
-      expect(() => services.gamePlayValidator["validateGamePlayCupidTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("At least one of the cupid targets can't be charmed");
+      expect(() => services.gamePlayValidator["validateGamePlayCupidTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when all cupid's targets are valid.", () => {
@@ -727,9 +768,9 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayFoxSniffs() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_FOX_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlayFoxTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Fox can't sniff this target");
+      expect(() => services.gamePlayValidator["validateGamePlayFoxTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when targeted player for fox is valid.", () => {
@@ -746,9 +787,9 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySeerLooks() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SEER_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlaySeerTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Seer can't look at this target");
+      expect(() => services.gamePlayValidator["validateGamePlaySeerTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when seer's targeted player is valid.", () => {
@@ -765,9 +806,9 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayRavenMarks() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_RAVEN_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlayRavenTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Raven can't mark this target");
+      expect(() => services.gamePlayValidator["validateGamePlayRavenTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when there are no targets.", () => {
@@ -790,13 +831,18 @@ describe("Game Play Validator Service", () => {
   describe("validateGamePlayWildChildTargets", () => {
     it("should throw error when targeted player can't be chosen as model.", () => {
       const wildChildPlayer = createFakeWildChildAlivePlayer();
-      const players = bulkCreateFakePlayers(4, [wildChildPlayer]);
+      const players = [
+        wildChildPlayer,
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWildChildChoosesModel(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: wildChildPlayer })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WILD_CHILD_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlayWildChildTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Wild child can't choose this target as a model");
+      expect(() => services.gamePlayValidator["validateGamePlayWildChildTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when wild child's targeted player is valid.", () => {
@@ -824,9 +870,9 @@ describe("Game Play Validator Service", () => {
       ];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(true);
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_PIED_PIPER_TARGETS);
 
-      expect(() => services.gamePlayValidator["validateGamePlayPiedPiperTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("At least one of the pied piper targets can't be charmed");
+      expect(() => services.gamePlayValidator["validateGamePlayPiedPiperTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when pied piper targets are valid and limited to game options.", () => {
@@ -863,9 +909,9 @@ describe("Game Play Validator Service", () => {
       const targetedPlayer = createFakeVillagerAlivePlayer({ isAlive: false });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_GUARD_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlayGuardTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Guard can't protect this target");
+      expect(() => services.gamePlayValidator["validateGamePlayGuardTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when targeted player can be protected.", () => {
@@ -900,22 +946,28 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySheriffSettlesVotes() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SHERIFF_SETTLE_VOTES_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlaySheriffTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Sheriff can't break the tie in votes with this target");
+      expect(() => services.gamePlayValidator["validateGamePlaySheriffTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should throw error when targeted player is not in last tie in votes and upcoming action is DELEGATE.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySheriffDelegates() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer({ isAlive: false }) })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SHERIFF_DELEGATE_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlaySheriffTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("Sheriff can't delegate his role to this target");
+      expect(() => services.gamePlayValidator["validateGamePlaySheriffTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when targeted player for sheriff settling votes is valid for delegate.", () => {
-      const game = createFakeGameWithCurrentPlay({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlaySheriffDelegates() });
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySheriffDelegates() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(true);
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(false);
@@ -924,7 +976,13 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when targeted player for sheriff settling votes is valid for settle votes.", () => {
-      const game = createFakeGameWithCurrentPlay({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlaySheriffSettlesVotes() });
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySheriffSettlesVotes() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(false);
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValueOnce(true);
@@ -940,9 +998,9 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer() }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeWerewolfAlivePlayer() }),
       ];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.TOO_LESS_TARGETS);
 
-      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, { min: 4, max: 4 })).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("There are too less targets for this current game's state");
+      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, { min: 4, max: 4 })).toThrow(expectedError);
     });
 
     it("should throw error when max boundary is not respected.", () => {
@@ -951,9 +1009,9 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeVillagerAlivePlayer() }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeWerewolfAlivePlayer() }),
       ];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.TOO_MUCH_TARGETS);
 
-      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, { min: 2, max: 2 })).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("There are too much targets for this current game's state");
+      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, { min: 2, max: 2 })).toThrow(expectedError);
     });
 
     it("should do nothing when boundaries are respected, even equal to max.", () => {
@@ -978,333 +1036,312 @@ describe("Game Play Validator Service", () => {
   });
 
   describe("validateGamePlaySourceTargets", () => {
-    let localMocks: {
-      gamePlayValidatorService: {
-        validateGamePlaySheriffTargets: jest.SpyInstance;
-        validateGamePlayGuardTargets: jest.SpyInstance;
-        validateGamePlayPiedPiperTargets: jest.SpyInstance;
-        validateGamePlayWildChildTargets: jest.SpyInstance;
-        validateGamePlayRavenTargets: jest.SpyInstance;
-        validateGamePlaySeerTargets: jest.SpyInstance;
-        validateGamePlayFoxTargets: jest.SpyInstance;
-        validateGamePlayCupidTargets: jest.SpyInstance;
-        validateGamePlayScapegoatTargets: jest.SpyInstance;
-        validateGamePlayHunterTargets: jest.SpyInstance;
-        validateGamePlayWerewolvesTargets: jest.SpyInstance;
-        validateGamePlayWitchTargets: jest.SpyInstance;
-      };
-    };
-    
     beforeEach(() => {
-      localMocks = {
-        gamePlayValidatorService: {
-          validateGamePlaySheriffTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlaySheriffTargets }, "validateGamePlaySheriffTargets").mockImplementation(),
-          validateGamePlayGuardTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayGuardTargets }, "validateGamePlayGuardTargets").mockImplementation(),
-          validateGamePlayPiedPiperTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayPiedPiperTargets }, "validateGamePlayPiedPiperTargets").mockImplementation(),
-          validateGamePlayWildChildTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWildChildTargets }, "validateGamePlayWildChildTargets").mockImplementation(),
-          validateGamePlayRavenTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayRavenTargets }, "validateGamePlayRavenTargets").mockImplementation(),
-          validateGamePlaySeerTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlaySeerTargets }, "validateGamePlaySeerTargets").mockImplementation(),
-          validateGamePlayFoxTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayFoxTargets }, "validateGamePlayFoxTargets").mockImplementation(),
-          validateGamePlayCupidTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayCupidTargets }, "validateGamePlayCupidTargets").mockImplementation(),
-          validateGamePlayScapegoatTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayScapegoatTargets }, "validateGamePlayScapegoatTargets").mockImplementation(),
-          validateGamePlayHunterTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayHunterTargets }, "validateGamePlayHunterTargets").mockImplementation(),
-          validateGamePlayWerewolvesTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWerewolvesTargets }, "validateGamePlayWerewolvesTargets").mockImplementation(),
-          validateGamePlayWitchTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWitchTargets }, "validateGamePlayWitchTargets").mockImplementation(),
-        },
-      };
+      mocks.gamePlayValidatorService.validateGamePlaySheriffTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlaySheriffTargets }, "validateGamePlaySheriffTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayGuardTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayGuardTargets }, "validateGamePlayGuardTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayPiedPiperTargets }, "validateGamePlayPiedPiperTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayWildChildTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWildChildTargets }, "validateGamePlayWildChildTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayRavenTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayRavenTargets }, "validateGamePlayRavenTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlaySeerTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlaySeerTargets }, "validateGamePlaySeerTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayFoxTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayFoxTargets }, "validateGamePlayFoxTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayCupidTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayCupidTargets }, "validateGamePlayCupidTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayScapegoatTargets }, "validateGamePlayScapegoatTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayHunterTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayHunterTargets }, "validateGamePlayHunterTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWerewolvesTargets }, "validateGamePlayWerewolvesTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayWitchTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWitchTargets }, "validateGamePlayWitchTargets").mockImplementation();
     });
 
     it("should call sheriff validator when game current play is for the sheriff.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySheriffSettlesVotes() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call werewolves validator when game current play is for the werewolves.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call werewolves validator when game current play is for the big bad wolf.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayBigBadWolfEats() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call werewolves validator when game current play is for the white werewolf.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWhiteWerewolfEats() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call guard validator when game current play is for the guard.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayGuardProtects() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
     
     it("should call pied piper validator when game current play is for the pied piper.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayPiedPiperCharms() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
     
     it("should call wild child validator when game current play is for the wild child.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWildChildChoosesModel() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
     
     it("should call raven validator when game current play is for the raven.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayRavenMarks() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
     
     it("should call seer validator when game current play is for the seer.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySeerLooks() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call fox validator when game current play is for the fox.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayFoxSniffs() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call cupid validator when game current play is for the cupid.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayCupidCharms() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call scapegoat validator when game current play is for the scapegoat.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayScapegoatBansVoting() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call hunter validator when game current play is for the hunter.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayHunterShoots() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
     it("should call witch validator when game current play is for the witch.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayWitchTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySeerTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayFoxTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayCupidTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayScapegoatTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayHunterTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).toHaveBeenCalledExactlyOnceWith([], game);
     });
   });
 
   describe("validateInfectedTargetsAndPotionUsage", () => {
     it("should throw error when expected action is not EAT and some targets are infected.", () => {
-      const players = bulkCreateFakePlayers(4, [
+      const players = [
         createFakeWitchAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-      ]);
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat({ action: GamePlayActions.CHOOSE_CARD }), players });
       const makeGamePlayTargetsWithRelationsDto = [
         createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
       
-      expect(() => services.gamePlayValidator["validateInfectedTargetsAndPotionUsage"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.isInfected` can't be set on this current game's state");
+      expect(() => services.gamePlayValidator["validateInfectedTargetsAndPotionUsage"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should throw error when expected source is not WEREWOLVES and some targets are infected.", () => {
-      const players = bulkCreateFakePlayers(4, [
+      const players = [
         createFakeWitchAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-      ]);
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat({ source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }) }), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
       
-      expect(() => services.gamePlayValidator["validateInfectedTargetsAndPotionUsage"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.isInfected` can't be set on this current game's state");
+      expect(() => services.gamePlayValidator["validateInfectedTargetsAndPotionUsage"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when there are infected targets and expected expected play is valid.", () => {
-      const players = bulkCreateFakePlayers(4, [
+      const players = [
         createFakeWitchAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
-      ]);
+      ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];
 
@@ -1318,9 +1355,9 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
       
-      expect(() => services.gamePlayValidator["validateInfectedTargetsAndPotionUsage"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.drankPotion` can't be set on this current game's state");
+      expect(() => services.gamePlayValidator["validateInfectedTargetsAndPotionUsage"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should throw error when expected source is not WITCH but targets drank potions.", () => {
@@ -1330,9 +1367,9 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
-      
-      expect(() => services.gamePlayValidator["validateInfectedTargetsAndPotionUsage"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets.drankPotion` can't be set on this current game's state");
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
+
+      expect(() => services.gamePlayValidator["validateInfectedTargetsAndPotionUsage"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when expected some players drank potions and game play is valid.", () => {
@@ -1348,51 +1385,39 @@ describe("Game Play Validator Service", () => {
   });
 
   describe("validateGamePlayTargetsWithRelationsDto", () => {
-    let localMocks: {
-      gamePlayValidatorService: {
-        validateGamePlayTargetsBoundaries: jest.SpyInstance;
-        validateInfectedTargetsAndPotionUsage: jest.SpyInstance;
-        validateGamePlaySourceTargets: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = {
-        gamePlayValidatorService: {
-          validateGamePlayTargetsBoundaries: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayTargetsBoundaries }, "validateGamePlayTargetsBoundaries").mockImplementation(),
-          validateInfectedTargetsAndPotionUsage: jest.spyOn(services.gamePlayValidator as unknown as { validateInfectedTargetsAndPotionUsage }, "validateInfectedTargetsAndPotionUsage").mockImplementation(),
-          validateGamePlaySourceTargets: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlaySourceTargets }, "validateGamePlaySourceTargets").mockImplementation(),
-        },
-      };
+      mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayTargetsBoundaries }, "validateGamePlayTargetsBoundaries").mockImplementation();
+      mocks.gamePlayValidatorService.validateInfectedTargetsAndPotionUsage = jest.spyOn(services.gamePlayValidator as unknown as { validateInfectedTargetsAndPotionUsage }, "validateInfectedTargetsAndPotionUsage").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlaySourceTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlaySourceTargets }, "validateGamePlaySourceTargets").mockImplementation();
     });
 
     it("should do nothing when there are no targets defined and upcoming action doesn't require targets anyway.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
 
       await expect(services.gamePlayValidator["validateGamePlayTargetsWithRelationsDto"](undefined, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateInfectedTargetsAndPotionUsage).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateInfectedTargetsAndPotionUsage).not.toHaveBeenCalled();
     });
 
     it("should do nothing when there are no targets and upcoming action can be skipped.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayFoxSniffs({ canBeSkipped: true }) });
 
       await expect(services.gamePlayValidator["validateGamePlayTargetsWithRelationsDto"]([], game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateInfectedTargetsAndPotionUsage).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateInfectedTargetsAndPotionUsage).not.toHaveBeenCalled();
     });
 
     it("should throw error when there is no targets but they are required cause action can't be skipped.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySeerLooks({ canBeSkipped: false }) });
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_TARGETS);
 
-      await expect(services.gamePlayValidator["validateGamePlayTargetsWithRelationsDto"]([], game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets` is required on this current game's state");
+      await expect(services.gamePlayValidator["validateGamePlayTargetsWithRelationsDto"]([], game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should throw error when there are targets but they are not expected.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_TARGETS);
 
-      await expect(services.gamePlayValidator["validateGamePlayTargetsWithRelationsDto"](makeGamePlayTargetsWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("`targets` can't be set on this current game's state");
+      await expect(services.gamePlayValidator["validateGamePlayTargetsWithRelationsDto"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
     it("should validate game play targets boundaries when targets are expected and current play has eligible targets boundaries.", async() => {
@@ -1401,7 +1426,7 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
 
       await expect(services.gamePlayValidator["validateGamePlayTargetsWithRelationsDto"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, currentPlay.eligibleTargets?.boundaries);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, currentPlay.eligibleTargets?.boundaries);
     });
 
     it("should not validate game play targets boundaries when targets are expected but current play doesn't have eligible targets boundaries.", async() => {
@@ -1410,7 +1435,7 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
 
       await expect(services.gamePlayValidator["validateGamePlayTargetsWithRelationsDto"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).not.toHaveBeenCalled();
     });
 
     it("should call targets validators when targets data is valid.", async() => {
@@ -1418,14 +1443,19 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
 
       await expect(services.gamePlayValidator["validateGamePlayTargetsWithRelationsDto"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
-      expect(localMocks.gamePlayValidatorService.validateGamePlaySourceTargets).toHaveBeenCalledOnce();
-      expect(localMocks.gamePlayValidatorService.validateInfectedTargetsAndPotionUsage).toHaveBeenCalledOnce();
+      expect(mocks.gamePlayValidatorService.validateGamePlaySourceTargets).toHaveBeenCalledOnce();
+      expect(mocks.gamePlayValidatorService.validateInfectedTargetsAndPotionUsage).toHaveBeenCalledOnce();
     });
   });
 
   describe("validateGamePlayVotesTieBreakerWithRelationsDto", () => {
     it("should throw error when cause is previous votes were in tie but one voted player is not in the previous tie.", () => {
-      const players = bulkCreateFakePlayers(4);
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeIdiotAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
       const interaction = createFakePlayerInteraction({
         source: PlayerGroups.SURVIVORS,
         type: PlayerInteractionTypes.VOTE,
@@ -1443,13 +1473,18 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[2] }),
       ];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_TARGET_FOR_TIE_BREAKER);
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledExactlyOnceWith("One vote's target is not in the previous tie in votes");
+      expect(() => services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when cause is previous votes were in tie and all voted players were in previous tie.", () => {
-      const players = bulkCreateFakePlayers(4);
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeIdiotAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
       const interaction = createFakePlayerInteraction({
         source: PlayerGroups.SURVIVORS,
         type: PlayerInteractionTypes.VOTE,
@@ -1471,7 +1506,12 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when cause is not previous votes were in tie.", () => {
-      const players = bulkCreateFakePlayers(4);
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeIdiotAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
       const interaction = createFakePlayerInteraction({
         source: PlayerGroups.SURVIVORS,
         type: PlayerInteractionTypes.VOTE,
@@ -1519,9 +1559,9 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[1] }),
       ];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_SOURCE);
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("One source is not able to vote because he's dead or doesn't have the ability to do so");
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should throw error when one vote target is can't be voted against.", () => {
@@ -1548,9 +1588,9 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[3], target: players[0] }),
       ];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("One target can't be voted because he's dead");
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should throw error when there are votes with the same source and target.", () => {
@@ -1577,27 +1617,16 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[0] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[1] }),
       ];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.SAME_SOURCE_AND_TARGET_VOTE);
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("One vote has the same source and target");
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDtoSourceAndTarget"](makeGamePlayVotesWithRelationsDto, game)).toThrow(expectedError);
     });
   });
 
   describe("validateGamePlayVotesWithRelationsDto", () => {
-    let localMocks: {
-      gamePlayValidatorService: {
-        validateGamePlayVotesTieBreakerWithRelationsDto: jest.SpyInstance;
-        validateGamePlayVotesWithRelationsDtoSourceAndTarget: jest.SpyInstance;
-      };
-    };
-
     beforeEach(() => {
-      localMocks = {
-        gamePlayValidatorService: {
-          validateGamePlayVotesTieBreakerWithRelationsDto: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayVotesTieBreakerWithRelationsDto }, "validateGamePlayVotesTieBreakerWithRelationsDto").mockImplementation(),
-          validateGamePlayVotesWithRelationsDtoSourceAndTarget: jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayVotesWithRelationsDtoSourceAndTarget }, "validateGamePlayVotesWithRelationsDtoSourceAndTarget").mockImplementation(),
-        },
-      };
+      mocks.gamePlayValidatorService.validateGamePlayVotesTieBreakerWithRelationsDto = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayVotesTieBreakerWithRelationsDto }, "validateGamePlayVotesTieBreakerWithRelationsDto").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayVotesWithRelationsDtoSourceAndTarget = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayVotesWithRelationsDtoSourceAndTarget }, "validateGamePlayVotesWithRelationsDtoSourceAndTarget").mockImplementation();
     });
 
     it("should do nothing when there are no votes defined but game play is not for votes anyway.", () => {
@@ -1607,19 +1636,31 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw error when there are empty votes but they are not expected.", () => {
-      const game = createFakeGameWithCurrentPlay({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlayWerewolvesEat() });
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWerewolvesEat() });
       const makeGamePlayVotesWithRelationsDto = [];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_VOTES);
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`votes` can't be set on this current game's state");
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should throw error when there are votes but they are not expected.", () => {
-      const game = createFakeGameWithCurrentPlay({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlayWerewolvesEat() });
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWerewolvesEat() });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto()];
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_VOTES);
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`votes` can't be set on this current game's state");
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when there are no votes defined but game play of votes can be skipped.", () => {
@@ -1636,36 +1677,54 @@ describe("Game Play Validator Service", () => {
 
     it("should throw error when there are no votes (undefined) but game play of votes can't be skipped.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ canBeSkipped: false }) });
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_VOTES);
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](undefined, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`votes` is required on this current game's state");
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](undefined, game)).toThrow(expectedError);
     });
 
     it("should throw error when there are no votes (empty array) but game play of votes can't be skipped.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ canBeSkipped: false }) });
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_VOTES);
 
-      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"]([], game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`votes` is required on this current game's state");
+      expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"]([], game)).toThrow(expectedError);
     });
 
     it("should call validateGamePlayVotesTieBreakerWithRelationsDto when current play is because of previous votes were in ties.", () => {
-      const game = createFakeGameWithCurrentPlay({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }) });
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }) });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] })];
 
       expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).not.toThrow();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayVotesTieBreakerWithRelationsDto).toHaveBeenCalledExactlyOnceWith(makeGamePlayVotesWithRelationsDto, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayVotesTieBreakerWithRelationsDto).toHaveBeenCalledExactlyOnceWith(makeGamePlayVotesWithRelationsDto, game);
     });
 
     it("should not call validateGamePlayVotesTieBreakerWithRelationsDto when current play is not because of previous votes were in ties.", () => {
-      const game = createFakeGameWithCurrentPlay({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }) });
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }) });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] })];
 
       expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).not.toThrow();
-      expect(localMocks.gamePlayValidatorService.validateGamePlayVotesTieBreakerWithRelationsDto).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayVotesTieBreakerWithRelationsDto).not.toHaveBeenCalled();
     });
 
     it("should do nothing when votes are valid.", () => {
-      const game = createFakeGameWithCurrentPlay({ players: bulkCreateFakePlayers(4), currentPlay: createFakeGamePlaySurvivorsVote() });
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] })];
 
       expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).not.toThrow();
@@ -1676,17 +1735,17 @@ describe("Game Play Validator Service", () => {
     it("should throw error when chosenSide is not defined and game play action is CHOOSE_SIDE.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_CHOSEN_SIDE);
 
-      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenSide"](makeGamePlayWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`chosenSide` is required on this current game's state");
+      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenSide"](makeGamePlayWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should throw error when chosenSide is defined and game play action is not CHOOSE_SIDE.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_CHOSEN_SIDE);
 
-      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenSide"](makeGamePlayWithRelationsDto, game)).toThrow(BadGamePlayPayloadException);
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`chosenSide` can't be set on this current game's state");
+      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenSide"](makeGamePlayWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when chosenSide is not defined and game play action is not CHOOSE_SIDE.", () => {
@@ -1709,6 +1768,101 @@ describe("Game Play Validator Service", () => {
       mocks.gameHistoryRecordService.didJudgeMakeHisSign.mockResolvedValue(true);
     });
 
+    it.each<{
+      test: string;
+      game: GameWithCurrentPlay;
+      makeGamePlayWithRelationsDto: MakeGamePlayWithRelationsDto;
+      didJudgeMakeHisSignMockResolvedValue: boolean;
+      getGameHistoryJudgeRequestRecordsMockResolvedValue: GameHistoryRecord[];
+      expected: BadGamePlayPayloadException;
+    }>([
+      {
+        test: "should throw error when judge request another vote but upcoming action is not vote.",
+        game: createFakeGameWithCurrentPlay({
+          currentPlay: createFakeGamePlayWitchUsesPotions(),
+          players: [
+            createFakeWitchAlivePlayer(),
+            createFakeDogWolfAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+            createFakeStutteringJudgeAlivePlayer(),
+          ],
+        }),
+        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
+        didJudgeMakeHisSignMockResolvedValue: true,
+        getGameHistoryJudgeRequestRecordsMockResolvedValue: [],
+        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
+      },
+      {
+        test: "should throw error when judge request another vote but he didn't make his sign.",
+        game: createFakeGameWithCurrentPlay({
+          currentPlay: createFakeGamePlaySurvivorsVote(),
+          players: [
+            createFakeWitchAlivePlayer(),
+            createFakeDogWolfAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+            createFakeStutteringJudgeAlivePlayer(),
+          ],
+        }),
+        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
+        didJudgeMakeHisSignMockResolvedValue: false,
+        getGameHistoryJudgeRequestRecordsMockResolvedValue: [],
+        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
+      },
+      {
+        test: "should throw error when judge request another vote but there is no judge in the game.",
+        game: createFakeGameWithCurrentPlay({
+          players: [
+            createFakeWitchAlivePlayer(),
+            createFakeDogWolfAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+          ],
+          currentPlay: createFakeGamePlaySurvivorsVote(),
+        }),
+        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
+        didJudgeMakeHisSignMockResolvedValue: true,
+        getGameHistoryJudgeRequestRecordsMockResolvedValue: [],
+        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
+      },
+      {
+        test: "should throw error when judge request another vote but he is dead.",
+        game: createFakeGameWithCurrentPlay({
+          currentPlay: createFakeGamePlaySurvivorsVote(),
+          players: [
+            createFakeWitchAlivePlayer(),
+            createFakeDogWolfAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+            createFakeStutteringJudgeAlivePlayer({ isAlive: false }),
+          ],
+        }),
+        didJudgeMakeHisSignMockResolvedValue: true,
+        getGameHistoryJudgeRequestRecordsMockResolvedValue: [],
+        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
+        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
+      },
+      {
+        test: "should throw error when judge request another vote but he has reach the request limit.",
+        game: createFakeGameWithCurrentPlay({
+          currentPlay: createFakeGamePlaySurvivorsVote(),
+          players: [
+            createFakeWitchAlivePlayer(),
+            createFakeDogWolfAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+            createFakeStutteringJudgeAlivePlayer(),
+          ],
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ stutteringJudge: { voteRequestsCount: 1 } }) }),
+        }),
+        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
+        didJudgeMakeHisSignMockResolvedValue: true,
+        getGameHistoryJudgeRequestRecordsMockResolvedValue: [createFakeGameHistoryRecord()],
+        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
+      },
+    ])("$test", async({ game, makeGamePlayWithRelationsDto, didJudgeMakeHisSignMockResolvedValue, getGameHistoryJudgeRequestRecordsMockResolvedValue, expected }) => {
+      mocks.gameHistoryRecordService.didJudgeMakeHisSign.mockResolvedValue(didJudgeMakeHisSignMockResolvedValue);
+      mocks.gameHistoryRecordService.getGameHistoryJudgeRequestRecords.mockResolvedValue(getGameHistoryJudgeRequestRecordsMockResolvedValue);
+
+      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expected);
+    });
+
     it("should do nothing when doesJudgeRequestAnotherVote is undefined.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
@@ -1716,83 +1870,13 @@ describe("Game Play Validator Service", () => {
       await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toResolve();
     });
 
-    it("should throw error when judge request another vote but upcoming action is not vote.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions() });
-      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
-
-      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`doesJudgeRequestAnotherVote` can't be set on this current game's state");
-    });
-
-    it("should throw error when judge request another vote but he didn't make his sign.", async() => {
-      const players = bulkCreateFakePlayers(4, [
-        createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeStutteringJudgeAlivePlayer(),
-      ]);
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), players });
-      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
-      mocks.gameHistoryRecordService.didJudgeMakeHisSign.mockResolvedValue(false);
-
-      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`doesJudgeRequestAnotherVote` can't be set on this current game's state");
-    });
-
-    it("should throw error when judge request another vote but there is no judge in the game.", async() => {
-      const players = bulkCreateFakePlayers(4, [
-        createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ]);
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), players });
-      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
-
-      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`doesJudgeRequestAnotherVote` can't be set on this current game's state");
-    });
-
-    it("should throw error when judge request another vote but he is dead.", async() => {
-      const players = bulkCreateFakePlayers(4, [
-        createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeStutteringJudgeAlivePlayer({ isAlive: false }),
-      ]);
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), players });
-      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
-
-      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`doesJudgeRequestAnotherVote` can't be set on this current game's state");
-    });
-
-    it("should throw error when judge request another vote but he has reach the request limit.", async() => {
-      const players = bulkCreateFakePlayers(4, [
-        createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeStutteringJudgeAlivePlayer(),
-      ]);
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ stutteringJudge: { voteRequestsCount: 2 } }) });
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), players, options });
-      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
-      mocks.gameHistoryRecordService.getGameHistoryJudgeRequestRecords.mockResolvedValue([
-        createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordSurvivorsVotePlay({ didJudgeRequestAnotherVote: true }) }),
-        createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordSurvivorsVotePlay({ didJudgeRequestAnotherVote: true }) }),
-      ]);
-
-      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toReject();
-      expect(BadGamePlayPayloadException).toHaveBeenCalledWith("`doesJudgeRequestAnotherVote` can't be set on this current game's state");
-    });
-
     it("should do nothing when judge request another vote and he can.", async() => {
-      const players = bulkCreateFakePlayers(4, [
+      const players = [
         createFakeWitchAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeStutteringJudgeAlivePlayer(),
-      ]);
+      ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ stutteringJudge: { voteRequestsCount: 2 } }) });
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), players, options });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });

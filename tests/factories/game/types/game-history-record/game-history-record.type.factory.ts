@@ -5,10 +5,9 @@ import { GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/schemas/game-hi
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 import { createFakeGameHistoryRecordPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 
 function createFakeGameHistoryRecordToInsert(gameHistoryRecordToInsert: Partial<GameHistoryRecordToInsert> = {}, override: object = {}): GameHistoryRecordToInsert {
@@ -21,18 +20,7 @@ function createFakeGameHistoryRecordToInsert(gameHistoryRecordToInsert: Partial<
     revealedPlayers: gameHistoryRecordToInsert.revealedPlayers ?? undefined,
     deadPlayers: gameHistoryRecordToInsert.deadPlayers ?? undefined,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function bulkCreateFakeGameHistoryRecordsToInsert(
-  length: number,
-  gameHistoryRecordToInserts: Partial<GameHistoryRecordToInsert>[] = [],
-  overrides: object[] = [],
-): GameHistoryRecordToInsert[] {
-  return bulkCreate(length, createFakeGameHistoryRecordToInsert, gameHistoryRecordToInserts, overrides);
-}
-
-export {
-  createFakeGameHistoryRecordToInsert,
-  bulkCreateFakeGameHistoryRecordsToInsert,
-};
+export { createFakeGameHistoryRecordToInsert };

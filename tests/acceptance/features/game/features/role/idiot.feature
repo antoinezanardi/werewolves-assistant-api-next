@@ -15,7 +15,10 @@ Feature: 🤪 Idiot role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target  |
@@ -28,7 +31,10 @@ Feature: 🤪 Idiot role
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
     And the game's current play should have eligible targets boundaries from 0 to 1
     And the game's current play should have the following eligible targets interactable players
       | name    | interaction |
@@ -60,7 +66,10 @@ Feature: 🤪 Idiot role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter   | target  |
@@ -83,7 +92,10 @@ Feature: 🤪 Idiot role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target  |
@@ -103,7 +115,10 @@ Feature: 🤪 Idiot role
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target  |
@@ -128,7 +143,10 @@ Feature: 🤪 Idiot role
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target  |

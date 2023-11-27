@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { InteractablePlayer } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/interactable-player.schema";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -12,7 +12,7 @@ function createFakeInteractablePlayer(interactablePlayer: Partial<InteractablePl
     interactions: interactablePlayer.interactions ?? [],
     ...interactablePlayer,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export { createFakeInteractablePlayer };

@@ -32,11 +32,12 @@
 4. 🚀 [Build](#build)
 5. 🐳 [Docker](#docker)
 6. 💯 [Tests](#tests)
-7. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-8. 📈 [Releases & Changelog](#versions)
-9. ✨ [Misc commands](#misc-commands)
-10. ©️ [License](#license)
-11. ❤️ [Contributors](#contributors)
+7. 🌿 [Env variables](#env-variables)
+8. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
+9. 📈 [Releases & Changelog](#versions)
+10. ✨ [Misc commands](#misc-commands)
+11. ©️ [License](#license)
+12. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
@@ -227,6 +228,26 @@ npm run test:stryker
 # Run mutant tests with coverage from scratch (without using the incremental file)
 npm run test:stryker:force
 ```
+
+## <a name="env-variables">🌿 Env variables</a>
+
+Environnement files are available in the **[env directory](https://github.com/antoinezanardi/werewolves-assistant-api-next/tree/main/env)**.
+
+You can create a `.env` file in this directory to override the default values when starting the API locally with `npm run start` command.
+
+Environment variables are :
+
+|        Name         |               Description               | Required | Default value |                   Limitations                    |
+|:-------------------:|:---------------------------------------:|:--------:|:-------------:|:------------------------------------------------:|
+|       `HOST`        | Host on which the API will be available |    ❌     |  `127.0.0.1`  |          If set, can't be empty string           |
+|       `PORT`        | Port on which the API will be available |    ❌     |    `8080`     | If set, must be a number between `0` and `65535` |
+|   `ENVIRONNEMENT`   |  Environment in which the API will run  |    ✅     |       ❌       |  Must be `development`, `production` or `test`   |
+|   `DATABASE_HOST`   |        MongoDB database host URL        |    ✅     |       ❌       |              Can't be empty string               |
+|   `DATABASE_PORT`   |          MongoDB database port          |    ❌     |  `undefined`  | If set, must be a number between `0` and `65535` |
+|   `DATABASE_NAME`   |          MongoDB database name          |    ✅     |       ❌       |              Can't be empty string               |
+| `DATABASE_USERNAME` |          MongoDB database user          |    ✅     |       ❌       |              Can't be empty string               |
+| `DATABASE_PASSWORD` |        MongoDB database password        |    ✅     |       ❌       |              Can't be empty string               |
+
 
 ## <a name="code-analysis-and-consistency">☑️ Code analysis and consistency</a>
 

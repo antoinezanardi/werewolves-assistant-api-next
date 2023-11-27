@@ -55,7 +55,10 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -106,7 +109,10 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -139,6 +145,9 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Babou
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -172,6 +181,9 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Babou
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -208,6 +220,9 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Babou
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -243,7 +258,10 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -272,7 +290,10 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -333,7 +354,10 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be survivors to elect-sheriff
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to elect-sheriff
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 1 to 4
     And the game's current play should have the following eligible targets interactable players
@@ -356,7 +380,10 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Babou
     Then the player named Babou should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be survivors to elect-sheriff
@@ -382,7 +409,10 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be sheriff to delegate
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be sheriff to delegate
     And the game's current play should be played by the following players
       | name   |
       | Thomas |
@@ -431,6 +461,9 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be sheriff to delegate
 
     When the player or group skips his turn
@@ -458,6 +491,9 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be sheriff to delegate
 
     When the player or group targets an unknown player
@@ -485,6 +521,9 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be sheriff to delegate
 
     When the sheriff delegates his role to the player named Thomas
@@ -512,6 +551,9 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be sheriff to delegate
 
     When the player or group targets the following players
@@ -544,7 +586,10 @@ Feature: 🎖️ Sheriff player attribute
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
     And the player named Thomas should have the active sheriff from survivors attribute
 
   Scenario: 🎖️ Sheriff election is randomized when there is a tie

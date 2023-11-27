@@ -17,7 +17,7 @@ Feature: 👴🏻 Ancient role
       | Benedicte | scapegoat             |
       | Alex      | idiot                 |
       | Alexis    | fox                   |
-      | Vanessa   | bear-tamer            |
+      | Mama      | bear-tamer            |
       | Cari      | stuttering-judge      |
       | Aurelien  | rusty-sword-knight    |
       | Leo       | wild-child            |
@@ -43,7 +43,7 @@ Feature: 👴🏻 Ancient role
       | Benedicte |
       | Alex      |
       | Alexis    |
-      | Vanessa   |
+      | Mama      |
       | Cari      |
       | Aurelien  |
       | Leo       |
@@ -57,22 +57,34 @@ Feature: 👴🏻 Ancient role
       | Antoine |
       | Olivia  |
       | JB      |
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Ali
     Then the player named Ali should be murdered by werewolves from eaten
     And the game's status should be playing
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
       | Olivia | Alex   |
     Then the player named Alex should be murdered by survivors from vote
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Romain
     Then the player named Romain should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -90,7 +102,7 @@ Feature: 👴🏻 Ancient role
       | Doudou  | witch    |
       | JB      | guard    |
       | Thomas  | idiot    |
-      | Bobo    | villager    |
+      | Bobo    | villager |
     Then the game's current play should be guard to protect
 
     When the guard protects the player named JB
@@ -108,6 +120,10 @@ Feature: 👴🏻 Ancient role
       | Doudou |
       | JB     |
       | Thomas |
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -129,7 +145,10 @@ Feature: 👴🏻 Ancient role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
-    And the game's current play should be hunter to shoot
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be hunter to shoot
 
     When the hunter shoots at the player named Antoine
     Then the player named Antoine should be murdered by hunter from shot
@@ -137,6 +156,10 @@ Feature: 👴🏻 Ancient role
       | name   |
       | Doudou |
       | JB     |
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -157,7 +180,10 @@ Feature: 👴🏻 Ancient role
       | Doudou | Antoine |
     Then the player named Antoine should be murdered by survivors from vote
     And nobody should have the active powerless from ancient attribute
-    And the game's current play should be guard to protect
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be guard to protect
 
   Scenario: 👴🏻 Ancient has two lives against werewolves
 
@@ -224,6 +250,7 @@ Feature: 👴🏻 Ancient role
     When the player or group skips his turn
     Then the player named Antoine should be murdered by werewolves from eaten
     And nobody should have the active powerless from ancient attribute
+    And the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 👴🏻 Ancient has only one life against werewolves with the right option
 
@@ -245,3 +272,4 @@ Feature: 👴🏻 Ancient role
 
     When the player or group skips his turn
     Then the player named Antoine should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies

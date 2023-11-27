@@ -17,6 +17,7 @@ enum GamePlayActions {
   VOTE = "vote",
   DELEGATE = "delegate",
   SETTLE_VOTES = "settle-votes",
+  BURY_DEAD_BODIES = "bury-dead-bodies",
 }
 
 enum GamePlayCauses {

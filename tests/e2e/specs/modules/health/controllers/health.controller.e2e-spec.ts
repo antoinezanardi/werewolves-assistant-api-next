@@ -26,7 +26,7 @@ describe("Health Controller", () => {
       };
 
       expect(response.statusCode).toBe(200);
-      expect(response.json<HealthCheckResult>()).toStrictEqual(expectedHealthCheckResult);
+      expect(response.json<HealthCheckResult>()).toStrictEqual<HealthCheckResult>(expectedHealthCheckResult);
     });
   });
 });

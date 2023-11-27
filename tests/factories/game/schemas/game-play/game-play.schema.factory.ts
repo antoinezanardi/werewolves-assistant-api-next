@@ -6,9 +6,17 @@ import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
+
+function createFakeGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+  return createFakeGamePlay({
+    source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
+    action: GamePlayActions.BURY_DEAD_BODIES,
+    occurrence: GamePlayOccurrences.CONSEQUENTIAL, ...gamePlay,
+  }, override);
+}
 
 function createFakeGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
@@ -241,10 +249,11 @@ function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object =
     eligibleTargets: gamePlay.eligibleTargets ?? undefined,
     canBeSkipped: gamePlay.canBeSkipped ?? undefined,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakeGamePlaySurvivorsBuryDeadBodies,
   createFakeGamePlaySheriffSettlesVotes,
   createFakeGamePlaySheriffDelegates,
   createFakeGamePlaySurvivorsVote,

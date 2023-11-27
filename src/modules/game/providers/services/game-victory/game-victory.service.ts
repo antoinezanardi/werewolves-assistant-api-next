@@ -3,8 +3,8 @@ import { Injectable } from "@nestjs/common";
 import { createAngelGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
-import { PlayerAttributeNames, PlayerDeathCauses } from "@/modules/game/enums/player.enum";
-import { areAllPlayersDead, getLeftToCharmByPiedPiperPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { areAllPlayersDead, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getLeftToCharmByPiedPiperPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
@@ -16,13 +16,14 @@ import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/h
 @Injectable()
 export class GameVictoryService {
   public isGameOver(game: Game): boolean {
-    const { upcomingPlays, currentPlay } = game;
+    const { currentPlay } = game;
     if (!currentPlay) {
       throw createNoCurrentGamePlayUnexpectedException("isGameOver", { gameId: game._id });
     }
-    const isShootPlayIncoming = !!upcomingPlays.find(({ action, source }) => action === GamePlayActions.SHOOT && source.name === RoleNames.HUNTER);
+    const isHunterShootPlayIncoming = doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, RoleNames.HUNTER, GamePlayActions.SHOOT);
+    const isSurvivorsBuryDeadBodiesPlayIncoming = doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, PlayerGroups.SURVIVORS, GamePlayActions.BURY_DEAD_BODIES);
     const gameVictoryData = this.generateGameVictoryData(game);
-    return areAllPlayersDead(game) || currentPlay.action !== GamePlayActions.SHOOT && !isShootPlayIncoming && !!gameVictoryData;
+    return areAllPlayersDead(game) || !isHunterShootPlayIncoming && !isSurvivorsBuryDeadBodiesPlayIncoming && !!gameVictoryData;
   }
 
   public generateGameVictoryData(game: Game): GameVictory | undefined {

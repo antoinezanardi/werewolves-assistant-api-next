@@ -27,7 +27,7 @@ import { createCantFindLastNominatedPlayersUnexpectedException, createMalformedC
 @Injectable()
 export class GamePlayAugmenterService {
   private readonly getEligibleTargetsPlayMethods: Partial<
-  Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlayEligibleTargets | Promise<GamePlayEligibleTargets>>
+  Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlayEligibleTargets | Promise<GamePlayEligibleTargets | undefined>>
   > = {
       [PlayerAttributeNames.SHERIFF]: async(game, gamePlay) => this.getSheriffGamePlayEligibleTargets(game, gamePlay),
       [PlayerGroups.SURVIVORS]: async(game, gamePlay) => this.getSurvivorsGamePlayEligibleTargets(game, gamePlay),
@@ -144,7 +144,10 @@ export class GamePlayAugmenterService {
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
-  private async getSurvivorsGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets> {
+  private async getSurvivorsGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets | undefined> {
+    if (gamePlay.action === GamePlayActions.BURY_DEAD_BODIES) {
+      return undefined;
+    }
     if (gamePlay.action === GamePlayActions.VOTE) {
       return this.getSurvivorsVoteGamePlayEligibleTargets(game, gamePlay);
     }
@@ -304,7 +307,7 @@ export class GamePlayAugmenterService {
       return undefined;
     }
     const eligibleTargets = await eligibleTargetsPlayMethod(game, gamePlay);
-    const areEligibleTargetsRelevant = eligibleTargets.interactablePlayers !== undefined && eligibleTargets.interactablePlayers.length > 0;
+    const areEligibleTargetsRelevant = eligibleTargets?.interactablePlayers !== undefined && eligibleTargets.interactablePlayers.length > 0;
     return areEligibleTargetsRelevant ? eligibleTargets : undefined;
   }
 

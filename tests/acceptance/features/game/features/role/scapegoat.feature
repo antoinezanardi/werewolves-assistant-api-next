@@ -27,6 +27,10 @@ Feature: 🐐 Scapegoat role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes and the stuttering judge does his sign
       | voter   | target |
@@ -34,7 +38,10 @@ Feature: 🐐 Scapegoat role
       | Olivia  | Thomas |
       | Thomas  | Olivia |
     Then the player named Antoine should be murdered by survivors from vote-scapegoated
-    And the game's current play should be scapegoat to ban-voting
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be scapegoat to ban-voting
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -81,10 +88,17 @@ Feature: 🐐 Scapegoat role
       | Thomas | Dad    |
       | Olivia | Dad    |
     Then the player named Dad should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Mom
     Then the player named Mom should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
     And the following players should have the active cant-vote from scapegoat attribute
       | name   |
       | Olivia |
@@ -114,10 +128,17 @@ Feature: 🐐 Scapegoat role
       | Antoine |
       | JB      |
       | Mom     |
-    And the game's current play should be werewolves to eat
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter   | target  |
@@ -141,7 +162,10 @@ Feature: 🐐 Scapegoat role
       | Antoine | Olivia |
       | Olivia  | Thomas |
     Then the player named Antoine should be murdered by survivors from vote-scapegoated
-    And the game's current play should be scapegoat to ban-voting
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be scapegoat to ban-voting
     And the game's current play should have eligible targets boundaries from 0 to 4
 
     When the scapegoat bans from vote the following players
@@ -154,7 +178,10 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named Mom
     Then the player named Mom should be murdered by werewolves from eaten
     And the game's phase should be day
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
     And the following players should have the active cant-vote from scapegoat attribute
       | name   |
       | Olivia |
@@ -177,7 +204,10 @@ Feature: 🐐 Scapegoat role
       | Antoine | Olivia |
       | Olivia  | Thomas |
     Then the player named Antoine should be murdered by survivors from vote-scapegoated
-    And the game's current play should be scapegoat to ban-voting
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be scapegoat to ban-voting
 
     When the player or group targets an unknown player
     Then the request should have failed with status code 404
@@ -198,18 +228,27 @@ Feature: 🐐 Scapegoat role
     When the survivors vote with the following votes
       | voter   | target |
       | Antoine | Juju   |
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the game's current play should be survivors to vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter   | target  |
       | Antoine | Thomas  |
       | Thomas  | Antoine |
     Then the player named Antoine should be murdered by survivors from vote-scapegoated
-    And the game's current play should be scapegoat to ban-voting
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be scapegoat to ban-voting
 
     When the scapegoat bans from vote the following players
       | name   |

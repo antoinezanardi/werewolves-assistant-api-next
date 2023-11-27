@@ -4,7 +4,7 @@ import { plainToInstance } from "class-transformer";
 import { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createFakeCreateGameAdditionalCardDto(
   createGameAdditionalCardDto: Partial<CreateGameAdditionalCardDto> = {},
@@ -14,7 +14,7 @@ function createFakeCreateGameAdditionalCardDto(
     roleName: createGameAdditionalCardDto.roleName ?? faker.helpers.arrayElement(Object.values(RoleNames)),
     recipient: createGameAdditionalCardDto.recipient ?? RoleNames.THIEF,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export { createFakeCreateGameAdditionalCardDto };

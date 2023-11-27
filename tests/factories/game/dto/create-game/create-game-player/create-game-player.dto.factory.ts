@@ -4,7 +4,7 @@ import { plainToInstance } from "class-transformer";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
 
@@ -14,11 +14,14 @@ function createFakeCreateGamePlayerDto(createGamePlayerDto: Partial<CreateGamePl
     role: { name: createGamePlayerDto.role?.name ?? faker.helpers.arrayElement(Object.values(RoleNames)) },
     position: createGamePlayerDto.position ?? undefined,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function bulkCreateFakeCreateGamePlayerDto(length: number, createGamePlayersDto: Partial<CreateGamePlayerDto>[] = [], overrides: object[] = []): CreateGamePlayerDto[] {
-  return bulkCreate(length, createFakeCreateGamePlayerDto, createGamePlayersDto, overrides);
+function bulkCreateFakeCreateGamePlayerDto(length: number): CreateGamePlayerDto[] {
+  return bulkCreate(length, createFakeCreateGamePlayerDto);
 }
 
-export { createFakeCreateGamePlayerDto, bulkCreateFakeCreateGamePlayerDto };
+export {
+  createFakeCreateGamePlayerDto,
+  bulkCreateFakeCreateGamePlayerDto,
+};

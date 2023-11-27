@@ -36,7 +36,8 @@ Feature: 🐺 Werewolf role
     And the game's current play should be witch to use-potions
 
     When the player or group skips his turn
-    Then the player named Juju should be murdered by werewolves from eaten
+    Then the game's current play should be survivors to bury-dead-bodies
+    And the player named Juju should be murdered by werewolves from eaten
 
   Scenario: 🐺 Werewolves can't eat an unknown player
 
@@ -69,6 +70,10 @@ Feature: 🐺 Werewolf role
       | Juju   | Antoine |
       | Doudou | Antoine |
       | Thom   | Antoine |
+    Then the game's current play should be survivors to bury-dead-bodies
+    And the player named Antoine should be murdered by survivors from vote
+
+    When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine

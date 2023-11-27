@@ -78,9 +78,10 @@ describe("Server", () => {
     });
 
     it("should call listen with the default port when no port is provided.", async() => {
+      process.env.PORT = undefined;
       app = await bootstrap();
-      
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "127.0.0.1");
+
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith(8080, "127.0.0.1");
     });
 
     it("should call listen with specific host when host is in process.env.HOST.", async() => {
@@ -91,6 +92,7 @@ describe("Server", () => {
     });
 
     it("should call listen with the default host when no host is provided.", async() => {
+      process.env.HOST = undefined;
       app = await bootstrap();
 
       expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "127.0.0.1");
@@ -122,8 +124,8 @@ describe("Server", () => {
       mocks.NestFactory.create.resolvedValue.getUrl.mockReturnValue(`http://127.0.0.1:8080`);
       app = await bootstrap();
       
-      expect(mocks.NestCommonLogger.log).toHaveBeenCalledWith("🐺 App is available at http://127.0.0.1:8080", "NestApplication");
-      expect(mocks.NestCommonLogger.log).toHaveBeenCalledWith("📖 API Documentation is available at http://127.0.0.1:8080/docs", "NestApplication");
+      expect(mocks.NestCommonLogger.log).toHaveBeenNthCalledWith(1, "🐺 App is available at http://127.0.0.1:8080", "NestApplication");
+      expect(mocks.NestCommonLogger.log).toHaveBeenNthCalledWith(2, "📖 API Documentation is available at http://127.0.0.1:8080/docs", "NestApplication");
     });
   });
 });

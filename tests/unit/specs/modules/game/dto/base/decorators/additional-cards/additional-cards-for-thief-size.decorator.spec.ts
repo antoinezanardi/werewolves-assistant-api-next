@@ -1,5 +1,6 @@
 import type { ValidationArguments } from "class-validator";
 
+import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import { getAdditionalCardsForThiefSizeDefaultMessage, isAdditionalCardsForThiefSizeRespected } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-thief-size.decorator";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -11,62 +12,43 @@ import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-o
 
 describe("Additional Cards For Thief Size Decorator", () => {
   describe("isAdditionalCardsForThiefSizeRespected", () => {
-    it("should return true when cards are not defined.", () => {
+    it.each<{
+      test: string;
+      additionalCards: unknown;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when cards are not defined.",
+        additionalCards: undefined,
+        expected: true,
+      },
+      {
+        test: "should return false when cards are not an array.",
+        additionalCards: null,
+        expected: false,
+      },
+      {
+        test: "should return false when cards size doesn't respect the options.",
+        additionalCards: [
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+        ],
+        expected: false,
+      },
+      {
+        test: "should return true when cards size doesn't respect the options.",
+        additionalCards: [
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+        ],
+        expected: true,
+      },
+    ])("$test", ({ additionalCards, expected }) => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeCreateThiefGameOptionsDto({ additionalCardsCount: 2 }) }) });
-      const createGameDto = createFakeCreateGameDto({ options });
-      const validationArguments: ValidationArguments = {
-        value: undefined,
-        object: createGameDto,
-        constraints: [],
-        targetName: "",
-        property: "additionalCards",
-      };
-
-      expect(isAdditionalCardsForThiefSizeRespected(undefined, validationArguments)).toBe(true);
-    });
-
-    it("should return false when cards are not an array.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeCreateThiefGameOptionsDto({ additionalCardsCount: 2 }) }) });
-      const createGameDto = createFakeCreateGameDto({ options });
-      const validationArguments: ValidationArguments = {
-        value: null,
-        object: createGameDto,
-        constraints: [],
-        targetName: "",
-        property: "additionalCards",
-      };
-
-      expect(isAdditionalCardsForThiefSizeRespected(null, validationArguments)).toBe(false);
-    });
-    
-    it("should return false when cards size doesn't respect the options.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeCreateThiefGameOptionsDto({ additionalCardsCount: 2 }) }) });
-      const additionalCards = [
-        createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-        createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-        createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-        createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-        createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-      ];
-      const createGameDto = createFakeCreateGameDto({ options, additionalCards });
-      const validationArguments: ValidationArguments = {
-        value: additionalCards,
-        object: createGameDto,
-        constraints: [],
-        targetName: "",
-        property: "additionalCards",
-      };
-
-      expect(isAdditionalCardsForThiefSizeRespected(additionalCards, validationArguments)).toBe(false);
-    });
-
-    it("should return true when cards size doesn't respect the options.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeCreateThiefGameOptionsDto({ additionalCardsCount: 2 }) }) });
-      const additionalCards = [
-        createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-        createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-      ];
-      const createGameDto = createFakeCreateGameDto({ options, additionalCards });
+      const createGameDto = createFakeCreateGameDto({ options, additionalCards: additionalCards as CreateGameAdditionalCardDto[] });
       const validationArguments: ValidationArguments = {
         value: additionalCards,
         object: createGameDto,
@@ -75,7 +57,7 @@ describe("Additional Cards For Thief Size Decorator", () => {
         property: "additionalCards",
       };
 
-      expect(isAdditionalCardsForThiefSizeRespected(additionalCards, validationArguments)).toBe(true);
+      expect(isAdditionalCardsForThiefSizeRespected(additionalCards, validationArguments)).toBe(expected);
     });
   });
 

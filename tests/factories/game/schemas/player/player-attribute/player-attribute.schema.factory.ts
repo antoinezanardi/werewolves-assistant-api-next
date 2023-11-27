@@ -9,9 +9,7 @@ import { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-
 import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { PLAIN_TO_INSTANCE_DEFAULT_OPTIONS } from "@/shared/validation/constants/validation.constant";
-
-import { bulkCreate } from "@tests/factories/shared/bulk-create.factory";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 function createFakeSheriffBySheriffPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
@@ -189,7 +187,7 @@ function createFakePlayerAttributeActivation(attributeActivation: Partial<Player
     turn: attributeActivation.turn ?? faker.number.int({ min: 1 }),
     phase: attributeActivation.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakePlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
@@ -200,11 +198,7 @@ function createFakePlayerAttribute(attribute: Partial<PlayerAttribute> = {}, ove
     activeAt: attribute.activeAt ?? undefined,
     doesRemainAfterDeath: attribute.doesRemainAfterDeath ?? undefined,
     ...override,
-  }, PLAIN_TO_INSTANCE_DEFAULT_OPTIONS);
-}
-
-function bulkCreateFakePlayerAttributes(length: number, attributes: Partial<PlayerAttribute>[] = [], overrides: object[] = []): PlayerAttribute[] {
-  return bulkCreate(length, createFakePlayerAttribute, attributes, overrides);
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
@@ -229,5 +223,4 @@ export {
   createFakeContaminatedByRustySwordKnightPlayerAttribute,
   createFakePlayerAttributeActivation,
   createFakePlayerAttribute,
-  bulkCreateFakePlayerAttributes,
 };
