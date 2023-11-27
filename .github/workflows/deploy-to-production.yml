@@ -1,12 +1,33 @@
-name: 🛰️ Deploy To Production Workflow
+name: 🚀 Deploy To Production Workflow
 
 on:
   release:
     types: [created]
 
 jobs:
+  upload-to-docker-hub:
+    name: Upload image with tag version to Docker Hub 🐳
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub repository 📡
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub 🔐
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Build and push Docker image 🐳
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: antoinezanardi/werewolves-assistant-api:${{ github.event.release.tag_name }}
+
   deploy:
-    name: Deploy to production 🛰️
+    name: Deploy to production 🚀
     runs-on: ubuntu-latest
     steps:
       - name: Setup GitHub repository 🔧
