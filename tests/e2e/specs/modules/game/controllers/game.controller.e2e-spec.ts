@@ -810,7 +810,10 @@ describe("Game Controller", () => {
           bearTamer: { doesGrowlIfInfected: false },
           stutteringJudge: { voteRequestsCount: 3 },
           wildChild: { isTransformationRevealed: true },
-          dogWolf: { isChosenSideRevealed: true },
+          dogWolf: {
+            isChosenSideRevealed: true,
+            isSideRandomlyChosen: true,
+          },
           thief: {
             mustChooseBetweenWerewolves: false,
             additionalCardsCount: 4,

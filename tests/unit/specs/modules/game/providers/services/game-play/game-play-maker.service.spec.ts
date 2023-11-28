@@ -1004,20 +1004,6 @@ describe("Game Play Maker Service", () => {
   });
 
   describe("dogWolfChoosesSide", () => {
-    it("should return game as is when chosen side is not set.", () => {
-      const players = [
-        createFakeDogWolfAlivePlayer(),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedGame = createFakeGame(game);
-
-      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
-    });
-
     it("should return game as is when there is no dog wolf in the game.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
@@ -1032,7 +1018,48 @@ describe("Game Play Maker Service", () => {
       expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should return dog wolf on the werewolves side when called.", () => {
+    it("should return dog wolf on random side when chosen side is not set.", () => {
+      const players = [
+        createFakeRavenAlivePlayer(),
+        createFakeDogWolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const expectedDogWolfPlayer = createFakePlayer({
+        ...players[1],
+        side: { ...players[1].side, current: RoleSides.VILLAGERS },
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedDogWolfPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+      mocks.lodash.sample.mockReturnValue(RoleSides.VILLAGERS);
+
+      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should get a random side when chosen side is not set.", () => {
+      const players = [
+        createFakeRavenAlivePlayer(),
+        createFakeDogWolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      services.gamePlayMaker["dogWolfChoosesSide"](play, game);
+
+      expect(mocks.lodash.sample).toHaveBeenCalledExactlyOnceWith([RoleSides.VILLAGERS, RoleSides.WEREWOLVES]);
+    });
+
+    it("should return dog wolf on the werewolves side when chosen side is werewolves.", () => {
       const players = [
         createFakeRavenAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
@@ -1055,6 +1082,32 @@ describe("Game Play Maker Service", () => {
         ],
       });
       
+      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should return dog wolf on the villagers side when chosen side is villagers.", () => {
+      const players = [
+        createFakeRavenAlivePlayer(),
+        createFakeDogWolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.VILLAGERS });
+      const expectedDogWolfPlayer = createFakePlayer({
+        ...players[1],
+        side: { ...players[1].side, current: RoleSides.VILLAGERS },
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedDogWolfPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
       expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });

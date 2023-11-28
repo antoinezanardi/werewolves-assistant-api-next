@@ -59,6 +59,7 @@ function createFakeCreateThiefGameOptionsDto(thiefGameOptions: Partial<CreateThi
 function createFakeCreateDogWolfGameOptionsDto(dogWolfGameOptions: Partial<CreateDogWolfGameOptionsDto> = {}, override: object = {}): CreateDogWolfGameOptionsDto {
   return plainToInstance(CreateDogWolfGameOptionsDto, {
     isChosenSideRevealed: dogWolfGameOptions.isChosenSideRevealed ?? faker.datatype.boolean(),
+    isSideRandomlyChosen: dogWolfGameOptions.isSideRandomlyChosen ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
