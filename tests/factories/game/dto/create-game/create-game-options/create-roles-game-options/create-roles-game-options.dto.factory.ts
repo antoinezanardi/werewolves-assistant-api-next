@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { CreateWitchGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-witch-game-options.dto";
 import { CreateAncientGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-ancient-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
 import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
@@ -24,6 +25,13 @@ import { CreateWildChildGameOptionsDto } from "@/modules/game/dto/create-game/cr
 import { GamePhases } from "@/modules/game/enums/game.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+function createFakeCreateWitchGameOptionsDto(witchGameOptions: Partial<CreateWitchGameOptionsDto> = {}, override: object = {}): CreateWitchGameOptionsDto {
+  return plainToInstance(CreateWitchGameOptionsDto, {
+    doesKnowWerewolvesTargets: witchGameOptions.doesKnowWerewolvesTargets ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
 
 function createFakeCreateRavenGameOptionsDto(ravenGameOptions: Partial<CreateRavenGameOptionsDto> = {}, override: object = {}): CreateRavenGameOptionsDto {
   return plainToInstance(CreateRavenGameOptionsDto, {
@@ -199,11 +207,13 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     thief: createFakeCreateThiefGameOptionsDto(rolesGameOptions.thief),
     piedPiper: createFakeCreatePiedPiperGameOptionsDto(rolesGameOptions.piedPiper),
     raven: createFakeCreateRavenGameOptionsDto(rolesGameOptions.raven),
+    witch: createFakeCreateWitchGameOptionsDto(rolesGameOptions.witch),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakeCreateWitchGameOptionsDto,
   createFakeCreateRavenGameOptionsDto,
   createFakeCreatePiedPiperGameOptionsDto,
   createFakeCreateThiefGameOptionsDto,

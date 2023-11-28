@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { WitchGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { AncientGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/ancient-game-options/ancient-game-options.schema";
 import { BearTamerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
@@ -24,6 +25,13 @@ import { WhiteWerewolfGameOptions } from "@/modules/game/schemas/game-options/ro
 import { WildChildGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options/wild-child-game-options.schema";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+function createFakeWitchGameOptions(witchGameOptions: Partial<WitchGameOptions> = {}, override: object = {}): WitchGameOptions {
+  return plainToInstance(WitchGameOptions, {
+    doesKnowWerewolvesTargets: witchGameOptions.doesKnowWerewolvesTargets ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
 
 function createFakeRavenGameOptions(ravenGameOptions: Partial<RavenGameOptions> = {}, override: object = {}): RavenGameOptions {
   return plainToInstance(RavenGameOptions, {
@@ -187,11 +195,13 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     thief: createFakeThiefGameOptions(rolesGameOptions.thief),
     piedPiper: createFakePiedPiperGameOptions(rolesGameOptions.piedPiper),
     raven: createFakeRavenGameOptions(rolesGameOptions.raven),
+    witch: createFakeWitchGameOptions(rolesGameOptions.witch),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakeWitchGameOptions,
   createFakeRavenGameOptions,
   createFakePiedPiperGameOptions,
   createFakeThiefGameOptions,

@@ -820,6 +820,7 @@ describe("Game Controller", () => {
             isPowerlessIfInfected: false,
           },
           raven: { markPenalty: 5 },
+          witch: { doesKnowWerewolvesTargets: false },
         },
       };
       const payload = createFakeCreateGameWithPlayersDto({}, { options });
