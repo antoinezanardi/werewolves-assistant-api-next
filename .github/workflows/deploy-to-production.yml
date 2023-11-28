@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Log in to Docker Hub 🔐
         uses: docker/login-action@v3
