@@ -15,6 +15,10 @@ class DogWolfGameOptions {
   @Prop(DOG_WOLF_GAME_OPTIONS_FIELDS_SPECS.isChosenSideRevealed)
   @Expose()
   public isChosenSideRevealed: boolean;
+
+  @ApiProperty(DOG_WOLF_GAME_OPTIONS_API_PROPERTIES.isSideRandomlyChosen as ApiPropertyOptions)
+  @Prop(DOG_WOLF_GAME_OPTIONS_FIELDS_SPECS.isSideRandomlyChosen)
+  public isSideRandomlyChosen: boolean;
 }
 
 const DOG_WOLF_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(DogWolfGameOptions);

@@ -204,10 +204,11 @@ export class GamePlayMakerService {
   private dogWolfChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
     const dogWolfPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.DOG_WOLF);
-    if (chosenSide === undefined || !dogWolfPlayer) {
+    if (!dogWolfPlayer) {
       return clonedGame;
     }
-    const playerDataToUpdate: Partial<Player> = { side: { ...dogWolfPlayer.side, current: chosenSide } };
+    const dogWolfSide = chosenSide ?? sample([RoleSides.VILLAGERS, RoleSides.WEREWOLVES]);
+    const playerDataToUpdate: Partial<Player> = { side: { ...dogWolfPlayer.side, current: dogWolfSide } };
     return updatePlayerInGame(dogWolfPlayer._id, playerDataToUpdate, clonedGame);
   }
   

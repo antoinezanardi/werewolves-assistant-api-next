@@ -36,7 +36,10 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     bearTamer: { doesGrowlIfInfected: true },
     stutteringJudge: { voteRequestsCount: 1 },
     wildChild: { isTransformationRevealed: false },
-    dogWolf: { isChosenSideRevealed: false },
+    dogWolf: {
+      isChosenSideRevealed: false,
+      isSideRandomlyChosen: false,
+    },
     thief: {
       mustChooseBetweenWerewolves: true,
       additionalCardsCount: 2,

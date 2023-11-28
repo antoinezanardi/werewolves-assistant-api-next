@@ -12,12 +12,20 @@ const DOG_WOLF_GAME_OPTIONS_FIELDS_SPECS = {
     required: true,
     default: DEFAULT_GAME_OPTIONS.roles.dogWolf.isChosenSideRevealed,
   },
+  isSideRandomlyChosen: {
+    required: true,
+    default: DEFAULT_GAME_OPTIONS.roles.dogWolf.isSideRandomlyChosen,
+  },
 } as const satisfies Record<keyof DogWolfGameOptions, MongoosePropOptions>;
 
 const DOG_WOLF_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof DogWolfGameOptions, ApiPropertyOptions>> = {
   isChosenSideRevealed: {
     description: "If set to `true`, when `dog-wolf` chooses his side at the beginning of the game, the game master will announce the chosen side to other players",
     ...convertMongoosePropOptionsToApiPropertyOptions(DOG_WOLF_GAME_OPTIONS_FIELDS_SPECS.isChosenSideRevealed),
+  },
+  isSideRandomlyChosen: {
+    description: "If set to `true`, when `dog-wolf` chooses his side at the beginning of the game, the side will be randomly chosen",
+    ...convertMongoosePropOptionsToApiPropertyOptions(DOG_WOLF_GAME_OPTIONS_FIELDS_SPECS.isSideRandomlyChosen),
   },
 };
 
