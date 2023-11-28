@@ -3,6 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
+import { CreateWitchGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-witch-game-options.dto";
 import { ROLES_GAME_OPTIONS_API_PROPERTIES, ROLES_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema.constant";
 import { CreateAncientGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-ancient-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
@@ -201,6 +202,15 @@ class CreateRolesGameOptionsDto {
   @Type(() => CreateRavenGameOptionsDto)
   @ValidateNested()
   public raven: CreateRavenGameOptionsDto = new CreateRavenGameOptionsDto();
+
+  @ApiProperty({
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.witch,
+    required: false,
+  } as ApiPropertyOptions)
+  @IsOptional()
+  @Type(() => CreateWitchGameOptionsDto)
+  @ValidateNested()
+  public witch: CreateWitchGameOptionsDto = new CreateWitchGameOptionsDto();
 }
 
 export { CreateRolesGameOptionsDto };

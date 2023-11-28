@@ -46,6 +46,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       isPowerlessIfInfected: true,
     },
     raven: { markPenalty: 2 },
+    witch: { doesKnowWerewolvesTargets: true },
   },
 };
 
