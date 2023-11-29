@@ -410,18 +410,18 @@ Feature: 🗳️ Vote Game Play
       | JB     | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
 
-  Scenario: 🗳 Raven mark adds two votes to the player who has it
+  Scenario: 🗳 Scandalmonger mark adds two votes to the player who has it
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
       | Olivia  | villager |
-      | JB      | raven    |
+      | JB      | scandalmonger    |
       | Thomas  | villager |
-    And the game's current play should be raven to mark
+    And the game's current play should be scandalmonger to mark
 
-    When the raven marks the player named JB
-    Then the player named JB should have the active raven-marked from raven attribute
+    When the scandalmonger marks the player named JB
+    Then the player named JB should have the active scandalmonger-marked from scandalmonger attribute
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia

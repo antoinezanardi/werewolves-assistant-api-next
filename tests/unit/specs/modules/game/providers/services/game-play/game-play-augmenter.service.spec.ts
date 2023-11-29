@@ -28,7 +28,7 @@ import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas
 import { createFakeInteractablePlayer } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/interactable-player.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -66,8 +66,8 @@ describe("Game Play Augmenter Service", () => {
       getLoversGamePlayEligibleTargets: jest.SpyInstance;
       getPiedPiperCharmsGamePlayEligibleTargets: jest.SpyInstance;
       getPiedPiperGamePlayEligibleTargets: jest.SpyInstance;
-      getRavenMarksGamePlayEligibleTargets: jest.SpyInstance;
-      getRavenGamePlayEligibleTargets: jest.SpyInstance;
+      getScandalmongerMarksGamePlayEligibleTargets: jest.SpyInstance;
+      getScandalmongerGamePlayEligibleTargets: jest.SpyInstance;
       getScapegoatBansVotingGamePlayEligibleTargets: jest.SpyInstance;
       getScapegoatGamePlayEligibleTargets: jest.SpyInstance;
       getSeerLooksGamePlayEligibleTargets: jest.SpyInstance;
@@ -138,8 +138,8 @@ describe("Game Play Augmenter Service", () => {
         getLoversGamePlayEligibleTargets: jest.fn(),
         getPiedPiperCharmsGamePlayEligibleTargets: jest.fn(),
         getPiedPiperGamePlayEligibleTargets: jest.fn(),
-        getRavenMarksGamePlayEligibleTargets: jest.fn(),
-        getRavenGamePlayEligibleTargets: jest.fn(),
+        getScandalmongerMarksGamePlayEligibleTargets: jest.fn(),
+        getScandalmongerGamePlayEligibleTargets: jest.fn(),
         getScapegoatBansVotingGamePlayEligibleTargets: jest.fn(),
         getScapegoatGamePlayEligibleTargets: jest.fn(),
         getSeerLooksGamePlayEligibleTargets: jest.fn(),
@@ -397,7 +397,7 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should throw error when game play action is not delegate nor settles votes.", async() => {
-      const gamePlay = createFakeGamePlayRavenMarks();
+      const gamePlay = createFakeGamePlayScandalmongerMarks();
       const game = createFakeGame();
       const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.MALFORMED_CURRENT_GAME_PLAY, { gamePlayAction: gamePlay.action });
       mocks.unexpectedExceptionFactory.createMalformedCurrentGamePlayUnexpectedException.mockReturnValue(mockedError);
@@ -1035,7 +1035,7 @@ describe("Game Play Augmenter Service", () => {
     });
   });
 
-  describe("getRavenGamePlayEligibleTargets", () => {
+  describe("getScandalmongerGamePlayEligibleTargets", () => {
     it("should return all alive interactable players with 0 to 1 targets boundaries when called.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
@@ -1045,7 +1045,7 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedInteraction = createFakePlayerInteraction({
-        source: RoleNames.RAVEN,
+        source: RoleNames.SCANDALMONGER,
         type: PlayerInteractionTypes.MARK,
       });
       const expectedInteractablePlayers = [
@@ -1066,7 +1066,7 @@ describe("Game Play Augmenter Service", () => {
         },
       });
 
-      expect(services.gamePlayAugmenter["getRavenGamePlayEligibleTargets"](game)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
+      expect(services.gamePlayAugmenter["getScandalmongerGamePlayEligibleTargets"](game)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
     });
   });
 
@@ -1436,9 +1436,9 @@ describe("Game Play Augmenter Service", () => {
       mocks.gamePlayAugmenterService.getPiedPiperGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
         getPiedPiperGamePlayEligibleTargets;
       }, "getPiedPiperGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
-      mocks.gamePlayAugmenterService.getRavenGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
-        getRavenGamePlayEligibleTargets;
-      }, "getRavenGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getScandalmongerGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getScandalmongerGamePlayEligibleTargets;
+      }, "getScandalmongerGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
       mocks.gamePlayAugmenterService.getScapegoatGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
         getScapegoatGamePlayEligibleTargets;
       }, "getScapegoatGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
@@ -1564,12 +1564,12 @@ describe("Game Play Augmenter Service", () => {
       expect(mocks.gamePlayAugmenterService.getPiedPiperGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should call get game play eligible targets for raven when game play source name is raven.", async() => {
-      const gamePlay = createFakeGamePlayRavenMarks();
+    it("should call get game play eligible targets for scandalmonger when game play source name is scandalmonger.", async() => {
+      const gamePlay = createFakeGamePlayScandalmongerMarks();
       const game = createFakeGame();
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
-      expect(mocks.gamePlayAugmenterService.getRavenGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getScandalmongerGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get game play eligible targets for scapegoat when game play source name is scapegoat.", async() => {
@@ -1640,7 +1640,7 @@ describe("Game Play Augmenter Service", () => {
       },
       {
         test: "should return true when game play action is not vote but because angel presence.",
-        gamePlay: createFakeGamePlayRavenMarks({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        gamePlay: createFakeGamePlayScandalmongerMarks({ cause: GamePlayCauses.ANGEL_PRESENCE }),
         game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
         expected: true,
       },
@@ -1768,8 +1768,8 @@ describe("Game Play Augmenter Service", () => {
         test: "should return true when game play source name is fox.",
       },
       {
-        gamePlay: createFakeGamePlayRavenMarks(),
-        test: "should return true when game play source name is raven.",
+        gamePlay: createFakeGamePlayScandalmongerMarks(),
+        test: "should return true when game play source name is scandalmonger.",
       },
       {
         gamePlay: createFakeGamePlayScapegoatBansVoting(),

@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createGamePlay, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayDefenderProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlaySurvivorsBuryDeadBodies, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlay, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayDefenderProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayScandalmongerMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlaySurvivorsBuryDeadBodies, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
 import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
@@ -230,15 +230,15 @@ describe("Game Play Factory", () => {
     });
   });
 
-  describe("createGamePlayRavenMarks", () => {
-    it("should create game play raven marks when called.", () => {
+  describe("createGamePlayScandalmongerMarks", () => {
+    it("should create game play scandalmonger marks when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: createFakeGamePlaySource({ name: RoleNames.RAVEN }),
+        source: createFakeGamePlaySource({ name: RoleNames.SCANDALMONGER }),
         action: GamePlayActions.MARK,
         occurrence: GamePlayOccurrences.ON_NIGHTS,
       });
 
-      expect(createGamePlayRavenMarks()).toStrictEqual<GamePlay>(expectedGamePlay);
+      expect(createGamePlayScandalmongerMarks()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
 

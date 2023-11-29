@@ -110,8 +110,8 @@ function createFakePiedPiperAlivePlayer(player: Partial<Player> = {}, override: 
   return createFakeAlivePlayerWithRole(RoleNames.PIED_PIPER, player, override);
 }
 
-function createFakeRavenAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
-  return createFakeAlivePlayerWithRole(RoleNames.RAVEN, player, override);
+function createFakeScandalmongerAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.SCANDALMONGER, player, override);
 }
 
 function createFakeAlivePlayerWithRole(role: RoleNames, player: Partial<Player> = {}, override: object = {}): Player {
@@ -161,5 +161,5 @@ export {
   createFakeThiefAlivePlayer,
   createFakeAngelAlivePlayer,
   createFakePiedPiperAlivePlayer,
-  createFakeRavenAlivePlayer,
+  createFakeScandalmongerAlivePlayer,
 };

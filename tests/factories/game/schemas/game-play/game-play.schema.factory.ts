@@ -150,9 +150,9 @@ function createFakeGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> =
   }, override);
 }
 
-function createFakeGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+function createFakeGamePlayScandalmongerMarks(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: RoleNames.RAVEN }),
+    source: createFakeGamePlaySource({ name: RoleNames.SCANDALMONGER }),
     action: GamePlayActions.MARK,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
     ...gamePlay,
@@ -268,7 +268,7 @@ export {
   createFakeGamePlayLoversMeetEachOther,
   createFakeGamePlayThreeBrothersMeetEachOther,
   createFakeGamePlayTwoSistersMeetEachOther,
-  createFakeGamePlayRavenMarks,
+  createFakeGamePlayScandalmongerMarks,
   createFakeGamePlayDefenderProtects,
   createFakeGamePlayHunterShoots,
   createFakeGamePlayWitchUsesPotions,

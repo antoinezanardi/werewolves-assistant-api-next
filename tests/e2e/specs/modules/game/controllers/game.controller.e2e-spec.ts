@@ -822,7 +822,7 @@ describe("Game Controller", () => {
             charmedPeopleCountPerNight: 1,
             isPowerlessIfInfected: false,
           },
-          raven: { markPenalty: 5 },
+          scandalmonger: { markPenalty: 5 },
           witch: { doesKnowWerewolvesTargets: false },
         },
       };

@@ -25,7 +25,7 @@ Feature: 👴🏻 Elder role
       | Babou     | thief                 |
       | Ali       | angel                 |
       | Pedro     | pied-piper            |
-      | Pierre    | raven                 |
+      | Pierre    | scandalmonger                 |
     Then the request should have succeeded with status code 201
     And the game's current play should be survivors to vote because angel-presence
 

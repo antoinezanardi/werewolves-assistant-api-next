@@ -28,7 +28,7 @@ enum BadGamePlayPayloadReasons {
   BAD_CUPID_TARGETS = "At least one of the cupid targets can't be charmed",
   BAD_FOX_TARGET = "Fox can't sniff this target",
   BAD_SEER_TARGET = "Seer can't look at this target",
-  BAD_RAVEN_TARGET = "Raven can't mark this target",
+  BAD_SCANDALMONGER_TARGET = "Scandalmonger can't mark this target",
   BAD_WILD_CHILD_TARGET = "Wild child can't choose this target as a model",
   BAD_PIED_PIPER_TARGETS = "At least one of the pied piper targets can't be charmed",
   BAD_DEFENDER_TARGET = "Defender can't protect this target",

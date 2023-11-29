@@ -157,14 +157,14 @@ export class GamePlayValidatorService {
     }
   }
 
-  private validateGamePlayRavenTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+  private validateGamePlayScandalmongerTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
     if (!playTargets.length) {
       return;
     }
     const targetedPlayer = playTargets[0].player;
     const canTargetedPlayerBeMarked = isPlayerInteractableWithInteractionType(targetedPlayer._id, PlayerInteractionTypes.MARK, game);
     if (!canTargetedPlayerBeMarked) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_RAVEN_TARGET);
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SCANDALMONGER_TARGET);
     }
   }
 
@@ -220,7 +220,7 @@ export class GamePlayValidatorService {
       [RoleNames.DEFENDER]: () => this.validateGamePlayDefenderTargets(playTargets, game),
       [RoleNames.PIED_PIPER]: () => this.validateGamePlayPiedPiperTargets(playTargets, game),
       [RoleNames.WILD_CHILD]: () => this.validateGamePlayWildChildTargets(playTargets, game),
-      [RoleNames.RAVEN]: () => this.validateGamePlayRavenTargets(playTargets, game),
+      [RoleNames.SCANDALMONGER]: () => this.validateGamePlayScandalmongerTargets(playTargets, game),
       [RoleNames.SEER]: () => this.validateGamePlaySeerTargets(playTargets, game),
       [RoleNames.FOX]: () => this.validateGamePlayFoxTargets(playTargets, game),
       [RoleNames.CUPID]: () => this.validateGamePlayCupidTargets(playTargets, game),
