@@ -68,7 +68,7 @@ jobs:
         run: npm run build
 
       - name: Auth to GCP ☁️
-        uses: 'google-github-actions/auth@v1'
+        uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
 
