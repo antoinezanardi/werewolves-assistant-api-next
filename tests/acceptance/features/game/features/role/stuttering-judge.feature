@@ -252,12 +252,12 @@ Feature: ⚖️ Stuttering Judge Role
       | name    | role             |
       | Antoine | stuttering-judge |
       | Olivia  | werewolf         |
-      | JB      | raven            |
+      | JB      | scandalmonger            |
       | Camille | villager         |
     Then the game's current play should be stuttering-judge to choose-sign
 
     When the stuttering judge chooses his sign
-    Then the game's current play should be raven to mark
+    Then the game's current play should be scandalmonger to mark
 
     When nobody vote and the stuttering judge does his sign
     Then the request should have failed with status code 400

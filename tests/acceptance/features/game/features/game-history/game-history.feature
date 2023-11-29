@@ -60,7 +60,7 @@ Feature: 📜 Game History
       | Doudou  | werewolf         |
       | Babou   | werewolf         |
       | JB      | seer             |
-      | Thomas  | raven            |
+      | Thomas  | scandalmonger            |
     Then the game's current play should be survivors to vote because angel-presence
 
     When the survivors vote with the following votes
@@ -134,7 +134,7 @@ Feature: 📜 Game History
       | Antoine |
     And the play's source name from the previous history record should be stuttering-judge
     And the play's cause from the previous history record should be undefined
-    And the game's current play should be raven to mark
+    And the game's current play should be scandalmonger to mark
 
     When the player or group skips his turn
     And the most recent history record is retrieved
@@ -142,7 +142,7 @@ Feature: 📜 Game History
     And the play's source players from the previous history record should be the following players
       | name   |
       | Thomas |
-    And the play's source name from the previous history record should be raven
+    And the play's source name from the previous history record should be scandalmonger
     And the play's cause from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
@@ -215,7 +215,7 @@ Feature: 📜 Game History
       | Juju    | witch                 |
       | Doudou  | vile-father-of-wolves |
       | JB      | defender                 |
-      | Thomas  | raven                 |
+      | Thomas  | scandalmonger                 |
     Then the game's current play should be seer to look
 
     When the seer looks at the player named Juju
@@ -223,7 +223,7 @@ Feature: 📜 Game History
     Then the play's targets from the previous history record should be the following players
       | name |
       | Juju |
-    And the game's current play should be raven to mark
+    And the game's current play should be scandalmonger to mark
 
     When the player or group skips his turn
     And the most recent history record is retrieved
@@ -270,7 +270,7 @@ Feature: 📜 Game History
     Then the play's targets from the previous history record should be the following players
       | name   |
       | Thomas |
-    And the game's current play should be raven to mark
+    And the game's current play should be scandalmonger to mark
 
     When the player or group skips his turn
     And the most recent history record is retrieved

@@ -122,7 +122,7 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
   },
   {
-    source: { name: RoleNames.RAVEN },
+    source: { name: RoleNames.SCANDALMONGER },
     action: GamePlayActions.MARK,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
   },

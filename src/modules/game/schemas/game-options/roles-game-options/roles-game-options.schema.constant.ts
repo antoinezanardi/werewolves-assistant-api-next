@@ -11,7 +11,7 @@ import { DEFENDER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-option
 import { IDIOT_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
 import { LITTLE_GIRL_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options/little-girl-game-options.schema";
 import { PIED_PIPER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options/pied-piper-game-options.schema";
-import { RAVEN_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/raven-game-options/raven-game-options.schema";
+import { SCANDALMONGER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/scandalmonger-game-options/scandalmonger-game-options.schema";
 import { SEER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options/seer-game-options.schema";
 import { SHERIFF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
 import { STUTTERING_JUDGE_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/stuttering-judge-game-options/stuttering-judge-game-options.schema";
@@ -120,10 +120,10 @@ const ROLES_GAME_OPTIONS_FIELDS_SPECS = {
     type: PIED_PIPER_GAME_OPTIONS_SCHEMA,
     default: DEFAULT_GAME_OPTIONS.roles.piedPiper,
   },
-  raven: {
+  scandalmonger: {
     required: true,
-    type: RAVEN_GAME_OPTIONS_SCHEMA,
-    default: DEFAULT_GAME_OPTIONS.roles.raven,
+    type: SCANDALMONGER_GAME_OPTIONS_SCHEMA,
+    default: DEFAULT_GAME_OPTIONS.roles.scandalmonger,
   },
   witch: {
     required: true,
@@ -206,9 +206,9 @@ const ROLES_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof RolesGameOpti
     description: "Game `pied piper` role's options.",
     ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.piedPiper),
   },
-  raven: {
-    description: "Game `raven` role's options.",
-    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.raven),
+  scandalmonger: {
+    description: "Game `scandalmonger` role's options.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.scandalmonger),
   },
   witch: {
     description: "Game `witch` role's options.",

@@ -21,11 +21,11 @@ import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dt
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeFoxGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeElderAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeElderAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Maker Service", () => {
@@ -47,7 +47,7 @@ describe("Game Play Maker Service", () => {
       scapegoatBansVoting: jest.SpyInstance;
       thiefChoosesCard: jest.SpyInstance;
       survivorsPlay: jest.SpyInstance;
-      ravenMarks: jest.SpyInstance;
+      scandalmongerMarks: jest.SpyInstance;
       sheriffPlays: jest.SpyInstance;
       sheriffDelegates: jest.SpyInstance;
       sheriffSettlesVotes: jest.SpyInstance;
@@ -87,7 +87,7 @@ describe("Game Play Maker Service", () => {
         scapegoatBansVoting: jest.fn(),
         thiefChoosesCard: jest.fn(),
         survivorsPlay: jest.fn(),
-        ravenMarks: jest.fn(),
+        scandalmongerMarks: jest.fn(),
         sheriffPlays: jest.fn(),
         sheriffDelegates: jest.fn(),
         sheriffSettlesVotes: jest.fn(),
@@ -141,7 +141,7 @@ describe("Game Play Maker Service", () => {
       mocks.gamePlayMakerService.scapegoatBansVoting = jest.spyOn(services.gamePlayMaker as unknown as { scapegoatBansVoting }, "scapegoatBansVoting").mockImplementation();
       mocks.gamePlayMakerService.thiefChoosesCard = jest.spyOn(services.gamePlayMaker as unknown as { thiefChoosesCard }, "thiefChoosesCard").mockImplementation();
       mocks.gamePlayMakerService.survivorsPlay = jest.spyOn(services.gamePlayMaker as unknown as { survivorsPlay }, "survivorsPlay").mockImplementation();
-      mocks.gamePlayMakerService.ravenMarks = jest.spyOn(services.gamePlayMaker as unknown as { ravenMarks }, "ravenMarks").mockImplementation();
+      mocks.gamePlayMakerService.scandalmongerMarks = jest.spyOn(services.gamePlayMaker as unknown as { scandalmongerMarks }, "scandalmongerMarks").mockImplementation();
       mocks.gamePlayMakerService.sheriffPlays = jest.spyOn(services.gamePlayMaker as unknown as { sheriffPlays }, "sheriffPlays").mockImplementation();
     });
 
@@ -316,12 +316,12 @@ describe("Game Play Maker Service", () => {
       expect(mocks.gamePlayMakerService.survivorsPlay).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
-    it("should call ravenMarks method when it's raven's turn.", async() => {
+    it("should call scandalmongerMarks method when it's scandalmonger's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
-      const game = createFakeGame({ currentPlay: createFakeGamePlayRavenMarks() });
+      const game = createFakeGame({ currentPlay: createFakeGamePlayScandalmongerMarks() });
       await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(mocks.gamePlayMakerService.ravenMarks).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(mocks.gamePlayMakerService.scandalmongerMarks).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should return game as is when it's two sisters turn.", async() => {
@@ -432,7 +432,7 @@ describe("Game Play Maker Service", () => {
     it("should not kill scapegoat when he's not the game.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -446,7 +446,7 @@ describe("Game Play Maker Service", () => {
     it("should not kill scapegoat when he's dead.", async() => {
       const players = [
         createFakeScapegoatAlivePlayer({ isAlive: false }),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -460,7 +460,7 @@ describe("Game Play Maker Service", () => {
     it("should not kill scapegoat when he's powerless.", async() => {
       const players = [
         createFakeScapegoatAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -474,7 +474,7 @@ describe("Game Play Maker Service", () => {
     it("should kill scapegoat when he's in the game and alive.", async() => {
       const players = [
         createFakeScapegoatAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -489,7 +489,7 @@ describe("Game Play Maker Service", () => {
     it("should not prepend sheriff delegation game play when sheriff is not in the game.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -504,7 +504,7 @@ describe("Game Play Maker Service", () => {
     it("should not prepend sheriff delegation game play when sheriff is dead.", async() => {
       const players = [
         createFakeSeerAlivePlayer({ isAlive: false, attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -519,7 +519,7 @@ describe("Game Play Maker Service", () => {
     it("should prepend sheriff delegation game play when sheriff is in the game.", async() => {
       const players = [
         createFakeSeerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -534,7 +534,7 @@ describe("Game Play Maker Service", () => {
     it("should prepend vote game play when previous play is not a tie.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -549,7 +549,7 @@ describe("Game Play Maker Service", () => {
     it("should prepend vote game play when there is no game history records.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -564,7 +564,7 @@ describe("Game Play Maker Service", () => {
     it("should not prepend vote game play when current play is due to a tie.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -586,7 +586,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when there is no vote.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -601,7 +601,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when there is no nominated players.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -621,7 +621,7 @@ describe("Game Play Maker Service", () => {
     it("should call handleTieInVotes method when there are several nominated players.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -641,7 +641,7 @@ describe("Game Play Maker Service", () => {
     it("should call handleTieInVotes method with prepended all vote game play from judge when there are several nominated players and judge requested it.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -665,7 +665,7 @@ describe("Game Play Maker Service", () => {
     it("should call killOrRevealPlayer method when there is one nominated player.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -688,7 +688,7 @@ describe("Game Play Maker Service", () => {
     it("should prepend survivors elect sheriff game play when current play is not due to a tie.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -705,7 +705,7 @@ describe("Game Play Maker Service", () => {
     it("should add sheriff attribute to a random nominated player when current play is due to a tie.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -733,7 +733,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when it's not possible to choose a random nominated player.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -756,7 +756,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when there is no vote.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -771,7 +771,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when there is no nominated players.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -790,7 +790,7 @@ describe("Game Play Maker Service", () => {
     it("should call handleTieInSheriffElection method when there is a tie in votes.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -810,7 +810,7 @@ describe("Game Play Maker Service", () => {
     it("should add sheriff attribute to nominated player when called.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -870,7 +870,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when there is no thief player in game.", () => {
       const players = [
         createFakeSeerAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -890,7 +890,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when there is no chosen card.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -910,7 +910,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when chosen card role is unknown.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -930,7 +930,7 @@ describe("Game Play Maker Service", () => {
     it("should update thief role and side when called.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -965,7 +965,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when there are no targets.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -979,7 +979,7 @@ describe("Game Play Maker Service", () => {
     it("should add scapegoat ban voting attributes to targets when called.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1007,7 +1007,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when there is no dog wolf in the game.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1020,7 +1020,7 @@ describe("Game Play Maker Service", () => {
 
     it("should return dog wolf on random side when chosen side is not set.", () => {
       const players = [
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -1047,7 +1047,7 @@ describe("Game Play Maker Service", () => {
 
     it("should get a random side when chosen side is not set.", () => {
       const players = [
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -1061,7 +1061,7 @@ describe("Game Play Maker Service", () => {
 
     it("should return dog wolf on the werewolves side when chosen side is werewolves.", () => {
       const players = [
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -1087,7 +1087,7 @@ describe("Game Play Maker Service", () => {
 
     it("should return dog wolf on the villagers side when chosen side is villagers.", () => {
       const players = [
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeDogWolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -1116,7 +1116,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeDogWolfAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1130,7 +1130,7 @@ describe("Game Play Maker Service", () => {
     it("should add worshiped attribute to target when called.", () => {
       const players = [
         createFakeDogWolfAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1159,7 +1159,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer({ position: 0 }),
-        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeScandalmongerAlivePlayer({ position: 1 }),
         createFakeWerewolfAlivePlayer({ position: 2 }),
         createFakeWerewolfAlivePlayer({ position: 3 }),
       ];
@@ -1173,7 +1173,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when there is no fox in the game.", () => {
       const players = [
         createFakeSeerAlivePlayer({ position: 0 }),
-        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeScandalmongerAlivePlayer({ position: 1 }),
         createFakeWerewolfAlivePlayer({ position: 2 }),
         createFakeWerewolfAlivePlayer({ position: 3 }),
       ];
@@ -1188,7 +1188,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when fox is not powerless if misses werewolves by game options.", () => {
       const players = [
         createFakeFoxAlivePlayer({ position: 0 }),
-        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeScandalmongerAlivePlayer({ position: 1 }),
         createFakeWerewolfAlivePlayer({ position: 2 }),
         createFakeWerewolfAlivePlayer({ position: 3 }),
       ];
@@ -1204,7 +1204,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when fox sniffes a werewolf in the group.", () => {
       const players = [
         createFakeFoxAlivePlayer({ position: 0 }),
-        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeScandalmongerAlivePlayer({ position: 1 }),
         createFakeWerewolfAlivePlayer({ position: 2 }),
         createFakeWerewolfAlivePlayer({ position: 3 }),
       ];
@@ -1220,7 +1220,7 @@ describe("Game Play Maker Service", () => {
     it("should make fox powerless when there is no werewolf in the group.", () => {
       const players = [
         createFakeFoxAlivePlayer({ position: 0 }),
-        createFakeRavenAlivePlayer({ position: 1 }),
+        createFakeScandalmongerAlivePlayer({ position: 1 }),
         createFakeVillagerAlivePlayer({ position: 2 }),
         createFakeWerewolfAlivePlayer({ position: 3 }),
       ];
@@ -1246,11 +1246,11 @@ describe("Game Play Maker Service", () => {
     });
   });
 
-  describe("ravenMarks", () => {
+  describe("scandalmongerMarks", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1258,13 +1258,13 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const expectedGame = createFakeGame(game);
 
-      expect(services.gamePlayMaker["ravenMarks"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["scandalmongerMarks"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should add raven marked attribute to target when called.", () => {
+    it("should add scandalmonger marked attribute to target when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1273,7 +1273,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
-        attributes: [createFakeRavenMarkedByRavenPlayerAttribute()],
+        attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()],
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -1285,7 +1285,7 @@ describe("Game Play Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlayMaker["ravenMarks"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["scandalmongerMarks"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
@@ -1293,7 +1293,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1307,7 +1307,7 @@ describe("Game Play Maker Service", () => {
     it("should add protected attribute to target when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1336,7 +1336,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1350,7 +1350,7 @@ describe("Game Play Maker Service", () => {
     it("should call killOrRevealPlayer method when called.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1368,7 +1368,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1382,7 +1382,7 @@ describe("Game Play Maker Service", () => {
     it("should add only one potion attributes to targets when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1409,7 +1409,7 @@ describe("Game Play Maker Service", () => {
     it("should add both potion attributes to targets when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1445,7 +1445,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when targets are undefined.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1459,7 +1459,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when targets are empty.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1473,7 +1473,7 @@ describe("Game Play Maker Service", () => {
     it("should add pied piper charmed attributes to targets when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1509,7 +1509,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1523,7 +1523,7 @@ describe("Game Play Maker Service", () => {
     it("should add in-love attribute to targets when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1559,7 +1559,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1573,7 +1573,7 @@ describe("Game Play Maker Service", () => {
     it("should add seen attribute to target when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1602,7 +1602,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1616,7 +1616,7 @@ describe("Game Play Maker Service", () => {
     it("should add eaten attribute by white werewolf to target when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1645,7 +1645,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1659,7 +1659,7 @@ describe("Game Play Maker Service", () => {
     it("should add eaten attribute by big bad wolf to target when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1688,7 +1688,7 @@ describe("Game Play Maker Service", () => {
     it("should return game as is when expected target count is not reached.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1702,7 +1702,7 @@ describe("Game Play Maker Service", () => {
     it("should add eaten attribute by werewolves to target when target is not infected.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -1758,7 +1758,7 @@ describe("Game Play Maker Service", () => {
     it("should change target side to werewolves when he's infected and not the elder.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];

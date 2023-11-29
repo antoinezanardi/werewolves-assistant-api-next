@@ -13,7 +13,7 @@ enum PlayerAttributeNames {
   DRANK_LIFE_POTION = "drank-life-potion",
   DRANK_DEATH_POTION = "drank-death-potion",
   PROTECTED = "protected",
-  RAVEN_MARKED = "raven-marked",
+  SCANDALMONGER_MARKED = "scandalmonger-marked",
   IN_LOVE = "in-love",
   WORSHIPED = "worshiped",
   POWERLESS = "powerless",

@@ -100,10 +100,10 @@ Feature: 🐺 Vile Father of Wolves role
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | vile-father-of-wolves |
-      | Olivia  | raven                 |
+      | Olivia  | scandalmonger                 |
       | JB      | werewolf              |
       | Thomas  | villager              |
-    Then the game's current play should be raven to mark
+    Then the game's current play should be scandalmonger to mark
 
     When the vile father of wolves infects the player named Olivia
     Then the request should have failed with status code 400

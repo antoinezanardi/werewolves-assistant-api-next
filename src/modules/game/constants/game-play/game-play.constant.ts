@@ -15,7 +15,7 @@ const GAME_PLAY_SOURCE_NAMES = [
   RoleNames.DEFENDER,
   RoleNames.HUNTER,
   RoleNames.PIED_PIPER,
-  RoleNames.RAVEN,
+  RoleNames.SCANDALMONGER,
   RoleNames.SCAPEGOAT,
   RoleNames.SEER,
   RoleNames.STUTTERING_JUDGE,

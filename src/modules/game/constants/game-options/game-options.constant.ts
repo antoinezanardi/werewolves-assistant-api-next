@@ -48,7 +48,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       charmedPeopleCountPerNight: 2,
       isPowerlessIfInfected: true,
     },
-    raven: { markPenalty: 2 },
+    scandalmonger: { markPenalty: 2 },
     witch: { doesKnowWerewolvesTargets: true },
   },
 };

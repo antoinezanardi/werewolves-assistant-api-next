@@ -204,7 +204,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     recommendedMinPlayers: 12,
   },
   {
-    name: RoleNames.RAVEN,
+    name: RoleNames.SCANDALMONGER,
     side: RoleSides.VILLAGERS,
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.THE_VILLAGE,

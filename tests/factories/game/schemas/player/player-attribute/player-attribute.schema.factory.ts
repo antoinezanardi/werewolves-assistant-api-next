@@ -92,10 +92,10 @@ function createFakeProtectedByDefenderPlayerAttribute(attribute: Partial<PlayerA
   }, override);
 }
 
-function createFakeRavenMarkedByRavenPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeScandalmongerMarkedByScandalmongerPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.RAVEN_MARKED,
-    source: RoleNames.RAVEN,
+    name: PlayerAttributeNames.SCANDALMONGER_MARKED,
+    source: RoleNames.SCANDALMONGER,
     remainingPhases: 2,
     ...attribute,
   }, override);
@@ -211,7 +211,7 @@ export {
   createFakeDrankLifePotionByWitchPlayerAttribute,
   createFakeDrankDeathPotionByWitchPlayerAttribute,
   createFakeProtectedByDefenderPlayerAttribute,
-  createFakeRavenMarkedByRavenPlayerAttribute,
+  createFakeScandalmongerMarkedByScandalmongerPlayerAttribute,
   createFakeInLoveByCupidPlayerAttribute,
   createFakeWorshipedByWildChildPlayerAttribute,
   createFakePowerlessByFoxPlayerAttribute,

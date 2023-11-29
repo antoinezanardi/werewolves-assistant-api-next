@@ -38,7 +38,7 @@ export class GamePlayAugmenterService {
       [RoleNames.DEFENDER]: async game => this.getDefenderGamePlayEligibleTargets(game),
       [RoleNames.HUNTER]: game => this.getHunterGamePlayEligibleTargets(game),
       [RoleNames.PIED_PIPER]: game => this.getPiedPiperGamePlayEligibleTargets(game),
-      [RoleNames.RAVEN]: game => this.getRavenGamePlayEligibleTargets(game),
+      [RoleNames.SCANDALMONGER]: game => this.getScandalmongerGamePlayEligibleTargets(game),
       [RoleNames.SCAPEGOAT]: game => this.getScapegoatGamePlayEligibleTargets(game),
       [RoleNames.SEER]: game => this.getSeerGamePlayEligibleTargets(game),
       [RoleNames.WHITE_WEREWOLF]: game => this.getWhiteWerewolfGamePlayEligibleTargets(game),
@@ -52,7 +52,7 @@ export class GamePlayAugmenterService {
     [PlayerGroups.SURVIVORS]: (game, gamePlay) => this.canSurvivorsSkipGamePlay(game, gamePlay),
     [RoleNames.BIG_BAD_WOLF]: game => this.canBigBadWolfSkipGamePlay(game),
     [RoleNames.FOX]: () => true,
-    [RoleNames.RAVEN]: () => true,
+    [RoleNames.SCANDALMONGER]: () => true,
     [RoleNames.SCAPEGOAT]: () => true,
     [RoleNames.THIEF]: game => this.canThiefSkipGamePlay(game),
     [RoleNames.TWO_SISTERS]: () => true,
@@ -221,9 +221,9 @@ export class GamePlayAugmenterService {
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
-  private getRavenGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getScandalmongerGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
     const alivePlayers = getAlivePlayers(game);
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.MARK, source: RoleNames.RAVEN }];
+    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.MARK, source: RoleNames.SCANDALMONGER }];
     const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
     const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });

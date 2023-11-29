@@ -25,7 +25,7 @@ enum RoleNames {
   DOG_WOLF = "dog-wolf",
   ANGEL = "angel",
   PIED_PIPER = "pied-piper",
-  RAVEN = "raven",
+  SCANDALMONGER = "scandalmonger",
 }
 
 enum RoleSides {

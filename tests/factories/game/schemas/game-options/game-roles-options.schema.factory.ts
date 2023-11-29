@@ -12,7 +12,7 @@ import { DefenderGameOptions } from "@/modules/game/schemas/game-options/roles-g
 import { IdiotGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
 import { LittleGirlGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options/little-girl-game-options.schema";
 import { PiedPiperGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options/pied-piper-game-options.schema";
-import { RavenGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/raven-game-options/raven-game-options.schema";
+import { ScandalmongerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/scandalmonger-game-options/scandalmonger-game-options.schema";
 import { RolesGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema";
 import { SeerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options/seer-game-options.schema";
 import { SheriffElectionGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options/sheriff-election-game-options.schema";
@@ -33,9 +33,9 @@ function createFakeWitchGameOptions(witchGameOptions: Partial<WitchGameOptions> 
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function createFakeRavenGameOptions(ravenGameOptions: Partial<RavenGameOptions> = {}, override: object = {}): RavenGameOptions {
-  return plainToInstance(RavenGameOptions, {
-    markPenalty: ravenGameOptions.markPenalty ?? faker.number.int({ min: 1, max: 5 }),
+function createFakeScandalmongerGameOptions(scandalmongerGameOptions: Partial<ScandalmongerGameOptions> = {}, override: object = {}): ScandalmongerGameOptions {
+  return plainToInstance(ScandalmongerGameOptions, {
+    markPenalty: scandalmongerGameOptions.markPenalty ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -195,7 +195,7 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     dogWolf: createFakeDogWolfGameOptions(rolesGameOptions.dogWolf),
     thief: createFakeThiefGameOptions(rolesGameOptions.thief),
     piedPiper: createFakePiedPiperGameOptions(rolesGameOptions.piedPiper),
-    raven: createFakeRavenGameOptions(rolesGameOptions.raven),
+    scandalmonger: createFakeScandalmongerGameOptions(rolesGameOptions.scandalmonger),
     witch: createFakeWitchGameOptions(rolesGameOptions.witch),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
@@ -203,7 +203,7 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
 
 export {
   createFakeWitchGameOptions,
-  createFakeRavenGameOptions,
+  createFakeScandalmongerGameOptions,
   createFakePiedPiperGameOptions,
   createFakeThiefGameOptions,
   createFakeDogWolfGameOptions,

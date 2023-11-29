@@ -14,7 +14,7 @@ import { DefenderGameOptions } from "@/modules/game/schemas/game-options/roles-g
 import { IdiotGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
 import { LittleGirlGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options/little-girl-game-options.schema";
 import { PiedPiperGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options/pied-piper-game-options.schema";
-import { RavenGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/raven-game-options/raven-game-options.schema";
+import { ScandalmongerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/scandalmonger-game-options/scandalmonger-game-options.schema";
 import { SeerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options/seer-game-options.schema";
 import { SheriffGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
 import { StutteringJudgeGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/stuttering-judge-game-options/stuttering-judge-game-options.schema";
@@ -142,11 +142,11 @@ class RolesGameOptions {
   @Expose()
   public piedPiper: PiedPiperGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.raven as ApiPropertyOptions)
-  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.raven)
-  @Type(() => RavenGameOptions)
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.scandalmonger as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.scandalmonger)
+  @Type(() => ScandalmongerGameOptions)
   @Expose()
-  public raven: RavenGameOptions;
+  public scandalmonger: ScandalmongerGameOptions;
 
   @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.witch as ApiPropertyOptions)
   @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.witch)

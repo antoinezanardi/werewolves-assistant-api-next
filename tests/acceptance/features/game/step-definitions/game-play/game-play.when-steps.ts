@@ -239,7 +239,7 @@ When(/^the thief chooses an unknown card$/u, async function(this: CustomWorld): 
   setGameInContext(this.response, this);
 });
 
-When(/^the raven marks the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
+When(/^the scandalmonger marks the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
 

@@ -17,7 +17,7 @@ export class GamePlayVoteService {
   public getNominatedPlayers(votes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Player[] {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     let playerVoteCounts = this.getPlayerVoteCounts(votes, clonedGame);
-    playerVoteCounts = this.addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
+    playerVoteCounts = this.addScandalmongerMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
     const maxVotes = Math.max(...playerVoteCounts.map(playerVoteCount => playerVoteCount[1]));
     return playerVoteCounts.filter(playerVoteCount => playerVoteCount[1] === maxVotes).map(playerVoteCount => createPlayer(playerVoteCount[0]));
   }
@@ -41,20 +41,20 @@ export class GamePlayVoteService {
     }, []);
   }
   
-  private addRavenMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: GameWithCurrentPlay): PlayerVoteCount[] {
+  private addScandalmongerMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: GameWithCurrentPlay): PlayerVoteCount[] {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
-    const ravenPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.RAVEN);
-    const ravenMarkedPlayer = getPlayerWithActiveAttributeName(clonedGame, PlayerAttributeNames.RAVEN_MARKED);
-    if (clonedGame.currentPlay.action !== GamePlayActions.VOTE || ravenPlayer?.isAlive !== true ||
-      !isPlayerPowerful(ravenPlayer, clonedGame) || ravenMarkedPlayer?.isAlive !== true) {
+    const scandalmongerPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.SCANDALMONGER);
+    const scandalmongerMarkedPlayer = getPlayerWithActiveAttributeName(clonedGame, PlayerAttributeNames.SCANDALMONGER_MARKED);
+    if (clonedGame.currentPlay.action !== GamePlayActions.VOTE || scandalmongerPlayer?.isAlive !== true ||
+      !isPlayerPowerful(scandalmongerPlayer, clonedGame) || scandalmongerMarkedPlayer?.isAlive !== true) {
       return playerVoteCounts;
     }
-    const ravenMarkedPlayerVoteCount = playerVoteCounts.find(playerVoteCount => playerVoteCount[0]._id.equals(ravenMarkedPlayer._id));
-    const { markPenalty } = clonedGame.options.roles.raven;
-    if (ravenMarkedPlayerVoteCount) {
-      ravenMarkedPlayerVoteCount[1] += markPenalty;
+    const scandalmongerMarkedPlayerVoteCount = playerVoteCounts.find(playerVoteCount => playerVoteCount[0]._id.equals(scandalmongerMarkedPlayer._id));
+    const { markPenalty } = clonedGame.options.roles.scandalmonger;
+    if (scandalmongerMarkedPlayerVoteCount) {
+      scandalmongerMarkedPlayerVoteCount[1] += markPenalty;
       return playerVoteCounts;
     }
-    return [...playerVoteCounts, [ravenMarkedPlayer, markPenalty]];
+    return [...playerVoteCounts, [scandalmongerMarkedPlayer, markPenalty]];
   }
 }

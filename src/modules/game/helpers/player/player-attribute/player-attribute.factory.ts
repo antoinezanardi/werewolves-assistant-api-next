@@ -90,10 +90,10 @@ function createInLoveByCupidPlayerAttribute(playerAttribute: Partial<PlayerAttri
   });
 }
 
-function createRavenMarkByRavenPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createScandalmongerMarkByScandalmongerPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PlayerAttributeNames.RAVEN_MARKED,
-    source: RoleNames.RAVEN,
+    name: PlayerAttributeNames.SCANDALMONGER_MARKED,
+    source: RoleNames.SCANDALMONGER,
     remainingPhases: 2,
     ...playerAttribute,
   });
@@ -194,7 +194,7 @@ export {
   createPowerlessByElderPlayerAttribute,
   createWorshipedByWildChildPlayerAttribute,
   createInLoveByCupidPlayerAttribute,
-  createRavenMarkByRavenPlayerAttribute,
+  createScandalmongerMarkByScandalmongerPlayerAttribute,
   createProtectedByDefenderPlayerAttribute,
   createDrankDeathPotionByWitchPlayerAttribute,
   createDrankLifePotionByWitchPlayerAttribute,

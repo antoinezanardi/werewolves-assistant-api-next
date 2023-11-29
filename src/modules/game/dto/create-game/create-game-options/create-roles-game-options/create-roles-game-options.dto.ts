@@ -14,7 +14,7 @@ import { CreateDefenderGameOptionsDto } from "@/modules/game/dto/create-game/cre
 import { CreateIdiotGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
 import { CreateLittleGirlGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-little-girl-game-options.dto";
 import { CreatePiedPiperGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-pied-piper-game-options.dto";
-import { CreateRavenGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-raven-game-options.dto";
+import { CreateScandalmongerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-scandalmonger-game-options.dto";
 import { CreateSeerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-seer-game-options.dto";
 import { CreateSheriffGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-game-options.dto";
 import { CreateStutteringJudgeGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-stuttering-judge-game-options.dto";
@@ -195,13 +195,13 @@ class CreateRolesGameOptionsDto {
   public piedPiper: CreatePiedPiperGameOptionsDto = new CreatePiedPiperGameOptionsDto();
 
   @ApiProperty({
-    ...ROLES_GAME_OPTIONS_API_PROPERTIES.raven,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.scandalmonger,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @Type(() => CreateRavenGameOptionsDto)
+  @Type(() => CreateScandalmongerGameOptionsDto)
   @ValidateNested()
-  public raven: CreateRavenGameOptionsDto = new CreateRavenGameOptionsDto();
+  public scandalmonger: CreateScandalmongerGameOptionsDto = new CreateScandalmongerGameOptionsDto();
 
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.witch,

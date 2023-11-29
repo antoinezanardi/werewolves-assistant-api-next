@@ -149,9 +149,9 @@ function createGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> = {})
   });
 }
 
-function createGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}): GamePlay {
+function createGamePlayScandalmongerMarks(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: createGamePlaySource({ name: RoleNames.RAVEN }),
+    source: createGamePlaySource({ name: RoleNames.SCANDALMONGER }),
     action: GamePlayActions.MARK,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
     ...gamePlay,
@@ -263,7 +263,7 @@ export {
   createGamePlayLoversMeetEachOther,
   createGamePlayThreeBrothersMeetEachOther,
   createGamePlayTwoSistersMeetEachOther,
-  createGamePlayRavenMarks,
+  createGamePlayScandalmongerMarks,
   createGamePlayDefenderProtects,
   createGamePlayHunterShoots,
   createGamePlayWitchUsesPotions,
