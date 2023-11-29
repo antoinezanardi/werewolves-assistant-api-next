@@ -11,10 +11,10 @@ import { IDIOT_GAME_OPTIONS_API_PROPERTIES, IDIOT_GAME_OPTIONS_FIELDS_SPECS } fr
   _id: false,
 })
 class IdiotGameOptions {
-  @ApiProperty(IDIOT_GAME_OPTIONS_API_PROPERTIES.doesDieOnAncientDeath as ApiPropertyOptions)
-  @Prop(IDIOT_GAME_OPTIONS_FIELDS_SPECS.doesDieOnAncientDeath)
+  @ApiProperty(IDIOT_GAME_OPTIONS_API_PROPERTIES.doesDieOnElderDeath as ApiPropertyOptions)
+  @Prop(IDIOT_GAME_OPTIONS_FIELDS_SPECS.doesDieOnElderDeath)
   @Expose()
-  public doesDieOnAncientDeath: boolean;
+  public doesDieOnElderDeath: boolean;
 }
 
 const IDIOT_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(IdiotGameOptions);

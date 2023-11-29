@@ -23,9 +23,9 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakeFoxGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeAncientAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeElderAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Maker Service", () => {
@@ -58,8 +58,8 @@ describe("Game Play Maker Service", () => {
     };
     playerKillerService: {
       killOrRevealPlayer: jest.SpyInstance;
-      isAncientKillable: jest.SpyInstance;
-      getAncientLivesCountAgainstWerewolves: jest.SpyInstance;
+      isElderKillable: jest.SpyInstance;
+      getElderLivesCountAgainstWerewolves: jest.SpyInstance;
     };
     gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
     gameMutator: { prependUpcomingPlayInGame: jest.SpyInstance };
@@ -98,8 +98,8 @@ describe("Game Play Maker Service", () => {
       },
       playerKillerService: {
         killOrRevealPlayer: jest.fn(),
-        isAncientKillable: jest.fn(),
-        getAncientLivesCountAgainstWerewolves: jest.fn(),
+        isElderKillable: jest.fn(),
+        getElderLivesCountAgainstWerewolves: jest.fn(),
       },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
       gameMutator: { prependUpcomingPlayInGame: jest.spyOn(GameMutator, "prependUpcomingPlayInGame").mockImplementation() },
@@ -459,7 +459,7 @@ describe("Game Play Maker Service", () => {
 
     it("should not kill scapegoat when he's powerless.", async() => {
       const players = [
-        createFakeScapegoatAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeScapegoatAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -1709,7 +1709,7 @@ describe("Game Play Maker Service", () => {
       const game = createFakeGameWithCurrentPlay({ players });
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: false })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.isAncientKillable.mockReturnValue(false);
+      mocks.playerKillerService.isElderKillable.mockReturnValue(false);
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         attributes: [createFakeEatenByWerewolvesPlayerAttribute()],
@@ -1727,17 +1727,17 @@ describe("Game Play Maker Service", () => {
       await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should add eaten attribute by werewolves to target when target is infected but not killable ancient.", async() => {
+    it("should add eaten attribute by werewolves to target when target is infected but not killable elder.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.isAncientKillable.mockReturnValue(false);
+      mocks.playerKillerService.isElderKillable.mockReturnValue(false);
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         attributes: [createFakeEatenByWerewolvesPlayerAttribute()],
@@ -1755,7 +1755,7 @@ describe("Game Play Maker Service", () => {
       await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should change target side to werewolves when he's infected and not the ancient.", async() => {
+    it("should change target side to werewolves when he's infected and not the elder.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
         createFakeRavenAlivePlayer(),
@@ -1765,7 +1765,7 @@ describe("Game Play Maker Service", () => {
       const game = createFakeGameWithCurrentPlay({ players });
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.getAncientLivesCountAgainstWerewolves.mockReturnValue(2);
+      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(2);
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },
@@ -1783,17 +1783,17 @@ describe("Game Play Maker Service", () => {
       await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should change target side to werewolves when he's infected and ancient with only one life left.", async() => {
+    it("should change target side to werewolves when he's infected and elder with only one life left.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.getAncientLivesCountAgainstWerewolves.mockReturnValue(1);
+      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(1);
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },
@@ -1811,17 +1811,17 @@ describe("Game Play Maker Service", () => {
       await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should change target side to werewolves when he's infected and ancient with zero one life left.", async() => {
+    it("should change target side to werewolves when he's infected and elder with zero one life left.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.getAncientLivesCountAgainstWerewolves.mockReturnValue(0);
+      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(0);
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },

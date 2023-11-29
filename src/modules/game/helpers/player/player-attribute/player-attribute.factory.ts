@@ -65,10 +65,10 @@ function createPowerlessByFoxPlayerAttribute(playerAttribute: Partial<PlayerAttr
   });
 }
 
-function createPowerlessByAncientPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createPowerlessByElderPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.POWERLESS,
-    source: RoleNames.ANCIENT,
+    source: RoleNames.ELDER,
     doesRemainAfterDeath: true,
     ...playerAttribute,
   });
@@ -191,7 +191,7 @@ export {
   createCantVoteBySurvivorsPlayerAttribute,
   createCantVoteByScapegoatPlayerAttribute,
   createPowerlessByFoxPlayerAttribute,
-  createPowerlessByAncientPlayerAttribute,
+  createPowerlessByElderPlayerAttribute,
   createWorshipedByWildChildPlayerAttribute,
   createInLoveByCupidPlayerAttribute,
   createRavenMarkByRavenPlayerAttribute,

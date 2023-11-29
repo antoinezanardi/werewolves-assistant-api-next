@@ -27,12 +27,12 @@ Feature: 🐺 Vile Father of Wolves role
     When the player or group skips his turn
     Then the game's current play should be seer to look
 
-  Scenario: 🐺 Vile Father of Wolves doesn't infect the ancient if he still have lives
+  Scenario: 🐺 Vile Father of Wolves doesn't infect the elder if he still have lives
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | vile-father-of-wolves |
-      | Olivia  | ancient               |
+      | Olivia  | elder                 |
       | JB      | villager              |
       | Thomas  | villager              |
     Then the game's current play should be werewolves to eat
@@ -41,12 +41,12 @@ Feature: 🐺 Vile Father of Wolves role
     Then the player named Olivia should be on villagers current side and originally be on villagers side
     And the player named Olivia should be alive
 
-  Scenario: 🐺 Vile Father of Wolves infects the ancient if he only has one life left
+  Scenario: 🐺 Vile Father of Wolves infects the elder if he only has one life left
 
-    Given a created game with options described in files no-sheriff-option.json, ancient-one-life-against-werewolves-option.json and with the following players
+    Given a created game with options described in files no-sheriff-option.json, elder-one-life-against-werewolves-option.json and with the following players
       | name    | role                  |
       | Antoine | vile-father-of-wolves |
-      | Olivia  | ancient               |
+      | Olivia  | elder                 |
       | JB      | villager              |
       | Thomas  | villager              |
     Then the game's current play should be werewolves to eat
@@ -59,7 +59,7 @@ Feature: 🐺 Vile Father of Wolves role
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
-      | Olivia  | ancient  |
+      | Olivia  | elder    |
       | JB      | villager |
       | Thomas  | villager |
       | Antoine | werewolf |

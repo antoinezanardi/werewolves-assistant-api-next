@@ -6,12 +6,12 @@ import { IDIOT_GAME_OPTIONS_API_PROPERTIES, IDIOT_GAME_OPTIONS_FIELDS_SPECS } fr
 
 class CreateIdiotGameOptionsDto {
   @ApiProperty({
-    ...IDIOT_GAME_OPTIONS_API_PROPERTIES.doesDieOnAncientDeath,
+    ...IDIOT_GAME_OPTIONS_API_PROPERTIES.doesDieOnElderDeath,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
-  public doesDieOnAncientDeath: boolean = IDIOT_GAME_OPTIONS_FIELDS_SPECS.doesDieOnAncientDeath.default;
+  public doesDieOnElderDeath: boolean = IDIOT_GAME_OPTIONS_FIELDS_SPECS.doesDieOnElderDeath.default;
 }
 
 export { CreateIdiotGameOptionsDto };

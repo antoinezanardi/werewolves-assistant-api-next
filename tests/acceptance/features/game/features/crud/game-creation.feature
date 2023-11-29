@@ -157,8 +157,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                                                                                                                                                                                                                                                                                                                                                   |
-      | players.4.role.name must be one of the following values: werewolf, big-bad-wolf, vile-father-of-wolves, white-werewolf, villager, villager-villager, seer, cupid, witch, hunter, little-girl, guard, ancient, scapegoat, idiot, two-sisters, three-brothers, fox, bear-tamer, stuttering-judge, rusty-sword-knight, thief, wild-child, dog-wolf, angel, pied-piper, raven |
+      | message                                                                                                                                                                                                                                                                                                                                                                 |
+      | players.4.role.name must be one of the following values: werewolf, big-bad-wolf, vile-father-of-wolves, white-werewolf, villager, villager-villager, seer, cupid, witch, hunter, little-girl, guard, elder, scapegoat, idiot, two-sisters, three-brothers, fox, bear-tamer, stuttering-judge, rusty-sword-knight, thief, wild-child, dog-wolf, angel, pied-piper, raven |
 
   Scenario: 🎲 Game can't be created if there is only one of the two sisters
 
@@ -314,12 +314,12 @@ Feature: 🎲 Game Creation
       | message                                                                                                |
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
-  Scenario: 🎲 Game can't be created if there are two ancients
+  Scenario: 🎲 Game can't be created if there are two elders
 
     Given a created game with the following players
       | name    | role     |
-      | Antoine | ancient  |
-      | Olivia  | ancient  |
+      | Antoine | elder    |
+      | Olivia  | elder    |
       | JB      | idiot    |
       | Thomas  | werewolf |
     Then the request should have failed with status code 400

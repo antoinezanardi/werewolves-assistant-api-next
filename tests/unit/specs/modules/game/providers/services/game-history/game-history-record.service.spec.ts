@@ -55,8 +55,8 @@ describe("Game History Record Service", () => {
       getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
       getGameHistoryJudgeChoosesHisSignRecords: jest.SpyInstance;
-      getGameHistoryWerewolvesEatAncientRecords: jest.SpyInstance;
-      getGameHistoryAncientProtectedFromWerewolvesRecords: jest.SpyInstance;
+      getGameHistoryWerewolvesEatElderRecords: jest.SpyInstance;
+      getGameHistoryElderProtectedFromWerewolvesRecords: jest.SpyInstance;
       getPreviousGameHistoryRecord: jest.SpyInstance;
       getGameHistory: jest.SpyInstance;
       getGameHistoryPhaseRecords: jest.SpyInstance;
@@ -90,8 +90,8 @@ describe("Game History Record Service", () => {
         getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
         getGameHistoryJudgeChoosesHisSignRecords: jest.fn(),
-        getGameHistoryWerewolvesEatAncientRecords: jest.fn(),
-        getGameHistoryAncientProtectedFromWerewolvesRecords: jest.fn(),
+        getGameHistoryWerewolvesEatElderRecords: jest.fn(),
+        getGameHistoryElderProtectedFromWerewolvesRecords: jest.fn(),
         getPreviousGameHistoryRecord: jest.fn(),
         getGameHistory: jest.fn(),
         getGameHistoryPhaseRecords: jest.fn(),
@@ -206,21 +206,21 @@ describe("Game History Record Service", () => {
     });
   });
   
-  describe("getGameHistoryWerewolvesEatAncientRecords", () => {
-    it("should get game history records when any kind of werewolves eat ancient when called.", async() => {
+  describe("getGameHistoryWerewolvesEatElderRecords", () => {
+    it("should get game history records when any kind of werewolves eat elder when called.", async() => {
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryWerewolvesEatAncientRecords(gameId);
+      await services.gameHistoryRecord.getGameHistoryWerewolvesEatElderRecords(gameId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryWerewolvesEatAncientRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getGameHistoryWerewolvesEatElderRecords).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 
-  describe("getGameHistoryAncientProtectedFromWerewolvesRecords", () => {
-    it("should get game history records when ancient is protected from werewolves when called.", async() => {
+  describe("getGameHistoryElderProtectedFromWerewolvesRecords", () => {
+    it("should get game history records when elder is protected from werewolves when called.", async() => {
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
+      await services.gameHistoryRecord.getGameHistoryElderProtectedFromWerewolvesRecords(gameId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryAncientProtectedFromWerewolvesRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getGameHistoryElderProtectedFromWerewolvesRecords).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 

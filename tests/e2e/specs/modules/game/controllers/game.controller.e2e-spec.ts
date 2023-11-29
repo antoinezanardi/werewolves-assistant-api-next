@@ -799,11 +799,11 @@ describe("Game Controller", () => {
           },
           littleGirl: { isProtectedByGuard: true },
           guard: { canProtectTwice: true },
-          ancient: {
+          elder: {
             livesCountAgainstWerewolves: 1,
             doesTakeHisRevenge: false,
           },
-          idiot: { doesDieOnAncientDeath: false },
+          idiot: { doesDieOnElderDeath: false },
           twoSisters: { wakingUpInterval: 0 },
           threeBrothers: { wakingUpInterval: 5 },
           fox: { isPowerlessIfMissesWerewolf: false },

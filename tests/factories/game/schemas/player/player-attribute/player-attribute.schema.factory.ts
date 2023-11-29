@@ -126,10 +126,10 @@ function createFakePowerlessByFoxPlayerAttribute(attribute: Partial<PlayerAttrib
   }, override);
 }
 
-function createFakePowerlessByAncientPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakePowerlessByElderPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.POWERLESS,
-    source: RoleNames.ANCIENT,
+    source: RoleNames.ELDER,
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -215,7 +215,7 @@ export {
   createFakeInLoveByCupidPlayerAttribute,
   createFakeWorshipedByWildChildPlayerAttribute,
   createFakePowerlessByFoxPlayerAttribute,
-  createFakePowerlessByAncientPlayerAttribute,
+  createFakePowerlessByElderPlayerAttribute,
   createFakeCantVoteBySurvivorsPlayerAttribute,
   createFakeCantVoteByScapegoatPlayerAttribute,
   createFakeCharmedByPiedPiperPlayerAttribute,

@@ -11,8 +11,8 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakeRavenGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayFoxSniffs } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakePowerlessByAncientPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeAncientAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePowerlessByElderPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeElderAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 
 describe("Game Play Vote Service", () => {
   let services: { gamePlayVote: GamePlayVoteService };
@@ -26,7 +26,7 @@ describe("Game Play Vote Service", () => {
   describe("getNominatedPlayers", () => {
     it("should get nominated players when called.", () => {
       const players: Player[] = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        createFakeElderAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
@@ -51,7 +51,7 @@ describe("Game Play Vote Service", () => {
   describe("getPlayerVoteCounts", () => {
     it("should return empty array when votes are undefined.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -64,7 +64,7 @@ describe("Game Play Vote Service", () => {
 
     it("should get player vote counts with only simple votes when there is no sheriff.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -86,7 +86,7 @@ describe("Game Play Vote Service", () => {
 
     it("should get player vote counts with only simple votes when sheriff doesn't have double vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        createFakeElderAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -108,7 +108,7 @@ describe("Game Play Vote Service", () => {
 
     it("should get player vote counts with simple only votes when game play is not vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        createFakeElderAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -130,7 +130,7 @@ describe("Game Play Vote Service", () => {
 
     it("should get player vote counts with simple votes and one doubled vote when sheriff has double vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        createFakeElderAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -154,7 +154,7 @@ describe("Game Play Vote Service", () => {
   describe("addRavenMarkVoteToPlayerVoteCounts", () => {
     it("should return player vote counts as is when action is not vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
@@ -170,7 +170,7 @@ describe("Game Play Vote Service", () => {
 
     it("should return player vote counts as is when there is no raven player in the game.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeFoxAlivePlayer(),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
@@ -186,7 +186,7 @@ describe("Game Play Vote Service", () => {
 
     it("should return player vote counts as is when raven player is not alive.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeRavenAlivePlayer({ isAlive: false }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
@@ -202,8 +202,8 @@ describe("Game Play Vote Service", () => {
 
     it("should return player vote counts as is when raven player is powerless.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeElderAlivePlayer(),
+        createFakeRavenAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -218,7 +218,7 @@ describe("Game Play Vote Service", () => {
 
     it("should return player vote counts as is when there are no raven mark.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -234,7 +234,7 @@ describe("Game Play Vote Service", () => {
 
     it("should return player vote counts as is when the raven target is dead.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false, attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
@@ -250,7 +250,7 @@ describe("Game Play Vote Service", () => {
 
     it("should return player vote counts with new player vote entry when raven target doesn't have vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeRavenAlivePlayer(),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
@@ -272,7 +272,7 @@ describe("Game Play Vote Service", () => {
 
     it("should return player vote counts with updated player vote entry when raven target already has votes.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeRavenAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
