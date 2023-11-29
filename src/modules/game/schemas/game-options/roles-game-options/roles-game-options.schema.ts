@@ -10,7 +10,7 @@ import { BearTamerGameOptions } from "@/modules/game/schemas/game-options/roles-
 import { BigBadWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
 import { DogWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
 import { FoxGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options/fox-game-options.schema";
-import { GuardGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/guard-game-options/guard-game-options.schema";
+import { DefenderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/defender-game-options/defender-game-options.schema";
 import { IdiotGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
 import { LittleGirlGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options/little-girl-game-options.schema";
 import { PiedPiperGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options/pied-piper-game-options.schema";
@@ -70,11 +70,11 @@ class RolesGameOptions {
   @Expose()
   public littleGirl: LittleGirlGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.guard as ApiPropertyOptions)
-  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.guard)
-  @Type(() => GuardGameOptions)
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.defender as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.defender)
+  @Type(() => DefenderGameOptions)
   @Expose()
-  public guard: GuardGameOptions;
+  public defender: DefenderGameOptions;
 
   @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.elder as ApiPropertyOptions)
   @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.elder)

@@ -9,14 +9,14 @@ Feature: 🐺🦴White Werewolf role
       | Antoine | villager          |
       | JB      | werewolf          |
       | Olivia  | white-werewolf    |
-      | Thomas  | guard             |
+      | Thomas  | defender             |
       | Olaf    | villager-villager |
       | Elsa    | idiot             |
       | Patoche | villager          |
     Then the request should have succeeded with status code 201
 
-    When the guard protects the player named Antoine
-    Then the player named Antoine should have the active protected from guard attribute
+    When the defender protects the player named Antoine
+    Then the player named Antoine should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -49,10 +49,10 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named Thomas
-    Then the player named Thomas should have the active protected from guard attribute
+    When the defender protects the player named Thomas
+    Then the player named Thomas should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -67,10 +67,10 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named Olivia
-    Then the player named Olivia should have the active protected from guard attribute
+    When the defender protects the player named Olivia
+    Then the player named Olivia should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Elsa
@@ -96,10 +96,10 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named Thomas
-    Then the player named Thomas should have the active protected from guard attribute
+    When the defender protects the player named Thomas
+    Then the player named Thomas should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -107,10 +107,10 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be survivors to vote
 
     When the player or group skips his turn
-    And the game's current play should be guard to protect
+    And the game's current play should be defender to protect
 
-    When the guard protects the player named Olivia
-    Then the player named Olivia should have the active protected from guard attribute
+    When the defender protects the player named Olivia
+    Then the player named Olivia should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -139,10 +139,10 @@ Feature: 🐺🦴White Werewolf role
       | Antoine | villager       |
       | JB      | werewolf       |
       | Olivia  | white-werewolf |
-      | Thomas  | guard          |
+      | Thomas  | defender          |
 
-    When the guard protects the player named Antoine
-    Then the player named Antoine should have the active protected from guard attribute
+    When the defender protects the player named Antoine
+    Then the player named Antoine should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -157,10 +157,10 @@ Feature: 🐺🦴White Werewolf role
     And the player named Antoine should be alive
 
     When the player or group skips his turn
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named Olivia
-    Then the player named Olivia should have the active protected from guard attribute
+    When the defender protects the player named Olivia
+    Then the player named Olivia should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -179,10 +179,10 @@ Feature: 🐺🦴White Werewolf role
     Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named Thomas
-    Then the player named Thomas should have the active protected from guard attribute
+    When the defender protects the player named Thomas
+    Then the player named Thomas should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas

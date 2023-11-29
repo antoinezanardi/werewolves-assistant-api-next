@@ -97,10 +97,10 @@ export class PlayerKillerService {
   }
 
   private canPlayerBeEaten(eatenPlayer: Player, game: Game): boolean {
-    const { isProtectedByGuard: isLittleGirlProtectedByGuard } = game.options.roles.littleGirl;
+    const { isProtectedByDefender: isLittleGirlProtectedByDefender } = game.options.roles.littleGirl;
     const isPlayerSavedByWitch = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PlayerAttributeNames.DRANK_LIFE_POTION, game);
-    const isPlayerProtectedByGuard = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PlayerAttributeNames.PROTECTED, game);
-    return !isPlayerSavedByWitch && (!isPlayerProtectedByGuard || eatenPlayer.role.current === RoleNames.LITTLE_GIRL && !isLittleGirlProtectedByGuard);
+    const isPlayerProtectedByDefender = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PlayerAttributeNames.PROTECTED, game);
+    return !isPlayerSavedByWitch && (!isPlayerProtectedByDefender || eatenPlayer.role.current === RoleNames.LITTLE_GIRL && !isLittleGirlProtectedByDefender);
   }
 
   private async isPlayerKillable(player: Player, game: Game, cause: PlayerDeathCauses): Promise<boolean> {

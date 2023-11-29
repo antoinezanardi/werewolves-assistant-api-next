@@ -159,9 +159,9 @@ function createFakeGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}, override
   }, override);
 }
 
-function createFakeGamePlayGuardProtects(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+function createFakeGamePlayDefenderProtects(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: RoleNames.GUARD }),
+    source: createFakeGamePlaySource({ name: RoleNames.DEFENDER }),
     action: GamePlayActions.PROTECT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
     ...gamePlay,
@@ -269,7 +269,7 @@ export {
   createFakeGamePlayThreeBrothersMeetEachOther,
   createFakeGamePlayTwoSistersMeetEachOther,
   createFakeGamePlayRavenMarks,
-  createFakeGamePlayGuardProtects,
+  createFakeGamePlayDefenderProtects,
   createFakeGamePlayHunterShoots,
   createFakeGamePlayWitchUsesPotions,
   createFakeGamePlayPiedPiperCharms,

@@ -7,7 +7,7 @@ import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/cr
 import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
 import { CreateDogWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
 import { CreateFoxGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-fox-game-options.dto";
-import { CreateGuardGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-guard-game-options.dto";
+import { CreateDefenderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-defender-game-options.dto";
 import { CreateIdiotGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
 import { CreateLittleGirlGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-little-girl-game-options.dto";
 import { CreatePiedPiperGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-pied-piper-game-options.dto";
@@ -127,16 +127,16 @@ function createFakeCreateElderGameOptionsDto(elderGameOptions: Partial<CreateEld
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function createFakeCreateGuardGameOptionsDto(guardGameOptions: Partial<CreateGuardGameOptionsDto> = {}, override: object = {}): CreateGuardGameOptionsDto {
-  return plainToInstance(CreateGuardGameOptionsDto, {
-    canProtectTwice: guardGameOptions.canProtectTwice ?? faker.datatype.boolean(),
+function createFakeCreateDefenderGameOptionsDto(defenderGameOptions: Partial<CreateDefenderGameOptionsDto> = {}, override: object = {}): CreateDefenderGameOptionsDto {
+  return plainToInstance(CreateDefenderGameOptionsDto, {
+    canProtectTwice: defenderGameOptions.canProtectTwice ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeCreateLittleGirlGameOptionsDto(littleGirlGameOptions: Partial<CreateLittleGirlGameOptionsDto> = {}, override: object = {}): CreateLittleGirlGameOptionsDto {
   return plainToInstance(CreateLittleGirlGameOptionsDto, {
-    isProtectedByGuard: littleGirlGameOptions.isProtectedByGuard ?? faker.datatype.boolean(),
+    isProtectedByDefender: littleGirlGameOptions.isProtectedByDefender ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -195,7 +195,7 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     whiteWerewolf: createFakeCreateWhiteWerewolfGameOptionsDto(rolesGameOptions.whiteWerewolf),
     seer: createFakeCreateSeerGameOptionsDto(rolesGameOptions.seer),
     littleGirl: createFakeCreateLittleGirlGameOptionsDto(rolesGameOptions.littleGirl),
-    guard: createFakeCreateGuardGameOptionsDto(rolesGameOptions.guard),
+    defender: createFakeCreateDefenderGameOptionsDto(rolesGameOptions.defender),
     elder: createFakeCreateElderGameOptionsDto(rolesGameOptions.elder),
     idiot: createFakeCreateIdiotGameOptionsDto(rolesGameOptions.idiot),
     twoSisters: createFakeCreateTwoSistersGameOptionsDto(rolesGameOptions.twoSisters),
@@ -227,7 +227,7 @@ export {
   createFakeCreateTwoSistersGameOptionsDto,
   createFakeCreateIdiotGameOptionsDto,
   createFakeCreateElderGameOptionsDto,
-  createFakeCreateGuardGameOptionsDto,
+  createFakeCreateDefenderGameOptionsDto,
   createFakeCreateLittleGirlGameOptionsDto,
   createFakeCreateSeerGameOptionsDto,
   createFakeCreateWhiteWerewolfGameOptionsDto,

@@ -13,7 +13,7 @@ Feature: 👴🏻 Elder role
       | Olivia    | werewolf              |
       | Thomas    | witch                 |
       | Romain    | hunter                |
-      | Ludo      | guard                 |
+      | Ludo      | defender                 |
       | Benedicte | scapegoat             |
       | Alex      | idiot                 |
       | Alexis    | fox                   |
@@ -100,13 +100,13 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | witch    |
-      | JB      | guard    |
+      | JB      | defender    |
       | Thomas  | idiot    |
       | Bobo    | villager |
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named JB
-    Then the player named JB should have the active protected from guard attribute
+    When the defender protects the player named JB
+    Then the player named JB should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Bobo
@@ -135,12 +135,12 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | idiot    |
-      | JB      | guard    |
+      | JB      | defender    |
       | Thomas  | hunter   |
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named JB
-    Then the player named JB should have the active protected from guard attribute
+    When the defender protects the player named JB
+    Then the player named JB should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -172,7 +172,7 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | angel    |
-      | JB      | guard    |
+      | JB      | defender    |
     Then the game's current play should be survivors to vote because angel-presence
 
     When the survivors vote with the following votes
@@ -183,7 +183,7 @@ Feature: 👴🏻 Elder role
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
   Scenario: 👴🏻 Elder has two lives against werewolves
 
@@ -192,11 +192,11 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | witch    |
-      | JB      | guard    |
-    Then the game's current play should be guard to protect
+      | JB      | defender    |
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named JB
-    Then the player named JB should have the active protected from guard attribute
+    When the defender protects the player named JB
+    Then the player named JB should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -208,10 +208,10 @@ Feature: 👴🏻 Elder role
     And the game's current play should be survivors to vote
 
     When the player or group skips his turn
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named Juju
-    Then the player named Juju should have the active protected from guard attribute
+    When the defender protects the player named Juju
+    Then the player named Juju should have the active protected from defender attribute
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should have the active eaten from werewolves attribute
@@ -222,10 +222,10 @@ Feature: 👴🏻 Elder role
     And the game's current play should be survivors to vote
 
     When the player or group skips his turn
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named Antoine
-    Then the player named Antoine should have the active protected from guard attribute
+    When the defender protects the player named Antoine
+    Then the player named Antoine should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -237,10 +237,10 @@ Feature: 👴🏻 Elder role
     And the player named Antoine should be alive
 
     When the player or group skips his turn
-    Then the game's current play should be guard to protect
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named JB
-    Then the player named JB should have the active protected from guard attribute
+    When the defender protects the player named JB
+    Then the player named JB should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -259,11 +259,11 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | witch    |
-      | JB      | guard    |
-    Then the game's current play should be guard to protect
+      | JB      | defender    |
+    Then the game's current play should be defender to protect
 
-    When the guard protects the player named JB
-    Then the player named JB should have the active protected from guard attribute
+    When the defender protects the player named JB
+    Then the player named JB should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine

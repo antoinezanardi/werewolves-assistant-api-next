@@ -9,7 +9,7 @@ import { createGamePlaySurvivorsVote, createGamePlaySheriffSettlesVotes, createG
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
-import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
@@ -37,7 +37,7 @@ export class GamePlayMakerService {
     [RoleNames.PIED_PIPER]: (play, game) => this.piedPiperCharms(play, game),
     [RoleNames.WITCH]: (play, game) => this.witchUsesPotions(play, game),
     [RoleNames.HUNTER]: async(play, game) => this.hunterShoots(play, game),
-    [RoleNames.GUARD]: (play, game) => this.guardProtects(play, game),
+    [RoleNames.DEFENDER]: (play, game) => this.defenderProtects(play, game),
     [RoleNames.FOX]: (play, game) => this.foxSniffs(play, game),
     [RoleNames.WILD_CHILD]: (play, game) => this.wildChildChoosesModel(play, game),
     [RoleNames.DOG_WOLF]: (play, game) => this.dogWolfChoosesSide(play, game),
@@ -252,15 +252,15 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, ravenMarkByRavenPlayerAttribute);
   }
   
-  private guardProtects({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
+  private defenderProtects({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
       return clonedGame;
     }
     const { player: targetedPlayer } = targets[0];
-    const protectedByGuardPlayerAttribute = createProtectedByGuardPlayerAttribute();
-    return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, protectedByGuardPlayerAttribute);
+    const protectedByDefenderPlayerAttribute = createProtectedByDefenderPlayerAttribute();
+    return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, protectedByDefenderPlayerAttribute);
   }
 
   private async hunterShoots({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {

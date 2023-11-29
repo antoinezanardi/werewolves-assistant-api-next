@@ -10,7 +10,7 @@ import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/cr
 import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
 import { CreateDogWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
 import { CreateFoxGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-fox-game-options.dto";
-import { CreateGuardGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-guard-game-options.dto";
+import { CreateDefenderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-defender-game-options.dto";
 import { CreateIdiotGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
 import { CreateLittleGirlGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-little-girl-game-options.dto";
 import { CreatePiedPiperGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-pied-piper-game-options.dto";
@@ -87,13 +87,13 @@ class CreateRolesGameOptionsDto {
   public littleGirl: CreateLittleGirlGameOptionsDto = new CreateLittleGirlGameOptionsDto();
 
   @ApiProperty({
-    ...ROLES_GAME_OPTIONS_API_PROPERTIES.guard,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.defender,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @Type(() => CreateGuardGameOptionsDto)
+  @Type(() => CreateDefenderGameOptionsDto)
   @ValidateNested()
-  public guard: CreateGuardGameOptionsDto = new CreateGuardGameOptionsDto();
+  public defender: CreateDefenderGameOptionsDto = new CreateDefenderGameOptionsDto();
 
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.elder,

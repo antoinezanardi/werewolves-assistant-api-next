@@ -35,7 +35,7 @@ export class GamePlayAugmenterService {
       [RoleNames.BIG_BAD_WOLF]: game => this.getBigBadWolfGamePlayEligibleTargets(game),
       [RoleNames.CUPID]: game => this.getCupidGamePlayEligibleTargets(game),
       [RoleNames.FOX]: game => this.getFoxGamePlayEligibleTargets(game),
-      [RoleNames.GUARD]: async game => this.getGuardGamePlayEligibleTargets(game),
+      [RoleNames.DEFENDER]: async game => this.getDefenderGamePlayEligibleTargets(game),
       [RoleNames.HUNTER]: game => this.getHunterGamePlayEligibleTargets(game),
       [RoleNames.PIED_PIPER]: game => this.getPiedPiperGamePlayEligibleTargets(game),
       [RoleNames.RAVEN]: game => this.getRavenGamePlayEligibleTargets(game),
@@ -190,14 +190,14 @@ export class GamePlayAugmenterService {
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
-  private async getGuardGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets> {
-    const { canProtectTwice } = game.options.roles.guard;
+  private async getDefenderGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets> {
+    const { canProtectTwice } = game.options.roles.defender;
     const alivePlayers = getAlivePlayers(game);
-    const lastGuardProtectRecord = await this.gameHistoryRecordService.getLastGameHistoryGuardProtectsRecord(game._id);
-    const lastProtectedPlayer = lastGuardProtectRecord?.play.targets?.[0].player;
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.PROTECT, source: RoleNames.GUARD }];
-    const possibleGuardTargets = canProtectTwice || !lastProtectedPlayer ? alivePlayers : alivePlayers.filter(player => !player._id.equals(lastProtectedPlayer._id));
-    const interactablePlayers: InteractablePlayer[] = possibleGuardTargets.map(player => ({ player, interactions }));
+    const lastDefenderProtectRecord = await this.gameHistoryRecordService.getLastGameHistoryDefenderProtectsRecord(game._id);
+    const lastProtectedPlayer = lastDefenderProtectRecord?.play.targets?.[0].player;
+    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.PROTECT, source: RoleNames.DEFENDER }];
+    const possibleDefenderTargets = canProtectTwice || !lastProtectedPlayer ? alivePlayers : alivePlayers.filter(player => !player._id.equals(lastProtectedPlayer._id));
+    const interactablePlayers: InteractablePlayer[] = possibleDefenderTargets.map(player => ({ player, interactions }));
     const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }

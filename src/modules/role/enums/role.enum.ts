@@ -10,7 +10,7 @@ enum RoleNames {
   WITCH = "witch",
   HUNTER = "hunter",
   LITTLE_GIRL = "little-girl",
-  GUARD = "guard",
+  DEFENDER = "defender",
   ELDER = "elder",
   SCAPEGOAT = "scapegoat",
   IDIOT = "idiot",

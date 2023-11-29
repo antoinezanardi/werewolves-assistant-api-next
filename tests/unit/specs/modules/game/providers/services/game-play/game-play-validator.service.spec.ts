@@ -31,7 +31,7 @@ import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas
 import { createFakeInteractablePlayer } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/interactable-player.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeDogWolfAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -52,7 +52,7 @@ describe("Game Play Validator Service", () => {
       validateDrankDeathPotionTargets: jest.SpyInstance;
       validateGamePlayInfectedTargets: jest.SpyInstance;
       validateGamePlaySheriffTargets: jest.SpyInstance;
-      validateGamePlayGuardTargets: jest.SpyInstance;
+      validateGamePlayDefenderTargets: jest.SpyInstance;
       validateGamePlayPiedPiperTargets: jest.SpyInstance;
       validateGamePlayWildChildTargets: jest.SpyInstance;
       validateGamePlayRavenTargets: jest.SpyInstance;
@@ -79,7 +79,7 @@ describe("Game Play Validator Service", () => {
       create: jest.SpyInstance;
     };
     gameHistoryRecordService: {
-      getLastGameHistoryGuardProtectsRecord: jest.SpyInstance;
+      getLastGameHistoryDefenderProtectsRecord: jest.SpyInstance;
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
@@ -110,7 +110,7 @@ describe("Game Play Validator Service", () => {
         validateDrankDeathPotionTargets: jest.fn(),
         validateGamePlayInfectedTargets: jest.fn(),
         validateGamePlaySheriffTargets: jest.fn(),
-        validateGamePlayGuardTargets: jest.fn(),
+        validateGamePlayDefenderTargets: jest.fn(),
         validateGamePlayPiedPiperTargets: jest.fn(),
         validateGamePlayWildChildTargets: jest.fn(),
         validateGamePlayRavenTargets: jest.fn(),
@@ -137,7 +137,7 @@ describe("Game Play Validator Service", () => {
         create: jest.fn(),
       },
       gameHistoryRecordService: {
-        getLastGameHistoryGuardProtectsRecord: jest.fn(),
+        getLastGameHistoryDefenderProtectsRecord: jest.fn(),
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
@@ -903,25 +903,25 @@ describe("Game Play Validator Service", () => {
     });
   });
 
-  describe("validateGamePlayGuardTargets", () => {
+  describe("validateGamePlayDefenderTargets", () => {
     it("should throw error when targeted player can't be targeted.", () => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayGuardProtects() });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDefenderProtects() });
       const targetedPlayer = createFakeVillagerAlivePlayer({ isAlive: false });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
-      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_GUARD_TARGET);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_DEFENDER_TARGET);
 
-      expect(() => services.gamePlayValidator["validateGamePlayGuardTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
+      expect(() => services.gamePlayValidator["validateGamePlayDefenderTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
     });
 
     it("should do nothing when targeted player can be protected.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ guard: { canProtectTwice: false } }) });
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayGuardProtects(), options });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ defender: { canProtectTwice: false } }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDefenderProtects(), options });
       const targetedPlayer = createFakeVillagerAlivePlayer();
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(true);
 
-      expect(() => services.gamePlayValidator["validateGamePlayGuardTargets"](makeGamePlayTargetsWithRelationsDto, game)).not.toThrow();
+      expect(() => services.gamePlayValidator["validateGamePlayDefenderTargets"](makeGamePlayTargetsWithRelationsDto, game)).not.toThrow();
     });
   });
 
@@ -1038,7 +1038,7 @@ describe("Game Play Validator Service", () => {
   describe("validateGamePlaySourceTargets", () => {
     beforeEach(() => {
       mocks.gamePlayValidatorService.validateGamePlaySheriffTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlaySheriffTargets }, "validateGamePlaySheriffTargets").mockImplementation();
-      mocks.gamePlayValidatorService.validateGamePlayGuardTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayGuardTargets }, "validateGamePlayGuardTargets").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayDefenderTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayDefenderTargets }, "validateGamePlayDefenderTargets").mockImplementation();
       mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayPiedPiperTargets }, "validateGamePlayPiedPiperTargets").mockImplementation();
       mocks.gamePlayValidatorService.validateGamePlayWildChildTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWildChildTargets }, "validateGamePlayWildChildTargets").mockImplementation();
       mocks.gamePlayValidatorService.validateGamePlayRavenTargets = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayRavenTargets }, "validateGamePlayRavenTargets").mockImplementation();
@@ -1056,7 +1056,7 @@ describe("Game Play Validator Service", () => {
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1074,7 +1074,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1092,7 +1092,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1110,7 +1110,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).toHaveBeenCalledExactlyOnceWith([], game);
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1122,13 +1122,13 @@ describe("Game Play Validator Service", () => {
       expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
     });
 
-    it("should call guard validator when game current play is for the guard.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayGuardProtects() });
+    it("should call defender validator when game current play is for the defender.", async() => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDefenderProtects() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).toHaveBeenCalledExactlyOnceWith([], game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).toHaveBeenCalledExactlyOnceWith([], game);
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1146,7 +1146,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).toHaveBeenCalledExactlyOnceWith([], game);
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1164,7 +1164,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).toHaveBeenCalledExactlyOnceWith([], game);
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1182,7 +1182,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).toHaveBeenCalledExactlyOnceWith([], game);
@@ -1200,7 +1200,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1218,7 +1218,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1236,7 +1236,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1254,7 +1254,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1272,7 +1272,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();
@@ -1290,7 +1290,7 @@ describe("Game Play Validator Service", () => {
 
       expect(mocks.gamePlayValidatorService.validateGamePlaySheriffTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWerewolvesTargets).not.toHaveBeenCalled();
-      expect(mocks.gamePlayValidatorService.validateGamePlayGuardTargets).not.toHaveBeenCalled();
+      expect(mocks.gamePlayValidatorService.validateGamePlayDefenderTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayPiedPiperTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayWildChildTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayRavenTargets).not.toHaveBeenCalled();

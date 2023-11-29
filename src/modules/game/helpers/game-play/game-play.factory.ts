@@ -158,9 +158,9 @@ function createGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}): GamePlay {
   });
 }
 
-function createGamePlayGuardProtects(gamePlay: Partial<GamePlay> = {}): GamePlay {
+function createGamePlayDefenderProtects(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: createGamePlaySource({ name: RoleNames.GUARD }),
+    source: createGamePlaySource({ name: RoleNames.DEFENDER }),
     action: GamePlayActions.PROTECT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
     ...gamePlay,
@@ -264,7 +264,7 @@ export {
   createGamePlayThreeBrothersMeetEachOther,
   createGamePlayTwoSistersMeetEachOther,
   createGamePlayRavenMarks,
-  createGamePlayGuardProtects,
+  createGamePlayDefenderProtects,
   createGamePlayHunterShoots,
   createGamePlayWitchUsesPotions,
   createGamePlayPiedPiperCharms,

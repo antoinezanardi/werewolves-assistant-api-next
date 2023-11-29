@@ -93,7 +93,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     maxInGame: 1,
   },
   {
-    name: RoleNames.GUARD,
+    name: RoleNames.DEFENDER,
     side: RoleSides.VILLAGERS,
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.NEW_MOON,
