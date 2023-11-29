@@ -214,7 +214,7 @@ Feature: 📜 Game History
       | Antoine | seer                  |
       | Juju    | witch                 |
       | Doudou  | vile-father-of-wolves |
-      | JB      | guard                 |
+      | JB      | defender                 |
       | Thomas  | raven                 |
     Then the game's current play should be seer to look
 
@@ -228,9 +228,9 @@ Feature: 📜 Game History
     When the player or group skips his turn
     And the most recent history record is retrieved
     Then the play's targets from the previous history record should be undefined
-    And the game's current play should be guard to protect
+    And the game's current play should be defender to protect
 
-    When the guard protects the player named JB
+    When the defender protects the player named JB
     And the most recent history record is retrieved
     Then the play's targets from the previous history record should be the following players
       | name |

@@ -7,7 +7,7 @@ import { BEAR_TAMER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-opti
 import { BIG_BAD_WOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
 import { DOG_WOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
 import { FOX_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options/fox-game-options.schema";
-import { GUARD_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/guard-game-options/guard-game-options.schema";
+import { DEFENDER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/defender-game-options/defender-game-options.schema";
 import { IDIOT_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
 import { LITTLE_GIRL_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options/little-girl-game-options.schema";
 import { PIED_PIPER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options/pied-piper-game-options.schema";
@@ -60,10 +60,10 @@ const ROLES_GAME_OPTIONS_FIELDS_SPECS = {
     type: LITTLE_GIRL_GAME_OPTIONS_SCHEMA,
     default: DEFAULT_GAME_OPTIONS.roles.littleGirl,
   },
-  guard: {
+  defender: {
     required: true,
-    type: GUARD_GAME_OPTIONS_SCHEMA,
-    default: DEFAULT_GAME_OPTIONS.roles.guard,
+    type: DEFENDER_GAME_OPTIONS_SCHEMA,
+    default: DEFAULT_GAME_OPTIONS.roles.defender,
   },
   elder: {
     required: true,
@@ -161,9 +161,9 @@ const ROLES_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof RolesGameOpti
     description: "Game `little girl` role's options.",
     ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.littleGirl),
   },
-  guard: {
-    description: "Game `guard` role's options.",
-    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.guard),
+  defender: {
+    description: "Game `defender` role's options.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.defender),
   },
   elder: {
     description: "Game `elder` role's options.",

@@ -23,8 +23,8 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       isTalkative: true,
       canSeeRoles: true,
     },
-    littleGirl: { isProtectedByGuard: false },
-    guard: { canProtectTwice: false },
+    littleGirl: { isProtectedByDefender: false },
+    defender: { canProtectTwice: false },
     elder: {
       livesCountAgainstWerewolves: 2,
       doesTakeHisRevenge: true,

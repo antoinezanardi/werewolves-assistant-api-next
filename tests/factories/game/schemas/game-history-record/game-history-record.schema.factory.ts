@@ -18,7 +18,7 @@ import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeDefenderAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 
 function createFakeGameHistoryRecordWerewolvesEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
@@ -109,12 +109,12 @@ function createFakeGameHistoryRecordHunterShootPlay(gameHistoryRecordPlay: Parti
   }, override);
 }
 
-function createFakeGameHistoryRecordGuardProtectPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
+function createFakeGameHistoryRecordDefenderProtectPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
     action: GamePlayActions.PROTECT,
     source: {
-      name: RoleNames.GUARD,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakeGuardAlivePlayer()],
+      name: RoleNames.DEFENDER,
+      players: gameHistoryRecordPlay.source?.players ?? [createFakeDefenderAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
   }, override);
@@ -349,7 +349,7 @@ export {
   createFakeGameHistoryRecordPiedPiperCharmPlay,
   createFakeGameHistoryRecordWitchUsePotionsPlay,
   createFakeGameHistoryRecordHunterShootPlay,
-  createFakeGameHistoryRecordGuardProtectPlay,
+  createFakeGameHistoryRecordDefenderProtectPlay,
   createFakeGameHistoryRecordRavenMarkPlay,
   createFakeGameHistoryRecordTwoSistersMeetEachOtherPlay,
   createFakeGameHistoryRecordThreeBrothersMeetEachOtherPlay,

@@ -182,11 +182,11 @@ export class GamePlayValidatorService {
     }
   }
 
-  private validateGamePlayGuardTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+  private validateGamePlayDefenderTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
     const targetedPlayer = playTargets[0].player;
     const canTargetedPlayerBeProtected = isPlayerInteractableWithInteractionType(targetedPlayer._id, PlayerInteractionTypes.PROTECT, game);
     if (!canTargetedPlayerBeProtected) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_GUARD_TARGET);
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_DEFENDER_TARGET);
     }
   }
 
@@ -217,7 +217,7 @@ export class GamePlayValidatorService {
       [PlayerGroups.WEREWOLVES]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.BIG_BAD_WOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.WHITE_WEREWOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
-      [RoleNames.GUARD]: () => this.validateGamePlayGuardTargets(playTargets, game),
+      [RoleNames.DEFENDER]: () => this.validateGamePlayDefenderTargets(playTargets, game),
       [RoleNames.PIED_PIPER]: () => this.validateGamePlayPiedPiperTargets(playTargets, game),
       [RoleNames.WILD_CHILD]: () => this.validateGamePlayWildChildTargets(playTargets, game),
       [RoleNames.RAVEN]: () => this.validateGamePlayRavenTargets(playTargets, game),

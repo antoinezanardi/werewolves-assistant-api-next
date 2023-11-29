@@ -83,10 +83,10 @@ function createFakeDrankDeathPotionByWitchPlayerAttribute(attribute: Partial<Pla
   }, override);
 }
 
-function createFakeProtectedByGuardPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeProtectedByDefenderPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.PROTECTED,
-    source: RoleNames.GUARD,
+    source: RoleNames.DEFENDER,
     remainingPhases: 1,
     ...attribute,
   }, override);
@@ -210,7 +210,7 @@ export {
   createFakeEatenByBigBadWolfPlayerAttribute,
   createFakeDrankLifePotionByWitchPlayerAttribute,
   createFakeDrankDeathPotionByWitchPlayerAttribute,
-  createFakeProtectedByGuardPlayerAttribute,
+  createFakeProtectedByDefenderPlayerAttribute,
   createFakeRavenMarkedByRavenPlayerAttribute,
   createFakeInLoveByCupidPlayerAttribute,
   createFakeWorshipedByWildChildPlayerAttribute,

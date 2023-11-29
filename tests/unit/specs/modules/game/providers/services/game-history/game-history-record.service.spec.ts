@@ -49,7 +49,7 @@ describe("Game History Record Service", () => {
     };
     gameHistoryRecordRepository: {
       create: jest.SpyInstance;
-      getLastGameHistoryGuardProtectsRecord: jest.SpyInstance;
+      getLastGameHistoryDefenderProtectsRecord: jest.SpyInstance;
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
@@ -84,7 +84,7 @@ describe("Game History Record Service", () => {
       },
       gameHistoryRecordRepository: {
         create: jest.fn(),
-        getLastGameHistoryGuardProtectsRecord: jest.fn(),
+        getLastGameHistoryDefenderProtectsRecord: jest.fn(),
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
@@ -140,12 +140,12 @@ describe("Game History Record Service", () => {
     });
   });
 
-  describe("getLastGameHistoryGuardProtectsRecord", () => {
-    it("should get game history when guard protected when called.", async() => {
+  describe("getLastGameHistoryDefenderProtectsRecord", () => {
+    it("should get game history when defender protected when called.", async() => {
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord(gameId);
+      await services.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId);
 
-      expect(repositories.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 

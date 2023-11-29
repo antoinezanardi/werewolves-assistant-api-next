@@ -18,14 +18,14 @@ import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpect
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
 import { createFakePlayer, createFakePlayerRole, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeElderAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakeIdiotAlivePlayer, createFakeLittleGirlAlivePlayer, createFakeRustySwordKnightAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeElderAlivePlayer, createFakeDefenderAlivePlayer, createFakeHunterAlivePlayer, createFakeIdiotAlivePlayer, createFakeLittleGirlAlivePlayer, createFakeRustySwordKnightAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerDeathPotionByWitchDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerReconsiderPardonBySurvivorsDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySurvivorsBuryDeadBodies } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeElderGameOptions, createFakeIdiotGameOptions, createFakeLittleGirlGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeGameHistoryRecord, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 
 describe("Player Killer Service", () => {
   let mocks: {
@@ -296,7 +296,7 @@ describe("Player Killer Service", () => {
       const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() });
       const elderProtectedFromWerewolvesRecords = [
         createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
           turn: 1,
         }),
       ];
@@ -314,7 +314,7 @@ describe("Player Killer Service", () => {
       const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: elderPlayer });
       const elderProtectedFromWerewolvesRecords = [
         createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
           turn: 1,
         }),
       ];
@@ -369,7 +369,7 @@ describe("Player Killer Service", () => {
       ];
       const elderProtectedFromWerewolvesRecords = [
         createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
           turn: 1,
         }),
         createFakeGameHistoryRecord({
@@ -583,21 +583,21 @@ describe("Player Killer Service", () => {
         expected: false,
       },
       {
-        test: "should return false when player is protected by guard and is not little girl.",
-        player: createFakeSeerAlivePlayer({ attributes: [createFakeProtectedByGuardPlayerAttribute()] }),
-        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByGuard: true }) }) }) }),
+        test: "should return false when player is protected by defender and is not little girl.",
+        player: createFakeSeerAlivePlayer({ attributes: [createFakeProtectedByDefenderPlayerAttribute()] }),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByDefender: true }) }) }) }),
         expected: false,
       },
       {
-        test: "should return false when player is protected by guard, is little girl but game options allows guard to protect her.",
-        player: createFakeLittleGirlAlivePlayer({ attributes: [createFakeProtectedByGuardPlayerAttribute()] }),
-        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByGuard: true }) }) }) }),
+        test: "should return false when player is protected by defender, is little girl but game options allows defender to protect her.",
+        player: createFakeLittleGirlAlivePlayer({ attributes: [createFakeProtectedByDefenderPlayerAttribute()] }),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByDefender: true }) }) }) }),
         expected: false,
       },
       {
-        test: "should return true when player is protected by guard, is little girl but game options doesn't allow guard to protect her.",
-        player: createFakeLittleGirlAlivePlayer({ attributes: [createFakeProtectedByGuardPlayerAttribute()] }),
-        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByGuard: false }) }) }) }),
+        test: "should return true when player is protected by defender, is little girl but game options doesn't allow defender to protect her.",
+        player: createFakeLittleGirlAlivePlayer({ attributes: [createFakeProtectedByDefenderPlayerAttribute()] }),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByDefender: false }) }) }) }),
         expected: true,
       },
       {
@@ -609,16 +609,16 @@ describe("Player Killer Service", () => {
       {
         test: "should return true when player defenseless.",
         player: createFakeSeerAlivePlayer({ attributes: [] }),
-        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByGuard: true }) }) }) }),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByDefender: true }) }) }) }),
         expected: true,
       },
     ])("$test", ({ player, game, expected }) => {
       expect(services.playerKiller["canPlayerBeEaten"](player, game)).toBe(expected);
     });
 
-    it("should return false when player is protected by guard and is not little girl.", () => {
-      const player = createFakeSeerAlivePlayer({ attributes: [createFakeProtectedByGuardPlayerAttribute()] });
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByGuard: false }) }) });
+    it("should return false when player is protected by defender and is not little girl.", () => {
+      const player = createFakeSeerAlivePlayer({ attributes: [createFakeProtectedByDefenderPlayerAttribute()] });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ littleGirl: createFakeLittleGirlGameOptions({ isProtectedByDefender: false }) }) });
       const game = createFakeGame({ options });
 
       expect(services.playerKiller["canPlayerBeEaten"](player, game)).toBe(false);
@@ -777,7 +777,7 @@ describe("Player Killer Service", () => {
         createFakeSeerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
 
@@ -789,7 +789,7 @@ describe("Player Killer Service", () => {
         createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
 
@@ -801,7 +801,7 @@ describe("Player Killer Service", () => {
         createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()], isAlive: false }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
 
@@ -813,7 +813,7 @@ describe("Player Killer Service", () => {
         createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       services.playerKiller["applyInLovePlayerDeathOutcomes"](players[1], game);
@@ -828,7 +828,7 @@ describe("Player Killer Service", () => {
         createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
 
@@ -840,7 +840,7 @@ describe("Player Killer Service", () => {
         createFakeIdiotAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
 
@@ -852,7 +852,7 @@ describe("Player Killer Service", () => {
         createFakeIdiotAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakePowerlessByElderPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGame({ players, upcomingPlays });
@@ -869,7 +869,7 @@ describe("Player Killer Service", () => {
         createFakeWildChildAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGame({ players, upcomingPlays });
@@ -895,7 +895,7 @@ describe("Player Killer Service", () => {
         createFakeIdiotAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       services.playerKiller["applyPlayerAttributesDeathOutcomes"](game.players[0], game);
@@ -911,7 +911,7 @@ describe("Player Killer Service", () => {
         createFakeIdiotAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakeInLoveByCupidPlayerAttribute(), createFakeWorshipedByWildChildPlayerAttribute()] }),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const interpolations = { gameId: game._id.toString(), playerId: players[2]._id.toString() };
@@ -940,7 +940,7 @@ describe("Player Killer Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerEatenByWerewolvesDeath();
@@ -953,7 +953,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerEatenByWerewolvesDeath();
@@ -966,7 +966,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerVoteBySurvivorsDeath();
@@ -979,7 +979,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerEatenByWerewolvesDeath();
@@ -992,7 +992,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer({ position: 1 }),
         createFakeWerewolfAlivePlayer({ position: 2 }),
         createFakeWerewolfAlivePlayer({ position: 3 }),
-        createFakeGuardAlivePlayer({ position: 4 }),
+        createFakeDefenderAlivePlayer({ position: 4 }),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerEatenByWerewolvesDeath();
@@ -1016,7 +1016,7 @@ describe("Player Killer Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerVoteScapegoatedBySurvivorsDeath();
@@ -1029,7 +1029,7 @@ describe("Player Killer Service", () => {
         createFakeScapegoatAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerVoteScapegoatedBySurvivorsDeath();
@@ -1042,7 +1042,7 @@ describe("Player Killer Service", () => {
         createFakeScapegoatAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerVoteBySurvivorsDeath();
@@ -1055,7 +1055,7 @@ describe("Player Killer Service", () => {
         createFakeScapegoatAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGame({ players, upcomingPlays });
@@ -1079,7 +1079,7 @@ describe("Player Killer Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: RoleNames.IDIOT, original: RoleNames.IDIOT }) }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const elderOptions = createFakeElderGameOptions({ doesTakeHisRevenge: true });
       const idiotOptions = createFakeIdiotGameOptions({ doesDieOnElderDeath: true });
@@ -1096,7 +1096,7 @@ describe("Player Killer Service", () => {
         createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: RoleNames.IDIOT, original: RoleNames.IDIOT }) }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const elderOptions = createFakeElderGameOptions({ doesTakeHisRevenge: true });
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: elderOptions }) });
@@ -1111,7 +1111,7 @@ describe("Player Killer Service", () => {
         createFakeElderAlivePlayer(),
         createFakeIdiotAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerEatenByWerewolvesDeath();
@@ -1124,7 +1124,7 @@ describe("Player Killer Service", () => {
         createFakeElderAlivePlayer({ isAlive: false }),
         createFakeIdiotAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ doesTakeHisRevenge: false }) }) });
@@ -1138,7 +1138,7 @@ describe("Player Killer Service", () => {
         createFakeElderAlivePlayer({ isAlive: false }),
         createFakeIdiotAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ doesTakeHisRevenge: true }) }) });
@@ -1163,7 +1163,7 @@ describe("Player Killer Service", () => {
         createFakeElderAlivePlayer({ isAlive: false }),
         createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: RoleNames.IDIOT, original: RoleNames.IDIOT }) }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const elderOptions = createFakeElderGameOptions({ doesTakeHisRevenge: false });
@@ -1181,7 +1181,7 @@ describe("Player Killer Service", () => {
         createFakeElderAlivePlayer({ isAlive: false }),
         createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: RoleNames.IDIOT, original: RoleNames.IDIOT }) }),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const elderOptions = createFakeElderGameOptions({ doesTakeHisRevenge: false });
@@ -1201,7 +1201,7 @@ describe("Player Killer Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
 
@@ -1213,7 +1213,7 @@ describe("Player Killer Service", () => {
         createFakeHunterAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
 
@@ -1225,7 +1225,7 @@ describe("Player Killer Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const upcomingPlays = [createFakeGamePlayScapegoatBansVoting()];
       const game = createFakeGame({ players, upcomingPlays });
@@ -1251,7 +1251,7 @@ describe("Player Killer Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeHunterAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
@@ -1268,7 +1268,7 @@ describe("Player Killer Service", () => {
         createFakeHunterAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
@@ -1285,7 +1285,7 @@ describe("Player Killer Service", () => {
         createFakeElderAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
@@ -1301,7 +1301,7 @@ describe("Player Killer Service", () => {
         createFakeScapegoatAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
@@ -1318,7 +1318,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
@@ -1342,7 +1342,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
@@ -1361,7 +1361,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
@@ -1380,7 +1380,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
@@ -1400,7 +1400,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const death = createFakePlayerDeathPotionByWitchDeath();
@@ -1421,7 +1421,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGame({ players, upcomingPlays });
@@ -1455,7 +1455,7 @@ describe("Player Killer Service", () => {
         createFakeRustySwordKnightAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeGuardAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ areRevealedOnDeath: true }) });
       const game = createFakeGame({ players, options });

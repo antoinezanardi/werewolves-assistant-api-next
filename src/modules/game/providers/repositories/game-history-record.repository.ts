@@ -25,11 +25,11 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.create(gameHistoryRecord);
   }
 
-  public async getLastGameHistoryGuardProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+  public async getLastGameHistoryDefenderProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GamePlayActions.PROTECT,
-      "play.source.name": RoleNames.GUARD,
+      "play.source.name": RoleNames.DEFENDER,
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
@@ -93,7 +93,7 @@ export class GameHistoryRecordRepository {
       gameId,
       $or: [
         {
-          "play.source.name": RoleNames.GUARD,
+          "play.source.name": RoleNames.DEFENDER,
           "play.action": GamePlayActions.PROTECT,
           "play.targets.player.role.current": RoleNames.ELDER,
         },

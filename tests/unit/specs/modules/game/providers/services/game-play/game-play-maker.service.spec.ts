@@ -21,9 +21,9 @@ import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dt
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeFoxGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByGuardPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeElderAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
@@ -40,7 +40,7 @@ describe("Game Play Maker Service", () => {
       piedPiperCharms: jest.SpyInstance;
       witchUsesPotions: jest.SpyInstance;
       hunterShoots: jest.SpyInstance;
-      guardProtects: jest.SpyInstance;
+      defenderProtects: jest.SpyInstance;
       foxSniffs: jest.SpyInstance;
       wildChildChoosesModel: jest.SpyInstance;
       dogWolfChoosesSide: jest.SpyInstance;
@@ -80,7 +80,7 @@ describe("Game Play Maker Service", () => {
         piedPiperCharms: jest.fn(),
         witchUsesPotions: jest.fn(),
         hunterShoots: jest.fn(),
-        guardProtects: jest.fn(),
+        defenderProtects: jest.fn(),
         foxSniffs: jest.fn(),
         wildChildChoosesModel: jest.fn(),
         dogWolfChoosesSide: jest.fn(),
@@ -134,7 +134,7 @@ describe("Game Play Maker Service", () => {
       mocks.gamePlayMakerService.piedPiperCharms = jest.spyOn(services.gamePlayMaker as unknown as { piedPiperCharms }, "piedPiperCharms").mockImplementation();
       mocks.gamePlayMakerService.witchUsesPotions = jest.spyOn(services.gamePlayMaker as unknown as { witchUsesPotions }, "witchUsesPotions").mockImplementation();
       mocks.gamePlayMakerService.hunterShoots = jest.spyOn(services.gamePlayMaker as unknown as { hunterShoots }, "hunterShoots").mockImplementation();
-      mocks.gamePlayMakerService.guardProtects = jest.spyOn(services.gamePlayMaker as unknown as { guardProtects }, "guardProtects").mockImplementation();
+      mocks.gamePlayMakerService.defenderProtects = jest.spyOn(services.gamePlayMaker as unknown as { defenderProtects }, "defenderProtects").mockImplementation();
       mocks.gamePlayMakerService.foxSniffs = jest.spyOn(services.gamePlayMaker as unknown as { foxSniffs }, "foxSniffs").mockImplementation();
       mocks.gamePlayMakerService.wildChildChoosesModel = jest.spyOn(services.gamePlayMaker as unknown as { wildChildChoosesModel }, "wildChildChoosesModel").mockImplementation();
       mocks.gamePlayMakerService.dogWolfChoosesSide = jest.spyOn(services.gamePlayMaker as unknown as { dogWolfChoosesSide }, "dogWolfChoosesSide").mockImplementation();
@@ -260,12 +260,12 @@ describe("Game Play Maker Service", () => {
       expect(mocks.gamePlayMakerService.hunterShoots).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
-    it("should call guardProtects method when it's guard's turn.", async() => {
+    it("should call defenderProtects method when it's defender's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
-      const game = createFakeGame({ currentPlay: createFakeGamePlayGuardProtects() });
+      const game = createFakeGame({ currentPlay: createFakeGamePlayDefenderProtects() });
       await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(mocks.gamePlayMakerService.guardProtects).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(mocks.gamePlayMakerService.defenderProtects).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call foxSniffs method when it's fox's turn.", async() => {
@@ -1289,7 +1289,7 @@ describe("Game Play Maker Service", () => {
     });
   });
 
-  describe("guardProtects", () => {
+  describe("defenderProtects", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
@@ -1301,7 +1301,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const expectedGame = createFakeGame(game);
 
-      expect(services.gamePlayMaker["guardProtects"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["defenderProtects"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
     it("should add protected attribute to target when called.", () => {
@@ -1316,7 +1316,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
-        attributes: [createFakeProtectedByGuardPlayerAttribute()],
+        attributes: [createFakeProtectedByDefenderPlayerAttribute()],
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -1328,7 +1328,7 @@ describe("Game Play Maker Service", () => {
         ],
       });
 
-      expect(services.gamePlayMaker["guardProtects"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["defenderProtects"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 

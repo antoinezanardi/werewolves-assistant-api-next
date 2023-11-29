@@ -99,10 +99,10 @@ function createRavenMarkByRavenPlayerAttribute(playerAttribute: Partial<PlayerAt
   });
 }
 
-function createProtectedByGuardPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createProtectedByDefenderPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.PROTECTED,
-    source: RoleNames.GUARD,
+    source: RoleNames.DEFENDER,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -195,7 +195,7 @@ export {
   createWorshipedByWildChildPlayerAttribute,
   createInLoveByCupidPlayerAttribute,
   createRavenMarkByRavenPlayerAttribute,
-  createProtectedByGuardPlayerAttribute,
+  createProtectedByDefenderPlayerAttribute,
   createDrankDeathPotionByWitchPlayerAttribute,
   createDrankLifePotionByWitchPlayerAttribute,
   createEatenByBigBadWolfPlayerAttribute,

@@ -12,7 +12,7 @@ const GAME_PLAY_SOURCE_NAMES = [
   RoleNames.CUPID,
   RoleNames.DOG_WOLF,
   RoleNames.FOX,
-  RoleNames.GUARD,
+  RoleNames.DEFENDER,
   RoleNames.HUNTER,
   RoleNames.PIED_PIPER,
   RoleNames.RAVEN,

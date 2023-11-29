@@ -319,11 +319,11 @@ Feature: 🏆 Game Victory
       | name    | role           |
       | Antoine | witch          |
       | JB      | werewolf       |
-      | Olivia  | guard          |
+      | Olivia  | defender          |
       | Thomas  | white-werewolf |
 
-    When the guard protects the player named Olivia
-    Then the player named Olivia should have the active protected from guard attribute
+    When the defender protects the player named Olivia
+    Then the player named Olivia should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -352,11 +352,11 @@ Feature: 🏆 Game Victory
       | name    | role       |
       | Antoine | witch      |
       | JB      | werewolf   |
-      | Olivia  | guard      |
+      | Olivia  | defender      |
       | Thomas  | pied-piper |
 
-    When the guard protects the player named Thomas
-    Then the player named Thomas should have the active protected from guard attribute
+    When the defender protects the player named Thomas
+    Then the player named Thomas should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine

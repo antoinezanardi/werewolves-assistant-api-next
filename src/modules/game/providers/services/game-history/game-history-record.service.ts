@@ -42,8 +42,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.create(gameHistoryRecordToInsert);
   }
 
-  public async getLastGameHistoryGuardProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
-    return this.gameHistoryRecordRepository.getLastGameHistoryGuardProtectsRecord(gameId);
+  public async getLastGameHistoryDefenderProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    return this.gameHistoryRecordRepository.getLastGameHistoryDefenderProtectsRecord(gameId);
   }
 
   public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayActions): Promise<GameHistoryRecord | null> {

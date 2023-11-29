@@ -797,8 +797,8 @@ describe("Game Controller", () => {
             isTalkative: false,
             canSeeRoles: false,
           },
-          littleGirl: { isProtectedByGuard: true },
-          guard: { canProtectTwice: true },
+          littleGirl: { isProtectedByDefender: true },
+          defender: { canProtectTwice: true },
           elder: {
             livesCountAgainstWerewolves: 1,
             doesTakeHisRevenge: false,
