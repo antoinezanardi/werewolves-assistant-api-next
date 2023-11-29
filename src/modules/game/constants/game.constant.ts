@@ -77,7 +77,7 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
   },
   {
-    source: { name: RoleNames.DOG_WOLF },
+    source: { name: RoleNames.WOLF_HOUND },
     action: GamePlayActions.CHOOSE_SIDE,
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
   },

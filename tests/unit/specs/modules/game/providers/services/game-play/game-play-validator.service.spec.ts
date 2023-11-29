@@ -26,15 +26,15 @@ import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dt
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeDogWolfGameOptions, createFakePiedPiperGameOptions, createFakeRolesGameOptions, createFakeThiefGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeWolfHoundGameOptions, createFakePiedPiperGameOptions, createFakeRolesGameOptions, createFakeThiefGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
 import { createFakeInteractablePlayer } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/interactable-player.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeDogWolfAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeWolfHoundAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Validator Service", () => {
@@ -267,14 +267,14 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when chosen card is not defined and not expected.", () => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
       
       expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game)).not.toThrow();
     });
 
     it("should throw error when chosen card is defined but not expected.", () => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenCard: createFakeGameAdditionalCard() });
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_CHOSEN_CARD);
 
@@ -511,7 +511,7 @@ describe("Game Play Validator Service", () => {
     it("should throw error when vile father of wolves is not in the game.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -527,7 +527,7 @@ describe("Game Play Validator Service", () => {
     it("should throw error when vile father of wolves is dead.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer({ isAlive: false }),
       ];
@@ -544,7 +544,7 @@ describe("Game Play Validator Service", () => {
     it("should throw error when vile father of wolves has already infected and some targets are infected.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
       ];
@@ -571,7 +571,7 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when infected target data is valid.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
       ];
@@ -677,7 +677,7 @@ describe("Game Play Validator Service", () => {
     it("should validate game play infected targets when called.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
       ];
@@ -1307,7 +1307,7 @@ describe("Game Play Validator Service", () => {
     it("should throw error when expected action is not EAT and some targets are infected.", () => {
       const players = [
         createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
       ];
@@ -1324,7 +1324,7 @@ describe("Game Play Validator Service", () => {
     it("should throw error when expected source is not WEREWOLVES and some targets are infected.", () => {
       const players = [
         createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
       ];
@@ -1338,7 +1338,7 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when there are infected targets and expected expected play is valid.", () => {
       const players = [
         createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
       ];
@@ -1733,7 +1733,7 @@ describe("Game Play Validator Service", () => {
 
   describe("validateGamePlayWithRelationsDtoChosenSide", () => {
     it("should throw error when chosenSide is defined and game play action is not CHOOSE_SIDE.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ dogWolf: createFakeDogWolfGameOptions({ isSideRandomlyChosen: false }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ wolfHound: createFakeWolfHoundGameOptions({ isSideRandomlyChosen: false }) }) });
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), options });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_CHOSEN_SIDE);
@@ -1742,8 +1742,8 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw error when chosenSide is defined and game play action is CHOOSE_SIDE but game options say that it is randomly chosen.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ dogWolf: createFakeDogWolfGameOptions({ isSideRandomlyChosen: true }) }) });
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide(), options });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ wolfHound: createFakeWolfHoundGameOptions({ isSideRandomlyChosen: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide(), options });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_CHOSEN_SIDE);
 
@@ -1751,8 +1751,8 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw error when chosenSide is not defined and game play action is CHOOSE_SIDE and game options say that side is not randomly chosen.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ dogWolf: createFakeDogWolfGameOptions({ isSideRandomlyChosen: false }) }) });
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide(), options });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ wolfHound: createFakeWolfHoundGameOptions({ isSideRandomlyChosen: false }) }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide(), options });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_CHOSEN_SIDE);
 
@@ -1760,15 +1760,15 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when chosenSide is defined and game play action is CHOOSE_SIDE and game options say that side is not randomly chosen.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ dogWolf: createFakeDogWolfGameOptions({ isSideRandomlyChosen: false }) }) });
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide(), options });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ wolfHound: createFakeWolfHoundGameOptions({ isSideRandomlyChosen: false }) }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide(), options });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
 
       expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenSide"](makeGamePlayWithRelationsDto, game)).not.toThrow();
     });
 
     it("should do nothing when chosenSide is not defined and game play action is not CHOOSE_SIDE.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ dogWolf: createFakeDogWolfGameOptions({ isSideRandomlyChosen: false }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ wolfHound: createFakeWolfHoundGameOptions({ isSideRandomlyChosen: false }) }) });
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), options });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
 
@@ -1776,7 +1776,7 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when chosenSide is not defined and game play action CHOOSE_SIDE but game options say that side is randomly chosen.", () => {
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ dogWolf: createFakeDogWolfGameOptions({ isSideRandomlyChosen: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ wolfHound: createFakeWolfHoundGameOptions({ isSideRandomlyChosen: true }) }) });
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), options });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
 
@@ -1803,7 +1803,7 @@ describe("Game Play Validator Service", () => {
           currentPlay: createFakeGamePlayWitchUsesPotions(),
           players: [
             createFakeWitchAlivePlayer(),
-            createFakeDogWolfAlivePlayer(),
+            createFakeWolfHoundAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
             createFakeStutteringJudgeAlivePlayer(),
           ],
@@ -1819,7 +1819,7 @@ describe("Game Play Validator Service", () => {
           currentPlay: createFakeGamePlaySurvivorsVote(),
           players: [
             createFakeWitchAlivePlayer(),
-            createFakeDogWolfAlivePlayer(),
+            createFakeWolfHoundAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
             createFakeStutteringJudgeAlivePlayer(),
           ],
@@ -1834,7 +1834,7 @@ describe("Game Play Validator Service", () => {
         game: createFakeGameWithCurrentPlay({
           players: [
             createFakeWitchAlivePlayer(),
-            createFakeDogWolfAlivePlayer(),
+            createFakeWolfHoundAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
           ],
           currentPlay: createFakeGamePlaySurvivorsVote(),
@@ -1850,7 +1850,7 @@ describe("Game Play Validator Service", () => {
           currentPlay: createFakeGamePlaySurvivorsVote(),
           players: [
             createFakeWitchAlivePlayer(),
-            createFakeDogWolfAlivePlayer(),
+            createFakeWolfHoundAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
             createFakeStutteringJudgeAlivePlayer({ isAlive: false }),
           ],
@@ -1866,7 +1866,7 @@ describe("Game Play Validator Service", () => {
           currentPlay: createFakeGamePlaySurvivorsVote(),
           players: [
             createFakeWitchAlivePlayer(),
-            createFakeDogWolfAlivePlayer(),
+            createFakeWolfHoundAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
             createFakeStutteringJudgeAlivePlayer(),
           ],
@@ -1894,7 +1894,7 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when judge request another vote and he can.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeStutteringJudgeAlivePlayer(),
       ];

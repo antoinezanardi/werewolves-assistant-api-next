@@ -41,7 +41,7 @@ class MakeGamePlayDto {
   @Expose()
   public chosenCardId?: Types.ObjectId;
 
-  @ApiProperty({ description: `Side chosen by \`${RoleNames.DOG_WOLF}\`. Required when game's upcoming action is \`${GamePlayActions.CHOOSE_SIDE}\`` })
+  @ApiProperty({ description: `Side chosen by \`${RoleNames.WOLF_HOUND}\`. Required when game's upcoming action is \`${GamePlayActions.CHOOSE_SIDE}\`` })
   @IsOptional()
   @IsEnum(RoleSides)
   @Expose()

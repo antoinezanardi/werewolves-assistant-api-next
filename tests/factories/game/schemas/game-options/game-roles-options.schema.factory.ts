@@ -6,7 +6,7 @@ import { GamePhases } from "@/modules/game/enums/game.enum";
 import { ElderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema";
 import { BearTamerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
 import { BigBadWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
-import { DogWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
+import { WolfHoundGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wolf-hound-game-options/wolf-hound-game-options.schema";
 import { FoxGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options/fox-game-options.schema";
 import { DefenderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/defender-game-options/defender-game-options.schema";
 import { IdiotGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
@@ -56,10 +56,10 @@ function createFakeThiefGameOptions(thiefGameOptions: Partial<ThiefGameOptions> 
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function createFakeDogWolfGameOptions(dogWolfGameOptions: Partial<DogWolfGameOptions> = {}, override: object = {}): DogWolfGameOptions {
-  return plainToInstance(DogWolfGameOptions, {
-    isChosenSideRevealed: dogWolfGameOptions.isChosenSideRevealed ?? faker.datatype.boolean(),
-    isSideRandomlyChosen: dogWolfGameOptions.isSideRandomlyChosen ?? faker.datatype.boolean(),
+function createFakeWolfHoundGameOptions(wolfHoundGameOptions: Partial<WolfHoundGameOptions> = {}, override: object = {}): WolfHoundGameOptions {
+  return plainToInstance(WolfHoundGameOptions, {
+    isChosenSideRevealed: wolfHoundGameOptions.isChosenSideRevealed ?? faker.datatype.boolean(),
+    isSideRandomlyChosen: wolfHoundGameOptions.isSideRandomlyChosen ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -192,7 +192,7 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     bearTamer: createFakeBearTamerGameOptions(rolesGameOptions.bearTamer),
     stutteringJudge: createFakeStutteringJudgeGameOptions(rolesGameOptions.stutteringJudge),
     wildChild: createFakeWildChildGameOptions(rolesGameOptions.wildChild),
-    dogWolf: createFakeDogWolfGameOptions(rolesGameOptions.dogWolf),
+    wolfHound: createFakeWolfHoundGameOptions(rolesGameOptions.wolfHound),
     thief: createFakeThiefGameOptions(rolesGameOptions.thief),
     piedPiper: createFakePiedPiperGameOptions(rolesGameOptions.piedPiper),
     scandalmonger: createFakeScandalmongerGameOptions(rolesGameOptions.scandalmonger),
@@ -206,7 +206,7 @@ export {
   createFakeScandalmongerGameOptions,
   createFakePiedPiperGameOptions,
   createFakeThiefGameOptions,
-  createFakeDogWolfGameOptions,
+  createFakeWolfHoundGameOptions,
   createFakeWildChildGameOptions,
   createFakeStutteringJudgeGameOptions,
   createFakeBearTamerGameOptions,

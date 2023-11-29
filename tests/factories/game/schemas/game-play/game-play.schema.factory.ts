@@ -87,9 +87,9 @@ function createFakeGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {},
   }, override);
 }
 
-function createFakeGamePlayDogWolfChoosesSide(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+function createFakeGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: RoleNames.DOG_WOLF }),
+    source: createFakeGamePlaySource({ name: RoleNames.WOLF_HOUND }),
     action: GamePlayActions.CHOOSE_SIDE,
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
     ...gamePlay,
@@ -261,7 +261,7 @@ export {
   createFakeGamePlayThiefChoosesCard,
   createFakeGamePlayStutteringJudgeChoosesSign,
   createFakeGamePlayScapegoatBansVoting,
-  createFakeGamePlayDogWolfChoosesSide,
+  createFakeGamePlayWolfHoundChoosesSide,
   createFakeGamePlayWildChildChoosesModel,
   createFakeGamePlayFoxSniffs,
   createFakeGamePlayCharmedMeetEachOther,

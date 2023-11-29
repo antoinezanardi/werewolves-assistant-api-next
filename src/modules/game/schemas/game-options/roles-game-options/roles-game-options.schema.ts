@@ -8,7 +8,7 @@ import { ROLES_GAME_OPTIONS_API_PROPERTIES, ROLES_GAME_OPTIONS_FIELDS_SPECS } fr
 import { ElderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema";
 import { BearTamerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
 import { BigBadWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
-import { DogWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
+import { WolfHoundGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wolf-hound-game-options/wolf-hound-game-options.schema";
 import { FoxGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options/fox-game-options.schema";
 import { DefenderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/defender-game-options/defender-game-options.schema";
 import { IdiotGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
@@ -124,11 +124,11 @@ class RolesGameOptions {
   @Expose()
   public wildChild: WildChildGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.dogWolf as ApiPropertyOptions)
-  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.dogWolf)
-  @Type(() => DogWolfGameOptions)
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.wolfHound as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.wolfHound)
+  @Type(() => WolfHoundGameOptions)
   @Expose()
-  public dogWolf: DogWolfGameOptions;
+  public wolfHound: WolfHoundGameOptions;
 
   @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.thief as ApiPropertyOptions)
   @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.thief)

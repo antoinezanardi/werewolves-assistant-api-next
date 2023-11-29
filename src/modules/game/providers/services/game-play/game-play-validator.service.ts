@@ -311,7 +311,7 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayWithRelationsDtoChosenSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): void {
-    const { isSideRandomlyChosen } = game.options.roles.dogWolf;
+    const { isSideRandomlyChosen } = game.options.roles.wolfHound;
     if (chosenSide !== undefined && (game.currentPlay.action !== GamePlayActions.CHOOSE_SIDE || isSideRandomlyChosen)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_CHOSEN_SIDE);
     }

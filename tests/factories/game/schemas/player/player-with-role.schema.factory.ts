@@ -94,8 +94,8 @@ function createFakeWildChildAlivePlayer(player: Partial<Player> = {}, override: 
   return createFakeAlivePlayerWithRole(RoleNames.WILD_CHILD, player, override);
 }
 
-function createFakeDogWolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
-  return createFakeAlivePlayerWithRole(RoleNames.DOG_WOLF, player, override);
+function createFakeWolfHoundAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.WOLF_HOUND, player, override);
 }
 
 function createFakeThiefAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
@@ -157,7 +157,7 @@ export {
   createFakeStutteringJudgeAlivePlayer,
   createFakeRustySwordKnightAlivePlayer,
   createFakeWildChildAlivePlayer,
-  createFakeDogWolfAlivePlayer,
+  createFakeWolfHoundAlivePlayer,
   createFakeThiefAlivePlayer,
   createFakeAngelAlivePlayer,
   createFakePiedPiperAlivePlayer,

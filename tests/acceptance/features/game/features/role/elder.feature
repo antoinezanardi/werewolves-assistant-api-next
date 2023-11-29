@@ -13,7 +13,7 @@ Feature: 👴🏻 Elder role
       | Olivia    | werewolf              |
       | Thomas    | witch                 |
       | Romain    | hunter                |
-      | Ludo      | defender                 |
+      | Ludo      | defender              |
       | Benedicte | scapegoat             |
       | Alex      | idiot                 |
       | Alexis    | fox                   |
@@ -21,11 +21,11 @@ Feature: 👴🏻 Elder role
       | Cari      | stuttering-judge      |
       | Aurelien  | rusty-sword-knight    |
       | Leo       | wild-child            |
-      | Sarah     | dog-wolf              |
+      | Sarah     | wolf-hound            |
       | Babou     | thief                 |
       | Ali       | angel                 |
       | Pedro     | pied-piper            |
-      | Pierre    | scandalmonger                 |
+      | Pierre    | scandalmonger         |
     Then the request should have succeeded with status code 201
     And the game's current play should be survivors to vote because angel-presence
 
@@ -100,7 +100,7 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | witch    |
-      | JB      | defender    |
+      | JB      | defender |
       | Thomas  | idiot    |
       | Bobo    | villager |
     Then the game's current play should be defender to protect
@@ -135,7 +135,7 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | idiot    |
-      | JB      | defender    |
+      | JB      | defender |
       | Thomas  | hunter   |
     Then the game's current play should be defender to protect
 
@@ -172,7 +172,7 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | angel    |
-      | JB      | defender    |
+      | JB      | defender |
     Then the game's current play should be survivors to vote because angel-presence
 
     When the survivors vote with the following votes
@@ -192,7 +192,7 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | witch    |
-      | JB      | defender    |
+      | JB      | defender |
     Then the game's current play should be defender to protect
 
     When the defender protects the player named JB
@@ -259,7 +259,7 @@ Feature: 👴🏻 Elder role
       | Antoine | elder    |
       | Juju    | werewolf |
       | Doudou  | witch    |
-      | JB      | defender    |
+      | JB      | defender |
     Then the game's current play should be defender to protect
 
     When the defender protects the player named JB

@@ -476,13 +476,13 @@ Feature: 📜 Game History
   Scenario: 📜 Chosen side is recorded in the game history
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
-      | Antoine | dog-wolf |
+      | Antoine | wolf-hound |
       | Olivia  | villager |
       | JB      | werewolf |
       | Thomas  | witch    |
-    Then the game's current play should be dog-wolf to choose-side
+    Then the game's current play should be wolf-hound to choose-side
 
-    When the dog wolf chooses the werewolves side
+    When the wolf-hound chooses the werewolves side
     And the most recent history record is retrieved
     Then the play's chosen side from the previous history record should be the werewolves side
 
