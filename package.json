@@ -1,6 +1,6 @@
 {
   "name": "werewolves-assistant-api-next",
-  "version": "1.23.0",
+  "version": "1.23.1",
   "description": "Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.",
   "readme": "README.md",
   "type": "commonjs",
