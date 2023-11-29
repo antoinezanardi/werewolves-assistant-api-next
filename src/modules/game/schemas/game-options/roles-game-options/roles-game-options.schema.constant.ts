@@ -5,7 +5,7 @@ import { WITCH_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/r
 import { ELDER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema";
 import { BEAR_TAMER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
 import { BIG_BAD_WOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
-import { DOG_WOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
+import { WOLF_HOUND_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/wolf-hound-game-options/wolf-hound-game-options.schema";
 import { FOX_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options/fox-game-options.schema";
 import { DEFENDER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/defender-game-options/defender-game-options.schema";
 import { IDIOT_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
@@ -105,10 +105,10 @@ const ROLES_GAME_OPTIONS_FIELDS_SPECS = {
     type: WILD_CHILD_GAME_OPTIONS_SCHEMA,
     default: DEFAULT_GAME_OPTIONS.roles.wildChild,
   },
-  dogWolf: {
+  wolfHound: {
     required: true,
-    type: DOG_WOLF_GAME_OPTIONS_SCHEMA,
-    default: DEFAULT_GAME_OPTIONS.roles.dogWolf,
+    type: WOLF_HOUND_GAME_OPTIONS_SCHEMA,
+    default: DEFAULT_GAME_OPTIONS.roles.wolfHound,
   },
   thief: {
     required: true,
@@ -194,9 +194,9 @@ const ROLES_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof RolesGameOpti
     description: "Game `wild child` role's options.",
     ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.wildChild),
   },
-  dogWolf: {
-    description: "Game `dog wolf` role's options.",
-    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.dogWolf),
+  wolfHound: {
+    description: "Game `wolf-hound` role's options.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.wolfHound),
   },
   thief: {
     description: "Game `thief` role's options.",

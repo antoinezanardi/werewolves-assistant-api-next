@@ -182,7 +182,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     maxInGame: 1,
   },
   {
-    name: RoleNames.DOG_WOLF,
+    name: RoleNames.WOLF_HOUND,
     side: RoleSides.VILLAGERS,
     type: RoleTypes.AMBIGUOUS,
     origin: RoleOrigins.CHARACTERS,

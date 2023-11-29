@@ -215,7 +215,7 @@ When(/^the wild child chooses the player named (?<name>.+) as a model$/u, async 
   setGameInContext(this.response, this);
 });
 
-When(/^the dog wolf chooses the (?<chosenSide>villagers|werewolves|unknown) side$/u, async function(this: CustomWorld, chosenSide: RoleSides): Promise<void> {
+When(/^the wolf-hound chooses the (?<chosenSide>villagers|werewolves|unknown) side$/u, async function(this: CustomWorld, chosenSide: RoleSides): Promise<void> {
   const makeGamePlayDto: MakeGamePlayDto = { chosenSide };
 
   this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);

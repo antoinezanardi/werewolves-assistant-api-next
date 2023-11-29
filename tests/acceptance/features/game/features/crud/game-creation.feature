@@ -106,7 +106,7 @@ Feature: 🎲 Game Creation
       | Antoine | seer     |
       | Olivia  | witch    |
       | JB      | idiot    |
-      | Thomas  | dog-wolf |
+      | Thomas  | wolf-hound |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
@@ -158,7 +158,7 @@ Feature: 🎲 Game Creation
     And the request exception error should be "Bad Request"
     And the request exception messages should be
       | message                                                                                                                                                                                                                                                                                                                                                                 |
-      | players.4.role.name must be one of the following values: werewolf, big-bad-wolf, vile-father-of-wolves, white-werewolf, villager, villager-villager, seer, cupid, witch, hunter, little-girl, defender, elder, scapegoat, idiot, two-sisters, three-brothers, fox, bear-tamer, stuttering-judge, rusty-sword-knight, thief, wild-child, dog-wolf, angel, pied-piper, scandalmonger |
+      | players.4.role.name must be one of the following values: werewolf, big-bad-wolf, vile-father-of-wolves, white-werewolf, villager, villager-villager, seer, cupid, witch, hunter, little-girl, defender, elder, scapegoat, idiot, two-sisters, three-brothers, fox, bear-tamer, stuttering-judge, rusty-sword-knight, thief, wild-child, wolf-hound, angel, pied-piper, scandalmonger |
 
   Scenario: 🎲 Game can't be created if there is only one of the two sisters
 
@@ -450,12 +450,12 @@ Feature: 🎲 Game Creation
       | message                                                                                                |
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
-  Scenario: 🎲 Game can't be created if there are two dog-wolves
+  Scenario: 🎲 Game can't be created if there are two wolf-hounds
 
     Given a created game with the following players
       | name    | role     |
-      | Antoine | dog-wolf |
-      | Olivia  | dog-wolf |
+      | Antoine | wolf-hound |
+      | Olivia  | wolf-hound |
       | JB      | idiot    |
       | Thomas  | werewolf |
     Then the request should have failed with status code 400

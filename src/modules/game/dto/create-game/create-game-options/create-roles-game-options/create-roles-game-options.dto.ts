@@ -8,7 +8,7 @@ import { ROLES_GAME_OPTIONS_API_PROPERTIES, ROLES_GAME_OPTIONS_FIELDS_SPECS } fr
 import { CreateElderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-elder-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
 import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
-import { CreateDogWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
+import { CreateWolfHoundGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-wolf-hound-game-options.dto";
 import { CreateFoxGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-fox-game-options.dto";
 import { CreateDefenderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-defender-game-options.dto";
 import { CreateIdiotGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
@@ -168,13 +168,13 @@ class CreateRolesGameOptionsDto {
   public wildChild: CreateWildChildGameOptionsDto = new CreateWildChildGameOptionsDto();
 
   @ApiProperty({
-    ...ROLES_GAME_OPTIONS_API_PROPERTIES.dogWolf,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.wolfHound,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @Type(() => CreateDogWolfGameOptionsDto)
+  @Type(() => CreateWolfHoundGameOptionsDto)
   @ValidateNested()
-  public dogWolf: CreateDogWolfGameOptionsDto = new CreateDogWolfGameOptionsDto();
+  public wolfHound: CreateWolfHoundGameOptionsDto = new CreateWolfHoundGameOptionsDto();
 
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.thief,

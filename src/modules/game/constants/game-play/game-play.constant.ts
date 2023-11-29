@@ -10,7 +10,7 @@ const GAME_PLAY_SOURCE_NAMES = [
   PlayerGroups.WEREWOLVES,
   RoleNames.BIG_BAD_WOLF,
   RoleNames.CUPID,
-  RoleNames.DOG_WOLF,
+  RoleNames.WOLF_HOUND,
   RoleNames.FOX,
   RoleNames.DEFENDER,
   RoleNames.HUNTER,

@@ -86,9 +86,9 @@ function createGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {}): Ga
   });
 }
 
-function createGamePlayDogWolfChoosesSide(gamePlay: Partial<GamePlay> = {}): GamePlay {
+function createGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: createGamePlaySource({ name: RoleNames.DOG_WOLF }),
+    source: createGamePlaySource({ name: RoleNames.WOLF_HOUND }),
     action: GamePlayActions.CHOOSE_SIDE,
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
     ...gamePlay,
@@ -256,7 +256,7 @@ export {
   createGamePlayThiefChoosesCard,
   createGamePlayStutteringJudgeChoosesSign,
   createGamePlayScapegoatBansVoting,
-  createGamePlayDogWolfChoosesSide,
+  createGamePlayWolfHoundChoosesSide,
   createGamePlayWildChildChoosesModel,
   createGamePlayFoxSniffs,
   createGamePlayCharmedMeetEachOther,

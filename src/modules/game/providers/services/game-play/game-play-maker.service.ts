@@ -40,7 +40,7 @@ export class GamePlayMakerService {
     [RoleNames.DEFENDER]: (play, game) => this.defenderProtects(play, game),
     [RoleNames.FOX]: (play, game) => this.foxSniffs(play, game),
     [RoleNames.WILD_CHILD]: (play, game) => this.wildChildChoosesModel(play, game),
-    [RoleNames.DOG_WOLF]: (play, game) => this.dogWolfChoosesSide(play, game),
+    [RoleNames.WOLF_HOUND]: (play, game) => this.wolfHoundChoosesSide(play, game),
     [RoleNames.SCAPEGOAT]: (play, game) => this.scapegoatBansVoting(play, game),
     [RoleNames.THIEF]: (play, game) => this.thiefChoosesCard(play, game),
     [RoleNames.SCANDALMONGER]: (play, game) => this.scandalmongerMarks(play, game),
@@ -201,15 +201,15 @@ export class GamePlayMakerService {
     return addPlayersAttributeInGame(targets.map(({ player }) => player._id), clonedGame, cantVoteByScapegoatPlayerAttribute);
   }
   
-  private dogWolfChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
+  private wolfHoundChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
-    const dogWolfPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.DOG_WOLF);
-    if (!dogWolfPlayer) {
+    const wolfHoundPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.WOLF_HOUND);
+    if (!wolfHoundPlayer) {
       return clonedGame;
     }
-    const dogWolfSide = chosenSide ?? sample([RoleSides.VILLAGERS, RoleSides.WEREWOLVES]);
-    const playerDataToUpdate: Partial<Player> = { side: { ...dogWolfPlayer.side, current: dogWolfSide } };
-    return updatePlayerInGame(dogWolfPlayer._id, playerDataToUpdate, clonedGame);
+    const wolfHoundSide = chosenSide ?? sample([RoleSides.VILLAGERS, RoleSides.WEREWOLVES]);
+    const playerDataToUpdate: Partial<Player> = { side: { ...wolfHoundPlayer.side, current: wolfHoundSide } };
+    return updatePlayerInGame(wolfHoundPlayer._id, playerDataToUpdate, clonedGame);
   }
   
   private wildChildChoosesModel({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {

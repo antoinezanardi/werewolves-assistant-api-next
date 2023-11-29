@@ -21,11 +21,11 @@ import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dt
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeFoxGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
-import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeElderAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeElderAlivePlayer, createFakeWolfHoundAlivePlayer, createFakeFoxAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Maker Service", () => {
@@ -43,7 +43,7 @@ describe("Game Play Maker Service", () => {
       defenderProtects: jest.SpyInstance;
       foxSniffs: jest.SpyInstance;
       wildChildChoosesModel: jest.SpyInstance;
-      dogWolfChoosesSide: jest.SpyInstance;
+      wolfHoundChoosesSide: jest.SpyInstance;
       scapegoatBansVoting: jest.SpyInstance;
       thiefChoosesCard: jest.SpyInstance;
       survivorsPlay: jest.SpyInstance;
@@ -83,7 +83,7 @@ describe("Game Play Maker Service", () => {
         defenderProtects: jest.fn(),
         foxSniffs: jest.fn(),
         wildChildChoosesModel: jest.fn(),
-        dogWolfChoosesSide: jest.fn(),
+        wolfHoundChoosesSide: jest.fn(),
         scapegoatBansVoting: jest.fn(),
         thiefChoosesCard: jest.fn(),
         survivorsPlay: jest.fn(),
@@ -137,7 +137,7 @@ describe("Game Play Maker Service", () => {
       mocks.gamePlayMakerService.defenderProtects = jest.spyOn(services.gamePlayMaker as unknown as { defenderProtects }, "defenderProtects").mockImplementation();
       mocks.gamePlayMakerService.foxSniffs = jest.spyOn(services.gamePlayMaker as unknown as { foxSniffs }, "foxSniffs").mockImplementation();
       mocks.gamePlayMakerService.wildChildChoosesModel = jest.spyOn(services.gamePlayMaker as unknown as { wildChildChoosesModel }, "wildChildChoosesModel").mockImplementation();
-      mocks.gamePlayMakerService.dogWolfChoosesSide = jest.spyOn(services.gamePlayMaker as unknown as { dogWolfChoosesSide }, "dogWolfChoosesSide").mockImplementation();
+      mocks.gamePlayMakerService.wolfHoundChoosesSide = jest.spyOn(services.gamePlayMaker as unknown as { wolfHoundChoosesSide }, "wolfHoundChoosesSide").mockImplementation();
       mocks.gamePlayMakerService.scapegoatBansVoting = jest.spyOn(services.gamePlayMaker as unknown as { scapegoatBansVoting }, "scapegoatBansVoting").mockImplementation();
       mocks.gamePlayMakerService.thiefChoosesCard = jest.spyOn(services.gamePlayMaker as unknown as { thiefChoosesCard }, "thiefChoosesCard").mockImplementation();
       mocks.gamePlayMakerService.survivorsPlay = jest.spyOn(services.gamePlayMaker as unknown as { survivorsPlay }, "survivorsPlay").mockImplementation();
@@ -284,12 +284,12 @@ describe("Game Play Maker Service", () => {
       expect(mocks.gamePlayMakerService.wildChildChoosesModel).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
-    it("should call dogWolfChoosesSide method when it's dog wolf's turn.", async() => {
+    it("should call wolfHoundChoosesSide method when it's wolf-hound's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
-      const game = createFakeGame({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const game = createFakeGame({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       await services.gamePlayMaker.makeGamePlay(play, game);
 
-      expect(mocks.gamePlayMakerService.dogWolfChoosesSide).toHaveBeenCalledExactlyOnceWith(play, game);
+      expect(mocks.gamePlayMakerService.wolfHoundChoosesSide).toHaveBeenCalledExactlyOnceWith(play, game);
     });
 
     it("should call scapegoatBansVoting method when it's scapegoat's turn.", async() => {
@@ -1003,8 +1003,8 @@ describe("Game Play Maker Service", () => {
     });
   });
 
-  describe("dogWolfChoosesSide", () => {
-    it("should return game as is when there is no dog wolf in the game.", () => {
+  describe("wolfHoundChoosesSide", () => {
+    it("should return game as is when there is no wolf-hound in the game.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
         createFakeScandalmongerAlivePlayer(),
@@ -1015,19 +1015,19 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
       const expectedGame = createFakeGame(game);
 
-      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["wolfHoundChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should return dog wolf on random side when chosen side is not set.", () => {
+    it("should return wolf-hound on random side when chosen side is not set.", () => {
       const players = [
         createFakeScandalmongerAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedDogWolfPlayer = createFakePlayer({
+      const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.VILLAGERS },
       });
@@ -1035,40 +1035,40 @@ describe("Game Play Maker Service", () => {
         ...game,
         players: [
           players[0],
-          expectedDogWolfPlayer,
+          expectedWolfHoundPlayer,
           players[2],
           players[3],
         ],
       });
       mocks.lodash.sample.mockReturnValue(RoleSides.VILLAGERS);
 
-      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["wolfHoundChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
     it("should get a random side when chosen side is not set.", () => {
       const players = [
         createFakeScandalmongerAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
       const play = createFakeMakeGamePlayWithRelationsDto();
-      services.gamePlayMaker["dogWolfChoosesSide"](play, game);
+      services.gamePlayMaker["wolfHoundChoosesSide"](play, game);
 
       expect(mocks.lodash.sample).toHaveBeenCalledExactlyOnceWith([RoleSides.VILLAGERS, RoleSides.WEREWOLVES]);
     });
 
-    it("should return dog wolf on the werewolves side when chosen side is werewolves.", () => {
+    it("should return wolf-hound on the werewolves side when chosen side is werewolves.", () => {
       const players = [
         createFakeScandalmongerAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
-      const expectedDogWolfPlayer = createFakePlayer({
+      const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },
       });
@@ -1076,25 +1076,25 @@ describe("Game Play Maker Service", () => {
         ...game,
         players: [
           players[0],
-          expectedDogWolfPlayer,
+          expectedWolfHoundPlayer,
           players[2],
           players[3],
         ],
       });
       
-      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["wolfHoundChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should return dog wolf on the villagers side when chosen side is villagers.", () => {
+    it("should return wolf-hound on the villagers side when chosen side is villagers.", () => {
       const players = [
         createFakeScandalmongerAlivePlayer(),
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.VILLAGERS });
-      const expectedDogWolfPlayer = createFakePlayer({
+      const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.VILLAGERS },
       });
@@ -1102,20 +1102,20 @@ describe("Game Play Maker Service", () => {
         ...game,
         players: [
           players[0],
-          expectedDogWolfPlayer,
+          expectedWolfHoundPlayer,
           players[2],
           players[3],
         ],
       });
 
-      expect(services.gamePlayMaker["dogWolfChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["wolfHoundChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 
   describe("wildChildChoosesModel", () => {
     it("should return game as is when expected target count is not reached.", () => {
       const players = [
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -1129,7 +1129,7 @@ describe("Game Play Maker Service", () => {
     
     it("should add worshiped attribute to target when called.", () => {
       const players = [
-        createFakeDogWolfAlivePlayer(),
+        createFakeWolfHoundAlivePlayer(),
         createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),

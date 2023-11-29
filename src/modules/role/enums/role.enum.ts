@@ -22,7 +22,7 @@ enum RoleNames {
   RUSTY_SWORD_KNIGHT = "rusty-sword-knight",
   THIEF = "thief",
   WILD_CHILD = "wild-child",
-  DOG_WOLF = "dog-wolf",
+  WOLF_HOUND = "wolf-hound",
   ANGEL = "angel",
   PIED_PIPER = "pied-piper",
   SCANDALMONGER = "scandalmonger",

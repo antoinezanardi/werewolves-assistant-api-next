@@ -36,7 +36,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     bearTamer: { doesGrowlIfInfected: true },
     stutteringJudge: { voteRequestsCount: 1 },
     wildChild: { isTransformationRevealed: false },
-    dogWolf: {
+    wolfHound: {
       isChosenSideRevealed: false,
       isSideRandomlyChosen: false,
     },

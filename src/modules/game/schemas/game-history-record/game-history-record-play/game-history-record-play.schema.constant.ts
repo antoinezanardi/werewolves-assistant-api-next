@@ -85,7 +85,7 @@ const GAME_HISTORY_RECORD_PLAY_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHis
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.chosenCard),
   },
   chosenSide: {
-    description: "Only if there is the `dog wolf` in the game, which side it joined",
+    description: "Only if there is the `wolf-hound` in the game, which side it joined",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.chosenSide),
   },
 };

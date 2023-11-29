@@ -5,7 +5,7 @@ import { CreateWitchGameOptionsDto } from "@/modules/game/dto/create-game/create
 import { CreateElderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-elder-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
 import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
-import { CreateDogWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
+import { CreateWolfHoundGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-wolf-hound-game-options.dto";
 import { CreateFoxGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-fox-game-options.dto";
 import { CreateDefenderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-defender-game-options.dto";
 import { CreateIdiotGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
@@ -59,10 +59,10 @@ function createFakeCreateThiefGameOptionsDto(thiefGameOptions: Partial<CreateThi
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function createFakeCreateDogWolfGameOptionsDto(dogWolfGameOptions: Partial<CreateDogWolfGameOptionsDto> = {}, override: object = {}): CreateDogWolfGameOptionsDto {
-  return plainToInstance(CreateDogWolfGameOptionsDto, {
-    isChosenSideRevealed: dogWolfGameOptions.isChosenSideRevealed ?? faker.datatype.boolean(),
-    isSideRandomlyChosen: dogWolfGameOptions.isSideRandomlyChosen ?? faker.datatype.boolean(),
+function createFakeCreateWolfHoundGameOptionsDto(wolfHoundGameOptions: Partial<CreateWolfHoundGameOptionsDto> = {}, override: object = {}): CreateWolfHoundGameOptionsDto {
+  return plainToInstance(CreateWolfHoundGameOptionsDto, {
+    isChosenSideRevealed: wolfHoundGameOptions.isChosenSideRevealed ?? faker.datatype.boolean(),
+    isSideRandomlyChosen: wolfHoundGameOptions.isSideRandomlyChosen ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -207,7 +207,7 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     bearTamer: createFakeCreateBearTamerGameOptionsDto(rolesGameOptions.bearTamer),
     stutteringJudge: createFakeCreateStutteringJudgeGameOptionsDto(rolesGameOptions.stutteringJudge),
     wildChild: createFakeCreateWildChildGameOptionsDto(rolesGameOptions.wildChild),
-    dogWolf: createFakeCreateDogWolfGameOptionsDto(rolesGameOptions.dogWolf),
+    wolfHound: createFakeCreateWolfHoundGameOptionsDto(rolesGameOptions.wolfHound),
     thief: createFakeCreateThiefGameOptionsDto(rolesGameOptions.thief),
     piedPiper: createFakeCreatePiedPiperGameOptionsDto(rolesGameOptions.piedPiper),
     scandalmonger: createFakeCreateScandalmongerGameOptionsDto(rolesGameOptions.scandalmonger),
@@ -221,7 +221,7 @@ export {
   createFakeCreateScandalmongerGameOptionsDto,
   createFakeCreatePiedPiperGameOptionsDto,
   createFakeCreateThiefGameOptionsDto,
-  createFakeCreateDogWolfGameOptionsDto,
+  createFakeCreateWolfHoundGameOptionsDto,
   createFakeCreateWildChildGameOptionsDto,
   createFakeCreateStutteringJudgeGameOptionsDto,
   createFakeCreateBearTamerGameOptionsDto,
