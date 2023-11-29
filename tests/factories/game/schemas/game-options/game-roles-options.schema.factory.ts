@@ -3,7 +3,7 @@ import { plainToInstance } from "class-transformer";
 
 import { WitchGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
 import { GamePhases } from "@/modules/game/enums/game.enum";
-import { AncientGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/ancient-game-options/ancient-game-options.schema";
+import { ElderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema";
 import { BearTamerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
 import { BigBadWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
 import { DogWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
@@ -108,15 +108,15 @@ function createFakeTwoSistersGameOptions(twoSistersGameOptions: Partial<TwoSiste
 
 function createFakeIdiotGameOptions(idiotGameOptions: Partial<IdiotGameOptions> = {}, override: object = {}): IdiotGameOptions {
   return plainToInstance(IdiotGameOptions, {
-    doesDieOnAncientDeath: idiotGameOptions.doesDieOnAncientDeath ?? faker.datatype.boolean(),
+    doesDieOnElderDeath: idiotGameOptions.doesDieOnElderDeath ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function createFakeAncientGameOptions(ancientGameOptions: Partial<AncientGameOptions> = {}, override: object = {}): AncientGameOptions {
-  return plainToInstance(AncientGameOptions, {
-    livesCountAgainstWerewolves: ancientGameOptions.livesCountAgainstWerewolves ?? faker.number.int({ min: 1, max: 5 }),
-    doesTakeHisRevenge: ancientGameOptions.doesTakeHisRevenge ?? faker.datatype.boolean(),
+function createFakeElderGameOptions(elderGameOptions: Partial<ElderGameOptions> = {}, override: object = {}): ElderGameOptions {
+  return plainToInstance(ElderGameOptions, {
+    livesCountAgainstWerewolves: elderGameOptions.livesCountAgainstWerewolves ?? faker.number.int({ min: 1, max: 5 }),
+    doesTakeHisRevenge: elderGameOptions.doesTakeHisRevenge ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -184,7 +184,7 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     seer: createFakeSeerGameOptions(rolesGameOptions.seer),
     littleGirl: createFakeLittleGirlGameOptions(rolesGameOptions.littleGirl),
     guard: createFakeGuardGameOptions(rolesGameOptions.guard),
-    ancient: createFakeAncientGameOptions(rolesGameOptions.ancient),
+    elder: createFakeElderGameOptions(rolesGameOptions.elder),
     idiot: createFakeIdiotGameOptions(rolesGameOptions.idiot),
     twoSisters: createFakeTwoSistersGameOptions(rolesGameOptions.twoSisters),
     threeBrothers: createFakeThreeBrothersGameOptions(rolesGameOptions.threeBrothers),
@@ -214,7 +214,7 @@ export {
   createFakeThreeBrothersGameOptions,
   createFakeTwoSistersGameOptions,
   createFakeIdiotGameOptions,
-  createFakeAncientGameOptions,
+  createFakeElderGameOptions,
   createFakeGuardGameOptions,
   createFakeLittleGirlGameOptions,
   createFakeSeerGameOptions,

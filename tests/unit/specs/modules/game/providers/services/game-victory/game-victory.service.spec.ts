@@ -19,7 +19,7 @@ import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-pla
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerShotByHunterDeath, createFakePlayerVoteBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
@@ -588,7 +588,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-            createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
           ],
         }),
         expected: false,
@@ -600,7 +600,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeVillagerAlivePlayer({ attributes: [] }),
-            createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
           ],
         }),
         expected: false,
@@ -702,7 +702,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer(),
             createFakeSeerAlivePlayer(),
             createFakeVillagerAlivePlayer(),
-            createFakeAngelAlivePlayer({ isAlive: false, attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakeAngelAlivePlayer({ isAlive: false, attributes: [createFakePowerlessByElderPlayerAttribute()] }),
           ],
         }),
         expected: false,

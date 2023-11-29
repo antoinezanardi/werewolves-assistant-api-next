@@ -349,8 +349,8 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer, isInfected: isTargetInfected } = targets[0];
     const eatenByWerewolvesPlayerAttribute = createEatenByWerewolvesPlayerAttribute();
-    const ancientLivesCount = await this.playerKillerService.getAncientLivesCountAgainstWerewolves(clonedGame, targetedPlayer);
-    if (isTargetInfected === true && (targetedPlayer.role.current !== RoleNames.ANCIENT || ancientLivesCount <= 1)) {
+    const elderLivesCount = await this.playerKillerService.getElderLivesCountAgainstWerewolves(clonedGame, targetedPlayer);
+    if (isTargetInfected === true && (targetedPlayer.role.current !== RoleNames.ELDER || elderLivesCount <= 1)) {
       const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES } };
       return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);
     }

@@ -5,7 +5,7 @@ import { Expose, Type } from "class-transformer";
 
 import { WitchGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
 import { ROLES_GAME_OPTIONS_API_PROPERTIES, ROLES_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema.constant";
-import { AncientGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/ancient-game-options/ancient-game-options.schema";
+import { ElderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema";
 import { BearTamerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
 import { BigBadWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
 import { DogWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
@@ -76,11 +76,11 @@ class RolesGameOptions {
   @Expose()
   public guard: GuardGameOptions;
 
-  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.ancient as ApiPropertyOptions)
-  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.ancient)
-  @Type(() => AncientGameOptions)
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.elder as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.elder)
+  @Type(() => ElderGameOptions)
   @Expose()
-  public ancient: AncientGameOptions;
+  public elder: ElderGameOptions;
 
   @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.idiot as ApiPropertyOptions)
   @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.idiot)

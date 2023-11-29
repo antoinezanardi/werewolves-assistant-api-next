@@ -10,7 +10,7 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeSeerAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerDiseaseByRustySwordKnightDeath, createFakePlayerEatenByWerewolvesDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakePlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakePlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Player Attribute Service", () => {
@@ -69,21 +69,21 @@ describe("Player Attribute Service", () => {
 
   describe("decreaseAttributeRemainingPhase", () => {
     it("should return attribute as is when there is no remaining phases.", () => {
-      const attribute = createFakePowerlessByAncientPlayerAttribute();
+      const attribute = createFakePowerlessByElderPlayerAttribute();
       const game = createFakeGame();
 
       expect(services.playerAttribute["decreaseAttributeRemainingPhase"](attribute, game)).toStrictEqual<PlayerAttribute>(attribute);
     });
 
     it("should return attribute as is when attribute is not active yet.", () => {
-      const attribute = createFakePowerlessByAncientPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 2 }) });
+      const attribute = createFakePowerlessByElderPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 2 }) });
       const game = createFakeGame({ turn: 1 });
 
       expect(services.playerAttribute["decreaseAttributeRemainingPhase"](attribute, game)).toStrictEqual<PlayerAttribute>(attribute);
     });
     
     it("should return decreased attribute when called.", () => {
-      const attribute = createFakePowerlessByAncientPlayerAttribute({ remainingPhases: 3 });
+      const attribute = createFakePowerlessByElderPlayerAttribute({ remainingPhases: 3 });
       const game = createFakeGame();
       const expectedAttribute = createFakePlayerAttribute({
         ...attribute,

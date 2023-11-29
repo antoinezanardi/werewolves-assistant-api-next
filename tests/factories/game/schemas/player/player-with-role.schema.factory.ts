@@ -54,8 +54,8 @@ function createFakeGuardAlivePlayer(player: Partial<Player> = {}, override: obje
   return createFakeAlivePlayerWithRole(RoleNames.GUARD, player, override);
 }
 
-function createFakeAncientAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
-  return createFakeAlivePlayerWithRole(RoleNames.ANCIENT, player, override);
+function createFakeElderAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.ELDER, player, override);
 }
 
 function createFakeScapegoatAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
@@ -147,7 +147,7 @@ export {
   createFakeHunterAlivePlayer,
   createFakeLittleGirlAlivePlayer,
   createFakeGuardAlivePlayer,
-  createFakeAncientAlivePlayer,
+  createFakeElderAlivePlayer,
   createFakeScapegoatAlivePlayer,
   createFakeIdiotAlivePlayer,
   createFakeTwoSistersAlivePlayer,

@@ -8,16 +8,16 @@ import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/hel
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
 const IDIOT_GAME_OPTIONS_FIELDS_SPECS = {
-  doesDieOnAncientDeath: {
+  doesDieOnElderDeath: {
     required: true,
-    default: DEFAULT_GAME_OPTIONS.roles.idiot.doesDieOnAncientDeath,
+    default: DEFAULT_GAME_OPTIONS.roles.idiot.doesDieOnElderDeath,
   },
 } as const satisfies Record<keyof IdiotGameOptions, MongoosePropOptions>;
 
 const IDIOT_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof IdiotGameOptions, ApiPropertyOptions>> = {
-  doesDieOnAncientDeath: {
-    description: "If set to `true`, the idiot will die if his role is revealed and the ancient just died",
-    ...convertMongoosePropOptionsToApiPropertyOptions(IDIOT_GAME_OPTIONS_FIELDS_SPECS.doesDieOnAncientDeath),
+  doesDieOnElderDeath: {
+    description: "If set to `true`, the idiot will die if his role is revealed and the elder just died",
+    ...convertMongoosePropOptionsToApiPropertyOptions(IDIOT_GAME_OPTIONS_FIELDS_SPECS.doesDieOnElderDeath),
   },
 };
 

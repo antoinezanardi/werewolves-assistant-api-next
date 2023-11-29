@@ -6,7 +6,7 @@ import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attri
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByAncientPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByElderPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Player Attribute Helper", () => {
@@ -19,37 +19,37 @@ describe("Player Attribute Helper", () => {
     }>([
       {
         test: "should return true when activation is undefined.",
-        attribute: createFakePowerlessByAncientPlayerAttribute(),
+        attribute: createFakePowerlessByElderPlayerAttribute(),
         game: createFakeGame(),
         expected: true,
       },
       {
         test: "should return false when activation turn is not reached yet.",
-        attribute: createFakePowerlessByAncientPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 2, phase: GamePhases.DAY }) }),
+        attribute: createFakePowerlessByElderPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 2, phase: GamePhases.DAY }) }),
         game: createFakeGame({ turn: 1, phase: GamePhases.DAY }),
         expected: false,
       },
       {
         test: "should return true when activation turn is reached (+1).",
-        attribute: createFakePowerlessByAncientPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.DAY }) }),
+        attribute: createFakePowerlessByElderPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.DAY }) }),
         game: createFakeGame({ turn: 2, phase: GamePhases.DAY }),
         expected: true,
       },
       {
         test: "should return false when activation turn is same as game's turn but game's phase is NIGHT and activation phase is DAY.",
-        attribute: createFakePowerlessByAncientPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.DAY }) }),
+        attribute: createFakePowerlessByElderPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.DAY }) }),
         game: createFakeGame({ turn: 1, phase: GamePhases.NIGHT }),
         expected: false,
       },
       {
         test: "should return true when activation turn is same as game's turn and phase too.",
-        attribute: createFakePowerlessByAncientPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.NIGHT }) }),
+        attribute: createFakePowerlessByElderPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.NIGHT }) }),
         game: createFakeGame({ turn: 1, phase: GamePhases.NIGHT }),
         expected: true,
       },
       {
         test: "should return true when activation turn is same as game's turn, phase are different but game's phase is DAY anyway.",
-        attribute: createFakePowerlessByAncientPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.NIGHT }) }),
+        attribute: createFakePowerlessByElderPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.NIGHT }) }),
         game: createFakeGame({ turn: 1, phase: GamePhases.DAY }),
         expected: true,
       },
@@ -62,7 +62,7 @@ describe("Player Attribute Helper", () => {
     it("should get attribute when player has this attribute.", () => {
       const attributes = [
         createFakeSheriffBySurvivorsPlayerAttribute(),
-        createFakePowerlessByAncientPlayerAttribute(),
+        createFakePowerlessByElderPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
 
@@ -72,7 +72,7 @@ describe("Player Attribute Helper", () => {
     it("should return undefined when player doesn't have the attribute.", () => {
       const attributes = [
         createFakeSheriffBySurvivorsPlayerAttribute(),
-        createFakePowerlessByAncientPlayerAttribute(),
+        createFakePowerlessByElderPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
 
@@ -113,7 +113,7 @@ describe("Player Attribute Helper", () => {
       const game = createFakeGame({ turn: 1, phase: GamePhases.DAY });
       const attributes = [
         createFakeSheriffBySurvivorsPlayerAttribute(),
-        createFakePowerlessByAncientPlayerAttribute(),
+        createFakePowerlessByElderPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
 
@@ -181,27 +181,27 @@ describe("Player Attribute Helper", () => {
     it("should get attribute when player has this attribute.", () => {
       const attributes = [
         createFakeSheriffBySurvivorsPlayerAttribute(),
-        createFakePowerlessByAncientPlayerAttribute(),
+        createFakePowerlessByElderPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getPlayerAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ANCIENT)).toStrictEqual<PlayerAttribute>(attributes[1]);
+      expect(getPlayerAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ELDER)).toStrictEqual<PlayerAttribute>(attributes[1]);
     });
 
     it("should return undefined when player doesn't have the attribute with correct name.", () => {
       const attributes = [
         createFakeSheriffBySurvivorsPlayerAttribute(),
-        createFakePowerlessByAncientPlayerAttribute(),
+        createFakePowerlessByElderPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getPlayerAttributeWithNameAndSource(player, PlayerAttributeNames.IN_LOVE, RoleNames.ANCIENT)).toBeUndefined();
+      expect(getPlayerAttributeWithNameAndSource(player, PlayerAttributeNames.IN_LOVE, RoleNames.ELDER)).toBeUndefined();
     });
 
     it("should return undefined when player doesn't have the attribute with correct source.", () => {
       const attributes = [
         createFakeSheriffBySurvivorsPlayerAttribute(),
-        createFakePowerlessByAncientPlayerAttribute(),
+        createFakePowerlessByElderPlayerAttribute(),
       ];
       const player = createFakePlayer({ attributes });
 
@@ -227,18 +227,18 @@ describe("Player Attribute Helper", () => {
       },
       {
         test: "should return false when player doesn't have the attribute with correct source.",
-        attributes: [createFakePowerlessByAncientPlayerAttribute({ source: RoleNames.FOX })],
+        attributes: [createFakePowerlessByElderPlayerAttribute({ source: RoleNames.FOX })],
         expected: false,
       },
       {
         test: "should return true when player has the attribute.",
-        attributes: [createFakePowerlessByAncientPlayerAttribute()],
+        attributes: [createFakePowerlessByElderPlayerAttribute()],
         expected: true,
       },
     ])("$test", ({ attributes, expected }) => {
       const player = createFakePlayer({ attributes });
 
-      expect(doesPlayerHaveAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ANCIENT)).toBe(expected);
+      expect(doesPlayerHaveAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ELDER)).toBe(expected);
     });
   });
 });

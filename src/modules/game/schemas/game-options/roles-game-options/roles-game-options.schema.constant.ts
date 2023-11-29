@@ -2,7 +2,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
 import { WITCH_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
-import { ANCIENT_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/ancient-game-options/ancient-game-options.schema";
+import { ELDER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema";
 import { BEAR_TAMER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
 import { BIG_BAD_WOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
 import { DOG_WOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
@@ -65,10 +65,10 @@ const ROLES_GAME_OPTIONS_FIELDS_SPECS = {
     type: GUARD_GAME_OPTIONS_SCHEMA,
     default: DEFAULT_GAME_OPTIONS.roles.guard,
   },
-  ancient: {
+  elder: {
     required: true,
-    type: ANCIENT_GAME_OPTIONS_SCHEMA,
-    default: DEFAULT_GAME_OPTIONS.roles.ancient,
+    type: ELDER_GAME_OPTIONS_SCHEMA,
+    default: DEFAULT_GAME_OPTIONS.roles.elder,
   },
   idiot: {
     required: true,
@@ -165,9 +165,9 @@ const ROLES_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof RolesGameOpti
     description: "Game `guard` role's options.",
     ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.guard),
   },
-  ancient: {
-    description: "Game `ancient` role's options.",
-    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.ancient),
+  elder: {
+    description: "Game `elder` role's options.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.elder),
   },
   idiot: {
     description: "Game `idiot` role's options.",

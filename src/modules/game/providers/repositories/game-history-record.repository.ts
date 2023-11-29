@@ -79,30 +79,30 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.find(filter);
   }
   
-  public async getGameHistoryWerewolvesEatAncientRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GamePlayActions.EAT,
-      "play.targets.player.role.current": RoleNames.ANCIENT,
+      "play.targets.player.role.current": RoleNames.ELDER,
     };
     return this.gameHistoryRecordModel.find(filter);
   }
 
-  public async getGameHistoryAncientProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryElderProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       $or: [
         {
           "play.source.name": RoleNames.GUARD,
           "play.action": GamePlayActions.PROTECT,
-          "play.targets.player.role.current": RoleNames.ANCIENT,
+          "play.targets.player.role.current": RoleNames.ELDER,
         },
         {
           "play.source.name": RoleNames.WITCH,
           "play.action": GamePlayActions.USE_POTIONS,
           "play.targets": {
             $elemMatch: {
-              "player.role.current": RoleNames.ANCIENT,
+              "player.role.current": RoleNames.ELDER,
               "drankPotion": WitchPotions.LIFE,
             },
           },

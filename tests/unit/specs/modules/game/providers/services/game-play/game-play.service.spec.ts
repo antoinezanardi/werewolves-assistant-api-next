@@ -29,7 +29,7 @@ import { createFakeRolesGameOptions, createFakeSheriffElectionGameOptions, creat
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayGuardProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayRavenMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 
 describe("Game Play Service", () => {
@@ -379,7 +379,7 @@ describe("Game Play Service", () => {
             createFakeCupidAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
             createFakeSeerAlivePlayer({ isAlive: false }),
-            createFakeWitchAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakeWitchAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
             createFakeAngelAlivePlayer(),
           ],
           options: DEFAULT_GAME_OPTIONS,
@@ -412,7 +412,7 @@ describe("Game Play Service", () => {
 
     it("should remove some game plays when players became powerless or died.", async() => {
       const players = [
-        createFakeSeerAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeHunterAlivePlayer({ isAlive: false }),
         createFakeWitchAlivePlayer({ isAlive: false }),
@@ -695,7 +695,7 @@ describe("Game Play Service", () => {
             createFakeWhiteWerewolfAlivePlayer(),
             createFakeSeerAlivePlayer(),
             createFakeVileFatherOfWolvesAlivePlayer(),
-            createFakeCupidAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakeCupidAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
           ],
         }),
         expected: false,
@@ -833,7 +833,7 @@ describe("Game Play Service", () => {
             createFakeWhiteWerewolfAlivePlayer(),
             createFakeSeerAlivePlayer(),
             createFakeVileFatherOfWolvesAlivePlayer(),
-            createFakeAngelAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakeAngelAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
           ],
         }),
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
@@ -910,8 +910,8 @@ describe("Game Play Service", () => {
         test: "should return false when game plays source group is werewolves and all are powerless.",
         game: createFakeGame({
           players: [
-            createFakeWerewolfAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
-            createFakeBigBadWolfAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakeWerewolfAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
+            createFakeBigBadWolfAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
             createFakeWitchAlivePlayer(),
             createFakeWildChildAlivePlayer(),
           ],
@@ -1002,7 +1002,7 @@ describe("Game Play Service", () => {
           players: [
             createFakeWerewolfAlivePlayer(),
             createFakeSeerAlivePlayer(),
-            createFakeWitchAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakeWitchAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
             createFakeAngelAlivePlayer(),
           ],
         }),
@@ -1201,7 +1201,7 @@ describe("Game Play Service", () => {
 
     it("should return false when white werewolf is in the game but powerless.", () => {
       const players = [
-        createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeSeerAlivePlayer(),
         createFakeVileFatherOfWolvesAlivePlayer(),
         createFakeAngelAlivePlayer(),
@@ -1684,7 +1684,7 @@ describe("Game Play Service", () => {
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ANCIENT } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ELDER } }),
           ],
           options: createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 0 } }) }),
         }),
@@ -1698,7 +1698,7 @@ describe("Game Play Service", () => {
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ANCIENT } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ELDER } }),
           ],
           options: createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ twoSisters: { wakingUpInterval: 2 } }) }),
         }),
@@ -1924,7 +1924,7 @@ describe("Game Play Service", () => {
         test: "should return false when game plays source role is hunter and player is powerless.",
         game: createFakeGame({
           players: [
-            createFakeHunterAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakeHunterAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
             createFakeSeerAlivePlayer(),
             createFakeTwoSistersAlivePlayer(),
             createFakeWildChildAlivePlayer(),
@@ -1963,7 +1963,7 @@ describe("Game Play Service", () => {
         test: "should return false when game plays source role is scapegoat and player is powerless.",
         game: createFakeGame({
           players: [
-            createFakeScapegoatAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakeScapegoatAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
             createFakeSeerAlivePlayer(),
             createFakeTwoSistersAlivePlayer(),
             createFakeWildChildAlivePlayer(),

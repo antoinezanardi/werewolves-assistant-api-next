@@ -5,7 +5,7 @@ import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
 import { CreateWitchGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-witch-game-options.dto";
 import { ROLES_GAME_OPTIONS_API_PROPERTIES, ROLES_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema.constant";
-import { CreateAncientGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-ancient-game-options.dto";
+import { CreateElderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-elder-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
 import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
 import { CreateDogWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
@@ -96,13 +96,13 @@ class CreateRolesGameOptionsDto {
   public guard: CreateGuardGameOptionsDto = new CreateGuardGameOptionsDto();
 
   @ApiProperty({
-    ...ROLES_GAME_OPTIONS_API_PROPERTIES.ancient,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.elder,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @Type(() => CreateAncientGameOptionsDto)
+  @Type(() => CreateElderGameOptionsDto)
   @ValidateNested()
-  public ancient: CreateAncientGameOptionsDto = new CreateAncientGameOptionsDto();
+  public elder: CreateElderGameOptionsDto = new CreateElderGameOptionsDto();
 
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.idiot,

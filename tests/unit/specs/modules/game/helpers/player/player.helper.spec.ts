@@ -6,7 +6,7 @@ import { RoleSides } from "@/modules/role/enums/role.enum";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakePowerlessByAncientPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePowerlessByElderPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePiedPiperAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -20,7 +20,7 @@ describe("Player Helper", () => {
     }>([
       {
         test: "should return false when pied piper is powerless.",
-        piedPiperPlayer: createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        piedPiperPlayer: createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         game: createFakeGame(),
         expected: false,
       },
@@ -68,7 +68,7 @@ describe("Player Helper", () => {
       },
       {
         test: "should return false when player is powerless.",
-        player: createFakePlayer({ isAlive: true, attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+        player: createFakePlayer({ isAlive: true, attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         game: createFakeGame(),
         expected: false,
       },

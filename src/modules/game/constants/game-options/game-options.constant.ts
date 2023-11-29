@@ -25,11 +25,11 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     },
     littleGirl: { isProtectedByGuard: false },
     guard: { canProtectTwice: false },
-    ancient: {
+    elder: {
       livesCountAgainstWerewolves: 2,
       doesTakeHisRevenge: true,
     },
-    idiot: { doesDieOnAncientDeath: true },
+    idiot: { doesDieOnElderDeath: true },
     twoSisters: { wakingUpInterval: 2 },
     threeBrothers: { wakingUpInterval: 2 },
     fox: { isPowerlessIfMissesWerewolf: true },

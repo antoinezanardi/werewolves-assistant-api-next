@@ -194,7 +194,7 @@ Feature: ⚖️ Stuttering Judge Role
       | Antoine | stuttering-judge |
       | Olivia  | werewolf         |
       | JB      | witch            |
-      | Camille | ancient          |
+      | Camille | elder            |
     Then the game's current play should be stuttering-judge to choose-sign
 
     When the stuttering judge chooses his sign
