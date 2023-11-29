@@ -8,8 +8,8 @@
 ![Nest](https://img.shields.io/badge/-NestJs-black?style=for-the-badge&logo=nestjs&color=E0234D)
 ![Mongoose](https://img.shields.io/badge/-MongoDB-black?style=for-the-badge&logoColor=white&logo=mongodb&color=127237)
 
-![Build Status](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/build.yml/badge.svg)
-![Release Status](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/release.yml/badge.svg)
+[![⚙️ Build Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/build.yml/badge.svg)](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/build.yml)
+[![🚀 Deploy To Production Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/deploy-to-production.yml/badge.svg)](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/deploy-to-production.yml)
 
 [![GitHub release](https://img.shields.io/github/release/antoinezanardi/werewolves-assistant-api-next.svg)](https://GitHub.com/antoinezanardi/werewolves-assistant-api-next/releases/)
 [![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventional%20commits-Æ1A7DBD?logo=semantic-release&color=1E7FBF)](https://github.com/semantic-release/semantic-release)
@@ -35,9 +35,10 @@
 7. 🌿 [Env variables](#env-variables)
 8. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
 9. 📈 [Releases & Changelog](#versions)
-10. ✨ [Misc commands](#misc-commands)
-11. ©️ [License](#license)
-12. ❤️ [Contributors](#contributors)
+10. 🐙 [GitHub Actions](#github-actions)
+11. ✨ [Misc commands](#misc-commands)
+12. ©️ [License](#license)
+13. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
@@ -313,6 +314,23 @@ Each change when a new release comes up is listed in the **<a href="https://gith
 Also, you can keep up with changes by watching releases via the **Watch GitHub button** at the top of this page.
 
 #### 🏷️ <a href="https://github.com/antoinezanardi/werewolves-assistant-api-next/releases" target="_blank">All releases for this project are available here</a>.
+
+## <a name="github-actions">🐙 GitHub Actions</a>
+
+This project uses **GitHub Actions** to automate some boring tasks.
+
+You can find all the workflows in the **[.github/workflows directory](https://github.com/antoinezanardi/werewolves-assistant-api-next/tree/main/.github/workflows).**
+
+### 🎢 Workflows
+
+|                                                                             Name                                                                             |                                          Description                                           |                        Trigger                         |                                                                                                                                         Status                                                                                                                                         |
+|:------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|:------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|                         **[⚙️ Build](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/build.yml)**                          |                 Various checks for app health, code quality and tests coverage                 | `push` on `develop` and all pull requests to `develop` |                               [![⚙️ Build Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/build.yml/badge.svg)](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/build.yml)                               |
+| **[🔃 Lint PR Name Into Develop Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/lint-pr-name-into-develop.yml)** |               Checks if pull request name respects `conventionnal-commit` rules                |         `pull-request` `created` or `updated`          | [![🔃 Lint PR Name Into Develop Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/lint-pr-name-into-develop.yml/badge.svg)](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/lint-pr-name-into-develop.yml) |
+|       **[⛵️ Push On Develop Branch Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/push-on-develop.yml)**        |                       Uploads app with `develop` version to `Docker Hub`                       |                  `push` on `develop`                   |            [![⛵️ Push On Develop Branch Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/push-on-develop.yml/badge.svg)](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/push-on-develop.yml)             |
+|        **[🔃️ Upsert PR Release Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/upsert-pr-release.yml)**         | Creates or updates pull request to `main` depending on commits on `develop` since last release |                  `push` on `develop`                   |            [![🔃️ Upsert PR Release Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/upsert-pr-release.yml/badge.svg)](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/upsert-pr-release.yml)             |
+|         **[🏷️ Release Creation Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/release-creation.yml)**          |         Creates a new release using `semantic-release` with tag and updated changelog          |                    `push` on `main`                    |              [![🏷️ Release Creation Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/release-creation.yml/badge.svg)](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/release-creation.yml)              |
+|      **[🚀 Deploy To Production Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/deploy-to-production.yml)**      |                  Deploys app with last tag version to `Docker Hub` and `GCP`                   |                     `tag-creation`                     |        [![🚀 Deploy To Production Workflow](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/deploy-to-production.yml/badge.svg)](https://github.com/antoinezanardi/werewolves-assistant-api-next/actions/workflows/deploy-to-production.yml)         |
 
 ## <a name="misc-commands">✨ Misc commands</a>
 
