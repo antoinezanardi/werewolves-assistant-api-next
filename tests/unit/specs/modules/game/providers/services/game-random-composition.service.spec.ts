@@ -524,7 +524,7 @@ describe("Game Random Composition Service", () => {
         RoleNames.FOX,
         RoleNames.TWO_SISTERS,
         RoleNames.WHITE_WEREWOLF,
-        RoleNames.VILE_FATHER_OF_WOLVES,
+        RoleNames.ACCURSED_WOLF_FATHER,
       ];
 
       expect(result).toHaveLength(6);

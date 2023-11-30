@@ -23,7 +23,7 @@ const WEREWOLF_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     recommendedMinPlayers: 15,
   },
   {
-    name: RoleNames.VILE_FATHER_OF_WOLVES,
+    name: RoleNames.ACCURSED_WOLF_FATHER,
     side: RoleSides.WEREWOLVES,
     type: RoleTypes.WEREWOLF,
     origin: RoleOrigins.CHARACTERS,

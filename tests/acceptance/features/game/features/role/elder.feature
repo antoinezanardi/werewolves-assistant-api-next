@@ -9,7 +9,7 @@ Feature: 👴🏻 Elder role
       | Antoine   | elder                 |
       | Juju      | seer                  |
       | Doudou    | cupid                 |
-      | JB        | vile-father-of-wolves |
+      | JB        | accursed-wolf-father |
       | Olivia    | werewolf              |
       | Thomas    | witch                 |
       | Romain    | hunter                |

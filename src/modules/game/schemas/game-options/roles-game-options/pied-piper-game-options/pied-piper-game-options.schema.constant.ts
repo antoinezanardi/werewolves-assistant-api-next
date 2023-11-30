@@ -26,7 +26,7 @@ const PIED_PIPER_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof PiedPipe
     ...convertMongoosePropOptionsToApiPropertyOptions(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight),
   },
   isPowerlessIfInfected: {
-    description: "If set to `true`, `pied piper` will be `powerless` if he is infected by the `vile father of wolves`",
+    description: "If set to `true`, `pied piper` will be `powerless` if he is infected by the `accursed wolf-father`",
     ...convertMongoosePropOptionsToApiPropertyOptions(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected),
   },
 };

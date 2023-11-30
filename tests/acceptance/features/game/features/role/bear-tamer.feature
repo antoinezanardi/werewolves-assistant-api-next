@@ -36,11 +36,11 @@ Feature: 🐻 Bear Tamer role
       | Olivia  | villager              |
       | Antoine | bear-tamer            |
       | JB      | villager              |
-      | Thomas  | vile-father-of-wolves |
+      | Thomas  | accursed-wolf-father |
       | Doudou  | villager              |
     Then the game's current play should be werewolves to eat
 
-    When the vile father of wolves infects the player named Antoine
+    When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be alive
     And the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Antoine should have the active growled from bear-tamer attribute
@@ -53,11 +53,11 @@ Feature: 🐻 Bear Tamer role
       | Olivia  | villager              |
       | Antoine | bear-tamer            |
       | JB      | villager              |
-      | Thomas  | vile-father-of-wolves |
+      | Thomas  | accursed-wolf-father |
       | Doudou  | villager              |
     Then the game's current play should be werewolves to eat
 
-    When the vile father of wolves infects the player named Antoine
+    When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be alive
     And the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Antoine should not have the active growled from bear-tamer attribute

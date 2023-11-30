@@ -34,7 +34,7 @@ import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-pla
 import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeWolfHoundAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeWolfHoundAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeAccursedWolfFatherAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Validator Service", () => {
@@ -82,7 +82,7 @@ describe("Game Play Validator Service", () => {
       getLastGameHistoryDefenderProtectsRecord: jest.SpyInstance;
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
-      getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
+      getGameHistoryAccursedWolfFatherInfectedRecords: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
       didJudgeMakeHisSign: jest.SpyInstance;
     };
@@ -140,7 +140,7 @@ describe("Game Play Validator Service", () => {
         getLastGameHistoryDefenderProtectsRecord: jest.fn(),
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
-        getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
+        getGameHistoryAccursedWolfFatherInfectedRecords: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
         didJudgeMakeHisSign: jest.fn(),
       },
@@ -508,7 +508,7 @@ describe("Game Play Validator Service", () => {
   });
 
   describe("validateGamePlayInfectedTargets", () => {
-    it("should throw error when vile father of wolves is not in the game.", async() => {
+    it("should throw error when accursed wolf-father is not in the game.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
         createFakeWolfHoundAlivePlayer(),
@@ -518,35 +518,35 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
       const gameHistoryRecords = [];
-      mocks.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords.mockResolvedValue(gameHistoryRecords);
+      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords.mockResolvedValue(gameHistoryRecords);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
 
       await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
-    it("should throw error when vile father of wolves is dead.", async() => {
+    it("should throw error when accursed wolf-father is dead.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
         createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer({ isAlive: false }),
+        createFakeAccursedWolfFatherAlivePlayer({ isAlive: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
       const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];
       const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: gameHistoryRecordTargets }) })];
-      mocks.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords.mockResolvedValue(gameHistoryRecords);
+      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords.mockResolvedValue(gameHistoryRecords);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
 
       await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
     });
 
-    it("should throw error when vile father of wolves has already infected and some targets are infected.", async() => {
+    it("should throw error when accursed wolf-father has already infected and some targets are infected.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
         createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];
@@ -555,7 +555,7 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: false }),
       ];
       const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: gameHistoryRecordTargets }) })];
-      mocks.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords.mockResolvedValue(gameHistoryRecords);
+      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords.mockResolvedValue(gameHistoryRecords);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
 
       await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
@@ -573,11 +573,11 @@ describe("Game Play Validator Service", () => {
         createFakeWitchAlivePlayer(),
         createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
-      mocks.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords.mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
     });
@@ -679,7 +679,7 @@ describe("Game Play Validator Service", () => {
         createFakeWitchAlivePlayer(),
         createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayFoxSniffs(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
@@ -1309,7 +1309,7 @@ describe("Game Play Validator Service", () => {
         createFakeWitchAlivePlayer(),
         createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat({ action: GamePlayActions.CHOOSE_CARD }), players });
       const makeGamePlayTargetsWithRelationsDto = [
@@ -1326,7 +1326,7 @@ describe("Game Play Validator Service", () => {
         createFakeWitchAlivePlayer(),
         createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat({ source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }) }), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];
@@ -1340,7 +1340,7 @@ describe("Game Play Validator Service", () => {
         createFakeWitchAlivePlayer(),
         createFakeWolfHoundAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];

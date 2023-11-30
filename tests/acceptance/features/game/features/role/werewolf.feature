@@ -8,7 +8,7 @@ Feature: 🐺 Werewolf role
       | name    | role                  |
       | Antoine | villager              |
       | Juju    | witch                 |
-      | Doudou  | vile-father-of-wolves |
+      | Doudou  | accursed-wolf-father |
       | Thom    | werewolf              |
     Then the request should have succeeded with status code 201
     And the game's current play should be werewolves to eat
@@ -45,7 +45,7 @@ Feature: 🐺 Werewolf role
       | name    | role                  |
       | Antoine | villager              |
       | Juju    | witch                 |
-      | Doudou  | vile-father-of-wolves |
+      | Doudou  | accursed-wolf-father |
       | Thom    | werewolf              |
     Then the game's current play should be werewolves to eat
 
@@ -88,7 +88,7 @@ Feature: 🐺 Werewolf role
       | name    | role                  |
       | Antoine | villager              |
       | Juju    | villager              |
-      | Doudou  | vile-father-of-wolves |
+      | Doudou  | accursed-wolf-father |
       | Thom    | werewolf              |
     Then the game's current play should be werewolves to eat
 
@@ -104,7 +104,7 @@ Feature: 🐺 Werewolf role
       | name    | role                  |
       | Antoine | villager              |
       | Juju    | villager              |
-      | Doudou  | vile-father-of-wolves |
+      | Doudou  | accursed-wolf-father |
       | Thom    | werewolf              |
     Then the game's current play should be werewolves to eat
 
@@ -120,7 +120,7 @@ Feature: 🐺 Werewolf role
       | name    | role                  |
       | Antoine | villager              |
       | Juju    | villager              |
-      | Doudou  | vile-father-of-wolves |
+      | Doudou  | accursed-wolf-father |
       | Thom    | werewolf              |
     Then the game's current play should be werewolves to eat
 

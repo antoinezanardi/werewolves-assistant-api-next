@@ -680,7 +680,7 @@ describe("Game Controller", () => {
         ],
         additionalCards: [
           createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
-          createFakeGameAdditionalCard({ roleName: RoleNames.VILE_FATHER_OF_WOLVES, recipient: RoleNames.THIEF }),
+          createFakeGameAdditionalCard({ roleName: RoleNames.ACCURSED_WOLF_FATHER, recipient: RoleNames.THIEF }),
         ],
       }, { options: undefined });
       const expectedPlayers = payload.players.map<Player>((player, index) => ({

@@ -9,7 +9,7 @@ Feature: 🦊 Fox role
       | Antoine | fox                   |
       | Juju    | villager              |
       | Doudou  | villager              |
-      | JB      | vile-father-of-wolves |
+      | JB      | accursed-wolf-father |
       | Olivia  | werewolf              |
       | Thomas  | villager              |
       | Coco    | idiot                 |
@@ -106,7 +106,7 @@ Feature: 🦊 Fox role
       | Antoine | fox                   |
       | Juju    | villager              |
       | Doudou  | villager              |
-      | JB      | vile-father-of-wolves |
+      | JB      | accursed-wolf-father |
       | Olivia  | werewolf              |
       | Thomas  | villager              |
       | Coco    | idiot                 |
@@ -125,7 +125,7 @@ Feature: 🦊 Fox role
       | Antoine | fox                   |
       | Juju    | villager              |
       | Doudou  | villager              |
-      | JB      | vile-father-of-wolves |
+      | JB      | accursed-wolf-father |
     Then the game's current play should be fox to sniff
 
     When the player or group targets an unknown player
@@ -141,7 +141,7 @@ Feature: 🦊 Fox role
       | Antoine | fox                   |
       | Juju    | angel                 |
       | Doudou  | villager              |
-      | JB      | vile-father-of-wolves |
+      | JB      | accursed-wolf-father |
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -165,7 +165,7 @@ Feature: 🦊 Fox role
       | Antoine | fox                   |
       | Juju    | villager              |
       | Doudou  | villager              |
-      | JB      | vile-father-of-wolves |
+      | JB      | accursed-wolf-father |
     Then the game's current play should be fox to sniff
 
     When the fox sniffs the player named Doudou

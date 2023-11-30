@@ -7,7 +7,7 @@ Feature: 🪈 Pied Piper role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | JB      | villager              |
       | Thomas  | villager              |
       | Dad     | villager              |
@@ -115,7 +115,7 @@ Feature: 🪈 Pied Piper role
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
-    When the vile father of wolves infects the player named Antoine
+    When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the game's current play should be survivors to vote
 
@@ -140,7 +140,7 @@ Feature: 🪈 Pied Piper role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | JB      | villager              |
       | Thomas  | villager              |
     Then the game's current play should be werewolves to eat
@@ -159,7 +159,7 @@ Feature: 🪈 Pied Piper role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | JB      | villager              |
       | Thomas  | villager              |
     Then the game's current play should be werewolves to eat
@@ -181,7 +181,7 @@ Feature: 🪈 Pied Piper role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | JB      | angel                 |
       | Thomas  | villager              |
       | Babou   | villager              |
@@ -213,7 +213,7 @@ Feature: 🪈 Pied Piper role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | JB      | villager              |
       | Thomas  | villager              |
       | Babou   | villager              |
@@ -236,7 +236,7 @@ Feature: 🪈 Pied Piper role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | JB      | villager              |
       | Thomas  | villager              |
       | Babou   | villager              |
@@ -277,7 +277,7 @@ Feature: 🪈 Pied Piper role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | JB      | villager              |
       | Thomas  | villager              |
     Then the game's current play should be werewolves to eat
@@ -298,7 +298,7 @@ Feature: 🪈 Pied Piper role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | JB      | villager              |
       | Thomas  | villager              |
       | Babou   | villager              |
@@ -322,12 +322,12 @@ Feature: 🪈 Pied Piper role
     Given a created game with options described in file no-sheriff-option.json, pied-piper-charms-three-people-per-night-option.json, pied-piper-not-powerless-if-infected-option.json and with the following players
       | name    | role                  |
       | Antoine | pied-piper            |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | JB      | villager              |
       | Thomas  | villager              |
       | Dad     | villager              |
 
-    When the vile father of wolves infects the player named Antoine
+    When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the game's current play should be pied-piper to charm
     And the game's current play should be played by the following players

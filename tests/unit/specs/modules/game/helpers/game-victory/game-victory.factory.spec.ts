@@ -5,7 +5,7 @@ import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victo
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeInLoveByCupidPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVileFatherOfWolvesAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeAccursedWolfFatherAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Victory Factory", () => {
@@ -22,7 +22,7 @@ describe("Game Victory Factory", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
         createFakePiedPiperAlivePlayer(),
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeAngelAlivePlayer(),
@@ -40,7 +40,7 @@ describe("Game Victory Factory", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
         createFakePiedPiperAlivePlayer(),
         createFakeWhiteWerewolfAlivePlayer(),
       ];
@@ -59,7 +59,7 @@ describe("Game Victory Factory", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
         createFakePiedPiperAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
         createFakeWhiteWerewolfAlivePlayer(),
       ];
@@ -81,7 +81,7 @@ describe("Game Victory Factory", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
         createFakePiedPiperAlivePlayer(),
       ];
       const game = createFakeGame({ players });
@@ -97,7 +97,7 @@ describe("Game Victory Factory", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
@@ -114,7 +114,7 @@ describe("Game Victory Factory", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
         createFakePiedPiperAlivePlayer(),
         createFakeWhiteWerewolfAlivePlayer(),
       ];
@@ -131,7 +131,7 @@ describe("Game Victory Factory", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
         createFakePiedPiperAlivePlayer(),
       ];
       const game = createFakeGame({ players });
@@ -149,7 +149,7 @@ describe("Game Victory Factory", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
         createFakePiedPiperAlivePlayer(),
         createFakeWhiteWerewolfAlivePlayer(),
       ];
@@ -172,7 +172,7 @@ describe("Game Victory Factory", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeVileFatherOfWolvesAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
         createFakePiedPiperAlivePlayer(),
         createFakeWhiteWerewolfAlivePlayer(),
       ];

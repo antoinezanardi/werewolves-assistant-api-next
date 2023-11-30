@@ -52,7 +52,7 @@ describe("Game History Record Service", () => {
       getLastGameHistoryDefenderProtectsRecord: jest.SpyInstance;
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
-      getGameHistoryVileFatherOfWolvesInfectedRecords: jest.SpyInstance;
+      getGameHistoryAccursedWolfFatherInfectedRecords: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
       getGameHistoryJudgeChoosesHisSignRecords: jest.SpyInstance;
       getGameHistoryWerewolvesEatElderRecords: jest.SpyInstance;
@@ -87,7 +87,7 @@ describe("Game History Record Service", () => {
         getLastGameHistoryDefenderProtectsRecord: jest.fn(),
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
-        getGameHistoryVileFatherOfWolvesInfectedRecords: jest.fn(),
+        getGameHistoryAccursedWolfFatherInfectedRecords: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
         getGameHistoryJudgeChoosesHisSignRecords: jest.fn(),
         getGameHistoryWerewolvesEatElderRecords: jest.fn(),
@@ -174,12 +174,12 @@ describe("Game History Record Service", () => {
     });
   });
 
-  describe("getGameHistoryVileFatherOfWolvesInfectedRecords", () => {
-    it("should get game history records when vile father of wolves infected a player when called.", async() => {
+  describe("getGameHistoryAccursedWolfFatherInfectedRecords", () => {
+    it("should get game history records when accursed wolf-father infected a player when called.", async() => {
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords(gameId);
+      await services.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 

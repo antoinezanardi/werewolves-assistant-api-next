@@ -355,7 +355,7 @@ describe("Game History Record Repository", () => {
     });
   });
 
-  describe("getGameHistoryVileFatherOfWolvesInfectedRecords", () => {
+  describe("getGameHistoryAccursedWolfFatherInfectedRecords", () => {
     it("should get no record when there are no eat play.", async() => {
       const gameId = createFakeObjectId();
       const gameHistoryRecords = [
@@ -365,12 +365,12 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
 
-    it("should get records of vile father of wolves infected for this gameId when called.", async() => {
+    it("should get records of accursed wolf-father infected for this gameId when called.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       const gameHistoryRecords = [
@@ -382,7 +382,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
       const expectedRecords = [gameHistoryRecords[2]];
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
