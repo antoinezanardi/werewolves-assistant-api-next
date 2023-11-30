@@ -95,9 +95,9 @@ export class GamePlayValidatorService {
     if (!infectedTargets.length) {
       return;
     }
-    const hasVileFatherOfWolvesInfected = (await this.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords(game._id)).length > 0;
-    const vileFatherOfWolvesPlayer = getPlayerWithCurrentRole(game, RoleNames.VILE_FATHER_OF_WOLVES);
-    if (!vileFatherOfWolvesPlayer || !isPlayerAliveAndPowerful(vileFatherOfWolvesPlayer, game) || hasVileFatherOfWolvesInfected) {
+    const hasAccursedWolfFatherInfected = (await this.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords(game._id)).length > 0;
+    const accursedWolfFatherPlayer = getPlayerWithCurrentRole(game, RoleNames.ACCURSED_WOLF_FATHER);
+    if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game) || hasAccursedWolfFatherInfected) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
     }
     this.validateGamePlayTargetsBoundaries(infectedTargets, { min: 1, max: 1 });

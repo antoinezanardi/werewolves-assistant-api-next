@@ -1,7 +1,7 @@
 enum RoleNames {
   WEREWOLF = "werewolf",
   BIG_BAD_WOLF = "big-bad-wolf",
-  VILE_FATHER_OF_WOLVES = "vile-father-of-wolves",
+  ACCURSED_WOLF_FATHER = "accursed-wolf-father",
   WHITE_WEREWOLF = "white-werewolf",
   VILLAGER = "villager",
   VILLAGER_VILLAGER = "villager-villager",

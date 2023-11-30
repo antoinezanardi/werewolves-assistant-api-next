@@ -8,7 +8,7 @@ Feature: 🤺 Rusty Sword Knight role
       | name    | role                  |
       | Antoine | rusty-sword-knight    |
       | JB      | werewolf              |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | Thomas  | villager              |
       | Babou   | werewolf              |
     Then the request should have succeeded with status code 201
@@ -32,7 +32,7 @@ Feature: 🤺 Rusty Sword Knight role
       | name    | role                  |
       | Antoine | rusty-sword-knight    |
       | JB      | werewolf              |
-      | Olivia  | vile-father-of-wolves |
+      | Olivia  | accursed-wolf-father |
       | Thomas  | villager              |
       | Babou   | werewolf              |
     Then the request should have succeeded with status code 201

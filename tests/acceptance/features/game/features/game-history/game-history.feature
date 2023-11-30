@@ -213,7 +213,7 @@ Feature: 📜 Game History
       | name    | role                  |
       | Antoine | seer                  |
       | Juju    | witch                 |
-      | Doudou  | vile-father-of-wolves |
+      | Doudou  | accursed-wolf-father |
       | JB      | defender                 |
       | Thomas  | scandalmonger                 |
     Then the game's current play should be seer to look
@@ -277,7 +277,7 @@ Feature: 📜 Game History
     Then the play's targets from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
-    When the vile father of wolves infects the player named Thomas
+    When the accursed wolf-father infects the player named Thomas
     And the most recent history record is retrieved
     Then the play's targets from the previous history record should be the following players
       | name   |

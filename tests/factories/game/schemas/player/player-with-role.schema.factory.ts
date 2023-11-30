@@ -14,8 +14,8 @@ function createFakeBigBadWolfAlivePlayer(player: Partial<Player> = {}, override:
   return createFakeAlivePlayerWithRole(RoleNames.BIG_BAD_WOLF, player, override);
 }
 
-function createFakeVileFatherOfWolvesAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
-  return createFakeAlivePlayerWithRole(RoleNames.VILE_FATHER_OF_WOLVES, player, override);
+function createFakeAccursedWolfFatherAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.ACCURSED_WOLF_FATHER, player, override);
 }
 
 function createFakeWhiteWerewolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
@@ -137,7 +137,7 @@ export {
   createFakeAlivePlayerWithRole,
   createFakeWerewolfAlivePlayer,
   createFakeBigBadWolfAlivePlayer,
-  createFakeVileFatherOfWolvesAlivePlayer,
+  createFakeAccursedWolfFatherAlivePlayer,
   createFakeWhiteWerewolfAlivePlayer,
   createFakeVillagerAlivePlayer,
   createFakeVillagerVillagerAlivePlayer,
