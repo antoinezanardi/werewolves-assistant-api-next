@@ -1817,6 +1817,22 @@ describe("Game Play Maker Service", () => {
       await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
+    it("should not infect target when target is not infected.", async() => {
+      const players = [
+        createFakeFoxAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: false })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(2);
+      await services.gamePlayMaker["werewolvesEat"](play, game);
+
+      expect(mocks.gamePlayMakerService.accursedWolfFatherInfects).not.toHaveBeenCalled();
+    });
+
     it("should not infect target when target is infected but not killable elder.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
@@ -1843,7 +1859,7 @@ describe("Game Play Maker Service", () => {
       const game = createFakeGameWithCurrentPlay({ players });
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(1);
+      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(2);
       await services.gamePlayMaker["werewolvesEat"](play, game);
 
       expect(mocks.gamePlayMakerService.accursedWolfFatherInfects).toHaveBeenCalledExactlyOnceWith(players[1], game);
