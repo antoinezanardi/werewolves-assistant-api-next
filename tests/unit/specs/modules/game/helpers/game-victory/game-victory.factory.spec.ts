@@ -1,11 +1,11 @@
 import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
-import { createAngelGameVictory, createGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
+import { createAngelGameVictory, createGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createPrejudicedManipulatorGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeInLoveByCupidPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeAccursedWolfFatherAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeAccursedWolfFatherAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakePrejudicedManipulatorAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Victory Factory", () => {
@@ -106,6 +106,45 @@ describe("Game Victory Factory", () => {
       };
 
       expect(createPiedPiperGameVictory(game)).toStrictEqual<GameVictory>(createFakeGameVictory(expectedGameVictory));
+    });
+  });
+
+  describe("createPrejudicedManipulatorGameVictory", () => {
+    it("should create prejudiced manipulator game victory with winner when called with prejudiced manipulator in game.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
+        createFakePiedPiperAlivePlayer(),
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+        createFakePrejudicedManipulatorAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const expectedGameVictory: GameVictory = {
+        type: GameVictoryTypes.PREJUDICED_MANIPULATOR,
+        winners: [players[6]],
+      };
+
+      expect(createPrejudicedManipulatorGameVictory(game)).toStrictEqual<GameVictory>(createFakeGameVictory(expectedGameVictory));
+    });
+
+    it("should create prejudiced manipulator game victory without winner when called without prejudiced manipulator in game.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
+        createFakePiedPiperAlivePlayer(),
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeAngelAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const expectedGameVictory: GameVictory = {
+        type: GameVictoryTypes.PREJUDICED_MANIPULATOR,
+        winners: undefined,
+      };
+
+      expect(createPrejudicedManipulatorGameVictory(game)).toStrictEqual<GameVictory>(createFakeGameVictory(expectedGameVictory));
     });
   });
 
