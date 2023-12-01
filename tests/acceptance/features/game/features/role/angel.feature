@@ -7,7 +7,7 @@ Feature: 👼 Angel role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | angel    |
-      | Olivia  | elder  |
+      | Olivia  | elder    |
       | JB      | villager |
       | Thomas  | werewolf |
     Then the request should have succeeded with status code 201

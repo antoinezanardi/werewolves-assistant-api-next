@@ -60,7 +60,7 @@ Feature: 📜 Game History
       | Doudou  | werewolf         |
       | Babou   | werewolf         |
       | JB      | seer             |
-      | Thomas  | scandalmonger            |
+      | Thomas  | scandalmonger    |
     Then the game's current play should be survivors to vote because angel-presence
 
     When the survivors vote with the following votes
@@ -210,12 +210,12 @@ Feature: 📜 Game History
   Scenario: 📜 Targets of various roles actions are recorded in the game history
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | seer                  |
-      | Juju    | witch                 |
+      | name    | role                 |
+      | Antoine | seer                 |
+      | Juju    | witch                |
       | Doudou  | accursed-wolf-father |
-      | JB      | defender                 |
-      | Thomas  | scandalmonger                 |
+      | JB      | defender             |
+      | Thomas  | scandalmonger        |
     Then the game's current play should be seer to look
 
     When the seer looks at the player named Juju
@@ -475,11 +475,11 @@ Feature: 📜 Game History
 
   Scenario: 📜 Chosen side is recorded in the game history
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
+      | name    | role       |
       | Antoine | wolf-hound |
-      | Olivia  | villager |
-      | JB      | werewolf |
-      | Thomas  | witch    |
+      | Olivia  | villager   |
+      | JB      | werewolf   |
+      | Thomas  | witch      |
     Then the game's current play should be wolf-hound to choose-side
 
     When the wolf-hound chooses the werewolves side

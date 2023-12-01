@@ -32,12 +32,12 @@ Feature: 🐻 Bear Tamer role
   Scenario: 🐻 Bear Tamer's bear growls when he is infected even if any of his neighbor is a werewolf
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Olivia  | villager              |
-      | Antoine | bear-tamer            |
-      | JB      | villager              |
+      | name    | role                 |
+      | Olivia  | villager             |
+      | Antoine | bear-tamer           |
+      | JB      | villager             |
       | Thomas  | accursed-wolf-father |
-      | Doudou  | villager              |
+      | Doudou  | villager             |
     Then the game's current play should be werewolves to eat
 
     When the accursed wolf-father infects the player named Antoine
@@ -49,12 +49,12 @@ Feature: 🐻 Bear Tamer role
   Scenario: 🐻 Bear Tamer's bear doesn't growl when he is infected even if any of his neighbor is a werewolf with the right option
 
     Given a created game with options described in file no-sheriff-option.json, bear-tamer-bear-doesnt-growl-if-infected-option.json and with the following players
-      | name    | role                  |
-      | Olivia  | villager              |
-      | Antoine | bear-tamer            |
-      | JB      | villager              |
+      | name    | role                 |
+      | Olivia  | villager             |
+      | Antoine | bear-tamer           |
+      | JB      | villager             |
       | Thomas  | accursed-wolf-father |
-      | Doudou  | villager              |
+      | Doudou  | villager             |
     Then the game's current play should be werewolves to eat
 
     When the accursed wolf-father infects the player named Antoine

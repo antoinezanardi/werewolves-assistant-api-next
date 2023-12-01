@@ -5,11 +5,11 @@ Feature: 🐶 Wolf-Hound role
   Scenario: 🐶 Wolf-Hound chooses the villagers side
 
     When a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
+      | name    | role       |
       | Antoine | wolf-hound |
-      | Benoit  | villager |
-      | Cecile  | villager |
-      | David   | werewolf |
+      | Benoit  | villager   |
+      | Cecile  | villager   |
+      | David   | werewolf   |
     Then the request should have succeeded with status code 201
     And the game's current play should be wolf-hound to choose-side
     And the game's current play should be played by the following players
@@ -28,11 +28,11 @@ Feature: 🐶 Wolf-Hound role
   Scenario: 🐶 Wolf-Hound chooses the werewolves side
 
     When a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
+      | name    | role       |
       | Antoine | wolf-hound |
-      | Benoit  | villager |
-      | Cecile  | villager |
-      | David   | werewolf |
+      | Benoit  | villager   |
+      | Cecile  | villager   |
+      | David   | werewolf   |
     Then the game's current play should be wolf-hound to choose-side
     And the game's current play should be played by the following players
       | name    |
@@ -45,11 +45,11 @@ Feature: 🐶 Wolf-Hound role
   Scenario: 🐶 Wolf-Hound side is randomly chosen if no choice is made with good option
 
     When a created game with options described in file no-sheriff-option.json, wolf-hound-side-randomly-chosen-option.json and with the following players
-      | name    | role     |
+      | name    | role       |
       | Antoine | wolf-hound |
-      | Benoit  | villager |
-      | Cecile  | villager |
-      | David   | werewolf |
+      | Benoit  | villager   |
+      | Cecile  | villager   |
+      | David   | werewolf   |
     Then the game's current play should be wolf-hound to choose-side
     And the game's current play should be played by the following players
       | name    |
@@ -62,11 +62,11 @@ Feature: 🐶 Wolf-Hound role
   Scenario: 🐶 Wolf-Hound can't skip his turn
 
     When a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
+      | name    | role       |
       | Antoine | wolf-hound |
-      | Benoit  | villager |
-      | Cecile  | villager |
-      | David   | werewolf |
+      | Benoit  | villager   |
+      | Cecile  | villager   |
+      | David   | werewolf   |
     Then the game's current play should be wolf-hound to choose-side
 
     When the player or group skips his turn
@@ -78,11 +78,11 @@ Feature: 🐶 Wolf-Hound role
   Scenario: 🐶 Wolf-Hound can't choose an unknown side
 
     When a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
+      | name    | role       |
       | Antoine | wolf-hound |
-      | Benoit  | villager |
-      | Cecile  | villager |
-      | David   | werewolf |
+      | Benoit  | villager   |
+      | Cecile  | villager   |
+      | David   | werewolf   |
     Then the game's current play should be wolf-hound to choose-side
     And the game's current play should be played by the following players
       | name    |
@@ -97,11 +97,11 @@ Feature: 🐶 Wolf-Hound role
   Scenario: 🐶 Wolf-Hound can't choose a side if it must be randomly chosen
 
     When a created game with options described in file no-sheriff-option.json, wolf-hound-side-randomly-chosen-option.json and with the following players
-      | name    | role     |
+      | name    | role       |
       | Antoine | wolf-hound |
-      | Benoit  | villager |
-      | Cecile  | villager |
-      | David   | werewolf |
+      | Benoit  | villager   |
+      | Cecile  | villager   |
+      | David   | werewolf   |
     Then the game's current play should be wolf-hound to choose-side
     And the game's current play should be played by the following players
       | name    |

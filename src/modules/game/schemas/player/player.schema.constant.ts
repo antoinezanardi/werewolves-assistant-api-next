@@ -34,6 +34,11 @@ const PLAYER_FIELDS_SPECS = {
     required: true,
     min: 0,
   },
+  group: {
+    required: false,
+    minLength: 1,
+    maxLength: 30,
+  },
   isAlive: {
     required: true,
     default: true,
@@ -66,6 +71,11 @@ const PLAYER_API_PROPERTIES: ReadonlyDeep<Record<keyof Player, ApiPropertyOption
     example: 3,
     ...PLAYER_FIELDS_SPECS.position,
     ...convertMongoosePropOptionsToApiPropertyOptions(PLAYER_FIELDS_SPECS.position),
+  },
+  group: {
+    description: "Player's group. Only set if there is a `prejudiced manipulator` in the game",
+    examples: ["men", "women", "with-glasses", "without-glasses", "blonde", "brunette", "redhead"],
+    ...convertMongoosePropOptionsToApiPropertyOptions(PLAYER_FIELDS_SPECS.group),
   },
   isAlive: {
     description: "If the player is currently alive or not",

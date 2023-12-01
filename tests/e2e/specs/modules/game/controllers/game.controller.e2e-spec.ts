@@ -556,6 +556,78 @@ describe("Game Controller", () => {
         }),
         errorMessage: "additionalCards.roleName can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles",
       },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and one of the player's group is not set",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX } }),
+          ],
+        }),
+        errorMessage: "each player must have a group if there is a player with role `prejudiced-manipulator`",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and there is only one group among players",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "there must be exactly two groups among players when `prejudiced-manipulator` in the game",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and there are three groups among players",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR }, group: "tata" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "tutu" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "there must be exactly two groups among players when `prejudiced-manipulator` in the game",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and one of the group name is too short",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR }, group: "" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "players.1.group must be longer than or equal to 1 characters",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and one of the group name is too long",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR }, group: "I'm the longest name for a group that you ever seen" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "I'm the longest name for a group that you ever seen" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "players.2.group must be shorter than or equal to 30 characters",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is not in the game and there groups among players",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, group: "tata" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "tutu" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "any player can't have a group if there is no player with role `prejudiced-manipulator`",
+      },
     ])("$test", async({
       payload,
       errorMessage,
@@ -567,7 +639,7 @@ describe("Game Controller", () => {
       });
 
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.json<BadRequestException>().message).toContainEqual(errorMessage);
+      expect(response.json<BadRequestException>().message).toContainEqual<string>(errorMessage);
     });
 
     it(`should create game when called.`, async() => {

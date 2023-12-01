@@ -25,7 +25,7 @@ Then(/^the game's status should be (?<phase>playing|over|canceled)$/u, function(
 });
 
 Then(
-  /^the game's winners should be (?<winners>villagers|werewolves|lovers|angel|white-werewolf|pied-piper|none) with the following players$/u,
+  /^the game's winners should be (?<winners>villagers|werewolves|lovers|angel|white-werewolf|pied-piper|prejudiced-manipulator|none) with the following players$/u,
   function(this: CustomWorld, victoryType: GameVictoryTypes, winnersDatable: DataTable): void {
     const players = convertDatatableToPlayers(winnersDatable.rows(), this.game);
     const expectedWinners = players.length ? players : undefined;

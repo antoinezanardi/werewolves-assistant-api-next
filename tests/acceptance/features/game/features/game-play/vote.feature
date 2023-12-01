@@ -413,11 +413,11 @@ Feature: 🗳️ Vote Game Play
   Scenario: 🗳 Scandalmonger mark adds two votes to the player who has it
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
-      | name    | role     |
-      | Antoine | werewolf |
-      | Olivia  | villager |
-      | JB      | scandalmonger    |
-      | Thomas  | villager |
+      | name    | role          |
+      | Antoine | werewolf      |
+      | Olivia  | villager      |
+      | JB      | scandalmonger |
+      | Thomas  | villager      |
     And the game's current play should be scandalmonger to mark
 
     When the scandalmonger marks the player named JB

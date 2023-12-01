@@ -6,7 +6,7 @@ Feature: 🛡️ Defender role
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
-      | Antoine | defender        |
+      | Antoine | defender     |
       | Olivia  | werewolf     |
       | JB      | big-bad-wolf |
       | Thomas  | villager     |
@@ -27,26 +27,26 @@ Feature: 🛡️ Defender role
       | Juju    |
       | Cari    |
     And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source | interaction |
-      | defender  | protect     |
+      | source   | interaction |
+      | defender | protect     |
     And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source | interaction |
-      | defender  | protect     |
+      | source   | interaction |
+      | defender | protect     |
     And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source | interaction |
-      | defender  | protect     |
+      | source   | interaction |
+      | defender | protect     |
     And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source | interaction |
-      | defender  | protect     |
+      | source   | interaction |
+      | defender | protect     |
     And the game's current play eligible targets interactable player named Nana should have the following interactions
-      | source | interaction |
-      | defender  | protect     |
+      | source   | interaction |
+      | defender | protect     |
     And the game's current play eligible targets interactable player named Juju should have the following interactions
-      | source | interaction |
-      | defender  | protect     |
+      | source   | interaction |
+      | defender | protect     |
     And the game's current play eligible targets interactable player named Cari should have the following interactions
-      | source | interaction |
-      | defender  | protect     |
+      | source   | interaction |
+      | defender | protect     |
 
     When the defender protects the player named Antoine
     Then the request should have succeeded with status code 200
@@ -74,12 +74,12 @@ Feature: 🛡️ Defender role
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 1 to 1
     And the game's current play should have the following eligible targets interactable players
-      | name    |
-      | Olivia  |
-      | JB      |
-      | Thomas  |
-      | Nana    |
-      | Cari    |
+      | name   |
+      | Olivia |
+      | JB     |
+      | Thomas |
+      | Nana   |
+      | Cari   |
 
     When the defender protects the player named Nana
     Then the player named Nana should have the active protected from defender attribute
@@ -116,7 +116,7 @@ Feature: 🛡️ Defender role
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
-      | Antoine | defender    |
+      | Antoine | defender |
       | Olivia  | werewolf |
       | JB      | villager |
       | Thomas  | villager |
@@ -133,7 +133,7 @@ Feature: 🛡️ Defender role
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
-      | Antoine | defender    |
+      | Antoine | defender |
       | Olivia  | werewolf |
       | JB      | villager |
       | Thomas  | villager |
@@ -149,7 +149,7 @@ Feature: 🛡️ Defender role
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
-      | Antoine | defender    |
+      | Antoine | defender |
       | Olivia  | werewolf |
       | JB      | angel    |
       | Thomas  | villager |
@@ -174,7 +174,7 @@ Feature: 🛡️ Defender role
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
-      | Antoine | defender    |
+      | Antoine | defender |
       | Olivia  | werewolf |
       | JB      | villager |
       | Thomas  | villager |
@@ -204,7 +204,7 @@ Feature: 🛡️ Defender role
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
-      | Antoine | defender    |
+      | Antoine | defender |
       | Olivia  | werewolf |
       | JB      | villager |
       | Thomas  | villager |
@@ -223,7 +223,7 @@ Feature: 🛡️ Defender role
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
-      | Antoine | defender    |
+      | Antoine | defender |
       | Olivia  | werewolf |
       | JB      | witch    |
       | Thomas  | villager |
@@ -248,7 +248,7 @@ Feature: 🛡️ Defender role
 
     Given a created game with options described in file no-sheriff-option.json, defender-can-protect-twice-option.json and with the following players
       | name    | role     |
-      | Antoine | defender    |
+      | Antoine | defender |
       | Olivia  | werewolf |
       | JB      | villager |
       | Thomas  | villager |

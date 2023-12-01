@@ -319,7 +319,7 @@ Feature: 🏆 Game Victory
       | name    | role           |
       | Antoine | witch          |
       | JB      | werewolf       |
-      | Olivia  | defender          |
+      | Olivia  | defender       |
       | Thomas  | white-werewolf |
 
     When the defender protects the player named Olivia
@@ -352,7 +352,7 @@ Feature: 🏆 Game Victory
       | name    | role       |
       | Antoine | witch      |
       | JB      | werewolf   |
-      | Olivia  | defender      |
+      | Olivia  | defender   |
       | Thomas  | pied-piper |
 
     When the defender protects the player named Thomas
@@ -389,6 +389,26 @@ Feature: 🏆 Game Victory
     And the game's winners should be pied-piper with the following players
       | name   |
       | Thomas |
+
+  Scenario: 👺 Prejudiced Manipulator wins the game
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role                   | group |
+      | Antoine | prejudiced-manipulator | boy   |
+      | JB      | werewolf               | boy   |
+      | Olivia  | villager               | boy   |
+      | Thomas  | villager               | girl  |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
+    And the game's winners should be prejudiced-manipulator with the following players
+      | name    |
+      | Antoine |
 
   Scenario: 🏆 No more game plays can be made when game is over
 

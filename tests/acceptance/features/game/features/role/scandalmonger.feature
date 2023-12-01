@@ -5,12 +5,12 @@ Feature: 🐦‍⬛ Scandalmonger role
   Scenario: 🐦‍⬛ Scandalmonger marks a player but can also skip
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
-      | Antoine | scandalmonger    |
-      | Olivia  | werewolf |
-      | JB      | villager |
-      | Camille | villager |
-      | Thomas  | villager |
+      | name    | role          |
+      | Antoine | scandalmonger |
+      | Olivia  | werewolf      |
+      | JB      | villager      |
+      | Camille | villager      |
+      | Thomas  | villager      |
     Then the request should have succeeded with status code 201
     And the game's current play should be scandalmonger to mark
     And the game's current play should be played by the following players
@@ -27,20 +27,20 @@ Feature: 🐦‍⬛ Scandalmonger role
       | Camille |
       | Thomas  |
     And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source | interaction |
-      | scandalmonger  | mark        |
+      | source        | interaction |
+      | scandalmonger | mark        |
     And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source | interaction |
-      | scandalmonger  | mark        |
+      | source        | interaction |
+      | scandalmonger | mark        |
     And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source | interaction |
-      | scandalmonger  | mark        |
+      | source        | interaction |
+      | scandalmonger | mark        |
     And the game's current play eligible targets interactable player named Camille should have the following interactions
-      | source | interaction |
-      | scandalmonger  | mark        |
+      | source        | interaction |
+      | scandalmonger | mark        |
     And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source | interaction |
-      | scandalmonger  | mark        |
+      | source        | interaction |
+      | scandalmonger | mark        |
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
@@ -101,12 +101,12 @@ Feature: 🐦‍⬛ Scandalmonger role
   Scenario: 🐦‍⬛ Scandalmonger marks a player with a greater mark than the default one with good option
 
     Given a created game with options described in file no-sheriff-option.json, scandalmonger-mark-penalty-is-three-option.json and with the following players
-      | name    | role     |
-      | Antoine | scandalmonger    |
-      | Olivia  | werewolf |
-      | JB      | villager |
-      | Camille | villager |
-      | Thomas  | villager |
+      | name    | role          |
+      | Antoine | scandalmonger |
+      | Olivia  | werewolf      |
+      | JB      | villager      |
+      | Camille | villager      |
+      | Thomas  | villager      |
     Then the game's current play should be scandalmonger to mark
     And the game's current play should be played by the following players
       | name    |
@@ -133,12 +133,12 @@ Feature: 🐦‍⬛ Scandalmonger role
   Scenario: 🐦‍⬛ Scandalmonger can't mark an unknown player
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
-      | Antoine | scandalmonger    |
-      | Olivia  | werewolf |
-      | JB      | villager |
-      | Camille | villager |
-      | Thomas  | villager |
+      | name    | role          |
+      | Antoine | scandalmonger |
+      | Olivia  | werewolf      |
+      | JB      | villager      |
+      | Camille | villager      |
+      | Thomas  | villager      |
     Then the game's current play should be scandalmonger to mark
 
     When the player or group targets an unknown player
@@ -150,12 +150,12 @@ Feature: 🐦‍⬛ Scandalmonger role
   Scenario: 🐦‍⬛ Scandalmonger can't mark a dead player
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
-      | Antoine | scandalmonger    |
-      | Olivia  | werewolf |
-      | JB      | villager |
-      | Camille | villager |
-      | Thomas  | angel    |
+      | name    | role          |
+      | Antoine | scandalmonger |
+      | Olivia  | werewolf      |
+      | JB      | villager      |
+      | Camille | villager      |
+      | Thomas  | angel         |
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -177,12 +177,12 @@ Feature: 🐦‍⬛ Scandalmonger role
   Scenario: 🐦‍⬛ Scandalmonger can't mark more than one player
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
-      | Antoine | scandalmonger    |
-      | Olivia  | werewolf |
-      | JB      | villager |
-      | Camille | villager |
-      | Thomas  | villager |
+      | name    | role          |
+      | Antoine | scandalmonger |
+      | Olivia  | werewolf      |
+      | JB      | villager      |
+      | Camille | villager      |
+      | Thomas  | villager      |
     Then the game's current play should be scandalmonger to mark
 
     When the player or group targets the following players

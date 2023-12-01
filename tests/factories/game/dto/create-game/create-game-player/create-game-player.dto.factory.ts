@@ -13,6 +13,7 @@ function createFakeCreateGamePlayerDto(createGamePlayerDto: Partial<CreateGamePl
     name: createGamePlayerDto.name ?? faker.person.firstName(),
     role: { name: createGamePlayerDto.role?.name ?? faker.helpers.arrayElement(Object.values(RoleNames)) },
     position: createGamePlayerDto.position ?? undefined,
+    group: createGamePlayerDto.group ?? undefined,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

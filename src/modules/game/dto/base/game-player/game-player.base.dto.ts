@@ -36,6 +36,13 @@ class GamePlayerBaseDto {
   @Min(PLAYER_FIELDS_SPECS.position.min)
   @Expose()
   public position: number;
+
+  @ApiProperty(PLAYER_API_PROPERTIES.group as ApiPropertyOptions)
+  @IsString()
+  @MinLength(PLAYER_FIELDS_SPECS.group.minLength)
+  @MaxLength(PLAYER_FIELDS_SPECS.group.maxLength)
+  @Expose()
+  public group: string;
 }
 
 export { GamePlayerBaseDto };
