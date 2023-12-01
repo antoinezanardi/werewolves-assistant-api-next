@@ -62,9 +62,10 @@ function convertDatatableToPlayerInteractions(datatable: string[][]): PlayerInte
 }
 
 function convertDatatableToCreateGamePlayersDto(datatable: string[][]): CreateGamePlayerDto[] {
-  return datatable.map(([playerName, playerRole]) => plainToInstance(CreateGamePlayerDto, {
+  return datatable.map(([playerName, playerRole, playerGroup]) => plainToInstance(CreateGamePlayerDto, {
     name: playerName,
     role: { name: playerRole },
+    group: playerGroup,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS));
 }
 

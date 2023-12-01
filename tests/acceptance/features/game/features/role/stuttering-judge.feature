@@ -252,7 +252,7 @@ Feature: ⚖️ Stuttering Judge Role
       | name    | role             |
       | Antoine | stuttering-judge |
       | Olivia  | werewolf         |
-      | JB      | scandalmonger            |
+      | JB      | scandalmonger    |
       | Camille | villager         |
     Then the game's current play should be stuttering-judge to choose-sign
 

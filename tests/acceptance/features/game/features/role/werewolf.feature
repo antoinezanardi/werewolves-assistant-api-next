@@ -5,11 +5,11 @@ Feature: 🐺 Werewolf role
   Scenario: 🐺 Werewolves eat a player
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | villager              |
-      | Juju    | witch                 |
+      | name    | role                 |
+      | Antoine | villager             |
+      | Juju    | witch                |
       | Doudou  | accursed-wolf-father |
-      | Thom    | werewolf              |
+      | Thom    | werewolf             |
     Then the request should have succeeded with status code 201
     And the game's current play should be werewolves to eat
     And the game's current play should be played by the following players
@@ -42,11 +42,11 @@ Feature: 🐺 Werewolf role
   Scenario: 🐺 Werewolves can't eat an unknown player
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | villager              |
-      | Juju    | witch                 |
+      | name    | role                 |
+      | Antoine | villager             |
+      | Juju    | witch                |
       | Doudou  | accursed-wolf-father |
-      | Thom    | werewolf              |
+      | Thom    | werewolf             |
     Then the game's current play should be werewolves to eat
 
     When the player or group targets an unknown player
@@ -85,11 +85,11 @@ Feature: 🐺 Werewolf role
   Scenario: 🐺 Werewolves can't eat another wolf
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | villager              |
-      | Juju    | villager              |
+      | name    | role                 |
+      | Antoine | villager             |
+      | Juju    | villager             |
       | Doudou  | accursed-wolf-father |
-      | Thom    | werewolf              |
+      | Thom    | werewolf             |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thom
@@ -101,11 +101,11 @@ Feature: 🐺 Werewolf role
   Scenario: 🐺 Werewolves can't skip their turn
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | villager              |
-      | Juju    | villager              |
+      | name    | role                 |
+      | Antoine | villager             |
+      | Juju    | villager             |
       | Doudou  | accursed-wolf-father |
-      | Thom    | werewolf              |
+      | Thom    | werewolf             |
     Then the game's current play should be werewolves to eat
 
     When the player or group skips his turn
@@ -117,11 +117,11 @@ Feature: 🐺 Werewolf role
   Scenario: 🐺 Werewolves can't eat multiple targets at once
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | villager              |
-      | Juju    | villager              |
+      | name    | role                 |
+      | Antoine | villager             |
+      | Juju    | villager             |
       | Doudou  | accursed-wolf-father |
-      | Thom    | werewolf              |
+      | Thom    | werewolf             |
     Then the game's current play should be werewolves to eat
 
     When the player or group targets the following players

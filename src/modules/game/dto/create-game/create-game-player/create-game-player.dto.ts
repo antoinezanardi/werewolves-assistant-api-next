@@ -12,7 +12,7 @@ import { CreateGamePlayerSideDto } from "@/modules/game/dto/create-game/create-g
 
 class CreateGamePlayerDto extends IntersectionType(
   PickType(GamePlayerBaseDto, ["name"] as const),
-  PickType(PartialType(GamePlayerBaseDto), ["position"] as const),
+  PickType(PartialType(GamePlayerBaseDto), ["position", "group"] as const),
 ) {
   @Transform(playerRoleTransformer)
   @ApiProperty(PLAYER_API_PROPERTIES.role as ApiPropertyOptions)
@@ -31,6 +31,10 @@ class CreateGamePlayerDto extends IntersectionType(
   @ApiProperty({ description: "Player's unique position among all players. Maximum is `players.length - 1`. Either all players position must be set or none of them. In that last case, it will be generated automatically" })
   @Expose()
   public position?: number;
+
+  @ApiProperty({ description: "Player's group. Must be set if `prejudiced-manipulator` is in the game and prohibited otherwise. If set, there must be two and only two different groups" })
+  @Expose()
+  public group?: string;
 }
 
 export { CreateGamePlayerDto };

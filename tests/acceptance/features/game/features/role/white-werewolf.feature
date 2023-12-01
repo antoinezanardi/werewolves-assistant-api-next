@@ -9,7 +9,7 @@ Feature: 🐺🦴White Werewolf role
       | Antoine | villager          |
       | JB      | werewolf          |
       | Olivia  | white-werewolf    |
-      | Thomas  | defender             |
+      | Thomas  | defender          |
       | Olaf    | villager-villager |
       | Elsa    | idiot             |
       | Patoche | villager          |
@@ -139,7 +139,7 @@ Feature: 🐺🦴White Werewolf role
       | Antoine | villager       |
       | JB      | werewolf       |
       | Olivia  | white-werewolf |
-      | Thomas  | defender          |
+      | Thomas  | defender       |
 
     When the defender protects the player named Antoine
     Then the player named Antoine should have the active protected from defender attribute

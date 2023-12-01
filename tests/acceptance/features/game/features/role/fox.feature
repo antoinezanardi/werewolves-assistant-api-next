@@ -5,14 +5,14 @@ Feature: 🦊 Fox role
   Scenario: 🦊 Fox is powerless if he misses a werewolf of any kind
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | fox                   |
-      | Juju    | villager              |
-      | Doudou  | villager              |
+      | name    | role                 |
+      | Antoine | fox                  |
+      | Juju    | villager             |
+      | Doudou  | villager             |
       | JB      | accursed-wolf-father |
-      | Olivia  | werewolf              |
-      | Thomas  | villager              |
-      | Coco    | idiot                 |
+      | Olivia  | werewolf             |
+      | Thomas  | villager             |
+      | Coco    | idiot                |
     Then the request should have succeeded with status code 201
     And the game's current play should be fox to sniff
     And the game's current play should be played by the following players
@@ -102,14 +102,14 @@ Feature: 🦊 Fox role
   Scenario: 🦊 Fox is not powerless if he misses a werewolf of any kind with game option
 
     Given a created game with options described in files no-sheriff-option.json, fox-not-powerless-if-misses-werewolf-option.json and with the following players
-      | name    | role                  |
-      | Antoine | fox                   |
-      | Juju    | villager              |
-      | Doudou  | villager              |
+      | name    | role                 |
+      | Antoine | fox                  |
+      | Juju    | villager             |
+      | Doudou  | villager             |
       | JB      | accursed-wolf-father |
-      | Olivia  | werewolf              |
-      | Thomas  | villager              |
-      | Coco    | idiot                 |
+      | Olivia  | werewolf             |
+      | Thomas  | villager             |
+      | Coco    | idiot                |
     Then the game's current play should be fox to sniff
     And the game's current play should be played by the following players
       | name    |
@@ -121,10 +121,10 @@ Feature: 🦊 Fox role
   Scenario: 🦊 Fox can't sniff an unknown player
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | fox                   |
-      | Juju    | villager              |
-      | Doudou  | villager              |
+      | name    | role                 |
+      | Antoine | fox                  |
+      | Juju    | villager             |
+      | Doudou  | villager             |
       | JB      | accursed-wolf-father |
     Then the game's current play should be fox to sniff
 
@@ -137,10 +137,10 @@ Feature: 🦊 Fox role
   Scenario: 🦊 Fox can't sniff a dead player
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | fox                   |
-      | Juju    | angel                 |
-      | Doudou  | villager              |
+      | name    | role                 |
+      | Antoine | fox                  |
+      | Juju    | angel                |
+      | Doudou  | villager             |
       | JB      | accursed-wolf-father |
     Then the game's current play should be survivors to vote
 
@@ -161,10 +161,10 @@ Feature: 🦊 Fox role
   Scenario: 🦊 Fox can't sniff more than one player
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | fox                   |
-      | Juju    | villager              |
-      | Doudou  | villager              |
+      | name    | role                 |
+      | Antoine | fox                  |
+      | Juju    | villager             |
+      | Doudou  | villager             |
       | JB      | accursed-wolf-father |
     Then the game's current play should be fox to sniff
 

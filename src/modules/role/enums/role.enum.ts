@@ -26,6 +26,7 @@ enum RoleNames {
   ANGEL = "angel",
   PIED_PIPER = "pied-piper",
   SCANDALMONGER = "scandalmonger",
+  PREJUDICED_MANIPULATOR = "prejudiced-manipulator",
 }
 
 enum RoleSides {

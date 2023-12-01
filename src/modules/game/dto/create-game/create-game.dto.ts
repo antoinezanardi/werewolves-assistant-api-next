@@ -3,6 +3,8 @@ import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, Equals, IsArray, IsOptional, ValidateNested } from "class-validator";
 
+import { CompositionHasTwoGroupsWithPrejudicedManipulator } from "@/modules/game/dto/base/decorators/composition/composition-has-two-groups-with-prejudiced-manipulator.decorator";
+import { CompositionGroupsPresence } from "@/modules/game/dto/base/decorators/composition/composition-groups-presence.decorator";
 import { AdditionalCardsForThiefRoles } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-thief-roles.decorator";
 import { AdditionalCardsForThiefSize } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-thief-size.decorator";
 import { AdditionalCardsPresence } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-presence.decorator";
@@ -45,6 +47,8 @@ class CreateGameDto {
   @CompositionHasVillager()
   @CompositionHasWerewolf()
   @CompositionPositionsConsistency()
+  @CompositionGroupsPresence()
+  @CompositionHasTwoGroupsWithPrejudicedManipulator()
   public players: CreateGamePlayerDto[];
 
   @ApiHideProperty()

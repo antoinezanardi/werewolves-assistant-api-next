@@ -5,27 +5,27 @@ Feature: 👴🏻 Elder role
   Scenario: 👴🏻 Elder makes all villagers loose powers if he dies from votes
 
     Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
-      | name      | role                  |
-      | Antoine   | elder                 |
-      | Juju      | seer                  |
-      | Doudou    | cupid                 |
+      | name      | role                 |
+      | Antoine   | elder                |
+      | Juju      | seer                 |
+      | Doudou    | cupid                |
       | JB        | accursed-wolf-father |
-      | Olivia    | werewolf              |
-      | Thomas    | witch                 |
-      | Romain    | hunter                |
-      | Ludo      | defender              |
-      | Benedicte | scapegoat             |
-      | Alex      | idiot                 |
-      | Alexis    | fox                   |
-      | Mama      | bear-tamer            |
-      | Cari      | stuttering-judge      |
-      | Aurelien  | rusty-sword-knight    |
-      | Leo       | wild-child            |
-      | Sarah     | wolf-hound            |
-      | Babou     | thief                 |
-      | Ali       | angel                 |
-      | Pedro     | pied-piper            |
-      | Pierre    | scandalmonger         |
+      | Olivia    | werewolf             |
+      | Thomas    | witch                |
+      | Romain    | hunter               |
+      | Ludo      | defender             |
+      | Benedicte | scapegoat            |
+      | Alex      | idiot                |
+      | Alexis    | fox                  |
+      | Mama      | bear-tamer           |
+      | Cari      | stuttering-judge     |
+      | Aurelien  | rusty-sword-knight   |
+      | Leo       | wild-child           |
+      | Sarah     | wolf-hound           |
+      | Babou     | thief                |
+      | Ali       | angel                |
+      | Pedro     | pied-piper           |
+      | Pierre    | scandalmonger        |
     Then the request should have succeeded with status code 201
     And the game's current play should be survivors to vote because angel-presence
 

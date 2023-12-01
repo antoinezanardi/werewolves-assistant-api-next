@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { createAngelGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
+import { createAngelGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createPrejudicedManipulatorGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
@@ -35,6 +35,7 @@ export class GameVictoryService {
       { winCondition: this.doLoversWin, victoryFactoryMethod: createLoversGameVictory },
       { winCondition: this.doesPiedPiperWin, victoryFactoryMethod: createPiedPiperGameVictory },
       { winCondition: this.doesWhiteWerewolfWin, victoryFactoryMethod: createWhiteWerewolfGameVictory },
+      { winCondition: this.doesPrejudicedManipulatorWin, victoryFactoryMethod: createPrejudicedManipulatorGameVictory },
       { winCondition: this.doWerewolvesWin, victoryFactoryMethod: createWerewolvesGameVictory },
       { winCondition: this.doVillagersWin, victoryFactoryMethod: createVillagersGameVictory },
     ];
@@ -82,5 +83,14 @@ export class GameVictoryService {
     }
     const { cause: deathCause } = angelPlayer.death;
     return deathCause === PlayerDeathCauses.EATEN || deathCause === PlayerDeathCauses.VOTE && phase === GamePhases.NIGHT;
+  }
+
+  private doesPrejudicedManipulatorWin(game: Game): boolean {
+    const prejudicedManipulatorPlayer = getPlayerWithCurrentRole(game, RoleNames.PREJUDICED_MANIPULATOR);
+    if (!prejudicedManipulatorPlayer || !isPlayerAliveAndPowerful(prejudicedManipulatorPlayer, game)) {
+      return false;
+    }
+    const playersNotInPrejudicedManipulatorGroup = game.players.filter(({ group }) => group !== prejudicedManipulatorPlayer.group);
+    return playersNotInPrejudicedManipulatorGroup.every(({ isAlive }) => !isAlive);
   }
 }

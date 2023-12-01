@@ -114,6 +114,10 @@ function createFakeScandalmongerAlivePlayer(player: Partial<Player> = {}, overri
   return createFakeAlivePlayerWithRole(RoleNames.SCANDALMONGER, player, override);
 }
 
+function createFakePrejudicedManipulatorAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.PREJUDICED_MANIPULATOR, player, override);
+}
+
 function createFakeAlivePlayerWithRole(role: RoleNames, player: Partial<Player> = {}, override: object = {}): Player {
   const playerRole: PlayerRole = {
     current: role,
@@ -162,4 +166,5 @@ export {
   createFakeAngelAlivePlayer,
   createFakePiedPiperAlivePlayer,
   createFakeScandalmongerAlivePlayer,
+  createFakePrejudicedManipulatorAlivePlayer,
 };

@@ -8,7 +8,7 @@ Feature: 👧 Little Girl role
       | name    | role        |
       | Antoine | werewolf    |
       | Olivia  | little-girl |
-      | JB      | defender       |
+      | JB      | defender    |
       | Thomas  | villager    |
     Then the request should have succeeded with status code 201
     And the game's current play should be defender to protect

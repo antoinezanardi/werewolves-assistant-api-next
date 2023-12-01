@@ -47,6 +47,11 @@ class Player {
   @Expose()
   public position: number;
 
+  @ApiProperty(PLAYER_API_PROPERTIES.group as ApiPropertyOptions)
+  @Prop(PLAYER_FIELDS_SPECS.group)
+  @Expose()
+  public group?: string;
+
   @ApiProperty(PLAYER_API_PROPERTIES.isAlive as ApiPropertyOptions)
   @Prop(PLAYER_FIELDS_SPECS.isAlive)
   @Expose()

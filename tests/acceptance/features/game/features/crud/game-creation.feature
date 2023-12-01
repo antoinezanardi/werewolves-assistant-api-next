@@ -87,11 +87,11 @@ Feature: 🎲 Game Creation
   Scenario: 🎲 Game can't be created without villagers
 
     Given a created game with the following players
-      | name    | role                  |
-      | Antoine | werewolf              |
+      | name    | role                 |
+      | Antoine | werewolf             |
       | Olivia  | accursed-wolf-father |
-      | JB      | big-bad-wolf          |
-      | Thomas  | white-werewolf        |
+      | JB      | big-bad-wolf         |
+      | Thomas  | white-werewolf       |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
@@ -102,10 +102,10 @@ Feature: 🎲 Game Creation
   Scenario: 🎲 Game can't be created without werewolves
 
     Given a created game with the following players
-      | name    | role     |
-      | Antoine | seer     |
-      | Olivia  | witch    |
-      | JB      | idiot    |
+      | name    | role       |
+      | Antoine | seer       |
+      | Olivia  | witch      |
+      | JB      | idiot      |
       | Thomas  | wolf-hound |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
@@ -157,8 +157,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                                                                                                                                                                                                                                                                                                                                                 |
-      | players.4.role.name must be one of the following values: werewolf, big-bad-wolf, accursed-wolf-father, white-werewolf, villager, villager-villager, seer, cupid, witch, hunter, little-girl, defender, elder, scapegoat, idiot, two-sisters, three-brothers, fox, bear-tamer, stuttering-judge, rusty-sword-knight, thief, wild-child, wolf-hound, angel, pied-piper, scandalmonger |
+      | message                                                                                                                                                                                                                                                                                                                                                                                                     |
+      | players.4.role.name must be one of the following values: werewolf, big-bad-wolf, accursed-wolf-father, white-werewolf, villager, villager-villager, seer, cupid, witch, hunter, little-girl, defender, elder, scapegoat, idiot, two-sisters, three-brothers, fox, bear-tamer, stuttering-judge, rusty-sword-knight, thief, wild-child, wolf-hound, angel, pied-piper, scandalmonger, prejudiced-manipulator |
 
   Scenario: 🎲 Game can't be created if there is only one of the two sisters
 
@@ -303,8 +303,8 @@ Feature: 🎲 Game Creation
 
     Given a created game with the following players
       | name    | role     |
-      | Antoine | defender    |
-      | Olivia  | defender    |
+      | Antoine | defender |
+      | Olivia  | defender |
       | JB      | idiot    |
       | Thomas  | werewolf |
     Then the request should have failed with status code 400
@@ -453,11 +453,11 @@ Feature: 🎲 Game Creation
   Scenario: 🎲 Game can't be created if there are two wolf-hounds
 
     Given a created game with the following players
-      | name    | role     |
+      | name    | role       |
       | Antoine | wolf-hound |
       | Olivia  | wolf-hound |
-      | JB      | idiot    |
-      | Thomas  | werewolf |
+      | JB      | idiot      |
+      | Thomas  | werewolf   |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
@@ -498,11 +498,11 @@ Feature: 🎲 Game Creation
   Scenario: 🎲 Game can't be created if there are two scandalmongers
 
     Given a created game with the following players
-      | name    | role     |
-      | Antoine | scandalmonger    |
-      | Olivia  | scandalmonger    |
-      | JB      | idiot    |
-      | Thomas  | werewolf |
+      | name    | role          |
+      | Antoine | scandalmonger |
+      | Olivia  | scandalmonger |
+      | JB      | idiot         |
+      | Thomas  | werewolf      |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
@@ -528,14 +528,122 @@ Feature: 🎲 Game Creation
   Scenario: 🎲 Game can't be created if there are two accursed wolf-father
 
     Given a created game with the following players
-      | name    | role                  |
+      | name    | role                 |
       | Antoine | accursed-wolf-father |
       | Olivia  | accursed-wolf-father |
-      | JB      | idiot                 |
-      | Thomas  | werewolf              |
+      | JB      | idiot                |
+      | Thomas  | werewolf             |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
       | message                                                                                                |
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
+
+  Scenario: 🎲 Game can't be created if there are two prejudiced manipulator
+
+    Given a created game with the following players
+      | name    | role                   | group |
+      | Antoine | prejudiced-manipulator | boy   |
+      | Olivia  | prejudiced-manipulator | boy   |
+      | JB      | idiot                  | girl  |
+      | Thomas  | werewolf               | girl  |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                                |
+      | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
+
+  Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but one player doesn't have a group
+
+    Given a created game with the following players
+      | name    | role                   |
+      | Antoine | prejudiced-manipulator |
+      | Olivia  | villager               |
+      | JB      | idiot                  |
+      | Thomas  | werewolf               |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                  |
+      | there must be exactly two groups among players when `prejudiced-manipulator` in the game |
+      | each player must have a group if there is a player with role `prejudiced-manipulator`    |
+
+  Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but one player has a group with empty name
+
+    Given a created game with the following players
+      | name    | role                   | group |
+      | Antoine | prejudiced-manipulator | boy   |
+      | Olivia  | villager               | boy   |
+      | JB      | idiot                  |       |
+      | Thomas  | werewolf               |       |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                      |
+      | players.2.group must be longer than or equal to 1 characters |
+      | players.3.group must be longer than or equal to 1 characters |
+
+  Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but one player has a group with too long name
+
+    Given a created game with the following players
+      | name    | role                   | group                                |
+      | Antoine | prejudiced-manipulator | boy                                  |
+      | Olivia  | villager               | boy                                  |
+      | JB      | idiot                  | ImTheLongestNameForAGroupYouEverSeen |
+      | Thomas  | werewolf               | ImTheLongestNameForAGroupYouEverSeen |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                        |
+      | players.2.group must be shorter than or equal to 30 characters |
+      | players.3.group must be shorter than or equal to 30 characters |
+
+  Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but there is only one group among players
+
+    Given a created game with the following players
+      | name    | role                   | group |
+      | Antoine | prejudiced-manipulator | boy   |
+      | Olivia  | villager               | boy   |
+      | JB      | idiot                  | boy   |
+      | Thomas  | werewolf               | boy   |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                  |
+      | there must be exactly two groups among players when `prejudiced-manipulator` in the game |
+
+  Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but there are more than groups among players
+
+    Given a created game with the following players
+      | name    | role                   | group |
+      | Antoine | prejudiced-manipulator | boy   |
+      | Olivia  | villager               | boy   |
+      | JB      | idiot                  | girl  |
+      | Thomas  | werewolf               | alien |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                  |
+      | there must be exactly two groups among players when `prejudiced-manipulator` in the game |
+
+  Scenario: 🎲 Game can't be created if there is no prejudiced manipulator but there are groups among players
+
+    Given a created game with the following players
+      | name    | role     | group |
+      | Antoine | werewolf | boy   |
+      | Olivia  | villager | boy   |
+      | JB      | idiot    | girl  |
+      | Thomas  | werewolf | girl  |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                |
+      | any player can't have a group if there is no player with role `prejudiced-manipulator` |
