@@ -60,7 +60,7 @@ Feature: 📜 Game History
       | Doudou  | werewolf         |
       | Babou   | werewolf         |
       | JB      | seer             |
-      | Thomas  | raven            |
+      | Thomas  | scandalmonger    |
     Then the game's current play should be survivors to vote because angel-presence
 
     When the survivors vote with the following votes
@@ -134,7 +134,7 @@ Feature: 📜 Game History
       | Antoine |
     And the play's source name from the previous history record should be stuttering-judge
     And the play's cause from the previous history record should be undefined
-    And the game's current play should be raven to mark
+    And the game's current play should be scandalmonger to mark
 
     When the player or group skips his turn
     And the most recent history record is retrieved
@@ -142,7 +142,7 @@ Feature: 📜 Game History
     And the play's source players from the previous history record should be the following players
       | name   |
       | Thomas |
-    And the play's source name from the previous history record should be raven
+    And the play's source name from the previous history record should be scandalmonger
     And the play's cause from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
@@ -210,12 +210,12 @@ Feature: 📜 Game History
   Scenario: 📜 Targets of various roles actions are recorded in the game history
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Antoine | seer                  |
-      | Juju    | witch                 |
-      | Doudou  | vile-father-of-wolves |
-      | JB      | guard                 |
-      | Thomas  | raven                 |
+      | name    | role                 |
+      | Antoine | seer                 |
+      | Juju    | witch                |
+      | Doudou  | accursed-wolf-father |
+      | JB      | defender             |
+      | Thomas  | scandalmonger        |
     Then the game's current play should be seer to look
 
     When the seer looks at the player named Juju
@@ -223,14 +223,14 @@ Feature: 📜 Game History
     Then the play's targets from the previous history record should be the following players
       | name |
       | Juju |
-    And the game's current play should be raven to mark
+    And the game's current play should be scandalmonger to mark
 
     When the player or group skips his turn
     And the most recent history record is retrieved
     Then the play's targets from the previous history record should be undefined
-    And the game's current play should be guard to protect
+    And the game's current play should be defender to protect
 
-    When the guard protects the player named JB
+    When the defender protects the player named JB
     And the most recent history record is retrieved
     Then the play's targets from the previous history record should be the following players
       | name |
@@ -270,14 +270,14 @@ Feature: 📜 Game History
     Then the play's targets from the previous history record should be the following players
       | name   |
       | Thomas |
-    And the game's current play should be raven to mark
+    And the game's current play should be scandalmonger to mark
 
     When the player or group skips his turn
     And the most recent history record is retrieved
     Then the play's targets from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
-    When the vile father of wolves infects the player named Thomas
+    When the accursed wolf-father infects the player named Thomas
     And the most recent history record is retrieved
     Then the play's targets from the previous history record should be the following players
       | name   |
@@ -475,14 +475,14 @@ Feature: 📜 Game History
 
   Scenario: 📜 Chosen side is recorded in the game history
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role     |
-      | Antoine | dog-wolf |
-      | Olivia  | villager |
-      | JB      | werewolf |
-      | Thomas  | witch    |
-    Then the game's current play should be dog-wolf to choose-side
+      | name    | role       |
+      | Antoine | wolf-hound |
+      | Olivia  | villager   |
+      | JB      | werewolf   |
+      | Thomas  | witch      |
+    Then the game's current play should be wolf-hound to choose-side
 
-    When the dog wolf chooses the werewolves side
+    When the wolf-hound chooses the werewolves side
     And the most recent history record is retrieved
     Then the play's chosen side from the previous history record should be the werewolves side
 

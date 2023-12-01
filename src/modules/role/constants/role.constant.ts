@@ -23,7 +23,7 @@ const WEREWOLF_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     recommendedMinPlayers: 15,
   },
   {
-    name: RoleNames.VILE_FATHER_OF_WOLVES,
+    name: RoleNames.ACCURSED_WOLF_FATHER,
     side: RoleSides.WEREWOLVES,
     type: RoleTypes.WEREWOLF,
     origin: RoleOrigins.CHARACTERS,
@@ -93,14 +93,14 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     maxInGame: 1,
   },
   {
-    name: RoleNames.GUARD,
+    name: RoleNames.DEFENDER,
     side: RoleSides.VILLAGERS,
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.NEW_MOON,
     maxInGame: 1,
   },
   {
-    name: RoleNames.ANCIENT,
+    name: RoleNames.ELDER,
     side: RoleSides.VILLAGERS,
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.NEW_MOON,
@@ -182,7 +182,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     maxInGame: 1,
   },
   {
-    name: RoleNames.DOG_WOLF,
+    name: RoleNames.WOLF_HOUND,
     side: RoleSides.VILLAGERS,
     type: RoleTypes.AMBIGUOUS,
     origin: RoleOrigins.CHARACTERS,
@@ -204,11 +204,19 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     recommendedMinPlayers: 12,
   },
   {
-    name: RoleNames.RAVEN,
+    name: RoleNames.SCANDALMONGER,
     side: RoleSides.VILLAGERS,
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.THE_VILLAGE,
     maxInGame: 1,
+  },
+  {
+    name: RoleNames.PREJUDICED_MANIPULATOR,
+    side: RoleSides.VILLAGERS,
+    type: RoleTypes.LONELY,
+    origin: RoleOrigins.CHARACTERS,
+    maxInGame: 1,
+    recommendedMinPlayers: 12,
   },
 ]);
 

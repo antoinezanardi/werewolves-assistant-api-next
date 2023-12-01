@@ -3,17 +3,18 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
+import { CreateWitchGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-witch-game-options.dto";
 import { ROLES_GAME_OPTIONS_API_PROPERTIES, ROLES_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema.constant";
-import { CreateAncientGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-ancient-game-options.dto";
+import { CreateElderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-elder-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
 import { CreateBigBadWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-big-bad-wolf-game-options.dto";
-import { CreateDogWolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-dog-wolf-game-options.dto";
+import { CreateWolfHoundGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-wolf-hound-game-options.dto";
 import { CreateFoxGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-fox-game-options.dto";
-import { CreateGuardGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-guard-game-options.dto";
+import { CreateDefenderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-defender-game-options.dto";
 import { CreateIdiotGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-idiot-game-options.dto";
 import { CreateLittleGirlGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-little-girl-game-options.dto";
 import { CreatePiedPiperGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-pied-piper-game-options.dto";
-import { CreateRavenGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-raven-game-options.dto";
+import { CreateScandalmongerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-scandalmonger-game-options.dto";
 import { CreateSeerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-seer-game-options.dto";
 import { CreateSheriffGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-sheriff-game-options/create-sheriff-game-options.dto";
 import { CreateStutteringJudgeGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-stuttering-judge-game-options.dto";
@@ -86,22 +87,22 @@ class CreateRolesGameOptionsDto {
   public littleGirl: CreateLittleGirlGameOptionsDto = new CreateLittleGirlGameOptionsDto();
 
   @ApiProperty({
-    ...ROLES_GAME_OPTIONS_API_PROPERTIES.guard,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.defender,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @Type(() => CreateGuardGameOptionsDto)
+  @Type(() => CreateDefenderGameOptionsDto)
   @ValidateNested()
-  public guard: CreateGuardGameOptionsDto = new CreateGuardGameOptionsDto();
+  public defender: CreateDefenderGameOptionsDto = new CreateDefenderGameOptionsDto();
 
   @ApiProperty({
-    ...ROLES_GAME_OPTIONS_API_PROPERTIES.ancient,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.elder,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @Type(() => CreateAncientGameOptionsDto)
+  @Type(() => CreateElderGameOptionsDto)
   @ValidateNested()
-  public ancient: CreateAncientGameOptionsDto = new CreateAncientGameOptionsDto();
+  public elder: CreateElderGameOptionsDto = new CreateElderGameOptionsDto();
 
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.idiot,
@@ -167,13 +168,13 @@ class CreateRolesGameOptionsDto {
   public wildChild: CreateWildChildGameOptionsDto = new CreateWildChildGameOptionsDto();
 
   @ApiProperty({
-    ...ROLES_GAME_OPTIONS_API_PROPERTIES.dogWolf,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.wolfHound,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @Type(() => CreateDogWolfGameOptionsDto)
+  @Type(() => CreateWolfHoundGameOptionsDto)
   @ValidateNested()
-  public dogWolf: CreateDogWolfGameOptionsDto = new CreateDogWolfGameOptionsDto();
+  public wolfHound: CreateWolfHoundGameOptionsDto = new CreateWolfHoundGameOptionsDto();
 
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.thief,
@@ -194,13 +195,22 @@ class CreateRolesGameOptionsDto {
   public piedPiper: CreatePiedPiperGameOptionsDto = new CreatePiedPiperGameOptionsDto();
 
   @ApiProperty({
-    ...ROLES_GAME_OPTIONS_API_PROPERTIES.raven,
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.scandalmonger,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @Type(() => CreateRavenGameOptionsDto)
+  @Type(() => CreateScandalmongerGameOptionsDto)
   @ValidateNested()
-  public raven: CreateRavenGameOptionsDto = new CreateRavenGameOptionsDto();
+  public scandalmonger: CreateScandalmongerGameOptionsDto = new CreateScandalmongerGameOptionsDto();
+
+  @ApiProperty({
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.witch,
+    required: false,
+  } as ApiPropertyOptions)
+  @IsOptional()
+  @Type(() => CreateWitchGameOptionsDto)
+  @ValidateNested()
+  public witch: CreateWitchGameOptionsDto = new CreateWitchGameOptionsDto();
 }
 
 export { CreateRolesGameOptionsDto };

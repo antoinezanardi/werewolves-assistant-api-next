@@ -41,9 +41,9 @@ describe("Composition Has Villager Decorator", () => {
     it("should return false when composition is full of werewolves.", () => {
       const players = [
         createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILE_FATHER_OF_WOLVES } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACCURSED_WOLF_FATHER } }),
         createFakeCreateGamePlayerDto({ role: { name: RoleNames.WHITE_WEREWOLF } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILE_FATHER_OF_WOLVES } }),
+        createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACCURSED_WOLF_FATHER } }),
       ];
 
       expect(doesCompositionHaveAtLeastOneVillager(players)).toBe(false);

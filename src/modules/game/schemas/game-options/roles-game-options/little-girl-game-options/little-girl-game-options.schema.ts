@@ -11,10 +11,10 @@ import { LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES, LITTLE_GIRL_GAME_OPTIONS_SPECS
   _id: false,
 })
 class LittleGirlGameOptions {
-  @ApiProperty(LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES.isProtectedByGuard as ApiPropertyOptions)
-  @Prop(LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS.isProtectedByGuard)
+  @ApiProperty(LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES.isProtectedByDefender as ApiPropertyOptions)
+  @Prop(LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS.isProtectedByDefender)
   @Expose()
-  public isProtectedByGuard: boolean;
+  public isProtectedByDefender: boolean;
 }
 
 const LITTLE_GIRL_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(LittleGirlGameOptions);

@@ -20,8 +20,8 @@ import { toJSON } from "@/shared/misc/helpers/object.helper";
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
-import { createFakeGameHistoryRecord, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordGuardProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordStutteringJudgeChooseSignPlay, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
-import { createFakeAncientAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordStutteringJudgeChooseSignPlay, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeElderAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
@@ -172,38 +172,38 @@ describe("Game History Record Repository", () => {
     });
   });
 
-  describe("getLastGameHistoryGuardProtectsRecord", () => {
-    it("should return no record when there is no guard play in the history.", async() => {
+  describe("getLastGameHistoryDefenderProtectsRecord", () => {
+    it("should return no record when there is no defender play in the history.", async() => {
       const gameId = createFakeObjectId();
       await populate([
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
       ]);
       
-      await expect(repositories.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord(gameId)).resolves.toBeNull();
+      await expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId)).resolves.toBeNull();
     });
 
     it("should return no record when there gameId is not the good one.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       await populate([
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
       ]);
 
-      await expect(repositories.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord(otherGameId)).resolves.toBeNull();
+      await expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(otherGameId)).resolves.toBeNull();
     });
 
-    it("should return the last guard game history play record when called.", async() => {
+    it("should return the last defender game history play record when called.", async() => {
       const gameId = createFakeObjectId();
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay(), createdAt: new Date("2020-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay(), createdAt: new Date("2020-01-01") }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2021-01-01") }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay(), createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay(), createdAt: new Date("2022-01-01") }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2023-01-01") }),
       ];
       await populate(gameHistoryRecords);
-      const record = await repositories.gameHistoryRecord.getLastGameHistoryGuardProtectsRecord(gameId);
+      const record = await repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId);
 
       expect(toJSON(record)).toStrictEqual<GameHistoryRecord>(toJSON(gameHistoryRecords[2]) as GameHistoryRecord);
     });
@@ -236,7 +236,7 @@ describe("Game History Record Repository", () => {
       const otherGameId = createFakeObjectId();
       const gameHistoryRecordPlayTieVoting = createFakeGameHistoryRecordPlayVoting({ result: GameHistoryRecordVotingResults.TIE });
       await populate([
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
       ]);
 
@@ -249,7 +249,7 @@ describe("Game History Record Repository", () => {
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ voting: gameHistoryRecordPlayTieVoting }), createdAt: new Date("2020-01-01") }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2021-01-01") }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay(), createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay(), createdAt: new Date("2022-01-01") }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ voting: gameHistoryRecordPlayTieVoting }), createdAt: new Date("2024-01-01") }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsElectSheriffPlay({ voting: gameHistoryRecordPlayTieVoting }), createdAt: new Date("2025-01-01") }),
       ];
@@ -267,7 +267,7 @@ describe("Game History Record Repository", () => {
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
       ];
       await populate(gameHistoryRecords);
@@ -355,22 +355,22 @@ describe("Game History Record Repository", () => {
     });
   });
 
-  describe("getGameHistoryVileFatherOfWolvesInfectedRecords", () => {
+  describe("getGameHistoryAccursedWolfFatherInfectedRecords", () => {
     it("should get no record when there are no eat play.", async() => {
       const gameId = createFakeObjectId();
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
 
-    it("should get records of vile father of wolves infected for this gameId when called.", async() => {
+    it("should get records of accursed wolf-father infected for this gameId when called.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       const gameHistoryRecords = [
@@ -382,7 +382,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryVileFatherOfWolvesInfectedRecords(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
       const expectedRecords = [gameHistoryRecords[2]];
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
@@ -395,7 +395,7 @@ describe("Game History Record Repository", () => {
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ didJudgeRequestAnotherVote: false }) }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
@@ -457,22 +457,22 @@ describe("Game History Record Repository", () => {
     });
   });
 
-  describe("getGameHistoryWerewolvesEatAncientRecords", () => {
+  describe("getGameHistoryWerewolvesEatElderRecords", () => {
     it("should get no record when there are no eat play.", async() => {
       const gameId = createFakeObjectId();
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ didJudgeRequestAnotherVote: false }) }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryWerewolvesEatAncientRecords(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryWerewolvesEatElderRecords(gameId);
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
     
-    it("should get records of ancient eaten by any kind of werewolves for this gameId when called.", async() => {
+    it("should get records of elder eaten by any kind of werewolves for this gameId when called.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       const gameHistoryRecords = [
@@ -480,18 +480,18 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay({
             targets: [
-              createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() }),
+              createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() }),
               createFakeGameHistoryRecordPlayTarget({ player: createFakeWitchAlivePlayer() }),
             ],
           }),
         }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ didJudgeRequestAnotherVote: false }) }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordBigBadWolfEatPlay({ targets: [createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() })] }) }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordBigBadWolfEatPlay({ targets: [createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() })] }) }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
         createFakeGameHistoryRecord({
           gameId: otherGameId, play: createFakeGameHistoryRecordWerewolvesEatPlay({
             targets: [
-              createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() }),
+              createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() }),
               createFakeGameHistoryRecordPlayTarget({ player: createFakeWitchAlivePlayer() }),
             ],
           }),
@@ -500,42 +500,42 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryWerewolvesEatAncientRecords(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryWerewolvesEatElderRecords(gameId);
       const expectedRecords = [gameHistoryRecords[1], gameHistoryRecords[3]];
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
     });
   });
 
-  describe("getGameHistoryAncientProtectedFromWerewolvesRecords", () => {
-    it("should get game history where ancient is protected from werewolves records for gameId when called.", async() => {
+  describe("getGameHistoryElderProtectedFromWerewolvesRecords", () => {
+    it("should get game history where elder is protected from werewolves records for gameId when called.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ didJudgeRequestAnotherVote: false }), createdAt: new Date("2023-01-01") }),
         createFakeGameHistoryRecord({
           gameId,
-          play: createFakeGameHistoryRecordGuardProtectPlay({
+          play: createFakeGameHistoryRecordDefenderProtectPlay({
             targets: [
               createFakeGameHistoryRecordPlayTarget({ player: createFakeSeerAlivePlayer() }),
-              createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() }),
+              createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() }),
             ],
           }),
         }),
         createFakeGameHistoryRecord({
           gameId: otherGameId,
-          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer() })] }),
+          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() })] }),
         }),
         createFakeGameHistoryRecord({
           gameId,
-          play: createFakeGameHistoryRecordGuardProtectPlay({ targets: [createFakeGameHistoryRecordPlayTarget({ player: createFakeSeerAlivePlayer() })] }),
+          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [createFakeGameHistoryRecordPlayTarget({ player: createFakeSeerAlivePlayer() })] }),
         }),
         createFakeGameHistoryRecord({
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
             targets: [
               createFakeGameHistoryRecordPlayTarget({ player: createFakeSeerAlivePlayer(), drankPotion: WitchPotions.LIFE }),
-              createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer(), drankPotion: WitchPotions.DEATH }),
+              createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer(), drankPotion: WitchPotions.DEATH }),
             ],
           }),
         }),
@@ -544,13 +544,13 @@ describe("Game History Record Repository", () => {
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
             targets: [
               createFakeGameHistoryRecordPlayTarget({ player: createFakeSeerAlivePlayer(), drankPotion: WitchPotions.DEATH }),
-              createFakeGameHistoryRecordPlayTarget({ player: createFakeAncientAlivePlayer(), drankPotion: WitchPotions.LIFE }),
+              createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer(), drankPotion: WitchPotions.LIFE }),
             ],
           }),
         }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryElderProtectedFromWerewolvesRecords(gameId);
       const expectedRecords = [gameHistoryRecords[1], gameHistoryRecords[5]];
       
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
@@ -564,7 +564,7 @@ describe("Game History Record Repository", () => {
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId: otherGameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ didJudgeRequestAnotherVote: false }) }),
         createFakeGameHistoryRecord({ gameId: otherGameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
-        createFakeGameHistoryRecord({ gameId: otherGameId, play: createFakeGameHistoryRecordGuardProtectPlay() }),
+        createFakeGameHistoryRecord({ gameId: otherGameId, play: createFakeGameHistoryRecordDefenderProtectPlay() }),
         createFakeGameHistoryRecord({ gameId: otherGameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
@@ -578,7 +578,7 @@ describe("Game History Record Repository", () => {
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay(), createdAt: new Date("2020-01-01") }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2021-01-01") }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordGuardProtectPlay(), createdAt: new Date("2022-01-01") }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay(), createdAt: new Date("2022-01-01") }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay(), createdAt: new Date("2023-01-01") }),
       ];
       await populate(gameHistoryRecords);

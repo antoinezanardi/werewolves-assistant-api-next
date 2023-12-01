@@ -44,6 +44,15 @@ function createPiedPiperGameVictory(game: Game, gameVictory: Partial<GameVictory
   });
 }
 
+function createPrejudicedManipulatorGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
+  const prejudicedManipulatorPlayer = getPlayerWithCurrentRole(game, RoleNames.PREJUDICED_MANIPULATOR);
+  return createGameVictory({
+    type: GameVictoryTypes.PREJUDICED_MANIPULATOR,
+    winners: prejudicedManipulatorPlayer ? [prejudicedManipulatorPlayer] : undefined,
+    ...gameVictory,
+  });
+}
+
 function createWhiteWerewolfGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
   const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, RoleNames.WHITE_WEREWOLF);
   return createGameVictory({
@@ -80,6 +89,7 @@ export {
   createAngelGameVictory,
   createLoversGameVictory,
   createPiedPiperGameVictory,
+  createPrejudicedManipulatorGameVictory,
   createWhiteWerewolfGameVictory,
   createWerewolvesGameVictory,
   createVillagersGameVictory,

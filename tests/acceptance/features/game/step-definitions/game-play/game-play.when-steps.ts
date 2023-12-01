@@ -76,7 +76,7 @@ When(/^the werewolves eat the player named (?<name>.+)$/u, async function(this: 
   setGameInContext(this.response, this);
 });
 
-When(/^the vile father of wolves infects the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
+When(/^the accursed wolf-father infects the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id, isInfected: true }] };
 
@@ -84,7 +84,7 @@ When(/^the vile father of wolves infects the player named (?<name>.+)$/u, async 
   setGameInContext(this.response, this);
 });
 
-When(/^the vile father of wolves infects the following players$/u, async function(this: CustomWorld, targetsDatatable: DataTable): Promise<void> {
+When(/^the accursed wolf-father infects the following players$/u, async function(this: CustomWorld, targetsDatatable: DataTable): Promise<void> {
   const makeGamePlayDto = { targets: convertDatatableToMakeGamePlayTargets(targetsDatatable.rows(), this.game) };
   makeGamePlayDto.targets = makeGamePlayDto.targets.map(target => ({ ...target, isInfected: true }));
 
@@ -164,7 +164,7 @@ When(/^the three brothers meet each other$/u, async function(this: CustomWorld):
   setGameInContext(this.response, this);
 });
 
-When(/^the guard protects the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
+When(/^the defender protects the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
 
@@ -215,7 +215,7 @@ When(/^the wild child chooses the player named (?<name>.+) as a model$/u, async 
   setGameInContext(this.response, this);
 });
 
-When(/^the dog wolf chooses the (?<chosenSide>villagers|werewolves|unknown) side$/u, async function(this: CustomWorld, chosenSide: RoleSides): Promise<void> {
+When(/^the wolf-hound chooses the (?<chosenSide>villagers|werewolves|unknown) side$/u, async function(this: CustomWorld, chosenSide: RoleSides): Promise<void> {
   const makeGamePlayDto: MakeGamePlayDto = { chosenSide };
 
   this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
@@ -239,7 +239,7 @@ When(/^the thief chooses an unknown card$/u, async function(this: CustomWorld): 
   setGameInContext(this.response, this);
 });
 
-When(/^the raven marks the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
+When(/^the scandalmonger marks the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
   const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
 

@@ -8,11 +8,11 @@ import type { PlayerVoteCount } from "@/modules/game/types/game-play.type";
 
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeRavenGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeScandalmongerGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayFoxSniffs } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakePowerlessByAncientPlayerAttribute, createFakeRavenMarkedByRavenPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeAncientAlivePlayer, createFakeFoxAlivePlayer, createFakeRavenAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePowerlessByElderPlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeElderAlivePlayer, createFakeFoxAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 
 describe("Game Play Vote Service", () => {
   let services: { gamePlayVote: GamePlayVoteService };
@@ -26,14 +26,14 @@ describe("Game Play Vote Service", () => {
   describe("getNominatedPlayers", () => {
     it("should get nominated players when called.", () => {
       const players: Player[] = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
+        createFakeElderAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
       ];
       const sheriffOptions = createFakeSheriffGameOptions({ hasDoubledVote: true });
-      const ravenOptions = createFakeRavenGameOptions({ markPenalty: 2 });
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: sheriffOptions, raven: ravenOptions }) });
+      const scandalmongerOptions = createFakeScandalmongerGameOptions({ markPenalty: 2 });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: sheriffOptions, scandalmonger: scandalmongerOptions }) });
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote(), options });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
@@ -51,8 +51,8 @@ describe("Game Play Vote Service", () => {
   describe("getPlayerVoteCounts", () => {
     it("should return empty array when votes are undefined.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeElderAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -64,8 +64,8 @@ describe("Game Play Vote Service", () => {
 
     it("should get player vote counts with only simple votes when there is no sheriff.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeElderAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -86,8 +86,8 @@ describe("Game Play Vote Service", () => {
 
     it("should get player vote counts with only simple votes when sheriff doesn't have double vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
+        createFakeElderAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -108,8 +108,8 @@ describe("Game Play Vote Service", () => {
 
     it("should get player vote counts with simple only votes when game play is not vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
+        createFakeElderAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -130,8 +130,8 @@ describe("Game Play Vote Service", () => {
 
     it("should get player vote counts with simple votes and one doubled vote when sheriff has double vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
-        createFakeRavenAlivePlayer(),
+        createFakeElderAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -151,12 +151,12 @@ describe("Game Play Vote Service", () => {
     });
   });
   
-  describe("addRavenMarkVoteToPlayerVoteCounts", () => {
+  describe("addScandalmongerMarkVoteToPlayerVoteCounts", () => {
     it("should return player vote counts as is when action is not vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
+        createFakeElderAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayFoxSniffs() });
@@ -165,14 +165,14 @@ describe("Game Play Vote Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlayVote["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayVote["addScandalmongerMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
-    it("should return player vote counts as is when there is no raven player in the game.", () => {
+    it("should return player vote counts as is when there is no scandalmonger player in the game.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeFoxAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
@@ -181,14 +181,14 @@ describe("Game Play Vote Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlayVote["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayVote["addScandalmongerMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
-    it("should return player vote counts as is when raven player is not alive.", () => {
+    it("should return player vote counts as is when scandalmonger player is not alive.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer({ isAlive: false }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
+        createFakeElderAlivePlayer(),
+        createFakeScandalmongerAlivePlayer({ isAlive: false }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
@@ -197,14 +197,14 @@ describe("Game Play Vote Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlayVote["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayVote["addScandalmongerMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
-    it("should return player vote counts as is when raven player is powerless.", () => {
+    it("should return player vote counts as is when scandalmonger player is powerless.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
+        createFakeElderAlivePlayer(),
+        createFakeScandalmongerAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
@@ -213,13 +213,13 @@ describe("Game Play Vote Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlayVote["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayVote["addScandalmongerMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
-    it("should return player vote counts as is when there are no raven mark.", () => {
+    it("should return player vote counts as is when there are no scandalmonger mark.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
+        createFakeElderAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
@@ -229,14 +229,14 @@ describe("Game Play Vote Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlayVote["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayVote["addScandalmongerMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
-    it("should return player vote counts as is when the raven target is dead.", () => {
+    it("should return player vote counts as is when the scandalmonger target is dead.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ isAlive: false, attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
+        createFakeElderAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ isAlive: false, attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
@@ -245,17 +245,17 @@ describe("Game Play Vote Service", () => {
         [players[1], 2],
       ];
 
-      expect(services.gamePlayVote["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
+      expect(services.gamePlayVote["addScandalmongerMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(playerVoteCounts);
     });
 
-    it("should return player vote counts with new player vote entry when raven target doesn't have vote.", () => {
+    it("should return player vote counts with new player vote entry when scandalmonger target doesn't have vote.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer(),
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
+        createFakeElderAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ raven: createFakeRavenGameOptions({ markPenalty: 2 }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ scandalmonger: createFakeScandalmongerGameOptions({ markPenalty: 2 }) }) });
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote(), options });
       const playerVoteCounts: PlayerVoteCount[] = [
         [players[0], 1],
@@ -267,17 +267,17 @@ describe("Game Play Vote Service", () => {
         [players[2], 2],
       ];
 
-      expect(services.gamePlayVote["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
+      expect(services.gamePlayVote["addScandalmongerMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
     });
 
-    it("should return player vote counts with updated player vote entry when raven target already has votes.", () => {
+    it("should return player vote counts with updated player vote entry when scandalmonger target already has votes.", () => {
       const players = [
-        createFakeAncientAlivePlayer(),
-        createFakeRavenAlivePlayer({ attributes: [createFakeRavenMarkedByRavenPlayerAttribute()] }),
+        createFakeElderAlivePlayer(),
+        createFakeScandalmongerAlivePlayer({ attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ raven: createFakeRavenGameOptions({ markPenalty: 5 }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ scandalmonger: createFakeScandalmongerGameOptions({ markPenalty: 5 }) }) });
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote(), options });
       const playerVoteCounts: PlayerVoteCount[] = [
         [players[0], 1],
@@ -288,7 +288,7 @@ describe("Game Play Vote Service", () => {
         [players[1], 7],
       ];
 
-      expect(services.gamePlayVote["addRavenMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
+      expect(services.gamePlayVote["addScandalmongerMarkVoteToPlayerVoteCounts"](playerVoteCounts, game)).toStrictEqual<PlayerVoteCount[]>(expectedPlayerVoteCounts);
     });
   });
 });

@@ -23,20 +23,23 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       isTalkative: true,
       canSeeRoles: true,
     },
-    littleGirl: { isProtectedByGuard: false },
-    guard: { canProtectTwice: false },
-    ancient: {
+    littleGirl: { isProtectedByDefender: false },
+    defender: { canProtectTwice: false },
+    elder: {
       livesCountAgainstWerewolves: 2,
       doesTakeHisRevenge: true,
     },
-    idiot: { doesDieOnAncientDeath: true },
+    idiot: { doesDieOnElderDeath: true },
     twoSisters: { wakingUpInterval: 2 },
     threeBrothers: { wakingUpInterval: 2 },
     fox: { isPowerlessIfMissesWerewolf: true },
     bearTamer: { doesGrowlIfInfected: true },
     stutteringJudge: { voteRequestsCount: 1 },
     wildChild: { isTransformationRevealed: false },
-    dogWolf: { isChosenSideRevealed: false },
+    wolfHound: {
+      isChosenSideRevealed: false,
+      isSideRandomlyChosen: false,
+    },
     thief: {
       mustChooseBetweenWerewolves: true,
       additionalCardsCount: 2,
@@ -45,7 +48,8 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       charmedPeopleCountPerNight: 2,
       isPowerlessIfInfected: true,
     },
-    raven: { markPenalty: 2 },
+    scandalmonger: { markPenalty: 2 },
+    witch: { doesKnowWerewolvesTargets: true },
   },
 };
 

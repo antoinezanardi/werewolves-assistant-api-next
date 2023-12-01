@@ -32,15 +32,15 @@ Feature: 🐻 Bear Tamer role
   Scenario: 🐻 Bear Tamer's bear growls when he is infected even if any of his neighbor is a werewolf
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                  |
-      | Olivia  | villager              |
-      | Antoine | bear-tamer            |
-      | JB      | villager              |
-      | Thomas  | vile-father-of-wolves |
-      | Doudou  | villager              |
+      | name    | role                 |
+      | Olivia  | villager             |
+      | Antoine | bear-tamer           |
+      | JB      | villager             |
+      | Thomas  | accursed-wolf-father |
+      | Doudou  | villager             |
     Then the game's current play should be werewolves to eat
 
-    When the vile father of wolves infects the player named Antoine
+    When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be alive
     And the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Antoine should have the active growled from bear-tamer attribute
@@ -49,15 +49,15 @@ Feature: 🐻 Bear Tamer role
   Scenario: 🐻 Bear Tamer's bear doesn't growl when he is infected even if any of his neighbor is a werewolf with the right option
 
     Given a created game with options described in file no-sheriff-option.json, bear-tamer-bear-doesnt-growl-if-infected-option.json and with the following players
-      | name    | role                  |
-      | Olivia  | villager              |
-      | Antoine | bear-tamer            |
-      | JB      | villager              |
-      | Thomas  | vile-father-of-wolves |
-      | Doudou  | villager              |
+      | name    | role                 |
+      | Olivia  | villager             |
+      | Antoine | bear-tamer           |
+      | JB      | villager             |
+      | Thomas  | accursed-wolf-father |
+      | Doudou  | villager             |
     Then the game's current play should be werewolves to eat
 
-    When the vile father of wolves infects the player named Antoine
+    When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be alive
     And the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Antoine should not have the active growled from bear-tamer attribute

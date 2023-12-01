@@ -87,9 +87,9 @@ function createFakeGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {},
   }, override);
 }
 
-function createFakeGamePlayDogWolfChoosesSide(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+function createFakeGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: RoleNames.DOG_WOLF }),
+    source: createFakeGamePlaySource({ name: RoleNames.WOLF_HOUND }),
     action: GamePlayActions.CHOOSE_SIDE,
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
     ...gamePlay,
@@ -150,18 +150,18 @@ function createFakeGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> =
   }, override);
 }
 
-function createFakeGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+function createFakeGamePlayScandalmongerMarks(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: RoleNames.RAVEN }),
+    source: createFakeGamePlaySource({ name: RoleNames.SCANDALMONGER }),
     action: GamePlayActions.MARK,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
     ...gamePlay,
   }, override);
 }
 
-function createFakeGamePlayGuardProtects(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+function createFakeGamePlayDefenderProtects(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: RoleNames.GUARD }),
+    source: createFakeGamePlaySource({ name: RoleNames.DEFENDER }),
     action: GamePlayActions.PROTECT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
     ...gamePlay,
@@ -261,15 +261,15 @@ export {
   createFakeGamePlayThiefChoosesCard,
   createFakeGamePlayStutteringJudgeChoosesSign,
   createFakeGamePlayScapegoatBansVoting,
-  createFakeGamePlayDogWolfChoosesSide,
+  createFakeGamePlayWolfHoundChoosesSide,
   createFakeGamePlayWildChildChoosesModel,
   createFakeGamePlayFoxSniffs,
   createFakeGamePlayCharmedMeetEachOther,
   createFakeGamePlayLoversMeetEachOther,
   createFakeGamePlayThreeBrothersMeetEachOther,
   createFakeGamePlayTwoSistersMeetEachOther,
-  createFakeGamePlayRavenMarks,
-  createFakeGamePlayGuardProtects,
+  createFakeGamePlayScandalmongerMarks,
+  createFakeGamePlayDefenderProtects,
   createFakeGamePlayHunterShoots,
   createFakeGamePlayWitchUsesPotions,
   createFakeGamePlayPiedPiperCharms,

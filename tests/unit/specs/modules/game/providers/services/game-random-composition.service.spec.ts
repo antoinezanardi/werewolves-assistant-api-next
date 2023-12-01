@@ -524,10 +524,11 @@ describe("Game Random Composition Service", () => {
         RoleNames.FOX,
         RoleNames.TWO_SISTERS,
         RoleNames.WHITE_WEREWOLF,
-        RoleNames.VILE_FATHER_OF_WOLVES,
+        RoleNames.ACCURSED_WOLF_FATHER,
+        RoleNames.PREJUDICED_MANIPULATOR,
       ];
 
-      expect(result).toHaveLength(6);
+      expect(result).toHaveLength(7);
       expect(result.every(role => expectedRoleNames.includes(role.name))).toBe(true);
     });
   });

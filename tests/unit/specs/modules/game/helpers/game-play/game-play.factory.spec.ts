@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createGamePlay, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayDogWolfChoosesSide, createGamePlayFoxSniffs, createGamePlayGuardProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayRavenMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlaySurvivorsBuryDeadBodies, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlay, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayWolfHoundChoosesSide, createGamePlayFoxSniffs, createGamePlayDefenderProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayScandalmongerMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlaySurvivorsBuryDeadBodies, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
 import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
@@ -146,15 +146,15 @@ describe("Game Play Factory", () => {
     });
   });
 
-  describe("createGamePlayDogWolfChoosesSide", () => {
-    it("should create game play dog wolf chooses side when called.", () => {
+  describe("createGamePlayWolfHoundChoosesSide", () => {
+    it("should create game play wolf-hound chooses side when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: createFakeGamePlaySource({ name: RoleNames.DOG_WOLF }),
+        source: createFakeGamePlaySource({ name: RoleNames.WOLF_HOUND }),
         action: GamePlayActions.CHOOSE_SIDE,
         occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
       });
 
-      expect(createGamePlayDogWolfChoosesSide()).toStrictEqual<GamePlay>(expectedGamePlay);
+      expect(createGamePlayWolfHoundChoosesSide()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
 
@@ -230,27 +230,27 @@ describe("Game Play Factory", () => {
     });
   });
 
-  describe("createGamePlayRavenMarks", () => {
-    it("should create game play raven marks when called.", () => {
+  describe("createGamePlayScandalmongerMarks", () => {
+    it("should create game play scandalmonger marks when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: createFakeGamePlaySource({ name: RoleNames.RAVEN }),
+        source: createFakeGamePlaySource({ name: RoleNames.SCANDALMONGER }),
         action: GamePlayActions.MARK,
         occurrence: GamePlayOccurrences.ON_NIGHTS,
       });
 
-      expect(createGamePlayRavenMarks()).toStrictEqual<GamePlay>(expectedGamePlay);
+      expect(createGamePlayScandalmongerMarks()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
 
-  describe("createGamePlayGuardProtects", () => {
-    it("should create game play guard protects when called.", () => {
+  describe("createGamePlayDefenderProtects", () => {
+    it("should create game play defender protects when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
-        source: createFakeGamePlaySource({ name: RoleNames.GUARD }),
+        source: createFakeGamePlaySource({ name: RoleNames.DEFENDER }),
         action: GamePlayActions.PROTECT,
         occurrence: GamePlayOccurrences.ON_NIGHTS,
       });
 
-      expect(createGamePlayGuardProtects()).toStrictEqual<GamePlay>(expectedGamePlay);
+      expect(createGamePlayDefenderProtects()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
 

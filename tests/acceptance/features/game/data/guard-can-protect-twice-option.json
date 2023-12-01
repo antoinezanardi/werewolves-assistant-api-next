@@ -1,7 +1,0 @@
-{
-  "roles": {
-    "guard": {
-      "canProtectTwice": true
-    }
-  }
-}

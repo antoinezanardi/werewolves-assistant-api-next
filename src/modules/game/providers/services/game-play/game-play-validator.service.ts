@@ -95,9 +95,9 @@ export class GamePlayValidatorService {
     if (!infectedTargets.length) {
       return;
     }
-    const hasVileFatherOfWolvesInfected = (await this.gameHistoryRecordService.getGameHistoryVileFatherOfWolvesInfectedRecords(game._id)).length > 0;
-    const vileFatherOfWolvesPlayer = getPlayerWithCurrentRole(game, RoleNames.VILE_FATHER_OF_WOLVES);
-    if (!vileFatherOfWolvesPlayer || !isPlayerAliveAndPowerful(vileFatherOfWolvesPlayer, game) || hasVileFatherOfWolvesInfected) {
+    const hasAccursedWolfFatherInfected = (await this.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords(game._id)).length > 0;
+    const accursedWolfFatherPlayer = getPlayerWithCurrentRole(game, RoleNames.ACCURSED_WOLF_FATHER);
+    if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game) || hasAccursedWolfFatherInfected) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
     }
     this.validateGamePlayTargetsBoundaries(infectedTargets, { min: 1, max: 1 });
@@ -157,14 +157,14 @@ export class GamePlayValidatorService {
     }
   }
 
-  private validateGamePlayRavenTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+  private validateGamePlayScandalmongerTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
     if (!playTargets.length) {
       return;
     }
     const targetedPlayer = playTargets[0].player;
     const canTargetedPlayerBeMarked = isPlayerInteractableWithInteractionType(targetedPlayer._id, PlayerInteractionTypes.MARK, game);
     if (!canTargetedPlayerBeMarked) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_RAVEN_TARGET);
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_SCANDALMONGER_TARGET);
     }
   }
 
@@ -182,11 +182,11 @@ export class GamePlayValidatorService {
     }
   }
 
-  private validateGamePlayGuardTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+  private validateGamePlayDefenderTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
     const targetedPlayer = playTargets[0].player;
     const canTargetedPlayerBeProtected = isPlayerInteractableWithInteractionType(targetedPlayer._id, PlayerInteractionTypes.PROTECT, game);
     if (!canTargetedPlayerBeProtected) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_GUARD_TARGET);
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_DEFENDER_TARGET);
     }
   }
 
@@ -217,10 +217,10 @@ export class GamePlayValidatorService {
       [PlayerGroups.WEREWOLVES]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.BIG_BAD_WOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.WHITE_WEREWOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
-      [RoleNames.GUARD]: () => this.validateGamePlayGuardTargets(playTargets, game),
+      [RoleNames.DEFENDER]: () => this.validateGamePlayDefenderTargets(playTargets, game),
       [RoleNames.PIED_PIPER]: () => this.validateGamePlayPiedPiperTargets(playTargets, game),
       [RoleNames.WILD_CHILD]: () => this.validateGamePlayWildChildTargets(playTargets, game),
-      [RoleNames.RAVEN]: () => this.validateGamePlayRavenTargets(playTargets, game),
+      [RoleNames.SCANDALMONGER]: () => this.validateGamePlayScandalmongerTargets(playTargets, game),
       [RoleNames.SEER]: () => this.validateGamePlaySeerTargets(playTargets, game),
       [RoleNames.FOX]: () => this.validateGamePlayFoxTargets(playTargets, game),
       [RoleNames.CUPID]: () => this.validateGamePlayCupidTargets(playTargets, game),
@@ -311,10 +311,11 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayWithRelationsDtoChosenSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): void {
-    if (chosenSide !== undefined && game.currentPlay.action !== GamePlayActions.CHOOSE_SIDE) {
+    const { isSideRandomlyChosen } = game.options.roles.wolfHound;
+    if (chosenSide !== undefined && (game.currentPlay.action !== GamePlayActions.CHOOSE_SIDE || isSideRandomlyChosen)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_CHOSEN_SIDE);
     }
-    if (chosenSide === undefined && game.currentPlay.action === GamePlayActions.CHOOSE_SIDE) {
+    if (chosenSide === undefined && game.currentPlay.action === GamePlayActions.CHOOSE_SIDE && !isSideRandomlyChosen) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.REQUIRED_CHOSEN_SIDE);
     }
   }

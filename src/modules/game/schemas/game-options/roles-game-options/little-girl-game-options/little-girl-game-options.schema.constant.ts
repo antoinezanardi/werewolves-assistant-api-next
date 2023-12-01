@@ -8,16 +8,16 @@ import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/hel
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
 const LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS = {
-  isProtectedByGuard: {
+  isProtectedByDefender: {
     required: true,
-    default: DEFAULT_GAME_OPTIONS.roles.littleGirl.isProtectedByGuard,
+    default: DEFAULT_GAME_OPTIONS.roles.littleGirl.isProtectedByDefender,
   },
 } as const satisfies Record<keyof LittleGirlGameOptions, MongoosePropOptions>;
 
 const LITTLE_GIRL_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof LittleGirlGameOptions, ApiPropertyOptions>> = {
-  isProtectedByGuard: {
-    description: "If set to `false`, the `little girl` won't be protected by the `guard` from the `werewolves` attacks",
-    ...convertMongoosePropOptionsToApiPropertyOptions(LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS.isProtectedByGuard),
+  isProtectedByDefender: {
+    description: "If set to `false`, the `little girl` won't be protected by the `defender` from the `werewolves` attacks",
+    ...convertMongoosePropOptionsToApiPropertyOptions(LITTLE_GIRL_GAME_OPTIONS_SPECS_FIELDS.isProtectedByDefender),
   },
 };
 

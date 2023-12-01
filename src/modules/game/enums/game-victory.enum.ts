@@ -6,6 +6,7 @@ enum GameVictoryTypes {
   PIED_PIPER = "pied-piper",
   WHITE_WEREWOLF = "white-werewolf",
   ANGEL = "angel",
+  PREJUDICED_MANIPULATOR = "prejudiced-manipulator",
 }
 
 export { GameVictoryTypes };

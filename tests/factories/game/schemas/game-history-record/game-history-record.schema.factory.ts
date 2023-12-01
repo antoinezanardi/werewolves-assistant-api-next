@@ -18,7 +18,7 @@ import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDogWolfAlivePlayer, createFakeFoxAlivePlayer, createFakeGuardAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeRavenAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeWolfHoundAlivePlayer, createFakeFoxAlivePlayer, createFakeDefenderAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 
 function createFakeGameHistoryRecordWerewolvesEatPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
@@ -109,23 +109,23 @@ function createFakeGameHistoryRecordHunterShootPlay(gameHistoryRecordPlay: Parti
   }, override);
 }
 
-function createFakeGameHistoryRecordGuardProtectPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
+function createFakeGameHistoryRecordDefenderProtectPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
     action: GamePlayActions.PROTECT,
     source: {
-      name: RoleNames.GUARD,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakeGuardAlivePlayer()],
+      name: RoleNames.DEFENDER,
+      players: gameHistoryRecordPlay.source?.players ?? [createFakeDefenderAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
   }, override);
 }
 
-function createFakeGameHistoryRecordRavenMarkPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
+function createFakeGameHistoryRecordScandalmongerMarkPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
     action: GamePlayActions.MARK,
     source: {
-      name: RoleNames.RAVEN,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakeRavenAlivePlayer()],
+      name: RoleNames.SCANDALMONGER,
+      players: gameHistoryRecordPlay.source?.players ?? [createFakeScandalmongerAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
   }, override);
@@ -190,12 +190,12 @@ function createFakeGameHistoryRecordWildChildChooseModelPlay(gameHistoryRecordPl
   }, override);
 }
 
-function createFakeGameHistoryRecordWildDogWolfChooseSidePlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
+function createFakeGameHistoryRecordWildWolfHoundChooseSidePlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
     action: GamePlayActions.CHOOSE_SIDE,
     source: {
-      name: RoleNames.DOG_WOLF,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakeDogWolfAlivePlayer()],
+      name: RoleNames.WOLF_HOUND,
+      players: gameHistoryRecordPlay.source?.players ?? [createFakeWolfHoundAlivePlayer()],
     },
     ...gameHistoryRecordPlay,
   }, override);
@@ -349,14 +349,14 @@ export {
   createFakeGameHistoryRecordPiedPiperCharmPlay,
   createFakeGameHistoryRecordWitchUsePotionsPlay,
   createFakeGameHistoryRecordHunterShootPlay,
-  createFakeGameHistoryRecordGuardProtectPlay,
-  createFakeGameHistoryRecordRavenMarkPlay,
+  createFakeGameHistoryRecordDefenderProtectPlay,
+  createFakeGameHistoryRecordScandalmongerMarkPlay,
   createFakeGameHistoryRecordTwoSistersMeetEachOtherPlay,
   createFakeGameHistoryRecordThreeBrothersMeetEachOtherPlay,
   createFakeGameHistoryRecordCharmedMeetEachOtherPlay,
   createFakeGameHistoryRecordFoxSniffPlay,
   createFakeGameHistoryRecordWildChildChooseModelPlay,
-  createFakeGameHistoryRecordWildDogWolfChooseSidePlay,
+  createFakeGameHistoryRecordWildWolfHoundChooseSidePlay,
   createFakeGameHistoryRecordScapegoatBanVotingPlay,
   createFakeGameHistoryRecordStutteringJudgeChooseSignPlay,
   createFakeGameHistoryRecordThiefChooseCardPlay,

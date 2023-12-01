@@ -19,9 +19,9 @@ import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-pla
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAncientPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerShotByHunterDeath, createFakePlayerVoteBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeAngelAlivePlayer, createFakePiedPiperAlivePlayer, createFakePrejudicedManipulatorAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Victory Service", () => {
@@ -263,6 +263,19 @@ describe("Game Victory Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.WHITE_WEREWOLF, winners: [players[2]] });
+
+      expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
+    });
+
+    it("should return prejudiced manipulator victory when prejudiced manipulator wins.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, group: "girl" }),
+        createFakeSeerAlivePlayer({ isAlive: false, group: "girl" }),
+        createFakePrejudicedManipulatorAlivePlayer({ group: "boy" }),
+        createFakeWerewolfAlivePlayer({ group: "boy" }),
+      ];
+      const game = createFakeGame({ players });
+      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.PREJUDICED_MANIPULATOR, winners: [players[2]] });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -588,7 +601,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-            createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
           ],
         }),
         expected: false,
@@ -600,7 +613,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeVillagerAlivePlayer({ attributes: [] }),
-            createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakePiedPiperAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
           ],
         }),
         expected: false,
@@ -702,7 +715,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer(),
             createFakeSeerAlivePlayer(),
             createFakeVillagerAlivePlayer(),
-            createFakeAngelAlivePlayer({ isAlive: false, attributes: [createFakePowerlessByAncientPlayerAttribute()] }),
+            createFakeAngelAlivePlayer({ isAlive: false, attributes: [createFakePowerlessByElderPlayerAttribute()] }),
           ],
         }),
         expected: false,
@@ -790,6 +803,82 @@ describe("Game Victory Service", () => {
       },
     ])("$test", ({ game, expected }) => {
       expect(services.gameVictory["doesAngelWin"](game)).toBe(expected);
+    });
+  });
+
+  describe("doesPrejudicedManipulatorWin", () => {
+    it.each<{
+      test: string;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when no players are provided.",
+        game: createFakeGame(),
+        expected: false,
+      },
+      {
+        test: "should return false when there is no prejudiced manipulator among players.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer({ group: "boy" }),
+            createFakeSeerAlivePlayer({ group: "boy" }),
+            createFakeVillagerAlivePlayer({ group: "boy" }),
+            createFakeVillagerAlivePlayer({ group: "girl", isAlive: false }),
+          ],
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when prejudiced manipulator is dead.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer({ group: "boy" }),
+            createFakeSeerAlivePlayer({ group: "boy" }),
+            createFakePrejudicedManipulatorAlivePlayer({ group: "boy", isAlive: false }),
+            createFakeVillagerAlivePlayer({ group: "girl", isAlive: false }),
+          ],
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when prejudiced manipulator is powerless.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer({ group: "boy" }),
+            createFakeSeerAlivePlayer({ group: "boy" }),
+            createFakePrejudicedManipulatorAlivePlayer({ group: "boy", attributes: [createFakePowerlessByElderPlayerAttribute()] }),
+            createFakeVillagerAlivePlayer({ group: "girl", isAlive: false }),
+          ],
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when one of the prejudiced manipulator's other group is still alive.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer({ group: "boy" }),
+            createFakeSeerAlivePlayer({ group: "girl" }),
+            createFakePrejudicedManipulatorAlivePlayer({ group: "boy" }),
+            createFakeVillagerAlivePlayer({ group: "girl", isAlive: false }),
+          ],
+        }),
+        expected: false,
+      },
+      {
+        test: "should return true when every one of the prejudiced manipulator's other group is dead.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer({ group: "boy" }),
+            createFakeSeerAlivePlayer({ group: "girl", isAlive: false }),
+            createFakePrejudicedManipulatorAlivePlayer({ group: "boy" }),
+            createFakeVillagerAlivePlayer({ group: "girl", isAlive: false }),
+          ],
+        }),
+        expected: true,
+      },
+    ])("$test", ({ game, expected }) => {
+      expect(services.gameVictory["doesPrejudicedManipulatorWin"](game)).toBe(expected);
     });
   });
 });

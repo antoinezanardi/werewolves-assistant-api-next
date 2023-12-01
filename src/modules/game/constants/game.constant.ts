@@ -77,7 +77,7 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
   },
   {
-    source: { name: RoleNames.DOG_WOLF },
+    source: { name: RoleNames.WOLF_HOUND },
     action: GamePlayActions.CHOOSE_SIDE,
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
   },
@@ -122,12 +122,12 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
   },
   {
-    source: { name: RoleNames.RAVEN },
+    source: { name: RoleNames.SCANDALMONGER },
     action: GamePlayActions.MARK,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
   },
   {
-    source: { name: RoleNames.GUARD },
+    source: { name: RoleNames.DEFENDER },
     action: GamePlayActions.PROTECT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
   },

@@ -26,7 +26,7 @@ const GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES: ReadonlyDeep<Record<keyof 
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.player),
   },
   isInfected: {
-    description: "Only if there is the `vile father of wolves` in the game and the action is eat from werewolves. If set to `true`, the target joined the werewolves side",
+    description: "Only if there is the `accursed wolf-father` in the game and the action is eat from werewolves. If set to `true`, the target joined the werewolves side",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.isInfected),
   },
   drankPotion: {

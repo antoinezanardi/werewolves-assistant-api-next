@@ -7,7 +7,7 @@ Feature: 👼 Angel role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | angel    |
-      | Olivia  | ancient  |
+      | Olivia  | elder    |
       | JB      | villager |
       | Thomas  | werewolf |
     Then the request should have succeeded with status code 201
@@ -45,7 +45,7 @@ Feature: 👼 Angel role
       | Antoine | Olivia |
       | JB      | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
-    And 2 of the following players should have the active powerless from ancient attribute
+    And 2 of the following players should have the active powerless from elder attribute
       | name    |
       | Antoine |
       | JB      |

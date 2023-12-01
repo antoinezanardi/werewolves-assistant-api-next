@@ -1,10 +1,9 @@
 import { applyDecorators } from "@nestjs/common";
 import { ArrayUnique } from "class-validator";
-import isObject from "isobject";
 import { has } from "lodash";
 
 function getPlayerName(value?: unknown): unknown {
-  if (!isObject(value) || !has(value, "name")) {
+  if (!has(value, "name")) {
     return value;
   }
   return (value as { name: unknown }).name;

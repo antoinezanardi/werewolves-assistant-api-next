@@ -56,6 +56,15 @@ function createCantVoteByScapegoatPlayerAttribute(game: Game, playerAttribute: P
   });
 }
 
+function createPowerlessByAccursedWolfFatherPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+  return createPlayerAttribute({
+    name: PlayerAttributeNames.POWERLESS,
+    source: RoleNames.ACCURSED_WOLF_FATHER,
+    doesRemainAfterDeath: true,
+    ...playerAttribute,
+  });
+}
+
 function createPowerlessByFoxPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.POWERLESS,
@@ -65,10 +74,10 @@ function createPowerlessByFoxPlayerAttribute(playerAttribute: Partial<PlayerAttr
   });
 }
 
-function createPowerlessByAncientPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createPowerlessByElderPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.POWERLESS,
-    source: RoleNames.ANCIENT,
+    source: RoleNames.ELDER,
     doesRemainAfterDeath: true,
     ...playerAttribute,
   });
@@ -90,19 +99,19 @@ function createInLoveByCupidPlayerAttribute(playerAttribute: Partial<PlayerAttri
   });
 }
 
-function createRavenMarkByRavenPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createScandalmongerMarkByScandalmongerPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
-    name: PlayerAttributeNames.RAVEN_MARKED,
-    source: RoleNames.RAVEN,
+    name: PlayerAttributeNames.SCANDALMONGER_MARKED,
+    source: RoleNames.SCANDALMONGER,
     remainingPhases: 2,
     ...playerAttribute,
   });
 }
 
-function createProtectedByGuardPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+function createProtectedByDefenderPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.PROTECTED,
-    source: RoleNames.GUARD,
+    source: RoleNames.DEFENDER,
     remainingPhases: 1,
     ...playerAttribute,
   });
@@ -190,12 +199,13 @@ export {
   createCharmedByPiedPiperPlayerAttribute,
   createCantVoteBySurvivorsPlayerAttribute,
   createCantVoteByScapegoatPlayerAttribute,
+  createPowerlessByAccursedWolfFatherPlayerAttribute,
   createPowerlessByFoxPlayerAttribute,
-  createPowerlessByAncientPlayerAttribute,
+  createPowerlessByElderPlayerAttribute,
   createWorshipedByWildChildPlayerAttribute,
   createInLoveByCupidPlayerAttribute,
-  createRavenMarkByRavenPlayerAttribute,
-  createProtectedByGuardPlayerAttribute,
+  createScandalmongerMarkByScandalmongerPlayerAttribute,
+  createProtectedByDefenderPlayerAttribute,
   createDrankDeathPotionByWitchPlayerAttribute,
   createDrankLifePotionByWitchPlayerAttribute,
   createEatenByBigBadWolfPlayerAttribute,

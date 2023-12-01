@@ -1,7 +1,7 @@
 enum RoleNames {
   WEREWOLF = "werewolf",
   BIG_BAD_WOLF = "big-bad-wolf",
-  VILE_FATHER_OF_WOLVES = "vile-father-of-wolves",
+  ACCURSED_WOLF_FATHER = "accursed-wolf-father",
   WHITE_WEREWOLF = "white-werewolf",
   VILLAGER = "villager",
   VILLAGER_VILLAGER = "villager-villager",
@@ -10,8 +10,8 @@ enum RoleNames {
   WITCH = "witch",
   HUNTER = "hunter",
   LITTLE_GIRL = "little-girl",
-  GUARD = "guard",
-  ANCIENT = "ancient",
+  DEFENDER = "defender",
+  ELDER = "elder",
   SCAPEGOAT = "scapegoat",
   IDIOT = "idiot",
   TWO_SISTERS = "two-sisters",
@@ -22,10 +22,11 @@ enum RoleNames {
   RUSTY_SWORD_KNIGHT = "rusty-sword-knight",
   THIEF = "thief",
   WILD_CHILD = "wild-child",
-  DOG_WOLF = "dog-wolf",
+  WOLF_HOUND = "wolf-hound",
   ANGEL = "angel",
   PIED_PIPER = "pied-piper",
-  RAVEN = "raven",
+  SCANDALMONGER = "scandalmonger",
+  PREJUDICED_MANIPULATOR = "prejudiced-manipulator",
 }
 
 enum RoleSides {

@@ -7,7 +7,7 @@ import { createGamePlayHunterShoots, createGamePlayScapegoatBansVoting, createGa
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
-import { createCantVoteBySurvivorsPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByAncientPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createCantVoteBySurvivorsPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByElderPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerReconsiderPardonBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
@@ -38,27 +38,27 @@ export class PlayerKillerService {
     return clonedGame;
   }
 
-  public async isAncientKillable(game: Game, ancientPlayer: Player, cause: PlayerDeathCauses): Promise<boolean> {
+  public async isElderKillable(game: Game, elderPlayer: Player, cause: PlayerDeathCauses): Promise<boolean> {
     if (cause !== PlayerDeathCauses.EATEN) {
       return true;
     }
-    const ancientLivesCountAgainstWerewolves = await this.getAncientLivesCountAgainstWerewolves(game, ancientPlayer);
-    return ancientLivesCountAgainstWerewolves <= 0;
+    const elderLivesCountAgainstWerewolves = await this.getElderLivesCountAgainstWerewolves(game, elderPlayer);
+    return elderLivesCountAgainstWerewolves <= 0;
   }
 
-  public async getAncientLivesCountAgainstWerewolves(game: Game, ancientPlayer: Player): Promise<number> {
-    const { livesCountAgainstWerewolves } = game.options.roles.ancient;
-    const werewolvesEatAncientRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatAncientRecords(game._id);
-    const werewolvesEatAncientOnPreviousTurnsRecords = werewolvesEatAncientRecords.filter(({ turn }) => turn < game.turn);
-    const ancientProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryAncientProtectedFromWerewolvesRecords(game._id);
-    const doesAncientLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(ancientPlayer, PlayerAttributeNames.EATEN, game) && this.canPlayerBeEaten(ancientPlayer, game);
-    return werewolvesEatAncientOnPreviousTurnsRecords.reduce((acc, werewolvesEatAncientRecord) => {
-      const wasAncientProtectedFromWerewolves = !!ancientProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatAncientRecord.turn);
-      if (!wasAncientProtectedFromWerewolves) {
+  public async getElderLivesCountAgainstWerewolves(game: Game, elderPlayer: Player): Promise<number> {
+    const { livesCountAgainstWerewolves } = game.options.roles.elder;
+    const werewolvesEatElderRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords(game._id);
+    const werewolvesEatElderOnPreviousTurnsRecords = werewolvesEatElderRecords.filter(({ turn }) => turn < game.turn);
+    const elderProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords(game._id);
+    const doesElderLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(elderPlayer, PlayerAttributeNames.EATEN, game) && this.canPlayerBeEaten(elderPlayer, game);
+    return werewolvesEatElderOnPreviousTurnsRecords.reduce((acc, werewolvesEatElderRecord) => {
+      const wasElderProtectedFromWerewolves = !!elderProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatElderRecord.turn);
+      if (!wasElderProtectedFromWerewolves) {
         return acc - 1;
       }
       return acc;
-    }, doesAncientLooseALifeOnCurrentTurn ? livesCountAgainstWerewolves - 1 : livesCountAgainstWerewolves);
+    }, doesElderLooseALifeOnCurrentTurn ? livesCountAgainstWerewolves - 1 : livesCountAgainstWerewolves);
   }
 
   private applyPlayerRoleRevelationOutcomes(revealedPlayer: Player, game: Game): Game {
@@ -97,10 +97,10 @@ export class PlayerKillerService {
   }
 
   private canPlayerBeEaten(eatenPlayer: Player, game: Game): boolean {
-    const { isProtectedByGuard: isLittleGirlProtectedByGuard } = game.options.roles.littleGirl;
+    const { isProtectedByDefender: isLittleGirlProtectedByDefender } = game.options.roles.littleGirl;
     const isPlayerSavedByWitch = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PlayerAttributeNames.DRANK_LIFE_POTION, game);
-    const isPlayerProtectedByGuard = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PlayerAttributeNames.PROTECTED, game);
-    return !isPlayerSavedByWitch && (!isPlayerProtectedByGuard || eatenPlayer.role.current === RoleNames.LITTLE_GIRL && !isLittleGirlProtectedByGuard);
+    const isPlayerProtectedByDefender = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PlayerAttributeNames.PROTECTED, game);
+    return !isPlayerSavedByWitch && (!isPlayerProtectedByDefender || eatenPlayer.role.current === RoleNames.LITTLE_GIRL && !isLittleGirlProtectedByDefender);
   }
 
   private async isPlayerKillable(player: Player, game: Game, cause: PlayerDeathCauses): Promise<boolean> {
@@ -110,8 +110,8 @@ export class PlayerKillerService {
     if (player.role.current === RoleNames.IDIOT) {
       return this.isIdiotKillable(player, cause, game);
     }
-    if (player.role.current === RoleNames.ANCIENT) {
-      return this.isAncientKillable(game, player, cause);
+    if (player.role.current === RoleNames.ELDER) {
+      return this.isElderKillable(game, player, cause);
     }
     return true;
   }
@@ -183,19 +183,19 @@ export class PlayerKillerService {
     return prependUpcomingPlayInGame(createGamePlayScapegoatBansVoting(), clonedGame);
   }
 
-  private applyAncientDeathOutcomes(killedPlayer: Player, game: Game, death: PlayerDeath): Game {
+  private applyElderDeathOutcomes(killedPlayer: Player, game: Game, death: PlayerDeath): Game {
     let clonedGame = createGame(game);
-    const ancientRevengeDeathCauses: PlayerDeathCauses[] = [PlayerDeathCauses.VOTE, PlayerDeathCauses.SHOT, PlayerDeathCauses.DEATH_POTION];
-    const { idiot: idiotOptions, ancient: ancientOptions } = clonedGame.options.roles;
-    if (killedPlayer.role.current !== RoleNames.ANCIENT || !isPlayerPowerful(killedPlayer, game)) {
+    const elderRevengeDeathCauses: PlayerDeathCauses[] = [PlayerDeathCauses.VOTE, PlayerDeathCauses.SHOT, PlayerDeathCauses.DEATH_POTION];
+    const { idiot: idiotOptions, elder: elderOptions } = clonedGame.options.roles;
+    if (killedPlayer.role.current !== RoleNames.ELDER || !isPlayerPowerful(killedPlayer, game)) {
       return clonedGame;
     }
-    if (ancientRevengeDeathCauses.includes(death.cause) && ancientOptions.doesTakeHisRevenge) {
+    if (elderRevengeDeathCauses.includes(death.cause) && elderOptions.doesTakeHisRevenge) {
       const aliveVillagerSidedPlayersIds = getAliveVillagerSidedPlayers(clonedGame).map(({ _id }) => _id);
-      clonedGame = addPlayersAttributeInGame(aliveVillagerSidedPlayersIds, clonedGame, createPowerlessByAncientPlayerAttribute());
+      clonedGame = addPlayersAttributeInGame(aliveVillagerSidedPlayersIds, clonedGame, createPowerlessByElderPlayerAttribute());
     }
     const idiotPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.IDIOT);
-    if (idiotPlayer?.isAlive === true && idiotPlayer.role.isRevealed && idiotOptions.doesDieOnAncientDeath) {
+    if (idiotPlayer?.isAlive === true && idiotPlayer.role.isRevealed && idiotOptions.doesDieOnElderDeath) {
       return this.killPlayer(idiotPlayer, clonedGame, createPlayerReconsiderPardonBySurvivorsDeath());
     }
     return clonedGame;
@@ -214,8 +214,8 @@ export class PlayerKillerService {
     if (killedPlayer.role.current === RoleNames.HUNTER) {
       return this.applyHunterDeathOutcomes(killedPlayer, clonedGame);
     }
-    if (killedPlayer.role.current === RoleNames.ANCIENT) {
-      return this.applyAncientDeathOutcomes(killedPlayer, clonedGame, death);
+    if (killedPlayer.role.current === RoleNames.ELDER) {
+      return this.applyElderDeathOutcomes(killedPlayer, clonedGame, death);
     }
     if (killedPlayer.role.current === RoleNames.SCAPEGOAT) {
       return this.applyScapegoatDeathOutcomes(killedPlayer, clonedGame, death);

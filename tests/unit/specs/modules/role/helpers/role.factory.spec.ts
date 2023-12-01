@@ -8,7 +8,7 @@ describe("Role Factory", () => {
   describe("createRole", () => {
     it("should create a role when called.", () => {
       const role: Role = {
-        name: RoleNames.ANCIENT,
+        name: RoleNames.ELDER,
         type: RoleTypes.AMBIGUOUS,
         side: RoleSides.VILLAGERS,
         origin: RoleOrigins.CHARACTERS,

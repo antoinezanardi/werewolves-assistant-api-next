@@ -1,6 +1,6 @@
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createCantVoteBySurvivorsPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createGrowledByBearTamerPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByAncientPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByGuardPlayerAttribute, createRavenMarkByRavenPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createCantVoteBySurvivorsPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createGrowledByBearTamerPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByElderPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -86,6 +86,18 @@ describe("Player Attribute Factory", () => {
     });
   });
 
+  describe("createPowerlessByAccursedWolfFatherPlayerAttribute", () => {
+    it("should create powerless attribute by accursed wolf father when called.", () => {
+      const expectedAttribute = createFakePlayerAttribute({
+        name: PlayerAttributeNames.POWERLESS,
+        source: RoleNames.ACCURSED_WOLF_FATHER,
+        doesRemainAfterDeath: true,
+      });
+
+      expect(createPowerlessByAccursedWolfFatherPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
+    });
+  });
+
   describe("createPowerlessByFoxPlayerAttribute", () => {
     it("should create powerless attribute by fox when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
@@ -98,15 +110,15 @@ describe("Player Attribute Factory", () => {
     });
   });
 
-  describe("createPowerlessByAncientPlayerAttribute", () => {
-    it("should create powerless attribute by ancient when called.", () => {
+  describe("createPowerlessByElderPlayerAttribute", () => {
+    it("should create powerless attribute by elder when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
         name: PlayerAttributeNames.POWERLESS,
-        source: RoleNames.ANCIENT,
+        source: RoleNames.ELDER,
         doesRemainAfterDeath: true,
       });
       
-      expect(createPowerlessByAncientPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
+      expect(createPowerlessByElderPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
 
@@ -132,27 +144,27 @@ describe("Player Attribute Factory", () => {
     });
   });
 
-  describe("createRavenMarkByRavenPlayerAttribute", () => {
-    it("should create raven-marked attribute by raven when called.", () => {
+  describe("createScandalmongerMarkByScandalmongerPlayerAttribute", () => {
+    it("should create scandalmonger-marked attribute by scandalmonger when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
-        name: PlayerAttributeNames.RAVEN_MARKED,
-        source: RoleNames.RAVEN,
+        name: PlayerAttributeNames.SCANDALMONGER_MARKED,
+        source: RoleNames.SCANDALMONGER,
         remainingPhases: 2,
       });
       
-      expect(createRavenMarkByRavenPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
+      expect(createScandalmongerMarkByScandalmongerPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
 
-  describe("createProtectedByGuardPlayerAttribute", () => {
-    it("should create protected attribute by guard when called.", () => {
+  describe("createProtectedByDefenderPlayerAttribute", () => {
+    it("should create protected attribute by defender when called.", () => {
       const expectedAttribute = createFakePlayerAttribute({
         name: PlayerAttributeNames.PROTECTED,
-        source: RoleNames.GUARD,
+        source: RoleNames.DEFENDER,
         remainingPhases: 1,
       });
       
-      expect(createProtectedByGuardPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
+      expect(createProtectedByDefenderPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
 

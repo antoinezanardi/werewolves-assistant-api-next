@@ -14,8 +14,8 @@ function createFakeBigBadWolfAlivePlayer(player: Partial<Player> = {}, override:
   return createFakeAlivePlayerWithRole(RoleNames.BIG_BAD_WOLF, player, override);
 }
 
-function createFakeVileFatherOfWolvesAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
-  return createFakeAlivePlayerWithRole(RoleNames.VILE_FATHER_OF_WOLVES, player, override);
+function createFakeAccursedWolfFatherAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.ACCURSED_WOLF_FATHER, player, override);
 }
 
 function createFakeWhiteWerewolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
@@ -50,12 +50,12 @@ function createFakeLittleGirlAlivePlayer(player: Partial<Player> = {}, override:
   return createFakeAlivePlayerWithRole(RoleNames.LITTLE_GIRL, player, override);
 }
 
-function createFakeGuardAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
-  return createFakeAlivePlayerWithRole(RoleNames.GUARD, player, override);
+function createFakeDefenderAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.DEFENDER, player, override);
 }
 
-function createFakeAncientAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
-  return createFakeAlivePlayerWithRole(RoleNames.ANCIENT, player, override);
+function createFakeElderAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.ELDER, player, override);
 }
 
 function createFakeScapegoatAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
@@ -94,8 +94,8 @@ function createFakeWildChildAlivePlayer(player: Partial<Player> = {}, override: 
   return createFakeAlivePlayerWithRole(RoleNames.WILD_CHILD, player, override);
 }
 
-function createFakeDogWolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
-  return createFakeAlivePlayerWithRole(RoleNames.DOG_WOLF, player, override);
+function createFakeWolfHoundAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.WOLF_HOUND, player, override);
 }
 
 function createFakeThiefAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
@@ -110,8 +110,12 @@ function createFakePiedPiperAlivePlayer(player: Partial<Player> = {}, override: 
   return createFakeAlivePlayerWithRole(RoleNames.PIED_PIPER, player, override);
 }
 
-function createFakeRavenAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
-  return createFakeAlivePlayerWithRole(RoleNames.RAVEN, player, override);
+function createFakeScandalmongerAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.SCANDALMONGER, player, override);
+}
+
+function createFakePrejudicedManipulatorAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.PREJUDICED_MANIPULATOR, player, override);
 }
 
 function createFakeAlivePlayerWithRole(role: RoleNames, player: Partial<Player> = {}, override: object = {}): Player {
@@ -137,7 +141,7 @@ export {
   createFakeAlivePlayerWithRole,
   createFakeWerewolfAlivePlayer,
   createFakeBigBadWolfAlivePlayer,
-  createFakeVileFatherOfWolvesAlivePlayer,
+  createFakeAccursedWolfFatherAlivePlayer,
   createFakeWhiteWerewolfAlivePlayer,
   createFakeVillagerAlivePlayer,
   createFakeVillagerVillagerAlivePlayer,
@@ -146,8 +150,8 @@ export {
   createFakeWitchAlivePlayer,
   createFakeHunterAlivePlayer,
   createFakeLittleGirlAlivePlayer,
-  createFakeGuardAlivePlayer,
-  createFakeAncientAlivePlayer,
+  createFakeDefenderAlivePlayer,
+  createFakeElderAlivePlayer,
   createFakeScapegoatAlivePlayer,
   createFakeIdiotAlivePlayer,
   createFakeTwoSistersAlivePlayer,
@@ -157,9 +161,10 @@ export {
   createFakeStutteringJudgeAlivePlayer,
   createFakeRustySwordKnightAlivePlayer,
   createFakeWildChildAlivePlayer,
-  createFakeDogWolfAlivePlayer,
+  createFakeWolfHoundAlivePlayer,
   createFakeThiefAlivePlayer,
   createFakeAngelAlivePlayer,
   createFakePiedPiperAlivePlayer,
-  createFakeRavenAlivePlayer,
+  createFakeScandalmongerAlivePlayer,
+  createFakePrejudicedManipulatorAlivePlayer,
 };

@@ -6,7 +6,7 @@ import { ROLES } from "@/modules/role/constants/role.constant";
 import type { RoleSides, RoleNames } from "@/modules/role/enums/role.enum";
 
 function playerSideTransformer(params: TransformFnParams): unknown {
-  if (!isObject(params.value) || !isObject(params.obj) || !has(params.obj as object, ["role", "name"])) {
+  if (!isObject(params.value) || !has(params.obj as object, ["role", "name"])) {
     return params.value;
   }
   const obj = params.obj as { role: { name: RoleNames } };

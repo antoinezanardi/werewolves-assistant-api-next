@@ -15,7 +15,7 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakeBearTamerGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeGrowledByBearTamerPlayerAttribute, createFakePowerlessByAncientPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeGrowledByBearTamerPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeBearTamerAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -372,7 +372,7 @@ describe("Game Phase Service", () => {
     });
 
     it("should not call applyStartingDayBearTamerRoleOutcomes method when the bear tamer is powerless.", () => {
-      const bearTamerPlayer = createFakeBearTamerAlivePlayer({ attributes: [createFakePowerlessByAncientPlayerAttribute()] });
+      const bearTamerPlayer = createFakeBearTamerAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] });
       const game = createFakeGame({ players: [bearTamerPlayer] });
       services.gamePhase["applyStartingDayPlayerRoleOutcomesToPlayers"](game);
 

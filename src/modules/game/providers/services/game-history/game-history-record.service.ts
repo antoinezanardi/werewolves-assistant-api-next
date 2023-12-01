@@ -42,8 +42,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.create(gameHistoryRecordToInsert);
   }
 
-  public async getLastGameHistoryGuardProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
-    return this.gameHistoryRecordRepository.getLastGameHistoryGuardProtectsRecord(gameId);
+  public async getLastGameHistoryDefenderProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    return this.gameHistoryRecordRepository.getLastGameHistoryDefenderProtectsRecord(gameId);
   }
 
   public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayActions): Promise<GameHistoryRecord | null> {
@@ -54,8 +54,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, potion);
   }
 
-  public async getGameHistoryVileFatherOfWolvesInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryVileFatherOfWolvesInfectedRecords(gameId);
+  public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
   }
 
   public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
@@ -67,12 +67,12 @@ export class GameHistoryRecordService {
     return records.length > 0;
   }
 
-  public async getGameHistoryWerewolvesEatAncientRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryWerewolvesEatAncientRecords(gameId);
+  public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryWerewolvesEatElderRecords(gameId);
   }
 
-  public async getGameHistoryAncientProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryAncientProtectedFromWerewolvesRecords(gameId);
+  public async getGameHistoryElderProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryElderProtectedFromWerewolvesRecords(gameId);
   }
 
   public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhases): Promise<GameHistoryRecord[]> {

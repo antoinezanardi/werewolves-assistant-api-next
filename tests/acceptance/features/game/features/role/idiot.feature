@@ -81,13 +81,13 @@ Feature: 🤪 Idiot role
     Then the player named Antoine should be alive
     And the player named Antoine should have his role revealed
 
-  Scenario: 🤪 Idiot doesn't die if his role is not revealed and ancient dies
+  Scenario: 🤪 Idiot doesn't die if his role is not revealed and elder dies
 
-    Given a created game with options described in file no-sheriff-option.json, ancient-one-life-against-werewolves-option.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json, elder-one-life-against-werewolves-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
       | Olivia  | villager |
-      | JB      | ancient  |
+      | JB      | elder    |
       | Thomas  | werewolf |
 
     When the werewolves eat the player named JB
@@ -104,13 +104,13 @@ Feature: 🤪 Idiot role
     Then the player named Antoine should be alive
     And the player named Antoine should have his role revealed
 
-  Scenario: 🤪 Idiot dies if his role is revealed and ancient dies
+  Scenario: 🤪 Idiot dies if his role is revealed and elder dies
 
-    Given a created game with options described in file no-sheriff-option.json, ancient-one-life-against-werewolves-option.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json, elder-one-life-against-werewolves-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
       | Olivia  | villager |
-      | JB      | ancient  |
+      | JB      | elder    |
       | Thomas  | werewolf |
 
     When the werewolves eat the player named Olivia
@@ -132,13 +132,13 @@ Feature: 🤪 Idiot role
     Then the player named JB should be murdered by werewolves from eaten
     And the player named Antoine should be murdered by survivors from reconsider-pardon
 
-  Scenario: 🤪 Idiot doesn't die if his role is revealed and ancient dies with the right option
+  Scenario: 🤪 Idiot doesn't die if his role is revealed and elder dies with the right option
 
-    Given a created game with options described in file no-sheriff-option.json, ancient-one-life-against-werewolves-option.json, idiot-doesnt-die-on-ancient-death-option.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json, elder-one-life-against-werewolves-option.json, idiot-doesnt-die-on-elder-death-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
       | Olivia  | villager |
-      | JB      | ancient  |
+      | JB      | elder    |
       | Thomas  | werewolf |
 
     When the werewolves eat the player named Olivia

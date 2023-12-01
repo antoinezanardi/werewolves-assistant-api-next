@@ -47,7 +47,7 @@ import { createFakeGamePlayEligibleTargetsBoundaries } from "@tests/factories/ga
 import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayCupidCharms, createFakeGamePlayDogWolfChoosesSide, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -98,9 +98,9 @@ describe("Game Controller", () => {
 
     it("should get 3 games when 3 games were created.", async() => {
       const games = [
-        createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() }),
-        createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() }),
-        createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() }),
+        createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() }),
+        createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() }),
+        createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() }),
       ];
       await models.game.create(games);
       const response = await app.inject({
@@ -288,7 +288,7 @@ describe("Game Controller", () => {
     });
 
     it("should get a game when id exists in base.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       await models.game.create(game);
       const response = await app.inject({
         method: "GET",
@@ -534,8 +534,8 @@ describe("Game Controller", () => {
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
           ],
           additionalCards: [
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.DOG_WOLF, recipient: RoleNames.THIEF }),
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.DOG_WOLF, recipient: RoleNames.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WOLF_HOUND, recipient: RoleNames.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WOLF_HOUND, recipient: RoleNames.THIEF }),
           ],
         }),
         errorMessage: "additionalCards.roleName can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles",
@@ -556,6 +556,78 @@ describe("Game Controller", () => {
         }),
         errorMessage: "additionalCards.roleName can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles",
       },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and one of the player's group is not set",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX } }),
+          ],
+        }),
+        errorMessage: "each player must have a group if there is a player with role `prejudiced-manipulator`",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and there is only one group among players",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "there must be exactly two groups among players when `prejudiced-manipulator` in the game",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and there are three groups among players",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR }, group: "tata" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "tutu" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "there must be exactly two groups among players when `prejudiced-manipulator` in the game",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and one of the group name is too short",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR }, group: "" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "players.1.group must be longer than or equal to 1 characters",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is in the game and one of the group name is too long",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PREJUDICED_MANIPULATOR }, group: "I'm the longest name for a group that you ever seen" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "I'm the longest name for a group that you ever seen" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "players.2.group must be shorter than or equal to 30 characters",
+      },
+      {
+        test: "should not allow game creation when prejudiced manipulator is not in the game and there groups among players",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF }, group: "toto" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER }, group: "tata" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH }, group: "tutu" }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.FOX }, group: "toto" }),
+          ],
+        }),
+        errorMessage: "any player can't have a group if there is no player with role `prejudiced-manipulator`",
+      },
     ])("$test", async({
       payload,
       errorMessage,
@@ -567,7 +639,7 @@ describe("Game Controller", () => {
       });
 
       expect(response.statusCode).toBe(HttpStatus.BAD_REQUEST);
-      expect(response.json<BadRequestException>().message).toContainEqual(errorMessage);
+      expect(response.json<BadRequestException>().message).toContainEqual<string>(errorMessage);
     });
 
     it(`should create game when called.`, async() => {
@@ -680,7 +752,7 @@ describe("Game Controller", () => {
         ],
         additionalCards: [
           createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
-          createFakeGameAdditionalCard({ roleName: RoleNames.VILE_FATHER_OF_WOLVES, recipient: RoleNames.THIEF }),
+          createFakeGameAdditionalCard({ roleName: RoleNames.ACCURSED_WOLF_FATHER, recipient: RoleNames.THIEF }),
         ],
       }, { options: undefined });
       const expectedPlayers = payload.players.map<Player>((player, index) => ({
@@ -797,20 +869,23 @@ describe("Game Controller", () => {
             isTalkative: false,
             canSeeRoles: false,
           },
-          littleGirl: { isProtectedByGuard: true },
-          guard: { canProtectTwice: true },
-          ancient: {
+          littleGirl: { isProtectedByDefender: true },
+          defender: { canProtectTwice: true },
+          elder: {
             livesCountAgainstWerewolves: 1,
             doesTakeHisRevenge: false,
           },
-          idiot: { doesDieOnAncientDeath: false },
+          idiot: { doesDieOnElderDeath: false },
           twoSisters: { wakingUpInterval: 0 },
           threeBrothers: { wakingUpInterval: 5 },
           fox: { isPowerlessIfMissesWerewolf: false },
           bearTamer: { doesGrowlIfInfected: false },
           stutteringJudge: { voteRequestsCount: 3 },
           wildChild: { isTransformationRevealed: true },
-          dogWolf: { isChosenSideRevealed: true },
+          wolfHound: {
+            isChosenSideRevealed: true,
+            isSideRandomlyChosen: true,
+          },
           thief: {
             mustChooseBetweenWerewolves: false,
             additionalCardsCount: 4,
@@ -819,7 +894,8 @@ describe("Game Controller", () => {
             charmedPeopleCountPerNight: 1,
             isPowerlessIfInfected: false,
           },
-          raven: { markPenalty: 5 },
+          scandalmonger: { markPenalty: 5 },
+          witch: { doesKnowWerewolvesTargets: false },
         },
       };
       const payload = createFakeCreateGameWithPlayersDto({}, { options });
@@ -862,7 +938,7 @@ describe("Game Controller", () => {
     });
 
     it("should get a bad request error when game doesn't have playing status.", async() => {
-      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.CANCELED, currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.CANCELED, currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
@@ -878,7 +954,7 @@ describe("Game Controller", () => {
     });
 
     it("should update game status to canceled when called.", async() => {
-      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.PLAYING, currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.PLAYING, currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
@@ -960,7 +1036,7 @@ describe("Game Controller", () => {
       ];
       const game = createFakeGameWithCurrentPlay({
         status: GameStatuses.PLAYING,
-        currentPlay: createFakeGamePlayDogWolfChoosesSide(),
+        currentPlay: createFakeGamePlayWolfHoundChoosesSide(),
         upcomingPlays: [createFakeGamePlaySurvivorsVote()],
         players,
       });
@@ -1244,8 +1320,8 @@ describe("Game Controller", () => {
     });
 
     it("should return no game history records when game doesn't have any.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
-      const secondGame = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
+      const secondGame = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.BIG_BAD_WOLF }) });
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay }),
@@ -1265,8 +1341,8 @@ describe("Game Controller", () => {
     });
 
     it("should return 3 game history records when game have 3 records.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
-      const secondGame = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
+      const secondGame = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.BIG_BAD_WOLF }) });
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay, createdAt: new Date("2022-01-01") }),
@@ -1299,9 +1375,9 @@ describe("Game Controller", () => {
     });
 
     it("should return last recent game history record when limit is 1 and order is desc.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       const getGameHistoryDto = createFakeGetGameHistoryDto({ limit: 1, order: ApiSortOrder.DESC });
-      const secondGame = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayDogWolfChoosesSide() });
+      const secondGame = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.BIG_BAD_WOLF }) });
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId: game._id, play: gameHistoryRecordPlay, createdAt: new Date("2022-01-01") }),

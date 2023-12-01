@@ -292,11 +292,11 @@ Feature: 🐺👹 Big Bad Wolf role
       | Antoine | witch        |
       | JB      | werewolf     |
       | Olivia  | big-bad-wolf |
-      | Thomas  | guard        |
+      | Thomas  | defender     |
       | Doudou  | villager     |
 
-    When the guard protects the player named Antoine
-    Then the player named Antoine should have the active protected from guard attribute
+    When the defender protects the player named Antoine
+    Then the player named Antoine should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -324,7 +324,7 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia | Thomas |
       | JB     | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-   And the game's current play should be survivors to bury-dead-bodies
+    And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
@@ -351,11 +351,11 @@ Feature: 🐺👹 Big Bad Wolf role
       | Antoine | witch        |
       | JB      | werewolf     |
       | Olivia  | big-bad-wolf |
-      | Thomas  | guard        |
+      | Thomas  | defender     |
       | Doudou  | villager     |
 
-    When the guard protects the player named Antoine
-    Then the player named Antoine should have the active protected from guard attribute
+    When the defender protects the player named Antoine
+    Then the player named Antoine should have the active protected from defender attribute
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine

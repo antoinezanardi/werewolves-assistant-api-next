@@ -1,17 +1,18 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { WitchGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
 import { GamePhases } from "@/modules/game/enums/game.enum";
-import { AncientGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/ancient-game-options/ancient-game-options.schema";
+import { ElderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema";
 import { BearTamerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
 import { BigBadWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/big-bad-wolf-game-options/big-bad-wolf-game-options.schema";
-import { DogWolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/dog-wolf-game-options/dog-wolf-game-options.schema";
+import { WolfHoundGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wolf-hound-game-options/wolf-hound-game-options.schema";
 import { FoxGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/fox-game-options/fox-game-options.schema";
-import { GuardGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/guard-game-options/guard-game-options.schema";
+import { DefenderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/defender-game-options/defender-game-options.schema";
 import { IdiotGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/idiot-game-options/idiot-game-options.schema";
 import { LittleGirlGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/little-girl-game-options/little-girl-game-options.schema";
 import { PiedPiperGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/pied-piper-game-options/pied-piper-game-options.schema";
-import { RavenGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/raven-game-options/raven-game-options.schema";
+import { ScandalmongerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/scandalmonger-game-options/scandalmonger-game-options.schema";
 import { RolesGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema";
 import { SeerGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options/seer-game-options.schema";
 import { SheriffElectionGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options/sheriff-election-game-options.schema";
@@ -25,9 +26,16 @@ import { WildChildGameOptions } from "@/modules/game/schemas/game-options/roles-
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
-function createFakeRavenGameOptions(ravenGameOptions: Partial<RavenGameOptions> = {}, override: object = {}): RavenGameOptions {
-  return plainToInstance(RavenGameOptions, {
-    markPenalty: ravenGameOptions.markPenalty ?? faker.number.int({ min: 1, max: 5 }),
+function createFakeWitchGameOptions(witchGameOptions: Partial<WitchGameOptions> = {}, override: object = {}): WitchGameOptions {
+  return plainToInstance(WitchGameOptions, {
+    doesKnowWerewolvesTargets: witchGameOptions.doesKnowWerewolvesTargets ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeScandalmongerGameOptions(scandalmongerGameOptions: Partial<ScandalmongerGameOptions> = {}, override: object = {}): ScandalmongerGameOptions {
+  return plainToInstance(ScandalmongerGameOptions, {
+    markPenalty: scandalmongerGameOptions.markPenalty ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -48,9 +56,10 @@ function createFakeThiefGameOptions(thiefGameOptions: Partial<ThiefGameOptions> 
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function createFakeDogWolfGameOptions(dogWolfGameOptions: Partial<DogWolfGameOptions> = {}, override: object = {}): DogWolfGameOptions {
-  return plainToInstance(DogWolfGameOptions, {
-    isChosenSideRevealed: dogWolfGameOptions.isChosenSideRevealed ?? faker.datatype.boolean(),
+function createFakeWolfHoundGameOptions(wolfHoundGameOptions: Partial<WolfHoundGameOptions> = {}, override: object = {}): WolfHoundGameOptions {
+  return plainToInstance(WolfHoundGameOptions, {
+    isChosenSideRevealed: wolfHoundGameOptions.isChosenSideRevealed ?? faker.datatype.boolean(),
+    isSideRandomlyChosen: wolfHoundGameOptions.isSideRandomlyChosen ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -99,29 +108,29 @@ function createFakeTwoSistersGameOptions(twoSistersGameOptions: Partial<TwoSiste
 
 function createFakeIdiotGameOptions(idiotGameOptions: Partial<IdiotGameOptions> = {}, override: object = {}): IdiotGameOptions {
   return plainToInstance(IdiotGameOptions, {
-    doesDieOnAncientDeath: idiotGameOptions.doesDieOnAncientDeath ?? faker.datatype.boolean(),
+    doesDieOnElderDeath: idiotGameOptions.doesDieOnElderDeath ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function createFakeAncientGameOptions(ancientGameOptions: Partial<AncientGameOptions> = {}, override: object = {}): AncientGameOptions {
-  return plainToInstance(AncientGameOptions, {
-    livesCountAgainstWerewolves: ancientGameOptions.livesCountAgainstWerewolves ?? faker.number.int({ min: 1, max: 5 }),
-    doesTakeHisRevenge: ancientGameOptions.doesTakeHisRevenge ?? faker.datatype.boolean(),
+function createFakeElderGameOptions(elderGameOptions: Partial<ElderGameOptions> = {}, override: object = {}): ElderGameOptions {
+  return plainToInstance(ElderGameOptions, {
+    livesCountAgainstWerewolves: elderGameOptions.livesCountAgainstWerewolves ?? faker.number.int({ min: 1, max: 5 }),
+    doesTakeHisRevenge: elderGameOptions.doesTakeHisRevenge ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function createFakeGuardGameOptions(guardGameOptions: Partial<GuardGameOptions> = {}, override: object = {}): GuardGameOptions {
-  return plainToInstance(GuardGameOptions, {
-    canProtectTwice: guardGameOptions.canProtectTwice ?? faker.datatype.boolean(),
+function createFakeDefenderGameOptions(defenderGameOptions: Partial<DefenderGameOptions> = {}, override: object = {}): DefenderGameOptions {
+  return plainToInstance(DefenderGameOptions, {
+    canProtectTwice: defenderGameOptions.canProtectTwice ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakeLittleGirlGameOptions(littleGirlGameOptions: Partial<LittleGirlGameOptions> = {}, override: object = {}): LittleGirlGameOptions {
   return plainToInstance(LittleGirlGameOptions, {
-    isProtectedByGuard: littleGirlGameOptions.isProtectedByGuard ?? faker.datatype.boolean(),
+    isProtectedByDefender: littleGirlGameOptions.isProtectedByDefender ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -174,8 +183,8 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     whiteWerewolf: createFakeWhiteWerewolfGameOptions(rolesGameOptions.whiteWerewolf),
     seer: createFakeSeerGameOptions(rolesGameOptions.seer),
     littleGirl: createFakeLittleGirlGameOptions(rolesGameOptions.littleGirl),
-    guard: createFakeGuardGameOptions(rolesGameOptions.guard),
-    ancient: createFakeAncientGameOptions(rolesGameOptions.ancient),
+    defender: createFakeDefenderGameOptions(rolesGameOptions.defender),
+    elder: createFakeElderGameOptions(rolesGameOptions.elder),
     idiot: createFakeIdiotGameOptions(rolesGameOptions.idiot),
     twoSisters: createFakeTwoSistersGameOptions(rolesGameOptions.twoSisters),
     threeBrothers: createFakeThreeBrothersGameOptions(rolesGameOptions.threeBrothers),
@@ -183,19 +192,21 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     bearTamer: createFakeBearTamerGameOptions(rolesGameOptions.bearTamer),
     stutteringJudge: createFakeStutteringJudgeGameOptions(rolesGameOptions.stutteringJudge),
     wildChild: createFakeWildChildGameOptions(rolesGameOptions.wildChild),
-    dogWolf: createFakeDogWolfGameOptions(rolesGameOptions.dogWolf),
+    wolfHound: createFakeWolfHoundGameOptions(rolesGameOptions.wolfHound),
     thief: createFakeThiefGameOptions(rolesGameOptions.thief),
     piedPiper: createFakePiedPiperGameOptions(rolesGameOptions.piedPiper),
-    raven: createFakeRavenGameOptions(rolesGameOptions.raven),
+    scandalmonger: createFakeScandalmongerGameOptions(rolesGameOptions.scandalmonger),
+    witch: createFakeWitchGameOptions(rolesGameOptions.witch),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
-  createFakeRavenGameOptions,
+  createFakeWitchGameOptions,
+  createFakeScandalmongerGameOptions,
   createFakePiedPiperGameOptions,
   createFakeThiefGameOptions,
-  createFakeDogWolfGameOptions,
+  createFakeWolfHoundGameOptions,
   createFakeWildChildGameOptions,
   createFakeStutteringJudgeGameOptions,
   createFakeBearTamerGameOptions,
@@ -203,8 +214,8 @@ export {
   createFakeThreeBrothersGameOptions,
   createFakeTwoSistersGameOptions,
   createFakeIdiotGameOptions,
-  createFakeAncientGameOptions,
-  createFakeGuardGameOptions,
+  createFakeElderGameOptions,
+  createFakeDefenderGameOptions,
   createFakeLittleGirlGameOptions,
   createFakeSeerGameOptions,
   createFakeWhiteWerewolfGameOptions,

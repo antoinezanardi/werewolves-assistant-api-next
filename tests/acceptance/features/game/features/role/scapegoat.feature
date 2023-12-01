@@ -112,7 +112,7 @@ Feature: 🐐 Scapegoat role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |
       | Antoine | scapegoat |
-      | Olivia  | ancient   |
+      | Olivia  | elder     |
       | JB      | angel     |
       | Thomas  | werewolf  |
       | Mom     | villager  |
@@ -123,7 +123,7 @@ Feature: 🐐 Scapegoat role
       | Olivia  | Thomas |
       | Thomas  | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
-    And 3 of the following players should have the active powerless from ancient attribute
+    And 3 of the following players should have the active powerless from elder attribute
       | name    |
       | Antoine |
       | JB      |
@@ -152,7 +152,7 @@ Feature: 🐐 Scapegoat role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |
       | Antoine | scapegoat |
-      | Olivia  | ancient   |
+      | Olivia  | elder     |
       | JB      | angel     |
       | Thomas  | werewolf  |
       | Mom     | villager  |
@@ -195,7 +195,7 @@ Feature: 🐐 Scapegoat role
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |
       | Antoine | scapegoat |
-      | Olivia  | ancient   |
+      | Olivia  | elder     |
       | JB      | angel     |
       | Thomas  | werewolf  |
 

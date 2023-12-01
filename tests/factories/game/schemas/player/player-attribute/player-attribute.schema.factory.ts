@@ -83,19 +83,19 @@ function createFakeDrankDeathPotionByWitchPlayerAttribute(attribute: Partial<Pla
   }, override);
 }
 
-function createFakeProtectedByGuardPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeProtectedByDefenderPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.PROTECTED,
-    source: RoleNames.GUARD,
+    source: RoleNames.DEFENDER,
     remainingPhases: 1,
     ...attribute,
   }, override);
 }
 
-function createFakeRavenMarkedByRavenPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakeScandalmongerMarkedByScandalmongerPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.RAVEN_MARKED,
-    source: RoleNames.RAVEN,
+    name: PlayerAttributeNames.SCANDALMONGER_MARKED,
+    source: RoleNames.SCANDALMONGER,
     remainingPhases: 2,
     ...attribute,
   }, override);
@@ -117,6 +117,15 @@ function createFakeWorshipedByWildChildPlayerAttribute(attribute: Partial<Player
   }, override);
 }
 
+function createFakePowerlessByAccursedWolfFatherPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+  return createFakePlayerAttribute({
+    name: PlayerAttributeNames.POWERLESS,
+    source: RoleNames.ACCURSED_WOLF_FATHER,
+    doesRemainAfterDeath: true,
+    ...attribute,
+  }, override);
+}
+
 function createFakePowerlessByFoxPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.POWERLESS,
@@ -126,10 +135,10 @@ function createFakePowerlessByFoxPlayerAttribute(attribute: Partial<PlayerAttrib
   }, override);
 }
 
-function createFakePowerlessByAncientPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+function createFakePowerlessByElderPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.POWERLESS,
-    source: RoleNames.ANCIENT,
+    source: RoleNames.ELDER,
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -210,12 +219,13 @@ export {
   createFakeEatenByBigBadWolfPlayerAttribute,
   createFakeDrankLifePotionByWitchPlayerAttribute,
   createFakeDrankDeathPotionByWitchPlayerAttribute,
-  createFakeProtectedByGuardPlayerAttribute,
-  createFakeRavenMarkedByRavenPlayerAttribute,
+  createFakeProtectedByDefenderPlayerAttribute,
+  createFakeScandalmongerMarkedByScandalmongerPlayerAttribute,
   createFakeInLoveByCupidPlayerAttribute,
   createFakeWorshipedByWildChildPlayerAttribute,
+  createFakePowerlessByAccursedWolfFatherPlayerAttribute,
   createFakePowerlessByFoxPlayerAttribute,
-  createFakePowerlessByAncientPlayerAttribute,
+  createFakePowerlessByElderPlayerAttribute,
   createFakeCantVoteBySurvivorsPlayerAttribute,
   createFakeCantVoteByScapegoatPlayerAttribute,
   createFakeCharmedByPiedPiperPlayerAttribute,

@@ -86,9 +86,9 @@ function createGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {}): Ga
   });
 }
 
-function createGamePlayDogWolfChoosesSide(gamePlay: Partial<GamePlay> = {}): GamePlay {
+function createGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: createGamePlaySource({ name: RoleNames.DOG_WOLF }),
+    source: createGamePlaySource({ name: RoleNames.WOLF_HOUND }),
     action: GamePlayActions.CHOOSE_SIDE,
     occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
     ...gamePlay,
@@ -149,18 +149,18 @@ function createGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> = {})
   });
 }
 
-function createGamePlayRavenMarks(gamePlay: Partial<GamePlay> = {}): GamePlay {
+function createGamePlayScandalmongerMarks(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: createGamePlaySource({ name: RoleNames.RAVEN }),
+    source: createGamePlaySource({ name: RoleNames.SCANDALMONGER }),
     action: GamePlayActions.MARK,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
     ...gamePlay,
   });
 }
 
-function createGamePlayGuardProtects(gamePlay: Partial<GamePlay> = {}): GamePlay {
+function createGamePlayDefenderProtects(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
-    source: createGamePlaySource({ name: RoleNames.GUARD }),
+    source: createGamePlaySource({ name: RoleNames.DEFENDER }),
     action: GamePlayActions.PROTECT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
     ...gamePlay,
@@ -256,15 +256,15 @@ export {
   createGamePlayThiefChoosesCard,
   createGamePlayStutteringJudgeChoosesSign,
   createGamePlayScapegoatBansVoting,
-  createGamePlayDogWolfChoosesSide,
+  createGamePlayWolfHoundChoosesSide,
   createGamePlayWildChildChoosesModel,
   createGamePlayFoxSniffs,
   createGamePlayCharmedMeetEachOther,
   createGamePlayLoversMeetEachOther,
   createGamePlayThreeBrothersMeetEachOther,
   createGamePlayTwoSistersMeetEachOther,
-  createGamePlayRavenMarks,
-  createGamePlayGuardProtects,
+  createGamePlayScandalmongerMarks,
+  createGamePlayDefenderProtects,
   createGamePlayHunterShoots,
   createGamePlayWitchUsesPotions,
   createGamePlayPiedPiperCharms,

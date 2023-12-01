@@ -11,7 +11,7 @@ class MakeGamePlayTargetDto {
   @IsMongoId()
   public playerId: Types.ObjectId;
 
-  @ApiProperty({ description: `Can be set only if there is a \`vile father of wolves\` in the game and game's upcoming action is \`${GamePlayActions.EAT}\`. If set to \`true\`, the \`werewolves\` victim will instantly join the \`werewolves\` side if possible.` })
+  @ApiProperty({ description: `Can be set only if there is a \`accursed wolf-father\` in the game and game's upcoming action is \`${GamePlayActions.EAT}\`. If set to \`true\`, the \`werewolves\` victim will instantly join the \`werewolves\` side if possible.` })
   @IsOptional()
   @IsBoolean()
   @Expose()

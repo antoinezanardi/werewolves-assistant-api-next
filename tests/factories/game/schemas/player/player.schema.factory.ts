@@ -36,6 +36,7 @@ function createFakePlayer(player: Partial<Player> = {}, override: object = {}): 
     side: createFakePlayerSide(player.side, (override as Player).side),
     attributes: player.attributes ?? [],
     isAlive: player.isAlive ?? faker.datatype.boolean(),
+    group: player.group ?? undefined,
     position: player.position ?? faker.number.int({ min: 0 }),
     death: player.death ? createFakePlayerDeath(player.death) : undefined,
     ...override,
