@@ -21,7 +21,7 @@ describe("Composition Groups Presence Decorator", () => {
         { role: { name: RoleNames.FOX } },
         { role: { name: RoleNames.VILLAGER } },
         { role: { name: RoleNames.WEREWOLF } },
-        { role: { name: RoleNames.PREJUDICED_MANIPULATOR } },
+        { role: { name: RoleNames.WITCH } },
       ];
 
       expect(isCompositionGroupsExistenceRespected([...players, "toto"])).toBe(false);

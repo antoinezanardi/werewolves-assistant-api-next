@@ -9,7 +9,7 @@ import { createGamePlaySurvivorsVote, createGamePlaySheriffSettlesVotes, createG
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
-import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
@@ -341,6 +341,15 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, eatenByBigBadWolfPlayerAttribute);
   }
 
+  private accursedWolfFatherInfects(targetedPlayer: Player, game: GameWithCurrentPlay): Game {
+    let clonedGame = createGame(game);
+    const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES } };
+    if (targetedPlayer.role.current === RoleNames.PREJUDICED_MANIPULATOR) {
+      clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, createPowerlessByAccursedWolfFatherPlayerAttribute());
+    }
+    return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);
+  }
+
   private async werewolvesEat({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = createGame(game);
     const expectedTargetCount = 1;
@@ -351,8 +360,7 @@ export class GamePlayMakerService {
     const eatenByWerewolvesPlayerAttribute = createEatenByWerewolvesPlayerAttribute();
     const elderLivesCount = await this.playerKillerService.getElderLivesCountAgainstWerewolves(clonedGame, targetedPlayer);
     if (isTargetInfected === true && (targetedPlayer.role.current !== RoleNames.ELDER || elderLivesCount <= 1)) {
-      const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES } };
-      return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);
+      return this.accursedWolfFatherInfects(targetedPlayer, clonedGame as GameWithCurrentPlay);
     }
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, eatenByWerewolvesPlayerAttribute);
   }

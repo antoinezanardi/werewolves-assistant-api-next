@@ -1,12 +1,11 @@
 import type { ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
-import isObject from "isobject";
 import { has } from "lodash";
 
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 function doesCompositionHasTwoGroupsWithPrejudicedManipulator(value: unknown): boolean {
-  if (!Array.isArray(value) || value.some(player => !isObject(player) || !has(player, ["role", "name"]))) {
+  if (!Array.isArray(value) || value.some(player => !has(player, ["role", "name"]))) {
     return false;
   }
   const players = value as { role: { name: RoleNames }; group?: string }[];
