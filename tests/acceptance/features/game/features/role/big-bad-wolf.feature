@@ -55,6 +55,7 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia | JB     |
       | Thomas | JB     |
     Then the player named JB should be murdered by survivors from vote
+    And the player named Olivia should have the active powerless from werewolves attribute
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
@@ -258,6 +259,7 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia | JB     |
       | Thomas | JB     |
     Then the player named JB should be murdered by survivors from vote
+    And the player named Olivia should not have the active powerless from werewolves attribute
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies

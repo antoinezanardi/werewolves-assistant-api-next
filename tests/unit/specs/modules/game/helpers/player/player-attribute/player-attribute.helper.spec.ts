@@ -1,6 +1,6 @@
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
-import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource, getActivePlayerAttributeWithName, getPlayerAttributeWithName, getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource, doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource, getActivePlayerAttributeWithName, getPlayerAttributeWithName, getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
@@ -239,6 +239,45 @@ describe("Player Attribute Helper", () => {
       const player = createFakePlayer({ attributes });
 
       expect(doesPlayerHaveAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ELDER)).toBe(expected);
+    });
+  });
+
+  describe("doesPlayerHaveActiveAttributeWithNameAndSource", () => {
+    it.each<{
+      test: string;
+      attributes: PlayerAttribute[];
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when player doesn't have any attributes.",
+        attributes: [],
+        expected: false,
+      },
+      {
+        test: "should return false when player doesn't have the attribute with correct name.",
+        attributes: [createFakeEatenByWerewolvesPlayerAttribute()],
+        expected: false,
+      },
+      {
+        test: "should return false when player doesn't have the attribute with correct source.",
+        attributes: [createFakePowerlessByElderPlayerAttribute({ source: RoleNames.FOX })],
+        expected: false,
+      },
+      {
+        test: "should return false when player has the attribute but not active yet.",
+        attributes: [createFakePowerlessByElderPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 2, phase: GamePhases.DAY }) })],
+        expected: false,
+      },
+      {
+        test: "should return true when player has the attribute and is active yet.",
+        attributes: [createFakePowerlessByElderPlayerAttribute({ activeAt: createFakePlayerAttributeActivation({ turn: 1, phase: GamePhases.DAY }) })],
+        expected: true,
+      },
+    ])("$test", ({ attributes, expected }) => {
+      const game = createFakeGame({ turn: 1, phase: GamePhases.DAY });
+      const player = createFakePlayer({ attributes });
+
+      expect(doesPlayerHaveActiveAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ELDER, game)).toBe(expected);
     });
   });
 });
