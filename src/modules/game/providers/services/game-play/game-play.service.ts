@@ -11,7 +11,7 @@ import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.
 import { createGamePlay, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { areGamePlaysEqual, canSurvivorsVote, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
-import { areAllWerewolvesAlive, getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -165,7 +165,7 @@ export class GamePlayService {
       [PlayerGroups.SURVIVORS]: this.isSurvivorsGamePlaySuitableForCurrentPhase,
       [PlayerGroups.LOVERS]: this.isLoversGamePlaySuitableForCurrentPhase,
       [PlayerGroups.CHARMED]: this.isPiedPiperGamePlaySuitableForCurrentPhase,
-      [PlayerGroups.WEREWOLVES]: () => game instanceof CreateGameDto || getGroupOfPlayers(game, source).some(werewolf => isPlayerAliveAndPowerful(werewolf, game)),
+      [PlayerGroups.WEREWOLVES]: () => game instanceof CreateGameDto || getGroupOfPlayers(game, source).some(werewolf => werewolf.isAlive),
       [PlayerGroups.VILLAGERS]: () => false,
     };
     return specificGroupMethods[source](game, gamePlay);
@@ -213,10 +213,8 @@ export class GamePlayService {
     }
     const { doSkipCallIfNoTarget } = game.options.roles;
     const availableTargets = getLeftToEatByWerewolvesPlayers(game);
-    const { isPowerlessIfWerewolfDies } = game.options.roles.bigBadWolf;
     const bigBadWolfPlayer = getPlayerWithCurrentRole(game, RoleNames.BIG_BAD_WOLF);
-    return !!bigBadWolfPlayer && isPlayerAliveAndPowerful(bigBadWolfPlayer, game) &&
-      (!isPowerlessIfWerewolfDies || areAllWerewolvesAlive(game) && (!doSkipCallIfNoTarget || !!availableTargets.length));
+    return !!bigBadWolfPlayer && isPlayerAliveAndPowerful(bigBadWolfPlayer, game) && (!doSkipCallIfNoTarget || !!availableTargets.length);
   }
 
   private isThreeBrothersGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {

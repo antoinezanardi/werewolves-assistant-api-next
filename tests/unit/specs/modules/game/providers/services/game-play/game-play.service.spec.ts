@@ -29,7 +29,7 @@ import { createFakeRolesGameOptions, createFakeSheriffElectionGameOptions, creat
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeWolfHoundAlivePlayer, createFakeFoxAlivePlayer, createFakeDefenderAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeAccursedWolfFatherAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 
 describe("Game Play Service", () => {
@@ -907,11 +907,11 @@ describe("Game Play Service", () => {
         expected: true,
       },
       {
-        test: "should return false when game plays source group is werewolves and all are powerless.",
+        test: "should return false when game plays source group is werewolves and all are dead.",
         game: createFakeGame({
           players: [
-            createFakeWerewolfAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
-            createFakeBigBadWolfAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
+            createFakeWerewolfAlivePlayer({ isAlive: false }),
+            createFakeBigBadWolfAlivePlayer({ isAlive: false }),
             createFakeWitchAlivePlayer(),
             createFakeWildChildAlivePlayer(),
           ],
@@ -1399,12 +1399,12 @@ describe("Game Play Service", () => {
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(false);
     });
 
-    it("should return false when big bad wolf is in the game but one werewolf is dead.", () => {
+    it("should return false when big bad wolf is in the game but he is powerless.", () => {
       const players = [
         createFakeWhiteWerewolfAlivePlayer({ isAlive: false }),
         createFakeSeerAlivePlayer(),
         createFakeAccursedWolfFatherAlivePlayer(),
-        createFakeBigBadWolfAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer({ attributes: [createFakePowerlessByWerewolvesPlayerAttribute()] }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
       const game = createFakeGame({ players, options });
@@ -1441,21 +1441,7 @@ describe("Game Play Service", () => {
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
 
-    it("should return true when big bad wolf is in the game, one werewolf is dead but classic rules are not followed.", () => {
-      const players = [
-        createFakeWhiteWerewolfAlivePlayer({ isAlive: false }),
-        createFakeSeerAlivePlayer(),
-        createFakeAccursedWolfFatherAlivePlayer(),
-        createFakeBigBadWolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: false } }) });
-      const game = createFakeGame({ players, options });
-      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([players[0]]);
-      
-      expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
-    });
-
-    it("should return true when big bad wolf is in the game and all werewolves are alive.", () => {
+    it("should return true when big bad wolf is in the game and he is not powerless or dead.", () => {
       const players = [
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
@@ -1469,14 +1455,14 @@ describe("Game Play Service", () => {
       expect(services.gamePlay["isBigBadWolfGamePlaySuitableForCurrentPhase"](game)).toBe(true);
     });
 
-    it("should return true when big bad wolf is in the game, all werewolves are alive and his turn is no skipped if no targets.", () => {
+    it("should return true when big bad wolf is in the game, alive and powerful and his turn is no skipped if no targets.", () => {
       const players = [
         createFakeWhiteWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
         createFakeAccursedWolfFatherAlivePlayer(),
         createFakeBigBadWolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false, bigBadWolf: { isPowerlessIfWerewolfDies: true } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false }) });
       const game = createFakeGame({ players, options });
       mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValue([]);
 
