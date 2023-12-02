@@ -1,5 +1,44 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.24.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.23.1...v1.24.0) (2023-12-1)
+
+
+### 🚀 Features
+
+* **game-options:** game option to prevent witch to know werewolves targets ([#686](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/686)) ([62b978f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/62b978f6965edc4d6abb10f8477661d56b28a111)), closes [#676](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/676)
+* **game-options:** game option to randomly choose dog-wolf side ([#687](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/687)) ([47e416f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/47e416fe01bb398707973aec9cd827c4519c0cb8)), closes [#677](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/677)
+* **prejudiced-manipulator:** prejudiced manipulator role ([#699](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/699)) ([f5c8f3c](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f5c8f3c566697167865ce7ed5ad7d5096b8682e0)), closes [#678](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/678)
+
+
+### 🐛 Bug Fixes
+
+* **deploy:** deploy good production tag to docker hub ([#685](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/685)) ([135aa63](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/135aa639a74eab4346c86423bde8a04b748f3ce2)), closes [#671](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/671)
+
+
+### 📖 Docs
+
+* **readme:** github actions section in README ([#691](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/691)) ([4fb6c8b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/4fb6c8b79bdfdfe49a7328247dfc3637cacfd56f)), closes [#684](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/684)
+
+
+### 🔩 Refactor
+
+* **accursed-wolf-father:** rename vile-father-of-wolves to accursed-wolf-father according to official rulebook ([#697](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/697)) ([a3ea194](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a3ea19439648264d885ec882df6a74b687f12599)), closes [#683](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/683)
+* **defender:** rename guard to defender according to official rulebook ([#693](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/693)) ([244e260](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/244e2601d449c5cbf213a0f432b34a75533cb562)), closes [#681](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/681)
+* **elder:** rename ancient to elder according to official rulebook ([#692](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/692)) ([9ee3d99](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/9ee3d99fc3f43ce1b8bc964717a1f07891a3e667)), closes [#679](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/679)
+* **scandalmonger:** rename raven to scandalmonger according to official rulebook ([#694](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/694)) ([2db7f6f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/2db7f6fe13e6ccf52c9214582555b0f6c13921c1)), closes [#682](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/682)
+* **wolf-hound:** rename dog-wolf to wolf-hound according to official rulebook ([#695](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/695)) ([2b6936f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/2b6936f749484121c709c3378aca68c890d4abd8)), closes [#680](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/680)
+
+
+### 🧹 Chore
+
+* **deps:** bump mongoose from 8.0.1 to 8.0.2 ([#690](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/690)) ([83c8c78](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/83c8c78718b5be5b075c3007681962621887ff46))
+* **deps:** bump the nest group with 1 update ([#673](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/673)) ([17c8171](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/17c8171780b79f72ff3b4b1fd8e5b00ba2440477))
+* **deps:** bump the stryker group with 3 updates ([#698](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/698)) ([4f67f80](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/4f67f80e83d24035de1f823f98ecf148ab263d30))
+* **deps:** bump the types group with 1 update ([#696](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/696)) ([493147f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/493147f38868d89a1391d8821717fad55acc7ddd))
+* **deps:** bump the types group with 2 updates ([#674](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/674)) ([507473a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/507473ab275afa00b34716d9142c16cf99b4a422))
+* **deps:** bump the types group with 2 updates ([#689](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/689)) ([e4d9254](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/e4d9254f617492a5210cd76ceec83bb116eedffe))
+* **github-actions:** bump google-github-actions/auth from 1 to 2 ([#688](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/688)) ([cc9f9b0](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/cc9f9b0b1c28a4799fa0db8e3890a8d68bd465f5))
+
 ## [1.23.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.23.0...v1.23.1) (2023-11-27)
 
 
