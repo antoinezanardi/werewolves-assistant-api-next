@@ -14,7 +14,7 @@ import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpect
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";

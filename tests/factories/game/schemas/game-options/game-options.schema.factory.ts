@@ -5,7 +5,7 @@ import { GameOptions } from "@/modules/game/schemas/game-options/game-options.sc
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
 import { createFakeCompositionGameOptions } from "@tests/factories/game/schemas/game-options/composition-game-options.schema.factory";
-import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
 
 function createFakeGameOptions(gameOptions: Partial<GameOptions> = {}, override: object = {}): GameOptions {

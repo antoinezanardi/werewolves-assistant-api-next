@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { CUPID_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";
 import { WITCH_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
 import { ELDER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema";
 import { BEAR_TAMER_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/bear-tamer-game-options/bear-tamer-game-options.schema";
@@ -54,6 +55,11 @@ const ROLES_GAME_OPTIONS_FIELDS_SPECS = {
     required: true,
     type: SEER_GAME_OPTIONS_SCHEMA,
     default: DEFAULT_GAME_OPTIONS.roles.seer,
+  },
+  cupid: {
+    required: true,
+    type: CUPID_GAME_OPTIONS_SCHEMA,
+    default: DEFAULT_GAME_OPTIONS.roles.cupid,
   },
   littleGirl: {
     required: true,
@@ -156,6 +162,10 @@ const ROLES_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof RolesGameOpti
   seer: {
     description: "Game `seer` role's options.",
     ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.seer),
+  },
+  cupid: {
+    description: "Game `cupid` role's options.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.cupid),
   },
   littleGirl: {
     description: "Game `little girl` role's options.",

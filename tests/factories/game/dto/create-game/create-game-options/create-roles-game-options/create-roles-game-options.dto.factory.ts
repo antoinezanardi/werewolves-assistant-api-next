@@ -1,6 +1,8 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { CreateCupidGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-game-options.dto";
+import { CreateCupidLoversGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-lovers-game-options.dto";
 import { CreateWitchGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-witch-game-options.dto";
 import { CreateElderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-elder-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
@@ -152,6 +154,20 @@ function createFakeCreateSeerGameOptionsDto(seerGameOptions: Partial<CreateSeerG
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
+function createFakeCreateCupidLoversGameOptionsDto(cupidLoversGameOptions: Partial<CreateCupidLoversGameOptionsDto> = {}, override: object = {}): CreateCupidLoversGameOptionsDto {
+  return plainToInstance(CreateCupidLoversGameOptionsDto, {
+    doRevealRoleToEachOther: cupidLoversGameOptions.doRevealRoleToEachOther ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeCreateCupidGameOptionsDto(cupidGameOptions: Partial<CreateCupidGameOptionsDto> = {}, override: object = {}): CreateCupidGameOptionsDto {
+  return plainToInstance(CreateCupidGameOptionsDto, {
+    lovers: createFakeCreateCupidLoversGameOptionsDto(cupidGameOptions.lovers),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakeCreateWhiteWerewolfGameOptionsDto(
   whiteWerewolfOptions: Partial<CreateWhiteWerewolfGameOptionsDto> = {},
   override: object = {},
@@ -197,6 +213,7 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     bigBadWolf: createFakeCreateBigBadWolfGameOptionsDto(rolesGameOptions.bigBadWolf),
     whiteWerewolf: createFakeCreateWhiteWerewolfGameOptionsDto(rolesGameOptions.whiteWerewolf),
     seer: createFakeCreateSeerGameOptionsDto(rolesGameOptions.seer),
+    cupid: createFakeCreateCupidGameOptionsDto(rolesGameOptions.cupid),
     littleGirl: createFakeCreateLittleGirlGameOptionsDto(rolesGameOptions.littleGirl),
     defender: createFakeCreateDefenderGameOptionsDto(rolesGameOptions.defender),
     elder: createFakeCreateElderGameOptionsDto(rolesGameOptions.elder),
@@ -233,6 +250,8 @@ export {
   createFakeCreateDefenderGameOptionsDto,
   createFakeCreateLittleGirlGameOptionsDto,
   createFakeCreateSeerGameOptionsDto,
+  createFakeCreateCupidLoversGameOptionsDto,
+  createFakeCreateCupidGameOptionsDto,
   createFakeCreateWhiteWerewolfGameOptionsDto,
   createFakeCreateBigBadWolfGameOptionsDto,
   createFakeCreateSheriffElectionGameOptionsDto,
