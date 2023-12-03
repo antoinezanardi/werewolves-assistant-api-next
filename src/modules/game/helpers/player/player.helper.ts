@@ -4,11 +4,6 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleSides } from "@/modules/role/enums/role.enum";
 
-function canPiedPiperCharm(piedPiperPlayer: Player, game: Game): boolean {
-  const { isPowerlessIfInfected } = game.options.roles.piedPiper;
-  return isPlayerAliveAndPowerful(piedPiperPlayer, game) && (!isPowerlessIfInfected || piedPiperPlayer.side.current === RoleSides.VILLAGERS);
-}
-
 function isPlayerPowerful(player: Player, game: Game): boolean {
   return !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.POWERLESS, game);
 }
@@ -26,7 +21,6 @@ function isPlayerOnVillagersSide(player: Player): boolean {
 }
 
 export {
-  canPiedPiperCharm,
   isPlayerPowerful,
   isPlayerAliveAndPowerful,
   isPlayerOnWerewolvesSide,

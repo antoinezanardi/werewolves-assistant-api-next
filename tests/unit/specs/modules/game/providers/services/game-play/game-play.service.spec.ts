@@ -11,7 +11,6 @@ import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game
 import { GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helper";
-import * as PlayerHelper from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
@@ -70,9 +69,6 @@ describe("Game Play Service", () => {
       getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
       getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
     };
-    playerHelper: {
-      canPiedPiperCharm: jest.SpyInstance;
-    };
     unexpectedExceptionFactory: {
       createNoGamePlayPriorityUnexpectedException: jest.SpyInstance;
     };
@@ -115,7 +111,6 @@ describe("Game Play Service", () => {
         getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers").mockReturnValue([]),
         getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers").mockReturnValue([]),
       },
-      playerHelper: { canPiedPiperCharm: jest.spyOn(PlayerHelper, "canPiedPiperCharm").mockReturnValue(true) },
       unexpectedExceptionFactory: { createNoGamePlayPriorityUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoGamePlayPriorityUnexpectedException").mockImplementation() },
     };
     const module: TestingModule = await Test.createTestingModule({
@@ -1271,7 +1266,6 @@ describe("Game Play Service", () => {
     it.each<{
       test: string;
       game: CreateGameDto | Game;
-      canPiedPiperCharmMockReturnValue: boolean;
       expected: boolean;
     }>([
       {
@@ -1284,7 +1278,6 @@ describe("Game Play Service", () => {
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
           ],
         }),
-        canPiedPiperCharmMockReturnValue: false,
         expected: false,
       },
       {
@@ -1297,7 +1290,6 @@ describe("Game Play Service", () => {
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
           ],
         }),
-        canPiedPiperCharmMockReturnValue: true,
         expected: true,
       },
       {
@@ -1310,11 +1302,10 @@ describe("Game Play Service", () => {
             createFakeAngelAlivePlayer(),
           ],
         }),
-        canPiedPiperCharmMockReturnValue: false,
         expected: false,
       },
       {
-        test: "should return false when pied piper is in the game but can't charm anymore.",
+        test: "should return false when pied piper is in the game but is dead.",
         game: createFakeGame({
           players: [
             createFakeWhiteWerewolfAlivePlayer(),
@@ -1323,11 +1314,10 @@ describe("Game Play Service", () => {
             createFakePiedPiperAlivePlayer({ isAlive: false }),
           ],
         }),
-        canPiedPiperCharmMockReturnValue: false,
         expected: false,
       },
       {
-        test: "should return true when pied piper is in the game and can still charm.",
+        test: "should return true when pied piper is in the game and is alive and powerful.",
         game: createFakeGame({
           players: [
             createFakeWhiteWerewolfAlivePlayer(),
@@ -1336,12 +1326,9 @@ describe("Game Play Service", () => {
             createFakePiedPiperAlivePlayer(),
           ],
         }),
-        canPiedPiperCharmMockReturnValue: true,
         expected: true,
       },
-    ])("$test", ({ game, canPiedPiperCharmMockReturnValue, expected }) => {
-      mocks.playerHelper.canPiedPiperCharm.mockReturnValue(canPiedPiperCharmMockReturnValue);
-
+    ])("$test", ({ game, expected }) => {
       expect(services.gamePlay["isPiedPiperGamePlaySuitableForCurrentPhase"](game)).toBe(expected);
     });
   });
