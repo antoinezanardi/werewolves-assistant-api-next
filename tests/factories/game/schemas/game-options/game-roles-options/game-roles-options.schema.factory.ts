@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { PrejudicedManipulatorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";
 import { CupidGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";
 import { CupidLoversGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-lovers-game-options/cupid-game-options.schema";
 import { WitchGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
@@ -27,6 +28,16 @@ import { WhiteWerewolfGameOptions } from "@/modules/game/schemas/game-options/ro
 import { WildChildGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options/wild-child-game-options.schema";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+function createFakePrejudicedManipulatorGameOptions(
+  prejudicedManipulatorGameOptions: Partial<PrejudicedManipulatorGameOptions> = {},
+  override: object = {},
+): PrejudicedManipulatorGameOptions {
+  return plainToInstance(PrejudicedManipulatorGameOptions, {
+    isPowerlessIfInfected: prejudicedManipulatorGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
 
 function createFakeWitchGameOptions(witchGameOptions: Partial<WitchGameOptions> = {}, override: object = {}): WitchGameOptions {
   return plainToInstance(WitchGameOptions, {
@@ -214,11 +225,13 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     piedPiper: createFakePiedPiperGameOptions(rolesGameOptions.piedPiper),
     scandalmonger: createFakeScandalmongerGameOptions(rolesGameOptions.scandalmonger),
     witch: createFakeWitchGameOptions(rolesGameOptions.witch),
+    prejudicedManipulator: createFakePrejudicedManipulatorGameOptions(rolesGameOptions.prejudicedManipulator),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakePrejudicedManipulatorGameOptions,
   createFakeWitchGameOptions,
   createFakeScandalmongerGameOptions,
   createFakePiedPiperGameOptions,
