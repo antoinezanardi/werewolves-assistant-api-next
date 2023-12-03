@@ -67,6 +67,7 @@ function createFakeCreatePiedPiperGameOptionsDto(piedPiperGameOptions: Partial<C
 function createFakeCreateThiefGameOptionsDto(thiefGameOptions: Partial<CreateThiefGameOptionsDto> = {}, override: object = {}): CreateThiefGameOptionsDto {
   return plainToInstance(CreateThiefGameOptionsDto, {
     mustChooseBetweenWerewolves: thiefGameOptions.mustChooseBetweenWerewolves ?? faker.datatype.boolean(),
+    isChosenCardRevealed: thiefGameOptions.isChosenCardRevealed ?? faker.datatype.boolean(),
     additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);

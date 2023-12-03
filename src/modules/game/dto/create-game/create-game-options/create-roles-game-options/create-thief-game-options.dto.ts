@@ -14,6 +14,14 @@ class CreateThiefGameOptionsDto {
   public mustChooseBetweenWerewolves: boolean = THIEF_GAME_OPTIONS_FIELDS_SPECS.mustChooseBetweenWerewolves.default;
 
   @ApiProperty({
+    ...THIEF_GAME_OPTIONS_API_PROPERTIES.isChosenCardRevealed,
+    required: false,
+  } as ApiPropertyOptions)
+  @IsOptional()
+  @IsBoolean()
+  public isChosenCardRevealed: boolean = THIEF_GAME_OPTIONS_FIELDS_SPECS.isChosenCardRevealed.default;
+
+  @ApiProperty({
     ...THIEF_GAME_OPTIONS_API_PROPERTIES.additionalCardsCount,
     required: false,
   } as ApiPropertyOptions)

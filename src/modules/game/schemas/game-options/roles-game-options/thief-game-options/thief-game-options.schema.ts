@@ -16,6 +16,11 @@ class ThiefGameOptions {
   @Expose()
   public mustChooseBetweenWerewolves: boolean;
 
+  @ApiProperty(THIEF_GAME_OPTIONS_API_PROPERTIES.isChosenCardRevealed as ApiPropertyOptions)
+  @Prop(THIEF_GAME_OPTIONS_FIELDS_SPECS.isChosenCardRevealed)
+  @Expose()
+  public isChosenCardRevealed: boolean;
+
   @ApiProperty(THIEF_GAME_OPTIONS_API_PROPERTIES.additionalCardsCount as ApiPropertyOptions)
   @Prop(THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount)
   @Expose()

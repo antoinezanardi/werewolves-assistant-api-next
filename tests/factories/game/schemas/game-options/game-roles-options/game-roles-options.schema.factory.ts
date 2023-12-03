@@ -64,6 +64,7 @@ function createFakePiedPiperGameOptions(piedPiperGameOptions: Partial<PiedPiperG
 function createFakeThiefGameOptions(thiefGameOptions: Partial<ThiefGameOptions> = {}, override: object = {}): ThiefGameOptions {
   return plainToInstance(ThiefGameOptions, {
     mustChooseBetweenWerewolves: thiefGameOptions.mustChooseBetweenWerewolves ?? faker.datatype.boolean(),
+    isChosenCardRevealed: thiefGameOptions.isChosenCardRevealed ?? faker.datatype.boolean(),
     additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
