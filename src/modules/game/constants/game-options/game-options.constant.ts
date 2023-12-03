@@ -51,6 +51,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     },
     scandalmonger: { markPenalty: 2 },
     witch: { doesKnowWerewolvesTargets: true },
+    prejudicedManipulator: { isPowerlessIfInfected: true },
   },
 };
 

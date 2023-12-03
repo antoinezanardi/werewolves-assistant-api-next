@@ -44,4 +44,33 @@ Feature: 👺 Prejudiced Manipulator role
       | voter  | target |
       | Olivia | Thomas |
     Then the player named Thomas should be murdered by survivors from vote
-    And the game's status should be playing
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be playing
+
+  Scenario: 👺 Prejudiced Manipulator is infected but can still win the game thanks to game options
+
+    Given a created game with options described in file no-sheriff-option.json, prejudiced-manipulator-not-powerless-if-infected-option.json and with the following players
+      | name    | role                   | group |
+      | Antoine | prejudiced-manipulator | boy   |
+      | Olivia  | accursed-wolf-father   | boy   |
+      | JB      | villager               | boy   |
+      | Thomas  | villager               | girl  |
+    Then the game's current play should be werewolves to eat
+
+    When the accursed wolf-father infects the player named Antoine
+    Then the player named Antoine should not have the active powerless from accursed-wolf-father attribute
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter  | target |
+      | Olivia | Thomas |
+    Then the player named Thomas should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
+    And the game's winners should be prejudiced-manipulator with the following players
+      | name    |
+      | Antoine |
