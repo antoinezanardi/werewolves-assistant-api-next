@@ -19,7 +19,7 @@ describe("Role Constant", () => {
 
   describe("roles", () => {
     it("should contain all roles when called.", () => {
-      expect(ROLES).toStrictEqual<Role[]>([...WEREWOLF_ROLES, ...VILLAGER_ROLES]);
+      expect(ROLES).toStrictEqual<Role[]>([...WEREWOLF_ROLES, ...VILLAGER_ROLES] as Role[]);
     });
   });
 });
