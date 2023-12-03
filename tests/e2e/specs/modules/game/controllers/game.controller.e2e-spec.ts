@@ -889,6 +889,7 @@ describe("Game Controller", () => {
           },
           thief: {
             mustChooseBetweenWerewolves: false,
+            isChosenCardRevealed: true,
             additionalCardsCount: 4,
           },
           piedPiper: {

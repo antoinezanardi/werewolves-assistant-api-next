@@ -43,6 +43,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     },
     thief: {
       mustChooseBetweenWerewolves: true,
+      isChosenCardRevealed: false,
       additionalCardsCount: 2,
     },
     piedPiper: {
