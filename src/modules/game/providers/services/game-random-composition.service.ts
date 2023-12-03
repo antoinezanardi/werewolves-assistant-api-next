@@ -38,7 +38,7 @@ export class GameRandomCompositionService {
       const randomRole = sample(leftRolesToPick);
       if (randomRole === undefined) {
         randomRolesToPickCount = 1;
-        randomRoles.push(defaultSidedRole);
+        randomRoles.push(defaultSidedRole as Role);
       } else {
         randomRolesToPickCount = randomRole.minInGame ?? 1;
         for (let j = 0; j < randomRolesToPickCount; j++) {
@@ -72,6 +72,6 @@ export class GameRandomCompositionService {
       const isRolePermitted = !excludedRoles.includes(role.name);
       const isRoleMinInGameRespected = !areRecommendedMinPlayersRespected || role.recommendedMinPlayers === undefined || role.recommendedMinPlayers <= players.length;
       return isRolePermitted && isRoleMinInGameRespected;
-    });
+    }) as Role[];
   }
 }

@@ -1,6 +1,7 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
+import type { Role } from "@/modules/role/types/role.type";
 import { doesCompositionHaveAtLeastOneVillager } from "@/modules/game/dto/base/decorators/composition/composition-has-villager.decorator";
 import { doesCompositionHaveAtLeastOneWerewolf } from "@/modules/game/dto/base/decorators/composition/composition-has-werewolf.decorator";
 import { areCompositionRolesMaxInGameRespected } from "@/modules/game/dto/base/decorators/composition/composition-roles-max-in-game.decorator";
@@ -79,6 +80,7 @@ describe("Game Random Composition Service", () => {
           maxInGame: 1,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
         }),
         createFakeRole({
           name: RoleNames.WITCH,
@@ -86,6 +88,7 @@ describe("Game Random Composition Service", () => {
           maxInGame: 1,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
         }),
         createFakeRole({
           name: RoleNames.PIED_PIPER,
@@ -93,81 +96,92 @@ describe("Game Random Composition Service", () => {
           maxInGame: 1,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
         }),
       ];
       const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 10, RoleSides.VILLAGERS);
 
-      expect(result).toIncludeAllMembers([
-        {
+      expect(result).toIncludeAllMembers<Role>([
+        createFakeRole({
           name: RoleNames.SEER,
           side: RoleSides.VILLAGERS,
           maxInGame: 0,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
-        {
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
+        createFakeRole({
           name: RoleNames.WITCH,
           side: RoleSides.VILLAGERS,
           maxInGame: 0,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
-        {
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
+        createFakeRole({
           name: RoleNames.PIED_PIPER,
           side: RoleSides.VILLAGERS,
           maxInGame: 0,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
-        {
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
+        createFakeRole({
           name: RoleNames.VILLAGER,
           side: RoleSides.VILLAGERS,
           maxInGame: 99,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
-        {
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
+        createFakeRole({
           name: RoleNames.VILLAGER,
           side: RoleSides.VILLAGERS,
           maxInGame: 99,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
-        {
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
+        createFakeRole({
           name: RoleNames.VILLAGER,
           side: RoleSides.VILLAGERS,
           maxInGame: 99,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
-        {
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
+        createFakeRole({
           name: RoleNames.VILLAGER,
           side: RoleSides.VILLAGERS,
           maxInGame: 99,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
-        {
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
+        createFakeRole({
           name: RoleNames.VILLAGER,
           side: RoleSides.VILLAGERS,
           maxInGame: 99,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
-        {
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
+        createFakeRole({
           name: RoleNames.VILLAGER,
           side: RoleSides.VILLAGERS,
           maxInGame: 99,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
-        {
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
+        createFakeRole({
           name: RoleNames.VILLAGER,
           side: RoleSides.VILLAGERS,
           maxInGame: 99,
           type: RoleTypes.VILLAGER,
           origin: RoleOrigins.CLASSIC,
-        },
+          additionalCardsEligibleRecipients: [RoleNames.THIEF],
+        }),
       ]);
     });
 

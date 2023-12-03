@@ -7,7 +7,7 @@ import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 
-import { GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
+import { ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES } from "@/modules/role/constants/role.constant";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
@@ -506,10 +506,10 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.THIEF, recipient: RoleNames.THIEF }),
           ],
         }),
-        errorMessage: `additionalCards.roleName must be one of the following values: ${GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES.toString()}`,
+        errorMessage: `additionalCards.roleName must be one of the following values: ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.toString()}`,
       },
       {
-        test: "should not allow game creation when one thief additional card is is not available for thief.",
+        test: "should not allow game creation when one thief additional card (thief role) is is not available for thief.",
         payload: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
@@ -522,7 +522,39 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.TWO_SISTERS, recipient: RoleNames.THIEF }),
           ],
         }),
-        errorMessage: `additionalCards.roleName must be one of the following values: ${GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES.toString()}`,
+        errorMessage: `additionalCards.roleName must be one of the following values: ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.toString()}`,
+      },
+      {
+        test: "should not allow game creation when one thief additional card (two-sisters role) is is not available for thief.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.TWO_SISTERS, recipient: RoleNames.THIEF }),
+          ],
+        }),
+        errorMessage: `additionalCards.roleName must be one of the following values: ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.toString()}`,
+      },
+      {
+        test: "should not allow game creation when one thief additional card (three-brothers role) is is not available for thief.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THREE_BROTHERS } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.TWO_SISTERS, recipient: RoleNames.THIEF }),
+          ],
+        }),
+        errorMessage: `additionalCards.roleName must be one of the following values: ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.toString()}`,
       },
       {
         test: "should not allow game creation when two thief additional role cards exceed the maximum occurrences in game possible.",
