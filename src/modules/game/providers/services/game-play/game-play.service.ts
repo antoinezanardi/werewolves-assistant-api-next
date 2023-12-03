@@ -12,7 +12,7 @@ import { createGamePlay, createGamePlaySurvivorsElectSheriff, createGamePlaySurv
 import { areGamePlaysEqual, canSurvivorsVote, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
 import { getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
-import { canPiedPiperCharm, isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { SheriffGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
@@ -204,7 +204,7 @@ export class GamePlayService {
       return !!getPlayerDtoWithRole(game, RoleNames.PIED_PIPER);
     }
     const piedPiperPlayer = getPlayerWithCurrentRole(game, RoleNames.PIED_PIPER);
-    return !!piedPiperPlayer && canPiedPiperCharm(piedPiperPlayer, game);
+    return !!piedPiperPlayer && isPlayerAliveAndPowerful(piedPiperPlayer, game);
   }
 
   private isBigBadWolfGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {

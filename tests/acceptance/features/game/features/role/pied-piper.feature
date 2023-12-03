@@ -117,6 +117,7 @@ Feature: 🪈 Pied Piper role
 
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should have the active powerless from accursed-wolf-father attribute
     And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -329,6 +330,7 @@ Feature: 🪈 Pied Piper role
 
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should not have the active powerless from accursed-wolf-father attribute
     And the game's current play should be pied-piper to charm
     And the game's current play should be played by the following players
       | name    |
