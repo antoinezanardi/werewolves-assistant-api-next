@@ -894,6 +894,7 @@ describe("Game Controller", () => {
               phase: GamePhases.DAY,
             },
             hasDoubledVote: false,
+            mustSettleTieInVotes: false,
           },
           bigBadWolf: { isPowerlessIfWerewolfDies: false },
           whiteWerewolf: { wakingUpInterval: 5 },

@@ -213,6 +213,7 @@ function createFakeCreateSheriffGameOptionsDto(sheriffGameOptions: Partial<Creat
     isEnabled: sheriffGameOptions.isEnabled ?? faker.datatype.boolean(),
     electedAt: createFakeCreateSheriffElectionGameOptionsDto(sheriffGameOptions.electedAt),
     hasDoubledVote: sheriffGameOptions.hasDoubledVote ?? faker.datatype.boolean(),
+    mustSettleTieInVotes: sheriffGameOptions.mustSettleTieInVotes ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

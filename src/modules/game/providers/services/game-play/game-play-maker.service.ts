@@ -6,7 +6,7 @@ import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlaySurvivorsVote, createGamePlaySheriffSettlesVotes, createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
-import { createGame } from "@/modules/game/helpers/game.factory";
+import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
 import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
 import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
@@ -100,14 +100,15 @@ export class GamePlayMakerService {
   }
 
   private async handleTieInVotes(game: GameWithCurrentPlay): Promise<Game> {
-    const clonedGame = createGame(game) as GameWithCurrentPlay;
+    const clonedGame = createGameWithCurrentGamePlay(game);
+    const { mustSettleTieInVotes: mustSheriffSettleTieInVotes } = clonedGame.options.roles.sheriff;
     const scapegoatPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.SCAPEGOAT);
     if (scapegoatPlayer && isPlayerAliveAndPowerful(scapegoatPlayer, game)) {
       const playerVoteScapegoatedBySurvivorsDeath = createPlayerVoteScapegoatedBySurvivorsDeath();
       return this.playerKillerService.killOrRevealPlayer(scapegoatPlayer._id, clonedGame, playerVoteScapegoatedBySurvivorsDeath);
     }
     const sheriffPlayer = getPlayerWithActiveAttributeName(clonedGame, PlayerAttributeNames.SHERIFF);
-    if (sheriffPlayer?.isAlive === true) {
+    if (sheriffPlayer?.isAlive === true && mustSheriffSettleTieInVotes) {
       const gamePlaySheriffSettlesVotes = createGamePlaySheriffSettlesVotes();
       return prependUpcomingPlayInGame(gamePlaySheriffSettlesVotes, clonedGame);
     }
