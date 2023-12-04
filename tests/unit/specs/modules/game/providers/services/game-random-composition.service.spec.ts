@@ -513,7 +513,7 @@ describe("Game Random Composition Service", () => {
     it("should not include roles with recommended minimum of players when areRecommendedMinPlayersRespected is true and not enough players.", () => {
       const rolesWithoutRecommendedMinPlayers = ROLES.filter(role => role.recommendedMinPlayers === undefined);
       const result = services.gameRandomComposition["getAvailableRolesForGameRandomComposition"](createFakeGetGameRandomCompositionDto({
-        players: bulkCreateFakeCreateGamePlayerDto(10),
+        players: bulkCreateFakeCreateGamePlayerDto(7),
         excludedRoles: rolesWithoutRecommendedMinPlayers.map(({ name }) => name),
         areRecommendedMinPlayersRespected: true,
       }));
@@ -540,9 +540,10 @@ describe("Game Random Composition Service", () => {
         RoleNames.WHITE_WEREWOLF,
         RoleNames.ACCURSED_WOLF_FATHER,
         RoleNames.PREJUDICED_MANIPULATOR,
+        RoleNames.ACTOR,
       ];
 
-      expect(result).toHaveLength(7);
+      expect(result).toHaveLength(8);
       expect(result.every(role => expectedRoleNames.includes(role.name))).toBe(true);
     });
   });

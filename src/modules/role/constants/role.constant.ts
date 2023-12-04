@@ -243,6 +243,14 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     additionalCardsEligibleRecipients: [RoleNames.THIEF],
     recommendedMinPlayers: 12,
   },
+  {
+    name: RoleNames.ACTOR,
+    side: RoleSides.VILLAGERS,
+    type: RoleTypes.VILLAGER,
+    origin: RoleOrigins.CHARACTERS,
+    maxInGame: 1,
+    recommendedMinPlayers: 8,
+  },
 ]);
 
 const ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
@@ -252,6 +260,8 @@ const ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
 
 const ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES = ROLES.filter(({ additionalCardsEligibleRecipients }) => additionalCardsEligibleRecipients?.includes(RoleNames.THIEF));
 
+const ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLES = ROLES.filter(({ additionalCardsEligibleRecipients }) => additionalCardsEligibleRecipients?.includes(RoleNames.ACTOR));
+
 export {
   ROLES,
   DEFAULT_WEREWOLF_ROLE,
@@ -259,4 +269,5 @@ export {
   WEREWOLF_ROLES,
   VILLAGER_ROLES,
   ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES,
+  ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLES,
 };

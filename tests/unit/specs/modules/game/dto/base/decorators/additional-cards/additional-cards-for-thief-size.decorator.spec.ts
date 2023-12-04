@@ -28,13 +28,18 @@ describe("Additional Cards For Thief Size Decorator", () => {
         expected: false,
       },
       {
+        test: "should return false when some card is not an object with expected structure.",
+        additionalCards: [
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+          { bad: "structure" },
+        ],
+        expected: false,
+      },
+      {
         test: "should return false when cards size doesn't respect the options.",
         additionalCards: [
           createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.ACTOR }),
         ],
         expected: false,
       },
@@ -63,7 +68,7 @@ describe("Additional Cards For Thief Size Decorator", () => {
 
   describe("getAdditionalCardsForThiefSizeDefaultMessage", () => {
     it("should default decorator message when called.", () => {
-      expect(getAdditionalCardsForThiefSizeDefaultMessage()).toBe("additionalCards length must be equal to options.roles.thief.additionalCardsCount");
+      expect(getAdditionalCardsForThiefSizeDefaultMessage()).toBe("additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount");
     });
   });
 });
