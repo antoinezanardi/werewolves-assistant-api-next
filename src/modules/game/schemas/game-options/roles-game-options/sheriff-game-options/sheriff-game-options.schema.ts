@@ -27,6 +27,11 @@ class SheriffGameOptions {
   @Prop(SHERIFF_GAME_OPTIONS_FIELDS_SPECS.hasDoubledVote)
   @Expose()
   public hasDoubledVote: boolean;
+
+  @ApiProperty(SHERIFF_GAME_OPTIONS_API_PROPERTIES.mustSettleTieInVotes as ApiPropertyOptions)
+  @Prop(SHERIFF_GAME_OPTIONS_FIELDS_SPECS.mustSettleTieInVotes)
+  @Expose()
+  public mustSettleTieInVotes: boolean;
 }
 
 const SHERIFF_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(SheriffGameOptions);

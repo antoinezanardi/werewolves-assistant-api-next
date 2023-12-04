@@ -16,6 +16,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
         phase: GamePhases.NIGHT,
       },
       hasDoubledVote: true,
+      mustSettleTieInVotes: true,
     },
     bigBadWolf: { isPowerlessIfWerewolfDies: true },
     whiteWerewolf: { wakingUpInterval: 2 },

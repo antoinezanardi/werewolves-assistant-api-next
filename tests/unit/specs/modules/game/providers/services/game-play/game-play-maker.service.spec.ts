@@ -20,7 +20,7 @@ import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/gam
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeFoxGameOptions, createFakePiedPiperGameOptions, createFakePrejudicedManipulatorGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeFoxGameOptions, createFakePiedPiperGameOptions, createFakePrejudicedManipulatorGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -488,14 +488,15 @@ describe("Game Play Maker Service", () => {
       expect(mocks.playerKillerService.killOrRevealPlayer).toHaveBeenCalledExactlyOnceWith(players[0]._id, game, playerDeath);
     });
 
-    it("should not prepend sheriff delegation game play when sheriff is not in the game.", async() => {
+    it("should not prepend sheriff settling tie in votes game play when sheriff is not in the game.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
         createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ mustSettleTieInVotes: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
       mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
       await services.gamePlayMaker["handleTieInVotes"](game);
@@ -503,14 +504,31 @@ describe("Game Play Maker Service", () => {
       expect(mocks.gameMutator.prependUpcomingPlayInGame).not.toHaveBeenCalledExactlyOnceWith(gamePlaySheriffSettlesVotes, game);
     });
 
-    it("should not prepend sheriff delegation game play when sheriff is dead.", async() => {
+    it("should not prepend sheriff settling tie in votes game play when sheriff is dead.", async() => {
       const players = [
         createFakeSeerAlivePlayer({ isAlive: false, attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ mustSettleTieInVotes: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
+      const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
+      mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
+      await services.gamePlayMaker["handleTieInVotes"](game);
+
+      expect(mocks.gameMutator.prependUpcomingPlayInGame).not.toHaveBeenCalledExactlyOnceWith(gamePlaySheriffSettlesVotes, game);
+    });
+
+    it("should not prepend sheriff settling tie in votes game play when game options don't allow it.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer({ isAlive: false, attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ mustSettleTieInVotes: false }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
       mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
       await services.gamePlayMaker["handleTieInVotes"](game);
@@ -525,7 +543,8 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ mustSettleTieInVotes: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const gamePlaySheriffSettlesVotes = createFakeGamePlaySheriffSettlesVotes();
       mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
       await services.gamePlayMaker["handleTieInVotes"](game);
@@ -540,7 +559,8 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ mustSettleTieInVotes: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
       mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
       await services.gamePlayMaker["handleTieInVotes"](game);
@@ -555,7 +575,8 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ mustSettleTieInVotes: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
       const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES, occurrence: GamePlayOccurrences.CONSEQUENTIAL });
       await services.gamePlayMaker["handleTieInVotes"](game);
