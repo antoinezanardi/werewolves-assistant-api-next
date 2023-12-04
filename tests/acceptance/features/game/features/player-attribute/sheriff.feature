@@ -130,9 +130,9 @@ Feature: 🎖️ Sheriff player attribute
       | JB      |
     And the game's current play should have eligible targets boundaries from 0 to 4
     And the game's current play should have the following eligible targets interactable players
-      | name    |
-      | Thomas  |
-      | JB      |
+      | name   |
+      | Thomas |
+      | JB     |
 
   Scenario: 🎖️ Sheriff can't break ties with a player which is not in the previous tie
 
