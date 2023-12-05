@@ -1,12 +1,14 @@
 import { registerDecorator } from "class-validator";
-import type { ValidationOptions } from "class-validator";
+import type { ValidationOptions, ValidationArguments } from "class-validator";
 import { has } from "lodash";
 
+import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-function isAdditionalCardsForActorSizeRespected(value: unknown): boolean {
+function isAdditionalCardsForActorSizeRespected(value: unknown, validationArguments: ValidationArguments): boolean {
+  const { players } = validationArguments.object as CreateGameDto;
   const actorAdditionalCardsExpectedSize = 3;
-  if (value === undefined) {
+  if (value === undefined || !players.some(player => player.role.name === RoleNames.ACTOR)) {
     return true;
   }
   if (!Array.isArray(value) || value.some(card => !has(card, "recipient"))) {

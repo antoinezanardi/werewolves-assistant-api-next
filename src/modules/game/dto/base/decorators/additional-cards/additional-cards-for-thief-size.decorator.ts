@@ -6,8 +6,8 @@ import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.d
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 function isAdditionalCardsForThiefSizeRespected(value: unknown, validationArguments: ValidationArguments): boolean {
-  const { options } = validationArguments.object as CreateGameDto;
-  if (value === undefined) {
+  const { players, options } = validationArguments.object as CreateGameDto;
+  if (value === undefined || !players.some(player => player.role.name === RoleNames.THIEF)) {
     return true;
   }
   if (!Array.isArray(value) || value.some(card => !has(card, "recipient"))) {

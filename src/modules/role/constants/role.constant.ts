@@ -69,7 +69,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.CLASSIC,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.CUPID,
@@ -77,7 +77,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.CLASSIC,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.WITCH,
@@ -85,7 +85,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.CLASSIC,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.HUNTER,
@@ -93,7 +93,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.CLASSIC,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.LITTLE_GIRL,
@@ -101,7 +101,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.CLASSIC,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.DEFENDER,
@@ -109,7 +109,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.NEW_MOON,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.ELDER,
@@ -117,7 +117,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.NEW_MOON,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.SCAPEGOAT,
@@ -125,7 +125,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.NEW_MOON,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.IDIOT,
@@ -133,7 +133,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.NEW_MOON,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.TWO_SISTERS,
@@ -160,7 +160,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     origin: RoleOrigins.CHARACTERS,
     maxInGame: 1,
     recommendedMinPlayers: 12,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.BEAR_TAMER,
@@ -168,7 +168,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.CHARACTERS,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.STUTTERING_JUDGE,
@@ -176,7 +176,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.CHARACTERS,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.RUSTY_SWORD_KNIGHT,
@@ -184,7 +184,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.CHARACTERS,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.THIEF,
@@ -199,7 +199,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.AMBIGUOUS,
     origin: RoleOrigins.CHARACTERS,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.WOLF_HOUND,
@@ -207,7 +207,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.AMBIGUOUS,
     origin: RoleOrigins.CHARACTERS,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.ANGEL,
@@ -215,7 +215,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.LONELY,
     origin: RoleOrigins.CHARACTERS,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.PIED_PIPER,
@@ -223,7 +223,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.LONELY,
     origin: RoleOrigins.NEW_MOON,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
     recommendedMinPlayers: 12,
   },
   {
@@ -232,7 +232,7 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     type: RoleTypes.VILLAGER,
     origin: RoleOrigins.THE_VILLAGE,
     maxInGame: 1,
-    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    additionalCardsEligibleRecipients: [RoleNames.THIEF, RoleNames.ACTOR],
   },
   {
     name: RoleNames.PREJUDICED_MANIPULATOR,
@@ -260,7 +260,11 @@ const ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
 
 const ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES = ROLES.filter(({ additionalCardsEligibleRecipients }) => additionalCardsEligibleRecipients?.includes(RoleNames.THIEF));
 
+const ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES = ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.map(({ name }) => name);
+
 const ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLES = ROLES.filter(({ additionalCardsEligibleRecipients }) => additionalCardsEligibleRecipients?.includes(RoleNames.ACTOR));
+
+const ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES = ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLES.map(({ name }) => name);
 
 export {
   ROLES,
@@ -270,4 +274,6 @@ export {
   VILLAGER_ROLES,
   ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES,
   ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLES,
+  ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES,
+  ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES,
 };
