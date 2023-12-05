@@ -1,6 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
 
+import { getRoleWithName } from "@/modules/role/helpers/role.helper";
+import type { Role } from "@/modules/role/types/role.type";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
@@ -44,6 +46,7 @@ export class GamePlayMakerService {
     [RoleNames.SCAPEGOAT]: (play, game) => this.scapegoatBansVoting(play, game),
     [RoleNames.THIEF]: (play, game) => this.thiefChoosesCard(play, game),
     [RoleNames.SCANDALMONGER]: (play, game) => this.scandalmongerMarks(play, game),
+    [RoleNames.ACTOR]: (play, game) => this.actorChoosesCard(play, game),
   };
 
   public constructor(
@@ -58,6 +61,20 @@ export class GamePlayMakerService {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     const gameSourcePlayMethod = this.gameSourcePlayMethods[clonedGame.currentPlay.source.name];
     return gameSourcePlayMethod ? gameSourcePlayMethod(play, clonedGame) : clonedGame;
+  }
+
+  private actorChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
+    const clonedGame = createGame(game);
+    const actorPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.ACTOR);
+    if (!actorPlayer || !chosenCard) {
+      return clonedGame;
+    }
+    const chosenRole = getRoleWithName(ROLES as Role[], chosenCard.roleName);
+    if (!chosenRole) {
+      return clonedGame;
+    }
+    const newActorRole: PlayerRole = { ...actorPlayer.role, current: chosenRole.name };
+    return updatePlayerInGame(actorPlayer._id, { role: newActorRole }, clonedGame);
   }
 
   private async sheriffSettlesVotes({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
@@ -183,7 +200,7 @@ export class GamePlayMakerService {
     if (!thiefPlayer || !chosenCard) {
       return clonedGame;
     }
-    const chosenRole = ROLES.find(role => role.name === chosenCard.roleName);
+    const chosenRole = getRoleWithName(ROLES as Role[], chosenCard.roleName);
     if (!chosenRole) {
       return clonedGame;
     }

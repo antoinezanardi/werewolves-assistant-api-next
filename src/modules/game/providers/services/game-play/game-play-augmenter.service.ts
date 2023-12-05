@@ -330,7 +330,8 @@ export class GamePlayAugmenterService {
     if (game.additionalCards === undefined || game.additionalCards.length === 0) {
       return true;
     }
-    const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => WEREWOLF_ROLES.find(role => role.name === roleName));
+    const werewolfRoleNames = WEREWOLF_ROLES.map(role => role.name);
+    const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => werewolfRoleNames.includes(roleName));
     return !areAllAdditionalCardsWerewolves || !mustChooseBetweenWerewolves;
   }
 

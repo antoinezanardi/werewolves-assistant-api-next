@@ -3,6 +3,8 @@ import type { PlayerSide } from "@/modules/game/schemas/player/player-side/playe
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { VILLAGER_ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import { getRoleWithName } from "@/modules/role/helpers/role.helper";
+import type { Role } from "@/modules/role/types/role.type";
 
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -118,15 +120,20 @@ function createFakePrejudicedManipulatorAlivePlayer(player: Partial<Player> = {}
   return createFakeAlivePlayerWithRole(RoleNames.PREJUDICED_MANIPULATOR, player, override);
 }
 
+function createFakeActorAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
+  return createFakeAlivePlayerWithRole(RoleNames.ACTOR, player, override);
+}
+
 function createFakeAlivePlayerWithRole(role: RoleNames, player: Partial<Player> = {}, override: object = {}): Player {
   const playerRole: PlayerRole = {
     current: role,
     original: role,
     isRevealed: role === RoleNames.VILLAGER_VILLAGER,
   };
+  const villagerRoles = VILLAGER_ROLES as Role[];
   const playerSide: PlayerSide = {
-    current: VILLAGER_ROLES.find(({ name }) => name === role) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
-    original: VILLAGER_ROLES.find(({ name }) => name === role) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
+    current: getRoleWithName(villagerRoles, role) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
+    original: getRoleWithName(villagerRoles, role) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
   };
   return createFakePlayer({
     role: playerRole,
@@ -167,4 +174,5 @@ export {
   createFakePiedPiperAlivePlayer,
   createFakeScandalmongerAlivePlayer,
   createFakePrejudicedManipulatorAlivePlayer,
+  createFakeActorAlivePlayer,
 };

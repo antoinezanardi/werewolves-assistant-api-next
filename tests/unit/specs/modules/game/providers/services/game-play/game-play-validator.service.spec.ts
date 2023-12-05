@@ -31,7 +31,7 @@ import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas
 import { createFakeInteractablePlayer } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/interactable-player.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayActorChoosesCard } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeWolfHoundAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeAccursedWolfFatherAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -45,6 +45,7 @@ describe("Game Play Validator Service", () => {
       validateGamePlayVotesWithRelationsDto: jest.SpyInstance;
       validateGamePlayTargetsWithRelationsDto: jest.SpyInstance;
       validateGamePlayWithRelationsDtoChosenCard: jest.SpyInstance;
+      validateGamePlayActorChosenCard: jest.SpyInstance;
       validateGamePlayWitchTargets: jest.SpyInstance;
       validateGamePlayWithRelationsDto: jest.SpyInstance;
       validateGamePlayThiefChosenCard: jest.SpyInstance;
@@ -103,6 +104,7 @@ describe("Game Play Validator Service", () => {
         validateGamePlayVotesWithRelationsDto: jest.fn(),
         validateGamePlayTargetsWithRelationsDto: jest.fn(),
         validateGamePlayWithRelationsDtoChosenCard: jest.fn(),
+        validateGamePlayActorChosenCard: jest.fn(),
         validateGamePlayWitchTargets: jest.fn(),
         validateGamePlayWithRelationsDto: jest.fn(),
         validateGamePlayThiefChosenCard: jest.fn(),
@@ -202,9 +204,52 @@ describe("Game Play Validator Service", () => {
     });
   });
 
-  describe("validateGamePlayThiefChosenCard", () => {
+  describe("validateGamePlayActorChosenCard", () => {
     it("should do nothing when game additional cards are not set.", () => {
       const chosenCard = createFakeGameAdditionalCard();
+      const game = createFakeGameWithCurrentPlay();
+
+      expect(() => services.gamePlayValidator["validateGamePlayActorChosenCard"](chosenCard, game)).not.toThrow();
+    });
+
+    it("should do nothing when chosen card is not defined.", () => {
+      const chosenCard = undefined;
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards });
+
+      expect(() => services.gamePlayValidator["validateGamePlayActorChosenCard"](chosenCard, game)).not.toThrow();
+    });
+
+    it("should do nothing when chosen card is for actor.", () => {
+      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards });
+
+      expect(() => services.gamePlayValidator["validateGamePlayActorChosenCard"](chosenCard, game)).not.toThrow();
+    });
+
+    it("should throw an error when chosen card is not for the actor.", () => {
+      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards });
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_ACTOR);
+
+      expect(() => services.gamePlayValidator["validateGamePlayActorChosenCard"](chosenCard, game)).toThrow(expectedError);
+    });
+  });
+
+  describe("validateGamePlayThiefChosenCard", () => {
+    it("should do nothing when game additional cards are not set.", () => {
+      const chosenCard = createFakeGameAdditionalCard({ recipient: RoleNames.THIEF });
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
       const game = createFakeGameWithCurrentPlay({ options });
 
@@ -212,11 +257,11 @@ describe("Game Play Validator Service", () => {
     });
     
     it("should do nothing when game additional cards are set but thief can skip even if all cards are werewolves.", () => {
-      const chosenCard = createFakeGameAdditionalCard();
+      const chosenCard = createFakeGameAdditionalCard({ recipient: RoleNames.THIEF });
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: false }) }) });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.THIEF }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards, options });
 
@@ -227,8 +272,8 @@ describe("Game Play Validator Service", () => {
       const chosenCard = undefined;
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.SEER }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.SEER, recipient: RoleNames.THIEF }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards, options });
 
@@ -236,11 +281,11 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when thief can't skip if all cards are werewolves but he chose one anyway.", () => {
-      const chosenCard = createFakeGameAdditionalCard();
+      const chosenCard = createFakeGameAdditionalCard({ recipient: RoleNames.THIEF });
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.THIEF }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards, options });
 
@@ -251,11 +296,24 @@ describe("Game Play Validator Service", () => {
       const chosenCard = undefined;
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.THIEF }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards, options });
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.THIEF_MUST_CHOOSE_CARD);
+
+      expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).toThrow(expectedError);
+    });
+
+    it("should throw error when chosen card is not for thief.", () => {
+      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.THIEF }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards, options });
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_THIEF);
 
       expect(() => services.gamePlayValidator["validateGamePlayThiefChosenCard"](chosenCard, game)).toThrow(expectedError);
     });
@@ -264,6 +322,7 @@ describe("Game Play Validator Service", () => {
   describe("validateGamePlayWithRelationsDtoChosenCard", () => {
     beforeEach(() => {
       mocks.gamePlayValidatorService.validateGamePlayThiefChosenCard = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayThiefChosenCard }, "validateGamePlayThiefChosenCard").mockImplementation();
+      mocks.gamePlayValidatorService.validateGamePlayActorChosenCard = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayActorChosenCard }, "validateGamePlayActorChosenCard").mockImplementation();
     });
 
     it("should do nothing when chosen card is not defined and not expected.", () => {
@@ -281,13 +340,22 @@ describe("Game Play Validator Service", () => {
       expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game)).toThrow(expectedError);
     });
 
-    it("should call validateGamePlayThiefChosenCard method when action is choose card.", () => {
+    it("should call validateGamePlayThiefChosenCard method when action is choose card and source is thief.", () => {
       const chosenCard = createFakeGameAdditionalCard();
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayThiefChoosesCard() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenCard });
       services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game);
 
       expect(mocks.gamePlayValidatorService.validateGamePlayThiefChosenCard).toHaveBeenCalledExactlyOnceWith(chosenCard, game);
+    });
+
+    it("should call validateGamePlayActorChosenCard method when action is choose card and source is actor.", () => {
+      const chosenCard = createFakeGameAdditionalCard();
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayActorChoosesCard() });
+      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ chosenCard });
+      services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game);
+
+      expect(mocks.gamePlayValidatorService.validateGamePlayActorChosenCard).toHaveBeenCalledExactlyOnceWith(chosenCard, game);
     });
   });
 

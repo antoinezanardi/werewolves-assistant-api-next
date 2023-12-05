@@ -171,6 +171,15 @@ export class GamePlayService {
     return specificGroupMethods[source](game, gamePlay);
   }
 
+  private isActorGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
+    if (game instanceof CreateGameDto) {
+      return !!getPlayerDtoWithRole(game, RoleNames.ACTOR);
+    }
+    const actorPlayer = getPlayerWithCurrentRole(game, RoleNames.ACTOR);
+    const notUsedActorGameAdditionalCards = game.additionalCards?.filter(({ recipient, isUsed }) => recipient === RoleNames.ACTOR && !isUsed) ?? [];
+    return !!actorPlayer && isPlayerAliveAndPowerful(actorPlayer, game) && notUsedActorGameAdditionalCards.length > 0;
+  }
+
   private async isWitchGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {
     if (game instanceof CreateGameDto) {
       return !!getPlayerDtoWithRole(game, RoleNames.WITCH);
@@ -253,6 +262,7 @@ export class GamePlayService {
       [RoleNames.WITCH]: async() => this.isWitchGamePlaySuitableForCurrentPhase(game),
       [RoleNames.HUNTER]: () => player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game),
       [RoleNames.SCAPEGOAT]: () => player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game),
+      [RoleNames.ACTOR]: () => this.isActorGamePlaySuitableForCurrentPhase(game),
     };
     if (specificRoleMethods[source] !== undefined) {
       return await specificRoleMethods[source]?.() === true;

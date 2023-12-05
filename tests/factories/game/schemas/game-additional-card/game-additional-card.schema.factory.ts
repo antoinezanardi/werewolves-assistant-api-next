@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { GAME_ADDITIONAL_CARDS_RECIPIENTS } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
 import { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -13,7 +14,7 @@ function createFakeGameAdditionalCard(gameAdditionalCard: Partial<GameAdditional
     _id: gameAdditionalCard._id ?? createFakeObjectId(),
     roleName: gameAdditionalCard.roleName ?? faker.helpers.arrayElement(Object.values(RoleNames)),
     isUsed: gameAdditionalCard.isUsed ?? faker.datatype.boolean(),
-    recipient: gameAdditionalCard.recipient ?? faker.helpers.arrayElement(Object.values([RoleNames.THIEF])),
+    recipient: gameAdditionalCard.recipient ?? faker.helpers.arrayElement(Object.values(GAME_ADDITIONAL_CARDS_RECIPIENTS)),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
