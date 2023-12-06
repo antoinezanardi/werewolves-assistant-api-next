@@ -1,7 +1,9 @@
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 
+import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGamePlayCupidCharms, createFakeGamePlayHunterShoots } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -271,6 +273,37 @@ describe("Game Mutator", () => {
       appendUpcomingPlayInGame(gamePlayToAppend, game);
       
       expect(game).toStrictEqual<Game>(clonedGame);
+    });
+  });
+
+  describe("updateAdditionalCardInGame", () => {
+    it("should return game as is when game doesn't have any additional card.", () => {
+      const cardId = createFakeObjectId();
+      const cardDataToUpdate: Partial<GameAdditionalCard> = { isUsed: false };
+      const game = createFakeGame();
+
+      expect(updateAdditionalCardInGame(cardId, cardDataToUpdate, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game as is when card id is not found in game.", () => {
+      const cardId = createFakeObjectId();
+      const cardDataToUpdate: Partial<GameAdditionalCard> = { isUsed: false };
+      const game = createFakeGame({ additionalCards: [createFakeGameAdditionalCard()] });
+
+      expect(updateAdditionalCardInGame(cardId, cardDataToUpdate, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game with updated card when card id is found in game.", () => {
+      const cardId = createFakeObjectId();
+      const cardDataToUpdate: Partial<GameAdditionalCard> = { isUsed: false };
+      const additionalCard = createFakeGameAdditionalCard({ _id: cardId });
+      const game = createFakeGame({ additionalCards: [additionalCard] });
+      const expectedGame = createFakeGame({
+        ...game,
+        additionalCards: [createFakeGameAdditionalCard({ ...additionalCard, ...cardDataToUpdate })],
+      });
+
+      expect(updateAdditionalCardInGame(cardId, cardDataToUpdate, game)).toStrictEqual<Game>(expectedGame);
     });
   });
 });

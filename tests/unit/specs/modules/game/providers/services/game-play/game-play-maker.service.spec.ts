@@ -362,10 +362,10 @@ describe("Game Play Maker Service", () => {
   describe("actorChoosesCard", () => {
     it("should return game as is when actor is not in the game.", () => {
       const additionalCards = [
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
       ];
       const players = [
         createFakeSeerAlivePlayer(),
@@ -382,10 +382,10 @@ describe("Game Play Maker Service", () => {
 
     it("should return game as is when actor didn't choose a card.", () => {
       const additionalCards = [
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
       ];
       const players = [
         createFakeActorAlivePlayer(),
@@ -402,10 +402,10 @@ describe("Game Play Maker Service", () => {
 
     it("should return game as is when role from chosen card is not found.", () => {
       const additionalCards = [
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
       ];
       const players = [
         createFakeActorAlivePlayer(),
@@ -420,12 +420,12 @@ describe("Game Play Maker Service", () => {
       expect(services.gamePlayMaker["actorChoosesCard"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should return game with actor having chosen card role when actor chose a card.", () => {
+    it("should return game with actor having chosen card role and make it used when actor chose a card.", () => {
       const additionalCards = [
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard({ roleName: RoleNames.SEER }),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.SEER, isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
       ];
       const players = [
         createFakeActorAlivePlayer(),
@@ -443,6 +443,12 @@ describe("Game Play Maker Service", () => {
           players[1],
           players[2],
           players[3],
+        ],
+        additionalCards: [
+          additionalCards[0],
+          createFakeGameAdditionalCard({ ...additionalCards[1], isUsed: true }),
+          additionalCards[2],
+          additionalCards[3],
         ],
       });
 

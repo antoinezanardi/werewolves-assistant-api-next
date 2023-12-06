@@ -10,7 +10,7 @@ import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.
 import { createGamePlaySurvivorsVote, createGamePlaySheriffSettlesVotes, createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
 import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
 import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteBySheriffDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
@@ -64,7 +64,7 @@ export class GamePlayMakerService {
   }
 
   private actorChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
-    const clonedGame = createGame(game);
+    let clonedGame = createGame(game);
     const actorPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.ACTOR);
     if (!actorPlayer || !chosenCard) {
       return clonedGame;
@@ -74,7 +74,8 @@ export class GamePlayMakerService {
       return clonedGame;
     }
     const newActorRole: PlayerRole = { ...actorPlayer.role, current: chosenRole.name };
-    return updatePlayerInGame(actorPlayer._id, { role: newActorRole }, clonedGame);
+    clonedGame = updatePlayerInGame(actorPlayer._id, { role: newActorRole }, clonedGame);
+    return updateAdditionalCardInGame(chosenCard._id, { isUsed: true }, clonedGame);
   }
 
   private async sheriffSettlesVotes({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
