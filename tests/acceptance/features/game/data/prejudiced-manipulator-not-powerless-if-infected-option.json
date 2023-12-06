@@ -1,7 +1,0 @@
-{
-  "roles": {
-    "prejudicedManipulator": {
-      "isPowerlessIfInfected": false
-    }
-  }
-}

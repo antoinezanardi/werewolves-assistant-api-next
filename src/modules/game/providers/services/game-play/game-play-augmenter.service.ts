@@ -59,6 +59,7 @@ export class GamePlayAugmenterService {
     [RoleNames.THREE_BROTHERS]: () => true,
     [RoleNames.WHITE_WEREWOLF]: () => true,
     [RoleNames.WITCH]: () => true,
+    [RoleNames.ACTOR]: () => true,
   };
 
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}

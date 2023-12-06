@@ -1,0 +1,7 @@
+{
+  "roles": {
+    "defender": {
+      "canProtectTwice": true
+    }
+  }
+}

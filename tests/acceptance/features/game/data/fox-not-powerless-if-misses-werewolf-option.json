@@ -1,7 +1,0 @@
-{
-  "roles": {
-    "fox": {
-      "isPowerlessIfMissesWerewolf": false
-    }
-  }
-}

@@ -1,0 +1,10 @@
+[
+  {
+    "roleName": "white-werewolf",
+    "recipient": "thief"
+  },
+  {
+    "roleName": "werewolf",
+    "recipient": "thief"
+  }
+]

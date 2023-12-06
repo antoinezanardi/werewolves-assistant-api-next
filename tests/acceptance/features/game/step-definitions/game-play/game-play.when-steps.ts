@@ -227,13 +227,13 @@ When(/^the stuttering judge chooses his sign$/u, async function(this: CustomWorl
   setGameInContext(this.response, this);
 });
 
-When(/^the thief chooses card with role (?<cardRole>.+)$/u, async function(this: CustomWorld, cardRole: RoleNames): Promise<void> {
+When(/^the (?:thief|actor) chooses card with role (?<cardRole>.+)$/u, async function(this: CustomWorld, cardRole: RoleNames): Promise<void> {
   const chosenCard = this.game.additionalCards?.find(({ roleName }) => roleName === cardRole);
   this.response = await makeGamePlayRequest({ chosenCardId: chosenCard?._id }, this.game, this.app);
   setGameInContext(this.response, this);
 });
 
-When(/^the thief chooses an unknown card$/u, async function(this: CustomWorld): Promise<void> {
+When(/^the (?:thief|actor) chooses an unknown card$/u, async function(this: CustomWorld): Promise<void> {
   const unknownCardId = createFakeObjectId("4c1b96d4dfe5af0ddfa19e35");
   this.response = await makeGamePlayRequest({ chosenCardId: unknownCardId }, this.game, this.app);
   setGameInContext(this.response, this);

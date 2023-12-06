@@ -1,7 +1,0 @@
-{
-  "roles": {
-    "sheriff": {
-      "mustSettleTieInVotes": false
-    }
-  }
-}
