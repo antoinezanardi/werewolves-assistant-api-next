@@ -1,0 +1,22 @@
+[
+  {
+    "roleName": "seer",
+    "recipient": "thief"
+  },
+  {
+    "roleName": "werewolf",
+    "recipient": "thief"
+  },
+  {
+    "roleName": "witch",
+    "recipient": "actor"
+  },
+  {
+    "roleName": "hunter",
+    "recipient": "actor"
+  },
+  {
+    "roleName": "little-girl",
+    "recipient": "actor"
+  }
+]

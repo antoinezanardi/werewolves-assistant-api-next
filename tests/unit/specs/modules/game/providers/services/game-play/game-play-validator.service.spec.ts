@@ -215,8 +215,8 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when chosen card is not defined.", () => {
       const chosenCard = undefined;
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards });
 
@@ -224,10 +224,10 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when chosen card is for actor.", () => {
-      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR });
+      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards });
 
@@ -235,10 +235,22 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw an error when chosen card is not for the actor.", () => {
-      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF });
+      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF, isUsed: false });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
+      ];
+      const game = createFakeGameWithCurrentPlay({ additionalCards });
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_ACTOR);
+
+      expect(() => services.gamePlayValidator["validateGamePlayActorChosenCard"](chosenCard, game)).toThrow(expectedError);
+    });
+
+    it("should throw an error when chosen card is already used.", () => {
+      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: true });
+      const additionalCards = [
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards });
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_ACTOR);

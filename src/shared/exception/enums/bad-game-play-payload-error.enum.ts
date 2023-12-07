@@ -6,6 +6,7 @@ enum BadGamePlayPayloadReasons {
   THIEF_MUST_CHOOSE_CARD = "Thief must choose a card (`chosenCard`)",
   CHOSEN_CARD_NOT_FOR_THIEF = "Chosen card is not for thief",
   CHOSEN_CARD_NOT_FOR_ACTOR = "Chosen card is not for actor",
+  CHOSEN_CARD_ALREADY_USED = "Chosen card is already used",
   UNEXPECTED_VOTES = "`votes` can't be set on this current game's state",
   REQUIRED_VOTES = "`votes` is required on this current game's state",
   SAME_SOURCE_AND_TARGET_VOTE = "One vote has the same source and target",

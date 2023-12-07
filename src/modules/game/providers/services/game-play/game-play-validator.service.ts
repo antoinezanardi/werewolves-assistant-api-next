@@ -43,8 +43,13 @@ export class GamePlayValidatorService {
     if (!game.additionalCards) {
       return;
     }
-    if (chosenCard && chosenCard.recipient !== RoleNames.ACTOR) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_ACTOR);
+    if (chosenCard) {
+      if (chosenCard.recipient !== RoleNames.ACTOR) {
+        throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_ACTOR);
+      }
+      if (chosenCard.isUsed) {
+        throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_ALREADY_USED);
+      }
     }
   }
 

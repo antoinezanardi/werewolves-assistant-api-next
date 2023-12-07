@@ -84,6 +84,23 @@ Feature: 👺 Thief role
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "Thief must choose a card (`chosenCard`)"
 
+  Scenario: 👺 Thief can't choose a card for actor
+
+    Given a created game with additional cards described in file valid-additional-cards-for-thief-and-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | thief    |
+      | JB      | werewolf |
+      | Thomas  | villager |
+      | Louise  | villager |
+    Then the game's current play should be thief to choose-card
+
+    When the thief chooses card with role hunter
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Chosen card is not for thief"
+
   Scenario: 👺 Thief can skip his turn if he wants even if all his cards are werewolves with good option
 
     Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with options described in file no-sheriff-option.json, thief-can-skip-even-with-full-werewolves-option.json and with the following players
