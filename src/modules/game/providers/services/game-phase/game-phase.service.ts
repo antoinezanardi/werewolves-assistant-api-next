@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import type { GameSource } from "@/modules/game/types/game.type";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
@@ -119,7 +120,8 @@ export class GamePhaseService {
 
   private applyStartingNightActorRoleOutcomes(actorPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    const attributes = actorPlayer.attributes.filter(({ name, source }) => name !== PlayerAttributeNames.POWERLESS || source === RoleNames.ACCURSED_WOLF_FATHER);
+    const stickyPowerlessSources: GameSource[] = [RoleNames.ACCURSED_WOLF_FATHER, RoleNames.ACTOR];
+    const attributes = actorPlayer.attributes.filter(({ name, source }) => name !== PlayerAttributeNames.POWERLESS || stickyPowerlessSources.includes(source));
     const playerDataToUpdate: Partial<Player> = { role: { ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }, attributes };
     return updatePlayerInGame(actorPlayer._id, playerDataToUpdate, clonedGame);
   }

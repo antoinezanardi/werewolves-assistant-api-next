@@ -32,14 +32,17 @@ describe("Additional Cards For Thief Size Decorator", () => {
         expected: true,
       },
       {
-        test: "should return true when cards not defined but there is not thief among players.",
+        test: "should return true when cards are defined but there is not thief among players.",
         createGameDto: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
-            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
           ],
         }),
-        additionalCards: undefined,
+        additionalCards: [
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+        ],
         expected: true,
       },
       {
@@ -54,6 +57,20 @@ describe("Additional Cards For Thief Size Decorator", () => {
         expected: false,
       },
       {
+        test: "should return false when every cards is not an object with expected structure.",
+        createGameDto: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
+          ],
+        }),
+        additionalCards: [
+          { bad: "structure" },
+          { bad: "structure" },
+        ],
+        expected: false,
+      },
+      {
         test: "should return false when some card is not an object with expected structure.",
         createGameDto: createFakeCreateGameDto({
           players: [
@@ -64,6 +81,7 @@ describe("Additional Cards For Thief Size Decorator", () => {
         additionalCards: [
           createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
           { bad: "structure" },
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
         ],
         expected: false,
       },

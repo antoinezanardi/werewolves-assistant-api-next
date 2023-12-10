@@ -388,16 +388,250 @@ Feature: 🎭 Actor role
     When the player or group skips his turn
     Then the player named JB should be murdered by rusty-sword-knight from disease
 
-  #  Scenario: 🎭 Actor acts as angel and wins
+  Scenario: 🎭 Actor acts as angel and wins
 
-  #  Scenario: 🎭 Actor acts as wild child and becomes a werewolf because the model died and thus becomes powerless
+    Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | villager |
+      | Louise  | villager |
+    Then the game's current play should be actor to choose-card
 
-  #  Scenario: 🎭 Actor acts as wild child but doesn't become a werewolf because he became back an actor before the model died
+    When the actor chooses card with role angel
+    Then the player named Antoine should be currently a angel and originally a actor
+    And the game's additional card with role angel for actor should be used
+    And the game's current play should be survivors to vote because angel-presence
 
-  #  Scenario: 🎭 Actor acts as wolf-hound and becomes a werewolf and thus becomes powerless
+    When the survivors vote with the following votes
+      | voter | target  |
+      | JB    | Antoine |
+    Then the player named Antoine should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
 
-  #  Scenario: 🎭 Actor acts as pied piper and wins
+    When the survivors bury dead bodies
+    Then the game's status should be over
+    And the game's winners should be angel with the following players
+      | name    |
+      | Antoine |
 
-  #  Scenario: 🎭 Actor acts as scandalmonger
+  Scenario: 🎭 Actor acts as wild child and becomes a werewolf because the model died and thus becomes powerless
 
-  #  Scenario: 🎭 Actor becomes powerless when he is infected by the accursed wolf-father
+    Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | villager |
+      | Louise  | villager |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role wild-child
+    Then the player named Antoine should be currently a wild-child and originally a actor
+    And the game's additional card with role wild-child for actor should be used
+    And the game's current play should be wild-child to choose-model
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+
+    When the wild child chooses the player named Olivia as a model
+    Then the player named Olivia should have the active worshiped from wild-child attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should have the active powerless from actor attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+  Scenario: 🎭 Actor acts as wild child but doesn't become a werewolf because he became back an actor before the model died
+
+    Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | villager |
+      | Louise  | villager |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role wild-child
+    Then the player named Antoine should be currently a wild-child and originally a actor
+    And the game's additional card with role wild-child for actor should be used
+    And the game's current play should be wild-child to choose-model
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+
+    When the wild child chooses the player named Olivia as a model
+    Then the player named Olivia should have the active worshiped from wild-child attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Louise
+    Then the player named Louise should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role angel
+    Then the player named Antoine should be currently a angel and originally a actor
+    And the game's additional card with role angel for actor should be used
+    And the game's current play should be survivors to vote because angel-presence
+
+    When the survivors vote with the following votes
+      | voter | target |
+      | JB    | Olivia |
+    Then the player named Olivia should be murdered by survivors from vote
+    And the player named Antoine should be on villagers current side and originally be on villagers side
+    And the player named Antoine should not have the active powerless from actor attribute
+
+  Scenario: 🎭 Actor acts as wolf-hound and becomes a werewolf and thus becomes powerless
+
+    Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | villager |
+      | Louise  | villager |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role wolf-hound
+    Then the player named Antoine should be currently a wolf-hound and originally a actor
+    And the game's additional card with role wolf-hound for actor should be used
+    And the game's current play should be wolf-hound to choose-side
+
+    When the wolf-hound chooses the werewolves side
+    Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should have the active powerless from actor attribute
+    And the game's current play should be werewolves to eat
+
+  Scenario: 🎭 Actor acts as wolf-hound and becomes a villager and thus doesn't become powerless
+
+    Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | villager |
+      | Louise  | villager |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role wolf-hound
+    Then the player named Antoine should be currently a wolf-hound and originally a actor
+    And the game's additional card with role wolf-hound for actor should be used
+    And the game's current play should be wolf-hound to choose-side
+
+    When the wolf-hound chooses the villagers side
+    Then the player named Antoine should be on villagers current side and originally be on villagers side
+    And the player named Antoine should not have the active powerless from actor attribute
+    And the game's current play should be werewolves to eat
+
+  Scenario: 🎭 Actor acts as pied piper and wins
+
+    Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | villager |
+    Then the game's current play should be actor to choose-card
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role pied-piper
+    Then the player named Antoine should be currently a pied-piper and originally a actor
+    And the game's additional card with role pied-piper for actor should be used
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be pied-piper to charm
+
+    When the pied piper charms the following players
+      | name   |
+      | JB     |
+      | Thomas |
+    Then the player named JB should have the active charmed from pied-piper attribute
+    And the player named Thomas should have the active charmed from pied-piper attribute
+    And the game's status should be over
+    And the game's winners should be pied-piper with the following players
+      | name    |
+      | Antoine |
+
+  Scenario: 🎭 Actor acts as scandalmonger
+
+    Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | villager |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role scandalmonger
+    Then the player named Antoine should be currently a scandalmonger and originally a actor
+    And the game's additional card with role scandalmonger for actor should be used
+    And the game's current play should be scandalmonger to mark
+
+    When the scandalmonger marks the player named Olivia
+    Then the player named Olivia should have the active scandalmonger-marked from scandalmonger attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the player named Olivia should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be actor to choose-card
+
+  Scenario: 🎭 Actor becomes powerless when he is infected by the accursed wolf-father
+
+    Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role                 |
+      | Antoine | actor                |
+      | Olivia  | villager             |
+      | JB      | werewolf             |
+      | Thomas  | villager             |
+      | Louise  | accursed-wolf-father |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role pied-piper
+    Then the player named Antoine should be currently a pied-piper and originally a actor
+    And the game's additional card with role pied-piper for actor should be used
+    And the game's current play should be werewolves to eat
+
+    When the accursed wolf-father infects the player named Antoine
+    Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should have the active powerless from accursed-wolf-father attribute
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat

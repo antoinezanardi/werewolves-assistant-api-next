@@ -1,15 +1,14 @@
-import { Test } from "@nestjs/testing";
 import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
 
-import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import { WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerDeathCauses } from "@/modules/game/enums/player.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helper";
 import * as GameMutator from "@/modules/game/helpers/game.mutator";
-import { createPowerlessByElderPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
@@ -17,15 +16,15 @@ import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
-import { createFakePlayer, createFakePlayerRole, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeElderAlivePlayer, createFakeDefenderAlivePlayer, createFakeHunterAlivePlayer, createFakeIdiotAlivePlayer, createFakeLittleGirlAlivePlayer, createFakeRustySwordKnightAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeBigBadWolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerDeathPotionByWitchDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerReconsiderPardonBySurvivorsDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySurvivorsBuryDeadBodies } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeBigBadWolfGameOptions, createFakeElderGameOptions, createFakeIdiotGameOptions, createFakeLittleGirlGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
-import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeBigBadWolfGameOptions, createFakeElderGameOptions, createFakeIdiotGameOptions, createFakeLittleGirlGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySurvivorsBuryDeadBodies } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerBrokenHeartByCupidDeath, createFakePlayerDeathPotionByWitchDeath, createFakePlayerEatenByWerewolvesDeath, createFakePlayerReconsiderPardonBySurvivorsDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeBigBadWolfAlivePlayer, createFakeDefenderAlivePlayer, createFakeElderAlivePlayer, createFakeHunterAlivePlayer, createFakeIdiotAlivePlayer, createFakeLittleGirlAlivePlayer, createFakeRustySwordKnightAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePlayer, createFakePlayerRole, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Player Killer Service", () => {
   let mocks: {
@@ -477,7 +476,7 @@ describe("Player Killer Service", () => {
       },
       {
         test: "should return false when player role is idiot but powerless.",
-        player: createFakeIdiotAlivePlayer({ attributes: [createPowerlessByElderPlayerAttribute()] }),
+        player: createFakeIdiotAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         death: createFakePlayerVoteBySurvivorsDeath(),
         game: createFakeGame(),
         expected: false,
@@ -554,7 +553,7 @@ describe("Player Killer Service", () => {
       },
       {
         test: "should return true when idiot is killed by vote but powerless.",
-        player: createFakeIdiotAlivePlayer({ attributes: [createPowerlessByElderPlayerAttribute()] }),
+        player: createFakeIdiotAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         cause: PlayerDeathCauses.VOTE,
         game: createFakeGame(),
         expected: true,
@@ -701,7 +700,7 @@ describe("Player Killer Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWildChildAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
-        createFakeSeerAlivePlayer({ attributes: [createWorshipedByWildChildPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeWorshipedByWildChildPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
 
@@ -710,7 +709,7 @@ describe("Player Killer Service", () => {
 
     it("should return game as is when there is no wild child player.", () => {
       const players = [
-        createFakeSeerAlivePlayer({ attributes: [createWorshipedByWildChildPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeWorshipedByWildChildPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeWitchAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -722,7 +721,7 @@ describe("Player Killer Service", () => {
 
     it("should return game as is when wild child player is dead.", () => {
       const players = [
-        createFakeSeerAlivePlayer({ attributes: [createWorshipedByWildChildPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeWorshipedByWildChildPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeWildChildAlivePlayer({ isAlive: false }),
         createFakeWerewolfAlivePlayer(),
@@ -734,9 +733,9 @@ describe("Player Killer Service", () => {
 
     it("should return game as is when wild child player is powerless.", () => {
       const players = [
-        createFakeSeerAlivePlayer({ attributes: [createWorshipedByWildChildPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeWorshipedByWildChildPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
-        createFakeWildChildAlivePlayer({ attributes: [createPowerlessByElderPlayerAttribute()] }),
+        createFakeWildChildAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGame({ players });
@@ -746,7 +745,7 @@ describe("Player Killer Service", () => {
 
     it("should transform wild child to a werewolf sided player when called.", () => {
       const players = [
-        createFakeSeerAlivePlayer({ attributes: [createWorshipedByWildChildPlayerAttribute()] }),
+        createFakeSeerAlivePlayer({ attributes: [createFakeWorshipedByWildChildPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWildChildAlivePlayer(),
@@ -761,6 +760,34 @@ describe("Player Killer Service", () => {
           createFakePlayer({
             ...game.players[3],
             side: createFakePlayerSide({ ...game.players[3].side, current: RoleSides.WEREWOLVES }),
+          }),
+        ],
+      });
+
+      expect(services.playerKiller["applyWorshipedPlayerDeathOutcomes"](players[0], game)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should transform wild child to a werewolf sided player and add powerless attribute when wild child is actor in disguise.", () => {
+      const players = [
+        createFakeSeerAlivePlayer({ attributes: [createFakeWorshipedByWildChildPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWildChildAlivePlayer({
+          role: createFakePlayerRole({ original: RoleNames.ACTOR, current: RoleNames.WILD_CHILD }),
+          attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()],
+        }),
+      ];
+      const game = createFakeGame({ players });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          game.players[0],
+          game.players[1],
+          game.players[2],
+          createFakePlayer({
+            ...game.players[3],
+            side: createFakePlayerSide({ ...game.players[3].side, current: RoleSides.WEREWOLVES }),
+            attributes: [...game.players[3].attributes, createFakePowerlessByActorPlayerAttribute()],
           }),
         ],
       });

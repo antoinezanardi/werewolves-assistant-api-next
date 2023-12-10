@@ -56,6 +56,15 @@ function createCantVoteByScapegoatPlayerAttribute(game: Game, playerAttribute: P
   });
 }
 
+function createPowerlessByActorPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+  return createPlayerAttribute({
+    name: PlayerAttributeNames.POWERLESS,
+    source: RoleNames.ACTOR,
+    doesRemainAfterDeath: true,
+    ...playerAttribute,
+  });
+}
+
 function createPowerlessByWerewolvesPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.POWERLESS,
@@ -208,6 +217,7 @@ export {
   createCharmedByPiedPiperPlayerAttribute,
   createCantVoteBySurvivorsPlayerAttribute,
   createCantVoteByScapegoatPlayerAttribute,
+  createPowerlessByActorPlayerAttribute,
   createPowerlessByWerewolvesPlayerAttribute,
   createPowerlessByAccursedWolfFatherPlayerAttribute,
   createPowerlessByFoxPlayerAttribute,

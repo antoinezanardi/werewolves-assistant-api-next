@@ -972,7 +972,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlayCupidCharms(),
-        hasGamePlayBeenMade: true,
+        hasGamePlayBeenMade: false,
         expected: false,
       },
       {
@@ -998,7 +998,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlayCupidCharms(),
-        hasGamePlayBeenMade: true,
+        hasGamePlayBeenMade: false,
         expected: false,
       },
       {

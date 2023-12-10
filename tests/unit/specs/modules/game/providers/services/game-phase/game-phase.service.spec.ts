@@ -15,7 +15,7 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakeBearTamerGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeGrowledByBearTamerPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeGrowledByBearTamerPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeActorAlivePlayer, createFakeBearTamerAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer, createFakePlayerRole, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -396,6 +396,7 @@ describe("Game Phase Service", () => {
       const attributes = [
         createFakePowerlessByElderPlayerAttribute(),
         createFakePowerlessByAccursedWolfFatherPlayerAttribute(),
+        createFakePowerlessByActorPlayerAttribute(),
         createFakeContaminatedByRustySwordKnightPlayerAttribute(),
       ];
       const actorPlayer = createFakeWerewolfAlivePlayer({ role: actorRole, attributes });
@@ -409,6 +410,7 @@ describe("Game Phase Service", () => {
             attributes: [
               attributes[1],
               attributes[2],
+              attributes[3],
             ],
           }),
         ],
