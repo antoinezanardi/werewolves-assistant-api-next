@@ -15,7 +15,7 @@ Feature: 💘 Cupid role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
-    And the game's current play occurrence should be first-night-only
+    And the game's current play occurrence should be one-night-only
     And the game's current play can not be skipped
     And the game's current play should have eligible targets boundaries from 2 to 2
     And the game's current play should have the following eligible targets interactable players
@@ -48,7 +48,7 @@ Feature: 💘 Cupid role
       | name   |
       | JB     |
       | Thomas |
-    And the game's current play occurrence should be first-night-only
+    And the game's current play occurrence should be one-night-only
     And the game's current play can be skipped
     And the game's current play should not have eligible targets boundaries
     And the game's current play should not have eligible targets interactable players

@@ -58,7 +58,7 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     source: { name: PlayerGroups.SURVIVORS },
     action: GamePlayActions.VOTE,
     cause: GamePlayCauses.ANGEL_PRESENCE,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
   },
   {
     source: { name: PlayerGroups.SURVIVORS },
@@ -74,7 +74,7 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
   {
     source: { name: RoleNames.THIEF },
     action: GamePlayActions.CHOOSE_CARD,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
   },
   {
     source: { name: RoleNames.ACTOR },
@@ -84,12 +84,12 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
   {
     source: { name: RoleNames.WOLF_HOUND },
     action: GamePlayActions.CHOOSE_SIDE,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
   },
   {
     source: { name: RoleNames.CUPID },
     action: GamePlayActions.CHARM,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
   },
   {
     source: { name: RoleNames.SEER },
@@ -104,12 +104,12 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
   {
     source: { name: PlayerGroups.LOVERS },
     action: GamePlayActions.MEET_EACH_OTHER,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
   },
   {
     source: { name: RoleNames.STUTTERING_JUDGE },
     action: GamePlayActions.CHOOSE_SIGN,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
   },
   {
     source: { name: RoleNames.TWO_SISTERS },
@@ -124,7 +124,7 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
   {
     source: { name: RoleNames.WILD_CHILD },
     action: GamePlayActions.CHOOSE_MODEL,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
   },
   {
     source: { name: RoleNames.SCANDALMONGER },
@@ -168,13 +168,10 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
   },
 ] as const;
 
-const ON_NIGHTS_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => occurrence === GamePlayOccurrences.ON_NIGHTS);
-
-const ON_FIRST_AND_LATER_NIGHTS_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => [GamePlayOccurrences.FIRST_NIGHT_ONLY, GamePlayOccurrences.ON_NIGHTS].includes(occurrence));
+const NIGHT_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => [GamePlayOccurrences.ONE_NIGHT_ONLY, GamePlayOccurrences.ON_NIGHTS].includes(occurrence));
 
 export {
   GAME_SOURCES,
   GAME_PLAYS_PRIORITY_LIST,
-  ON_NIGHTS_GAME_PLAYS_PRIORITY_LIST,
-  ON_FIRST_AND_LATER_NIGHTS_GAME_PLAYS_PRIORITY_LIST,
+  NIGHT_GAME_PLAYS_PRIORITY_LIST,
 };

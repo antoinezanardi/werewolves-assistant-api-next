@@ -15,7 +15,7 @@ Feature: 👺 Thief role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
-    And the game's current play occurrence should be first-night-only
+    And the game's current play occurrence should be one-night-only
     And the game's current play can be skipped
     And the game's current play should not have eligible targets
 

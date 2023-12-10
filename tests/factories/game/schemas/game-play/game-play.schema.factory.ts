@@ -48,7 +48,7 @@ function createFakeGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}, ov
 function createFakeGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   let occurrence = GamePlayOccurrences.ON_DAYS;
   if (gamePlay.cause === GamePlayCauses.ANGEL_PRESENCE) {
-    occurrence = GamePlayOccurrences.FIRST_NIGHT_ONLY;
+    occurrence = GamePlayOccurrences.ONE_NIGHT_ONLY;
   } else if ([GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES, GamePlayCauses.STUTTERING_JUDGE_REQUEST].includes(gamePlay.cause as GamePlayCauses)) {
     occurrence = GamePlayOccurrences.CONSEQUENTIAL;
   }
@@ -73,7 +73,7 @@ function createFakeGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}, ov
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: RoleNames.THIEF }),
     action: GamePlayActions.CHOOSE_CARD,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   }, override);
 }
@@ -82,7 +82,7 @@ function createFakeGamePlayStutteringJudgeChoosesSign(gamePlay: Partial<GamePlay
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
     action: GamePlayActions.CHOOSE_SIGN,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   }, override);
 }
@@ -100,7 +100,7 @@ function createFakeGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: RoleNames.WOLF_HOUND }),
     action: GamePlayActions.CHOOSE_SIDE,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   }, override);
 }
@@ -109,7 +109,7 @@ function createFakeGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: RoleNames.WILD_CHILD }),
     action: GamePlayActions.CHOOSE_MODEL,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   }, override);
 }
@@ -136,7 +136,7 @@ function createFakeGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {},
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: PlayerGroups.LOVERS }),
     action: GamePlayActions.MEET_EACH_OTHER,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   }, override);
 }
@@ -208,7 +208,7 @@ function createFakeGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}, overrid
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: RoleNames.CUPID }),
     action: GamePlayActions.CHARM,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   }, override);
 }

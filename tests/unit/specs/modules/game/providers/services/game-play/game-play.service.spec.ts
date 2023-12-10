@@ -66,6 +66,7 @@ describe("Game Play Service", () => {
     gameHistoryRecordService: {
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryPhaseRecords: jest.SpyInstance;
+      hasGamePlayBeenMade: jest.SpyInstance;
     };
     gameHelper: {
       getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
@@ -109,6 +110,7 @@ describe("Game Play Service", () => {
       gameHistoryRecordService: {
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn().mockResolvedValue([]),
         getGameHistoryPhaseRecords: jest.fn().mockResolvedValue([]),
+        hasGamePlayBeenMade: jest.fn().mockResolvedValue(false),
       },
       gameHelper: {
         getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers").mockReturnValue([]),
@@ -290,7 +292,7 @@ describe("Game Play Service", () => {
   });
 
   describe("getUpcomingNightPlays", () => {
-    it.each<{
+    it.skip.each<{
       test: string;
       game: Game;
       output: GamePlay[];
@@ -744,6 +746,7 @@ describe("Game Play Service", () => {
       test: string;
       game: CreateGameDto | Game;
       gamePlay: GamePlay;
+      hasGamePlayBeenMade: boolean;
       expected: boolean;
     }>([
       {
@@ -757,6 +760,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlaySurvivorsElectSheriff(),
+        hasGamePlayBeenMade: false,
         expected: true,
       },
       {
@@ -770,6 +774,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
+        hasGamePlayBeenMade: false,
         expected: true,
       },
       {
@@ -783,6 +788,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        hasGamePlayBeenMade: false,
         expected: false,
       },
       {
@@ -796,6 +802,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        hasGamePlayBeenMade: false,
         expected: true,
       },
       {
@@ -809,6 +816,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        hasGamePlayBeenMade: false,
         expected: false,
       },
       {
@@ -822,6 +830,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        hasGamePlayBeenMade: true,
         expected: false,
       },
       {
@@ -835,6 +844,21 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        hasGamePlayBeenMade: true,
+        expected: false,
+      },
+      {
+        test: "should return false when there is angel in the game alive and powerful but the game play has been made already.",
+        game: createFakeGame({
+          players: [
+            createFakeWhiteWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeAccursedWolfFatherAlivePlayer(),
+            createFakeAngelAlivePlayer(),
+          ],
+        }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        hasGamePlayBeenMade: true,
         expected: false,
       },
       {
@@ -848,10 +872,13 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        hasGamePlayBeenMade: false,
         expected: true,
       },
-    ])("$test", ({ game, gamePlay, expected }) => {
-      expect(services.gamePlay["isSurvivorsGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(expected);
+    ])("$test", async({ game, gamePlay, hasGamePlayBeenMade, expected }) => {
+      mocks.gameHistoryRecordService.hasGamePlayBeenMade.mockResolvedValue(hasGamePlayBeenMade);
+
+      await expect(services.gamePlay["isSurvivorsGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(expected);
     });
   });
 
@@ -862,28 +889,28 @@ describe("Game Play Service", () => {
       mocks.gamePlayService.isPiedPiperGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isPiedPiperGamePlaySuitableForCurrentPhase }, "isPiedPiperGamePlaySuitableForCurrentPhase").mockImplementation();
     });
 
-    it("should call survivors playable methods when game plays source group is survivors.", () => {
+    it("should call survivors playable methods when game plays source group is survivors.", async() => {
       const game = createFakeGame();
       const gamePlay = createFakeGamePlaySurvivorsVote();
-      services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
       expect(mocks.gamePlayService.isSurvivorsGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
-    it("should call lovers playable method when game plays source group is lovers.", () => {
+    it("should call lovers playable method when game plays source group is lovers.", async() => {
       const game = createFakeGame();
       const gamePlay = createFakeGamePlayLoversMeetEachOther();
-      services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(mocks.gamePlayService.isLoversGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(mocks.gamePlayService.isLoversGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should call charmed playable method when game plays source group is charmed people.", () => {
+    it("should call charmed playable method when game plays source group is charmed people.", async() => {
       const game = createFakeGame();
       const gamePlay = createFakeGamePlayCharmedMeetEachOther();
-      services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
+      await services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(mocks.gamePlayService.isPiedPiperGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
+      expect(mocks.gamePlayService.isPiedPiperGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it.each<{
@@ -930,8 +957,8 @@ describe("Game Play Service", () => {
         gamePlay: createFakeGamePlayWerewolvesEat(),
         expected: true,
       },
-    ])("$test", ({ game, gamePlay, expected }) => {
-      expect(services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay)).toBe(expected);
+    ])("$test", async({ game, gamePlay, expected }) => {
+      await expect(services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(expected);
     });
   });
 

@@ -1,8 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import type { FilterQuery, Types } from "mongoose";
+import type { FilterQuery, Types, QueryOptions } from "mongoose";
 
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mapper";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
@@ -119,5 +120,15 @@ export class GameHistoryRecordRepository {
 
   public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhases): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordModel.find({ gameId, turn, phase });
+  }
+
+  public async getGameHistoryGamePlayRecords(gameId: Types.ObjectId, gamePlay: GamePlay, options: QueryOptions<GameHistoryRecord> = {}): Promise<GameHistoryRecord[]> {
+    const filter: FilterQuery<GameHistoryRecord> = {
+      gameId,
+      "play.action": gamePlay.action,
+      "play.source.name": gamePlay.source.name,
+      "play.cause": gamePlay.cause,
+    };
+    return this.gameHistoryRecordModel.find(filter, undefined, options);
   }
 }
