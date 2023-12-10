@@ -57,6 +57,7 @@ describe("Game Play Service", () => {
       isSheriffGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isRoleGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isGroupGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+      isOneNightOnlyGamePlaySuitableForCurrentPhase: jest.SpyInstance;
     };
     gamePlayAugmenterService: {
       setGamePlayCanBeSkipped: jest.SpyInstance;
@@ -101,6 +102,7 @@ describe("Game Play Service", () => {
         isSheriffGamePlaySuitableForCurrentPhase: jest.fn(),
         isRoleGamePlaySuitableForCurrentPhase: jest.fn(),
         isGroupGamePlaySuitableForCurrentPhase: jest.fn(),
+        isOneNightOnlyGamePlaySuitableForCurrentPhase: jest.fn(),
       },
       gamePlayAugmenterService: {
         setGamePlayCanBeSkipped: jest.fn(),
@@ -292,7 +294,7 @@ describe("Game Play Service", () => {
   });
 
   describe("getUpcomingNightPlays", () => {
-    it.skip.each<{
+    it.each<{
       test: string;
       game: Game;
       output: GamePlay[];
@@ -355,7 +357,6 @@ describe("Game Play Service", () => {
           createFakeGamePlayCupidCharms(),
           createFakeGamePlaySeerLooks(),
           createFakeGamePlayFoxSniffs(),
-          createFakeGamePlayLoversMeetEachOther(),
           createFakeGamePlayStutteringJudgeChoosesSign(),
           createFakeGamePlayTwoSistersMeetEachOther(),
           createFakeGamePlayThreeBrothersMeetEachOther(),
@@ -384,7 +385,11 @@ describe("Game Play Service", () => {
           ],
           options: DEFAULT_GAME_OPTIONS,
         }),
-        output: [createFakeGamePlayWerewolvesEat()],
+        output: [
+          createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+          createFakeGamePlayCupidCharms(),
+          createFakeGamePlayWerewolvesEat(),
+        ],
       },
     ])("$test", async({ game, output }) => {
       await expect(services.gamePlay.getUpcomingNightPlays(game)).resolves.toStrictEqual<GamePlay[]>(output);
@@ -638,10 +643,11 @@ describe("Game Play Service", () => {
     it.each<{
       test: string;
       game: CreateGameDto | Game;
+      hasGamePlayBeenMade: boolean;
       expected: boolean;
     }>([
       {
-        test: "should return false when there is no cupid in the game dto.",
+        test: "should return false when game is dto.",
         game: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
@@ -650,58 +656,11 @@ describe("Game Play Service", () => {
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.WHITE_WEREWOLF } }),
           ],
         }),
+        hasGamePlayBeenMade: false,
         expected: false,
       },
       {
-        test: "should return true when there is cupid in the game dto.",
-        game: createFakeCreateGameDto({
-          players: [
-            createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
-            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
-            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
-            createFakeCreateGamePlayerDto({ role: { name: RoleNames.CUPID } }),
-          ],
-        }),
-        expected: true,
-      },
-      {
-        test: "should return false when there is no cupid in the game.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer(),
-            createFakeSeerAlivePlayer(),
-            createFakeAccursedWolfFatherAlivePlayer(),
-            createFakeVillagerAlivePlayer(),
-          ],
-        }),
-        expected: false,
-      },
-      {
-        test: "should return false when there is cupid in the game but he is dead and there is no lovers.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer(),
-            createFakeSeerAlivePlayer(),
-            createFakeAccursedWolfFatherAlivePlayer(),
-            createFakeCupidAlivePlayer({ isAlive: false }),
-          ],
-        }),
-        expected: false,
-      },
-      {
-        test: "should return false when there is cupid in the game but he is powerless and there is no lovers.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer(),
-            createFakeSeerAlivePlayer(),
-            createFakeAccursedWolfFatherAlivePlayer(),
-            createFakeCupidAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
-          ],
-        }),
-        expected: false,
-      },
-      {
-        test: "should return true when there is cupid alive and powerful and there is no lovers.",
+        test: "should return false when there no lovers in the game.",
         game: createFakeGame({
           players: [
             createFakeWhiteWerewolfAlivePlayer(),
@@ -710,34 +669,53 @@ describe("Game Play Service", () => {
             createFakeCupidAlivePlayer(),
           ],
         }),
-        expected: true,
-      },
-      {
-        test: "should return false when cupid is dead but one of the lovers is dead.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer(),
-            createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
-            createFakeAccursedWolfFatherAlivePlayer({ isAlive: false, attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
-            createFakeCupidAlivePlayer({ isAlive: false }),
-          ],
-        }),
+        hasGamePlayBeenMade: true,
         expected: false,
       },
       {
-        test: "should return true when cupid is dead and lovers are alive.",
+        test: "should return false when only one lover is alive.",
         game: createFakeGame({
           players: [
-            createFakeWhiteWerewolfAlivePlayer(),
+            createFakeWhiteWerewolfAlivePlayer({ isAlive: false, attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
             createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
-            createFakeAccursedWolfFatherAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
-            createFakeCupidAlivePlayer({ isAlive: false }),
+            createFakeAccursedWolfFatherAlivePlayer(),
+            createFakeCupidAlivePlayer(),
           ],
         }),
+        hasGamePlayBeenMade: false,
+        expected: false,
+      },
+      {
+        test: "should return false when both lovers are alive but game play has been made already.",
+        game: createFakeGame({
+          players: [
+            createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+            createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+            createFakeAccursedWolfFatherAlivePlayer(),
+            createFakeCupidAlivePlayer(),
+          ],
+        }),
+        hasGamePlayBeenMade: true,
+        expected: false,
+      },
+      {
+        test: "should return true when both lovers are alive and game play has not been made already.",
+        game: createFakeGame({
+          players: [
+            createFakeWhiteWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+            createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+            createFakeAccursedWolfFatherAlivePlayer(),
+            createFakeCupidAlivePlayer(),
+          ],
+        }),
+        hasGamePlayBeenMade: false,
         expected: true,
       },
-    ])("$test", ({ game, expected }) => {
-      expect(services.gamePlay["isLoversGamePlaySuitableForCurrentPhase"](game)).toBe(expected);
+    ])("$test", async({ game, hasGamePlayBeenMade, expected }) => {
+      const gamePlay = createFakeGamePlayLoversMeetEachOther();
+      mocks.gameHistoryRecordService.hasGamePlayBeenMade.mockResolvedValue(hasGamePlayBeenMade);
+
+      await expect(services.gamePlay["isLoversGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(expected);
     });
   });
 
@@ -902,7 +880,7 @@ describe("Game Play Service", () => {
       const gamePlay = createFakeGamePlayLoversMeetEachOther();
       await services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
-      expect(mocks.gamePlayService.isLoversGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayService.isLoversGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
     it("should call charmed playable method when game plays source group is charmed people.", async() => {
@@ -959,6 +937,100 @@ describe("Game Play Service", () => {
       },
     ])("$test", async({ game, gamePlay, expected }) => {
       await expect(services.gamePlay["isGroupGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(expected);
+    });
+  });
+
+  describe("isOneNightOnlyGamePlaySuitableForCurrentPhase", () => {
+    it.each<{
+      test: string;
+      game: CreateGameDto | Game;
+      gamePlay: GamePlay;
+      hasGamePlayBeenMade: boolean;
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when game is dto and player is not among game players.",
+        game: createFakeCreateGameDto({ players: [createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } })] }),
+        gamePlay: createFakeGamePlayCupidCharms(),
+        hasGamePlayBeenMade: false,
+        expected: false,
+      },
+      {
+        test: "should return true when game is dto and player is among players",
+        game: createFakeCreateGameDto({ players: [createFakeCreateGamePlayerDto({ role: { name: RoleNames.CUPID } })] }),
+        gamePlay: createFakeGamePlayCupidCharms(),
+        hasGamePlayBeenMade: true,
+        expected: true,
+      },
+      {
+        test: "should return false when player is not in the game.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeAccursedWolfFatherAlivePlayer(),
+          ],
+        }),
+        gamePlay: createFakeGamePlayCupidCharms(),
+        hasGamePlayBeenMade: true,
+        expected: false,
+      },
+      {
+        test: "should return false when player is in the game but dead.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeCupidAlivePlayer({ isAlive: false }),
+          ],
+        }),
+        gamePlay: createFakeGamePlayCupidCharms(),
+        hasGamePlayBeenMade: true,
+        expected: false,
+      },
+      {
+        test: "should return false when player is in the game but powerless.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeCupidAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
+          ],
+        }),
+        gamePlay: createFakeGamePlayCupidCharms(),
+        hasGamePlayBeenMade: true,
+        expected: false,
+      },
+      {
+        test: "should return false when game play has been made already.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeCupidAlivePlayer(),
+          ],
+        }),
+        gamePlay: createFakeGamePlayCupidCharms(),
+        hasGamePlayBeenMade: true,
+        expected: false,
+      },
+      {
+        test: "should return true when game play has not been made already.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeCupidAlivePlayer(),
+          ],
+        }),
+        gamePlay: createFakeGamePlayCupidCharms(),
+        hasGamePlayBeenMade: false,
+        expected: true,
+      },
+    ])(`$test`, async({ game, gamePlay, hasGamePlayBeenMade, expected }) => {
+      mocks.gameHistoryRecordService.hasGamePlayBeenMade.mockResolvedValue(hasGamePlayBeenMade);
+
+      await expect(services.gamePlay["isOneNightOnlyGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(expected);
     });
   });
 
@@ -1927,6 +1999,7 @@ describe("Game Play Service", () => {
       mocks.gamePlayService.isWhiteWerewolfGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isWhiteWerewolfGamePlaySuitableForCurrentPhase }, "isWhiteWerewolfGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isWitchGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isWitchGamePlaySuitableForCurrentPhase }, "isWitchGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isActorGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isActorGamePlaySuitableForCurrentPhase }, "isActorGamePlaySuitableForCurrentPhase").mockImplementation();
+      mocks.gamePlayService.isOneNightOnlyGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isOneNightOnlyGamePlaySuitableForCurrentPhase }, "isOneNightOnlyGamePlaySuitableForCurrentPhase").mockImplementation();
     });
 
     it("should call two sisters method when game play source role is two sisters.", async() => {
@@ -2025,6 +2098,20 @@ describe("Game Play Service", () => {
       await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
       expect(mocks.gamePlayService.isActorGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call one night only method when game plays occurrence is one night only.", async() => {
+      const players = [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+        createFakeTwoSistersAlivePlayer(),
+        createFakeCupidAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gamePlay = createFakeGamePlayCupidCharms();
+      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
+
+      expect(mocks.gamePlayService.isOneNightOnlyGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
     });
 
     it.each<{

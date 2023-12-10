@@ -119,7 +119,8 @@ export class GamePhaseService {
 
   private applyStartingNightActorRoleOutcomes(actorPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    const playerDataToUpdate: Partial<Player> = { role: { ...actorPlayer.role, current: RoleNames.ACTOR } };
+    const attributes = actorPlayer.attributes.filter(({ name, source }) => name !== PlayerAttributeNames.POWERLESS || source === RoleNames.ACCURSED_WOLF_FATHER);
+    const playerDataToUpdate: Partial<Player> = { role: { ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }, attributes };
     return updatePlayerInGame(actorPlayer._id, playerDataToUpdate, clonedGame);
   }
 

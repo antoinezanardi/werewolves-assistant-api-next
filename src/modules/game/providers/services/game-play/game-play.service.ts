@@ -5,7 +5,7 @@ import { GamePlayAugmenterService } from "@/modules/game/providers/services/game
 import { NIGHT_GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constant";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
+import { GamePlayCauses, GamePlayOccurrences, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlay, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
@@ -129,17 +129,12 @@ export class GamePlayService {
     return isEnabled && electedAt.turn === currentTurn && electedAt.phase === currentPhase;
   }
 
-  private isLoversGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
+  private async isLoversGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
     if (game instanceof CreateGameDto) {
-      return !!getPlayerDtoWithRole(game, RoleNames.CUPID);
-    }
-    const cupidPlayer = getPlayerWithCurrentRole(game, RoleNames.CUPID);
-    if (!cupidPlayer) {
       return false;
     }
     const inLovePlayers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
-    // TODO: check if lovers have played before
-    return !inLovePlayers.length && isPlayerAliveAndPowerful(cupidPlayer, game) || inLovePlayers.length > 0 && inLovePlayers.every(player => player.isAlive);
+    return inLovePlayers.length > 0 && inLovePlayers.every(player => player.isAlive) && !await this.gameHistoryRecordService.hasGamePlayBeenMade(game._id, gamePlay);
   }
 
   private async isSurvivorsGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
@@ -157,7 +152,7 @@ export class GamePlayService {
     const source = gamePlay.source.name as PlayerGroups;
     const specificGroupMethods: Record<PlayerGroups, (game: CreateGameDto | Game, gamePlay: GamePlay) => Promise<boolean> | boolean> = {
       [PlayerGroups.SURVIVORS]: async() => this.isSurvivorsGamePlaySuitableForCurrentPhase(game, gamePlay),
-      [PlayerGroups.LOVERS]: () => this.isLoversGamePlaySuitableForCurrentPhase(game),
+      [PlayerGroups.LOVERS]: async() => this.isLoversGamePlaySuitableForCurrentPhase(game, gamePlay),
       [PlayerGroups.CHARMED]: () => this.isPiedPiperGamePlaySuitableForCurrentPhase(game),
       [PlayerGroups.WEREWOLVES]: () => game instanceof CreateGameDto || getGroupOfPlayers(game, source).some(werewolf => werewolf.isAlive),
       [PlayerGroups.VILLAGERS]: () => false,
@@ -165,7 +160,7 @@ export class GamePlayService {
     return specificGroupMethods[source](game, gamePlay);
   }
   
-  private async isOneNightOnlyGamePlaySuitableForCurrentPhase(gamePlay: GamePlay, game: CreateGameDto | Game): Promise<boolean> {
+  private async isOneNightOnlyGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
     if (game instanceof CreateGameDto) {
       return !!getPlayerDtoWithRole(game, gamePlay.source.name as RoleNames);
     }
@@ -271,6 +266,9 @@ export class GamePlayService {
     };
     if (specificRoleMethods[source] !== undefined) {
       return await specificRoleMethods[source]?.() === true;
+    }
+    if (gamePlay.occurrence === GamePlayOccurrences.ONE_NIGHT_ONLY) {
+      return this.isOneNightOnlyGamePlaySuitableForCurrentPhase(game, gamePlay);
     }
     return player instanceof CreateGamePlayerDto || isPlayerAliveAndPowerful(player, game as Game);
   }

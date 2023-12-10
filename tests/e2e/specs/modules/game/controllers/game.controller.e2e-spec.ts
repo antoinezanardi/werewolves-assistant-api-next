@@ -47,7 +47,7 @@ import { createFakeGamePlayEligibleTargetsBoundaries } from "@tests/factories/ga
 import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -873,7 +873,6 @@ describe("Game Controller", () => {
         upcomingPlays: toJSON([
           createFakeGamePlayCupidCharms(),
           createFakeGamePlaySeerLooks(),
-          createFakeGamePlayLoversMeetEachOther(),
           createFakeGamePlayWerewolvesEat(),
           createFakeGamePlayWhiteWerewolfEats(),
         ]) as GamePlay[],
@@ -977,7 +976,6 @@ describe("Game Controller", () => {
           createFakeGamePlayThiefChoosesCard(),
           createFakeGamePlayCupidCharms(),
           createFakeGamePlaySeerLooks(),
-          createFakeGamePlayLoversMeetEachOther(),
           createFakeGamePlayWerewolvesEat(),
           createFakeGamePlayWhiteWerewolfEats(),
         ]) as GamePlay[],

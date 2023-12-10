@@ -15,7 +15,7 @@ import { createFakeGameOptions } from "@tests/factories/game/schemas/game-option
 import { createFakeBearTamerGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeGrowledByBearTamerPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeGrowledByBearTamerPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeActorAlivePlayer, createFakeBearTamerAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer, createFakePlayerRole, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
@@ -387,15 +387,29 @@ describe("Game Phase Service", () => {
   });
 
   describe("applyStartingNightActorRoleOutcomes", () => {
-    it("should set player current role to actor when called.", () => {
-      const actorPlayer = createFakeWerewolfAlivePlayer();
+    it("should set player current role to actor and remove obsolete powerless attributes when called.", () => {
+      const actorRole = createFakePlayerRole({
+        original: RoleNames.ACTOR,
+        current: RoleNames.WEREWOLF,
+        isRevealed: true,
+      });
+      const attributes = [
+        createFakePowerlessByElderPlayerAttribute(),
+        createFakePowerlessByAccursedWolfFatherPlayerAttribute(),
+        createFakeContaminatedByRustySwordKnightPlayerAttribute(),
+      ];
+      const actorPlayer = createFakeWerewolfAlivePlayer({ role: actorRole, attributes });
       const game = createFakeGame({ players: [actorPlayer] });
       const expectedGame = createFakeGame({
         ...game,
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            attributes: [
+              attributes[1],
+              attributes[2],
+            ],
           }),
         ],
       });
