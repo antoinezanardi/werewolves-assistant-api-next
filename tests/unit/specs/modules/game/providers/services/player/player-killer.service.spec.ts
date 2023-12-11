@@ -489,6 +489,13 @@ describe("Player Killer Service", () => {
         expected: false,
       },
       {
+        test: "should return false when player is not dead and his role can be revealed to others.",
+        player: createFakeWitchAlivePlayer(),
+        death: createFakePlayerVoteBySurvivorsDeath(),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ areRevealedOnDeath: true }) }) }),
+        expected: false,
+      },
+      {
         test: "should return true when player is dead and his role can be revealed to others.",
         player: createFakeWitchAlivePlayer({ isAlive: false }),
         death: createFakePlayerVoteBySurvivorsDeath(),

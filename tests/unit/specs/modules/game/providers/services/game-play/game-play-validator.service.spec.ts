@@ -206,7 +206,7 @@ describe("Game Play Validator Service", () => {
 
   describe("validateGamePlayActorChosenCard", () => {
     it("should do nothing when game additional cards are not set.", () => {
-      const chosenCard = createFakeGameAdditionalCard();
+      const chosenCard = createFakeGameAdditionalCard({ isUsed: true });
       const game = createFakeGameWithCurrentPlay();
 
       expect(() => services.gamePlayValidator["validateGamePlayActorChosenCard"](chosenCard, game)).not.toThrow();

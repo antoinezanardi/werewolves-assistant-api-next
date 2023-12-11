@@ -40,7 +40,7 @@ describe("Additional Cards For Thief Size Decorator", () => {
           ],
         }),
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
+          null,
           createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.THIEF }),
         ],
         expected: true,

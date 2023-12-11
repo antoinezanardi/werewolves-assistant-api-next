@@ -1696,7 +1696,7 @@ describe("Game Play Augmenter Service", () => {
       },
       {
         test: "should return true when game has no additional cards.",
-        game: createFakeGame({ additionalCards: [] }),
+        game: createFakeGame({ additionalCards: [], options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: false }) }) }) }),
         expected: true,
       },
       {

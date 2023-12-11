@@ -328,7 +328,7 @@ export class GamePlayAugmenterService {
 
   private canThiefSkipGamePlay(game: Game): boolean {
     const { mustChooseBetweenWerewolves } = game.options.roles.thief;
-    if (game.additionalCards === undefined || game.additionalCards.length === 0) {
+    if (game.additionalCards === undefined) {
       return true;
     }
     const werewolfRoleNames = WEREWOLF_ROLES.map(role => role.name);
