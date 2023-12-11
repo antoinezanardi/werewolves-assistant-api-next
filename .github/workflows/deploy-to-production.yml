@@ -80,7 +80,7 @@ jobs:
           echo "FORMATTED_VERSION_FOR_GCP=${version}" >> $GITHUB_OUTPUT
 
       - name: Deploy to production 🛰️
-        uses: 'google-github-actions/deploy-appengine@v1'
+        uses: 'google-github-actions/deploy-appengine@v2'
         with:
           project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
           flags: "--version=${{ steps.format-version-for-gcp.outputs.FORMATTED_VERSION_FOR_GCP }}"
