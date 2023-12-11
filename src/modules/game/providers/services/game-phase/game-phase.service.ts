@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 
+import type { GameSource } from "@/modules/game/types/game.type";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getNearestAliveNeighbor, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
-import { addPlayerAttributeInGame } from "@/modules/game/helpers/game.mutator";
+import { addPlayerAttributeInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
 import { createGrowledByBearTamerPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { doesPlayerHaveActiveAttributeWithName, getActivePlayerAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
@@ -44,11 +45,11 @@ export class GamePhaseService {
   }
 
   public applyStartingGamePhaseOutcomes(game: Game): Game {
-    let clonedGame = createGame(game);
+    const clonedGame = createGame(game);
     if (clonedGame.phase === GamePhases.DAY) {
-      clonedGame = this.applyStartingDayPlayerRoleOutcomesToPlayers(clonedGame);
+      return this.applyStartingDayPlayerRoleOutcomesToPlayers(clonedGame);
     }
-    return clonedGame;
+    return this.applyStartingNightPlayerRoleOutcomes(clonedGame);
   }
 
   private async applyEndingGamePhasePlayerAttributesOutcomesToPlayers(game: Game): Promise<Game> {
@@ -112,6 +113,24 @@ export class GamePhaseService {
     for (const player of clonedGame.players) {
       if (player.role.current === RoleNames.BEAR_TAMER && isPlayerAliveAndPowerful(player, clonedGame)) {
         clonedGame = this.applyStartingDayBearTamerRoleOutcomes(player, clonedGame);
+      }
+    }
+    return clonedGame;
+  }
+
+  private applyStartingNightActorRoleOutcomes(actorPlayer: Player, game: Game): Game {
+    const clonedGame = createGame(game);
+    const stickyPowerlessSources: GameSource[] = [RoleNames.ACCURSED_WOLF_FATHER, RoleNames.ACTOR];
+    const attributes = actorPlayer.attributes.filter(({ name, source }) => name !== PlayerAttributeNames.POWERLESS || stickyPowerlessSources.includes(source));
+    const playerDataToUpdate: Partial<Player> = { role: { ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }, attributes };
+    return updatePlayerInGame(actorPlayer._id, playerDataToUpdate, clonedGame);
+  }
+
+  private applyStartingNightPlayerRoleOutcomes(game: Game): Game {
+    let clonedGame = createGame(game);
+    for (const player of clonedGame.players) {
+      if (player.role.original === RoleNames.ACTOR && player.isAlive) {
+        clonedGame = this.applyStartingNightActorRoleOutcomes(player, clonedGame);
       }
     }
     return clonedGame;

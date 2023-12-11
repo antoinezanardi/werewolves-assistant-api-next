@@ -39,25 +39,48 @@ export class GamePlayValidatorService {
     this.validateGamePlayWithRelationsDtoChosenCard(play, clonedGameWithCurrentPlay);
   }
 
+  private validateGamePlayActorChosenCard(chosenCard: GameAdditionalCard | undefined, game: GameWithCurrentPlay): void {
+    if (!game.additionalCards) {
+      return;
+    }
+    if (chosenCard) {
+      if (chosenCard.recipient !== RoleNames.ACTOR) {
+        throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_ACTOR);
+      }
+      if (chosenCard.isUsed) {
+        throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_ALREADY_USED);
+      }
+    }
+  }
+
   private validateGamePlayThiefChosenCard(chosenCard: GameAdditionalCard | undefined, game: GameWithCurrentPlay): void {
     const { mustChooseBetweenWerewolves } = game.options.roles.thief;
     if (!game.additionalCards || !mustChooseBetweenWerewolves) {
       return;
     }
-    const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => WEREWOLF_ROLES.find(role => role.name === roleName));
+    const werewolfRoleNames = WEREWOLF_ROLES.map(({ name }) => name);
+    const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => werewolfRoleNames.includes(roleName));
     if (areAllAdditionalCardsWerewolves && !chosenCard) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.THIEF_MUST_CHOOSE_CARD);
+    }
+    if (chosenCard && chosenCard.recipient !== RoleNames.THIEF) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_THIEF);
     }
   }
 
   private validateGamePlayWithRelationsDtoChosenCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): void {
-    if (game.currentPlay.action !== GamePlayActions.CHOOSE_CARD) {
+    const { action, source } = game.currentPlay;
+    if (action !== GamePlayActions.CHOOSE_CARD) {
       if (chosenCard) {
         throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_CHOSEN_CARD);
       }
       return;
     }
-    this.validateGamePlayThiefChosenCard(chosenCard, game);
+    if (source.name === RoleNames.THIEF) {
+      this.validateGamePlayThiefChosenCard(chosenCard, game);
+    } else if (source.name === RoleNames.ACTOR) {
+      this.validateGamePlayActorChosenCard(chosenCard, game);
+    }
   }
 
   private validateDrankLifePotionTargets(drankLifePotionTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {

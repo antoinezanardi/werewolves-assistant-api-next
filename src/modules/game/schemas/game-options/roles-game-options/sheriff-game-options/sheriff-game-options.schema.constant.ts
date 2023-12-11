@@ -22,6 +22,10 @@ const SHERIFF_GAME_OPTIONS_FIELDS_SPECS = {
     required: true,
     default: DEFAULT_GAME_OPTIONS.roles.sheriff.hasDoubledVote,
   },
+  mustSettleTieInVotes: {
+    required: true,
+    default: DEFAULT_GAME_OPTIONS.roles.sheriff.mustSettleTieInVotes,
+  },
 } as const satisfies Record<keyof SheriffGameOptions, MongoosePropOptions>;
 
 const SHERIFF_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof SheriffGameOptions, ApiPropertyOptions>> = {
@@ -36,6 +40,10 @@ const SHERIFF_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof SheriffGame
   hasDoubledVote: {
     description: "If set to `true`, `sheriff` vote during the village's vote is doubled, otherwise, it's a regular vote",
     ...convertMongoosePropOptionsToApiPropertyOptions(SHERIFF_GAME_OPTIONS_FIELDS_SPECS.hasDoubledVote),
+  },
+  mustSettleTieInVotes: {
+    description: "If set to `true`, in case of a tie in votes, the sheriff will have to settle the tie by choosing the player to kill between the tied players. Otherwise, there will be another vote between the tied players",
+    ...convertMongoosePropOptionsToApiPropertyOptions(SHERIFF_GAME_OPTIONS_FIELDS_SPECS.mustSettleTieInVotes),
   },
 };
 

@@ -157,8 +157,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                                                                                                                                                                                                                                                                                                                                                                                     |
-      | players.4.role.name must be one of the following values: werewolf, big-bad-wolf, accursed-wolf-father, white-werewolf, villager, villager-villager, seer, cupid, witch, hunter, little-girl, defender, elder, scapegoat, idiot, two-sisters, three-brothers, fox, bear-tamer, stuttering-judge, rusty-sword-knight, thief, wild-child, wolf-hound, angel, pied-piper, scandalmonger, prejudiced-manipulator |
+      | message                                                                                                                                                                                                                                                                                                                                                                                                            |
+      | players.4.role.name must be one of the following values: werewolf, big-bad-wolf, accursed-wolf-father, white-werewolf, villager, villager-villager, seer, cupid, witch, hunter, little-girl, defender, elder, scapegoat, idiot, two-sisters, three-brothers, fox, bear-tamer, stuttering-judge, rusty-sword-knight, thief, wild-child, wolf-hound, angel, pied-piper, scandalmonger, prejudiced-manipulator, actor |
 
   Scenario: 🎲 Game can't be created if there is only one of the two sisters
 
@@ -432,8 +432,53 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                                            |
-      | additionalCards must be set if there is a player with role `thief` |
+      | message                                                                                        |
+      | additionalCards must be set if there is a player with one of the following roles : thief,actor |
+
+  Scenario: 🎲 Game can't be created if there are too less additional cards for thief
+
+    Given a created game with additional cards described in file one-additional-card-for-thief.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Olivia  | thief    |
+      | JB      | idiot    |
+      | Thomas  | werewolf |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                    |
+      | additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount |
+
+  Scenario: 🎲 Game can't be created if there are too much additional cards for thief
+
+    Given a created game with additional cards described in file five-additional-cards-for-thief.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Olivia  | thief    |
+      | JB      | villager |
+      | Thomas  | werewolf |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                    |
+      | additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount |
+
+  Scenario: 🎲 Game can't be created if one additional card can't be given to thief
+
+    Given a created game with additional cards described in file invalid-additional-cards-for-thief.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Olivia  | thief    |
+      | JB      | idiot    |
+      | Thomas  | werewolf |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                                                                                                                                                                                                                                                                                        |
+      | additionalCards.roleName for thief must be one of the following values: werewolf,big-bad-wolf,accursed-wolf-father,white-werewolf,villager,villager-villager,seer,cupid,witch,hunter,little-girl,defender,elder,scapegoat,idiot,fox,bear-tamer,stuttering-judge,rusty-sword-knight,wild-child,wolf-hound,angel,pied-piper,scandalmonger,prejudiced-manipulator |
 
   Scenario: 🎲 Game can't be created if there are two wild children
 
@@ -647,3 +692,63 @@ Feature: 🎲 Game Creation
     And the request exception messages should be
       | message                                                                                |
       | any player can't have a group if there is no player with role `prejudiced-manipulator` |
+
+  Scenario: 🎲 Game can't be created if there are no additional cards for actor
+
+    Given a created game with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Olivia  | actor    |
+      | JB      | idiot    |
+      | Thomas  | werewolf |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                        |
+      | additionalCards must be set if there is a player with one of the following roles : thief,actor |
+
+  Scenario: 🎲 Game can't be created if there are too less additional cards for actor
+
+    Given a created game with additional cards described in file one-additional-card-for-actor.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Olivia  | actor    |
+      | JB      | idiot    |
+      | Thomas  | werewolf |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                             |
+      | additionalCards length for actor must be equal to 3 |
+
+  Scenario: 🎲 Game can't be created if there are too much additional cards for actor
+
+    Given a created game with additional cards described in file five-additional-cards-for-actor.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Olivia  | actor    |
+      | JB      | idiot    |
+      | Thomas  | werewolf |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                             |
+      | additionalCards length for actor must be equal to 3 |
+
+  Scenario: 🎲 Game can't be created if one additional card can't be given to actor
+
+    Given a created game with additional cards described in file invalid-additional-cards-for-actor.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Olivia  | actor    |
+      | JB      | idiot    |
+      | Thomas  | werewolf |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                                                                                                                                                                            |
+      | additionalCards.roleName for actor must be one of the following values: seer,cupid,witch,hunter,little-girl,defender,elder,scapegoat,idiot,fox,bear-tamer,stuttering-judge,rusty-sword-knight,wild-child,wolf-hound,angel,pied-piper,scandalmonger |

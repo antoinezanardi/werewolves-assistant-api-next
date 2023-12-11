@@ -12,6 +12,10 @@ const THIEF_GAME_OPTIONS_FIELDS_SPECS = {
     required: true,
     default: DEFAULT_GAME_OPTIONS.roles.thief.mustChooseBetweenWerewolves,
   },
+  isChosenCardRevealed: {
+    required: true,
+    default: DEFAULT_GAME_OPTIONS.roles.thief.isChosenCardRevealed,
+  },
   additionalCardsCount: {
     required: true,
     default: DEFAULT_GAME_OPTIONS.roles.thief.additionalCardsCount,
@@ -24,6 +28,10 @@ const THIEF_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof ThiefGameOpti
   mustChooseBetweenWerewolves: {
     description: "If set to `true`, if all `thief` additional cards are from the `werewolves` side, he can't skip and must choose one",
     ...convertMongoosePropOptionsToApiPropertyOptions(THIEF_GAME_OPTIONS_FIELDS_SPECS.mustChooseBetweenWerewolves),
+  },
+  isChosenCardRevealed: {
+    description: "If set to `true`, the `thief` chosen card is revealed to every other players",
+    ...convertMongoosePropOptionsToApiPropertyOptions(THIEF_GAME_OPTIONS_FIELDS_SPECS.isChosenCardRevealed),
   },
   additionalCardsCount: {
     description: "Number of additional cards for the `thief` at the beginning of the game",

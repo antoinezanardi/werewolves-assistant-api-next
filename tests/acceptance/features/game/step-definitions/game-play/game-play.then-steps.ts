@@ -28,7 +28,7 @@ Then(
   },
 );
 
-Then(/^the game's current play occurrence should be (?<occurrence>first-night-only|on-nights|on-days|anytime|consequential)$/u, function(this: CustomWorld, occurrence: GamePlayOccurrences): void {
+Then(/^the game's current play occurrence should be (?<occurrence>one-night-only|on-nights|on-days|anytime|consequential)$/u, function(this: CustomWorld, occurrence: GamePlayOccurrences): void {
   expect(this.game.currentPlay?.occurrence).toBe(occurrence);
 });
 

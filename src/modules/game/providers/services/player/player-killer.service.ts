@@ -7,11 +7,11 @@ import { createGamePlayHunterShoots, createGamePlayScapegoatBansVoting, createGa
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
-import { createCantVoteBySurvivorsPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByElderPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
-import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { createCantVoteBySurvivorsPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByActorPlayerAttribute, createPowerlessByElderPlayerAttribute, createPowerlessByWerewolvesPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerReconsiderPardonBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
-import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
@@ -120,10 +120,13 @@ export class PlayerKillerService {
     const clonedGame = createGame(game);
     const wildChildPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.WILD_CHILD);
     if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, PlayerAttributeNames.WORSHIPED, clonedGame) ||
-      wildChildPlayer === undefined || !wildChildPlayer.isAlive || !isPlayerPowerful(wildChildPlayer, clonedGame)) {
+      wildChildPlayer === undefined || !isPlayerAliveAndPowerful(wildChildPlayer, clonedGame)) {
       return clonedGame;
     }
     wildChildPlayer.side.current = RoleSides.WEREWOLVES;
+    if (wildChildPlayer.role.original === RoleNames.ACTOR) {
+      wildChildPlayer.attributes.push(createPowerlessByActorPlayerAttribute());
+    }
     return updatePlayerInGame(wildChildPlayer._id, wildChildPlayer, clonedGame);
   }
 
@@ -163,6 +166,18 @@ export class PlayerKillerService {
       clonedGame = this.applyWorshipedPlayerDeathOutcomes(clonedKilledPlayer, clonedGame);
     }
     return clonedGame;
+  }
+
+  private applyPlayerSideDeathOutcomes(killedPlayer: Player, game: Game): Game {
+    const clonedGame = createGame(game);
+    const bigBadWolfPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.BIG_BAD_WOLF);
+    const { isPowerlessIfWerewolfDies } = game.options.roles.bigBadWolf;
+    if (killedPlayer.side.current !== RoleSides.WEREWOLVES || !bigBadWolfPlayer ||
+      !isPowerlessIfWerewolfDies || killedPlayer.role.current === RoleNames.BIG_BAD_WOLF ||
+        doesPlayerHaveActiveAttributeWithNameAndSource(bigBadWolfPlayer, PlayerAttributeNames.POWERLESS, PlayerGroups.WEREWOLVES, clonedGame)) {
+      return clonedGame;
+    }
+    return addPlayerAttributeInGame(bigBadWolfPlayer._id, clonedGame, createPowerlessByWerewolvesPlayerAttribute());
   }
 
   private applyRustySwordKnightDeathOutcomes(killedPlayer: Player, game: Game, death: PlayerDeath): Game {
@@ -231,6 +246,7 @@ export class PlayerKillerService {
     let clonedPlayerToKill = createPlayer(killedPlayer);
     const cantFindPlayerException = createCantFindPlayerUnexpectedException("applyPlayerDeathOutcomes", { gameId: game._id, playerId: killedPlayer._id });
     clonedGame = this.applyPlayerRoleDeathOutcomes(clonedPlayerToKill, clonedGame, death);
+    clonedGame = this.applyPlayerSideDeathOutcomes(clonedPlayerToKill, clonedGame);
     clonedPlayerToKill = getPlayerWithIdOrThrow(clonedPlayerToKill._id, clonedGame, cantFindPlayerException);
     clonedGame = this.applyPlayerAttributesDeathOutcomes(clonedPlayerToKill, clonedGame);
     if (!doesGameHaveCurrentOrUpcomingPlaySourceAndAction(clonedGame, PlayerGroups.SURVIVORS, GamePlayActions.BURY_DEAD_BODIES)) {

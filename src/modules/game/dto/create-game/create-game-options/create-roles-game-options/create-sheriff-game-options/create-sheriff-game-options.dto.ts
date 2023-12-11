@@ -31,6 +31,14 @@ class CreateSheriffGameOptionsDto {
   @IsOptional()
   @IsBoolean()
   public hasDoubledVote: boolean = SHERIFF_GAME_OPTIONS_FIELDS_SPECS.hasDoubledVote.default;
+
+  @ApiProperty({
+    ...SHERIFF_GAME_OPTIONS_API_PROPERTIES.mustSettleTieInVotes,
+    required: false,
+  } as ApiPropertyOptions)
+  @IsOptional()
+  @IsBoolean()
+  public mustSettleTieInVotes: boolean = SHERIFF_GAME_OPTIONS_FIELDS_SPECS.mustSettleTieInVotes.default;
 }
 
 export { CreateSheriffGameOptionsDto };

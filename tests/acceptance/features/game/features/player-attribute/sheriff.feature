@@ -43,7 +43,6 @@ Feature: 🎖️ Sheriff player attribute
       | source    | interaction       |
       | survivors | choose-as-sheriff |
 
-
     When the survivors elect sheriff with the following votes
       | voter   | target |
       | Antoine | Olivia |
@@ -87,6 +86,53 @@ Feature: 🎖️ Sheriff player attribute
     Then the request should have succeeded with status code 200
     And the player named JB should be alive
     And the player named Thomas should be murdered by sheriff from vote
+
+  Scenario: 🎖️ Sheriff doesn't break tie between votes with good game options
+
+    Given a created game with options described in file sheriff-does-not-settle-tie-in-votes-option.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Olivia  | werewolf |
+      | Thomas  | villager |
+      | JB      | villager |
+      | Babou   | villager |
+    Then the request should have succeeded with status code 201
+    And the game's current play should be survivors to elect-sheriff
+
+    When the survivors elect sheriff with the following votes
+      | voter   | target |
+      | Antoine | Olivia |
+      | JB      | Olivia |
+      | Thomas  | Olivia |
+    Then the request should have succeeded with status code 200
+    And the player named Olivia should have the active sheriff from survivors attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Babou
+    Then the player named Babou should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter  | target |
+      | JB     | Thomas |
+      | Thomas | JB     |
+    Then the player named JB should be alive
+    And the player named Thomas should be alive
+    And the game's current play should be survivors to vote
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | Thomas  |
+      | JB      |
+    And the game's current play should have eligible targets boundaries from 0 to 4
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Thomas |
+      | JB     |
 
   Scenario: 🎖️ Sheriff can't break ties with a player which is not in the previous tie
 

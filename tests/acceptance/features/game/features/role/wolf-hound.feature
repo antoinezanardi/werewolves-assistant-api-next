@@ -16,7 +16,7 @@ Feature: 🐶 Wolf-Hound role
       | name    |
       | Antoine |
     And the player named Antoine should be on villagers current side and originally be on villagers side
-    And the game's current play occurrence should be first-night-only
+    And the game's current play occurrence should be one-night-only
     And the game's current play can not be skipped
     And the game's current play should not have eligible targets boundaries
     And the game's current play should not have eligible targets interactable players

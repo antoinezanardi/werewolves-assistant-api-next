@@ -4,6 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform } from "class-transformer";
 import { Types } from "mongoose";
 
+import { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card.types";
 import { GAME_ADDITIONAL_CARDS_API_PROPERTIES, GAME_ADDITIONAL_CARDS_FIELDS_SPECS } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -24,7 +25,7 @@ class GameAdditionalCard {
   @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.recipient as ApiPropertyOptions)
   @Prop(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.recipient)
   @Expose()
-  public recipient: RoleNames.THIEF;
+  public recipient: GameAdditionalCardRecipientRoleName;
 
   @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.isUsed as ApiPropertyOptions)
   @Prop(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.isUsed)

@@ -3,6 +3,8 @@ import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, Equals, IsArray, IsOptional, ValidateNested } from "class-validator";
 
+import { AdditionalCardsForActorRoles } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-actor-roles.decorator";
+import { AdditionalCardsForActorSize } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-actor-size.decorator";
 import { CompositionHasTwoGroupsWithPrejudicedManipulator } from "@/modules/game/dto/base/decorators/composition/composition-has-two-groups-with-prejudiced-manipulator.decorator";
 import { CompositionGroupsPresence } from "@/modules/game/dto/base/decorators/composition/composition-groups-presence.decorator";
 import { AdditionalCardsForThiefRoles } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-thief-roles.decorator";
@@ -53,7 +55,6 @@ class CreateGameDto {
 
   @ApiHideProperty()
   @IsOptional()
-  @ArrayMaxSize(0)
   public currentPlay: GamePlay;
 
   @ApiHideProperty()
@@ -71,6 +72,8 @@ class CreateGameDto {
   @AdditionalCardsRolesMaxInGame()
   @AdditionalCardsForThiefSize()
   @AdditionalCardsForThiefRoles()
+  @AdditionalCardsForActorSize()
+  @AdditionalCardsForActorRoles()
   public additionalCards?: CreateGameAdditionalCardDto[];
 
   @ApiProperty({

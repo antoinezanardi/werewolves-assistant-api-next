@@ -34,6 +34,11 @@ function doesPlayerHaveAttributeWithNameAndSource(player: Player, attributeName:
   return !!getPlayerAttributeWithNameAndSource(player, attributeName, attributeSource);
 }
 
+function doesPlayerHaveActiveAttributeWithNameAndSource(player: Player, attributeName: PlayerAttributeNames, attributeSource: GameSource, game: Game): boolean {
+  const attribute = getPlayerAttributeWithNameAndSource(player, attributeName, attributeSource);
+  return !!attribute && isPlayerAttributeActive(attribute, game);
+}
+
 export {
   isPlayerAttributeActive,
   getPlayerAttributeWithName,
@@ -42,4 +47,5 @@ export {
   doesPlayerHaveActiveAttributeWithName,
   getPlayerAttributeWithNameAndSource,
   doesPlayerHaveAttributeWithNameAndSource,
+  doesPlayerHaveActiveAttributeWithNameAndSource,
 };

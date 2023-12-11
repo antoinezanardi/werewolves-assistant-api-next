@@ -1,6 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { CreatePrejudicedManipulatorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-prejudiced-manipulator-game-options.dto";
+import { CreateCupidGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-game-options.dto";
+import { CreateCupidLoversGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-lovers-game-options.dto";
 import { CreateWitchGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-witch-game-options.dto";
 import { CreateElderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-elder-game-options.dto";
 import { CreateBearTamerGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-bear-tamer-game-options.dto";
@@ -25,6 +28,16 @@ import { CreateWildChildGameOptionsDto } from "@/modules/game/dto/create-game/cr
 import { GamePhases } from "@/modules/game/enums/game.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+function createFakeCreatePrejudicedManipulatorGameOptionsDto(
+  prejudicedManipulatorGameOptions: Partial<CreatePrejudicedManipulatorGameOptionsDto> = {},
+  override: object = {},
+): CreatePrejudicedManipulatorGameOptionsDto {
+  return plainToInstance(CreatePrejudicedManipulatorGameOptionsDto, {
+    isPowerlessIfInfected: prejudicedManipulatorGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
 
 function createFakeCreateWitchGameOptionsDto(witchGameOptions: Partial<CreateWitchGameOptionsDto> = {}, override: object = {}): CreateWitchGameOptionsDto {
   return plainToInstance(CreateWitchGameOptionsDto, {
@@ -54,6 +67,7 @@ function createFakeCreatePiedPiperGameOptionsDto(piedPiperGameOptions: Partial<C
 function createFakeCreateThiefGameOptionsDto(thiefGameOptions: Partial<CreateThiefGameOptionsDto> = {}, override: object = {}): CreateThiefGameOptionsDto {
   return plainToInstance(CreateThiefGameOptionsDto, {
     mustChooseBetweenWerewolves: thiefGameOptions.mustChooseBetweenWerewolves ?? faker.datatype.boolean(),
+    isChosenCardRevealed: thiefGameOptions.isChosenCardRevealed ?? faker.datatype.boolean(),
     additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
@@ -152,6 +166,20 @@ function createFakeCreateSeerGameOptionsDto(seerGameOptions: Partial<CreateSeerG
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
+function createFakeCreateCupidLoversGameOptionsDto(cupidLoversGameOptions: Partial<CreateCupidLoversGameOptionsDto> = {}, override: object = {}): CreateCupidLoversGameOptionsDto {
+  return plainToInstance(CreateCupidLoversGameOptionsDto, {
+    doRevealRoleToEachOther: cupidLoversGameOptions.doRevealRoleToEachOther ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeCreateCupidGameOptionsDto(cupidGameOptions: Partial<CreateCupidGameOptionsDto> = {}, override: object = {}): CreateCupidGameOptionsDto {
+  return plainToInstance(CreateCupidGameOptionsDto, {
+    lovers: createFakeCreateCupidLoversGameOptionsDto(cupidGameOptions.lovers),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakeCreateWhiteWerewolfGameOptionsDto(
   whiteWerewolfOptions: Partial<CreateWhiteWerewolfGameOptionsDto> = {},
   override: object = {},
@@ -185,6 +213,7 @@ function createFakeCreateSheriffGameOptionsDto(sheriffGameOptions: Partial<Creat
     isEnabled: sheriffGameOptions.isEnabled ?? faker.datatype.boolean(),
     electedAt: createFakeCreateSheriffElectionGameOptionsDto(sheriffGameOptions.electedAt),
     hasDoubledVote: sheriffGameOptions.hasDoubledVote ?? faker.datatype.boolean(),
+    mustSettleTieInVotes: sheriffGameOptions.mustSettleTieInVotes ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -197,6 +226,7 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     bigBadWolf: createFakeCreateBigBadWolfGameOptionsDto(rolesGameOptions.bigBadWolf),
     whiteWerewolf: createFakeCreateWhiteWerewolfGameOptionsDto(rolesGameOptions.whiteWerewolf),
     seer: createFakeCreateSeerGameOptionsDto(rolesGameOptions.seer),
+    cupid: createFakeCreateCupidGameOptionsDto(rolesGameOptions.cupid),
     littleGirl: createFakeCreateLittleGirlGameOptionsDto(rolesGameOptions.littleGirl),
     defender: createFakeCreateDefenderGameOptionsDto(rolesGameOptions.defender),
     elder: createFakeCreateElderGameOptionsDto(rolesGameOptions.elder),
@@ -212,11 +242,13 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     piedPiper: createFakeCreatePiedPiperGameOptionsDto(rolesGameOptions.piedPiper),
     scandalmonger: createFakeCreateScandalmongerGameOptionsDto(rolesGameOptions.scandalmonger),
     witch: createFakeCreateWitchGameOptionsDto(rolesGameOptions.witch),
+    prejudicedManipulator: createFakeCreatePrejudicedManipulatorGameOptionsDto(rolesGameOptions.prejudicedManipulator),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakeCreatePrejudicedManipulatorGameOptionsDto,
   createFakeCreateWitchGameOptionsDto,
   createFakeCreateScandalmongerGameOptionsDto,
   createFakeCreatePiedPiperGameOptionsDto,
@@ -233,6 +265,8 @@ export {
   createFakeCreateDefenderGameOptionsDto,
   createFakeCreateLittleGirlGameOptionsDto,
   createFakeCreateSeerGameOptionsDto,
+  createFakeCreateCupidLoversGameOptionsDto,
+  createFakeCreateCupidGameOptionsDto,
   createFakeCreateWhiteWerewolfGameOptionsDto,
   createFakeCreateBigBadWolfGameOptionsDto,
   createFakeCreateSheriffElectionGameOptionsDto,

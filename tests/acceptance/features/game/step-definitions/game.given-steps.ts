@@ -27,12 +27,12 @@ Given(
   async function(this: CustomWorld, cardsFileName: string | null, optionFilenames: string | null, playersDatatable: DataTable): Promise<void> {
     let additionalCards: GameAdditionalCard[] = [];
     if (cardsFileName !== null) {
-      additionalCards = readJsonFile<GameAdditionalCard[]>("game", cardsFileName);
+      additionalCards = readJsonFile<GameAdditionalCard[]>("game", `game-additional-cards/${cardsFileName}`);
     }
     let options = {};
     if (optionFilenames !== null) {
       const flatOptions = optionFilenames.split(",").reduce((acc, fileName) => {
-        const flatOption = crush(readJsonFile<GameOptions>("game", fileName.trim()));
+        const flatOption = crush(readJsonFile<GameOptions>("game", `game-options/${fileName.trim()}`));
         return { ...acc, ...flatOption };
       }, {});
       options = construct<Record<string, unknown>>(flatOptions);

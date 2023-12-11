@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
@@ -102,6 +103,11 @@ export class GameHistoryRecordService {
 
   public async getGameHistory(gameId: Types.ObjectId, getGameHistoryDto: GetGameHistoryDto): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordRepository.getGameHistory(gameId, getGameHistoryDto);
+  }
+
+  public async hasGamePlayBeenMade(gameId: Types.ObjectId, play: GamePlay): Promise<boolean> {
+    const records = await this.gameHistoryRecordRepository.getGameHistoryGamePlayRecords(gameId, play, { limit: 1 });
+    return records.length > 0;
   }
 
   private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {

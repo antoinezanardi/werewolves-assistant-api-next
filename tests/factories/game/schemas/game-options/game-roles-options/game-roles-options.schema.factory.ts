@@ -1,6 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { PrejudicedManipulatorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";
+import { CupidGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";
+import { CupidLoversGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-lovers-game-options/cupid-game-options.schema";
 import { WitchGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { ElderGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema";
@@ -25,6 +28,16 @@ import { WhiteWerewolfGameOptions } from "@/modules/game/schemas/game-options/ro
 import { WildChildGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options/wild-child-game-options.schema";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+function createFakePrejudicedManipulatorGameOptions(
+  prejudicedManipulatorGameOptions: Partial<PrejudicedManipulatorGameOptions> = {},
+  override: object = {},
+): PrejudicedManipulatorGameOptions {
+  return plainToInstance(PrejudicedManipulatorGameOptions, {
+    isPowerlessIfInfected: prejudicedManipulatorGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
 
 function createFakeWitchGameOptions(witchGameOptions: Partial<WitchGameOptions> = {}, override: object = {}): WitchGameOptions {
   return plainToInstance(WitchGameOptions, {
@@ -51,6 +64,7 @@ function createFakePiedPiperGameOptions(piedPiperGameOptions: Partial<PiedPiperG
 function createFakeThiefGameOptions(thiefGameOptions: Partial<ThiefGameOptions> = {}, override: object = {}): ThiefGameOptions {
   return plainToInstance(ThiefGameOptions, {
     mustChooseBetweenWerewolves: thiefGameOptions.mustChooseBetweenWerewolves ?? faker.datatype.boolean(),
+    isChosenCardRevealed: thiefGameOptions.isChosenCardRevealed ?? faker.datatype.boolean(),
     additionalCardsCount: thiefGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
@@ -143,6 +157,20 @@ function createFakeSeerGameOptions(seerGameOptions: Partial<SeerGameOptions> = {
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
+function createFakeCupidLoversGameOptions(cupidLoversGameOptions: Partial<CupidLoversGameOptions> = {}, override: object = {}): CupidLoversGameOptions {
+  return plainToInstance(CupidLoversGameOptions, {
+    doRevealRoleToEachOther: cupidLoversGameOptions.doRevealRoleToEachOther ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeCupidGameOptions(cupidGameOptions: Partial<CupidGameOptions> = {}, override: object = {}): CupidGameOptions {
+  return plainToInstance(CupidGameOptions, {
+    lovers: createFakeCupidLoversGameOptions(cupidGameOptions.lovers),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakeWhiteWerewolfGameOptions(whiteWerewolfOptions: Partial<WhiteWerewolfGameOptions> = {}, override: object = {}): WhiteWerewolfGameOptions {
   return plainToInstance(WhiteWerewolfGameOptions, {
     wakingUpInterval: whiteWerewolfOptions.wakingUpInterval ?? faker.number.int({ min: 1, max: 5 }),
@@ -170,6 +198,7 @@ function createFakeSheriffGameOptions(sheriffGameOptions: Partial<SheriffGameOpt
     isEnabled: sheriffGameOptions.isEnabled ?? faker.datatype.boolean(),
     electedAt: createFakeSheriffElectionGameOptions(sheriffGameOptions.electedAt),
     hasDoubledVote: sheriffGameOptions.hasDoubledVote ?? faker.datatype.boolean(),
+    mustSettleTieInVotes: sheriffGameOptions.mustSettleTieInVotes ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -182,6 +211,7 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     bigBadWolf: createFakeBigBadWolfGameOptions(rolesGameOptions.bigBadWolf),
     whiteWerewolf: createFakeWhiteWerewolfGameOptions(rolesGameOptions.whiteWerewolf),
     seer: createFakeSeerGameOptions(rolesGameOptions.seer),
+    cupid: createFakeCupidGameOptions(rolesGameOptions.cupid),
     littleGirl: createFakeLittleGirlGameOptions(rolesGameOptions.littleGirl),
     defender: createFakeDefenderGameOptions(rolesGameOptions.defender),
     elder: createFakeElderGameOptions(rolesGameOptions.elder),
@@ -197,11 +227,13 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     piedPiper: createFakePiedPiperGameOptions(rolesGameOptions.piedPiper),
     scandalmonger: createFakeScandalmongerGameOptions(rolesGameOptions.scandalmonger),
     witch: createFakeWitchGameOptions(rolesGameOptions.witch),
+    prejudicedManipulator: createFakePrejudicedManipulatorGameOptions(rolesGameOptions.prejudicedManipulator),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakePrejudicedManipulatorGameOptions,
   createFakeWitchGameOptions,
   createFakeScandalmongerGameOptions,
   createFakePiedPiperGameOptions,
@@ -218,6 +250,8 @@ export {
   createFakeDefenderGameOptions,
   createFakeLittleGirlGameOptions,
   createFakeSeerGameOptions,
+  createFakeCupidGameOptions,
+  createFakeCupidLoversGameOptions,
   createFakeWhiteWerewolfGameOptions,
   createFakeBigBadWolfGameOptions,
   createFakeSheriffElectionGameOptions,

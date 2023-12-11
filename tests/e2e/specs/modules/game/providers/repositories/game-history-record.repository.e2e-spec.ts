@@ -4,11 +4,12 @@ import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
-import { GamePlayActions, WitchPotions } from "@/modules/game/enums/game-play.enum";
+import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import type { RoleSides } from "@/modules/role/enums/role.enum";
@@ -21,6 +22,7 @@ import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordStutteringJudgeChooseSignPlay, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGamePlayCupidCharms, createFakeGamePlayPiedPiperCharms } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeElderAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
@@ -179,7 +181,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
       ]);
-      
+
       await expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId)).resolves.toBeNull();
     });
 
@@ -403,7 +405,7 @@ describe("Game History Record Repository", () => {
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
-    
+
     it("should get records of stuttering judge requesting another vote for this gameId when called.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
@@ -471,7 +473,7 @@ describe("Game History Record Repository", () => {
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
-    
+
     it("should get records of elder eaten by any kind of werewolves for this gameId when called.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
@@ -552,7 +554,7 @@ describe("Game History Record Repository", () => {
       await populate(gameHistoryRecords);
       const records = await repositories.gameHistoryRecord.getGameHistoryElderProtectedFromWerewolvesRecords(gameId);
       const expectedRecords = [gameHistoryRecords[1], gameHistoryRecords[5]];
-      
+
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
     });
   });
@@ -605,6 +607,68 @@ describe("Game History Record Repository", () => {
       const records = await repositories.gameHistoryRecord.getGameHistoryPhaseRecords(gameId, 1, GamePhases.DAY);
       const expectedRecords = [gameHistoryRecords[0], gameHistoryRecords[2], gameHistoryRecords[4]];
 
+      expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
+    });
+  });
+
+  describe("getGameHistoryGamePlayRecords", () => {
+    const gameId = createFakeObjectId();
+    const otherGameId = createFakeObjectId();
+    const gameHistoryRecords = [
+      createFakeGameHistoryRecord({
+        gameId,
+        play: createFakeGameHistoryRecordPlay({
+          action: GamePlayActions.CHARM,
+          source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.CUPID }),
+        }),
+      }),
+      createFakeGameHistoryRecord({
+        gameId: otherGameId,
+        play: createFakeGameHistoryRecordPlay({
+          action: GamePlayActions.CHARM,
+          source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.PIED_PIPER }),
+        }),
+      }),
+      createFakeGameHistoryRecord({
+        gameId,
+        play: createFakeGameHistoryRecordPlay({
+          action: GamePlayActions.CHARM,
+          source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.CUPID }),
+          cause: GamePlayCauses.ANGEL_PRESENCE,
+        }),
+      }),
+    ];
+
+    beforeEach(async() => {
+      await populate(gameHistoryRecords);
+    });
+
+    it.each<{
+      test: string;
+      gameId: Types.ObjectId;
+      gamePlay: GamePlay;
+      expectedRecords: GameHistoryRecord[];
+    }>([
+      {
+        test: "should get one record when cupid charming.",
+        gameId,
+        gamePlay: createFakeGamePlayCupidCharms(),
+        expectedRecords: [gameHistoryRecords[0]],
+      },
+      {
+        test: "should get no record when pied-piper charming but on wrong game.",
+        gameId,
+        gamePlay: createFakeGamePlayPiedPiperCharms(),
+        expectedRecords: [],
+      },
+      {
+        test: "should get one record when cupid charming because of angel presence.",
+        gameId,
+        gamePlay: createFakeGamePlayCupidCharms({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        expectedRecords: [gameHistoryRecords[2]],
+      },
+    ])(`$test`, async({ gameId: id, gamePlay, expectedRecords }) => {
+      const records = await repositories.gameHistoryRecord.getGameHistoryGamePlayRecords(id, gamePlay);
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
     });
   });

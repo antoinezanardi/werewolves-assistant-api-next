@@ -1,5 +1,7 @@
 import type { Types } from "mongoose";
 
+import { createGameAdditionalCard } from "@/modules/game/helpers/game-additional-card/game-additional-card.factory";
+import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getPlayerWithId } from "@/modules/game/helpers/game.helper";
@@ -63,6 +65,19 @@ function appendUpcomingPlayInGame(gamePlay: GamePlay, game: Game): Game {
   return clonedGame;
 }
 
+function updateAdditionalCardInGame(cardId: Types.ObjectId, cardDataToUpdate: Partial<GameAdditionalCard>, game: Game): Game {
+  const clonedGame = createGame(game);
+  if (!clonedGame.additionalCards) {
+    return clonedGame;
+  }
+  const cardIdx = clonedGame.additionalCards.findIndex(card => card._id.equals(cardId));
+  if (cardIdx !== -1) {
+    const clonedCard = createGameAdditionalCard(clonedGame.additionalCards[cardIdx]);
+    clonedGame.additionalCards.splice(cardIdx, 1, createGameAdditionalCard(Object.assign(clonedCard, cardDataToUpdate)));
+  }
+  return clonedGame;
+}
+
 export {
   updatePlayerInGame,
   addPlayerAttributeInGame,
@@ -70,4 +85,5 @@ export {
   removePlayerAttributeByNameInGame,
   prependUpcomingPlayInGame,
   appendUpcomingPlayInGame,
+  updateAdditionalCardInGame,
 };

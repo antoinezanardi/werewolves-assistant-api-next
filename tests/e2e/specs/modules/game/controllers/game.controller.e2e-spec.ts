@@ -7,7 +7,7 @@ import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 
-import { GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
+import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role.constant";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
@@ -41,13 +41,13 @@ import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeCompositionGameOptions } from "@tests/factories/game/schemas/game-options/composition-game-options.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options.schema.factory";
+import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlayEligibleTargetsBoundaries } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema.factory";
 import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlayLoversMeetEachOther, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -439,7 +439,7 @@ describe("Game Controller", () => {
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.THIEF } }),
           ],
         }),
-        errorMessage: "additionalCards must be set if there is a player with role `thief`",
+        errorMessage: "additionalCards must be set if there is a player with one of the following roles : thief,actor",
       },
       {
         test: "should not allow game creation when thief is not in the game but additional cards are set.",
@@ -455,7 +455,7 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
           ],
         }),
-        errorMessage: "additionalCards can't be set if there is no player with role `thief`",
+        errorMessage: "additionalCards can't be set if there is no player with one of the following roles : thief,actor",
       },
       {
         test: "should not allow game creation when thief additional cards are more than the expected default limit.",
@@ -473,7 +473,7 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
           ],
         }),
-        errorMessage: "additionalCards length must be equal to options.roles.thief.additionalCardsCount",
+        errorMessage: "additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount",
       },
       {
         test: "should not allow game creation when thief additional cards are less than the expected limit defined in options.",
@@ -490,7 +490,7 @@ describe("Game Controller", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeCreateThiefGameOptionsDto({ additionalCardsCount: 4 }) }) }),
         }),
-        errorMessage: "additionalCards length must be equal to options.roles.thief.additionalCardsCount",
+        errorMessage: "additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount",
       },
       {
         test: "should not allow game creation when one thief additional card is the thief himself.",
@@ -506,10 +506,10 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.THIEF, recipient: RoleNames.THIEF }),
           ],
         }),
-        errorMessage: `additionalCards.roleName must be one of the following values: ${GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES.toString()}`,
+        errorMessage: `additionalCards.roleName for thief must be one of the following values: ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES.toString()}`,
       },
       {
-        test: "should not allow game creation when one thief additional card is is not available for thief.",
+        test: "should not allow game creation when one thief additional card (thief role) is is not available for thief.",
         payload: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
@@ -522,7 +522,39 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.TWO_SISTERS, recipient: RoleNames.THIEF }),
           ],
         }),
-        errorMessage: `additionalCards.roleName must be one of the following values: ${GAME_ADDITIONAL_CARDS_THIEF_ROLE_NAMES.toString()}`,
+        errorMessage: `additionalCards.roleName for thief must be one of the following values: ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES.toString()}`,
+      },
+      {
+        test: "should not allow game creation when one thief additional card (two-sisters role) is is not available for thief.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.TWO_SISTERS, recipient: RoleNames.THIEF }),
+          ],
+        }),
+        errorMessage: `additionalCards.roleName for thief must be one of the following values: ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES.toString()}`,
+      },
+      {
+        test: "should not allow game creation when one thief additional card (three-brothers role) is is not available for thief.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.THREE_BROTHERS } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.TWO_SISTERS, recipient: RoleNames.THIEF }),
+          ],
+        }),
+        errorMessage: `additionalCards.roleName for thief must be one of the following values: ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES.toString()}`,
       },
       {
         test: "should not allow game creation when two thief additional role cards exceed the maximum occurrences in game possible.",
@@ -628,6 +660,120 @@ describe("Game Controller", () => {
         }),
         errorMessage: "any player can't have a group if there is no player with role `prejudiced-manipulator`",
       },
+      {
+        test: "should not allow game creation when actor is in the game but additional cards are not set.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
+          ],
+        }),
+        errorMessage: "additionalCards must be set if there is a player with one of the following roles : thief,actor",
+      },
+      {
+        test: "should not allow game creation when actor is not in the game but additional cards are set.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+          ],
+        }),
+        errorMessage: "additionalCards can't be set if there is no player with one of the following roles : thief,actor",
+      },
+      {
+        test: "should not allow game creation when actor additional cards are more than the expected default limit.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+          ],
+        }),
+        errorMessage: "additionalCards length for actor must be equal to 3",
+      },
+      {
+        test: "should not allow game creation when one actor additional card (werewolf role) is is not available for actor.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.SEER, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.IDIOT, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
+          ],
+        }),
+        errorMessage: `additionalCards.roleName for actor must be one of the following values: ${ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES.toString()}`,
+      },
+      {
+        test: "should not allow game creation when one actor additional card (big-bad-wolf role) is is not available for actor.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.SEER, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.IDIOT, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.BIG_BAD_WOLF, recipient: RoleNames.ACTOR }),
+          ],
+        }),
+        errorMessage: `additionalCards.roleName for actor must be one of the following values: ${ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES.toString()}`,
+      },
+      {
+        test: "should not allow game creation when one actor additional card (two-sisters role) is is not available for actor.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.SEER, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.IDIOT, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.TWO_SISTERS, recipient: RoleNames.ACTOR }),
+          ],
+        }),
+        errorMessage: `additionalCards.roleName for actor must be one of the following values: ${ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES.toString()}`,
+      },
+      {
+        test: "should not allow game creation when one actor additional card (actor role) is is not available for actor.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.SEER, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.IDIOT, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.ACTOR, recipient: RoleNames.ACTOR }),
+          ],
+        }),
+        errorMessage: `additionalCards.roleName for actor must be one of the following values: ${ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES.toString()}`,
+      },
     ])("$test", async({
       payload,
       errorMessage,
@@ -727,7 +873,6 @@ describe("Game Controller", () => {
         upcomingPlays: toJSON([
           createFakeGamePlayCupidCharms(),
           createFakeGamePlaySeerLooks(),
-          createFakeGamePlayLoversMeetEachOther(),
           createFakeGamePlayWerewolvesEat(),
           createFakeGamePlayWhiteWerewolfEats(),
         ]) as GamePlay[],
@@ -831,7 +976,6 @@ describe("Game Controller", () => {
           createFakeGamePlayThiefChoosesCard(),
           createFakeGamePlayCupidCharms(),
           createFakeGamePlaySeerLooks(),
-          createFakeGamePlayLoversMeetEachOther(),
           createFakeGamePlayWerewolvesEat(),
           createFakeGamePlayWhiteWerewolfEats(),
         ]) as GamePlay[],
@@ -862,6 +1006,7 @@ describe("Game Controller", () => {
               phase: GamePhases.DAY,
             },
             hasDoubledVote: false,
+            mustSettleTieInVotes: false,
           },
           bigBadWolf: { isPowerlessIfWerewolfDies: false },
           whiteWerewolf: { wakingUpInterval: 5 },
@@ -869,6 +1014,7 @@ describe("Game Controller", () => {
             isTalkative: false,
             canSeeRoles: false,
           },
+          cupid: { lovers: { doRevealRoleToEachOther: true } },
           littleGirl: { isProtectedByDefender: true },
           defender: { canProtectTwice: true },
           elder: {
@@ -888,6 +1034,7 @@ describe("Game Controller", () => {
           },
           thief: {
             mustChooseBetweenWerewolves: false,
+            isChosenCardRevealed: true,
             additionalCardsCount: 4,
           },
           piedPiper: {
@@ -896,6 +1043,7 @@ describe("Game Controller", () => {
           },
           scandalmonger: { markPenalty: 5 },
           witch: { doesKnowWerewolvesTargets: false },
+          prejudicedManipulator: { isPowerlessIfInfected: false },
         },
       };
       const payload = createFakeCreateGameWithPlayersDto({}, { options });

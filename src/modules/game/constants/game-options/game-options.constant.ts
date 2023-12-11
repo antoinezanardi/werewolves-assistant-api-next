@@ -16,6 +16,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
         phase: GamePhases.NIGHT,
       },
       hasDoubledVote: true,
+      mustSettleTieInVotes: true,
     },
     bigBadWolf: { isPowerlessIfWerewolfDies: true },
     whiteWerewolf: { wakingUpInterval: 2 },
@@ -23,6 +24,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       isTalkative: true,
       canSeeRoles: true,
     },
+    cupid: { lovers: { doRevealRoleToEachOther: false } },
     littleGirl: { isProtectedByDefender: false },
     defender: { canProtectTwice: false },
     elder: {
@@ -42,6 +44,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     },
     thief: {
       mustChooseBetweenWerewolves: true,
+      isChosenCardRevealed: false,
       additionalCardsCount: 2,
     },
     piedPiper: {
@@ -50,6 +53,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     },
     scandalmonger: { markPenalty: 2 },
     witch: { doesKnowWerewolvesTargets: true },
+    prejudicedManipulator: { isPowerlessIfInfected: true },
   },
 };
 

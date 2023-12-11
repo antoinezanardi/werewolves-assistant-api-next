@@ -100,6 +100,30 @@ describe("Additional Cards Presence Decorator", () => {
         expected: true,
       },
       {
+        test: "should return true when additional cards are set and an actor is in the game.",
+        additionalCards: [
+          createFakeCreateGameAdditionalCardDto(),
+          createFakeCreateGameAdditionalCardDto(),
+        ],
+        validationArguments: {
+          value: [
+            createFakeCreateGameAdditionalCardDto(),
+            createFakeCreateGameAdditionalCardDto(),
+          ],
+          object: createFakeCreateGameDto({
+            players: [
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.ACTOR } }),
+            ],
+          }),
+          constraints: [],
+          targetName: "",
+          property: "additionalCards",
+        },
+        expected: true,
+      },
+      {
         test: "should return true when additional cards are not set and there is no thief is in the game.",
         additionalCards: undefined,
         validationArguments: {
@@ -139,7 +163,7 @@ describe("Additional Cards Presence Decorator", () => {
         property: "additionalCards",
       };
 
-      expect(getAdditionalCardsPresenceDefaultMessage(validationArguments)).toBe("additionalCards must be set if there is a player with role `thief`");
+      expect(getAdditionalCardsPresenceDefaultMessage(validationArguments)).toBe("additionalCards must be set if there is a player with one of the following roles : thief,actor");
     });
 
     it("should return additional cards forbidden presence message when they are set.", () => {
@@ -163,7 +187,7 @@ describe("Additional Cards Presence Decorator", () => {
         property: "additionalCards",
       };
 
-      expect(getAdditionalCardsPresenceDefaultMessage(validationArguments)).toBe("additionalCards can't be set if there is no player with role `thief`");
+      expect(getAdditionalCardsPresenceDefaultMessage(validationArguments)).toBe("additionalCards can't be set if there is no player with one of the following roles : thief,actor");
     });
   });
 });

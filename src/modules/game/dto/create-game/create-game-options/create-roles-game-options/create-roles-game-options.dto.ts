@@ -3,6 +3,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
+import { CreatePrejudicedManipulatorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-prejudiced-manipulator-game-options.dto";
+import { CreateCupidGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-game-options.dto";
 import { CreateWitchGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-witch-game-options.dto";
 import { ROLES_GAME_OPTIONS_API_PROPERTIES, ROLES_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema.constant";
 import { CreateElderGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-elder-game-options.dto";
@@ -76,6 +78,15 @@ class CreateRolesGameOptionsDto {
   @Type(() => CreateSeerGameOptionsDto)
   @ValidateNested()
   public seer: CreateSeerGameOptionsDto = new CreateSeerGameOptionsDto();
+
+  @ApiProperty({
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.cupid,
+    required: false,
+  } as ApiPropertyOptions)
+  @IsOptional()
+  @Type(() => CreateCupidGameOptionsDto)
+  @ValidateNested()
+  public cupid: CreateCupidGameOptionsDto = new CreateCupidGameOptionsDto();
 
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.littleGirl,
@@ -211,6 +222,15 @@ class CreateRolesGameOptionsDto {
   @Type(() => CreateWitchGameOptionsDto)
   @ValidateNested()
   public witch: CreateWitchGameOptionsDto = new CreateWitchGameOptionsDto();
+
+  @ApiProperty({
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.prejudicedManipulator,
+    required: false,
+  } as ApiPropertyOptions)
+  @IsOptional()
+  @Type(() => CreatePrejudicedManipulatorGameOptionsDto)
+  @ValidateNested()
+  public prejudicedManipulator: CreatePrejudicedManipulatorGameOptionsDto = new CreatePrejudicedManipulatorGameOptionsDto();
 }
 
 export { CreateRolesGameOptionsDto };
