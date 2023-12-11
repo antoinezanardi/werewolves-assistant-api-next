@@ -27,7 +27,7 @@ import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dt
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote, createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlay, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
@@ -60,6 +60,7 @@ describe("Game History Record Service", () => {
       getPreviousGameHistoryRecord: jest.SpyInstance;
       getGameHistory: jest.SpyInstance;
       getGameHistoryPhaseRecords: jest.SpyInstance;
+      getGameHistoryGamePlayRecords: jest.SpyInstance;
     };
     gameRepository: { findOne: jest.SpyInstance };
     gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
@@ -95,6 +96,7 @@ describe("Game History Record Service", () => {
         getPreviousGameHistoryRecord: jest.fn(),
         getGameHistory: jest.fn(),
         getGameHistoryPhaseRecords: jest.fn(),
+        getGameHistoryGamePlayRecords: jest.fn(),
       },
       gameRepository: { findOne: jest.fn() },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
@@ -340,6 +342,33 @@ describe("Game History Record Service", () => {
       await services.gameHistoryRecord.getGameHistory(game._id, getGameHistoryDto);
 
       expect(mocks.gameHistoryRecordRepository.getGameHistory).toHaveBeenCalledExactlyOnceWith(game._id, getGameHistoryDto);
+    });
+  });
+
+  describe("hasGamePlayBeenMade", () => {
+    it("should call getGameHistoryGamePlayRecords repository method when called.", async() => {
+      const game = createFakeGame();
+      const gamePlay = createFakeGamePlay();
+      mocks.gameHistoryRecordRepository.getGameHistoryGamePlayRecords.mockResolvedValueOnce([]);
+      await services.gameHistoryRecord.hasGamePlayBeenMade(game._id, gamePlay);
+
+      expect(mocks.gameHistoryRecordRepository.getGameHistoryGamePlayRecords).toHaveBeenCalledExactlyOnceWith(game._id, gamePlay, { limit: 1 });
+    });
+
+    it("should return false when there is no game play record.", async() => {
+      const game = createFakeGame();
+      const gamePlay = createFakeGamePlay();
+      mocks.gameHistoryRecordRepository.getGameHistoryGamePlayRecords.mockResolvedValueOnce([]);
+
+      await expect(services.gameHistoryRecord.hasGamePlayBeenMade(game._id, gamePlay)).resolves.toBe(false);
+    });
+
+    it("should return true when there is a game play record.", async() => {
+      const game = createFakeGame();
+      const gamePlay = createFakeGamePlay();
+      mocks.gameHistoryRecordRepository.getGameHistoryGamePlayRecords.mockResolvedValueOnce([createFakeGameHistoryRecordPlay()]);
+      
+      await expect(services.gameHistoryRecord.hasGamePlayBeenMade(game._id, gamePlay)).resolves.toBe(true);
     });
   });
 

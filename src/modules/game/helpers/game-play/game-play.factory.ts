@@ -38,7 +38,7 @@ function createGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}): GameP
 function createGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
   let occurrence: GamePlayOccurrences = GamePlayOccurrences.ON_DAYS;
   if (gamePlay.cause === GamePlayCauses.ANGEL_PRESENCE) {
-    occurrence = GamePlayOccurrences.FIRST_NIGHT_ONLY;
+    occurrence = GamePlayOccurrences.ONE_NIGHT_ONLY;
   } else if ([GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES, GamePlayCauses.STUTTERING_JUDGE_REQUEST].includes(gamePlay.cause as GamePlayCauses)) {
     occurrence = GamePlayOccurrences.CONSEQUENTIAL;
   }
@@ -63,7 +63,7 @@ function createGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}): GameP
   return createGamePlay({
     source: createGamePlaySource({ name: RoleNames.THIEF }),
     action: GamePlayActions.CHOOSE_CARD,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   });
 }
@@ -72,7 +72,7 @@ function createGamePlayStutteringJudgeChoosesSign(gamePlay: Partial<GamePlay> = 
   return createGamePlay({
     source: createGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
     action: GamePlayActions.CHOOSE_SIGN,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   });
 }
@@ -90,7 +90,7 @@ function createGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}): G
   return createGamePlay({
     source: createGamePlaySource({ name: RoleNames.WOLF_HOUND }),
     action: GamePlayActions.CHOOSE_SIDE,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   });
 }
@@ -99,7 +99,7 @@ function createGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {}): 
   return createGamePlay({
     source: createGamePlaySource({ name: RoleNames.WILD_CHILD }),
     action: GamePlayActions.CHOOSE_MODEL,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   });
 }
@@ -126,7 +126,7 @@ function createGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {}): Ga
   return createGamePlay({
     source: createGamePlaySource({ name: PlayerGroups.LOVERS }),
     action: GamePlayActions.MEET_EACH_OTHER,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   });
 }
@@ -198,7 +198,7 @@ function createGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
     source: createGamePlaySource({ name: RoleNames.CUPID }),
     action: GamePlayActions.CHARM,
-    occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   });
 }

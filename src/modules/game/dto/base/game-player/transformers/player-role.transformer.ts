@@ -1,6 +1,8 @@
 import { has } from "lodash";
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 
+import { getRoleWithName } from "@/modules/role/helpers/role.helper";
+import type { Role } from "@/modules/role/types/role.type";
 import { ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -9,12 +11,12 @@ function playerRoleTransformer(params: TransformFnParams): unknown {
     return params.value;
   }
   const value = params.value as {
-    name: string;
+    name: RoleNames;
     current: RoleNames;
     original: RoleNames;
     isRevealed: boolean;
   };
-  const role = ROLES.find(({ name }) => name === value.name);
+  const role = getRoleWithName(ROLES as Role[], value.name);
   if (role === undefined) {
     return value;
   }

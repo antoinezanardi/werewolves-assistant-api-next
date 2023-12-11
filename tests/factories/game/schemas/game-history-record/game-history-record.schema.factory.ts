@@ -315,6 +315,7 @@ function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHist
   return plainToInstance(GameHistoryRecordPlay, {
     source: createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlay.source),
     action: gameHistoryRecordPlay.action ?? faker.helpers.arrayElement(Object.values(GamePlayActions)),
+    cause: gameHistoryRecordPlay.cause ?? undefined,
     targets: gameHistoryRecordPlay.targets ?? undefined,
     votes: gameHistoryRecordPlay.votes ?? undefined,
     voting: gameHistoryRecordPlay.voting ? createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlay.voting, override) : undefined,

@@ -60,7 +60,7 @@ describe("Game Play Factory", () => {
           source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
           action: GamePlayActions.VOTE,
           cause: GamePlayCauses.ANGEL_PRESENCE,
-          occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+          occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
         }),
         cause: GamePlayCauses.ANGEL_PRESENCE,
       },
@@ -115,7 +115,7 @@ describe("Game Play Factory", () => {
       const expectedGamePlay = createFakeGamePlay({
         source: createFakeGamePlaySource({ name: RoleNames.THIEF }),
         action: GamePlayActions.CHOOSE_CARD,
-        occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+        occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
       });
 
       expect(createGamePlayThiefChoosesCard()).toStrictEqual<GamePlay>(expectedGamePlay);
@@ -127,7 +127,7 @@ describe("Game Play Factory", () => {
       const expectedGamePlay = createFakeGamePlay({
         source: createFakeGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
         action: GamePlayActions.CHOOSE_SIGN,
-        occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+        occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
       });
 
       expect(createGamePlayStutteringJudgeChoosesSign()).toStrictEqual<GamePlay>(expectedGamePlay);
@@ -151,7 +151,7 @@ describe("Game Play Factory", () => {
       const expectedGamePlay = createFakeGamePlay({
         source: createFakeGamePlaySource({ name: RoleNames.WOLF_HOUND }),
         action: GamePlayActions.CHOOSE_SIDE,
-        occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+        occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
       });
 
       expect(createGamePlayWolfHoundChoosesSide()).toStrictEqual<GamePlay>(expectedGamePlay);
@@ -163,7 +163,7 @@ describe("Game Play Factory", () => {
       const expectedGamePlay = createFakeGamePlay({
         source: createFakeGamePlaySource({ name: RoleNames.WILD_CHILD }),
         action: GamePlayActions.CHOOSE_MODEL,
-        occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+        occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
       });
 
       expect(createGamePlayWildChildChoosesModel()).toStrictEqual<GamePlay>(expectedGamePlay);
@@ -199,7 +199,7 @@ describe("Game Play Factory", () => {
       const expectedGamePlay = createFakeGamePlay({
         source: createFakeGamePlaySource({ name: PlayerGroups.LOVERS }),
         action: GamePlayActions.MEET_EACH_OTHER,
-        occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+        occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
       });
 
       expect(createGamePlayLoversMeetEachOther()).toStrictEqual<GamePlay>(expectedGamePlay);
@@ -295,7 +295,7 @@ describe("Game Play Factory", () => {
       const expectedGamePlay = createFakeGamePlay({
         source: createFakeGamePlaySource({ name: RoleNames.CUPID }),
         action: GamePlayActions.CHARM,
-        occurrence: GamePlayOccurrences.FIRST_NIGHT_ONLY,
+        occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
       });
 
       expect(createGamePlayCupidCharms()).toStrictEqual<GamePlay>(expectedGamePlay);

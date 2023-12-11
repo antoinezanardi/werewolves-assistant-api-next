@@ -117,6 +117,15 @@ function createFakeWorshipedByWildChildPlayerAttribute(attribute: Partial<Player
   }, override);
 }
 
+function createFakePowerlessByActorPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+  return createFakePlayerAttribute({
+    name: PlayerAttributeNames.POWERLESS,
+    source: RoleNames.ACTOR,
+    doesRemainAfterDeath: true,
+    ...attribute,
+  }, override);
+}
+
 function createFakePowerlessByWerewolvesPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.POWERLESS,
@@ -232,6 +241,7 @@ export {
   createFakeScandalmongerMarkedByScandalmongerPlayerAttribute,
   createFakeInLoveByCupidPlayerAttribute,
   createFakeWorshipedByWildChildPlayerAttribute,
+  createFakePowerlessByActorPlayerAttribute,
   createFakePowerlessByWerewolvesPlayerAttribute,
   createFakePowerlessByAccursedWolfFatherPlayerAttribute,
   createFakePowerlessByFoxPlayerAttribute,

@@ -1,0 +1,14 @@
+[
+  {
+    "roleName": "cupid",
+    "recipient": "actor"
+  },
+  {
+    "roleName": "defender",
+    "recipient": "actor"
+  },
+  {
+    "roleName": "hunter",
+    "recipient": "actor"
+  }
+]

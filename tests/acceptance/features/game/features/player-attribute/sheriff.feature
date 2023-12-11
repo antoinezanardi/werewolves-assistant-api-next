@@ -89,7 +89,7 @@ Feature: 🎖️ Sheriff player attribute
 
   Scenario: 🎖️ Sheriff doesn't break tie between votes with good game options
 
-    Given a created game with options described in file sheriff-does-not-settle-tie-in-votes.json and with the following players
+    Given a created game with options described in file sheriff-does-not-settle-tie-in-votes-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
       | Olivia  | werewolf |

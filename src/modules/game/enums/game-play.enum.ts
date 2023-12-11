@@ -27,7 +27,7 @@ enum GamePlayCauses {
 }
 
 enum GamePlayOccurrences {
-  FIRST_NIGHT_ONLY = "first-night-only",
+  ONE_NIGHT_ONLY = "one-night-only",
   ON_NIGHTS = "on-nights",
   ON_DAYS = "on-days",
   ANYTIME = "anytime",

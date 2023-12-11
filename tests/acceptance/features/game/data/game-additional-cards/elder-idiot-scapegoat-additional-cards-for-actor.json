@@ -1,0 +1,14 @@
+[
+  {
+    "roleName": "elder",
+    "recipient": "actor"
+  },
+  {
+    "roleName": "idiot",
+    "recipient": "actor"
+  },
+  {
+    "roleName": "scapegoat",
+    "recipient": "actor"
+  }
+]

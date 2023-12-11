@@ -1,0 +1,14 @@
+[
+  {
+    "roleName": "pied-piper",
+    "recipient": "actor"
+  },
+  {
+    "roleName": "scandalmonger",
+    "recipient": "actor"
+  },
+  {
+    "roleName": "seer",
+    "recipient": "actor"
+  }
+]
