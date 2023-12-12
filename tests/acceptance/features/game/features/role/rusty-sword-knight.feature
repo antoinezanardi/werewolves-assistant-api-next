@@ -53,3 +53,27 @@ Feature: 🤺 Rusty Sword Knight role
     Then the player named Babou should be murdered by survivors from vote
     And the player named Olivia should be alive
     And the player named JB should be alive
+
+  Scenario: 🤺 Rusty Sword Knight doesn't kill the left werewolf if he's powerless when he's been eaten
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role               |
+      | Antoine | rusty-sword-knight |
+      | JB      | werewolf           |
+      | Olivia  | elder              |
+      | Thomas  | angel              |
+      | Babou   | werewolf           |
+    Then the game's current play should be survivors to vote because angel-presence
+
+    When the survivors vote with the following votes
+      | voter  | target |
+      | Thomas | Olivia |
+    Then the player named Antoine should have the active powerless from elder attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should be murdered by werewolves from eaten
+    And the player named Babou should not have the active contaminated from rusty-sword-knight attribute
