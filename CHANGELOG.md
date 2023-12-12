@@ -1,5 +1,37 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.25.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.24.0...v1.25.0) (2023-12-11)
+
+
+### 🚀 Features
+
+* **actor:** actor role ([#720](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/720)) ([22c80c9](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/22c80c94d5b4fa91d8eceea6caa0057d363875ac)), closes [#706](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/706)
+* **big-bad-wolf:** powerless attribute when one werewolf dies ([#708](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/708)) ([6e48a61](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/6e48a6124e04d5619b767a800b677a8c9883ff09)), closes [#700](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/700)
+* **game-options:** lovers reveal each other role game option ([#710](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/710)) ([7b284d9](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/7b284d9578b230c57b4ab7a26e307ce43460033e)), closes [#702](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/702)
+* **game-options:** prejudiced manipulator powerless if infected game option ([#712](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/712)) ([38aa021](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/38aa021d766ac3db932dba38b87187fe0cdaee0a)), closes [#703](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/703)
+* **game-options:** sheriff must settle tie between votes game option ([#719](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/719)) ([da119d3](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/da119d3f78a0a4accbdbab551e0ceb8c33a611fa)), closes [#704](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/704)
+* **game-options:** thief chosen card revealed option ([#713](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/713)) ([f3277db](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f3277db8f3b7e8a93565311c95263f521536b169)), closes [#705](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/705)
+* **pied-piper:** add powerless by accursed wolf-father when infected ([#711](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/711)) ([1d8a37f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1d8a37f642c1438f6aadd9ec90d8e399d24105f4)), closes [#701](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/701)
+* **roles:** eligible additional card recipients for each role ([#714](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/714)) ([0b75987](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/0b7598724f2eba50f29fac1f413930fd5d61b3ed)), closes [#707](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/707)
+
+
+### 🧹 Chore
+
+* **deps:** bump lint-staged from 15.1.0 to 15.2.0 ([#718](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/718)) ([709a36f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/709a36f089496ab751c1a938ccbc1e1abc7567c0))
+* **deps:** bump mongoose from 8.0.2 to 8.0.3 ([#729](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/729)) ([6e15252](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/6e152521b07a9c1c5591fc16efeb6b6d237faa96))
+* **deps:** bump reflect-metadata from 0.1.13 to 0.1.14 ([#730](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/730)) ([4265dc6](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/4265dc62099798497cd243025aac471e9a0cf9a0))
+* **deps:** bump semantic-release from 22.0.8 to 22.0.9 ([#722](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/722)) ([7a00939](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/7a00939cf8d863badbb97d31208459f535c7172b))
+* **deps:** bump semantic-release from 22.0.9 to 22.0.10 ([#725](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/725)) ([79741e6](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/79741e6d3c7f50a9e1f24da00c0e7dce3df04afe))
+* **deps:** bump the eslint group with 1 update ([#716](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/716)) ([4ecf67e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/4ecf67e94e2251f2b2c7af69ceac8996c5d65ca7))
+* **deps:** bump the types group with 1 update ([#715](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/715)) ([48bc69c](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/48bc69c3cd4e6f97e9fcea4b6ba4489d8cb0bed3))
+* **deps:** bump the types group with 1 update ([#723](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/723)) ([1fe93d9](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1fe93d926b4982ab38abb76dafefa16a7a4c48a3))
+* **deps:** bump the types group with 1 update ([#728](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/728)) ([fbb7bbd](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/fbb7bbdc990b6c818e82778babe6d8667c52790e))
+* **deps:** bump the types group with 2 updates ([#721](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/721)) ([131cb32](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/131cb3281535826c8c3769c0608e270ae54b0b6c))
+* **deps:** bump ts-node from 10.9.1 to 10.9.2 ([#732](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/732)) ([3967c56](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/3967c56597b3ac23b95f97a3c24d69b32ceea74a))
+* **deps:** bump type-fest from 4.8.2 to 4.8.3 ([#717](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/717)) ([83a0875](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/83a087564d9e751095264a21fd1dcc096463d366))
+* **deps:** bump typescript from 5.3.2 to 5.3.3 ([#726](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/726)) ([9a3582c](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/9a3582c4dfd4283656d0a734583b5b7677502419))
+* **github-actions:** bump google-github-actions/deploy-appengine from 1 to 2 ([#733](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/733)) ([f042aa6](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f042aa6cd75019b9bb3bae3e625556eb38f5306f))
+
 ## [1.24.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.23.1...v1.24.0) (2023-12-1)
 
 
