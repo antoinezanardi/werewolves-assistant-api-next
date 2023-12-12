@@ -93,7 +93,7 @@ Then(/^the play's nominated players from votes of the previous history record sh
 });
 
 Then(/^the play's chosen card from the previous history record should be the card with role (?<cardRole>.+)$/u, function(this: CustomWorld, cardRole: RoleNames): void {
-  const chosenCard = this.game.additionalCards?.find(({ roleName }) => roleName === cardRole);
+  const chosenCard = this.gameOnPreviousGamePlay.additionalCards?.find(({ roleName }) => roleName === cardRole);
 
   expect(this.lastGameHistoryRecord.play.chosenCard).toStrictEqual(chosenCard);
 });
