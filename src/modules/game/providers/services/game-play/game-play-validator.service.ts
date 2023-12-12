@@ -15,7 +15,6 @@ import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
-import { WEREWOLF_ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
@@ -54,13 +53,10 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayThiefChosenCard(chosenCard: GameAdditionalCard | undefined, game: GameWithCurrentPlay): void {
-    const { mustChooseBetweenWerewolves } = game.options.roles.thief;
-    if (!game.additionalCards || !mustChooseBetweenWerewolves) {
+    if (!game.additionalCards) {
       return;
     }
-    const werewolfRoleNames = WEREWOLF_ROLES.map(({ name }) => name);
-    const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => werewolfRoleNames.includes(roleName));
-    if (areAllAdditionalCardsWerewolves && !chosenCard) {
+    if (!chosenCard && game.currentPlay.canBeSkipped === false) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.THIEF_MUST_CHOOSE_CARD);
     }
     if (chosenCard && chosenCard.recipient !== RoleNames.THIEF) {
