@@ -1058,7 +1058,7 @@ describe("Game Play Maker Service", () => {
       expect(services.gamePlayMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should update thief role and side when called.", () => {
+    it("should update thief role and side and make his card used when called.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
         createFakeScandalmongerAlivePlayer(),
@@ -1085,6 +1085,12 @@ describe("Game Play Maker Service", () => {
           players[1],
           players[2],
           players[3],
+        ],
+        additionalCards: [
+          createFakeGameAdditionalCard({ ...additionalCards[0], isUsed: true }),
+          additionalCards[1],
+          additionalCards[2],
+          additionalCards[3],
         ],
       });
 

@@ -196,7 +196,7 @@ export class GamePlayMakerService {
   }
   
   private thiefChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
-    const clonedGame = createGame(game);
+    let clonedGame = createGame(game);
     const thiefPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.THIEF);
     if (!thiefPlayer || !chosenCard) {
       return clonedGame;
@@ -208,7 +208,8 @@ export class GamePlayMakerService {
     const newThiefSide: PlayerSide = { ...thiefPlayer.side, current: chosenRole.side };
     const newThiefRole: PlayerRole = { ...thiefPlayer.role, current: chosenRole.name };
     const playerDataToUpdate: Partial<Player> = { side: newThiefSide, role: newThiefRole };
-    return updatePlayerInGame(thiefPlayer._id, playerDataToUpdate, clonedGame);
+    clonedGame = updatePlayerInGame(thiefPlayer._id, playerDataToUpdate, clonedGame);
+    return updateAdditionalCardInGame(chosenCard._id, { isUsed: true }, clonedGame);
   }
   
   private scapegoatBansVoting({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
