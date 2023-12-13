@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { ActorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/actor-game-options/actor-game-options.schema";
 import { PrejudicedManipulatorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";
 import { CupidGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";
 import { CupidLoversGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-lovers-game-options/cupid-game-options.schema";
@@ -28,6 +29,13 @@ import { WhiteWerewolfGameOptions } from "@/modules/game/schemas/game-options/ro
 import { WildChildGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options/wild-child-game-options.schema";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+function createFakeActorGameOptions(actorGameOptions: Partial<ActorGameOptions> = {}, override: object = {}): ActorGameOptions {
+  return plainToInstance(ActorGameOptions, {
+    isPowerlessOnWerewolvesSide: actorGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
 
 function createFakePrejudicedManipulatorGameOptions(
   prejudicedManipulatorGameOptions: Partial<PrejudicedManipulatorGameOptions> = {},
@@ -228,11 +236,13 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     scandalmonger: createFakeScandalmongerGameOptions(rolesGameOptions.scandalmonger),
     witch: createFakeWitchGameOptions(rolesGameOptions.witch),
     prejudicedManipulator: createFakePrejudicedManipulatorGameOptions(rolesGameOptions.prejudicedManipulator),
+    actor: createFakeActorGameOptions(rolesGameOptions.actor),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakeActorGameOptions,
   createFakePrejudicedManipulatorGameOptions,
   createFakeWitchGameOptions,
   createFakeScandalmongerGameOptions,

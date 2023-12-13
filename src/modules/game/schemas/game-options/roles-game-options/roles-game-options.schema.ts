@@ -3,6 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
+import { ActorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/actor-game-options/actor-game-options.schema";
 import { PrejudicedManipulatorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";
 import { CupidGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";
 import { WitchGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
@@ -167,6 +168,12 @@ class RolesGameOptions {
   @Type(() => PrejudicedManipulatorGameOptions)
   @Expose()
   public prejudicedManipulator: PrejudicedManipulatorGameOptions;
+
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.actor as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.actor)
+  @Type(() => ActorGameOptions)
+  @Expose()
+  public actor: ActorGameOptions;
 }
 
 const ROLES_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(RolesGameOptions);

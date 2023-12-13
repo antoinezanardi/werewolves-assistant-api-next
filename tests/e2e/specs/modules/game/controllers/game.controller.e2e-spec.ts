@@ -1044,6 +1044,7 @@ describe("Game Controller", () => {
           scandalmonger: { markPenalty: 5 },
           witch: { doesKnowWerewolvesTargets: false },
           prejudicedManipulator: { isPowerlessIfInfected: false },
+          actor: { isPowerlessOnWerewolvesSide: false },
         },
       };
       const payload = createFakeCreateGameWithPlayersDto({}, { options });

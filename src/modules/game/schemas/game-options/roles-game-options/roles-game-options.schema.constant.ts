@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { ACTOR_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/actor-game-options/actor-game-options.schema";
 import { PREJUDICED_MANIPULATOR_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";
 import { CUPID_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";
 import { WITCH_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/witch-game-options/witch-game-options.schema";
@@ -142,6 +143,11 @@ const ROLES_GAME_OPTIONS_FIELDS_SPECS = {
     type: PREJUDICED_MANIPULATOR_GAME_OPTIONS_SCHEMA,
     default: DEFAULT_GAME_OPTIONS.roles.prejudicedManipulator,
   },
+  actor: {
+    required: true,
+    type: ACTOR_GAME_OPTIONS_SCHEMA,
+    default: DEFAULT_GAME_OPTIONS.roles.actor,
+  },
 } as const satisfies Record<keyof RolesGameOptions, MongoosePropOptions>;
 
 const ROLES_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof RolesGameOptions, ApiPropertyOptions>> = {
@@ -233,6 +239,10 @@ const ROLES_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof RolesGameOpti
   prejudicedManipulator: {
     description: "Game `prejudiced manipulator` role's options.",
     ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.prejudicedManipulator),
+  },
+  actor: {
+    description: "Game `actor` role's options.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.actor),
   },
 };
 

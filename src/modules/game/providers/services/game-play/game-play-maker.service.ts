@@ -223,13 +223,14 @@ export class GamePlayMakerService {
   
   private wolfHoundChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
+    const { roles } = clonedGame.options;
     const wolfHoundPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.WOLF_HOUND);
     if (!wolfHoundPlayer) {
       return clonedGame;
     }
     const wolfHoundSide = chosenSide ?? sample([RoleSides.VILLAGERS, RoleSides.WEREWOLVES]);
     const playerDataToUpdate: Partial<Player> = { side: { ...wolfHoundPlayer.side, current: wolfHoundSide } };
-    if (wolfHoundPlayer.role.original === RoleNames.ACTOR && wolfHoundSide === RoleSides.WEREWOLVES) {
+    if (wolfHoundPlayer.role.original === RoleNames.ACTOR && wolfHoundSide === RoleSides.WEREWOLVES && roles.actor.isPowerlessOnWerewolvesSide) {
       playerDataToUpdate.attributes = [...wolfHoundPlayer.attributes, createPowerlessByActorPlayerAttribute()];
     }
     return updatePlayerInGame(wolfHoundPlayer._id, playerDataToUpdate, clonedGame);
@@ -370,7 +371,7 @@ export class GamePlayMakerService {
     const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES } };
     if (targetedPlayer.role.current === RoleNames.PREJUDICED_MANIPULATOR && roles.prejudicedManipulator.isPowerlessIfInfected ||
       targetedPlayer.role.current === RoleNames.PIED_PIPER && roles.piedPiper.isPowerlessIfInfected ||
-      targetedPlayer.role.current === RoleNames.ACTOR) {
+      targetedPlayer.role.current === RoleNames.ACTOR && roles.actor.isPowerlessOnWerewolvesSide) {
       clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, createPowerlessByAccursedWolfFatherPlayerAttribute());
     }
     return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);

@@ -118,13 +118,14 @@ export class PlayerKillerService {
 
   private applyWorshipedPlayerDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
+    const { roles } = clonedGame.options;
     const wildChildPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.WILD_CHILD);
     if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, PlayerAttributeNames.WORSHIPED, clonedGame) ||
       wildChildPlayer === undefined || !isPlayerAliveAndPowerful(wildChildPlayer, clonedGame)) {
       return clonedGame;
     }
     wildChildPlayer.side.current = RoleSides.WEREWOLVES;
-    if (wildChildPlayer.role.original === RoleNames.ACTOR) {
+    if (wildChildPlayer.role.original === RoleNames.ACTOR && roles.actor.isPowerlessOnWerewolvesSide) {
       wildChildPlayer.attributes.push(createPowerlessByActorPlayerAttribute());
     }
     return updatePlayerInGame(wildChildPlayer._id, wildChildPlayer, clonedGame);
