@@ -18,7 +18,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeBigBadWolfGameOptions, createFakeElderGameOptions, createFakeIdiotGameOptions, createFakeLittleGirlGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeActorGameOptions, createFakeBigBadWolfGameOptions, createFakeElderGameOptions, createFakeIdiotGameOptions, createFakeLittleGirlGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySheriffDelegates, createFakeGamePlaySurvivorsBuryDeadBodies } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -784,7 +784,8 @@ describe("Player Killer Service", () => {
           attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()],
         }),
       ];
-      const game = createFakeGame({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGame({ players, options });
       const expectedGame = createFakeGame({
         ...game,
         players: [
@@ -795,6 +796,35 @@ describe("Player Killer Service", () => {
             ...game.players[3],
             side: createFakePlayerSide({ ...game.players[3].side, current: RoleSides.WEREWOLVES }),
             attributes: [...game.players[3].attributes, createFakePowerlessByActorPlayerAttribute()],
+          }),
+        ],
+      });
+
+      expect(services.playerKiller["applyWorshipedPlayerDeathOutcomes"](players[0], game)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should transform wild child to a werewolf sided player but without powerless attribute when wild child is actor in disguise and game options are changed.", () => {
+      const players = [
+        createFakeSeerAlivePlayer({ attributes: [createFakeWorshipedByWildChildPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWildChildAlivePlayer({
+          role: createFakePlayerRole({ original: RoleNames.ACTOR, current: RoleNames.WILD_CHILD }),
+          attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()],
+        }),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
+      const game = createFakeGame({ players, options });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          game.players[0],
+          game.players[1],
+          game.players[2],
+          createFakePlayer({
+            ...game.players[3],
+            side: createFakePlayerSide({ ...game.players[3].side, current: RoleSides.WEREWOLVES }),
+            attributes: [...game.players[3].attributes],
           }),
         ],
       });

@@ -451,6 +451,41 @@ Feature: 🎭 Actor role
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
+  Scenario: 🎭 Actor acts as wild child and becomes a werewolf but doesn't becomes powerless with good game option
+
+    Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, actor-not-powerless-on-werewolves-side-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | villager |
+      | Louise  | villager |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role wild-child
+    Then the player named Antoine should be currently a wild-child and originally a actor
+    And the game's additional card with role wild-child for actor should be used
+    And the game's current play should be wild-child to choose-model
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+
+    When the wild child chooses the player named Olivia as a model
+    Then the player named Olivia should have the active worshiped from wild-child attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should not have the active powerless from actor attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be actor to choose-card
+
   Scenario: 🎭 Actor acts as wild child but doesn't become a werewolf because he became back an actor before the model died
 
     Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
@@ -516,6 +551,36 @@ Feature: 🎭 Actor role
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Antoine should have the active powerless from actor attribute
     And the game's current play should be werewolves to eat
+
+  Scenario: 🎭 Actor acts as wolf-hound and becomes a werewolf but doesn't becomes powerless with good game option
+
+    Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, actor-not-powerless-on-werewolves-side-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | villager |
+      | Louise  | villager |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role wolf-hound
+    Then the player named Antoine should be currently a wolf-hound and originally a actor
+    And the game's additional card with role wolf-hound for actor should be used
+    And the game's current play should be wolf-hound to choose-side
+
+    When the wolf-hound chooses the werewolves side
+    Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should not have the active powerless from actor attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be actor to choose-card
 
   Scenario: 🎭 Actor acts as wolf-hound and becomes a villager and thus doesn't become powerless
 
@@ -635,3 +700,30 @@ Feature: 🎭 Actor role
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
+
+  Scenario: 🎭 Actor doesn't become powerless when he is infected by the accursed wolf-father with good game option
+
+    Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, actor-not-powerless-on-werewolves-side-option.json and with the following players
+      | name    | role                 |
+      | Antoine | actor                |
+      | Olivia  | villager             |
+      | JB      | werewolf             |
+      | Thomas  | villager             |
+      | Louise  | accursed-wolf-father |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role seer
+    Then the player named Antoine should be currently a seer and originally a actor
+    And the game's additional card with role seer for actor should be used
+    And the game's current play should be seer to look
+
+    When the seer looks at the player named Olivia
+    And the game's current play should be werewolves to eat
+
+    When the accursed wolf-father infects the player named Antoine
+    Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should not have the active powerless from accursed-wolf-father attribute
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be actor to choose-card

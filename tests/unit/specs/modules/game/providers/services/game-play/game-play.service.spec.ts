@@ -1705,7 +1705,7 @@ describe("Game Play Service", () => {
         createFakeTwoSistersAlivePlayer(),
         createFakeWildChildAlivePlayer(),
       ];
-      const options = createFakeGameOptionsDto({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 789 } }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ threeBrothers: { wakingUpInterval: 789 } }) });
       const game = createFakeGame({ players, turn: 1, options });
       services.gamePlay["isThreeBrothersGamePlaySuitableForCurrentPhase"](game);
 

@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { CreateActorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-actor-game-options.dto";
 import { CreatePrejudicedManipulatorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-prejudiced-manipulator-game-options.dto";
 import { CreateCupidGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-game-options.dto";
 import { CreateCupidLoversGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-lovers-game-options.dto";
@@ -28,6 +29,13 @@ import { CreateWildChildGameOptionsDto } from "@/modules/game/dto/create-game/cr
 import { GamePhases } from "@/modules/game/enums/game.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+
+function createFakeActorGameOptionsDto(actorGameOptions: Partial<CreateActorGameOptionsDto> = {}, override: object = {}): CreateActorGameOptionsDto {
+  return plainToInstance(CreateActorGameOptionsDto, {
+    isPowerlessOnWerewolvesSide: actorGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
 
 function createFakeCreatePrejudicedManipulatorGameOptionsDto(
   prejudicedManipulatorGameOptions: Partial<CreatePrejudicedManipulatorGameOptionsDto> = {},
@@ -243,11 +251,13 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     scandalmonger: createFakeCreateScandalmongerGameOptionsDto(rolesGameOptions.scandalmonger),
     witch: createFakeCreateWitchGameOptionsDto(rolesGameOptions.witch),
     prejudicedManipulator: createFakeCreatePrejudicedManipulatorGameOptionsDto(rolesGameOptions.prejudicedManipulator),
+    actor: createFakeActorGameOptionsDto(rolesGameOptions.actor),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakeActorGameOptionsDto,
   createFakeCreatePrejudicedManipulatorGameOptionsDto,
   createFakeCreateWitchGameOptionsDto,
   createFakeCreateScandalmongerGameOptionsDto,
