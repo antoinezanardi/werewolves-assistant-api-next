@@ -6,6 +6,7 @@ enum UnexpectedExceptionReasons {
   NO_GAME_PLAY_PRIORITY = `Game play "{{gamePlay}}" doesn't have a set priority`,
   MALFORMED_CURRENT_GAME_PLAY = `Current game play with action "{{action}}" and source "{{source}}" are not consistent for game with id "{{gameId}}"`,
   CANT_FIND_LAST_NOMINATED_PLAYERS = `Can't find last nominated players for game with id "{{gameId}}"`,
+  CANT_FIND_LAST_DEAD_PLAYERS = `Can't find last dead players for game with id "{{gameId}}"`,
 }
 
 export { UnexpectedExceptionReasons };

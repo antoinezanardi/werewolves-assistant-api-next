@@ -251,6 +251,14 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [
     maxInGame: 1,
     recommendedMinPlayers: 8,
   },
+  {
+    name: RoleNames.DEVOTED_SERVANT,
+    side: RoleSides.VILLAGERS,
+    type: RoleTypes.VILLAGER,
+    origin: RoleOrigins.CHARACTERS,
+    additionalCardsEligibleRecipients: [RoleNames.THIEF],
+    maxInGame: 1,
+  },
 ]);
 
 const ROLES: ReadonlyDeep<Role[]> = plainToInstance(Role, [

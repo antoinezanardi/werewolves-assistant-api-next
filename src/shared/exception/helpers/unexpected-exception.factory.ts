@@ -38,6 +38,11 @@ function createCantFindLastNominatedPlayersUnexpectedException(scope: string, in
   return new UnexpectedException(scope, UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: gameId.toString() });
 }
 
+function createCantFindLastDeadPlayersUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId }): UnexpectedException {
+  const { gameId } = interpolations;
+  return new UnexpectedException(scope, UnexpectedExceptionReasons.CANT_FIND_LAST_DEAD_PLAYERS, { gameId: gameId.toString() });
+}
+
 export {
   createCantFindPlayerUnexpectedException,
   createPlayerIsDeadUnexpectedException,
@@ -46,4 +51,5 @@ export {
   createNoGamePlayPriorityUnexpectedException,
   createMalformedCurrentGamePlayUnexpectedException,
   createCantFindLastNominatedPlayersUnexpectedException,
+  createCantFindLastDeadPlayersUnexpectedException,
 };

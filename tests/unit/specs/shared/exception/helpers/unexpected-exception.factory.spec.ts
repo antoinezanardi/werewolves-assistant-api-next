@@ -1,4 +1,4 @@
-import { createCantFindLastNominatedPlayersUnexpectedException, createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNominatedPlayersUnexpectedException, createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
@@ -92,6 +92,19 @@ describe("Unexpected Exception Factory", () => {
         statusCode: 500,
         message: "Unexpected exception in makePlay",
         error: `Can't find last nominated players for game with id "${interpolations.gameId.toString()}"`,
+      });
+    });
+  });
+
+  describe("createCantFindLastDeadPlayersUnexpectedException", () => {
+    it("should create can't find last dead players unexpected exception when called.", () => {
+      const interpolations = { gameId: createFakeObjectId() };
+      const exception = createCantFindLastDeadPlayersUnexpectedException("makePlay", interpolations);
+
+      expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
+        statusCode: 500,
+        message: "Unexpected exception in makePlay",
+        error: `Can't find last dead players for game with id "${interpolations.gameId.toString()}"`,
       });
     });
   });

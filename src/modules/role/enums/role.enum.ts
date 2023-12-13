@@ -28,6 +28,7 @@ enum RoleNames {
   SCANDALMONGER = "scandalmonger",
   PREJUDICED_MANIPULATOR = "prejudiced-manipulator",
   ACTOR = "actor",
+  DEVOTED_SERVANT = "devoted-servant",
 }
 
 enum RoleSides {
