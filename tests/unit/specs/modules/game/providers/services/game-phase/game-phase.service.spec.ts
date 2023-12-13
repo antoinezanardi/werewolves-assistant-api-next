@@ -268,7 +268,7 @@ describe("Game Phase Service", () => {
   describe("applyStartingDayBearTamerRoleOutcomes", () => {
     it("should return game as is when none of the bear tamer neighbor is a werewolf and bear tamer is not infected.", () => {
       const bearTamerPlayer = createFakeBearTamerAlivePlayer();
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: true }) }) });
       const game = createFakeGame({ players: [bearTamerPlayer], options });
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
@@ -279,7 +279,7 @@ describe("Game Phase Service", () => {
 
     it("should return game as is when bear tamer is infected but options specify that it doesn't growl if it's the case.", () => {
       const bearTamerPlayer = createFakeBearTamerAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: false }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) });
       const game = createFakeGame({ players: [bearTamerPlayer], options });
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
@@ -290,7 +290,7 @@ describe("Game Phase Service", () => {
 
     it("should add bear tamer player growled attribute when he is infected, even if none of his neighbors are werewolves.", () => {
       const bearTamerPlayer = createFakeBearTamerAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) });
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: true }) }) });
       const game = createFakeGame({ players: [bearTamerPlayer], options });
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
@@ -310,7 +310,7 @@ describe("Game Phase Service", () => {
 
     it("should add bear tamer player growled attribute when his left neighbor is a werewolf.", () => {
       const bearTamerPlayer = createFakeBearTamerAlivePlayer();
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: true }) }) });
       const game = createFakeGame({ players: [bearTamerPlayer], options });
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeBigBadWolfAlivePlayer());
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
@@ -330,7 +330,7 @@ describe("Game Phase Service", () => {
 
     it("should add bear tamer player growled attribute when his right neighbor is a werewolf.", () => {
       const bearTamerPlayer = createFakeBearTamerAlivePlayer();
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: true }) }) });
       const game = createFakeGame({ players: [bearTamerPlayer], options });
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeVillagerAlivePlayer());
       mocks.gameHelper.getNearestAliveNeighbor.mockReturnValueOnce(createFakeWhiteWerewolfAlivePlayer());

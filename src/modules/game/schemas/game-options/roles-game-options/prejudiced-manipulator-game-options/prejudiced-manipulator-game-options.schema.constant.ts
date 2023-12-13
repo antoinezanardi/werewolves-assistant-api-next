@@ -8,16 +8,16 @@ import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/hel
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
 const PREJUDICED_MANIPULATOR_GAME_OPTIONS_FIELDS_SPECS = {
-  isPowerlessIfInfected: {
+  isPowerlessOnWerewolvesSide: {
     required: true,
     default: DEFAULT_GAME_OPTIONS.roles.fox.isPowerlessIfMissesWerewolf,
   },
 } as const satisfies Record<keyof PrejudicedManipulatorGameOptions, MongoosePropOptions>;
 
 const PREJUDICED_MANIPULATOR_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof PrejudicedManipulatorGameOptions, ApiPropertyOptions>> = {
-  isPowerlessIfInfected: {
-    description: "If set to `true`, `prejudiced manipulator` will be `powerless` if he is infected by the `accursed wolf-father`",
-    ...convertMongoosePropOptionsToApiPropertyOptions(PREJUDICED_MANIPULATOR_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected),
+  isPowerlessOnWerewolvesSide: {
+    description: "If set to `true`, `prejudiced manipulator` will be `powerless` if he joins the werewolves side",
+    ...convertMongoosePropOptionsToApiPropertyOptions(PREJUDICED_MANIPULATOR_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide),
   },
 };
 

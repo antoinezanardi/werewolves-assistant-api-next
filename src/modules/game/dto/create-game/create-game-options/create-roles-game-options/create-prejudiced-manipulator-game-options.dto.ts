@@ -6,12 +6,12 @@ import { PREJUDICED_MANIPULATOR_GAME_OPTIONS_API_PROPERTIES, PREJUDICED_MANIPULA
 
 class CreatePrejudicedManipulatorGameOptionsDto {
   @ApiProperty({
-    ...PREJUDICED_MANIPULATOR_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfInfected,
+    ...PREJUDICED_MANIPULATOR_GAME_OPTIONS_API_PROPERTIES.isPowerlessOnWerewolvesSide,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
-  public isPowerlessIfInfected: boolean = PREJUDICED_MANIPULATOR_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected.default;
+  public isPowerlessOnWerewolvesSide: boolean = PREJUDICED_MANIPULATOR_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide.default;
 }
 
 export { CreatePrejudicedManipulatorGameOptionsDto };

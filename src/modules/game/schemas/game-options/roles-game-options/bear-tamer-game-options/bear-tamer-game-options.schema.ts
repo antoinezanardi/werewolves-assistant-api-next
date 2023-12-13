@@ -11,10 +11,10 @@ import { BEAR_TAMER_GAME_OPTIONS_API_PROPERTIES, BEAR_TAMER_GAME_OPTIONS_FIELDS_
   _id: false,
 })
 class BearTamerGameOptions {
-  @ApiProperty(BEAR_TAMER_GAME_OPTIONS_API_PROPERTIES.doesGrowlIfInfected as ApiPropertyOptions)
-  @Prop(BEAR_TAMER_GAME_OPTIONS_FIELDS_SPECS.doesGrowlIfInfected)
+  @ApiProperty(BEAR_TAMER_GAME_OPTIONS_API_PROPERTIES.doesGrowlOnWerewolvesSide as ApiPropertyOptions)
+  @Prop(BEAR_TAMER_GAME_OPTIONS_FIELDS_SPECS.doesGrowlOnWerewolvesSide)
   @Expose()
-  public doesGrowlIfInfected: boolean;
+  public doesGrowlOnWerewolvesSide: boolean;
 }
 
 const BEAR_TAMER_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(BearTamerGameOptions);

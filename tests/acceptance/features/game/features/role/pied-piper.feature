@@ -320,7 +320,7 @@ Feature: 🪈 Pied Piper role
 
   Scenario: 🪈 Pied Piper charms 3 people by night and can win even if he's infected
 
-    Given a created game with options described in file no-sheriff-option.json, pied-piper-charms-three-people-per-night-option.json, pied-piper-not-powerless-if-infected-option.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json, pied-piper-charms-three-people-per-night-option.json, pied-piper-not-powerless-on-werewolves-side-option.json and with the following players
       | name    | role                 |
       | Antoine | pied-piper           |
       | Olivia  | accursed-wolf-father |

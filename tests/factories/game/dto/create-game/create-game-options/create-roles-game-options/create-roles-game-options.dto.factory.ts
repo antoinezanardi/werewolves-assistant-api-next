@@ -42,7 +42,7 @@ function createFakeCreatePrejudicedManipulatorGameOptionsDto(
   override: object = {},
 ): CreatePrejudicedManipulatorGameOptionsDto {
   return plainToInstance(CreatePrejudicedManipulatorGameOptionsDto, {
-    isPowerlessIfInfected: prejudicedManipulatorGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    isPowerlessOnWerewolvesSide: prejudicedManipulatorGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -67,7 +67,7 @@ function createFakeCreateScandalmongerGameOptionsDto(
 function createFakeCreatePiedPiperGameOptionsDto(piedPiperGameOptions: Partial<CreatePiedPiperGameOptionsDto> = {}, override: object = {}): CreatePiedPiperGameOptionsDto {
   return plainToInstance(CreatePiedPiperGameOptionsDto, {
     charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.number.int({ min: 1, max: 5 }),
-    isPowerlessIfInfected: piedPiperGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    isPowerlessOnWerewolvesSide: piedPiperGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -108,7 +108,7 @@ function createFakeCreateStutteringJudgeGameOptionsDto(
 
 function createFakeCreateBearTamerGameOptionsDto(bearTamerGameOptions: Partial<CreateBearTamerGameOptionsDto> = {}, override: object = {}): CreateBearTamerGameOptionsDto {
   return plainToInstance(CreateBearTamerGameOptionsDto, {
-    doesGrowlIfInfected: bearTamerGameOptions.doesGrowlIfInfected ?? faker.datatype.boolean(),
+    doesGrowlOnWerewolvesSide: bearTamerGameOptions.doesGrowlOnWerewolvesSide ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

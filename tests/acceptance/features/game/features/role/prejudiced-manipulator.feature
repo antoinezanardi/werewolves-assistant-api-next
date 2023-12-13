@@ -51,7 +51,7 @@ Feature: 👺 Prejudiced Manipulator role
 
   Scenario: 👺 Prejudiced Manipulator is infected but can still win the game thanks to game options
 
-    Given a created game with options described in file no-sheriff-option.json, prejudiced-manipulator-not-powerless-if-infected-option.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json, prejudiced-manipulator-not-powerless-on-werewolves-side-option.json and with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
       | Olivia  | accursed-wolf-father   | boy   |

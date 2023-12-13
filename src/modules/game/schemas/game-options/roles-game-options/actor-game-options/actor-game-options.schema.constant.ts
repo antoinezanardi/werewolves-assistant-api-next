@@ -16,7 +16,7 @@ const ACTOR_GAME_OPTIONS_FIELDS_SPECS = {
 
 const ACTOR_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof ActorGameOptions, ApiPropertyOptions>> = {
   isPowerlessOnWerewolvesSide: {
-    description: "If set to `true`, the actor becomes powerless if he switches to the werewolves side.",
+    description: "If set to `true`, the actor becomes powerless if he joins the werewolves side.",
     ...convertMongoosePropOptionsToApiPropertyOptions(ACTOR_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide),
   },
 };

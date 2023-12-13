@@ -99,9 +99,9 @@ export class GamePhaseService {
     const leftAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, clonedGame, { direction: "left" });
     const rightAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, clonedGame, { direction: "right" });
     const doesBearTamerHaveWerewolfSidedNeighbor = leftAliveNeighbor?.side.current === RoleSides.WEREWOLVES || rightAliveNeighbor?.side.current === RoleSides.WEREWOLVES;
-    const { doesGrowlIfInfected } = clonedGame.options.roles.bearTamer;
+    const { doesGrowlOnWerewolvesSide } = clonedGame.options.roles.bearTamer;
     const isBearTamerInfected = bearTamerPlayer.side.current === RoleSides.WEREWOLVES;
-    if (doesGrowlIfInfected && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor) {
+    if (doesGrowlOnWerewolvesSide && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor) {
       const growledByBearTamerPlayerAttribute = createGrowledByBearTamerPlayerAttribute();
       return addPlayerAttributeInGame(bearTamerPlayer._id, clonedGame, growledByBearTamerPlayerAttribute);
     }
