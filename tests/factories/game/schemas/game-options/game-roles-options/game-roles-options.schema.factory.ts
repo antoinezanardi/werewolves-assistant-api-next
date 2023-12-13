@@ -33,6 +33,7 @@ import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants
 function createFakeActorGameOptions(actorGameOptions: Partial<ActorGameOptions> = {}, override: object = {}): ActorGameOptions {
   return plainToInstance(ActorGameOptions, {
     isPowerlessOnWerewolvesSide: actorGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
+    additionalCardsCount: actorGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

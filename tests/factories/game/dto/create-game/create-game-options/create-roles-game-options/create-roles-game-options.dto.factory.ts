@@ -30,9 +30,10 @@ import { GamePhases } from "@/modules/game/enums/game.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
-function createFakeActorGameOptionsDto(actorGameOptions: Partial<CreateActorGameOptionsDto> = {}, override: object = {}): CreateActorGameOptionsDto {
+function createFakeCreateActorGameOptionsDto(actorGameOptions: Partial<CreateActorGameOptionsDto> = {}, override: object = {}): CreateActorGameOptionsDto {
   return plainToInstance(CreateActorGameOptionsDto, {
     isPowerlessOnWerewolvesSide: actorGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
+    additionalCardsCount: actorGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -251,13 +252,13 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     scandalmonger: createFakeCreateScandalmongerGameOptionsDto(rolesGameOptions.scandalmonger),
     witch: createFakeCreateWitchGameOptionsDto(rolesGameOptions.witch),
     prejudicedManipulator: createFakeCreatePrejudicedManipulatorGameOptionsDto(rolesGameOptions.prejudicedManipulator),
-    actor: createFakeActorGameOptionsDto(rolesGameOptions.actor),
+    actor: createFakeCreateActorGameOptionsDto(rolesGameOptions.actor),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
-  createFakeActorGameOptionsDto,
+  createFakeCreateActorGameOptionsDto,
   createFakeCreatePrejudicedManipulatorGameOptionsDto,
   createFakeCreateWitchGameOptionsDto,
   createFakeCreateScandalmongerGameOptionsDto,

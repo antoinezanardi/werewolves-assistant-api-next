@@ -5,6 +5,8 @@ import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
+import { createFakeGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
+import { createFakeCreateActorGameOptionsDto, createFakeRolesGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
@@ -81,7 +83,7 @@ describe("Additional Cards For Actor Size Decorator", () => {
         expected: false,
       },
       {
-        test: "should return false when cards size doesn't respect the options.",
+        test: "should return false when cards size doesn't respect the default options.",
         createGameDto: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
@@ -96,7 +98,24 @@ describe("Additional Cards For Actor Size Decorator", () => {
         expected: false,
       },
       {
-        test: "should return true when cards size doesn't respect the options.",
+        test: "should return false when cards size doesn't respect the changed options set to 5.",
+        createGameDto: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
+          ],
+          options: createFakeGameOptionsDto({ roles: createFakeRolesGameOptionsDto({ actor: createFakeCreateActorGameOptionsDto({ additionalCardsCount: 5 }) }) }),
+        }),
+        additionalCards: [
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.ACTOR }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.ACTOR }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.ACTOR }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.VILLAGER, recipient: RoleNames.ACTOR }),
+        ],
+        expected: false,
+      },
+      {
+        test: "should return true when cards size respects the options.",
         createGameDto: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
@@ -129,7 +148,7 @@ describe("Additional Cards For Actor Size Decorator", () => {
 
   describe("getAdditionalCardsForActorSizeDefaultMessage", () => {
     it("should default decorator message when called.", () => {
-      expect(getAdditionalCardsForActorSizeDefaultMessage()).toBe("additionalCards length for actor must be equal to 3");
+      expect(getAdditionalCardsForActorSizeDefaultMessage()).toBe("additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount");
     });
   });
 });

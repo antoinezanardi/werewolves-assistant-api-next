@@ -6,8 +6,8 @@ import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.d
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 function isAdditionalCardsForActorSizeRespected(value: unknown, validationArguments: ValidationArguments): boolean {
-  const { players } = validationArguments.object as CreateGameDto;
-  const actorAdditionalCardsExpectedSize = 3;
+  const { players, options } = validationArguments.object as CreateGameDto;
+  const { additionalCardsCount } = options.roles.actor;
   if (value === undefined || !players.some(player => player.role.name === RoleNames.ACTOR)) {
     return true;
   }
@@ -16,11 +16,11 @@ function isAdditionalCardsForActorSizeRespected(value: unknown, validationArgume
   }
   const cards = value as { recipient: string }[];
   const actorAdditionalCards = cards.filter(card => card.recipient === RoleNames.ACTOR);
-  return actorAdditionalCards.length === actorAdditionalCardsExpectedSize;
+  return actorAdditionalCards.length === additionalCardsCount;
 }
 
 function getAdditionalCardsForActorSizeDefaultMessage(): string {
-  return "additionalCards length for actor must be equal to 3";
+  return "additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount";
 }
 
 function AdditionalCardsForActorSize(validationOptions?: ValidationOptions) {

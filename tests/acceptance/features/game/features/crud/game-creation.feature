@@ -720,8 +720,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                             |
-      | additionalCards length for actor must be equal to 3 |
+      | message                                                                                    |
+      | additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount |
 
   Scenario: 🎲 Game can't be created if there are too much additional cards for actor
 
@@ -735,8 +735,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                             |
-      | additionalCards length for actor must be equal to 3 |
+      | message                                                                                    |
+      | additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount |
 
   Scenario: 🎲 Game can't be created if one additional card can't be given to actor
 
