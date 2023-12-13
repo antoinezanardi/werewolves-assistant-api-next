@@ -14,9 +14,9 @@ const PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS = {
     min: 1,
     max: 5,
   },
-  isPowerlessIfInfected: {
+  isPowerlessOnWerewolvesSide: {
     required: true,
-    default: DEFAULT_GAME_OPTIONS.roles.piedPiper.isPowerlessIfInfected,
+    default: DEFAULT_GAME_OPTIONS.roles.piedPiper.isPowerlessOnWerewolvesSide,
   },
 } as const satisfies Record<keyof PiedPiperGameOptions, MongoosePropOptions>;
 
@@ -25,9 +25,9 @@ const PIED_PIPER_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof PiedPipe
     description: "Number of `charmed` people by the `pied piper` per night if there are enough targets (or number of not charmed players otherwise)",
     ...convertMongoosePropOptionsToApiPropertyOptions(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight),
   },
-  isPowerlessIfInfected: {
-    description: "If set to `true`, `pied piper` will be `powerless` if he is infected by the `accursed wolf-father`",
-    ...convertMongoosePropOptionsToApiPropertyOptions(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected),
+  isPowerlessOnWerewolvesSide: {
+    description: "If set to `true`, `pied piper` will be `powerless` if he joins the werewolves side",
+    ...convertMongoosePropOptionsToApiPropertyOptions(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide),
   },
 };
 

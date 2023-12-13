@@ -172,7 +172,7 @@ describe("Game Victory Service", () => {
         createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, upcomingPlays, currentPlay, options });
 
@@ -190,7 +190,7 @@ describe("Game Victory Service", () => {
         createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const currentPlay = createFakeGamePlaySurvivorsVote();
       const game = createFakeGame({ players, upcomingPlays, currentPlay, options, turn: 1, phase: GamePhases.NIGHT });
 
@@ -221,7 +221,7 @@ describe("Game Victory Service", () => {
         createFakeVillagerAlivePlayer(),
         createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const game = createFakeGame({ players, options, phase: GamePhases.NIGHT, turn: 1 });
       const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.ANGEL, winners: [players[3]] });
 
@@ -248,7 +248,7 @@ describe("Game Victory Service", () => {
         createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const game = createFakeGame({ players, options });
       const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.PIED_PIPER, winners: [players[3]] });
 
@@ -627,7 +627,7 @@ describe("Game Victory Service", () => {
             createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
           ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) }),
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) }),
         }),
         expected: false,
       },
@@ -640,7 +640,7 @@ describe("Game Victory Service", () => {
             createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
           ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) }),
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) }),
         }),
         expected: true,
       },
@@ -653,7 +653,7 @@ describe("Game Victory Service", () => {
             createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakePiedPiperAlivePlayer(),
           ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) }),
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) }),
         }),
         expected: true,
       },

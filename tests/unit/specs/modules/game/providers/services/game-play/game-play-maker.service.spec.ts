@@ -1910,7 +1910,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -1936,7 +1936,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -1963,7 +1963,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessIfInfected: false }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -1989,7 +1989,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -2016,7 +2016,13 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
+      const options = createFakeGameOptions({
+        roles: createFakeRolesGameOptions({
+          piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }),
+          prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessOnWerewolvesSide: true }),
+          actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }),
+        }),
+      });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],

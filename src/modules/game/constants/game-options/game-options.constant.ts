@@ -35,7 +35,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     twoSisters: { wakingUpInterval: 2 },
     threeBrothers: { wakingUpInterval: 2 },
     fox: { isPowerlessIfMissesWerewolf: true },
-    bearTamer: { doesGrowlIfInfected: true },
+    bearTamer: { doesGrowlOnWerewolvesSide: true },
     stutteringJudge: { voteRequestsCount: 1 },
     wildChild: { isTransformationRevealed: false },
     wolfHound: {
@@ -49,11 +49,11 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     },
     piedPiper: {
       charmedPeopleCountPerNight: 2,
-      isPowerlessIfInfected: true,
+      isPowerlessOnWerewolvesSide: true,
     },
     scandalmonger: { markPenalty: 2 },
     witch: { doesKnowWerewolvesTargets: true },
-    prejudicedManipulator: { isPowerlessIfInfected: true },
+    prejudicedManipulator: { isPowerlessOnWerewolvesSide: true },
     actor: { isPowerlessOnWerewolvesSide: true },
   },
 };

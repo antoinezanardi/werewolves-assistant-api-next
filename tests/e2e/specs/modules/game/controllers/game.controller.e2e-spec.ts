@@ -1025,7 +1025,7 @@ describe("Game Controller", () => {
           twoSisters: { wakingUpInterval: 0 },
           threeBrothers: { wakingUpInterval: 5 },
           fox: { isPowerlessIfMissesWerewolf: false },
-          bearTamer: { doesGrowlIfInfected: false },
+          bearTamer: { doesGrowlOnWerewolvesSide: false },
           stutteringJudge: { voteRequestsCount: 3 },
           wildChild: { isTransformationRevealed: true },
           wolfHound: {
@@ -1039,11 +1039,11 @@ describe("Game Controller", () => {
           },
           piedPiper: {
             charmedPeopleCountPerNight: 1,
-            isPowerlessIfInfected: false,
+            isPowerlessOnWerewolvesSide: false,
           },
           scandalmonger: { markPenalty: 5 },
           witch: { doesKnowWerewolvesTargets: false },
-          prejudicedManipulator: { isPowerlessIfInfected: false },
+          prejudicedManipulator: { isPowerlessOnWerewolvesSide: false },
           actor: { isPowerlessOnWerewolvesSide: false },
         },
       };

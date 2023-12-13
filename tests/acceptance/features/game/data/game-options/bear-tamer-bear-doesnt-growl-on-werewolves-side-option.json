@@ -1,7 +1,7 @@
 {
   "roles": {
     "bearTamer": {
-      "doesGrowlIfInfected": false
+      "doesGrowlOnWerewolvesSide": false
     }
   }
 }

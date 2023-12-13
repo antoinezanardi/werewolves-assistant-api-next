@@ -369,8 +369,8 @@ export class GamePlayMakerService {
     let clonedGame = createGame(game);
     const { roles } = game.options;
     const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES } };
-    if (targetedPlayer.role.current === RoleNames.PREJUDICED_MANIPULATOR && roles.prejudicedManipulator.isPowerlessIfInfected ||
-      targetedPlayer.role.current === RoleNames.PIED_PIPER && roles.piedPiper.isPowerlessIfInfected ||
+    if (targetedPlayer.role.current === RoleNames.PREJUDICED_MANIPULATOR && roles.prejudicedManipulator.isPowerlessOnWerewolvesSide ||
+      targetedPlayer.role.current === RoleNames.PIED_PIPER && roles.piedPiper.isPowerlessOnWerewolvesSide ||
       targetedPlayer.role.current === RoleNames.ACTOR && roles.actor.isPowerlessOnWerewolvesSide) {
       clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, createPowerlessByAccursedWolfFatherPlayerAttribute());
     }
