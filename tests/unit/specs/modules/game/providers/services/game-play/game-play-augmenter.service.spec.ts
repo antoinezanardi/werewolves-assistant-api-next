@@ -31,8 +31,9 @@ import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-pla
 import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayActorChoosesCard } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeDevotedServantAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeDeadPlayer, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Augmenter Service", () => {
   let services: { gamePlayAugmenter: GamePlayAugmenterService };
@@ -699,7 +700,10 @@ describe("Game Play Augmenter Service", () => {
         createFakeDevotedServantAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const deadPlayers = [players[0], players[1]];
+      const deadPlayers = [
+        createFakeDeadPlayer({ ...players[0], isAlive: false, death: createFakePlayerDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeath() }),
+      ];
       const gameHistoryRecord = createFakeGameHistoryRecord({ deadPlayers });
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValueOnce(gameHistoryRecord);
       const expectedInteraction = createFakePlayerInteraction({

@@ -151,12 +151,12 @@ export class GamePlayAugmenterService {
     if (!devotedServantPlayer || !isPlayerAliveAndPowerful(devotedServantPlayer, game)) {
       return undefined;
     }
-    const lastGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(game._id);
-    if (lastGameHistoryRecord?.deadPlayers === undefined || lastGameHistoryRecord.deadPlayers.length === 0) {
+    const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(game._id);
+    if (previousGameHistoryRecord?.deadPlayers === undefined || previousGameHistoryRecord.deadPlayers.length === 0) {
       throw createCantFindLastDeadPlayersUnexpectedException("getSurvivorsBuryDeadBodiesGamePlayEligibleTargets", { gameId: game._id });
     }
     const interaction: PlayerInteraction = { type: PlayerInteractionTypes.STEAL_ROLE, source: RoleNames.DEVOTED_SERVANT };
-    const interactablePlayers = lastGameHistoryRecord.deadPlayers.map(player => ({ player, interactions: [interaction] }));
+    const interactablePlayers = previousGameHistoryRecord.deadPlayers.map(player => ({ player, interactions: [interaction] }));
     const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }

@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerInteractableWithInteractionType } from "@/modules/game/helpers/game-play/game-play.helper";
 import { STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS, TARGET_ACTIONS, VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
@@ -76,6 +77,23 @@ export class GamePlayValidatorService {
       this.validateGamePlayThiefChosenCard(chosenCard, game);
     } else if (source.name === RoleNames.ACTOR) {
       this.validateGamePlayActorChosenCard(chosenCard, game);
+    }
+  }
+
+  private validateGamePlaySurvivorsTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+    const { action } = game.currentPlay;
+    if (!playTargets.length || action !== GamePlayActions.BURY_DEAD_BODIES) {
+      return;
+    }
+    const devotedServantPlayer = getPlayerWithCurrentRole(game, RoleNames.DEVOTED_SERVANT);
+    if (!devotedServantPlayer || !isPlayerAliveAndPowerful(devotedServantPlayer, game) ||
+      doesPlayerHaveActiveAttributeWithName(devotedServantPlayer, PlayerAttributeNames.IN_LOVE, game)) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.DEVOTED_SERVANT_CANT_STEAL_ROLE);
+    }
+    const targetedPlayer = playTargets[0].player;
+    const canRoleTargetedPlayerBeStolen = isPlayerInteractableWithInteractionType(targetedPlayer._id, PlayerInteractionTypes.STEAL_ROLE, game);
+    if (!canRoleTargetedPlayerBeStolen) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_DEVOTED_SERVANT_TARGET);
     }
   }
 
@@ -233,6 +251,7 @@ export class GamePlayValidatorService {
   private async validateGamePlaySourceTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
     const gamePlaySourceValidationMethods: Partial<Record<GamePlaySourceName, () => Promise<void> | void>> = {
       [PlayerAttributeNames.SHERIFF]: () => this.validateGamePlaySheriffTargets(playTargets, game),
+      [PlayerGroups.SURVIVORS]: () => this.validateGamePlaySurvivorsTargets(playTargets, game),
       [PlayerGroups.WEREWOLVES]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.BIG_BAD_WOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.WHITE_WEREWOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),

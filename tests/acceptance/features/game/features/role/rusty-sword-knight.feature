@@ -16,12 +16,16 @@ Feature: 🤺 Rusty Sword Knight role
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the player named Babou should have the active contaminated from rusty-sword-knight attribute
+    And the player named Babou should not have the active contaminated from rusty-sword-knight attribute
     And the player named Babou should be alive
     And the game's current play should be survivors to bury-dead-bodies
+    And the game's current play should not have eligible targets
+    And the game's current play can be skipped
 
     When the survivors bury dead bodies
-    Then the game's current play should be survivors to vote
+    Then the player named Babou should have the active contaminated from rusty-sword-knight attribute
+    And the player named Babou should be alive
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the player named Babou should be murdered by rusty-sword-knight from disease
@@ -40,12 +44,13 @@ Feature: 🤺 Rusty Sword Knight role
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the player named Babou should have the active contaminated from rusty-sword-knight attribute
+    And the player named Babou should not have the active contaminated from rusty-sword-knight attribute
     And the player named Babou should be alive
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be survivors to vote
+    Then the player named Babou should have the active contaminated from rusty-sword-knight attribute
+    And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -68,12 +73,16 @@ Feature: 🤺 Rusty Sword Knight role
     When the survivors vote with the following votes
       | voter  | target |
       | Thomas | Olivia |
-    Then the player named Antoine should have the active powerless from elder attribute
+    Then the player named Antoine should not have the active powerless from elder attribute
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be werewolves to eat
+    Then the player named Antoine should have the active powerless from elder attribute
+    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the player named Babou should not have the active contaminated from rusty-sword-knight attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the player named Babou should not have the active contaminated from rusty-sword-knight attribute

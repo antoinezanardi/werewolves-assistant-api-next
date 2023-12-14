@@ -182,6 +182,11 @@ function getAllowedToVotePlayers(game: Game): Player[] {
   return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
 }
 
+function doesGameHaveUpcomingPlaySourceAndAction(game: Game, source: GameSource, action: GamePlayActions): boolean {
+  const { upcomingPlays } = game;
+  return upcomingPlays.some(play => play.source.name === source && play.action === action);
+}
+
 function doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game: Game, source: GameSource, action: GamePlayActions): boolean {
   const { currentPlay, upcomingPlays } = game;
   const gamePlays = currentPlay ? [currentPlay, ...upcomingPlays] : upcomingPlays;
@@ -217,5 +222,6 @@ export {
   getFoxSniffedPlayers,
   getNearestAliveNeighbor,
   getAllowedToVotePlayers,
+  doesGameHaveUpcomingPlaySourceAndAction,
   doesGameHaveCurrentOrUpcomingPlaySourceAndAction,
 };

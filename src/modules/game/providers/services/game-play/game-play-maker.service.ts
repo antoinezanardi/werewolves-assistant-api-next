@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
 
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
@@ -24,7 +25,7 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import { getRoleWithName } from "@/modules/role/helpers/role.helper";
 import type { Role } from "@/modules/role/types/role.type";
 
-import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindLastDeadPlayersUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 @Injectable()
 export class GamePlayMakerService {
@@ -52,6 +53,7 @@ export class GamePlayMakerService {
   public constructor(
     private readonly playerKillerService: PlayerKillerService,
     private readonly gamePlayVoteService: GamePlayVoteService,
+    private readonly gameHistoryRecordService: GameHistoryRecordService,
   ) {}
 
   public async makeGamePlay(play: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
@@ -115,6 +117,18 @@ export class GamePlayMakerService {
       return clonedGame;
     }
     return sheriffPlayMethod();
+  }
+
+  private async survivorsBuryDeadBodies(gamePlay: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
+    let clonedGame = createGame(game);
+    const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(clonedGame._id);
+    if (previousGameHistoryRecord?.deadPlayers === undefined || previousGameHistoryRecord.deadPlayers.length === 0) {
+      throw createCantFindLastDeadPlayersUnexpectedException("survivorsBuryDeadBodies", { gameId: clonedGame._id });
+    }
+    for (const deadPlayer of previousGameHistoryRecord.deadPlayers) {
+      clonedGame = this.playerKillerService.applyPlayerDeathOutcomes(deadPlayer, clonedGame);
+    }
+    return clonedGame;
   }
 
   private async handleTieInVotes(game: GameWithCurrentPlay): Promise<Game> {
@@ -187,6 +201,7 @@ export class GamePlayMakerService {
     const survivorsPlayMethods: Partial<Record<GamePlayActions, () => Game | Promise<Game>>> = {
       [GamePlayActions.ELECT_SHERIFF]: () => this.survivorsElectSheriff(play, clonedGame),
       [GamePlayActions.VOTE]: async() => this.survivorsVote(play, clonedGame),
+      [GamePlayActions.BURY_DEAD_BODIES]: async() => this.survivorsBuryDeadBodies(play, clonedGame),
     };
     const survivorsPlayMethod = survivorsPlayMethods[clonedGame.currentPlay.action];
     if (survivorsPlayMethod === undefined) {

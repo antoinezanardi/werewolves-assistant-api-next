@@ -72,7 +72,11 @@ Feature: 💘 Cupid role
       | Olivia | JB     |
       | Thomas | JB     |
     Then the player named JB should be murdered by survivors from vote
-    And the player named Thomas should be murdered by cupid from broken-heart
+    And the player named Thomas should be alive
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the player named Thomas should be murdered by cupid from broken-heart
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies

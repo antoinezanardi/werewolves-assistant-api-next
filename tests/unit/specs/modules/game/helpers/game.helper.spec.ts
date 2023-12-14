@@ -1,9 +1,10 @@
 import type { Types } from "mongoose";
 
+import type { Game } from "@/modules/game/schemas/game.schema";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, doesGameHaveUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GetNearestPlayerOptions } from "@/modules/game/types/game.type";
@@ -848,26 +849,64 @@ describe("Game Helper", () => {
     });
   });
 
+  describe("doesGameHaveUpcomingPlaySourceAndAction", () => {
+    it.each<{
+      test: string;
+      game: Game;
+      role: RoleNames;
+      action: GamePlayActions;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when game has upcoming play source and action.",
+        game: createFakeGame({ upcomingPlays: [createFakeGamePlayHunterShoots()] }),
+        role: RoleNames.HUNTER,
+        action: GamePlayActions.SHOOT,
+        expected: true,
+      },
+      {
+        test: "should return false when game has no upcoming play source and action.",
+        game: createFakeGame({ upcomingPlays: [createFakeGamePlayHunterShoots()] }),
+        role: RoleNames.HUNTER,
+        action: GamePlayActions.EAT,
+        expected: false,
+      },
+    ])(`$test`, ({ game, role, action, expected }) => {
+      expect(doesGameHaveUpcomingPlaySourceAndAction(game, role, action)).toBe(expected);
+    });
+  });
+
   describe("doesGameHaveCurrentOrUpcomingPlaySourceAndAction", () => {
-    it("should return true when game has current play source and action.", () => {
-      const currentPlay = createFakeGamePlayHunterShoots();
-      const game = createFakeGame({ currentPlay });
-
-      expect(doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, RoleNames.HUNTER, GamePlayActions.SHOOT)).toBe(true);
-    });
-
-    it("should return true when game has upcoming play source and action.", () => {
-      const upcomingPlay = createFakeGamePlayHunterShoots();
-      const game = createFakeGame({ upcomingPlays: [upcomingPlay] });
-
-      expect(doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, RoleNames.HUNTER, GamePlayActions.SHOOT)).toBe(true);
-    });
-
-    it("should return false when game has no current or upcoming play source and action.", () => {
-      const currentPlay = createFakeGamePlayHunterShoots();
-      const game = createFakeGame({ currentPlay, upcomingPlays: [currentPlay] });
-
-      expect(doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, RoleNames.HUNTER, GamePlayActions.EAT)).toBe(false);
+    it.each<{
+      test: string;
+      game: Game;
+      role: RoleNames;
+      action: GamePlayActions;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when game has current play source and action.",
+        game: createFakeGame({ currentPlay: createFakeGamePlayHunterShoots() }),
+        role: RoleNames.HUNTER,
+        action: GamePlayActions.SHOOT,
+        expected: true,
+      },
+      {
+        test: "should return true when game has upcoming play source and action.",
+        game: createFakeGame({ upcomingPlays: [createFakeGamePlayHunterShoots()] }),
+        role: RoleNames.HUNTER,
+        action: GamePlayActions.SHOOT,
+        expected: true,
+      },
+      {
+        test: "should return false when game has no current or upcoming play source and action.",
+        game: createFakeGame({ currentPlay: createFakeGamePlayHunterShoots(), upcomingPlays: [createFakeGamePlayHunterShoots()] }),
+        role: RoleNames.HUNTER,
+        action: GamePlayActions.EAT,
+        expected: false,
+      },
+    ])(`$test`, ({ game, role, action, expected }) => {
+      expect(doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, role, action)).toBe(expected);
     });
   });
 });

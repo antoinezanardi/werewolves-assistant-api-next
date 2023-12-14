@@ -37,6 +37,8 @@ enum BadGamePlayPayloadReasons {
   BAD_DEFENDER_TARGET = "Defender can't protect this target",
   BAD_SHERIFF_DELEGATE_TARGET = "Sheriff can't delegate his role to this target",
   BAD_SHERIFF_SETTLE_VOTES_TARGET = "Sheriff can't break the tie in votes with this target",
+  DEVOTED_SERVANT_CANT_STEAL_ROLE = "Devoted servant can't steal the role of this target because she's not in the game or dead or powerless or in love with another player",
+  BAD_DEVOTED_SERVANT_TARGET = "Devoted servant can't steal the role of this target because he's not about to die",
 }
 
 export { BadGamePlayPayloadReasons };

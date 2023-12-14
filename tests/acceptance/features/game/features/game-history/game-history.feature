@@ -552,6 +552,13 @@ Feature: 📜 Game History
       | Antoine | JB   |
     And the most recent history record is retrieved
     Then the dead players from the previous history record should be the following players
+      | name |
+      | JB   |
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the dead players from the previous history record should be the following players
       | name   |
-      | JB     |
       | Thomas |
+
+    # TODO: complete this scenario with multiple dead players at the same time (add witch for example)

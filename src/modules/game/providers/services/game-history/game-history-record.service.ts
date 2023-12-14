@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
@@ -110,12 +111,12 @@ export class GameHistoryRecordService {
     return records.length > 0;
   }
 
-  private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
+  private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): DeadPlayer[] | undefined {
     const { players: newPlayers } = newGame;
     const currentDeadPlayers = newPlayers.filter(player => {
       const matchingBasePlayer = getPlayerWithId(baseGame, player._id);
       return matchingBasePlayer?.isAlive === true && !player.isAlive;
-    });
+    }) as DeadPlayer[];
     return currentDeadPlayers.length ? currentDeadPlayers : undefined;
   }
 
@@ -151,7 +152,7 @@ export class GameHistoryRecordService {
     const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, PlayerAttributeNames.SHERIFF);
     const areSomePlayersDeadFromCurrentVotes = gameHistoryRecordToInsert.deadPlayers?.some(({ death }) => {
       const deathFromVoteCauses = [PlayerDeathCauses.VOTE, PlayerDeathCauses.VOTE_SCAPEGOATED];
-      return death?.cause !== undefined && deathFromVoteCauses.includes(death.cause);
+      return deathFromVoteCauses.includes(death.cause);
     }) === true;
     if (baseGame.currentPlay.action === GamePlayActions.ELECT_SHERIFF) {
       return sheriffPlayer ? GameHistoryRecordVotingResults.SHERIFF_ELECTION : GameHistoryRecordVotingResults.TIE;

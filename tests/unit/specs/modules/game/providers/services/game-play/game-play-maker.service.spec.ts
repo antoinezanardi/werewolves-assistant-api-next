@@ -2,6 +2,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import lodash from "lodash";
 
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { GamePlayCauses, GamePlayOccurrences, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import * as GameMutator from "@/modules/game/helpers/game.mutator";
@@ -21,7 +22,7 @@ import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dt
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeActorGameOptions, createFakeFoxGameOptions, createFakePiedPiperGameOptions, createFakePrejudicedManipulatorGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
-import { createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
@@ -56,7 +57,11 @@ describe("Game Play Maker Service", () => {
       handleTieInSheriffElection: jest.SpyInstance;
       survivorsElectSheriff: jest.SpyInstance;
       survivorsVote: jest.SpyInstance;
+      survivorsBuryDeadBodies: jest.SpyInstance;
       actorChoosesCard: jest.SpyInstance;
+    };
+    gameHistoryRecordService: {
+      getPreviousGameHistoryRecord: jest.SpyInstance;
     };
     playerKillerService: {
       killOrRevealPlayer: jest.SpyInstance;
@@ -98,6 +103,7 @@ describe("Game Play Maker Service", () => {
         handleTieInSheriffElection: jest.fn(),
         survivorsElectSheriff: jest.fn(),
         survivorsVote: jest.fn(),
+        survivorsBuryDeadBodies: jest.fn(),
         actorChoosesCard: jest.fn(),
       },
       playerKillerService: {
@@ -105,6 +111,7 @@ describe("Game Play Maker Service", () => {
         isElderKillable: jest.fn(),
         getElderLivesCountAgainstWerewolves: jest.fn(),
       },
+      gameHistoryRecordService: { getPreviousGameHistoryRecord: jest.fn() },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
       gameMutator: { prependUpcomingPlayInGame: jest.spyOn(GameMutator, "prependUpcomingPlayInGame").mockImplementation() },
       unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
@@ -120,6 +127,10 @@ describe("Game Play Maker Service", () => {
         {
           provide: PlayerKillerService,
           useValue: mocks.playerKillerService,
+        },
+        {
+          provide: GameHistoryRecordService,
+          useValue: {},
         },
         GamePlayMakerService,
       ],
@@ -970,6 +981,7 @@ describe("Game Play Maker Service", () => {
     beforeEach(() => {
       mocks.gamePlayMakerService.survivorsElectSheriff = jest.spyOn(services.gamePlayMaker as unknown as { survivorsElectSheriff }, "survivorsElectSheriff").mockImplementation();
       mocks.gamePlayMakerService.survivorsVote = jest.spyOn(services.gamePlayMaker as unknown as { survivorsVote }, "survivorsVote").mockImplementation();
+      mocks.gamePlayMakerService.survivorsBuryDeadBodies = jest.spyOn(services.gamePlayMaker as unknown as { survivorsBuryDeadBodies }, "survivorsBuryDeadBodies").mockImplementation();
     });
 
     it("should return game as is when upcoming play is not for all.", async() => {
@@ -994,6 +1006,14 @@ describe("Game Play Maker Service", () => {
       await services.gamePlayMaker["survivorsPlay"](play, game);
 
       expect(mocks.gamePlayMakerService.survivorsVote).toHaveBeenCalledExactlyOnceWith(play, game);
+    });
+
+    it("should call survivorsBuryDeadBodies method when upcoming play is burying dead bodies.", async() => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsBuryDeadBodies() });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      await services.gamePlayMaker["survivorsPlay"](play, game);
+
+      expect(mocks.gamePlayMakerService.survivorsBuryDeadBodies).toHaveBeenCalledExactlyOnceWith(play, game);
     });
   });
 

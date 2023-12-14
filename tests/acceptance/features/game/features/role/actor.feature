@@ -211,7 +211,13 @@ Feature: 🎭 Actor role
     When the werewolves eat the player named Louise
     Then the game's current play should be survivors to bury-dead-bodies
     And the player named Louise should be murdered by werewolves from eaten
-    And the player named Thomas should be murdered by cupid from broken-heart
+    And the player named Thomas should be alive
+    And the game's current play should not have eligible targets
+    And the game's current play can be skipped
+
+    When the survivors bury dead bodies
+    Then the player named Thomas should be murdered by cupid from broken-heart
+    And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
@@ -378,12 +384,13 @@ Feature: 🎭 Actor role
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
-    And the player named JB should have the active contaminated from rusty-sword-knight attribute
+    And the player named JB should not have the active contaminated from rusty-sword-knight attribute
     And the player named JB should be alive
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be survivors to vote
+    Then the player named JB should have the active contaminated from rusty-sword-knight attribute
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the player named JB should be murdered by rusty-sword-knight from disease
@@ -441,12 +448,14 @@ Feature: 🎭 Actor role
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the player named Antoine should be on werewolves current side and originally be on villagers side
-    And the player named Antoine should have the active powerless from actor attribute
+    And the player named Antoine should be on villagers current side and originally be on villagers side
+    And the player named Antoine should not have the active powerless from actor attribute
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be survivors to vote
+    Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should have the active powerless from actor attribute
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -476,12 +485,14 @@ Feature: 🎭 Actor role
 
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
-    And the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should be on villagers current side and originally be on villagers side
     And the player named Antoine should not have the active powerless from actor attribute
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be survivors to vote
+    Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should not have the active powerless from actor attribute
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be actor to choose-card

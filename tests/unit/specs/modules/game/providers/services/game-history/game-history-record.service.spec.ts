@@ -2,6 +2,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
@@ -32,7 +33,7 @@ import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/
 import { createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeDeadPlayer, createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
@@ -577,7 +578,7 @@ describe("Game History Record Service", () => {
         ],
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: undefined });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SKIPPED);
     });
@@ -601,7 +602,7 @@ describe("Game History Record Service", () => {
         ],
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.SKIPPED);
     });
@@ -626,8 +627,8 @@ describe("Game History Record Service", () => {
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
       const deadPlayers = [
-        createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
-        createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() }),
       ];
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers });
 
@@ -653,7 +654,7 @@ describe("Game History Record Service", () => {
         ],
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteScapegoatedBySurvivorsDeath() })] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteScapegoatedBySurvivorsDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.DEATH);
     });
@@ -677,7 +678,7 @@ describe("Game History Record Service", () => {
         ],
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.INCONSEQUENTIAL);
     });
@@ -701,7 +702,7 @@ describe("Game History Record Service", () => {
         ],
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.INCONSEQUENTIAL);
     });
@@ -725,7 +726,7 @@ describe("Game History Record Service", () => {
         ],
       });
       const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakePlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
+      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe(GameHistoryRecordVotingResults.TIE);
     });
@@ -939,6 +940,7 @@ describe("Game History Record Service", () => {
     const existingId = createFakeObjectId();
     const existingGame = createFakeGame();
     const fakePlayer = createFakePlayer();
+    const fakeDeadPlayer = createFakeDeadPlayer();
     const unknownId = createFakeObjectId();
 
     beforeEach(() => {
@@ -963,8 +965,8 @@ describe("Game History Record Service", () => {
       },
       {
         test: "should throw resource not found error when a dead player is not in the game.",
-        gameHistoryRecord: createFakeGameHistoryRecordToInsert({ gameId: existingId, deadPlayers: [fakePlayer] }),
-        errorParameters: [ApiResources.PLAYERS, fakePlayer._id.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_DEAD_PLAYER],
+        gameHistoryRecord: createFakeGameHistoryRecordToInsert({ gameId: existingId, deadPlayers: [fakeDeadPlayer] }),
+        errorParameters: [ApiResources.PLAYERS, fakeDeadPlayer._id.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_DEAD_PLAYER],
       },
     ])("$test", async({ gameHistoryRecord, errorParameters }) => {
       const expectedException = new ResourceNotFoundException(...errorParameters);
@@ -977,7 +979,7 @@ describe("Game History Record Service", () => {
         gameId: existingId,
         play: createFakeGameHistoryRecordPlay({ source: { name: PlayerAttributeNames.SHERIFF, players: existingGame.players } }),
         revealedPlayers: existingGame.players,
-        deadPlayers: existingGame.players,
+        deadPlayers: existingGame.players.map(player => createFakeDeadPlayer(player as DeadPlayer)),
       });
 
       await expect(services.gameHistoryRecord["validateGameHistoryRecordToInsertData"](validPlay)).resolves.not.toThrow();
