@@ -41,6 +41,10 @@ function getPlayerWithIdOrThrow(playerId: Types.ObjectId, game: Game, exception:
   return player;
 }
 
+function getPlayersWithIds(ids: Types.ObjectId[], game: Game): Player[] {
+  return game.players.filter(({ _id }) => ids.some(id => id.equals(_id)));
+}
+
 function getPlayerWithName(game: Game, playerName: string): Player | undefined {
   return game.players.find(({ name }) => name === playerName);
 }
@@ -200,6 +204,7 @@ export {
   getPlayersWithCurrentSide,
   getPlayerWithId,
   getPlayerWithIdOrThrow,
+  getPlayersWithIds,
   getPlayerWithName,
   getPlayerWithNameOrThrow,
   getAdditionalCardWithId,

@@ -135,6 +135,11 @@ Feature: 🤪 Idiot role
 
     When the survivors bury dead bodies
     Then the player named Antoine should be murdered by survivors from reconsider-pardon
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the player named Antoine should not have the active cant-vote from survivors attribute
+    And the player named Antoine should have his role revealed
 
   Scenario: 🤪 Idiot doesn't die if his role is revealed and elder dies with the right option
 

@@ -21,6 +21,7 @@ enum PlayerAttributeNames {
   CHARMED = "charmed",
   GROWLED = "growled",
   CONTAMINATED = "contaminated",
+  STOLEN_ROLE = "stolen-role",
 }
 
 enum PlayerDeathCauses {

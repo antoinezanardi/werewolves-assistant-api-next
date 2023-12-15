@@ -11,6 +11,15 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
+function createFakeStolenRoleByDevotedServantPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+  return createFakePlayerAttribute({
+    name: PlayerAttributeNames.STOLEN_ROLE,
+    source: RoleNames.DEVOTED_SERVANT,
+    doesRemainAfterDeath: true,
+    ...attribute,
+  }, override);
+}
+
 function createFakeSheriffBySheriffPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.SHERIFF,
@@ -229,6 +238,7 @@ function createFakePlayerAttribute(attribute: Partial<PlayerAttribute> = {}, ove
 }
 
 export {
+  createFakeStolenRoleByDevotedServantPlayerAttribute,
   createFakeSheriffBySheriffPlayerAttribute,
   createFakeSheriffBySurvivorsPlayerAttribute,
   createFakeSeenBySeerPlayerAttribute,

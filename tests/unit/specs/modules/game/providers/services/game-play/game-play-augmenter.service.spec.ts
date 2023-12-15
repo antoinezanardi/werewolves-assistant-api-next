@@ -30,7 +30,7 @@ import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayActorChoosesCard } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeDevotedServantAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeDeadPlayer, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
@@ -636,6 +636,18 @@ describe("Game Play Augmenter Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer(),
         createFakeDevotedServantAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
+      ];
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlayEligibleTargets"](game)).resolves.toBeUndefined();
+    });
+
+    it("should return undefined when devoted servant is in love.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
 

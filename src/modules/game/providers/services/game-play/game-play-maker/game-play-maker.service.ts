@@ -1,13 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
 
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
+import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlaySheriffSettlesVotes, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
-import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { getFoxSniffedPlayers, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
 import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByActorPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySheriffPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteBySheriffDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
@@ -54,6 +56,7 @@ export class GamePlayMakerService {
     private readonly playerKillerService: PlayerKillerService,
     private readonly gamePlayVoteService: GamePlayVoteService,
     private readonly gameHistoryRecordService: GameHistoryRecordService,
+    private readonly devotedServantGamePlayMakerService: DevotedServantGamePlayMakerService,
   ) {}
 
   public async makeGamePlay(play: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
@@ -119,13 +122,23 @@ export class GamePlayMakerService {
     return sheriffPlayMethod();
   }
 
-  private async survivorsBuryDeadBodies(gamePlay: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
+  private async survivorsBuryDeadBodies({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     let clonedGame = createGame(game);
+    const { areRevealedOnDeath: areRolesRevealedOnDeath } = clonedGame.options.roles;
     const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(clonedGame._id);
     if (previousGameHistoryRecord?.deadPlayers === undefined || previousGameHistoryRecord.deadPlayers.length === 0) {
       throw createCantFindLastDeadPlayersUnexpectedException("survivorsBuryDeadBodies", { gameId: clonedGame._id });
     }
-    for (const deadPlayer of previousGameHistoryRecord.deadPlayers) {
+    const expectedTargetCountForDevotedServant = 1;
+    if (targets?.length === expectedTargetCountForDevotedServant) {
+      clonedGame = this.devotedServantGamePlayMakerService.devotedServantStealsRole(targets[0].player, clonedGame);
+    }
+    const previousDeadPlayersIds = previousGameHistoryRecord.deadPlayers.map(({ _id }) => _id);
+    const previousDeadPlayersInGame = getPlayersWithIds(previousDeadPlayersIds, clonedGame) as DeadPlayer[];
+    for (const deadPlayer of previousDeadPlayersInGame) {
+      if (areRolesRevealedOnDeath) {
+        clonedGame = this.playerKillerService.revealPlayerRole(deadPlayer, clonedGame);
+      }
       clonedGame = this.playerKillerService.applyPlayerDeathOutcomes(deadPlayer, clonedGame);
     }
     return clonedGame;

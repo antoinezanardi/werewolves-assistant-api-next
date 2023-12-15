@@ -148,7 +148,8 @@ export class GamePlayAugmenterService {
 
   private async getSurvivorsBuryDeadBodiesGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets | undefined> {
     const devotedServantPlayer = getPlayerWithCurrentRole(game, RoleNames.DEVOTED_SERVANT);
-    if (!devotedServantPlayer || !isPlayerAliveAndPowerful(devotedServantPlayer, game)) {
+    if (!devotedServantPlayer || !isPlayerAliveAndPowerful(devotedServantPlayer, game) ||
+      doesPlayerHaveActiveAttributeWithName(devotedServantPlayer, PlayerAttributeNames.IN_LOVE, game)) {
       return undefined;
     }
     const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(game._id);

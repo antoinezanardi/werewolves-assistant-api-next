@@ -2,11 +2,13 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import lodash from "lodash";
 
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
+import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { GamePlayCauses, GamePlayOccurrences, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import * as GameMutator from "@/modules/game/helpers/game.mutator";
-import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker.service";
+import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/game-play-maker.service";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -16,6 +18,7 @@ import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
+import { createFakeGameHistoryRecord } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
@@ -27,7 +30,7 @@ import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/
 import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeActorAlivePlayer, createFakeElderAlivePlayer, createFakeFoxAlivePlayer, createFakePiedPiperAlivePlayer, createFakePrejudicedManipulatorAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeDeadPlayer, createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Maker Service", () => {
   let services: { gamePlayMaker: GamePlayMakerService };
@@ -65,13 +68,18 @@ describe("Game Play Maker Service", () => {
     };
     playerKillerService: {
       killOrRevealPlayer: jest.SpyInstance;
+      applyPlayerDeathOutcomes: jest.SpyInstance;
       isElderKillable: jest.SpyInstance;
       getElderLivesCountAgainstWerewolves: jest.SpyInstance;
+    };
+    devotedServantGamePlayMakerService: {
+      devotedServantStealsRole: jest.SpyInstance;
     };
     gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
     gameMutator: { prependUpcomingPlayInGame: jest.SpyInstance };
     unexpectedExceptionFactory: {
       createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
+      createCantFindLastDeadPlayersUnexpectedException: jest.SpyInstance;
     };
     lodash: { sample: jest.SpyInstance };
   };
@@ -108,13 +116,18 @@ describe("Game Play Maker Service", () => {
       },
       playerKillerService: {
         killOrRevealPlayer: jest.fn(),
+        applyPlayerDeathOutcomes: jest.fn(),
         isElderKillable: jest.fn(),
         getElderLivesCountAgainstWerewolves: jest.fn(),
       },
+      devotedServantGamePlayMakerService: { devotedServantStealsRole: jest.fn() },
       gameHistoryRecordService: { getPreviousGameHistoryRecord: jest.fn() },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
       gameMutator: { prependUpcomingPlayInGame: jest.spyOn(GameMutator, "prependUpcomingPlayInGame").mockImplementation() },
-      unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
+      unexpectedExceptionFactory: {
+        createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation(),
+        createCantFindLastDeadPlayersUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindLastDeadPlayersUnexpectedException").mockImplementation(),
+      },
       lodash: { sample: jest.spyOn(lodash, "sample").mockImplementation() },
     };
 
@@ -130,7 +143,11 @@ describe("Game Play Maker Service", () => {
         },
         {
           provide: GameHistoryRecordService,
-          useValue: {},
+          useValue: mocks.gameHistoryRecordService,
+        },
+        {
+          provide: DevotedServantGamePlayMakerService,
+          useValue: mocks.devotedServantGamePlayMakerService,
         },
         GamePlayMakerService,
       ],
@@ -546,6 +563,73 @@ describe("Game Play Maker Service", () => {
       await services.gamePlayMaker["sheriffPlays"](play, game);
 
       expect(mocks.gamePlayMakerService.sheriffSettlesVotes).toHaveBeenCalledExactlyOnceWith(play, game);
+    });
+  });
+
+  describe("survivorsBuryDeadBodies", () => {
+    it("should throw error when previous game history record is not found.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const mockedError = new UnexpectedException("survivorsBuryDeadBodies", UnexpectedExceptionReasons.CANT_FIND_LAST_DEAD_PLAYERS, { gameId: game._id.toString() });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(undefined);
+      mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException.mockReturnValueOnce(mockedError);
+
+      await expect(services.gamePlayMaker["survivorsBuryDeadBodies"](play, game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("survivorsBuryDeadBodies", { gameId: game._id });
+    });
+
+    it("should throw error when previous game history record doesn't have dead players.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const mockedError = new UnexpectedException("survivorsBuryDeadBodies", UnexpectedExceptionReasons.CANT_FIND_LAST_DEAD_PLAYERS, { gameId: game._id.toString() });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers: [] }));
+      mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException.mockReturnValueOnce(mockedError);
+
+      await expect(services.gamePlayMaker["survivorsBuryDeadBodies"](play, game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("survivorsBuryDeadBodies", { gameId: game._id });
+    });
+
+    it("should make devoted servant steal role game play when there is one target.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto()];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers: [createFakeDeadPlayer()] }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValueOnce(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.devotedServantGamePlayMakerService.devotedServantStealsRole).toHaveBeenCalledExactlyOnceWith(targets[0].player, game);
+    });
+
+    it("should not make devoted servant steal role game play when there is no target.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers: [createFakeDeadPlayer()] }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValueOnce(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.devotedServantGamePlayMakerService.devotedServantStealsRole).not.toHaveBeenCalled();
+    });
+
+    it("should apply player death outcomes for each dead players from previous game history record when called.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const deadPlayers = [createFakeDeadPlayer(players[1] as DeadPlayer), createFakeDeadPlayer(players[2] as DeadPlayer)];
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValueOnce(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.playerKillerService.applyPlayerDeathOutcomes).toHaveBeenCalledTimes(deadPlayers.length);
+      expect(mocks.playerKillerService.applyPlayerDeathOutcomes).toHaveBeenCalledWith(players[1], game);
+      expect(mocks.playerKillerService.applyPlayerDeathOutcomes).toHaveBeenCalledWith(players[2], game);
     });
   });
 

@@ -26,10 +26,10 @@ export class PlayerKillerService {
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
   
   public async killOrRevealPlayer(playerId: Types.ObjectId, game: Game, death: PlayerDeath): Promise<Game> {
-    let clonedGame = createGame(game);
+    const clonedGame = createGame(game);
     let playerToKill = this.getPlayerToKillInGame(playerId, clonedGame);
     if (await this.isPlayerKillable(playerToKill, clonedGame, death.cause)) {
-      clonedGame = this.killPlayer(playerToKill, clonedGame, death);
+      return this.killPlayer(playerToKill, clonedGame, death);
     }
     const cantFindPlayerException = createCantFindPlayerUnexpectedException("killOrRevealPlayer", { gameId: game._id, playerId: playerToKill._id });
     playerToKill = getPlayerWithIdOrThrow(playerToKill._id, clonedGame, cantFindPlayerException);
@@ -82,7 +82,7 @@ export class PlayerKillerService {
     return clonedGame;
   }
 
-  private revealPlayerRole(playerToReveal: Player, game: Game): Game {
+  public revealPlayerRole(playerToReveal: Player, game: Game): Game {
     let clonedGame = createGame(game);
     let clonedPlayerToReveal = createPlayer(playerToReveal);
     const cantFindPlayerException = createCantFindPlayerUnexpectedException("revealPlayerRole", { gameId: game._id, playerId: playerToReveal._id });

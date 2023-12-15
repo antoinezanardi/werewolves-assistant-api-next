@@ -4,7 +4,7 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, doesGameHaveUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, doesGameHaveUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GetNearestPlayerOptions } from "@/modules/game/types/game.type";
@@ -167,6 +167,24 @@ describe("Game Helper", () => {
       const exception = new UnexpectedException("killPlayer", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, exceptionInterpolations);
       
       expect(() => getPlayerWithIdOrThrow(unknownPlayerId, game, exception)).toThrow(exception);
+    });
+  });
+
+  describe("getPlayersWithIds", () => {
+    it("should get players with specific ids when called with these ids.", () => {
+      const players = [
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+        createFakePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const idsToFind = [players[1]._id, players[3]._id, createFakeObjectId(), players[5]._id];
+      const expectedPlayers = [players[1], players[3], players[5]];
+
+      expect(getPlayersWithIds(idsToFind, game)).toStrictEqual<Player[]>(expectedPlayers);
     });
   });
 
