@@ -1,21 +1,38 @@
 import { Injectable } from "@nestjs/common";
 
-import { createStolenRoleByDevotedServantPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
-import { addPlayerAttributeInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { createGamePlaySheriffDelegates } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
-import { getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
+import { addPlayerAttributeInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameAndSourceInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { createStolenRoleByDevotedServantPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { canPlayerDelegateSheriffAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
+import { createCantFindPlayerUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+
 @Injectable()
 export class DevotedServantGamePlayMakerService {
-  public swapTargetAndDevotedServantCurrentRoleAndSide(targetedPlayer: Player, game: Game): Game {
+  public devotedServantStealsRole(targetedPlayer: DeadPlayer, game: Game): Game {
     let clonedGame = createGame(game);
-    const devotedServantPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.DEVOTED_SERVANT);
+    let devotedServantPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.DEVOTED_SERVANT);
     if (!devotedServantPlayer) {
       return clonedGame;
     }
+    const cantFindDevotedServantException = createCantFindPlayerUnexpectedException("devotedServantStealsRole", { gameId: game._id, playerId: devotedServantPlayer._id });
+    clonedGame = removePlayerAttributeByNameAndSourceInGame(devotedServantPlayer._id, clonedGame, PlayerAttributeNames.CHARMED, RoleNames.PIED_PIPER);
+    devotedServantPlayer = getPlayerWithIdOrThrow(devotedServantPlayer._id, clonedGame, cantFindDevotedServantException);
+    clonedGame = this.swapTargetAndDevotedServantCurrentRoleAndSide(targetedPlayer, devotedServantPlayer, clonedGame);
+    devotedServantPlayer = getPlayerWithIdOrThrow(devotedServantPlayer._id, clonedGame, cantFindDevotedServantException);
+    clonedGame = this.makeDevotedServantDelegatesIfSheriff(devotedServantPlayer, clonedGame);
+    return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, createStolenRoleByDevotedServantPlayerAttribute());
+  }
+
+  private swapTargetAndDevotedServantCurrentRoleAndSide(targetedPlayer: DeadPlayer, devotedServantPlayer: Player, game: Game): Game {
+    let clonedGame = createGame(game);
     const devotedServantPlayerDataToUpdate: Partial<Player> = {
       role: {
         ...devotedServantPlayer.role,
@@ -41,9 +58,11 @@ export class DevotedServantGamePlayMakerService {
     return updatePlayerInGame(targetedPlayer._id, targetPlayerDataToUpdate, clonedGame);
   }
 
-  public devotedServantStealsRole(targetedPlayer: Player, game: Game): Game {
-    let clonedGame = createGame(game);
-    clonedGame = this.swapTargetAndDevotedServantCurrentRoleAndSide(targetedPlayer, clonedGame);
-    return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, createStolenRoleByDevotedServantPlayerAttribute());
+  private makeDevotedServantDelegatesIfSheriff(devotedServantPlayer: Player, game: Game): Game {
+    const clonedGame = createGame(game);
+    if (!canPlayerDelegateSheriffAttribute(devotedServantPlayer, clonedGame)) {
+      return clonedGame;
+    }
+    return prependUpcomingPlayInGame(createGamePlaySheriffDelegates(), clonedGame);
   }
 }

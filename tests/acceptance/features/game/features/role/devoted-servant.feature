@@ -12,6 +12,9 @@ Feature: 🎀 Devoted Servant role
       | Thomas  | villager        |
     Then the request should have succeeded with status code 201
     And the game's current play should be seer to look
+    And the game's current play should be played by the following players
+      | name   |
+      | Olivia |
 
     When the seer looks at the player named Antoine
     Then the game's current play should be werewolves to eat
@@ -35,6 +38,13 @@ Feature: 🎀 Devoted Servant role
     And the player named JB should be currently a seer and originally a devoted-servant
     And the player named Olivia should have his role revealed
     And the player named JB should not have his role revealed
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be seer to look
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
 
   Scenario: 🎀 Devoted servant can't steal the role if she is dead
 
@@ -173,7 +183,7 @@ Feature: 🎀 Devoted Servant role
   Scenario: 🎀 Devoted servant can't steal the role of an unknown player
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
-      | name   | role            |
+      | name    | role            |
       | Antoine | werewolf        |
       | Olivia  | villager        |
       | JB      | devoted-servant |
@@ -228,3 +238,120 @@ Feature: 🎀 Devoted Servant role
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "There are too much targets for this current game's state"
+
+  Scenario: 🎀 Devoted servant must delegate if she was sheriff before stealing a role
+
+    Given a created game with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | villager        |
+      | JB      | devoted-servant |
+      | Thomas  | villager        |
+    Then the game's current play should be survivors to elect-sheriff
+
+    When the survivors elect sheriff with the following votes
+      | voter  | target |
+      | Olivia | JB     |
+    Then the player named JB should have the active sheriff from survivors attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Thomas
+    Then the player named Thomas should be currently a devoted-servant and originally a villager
+    And the player named JB should be currently a villager and originally a devoted-servant
+    And the player named Thomas should have his role revealed
+    And the player named JB should not have his role revealed
+    And the game's current play should be sheriff to delegate
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+    And the game's current play should have the following eligible targets interactable players
+      | name    |
+      | Antoine |
+      | Olivia  |
+    And the game's current play eligible targets interactable player named Antoine should have the following interactions
+      | source  | interaction           |
+      | sheriff | transfer-sheriff-role |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source  | interaction           |
+      | sheriff | transfer-sheriff-role |
+
+  Scenario: 🎀 Devoted servant doesn't delegate if she was sheriff and steals the role of idiot
+
+    Given a created game with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | villager        |
+      | JB      | devoted-servant |
+      | Thomas  | idiot           |
+    Then the game's current play should be survivors to elect-sheriff
+
+    When the survivors elect sheriff with the following votes
+      | voter  | target |
+      | Olivia | JB     |
+    Then the player named JB should have the active sheriff from survivors attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Thomas
+    Then the player named Thomas should be currently a devoted-servant and originally a idiot
+    And the player named JB should be currently a idiot and originally a devoted-servant
+    And the player named Thomas should have his role revealed
+    And the player named JB should not have his role revealed
+    And the player named JB should have the active sheriff from survivors attribute
+    And the game's current play should be survivors to vote
+
+  Scenario: 🎀 Devoted servant steals the role of the hunter before he dies so he doesn't shoot anybody
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | villager        |
+      | JB      | devoted-servant |
+      | Thomas  | hunter          |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Thomas
+    Then the player named Thomas should be currently a devoted-servant and originally a hunter
+    And the player named Thomas should have his role revealed
+    And the player named JB should be currently a hunter and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the game's current play should be survivors to vote
+
+  Scenario: 🎀 Devoted servant is not charmed by pied piper anymore if she steals a role
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | villager        |
+      | JB      | devoted-servant |
+      | Thomas  | pied-piper      |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the game's current play should be pied-piper to charm
+
+    When the pied piper charms the following players
+      | name   |
+      | JB     |
+      | Olivia |
+    Then the player named JB should have the active charmed from pied-piper attribute
+    And the player named Olivia should have the active charmed from pied-piper attribute
+    And the game's current play should be charmed to meet-each-other
+
+    When the charmed people meet each other
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a villager
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a villager and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the player named JB should not have the active charmed from pied-piper attribute

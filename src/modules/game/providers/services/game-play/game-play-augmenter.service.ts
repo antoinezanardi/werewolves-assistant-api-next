@@ -95,9 +95,9 @@ export class GamePlayAugmenterService {
   }
 
   private getSheriffDelegatesGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
-    const alivePlayers = getAlivePlayers(game);
+    const alivePlayersWithoutCurrentSheriff = getAlivePlayers(game).filter(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.SHERIFF, game));
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE, source: PlayerAttributeNames.SHERIFF }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
+    const interactablePlayers: InteractablePlayer[] = alivePlayersWithoutCurrentSheriff.map(player => ({ player, interactions }));
     const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }

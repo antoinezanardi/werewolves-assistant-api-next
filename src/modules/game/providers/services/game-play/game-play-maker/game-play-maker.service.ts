@@ -131,7 +131,7 @@ export class GamePlayMakerService {
     }
     const expectedTargetCountForDevotedServant = 1;
     if (targets?.length === expectedTargetCountForDevotedServant) {
-      clonedGame = this.devotedServantGamePlayMakerService.devotedServantStealsRole(targets[0].player, clonedGame);
+      clonedGame = this.devotedServantGamePlayMakerService.devotedServantStealsRole(targets[0].player as DeadPlayer, clonedGame);
     }
     const previousDeadPlayersIds = previousGameHistoryRecord.deadPlayers.map(({ _id }) => _id);
     const previousDeadPlayersInGame = getPlayersWithIds(previousDeadPlayersIds, clonedGame) as DeadPlayer[];

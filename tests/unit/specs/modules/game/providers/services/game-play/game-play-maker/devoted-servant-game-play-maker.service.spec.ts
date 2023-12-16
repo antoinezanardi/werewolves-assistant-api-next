@@ -1,0 +1,213 @@
+import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
+
+import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { createGamePlaySheriffDelegates } from "@/modules/game/helpers/game-play/game-play.factory";
+import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
+import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import * as GamePlayHelper from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import * as GameMutator from "@/modules/game/helpers/game.mutator";
+
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeStolenRoleByDevotedServantPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeDevotedServantAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+
+describe("Devoted Servant Game Play Maker Service", () => {
+  let services: { devotedServantGamePlayMaker: DevotedServantGamePlayMakerService };
+  let mocks: {
+    devotedServantGamePlayMakerService: {
+      swapTargetAndDevotedServantCurrentRoleAndSide: jest.SpyInstance;
+      makeDevotedServantDelegatesIfSheriff: jest.SpyInstance;
+    };
+    playerAttributeHelper: {
+      canPlayerDelegateSheriffAttribute: jest.SpyInstance;
+    };
+    gameMutator: {
+      removePlayerAttributeByNameAndSourceInGame: jest.SpyInstance;
+    };
+  };
+
+  beforeEach(async() => {
+    mocks = {
+      devotedServantGamePlayMakerService: {
+        swapTargetAndDevotedServantCurrentRoleAndSide: jest.fn(),
+        makeDevotedServantDelegatesIfSheriff: jest.fn(),
+      },
+      playerAttributeHelper: { canPlayerDelegateSheriffAttribute: jest.spyOn(GamePlayHelper, "canPlayerDelegateSheriffAttribute").mockReturnValue(true) },
+      gameMutator: { removePlayerAttributeByNameAndSourceInGame: jest.spyOn(GameMutator, "removePlayerAttributeByNameAndSourceInGame").mockImplementation() },
+    };
+    const module: TestingModule = await Test.createTestingModule({ providers: [DevotedServantGamePlayMakerService] }).compile();
+
+    services = { devotedServantGamePlayMaker: module.get<DevotedServantGamePlayMakerService>(DevotedServantGamePlayMakerService) };
+  });
+
+  describe("devotedServantStealsRole", () => {
+    beforeEach(() => {
+      mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide = jest.spyOn(services.devotedServantGamePlayMaker as unknown as { swapTargetAndDevotedServantCurrentRoleAndSide }, "swapTargetAndDevotedServantCurrentRoleAndSide").mockImplementation();
+      mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff = jest.spyOn(services.devotedServantGamePlayMaker as unknown as { makeDevotedServantDelegatesIfSheriff }, "makeDevotedServantDelegatesIfSheriff").mockImplementation();
+    });
+
+    it("should return game as is when devoted servant is not in the game.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeSeerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+
+      expect(services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should remove charmed from pied piper player attribute from devoted servant when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakePiedPiperAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+      ];
+      const game = createFakeGame({ players });
+      mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
+      services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
+
+      expect(mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame).toHaveBeenCalledExactlyOnceWith(players[3]._id, game, PlayerAttributeNames.CHARMED, RoleNames.PIED_PIPER);
+    });
+
+    it("should swap target and devoted servant current role and side when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
+      services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
+
+      expect(mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide).toHaveBeenCalledExactlyOnceWith(players[0], players[3], game);
+    });
+
+    it("should make devoted servant delegates if she is sheriff when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
+      services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
+
+      expect(mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff).toHaveBeenCalledExactlyOnceWith(players[3], game);
+    });
+
+    it("should add stolen role by devoted servant player attribute to target when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakePlayer({
+            ...game.players[0],
+            attributes: [createFakeStolenRoleByDevotedServantPlayerAttribute()],
+          }),
+          game.players[1],
+          game.players[2],
+          game.players[3],
+        ],
+      });
+      mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
+      const result = services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
+
+      expect(result).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("swapTargetAndDevotedServantCurrentRoleAndSide", () => {
+    it("should swap target and devoted servant current role and side when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      players[0].role.isRevealed = false;
+      const game = createFakeGame({ players });
+      const expectedGame = createFakeGame(game);
+      expectedGame.players[0].role.current = RoleNames.DEVOTED_SERVANT;
+      expectedGame.players[0].side.current = RoleSides.VILLAGERS;
+      expectedGame.players[3].role.current = RoleNames.WEREWOLF;
+      expectedGame.players[3].side.current = RoleSides.WEREWOLVES;
+      expectedGame.players[3].role.isRevealed = false;
+
+      expect(services.devotedServantGamePlayMaker["swapTargetAndDevotedServantCurrentRoleAndSide"](players[0] as DeadPlayer, players[3], game)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should remain role revelation when swapping target and devoted servant current role and side when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      players[0].role.isRevealed = true;
+      const game = createFakeGame({ players });
+      const expectedGame = createFakeGame(game);
+      expectedGame.players[0].role.current = RoleNames.DEVOTED_SERVANT;
+      expectedGame.players[0].side.current = RoleSides.VILLAGERS;
+      expectedGame.players[3].role.current = RoleNames.WEREWOLF;
+      expectedGame.players[3].side.current = RoleSides.WEREWOLVES;
+      expectedGame.players[3].role.isRevealed = true;
+
+      expect(services.devotedServantGamePlayMaker["swapTargetAndDevotedServantCurrentRoleAndSide"](players[0] as DeadPlayer, players[3], game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("makeDevotedServantDelegatesIfSheriff", () => {
+    it("should return game as is when devoted servant cannot delegate sheriff attribute.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      mocks.playerAttributeHelper.canPlayerDelegateSheriffAttribute.mockReturnValueOnce(false);
+
+      expect(services.devotedServantGamePlayMaker["makeDevotedServantDelegatesIfSheriff"](players[3], game)).toStrictEqual<Game>(game);
+    });
+
+    it("should prepend sheriff delegates to upcoming plays when devoted servant can delegate sheriff attribute.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const expectedGame = createFakeGame({
+        ...game,
+        upcomingPlays: [createGamePlaySheriffDelegates()],
+      });
+
+      expect(services.devotedServantGamePlayMaker["makeDevotedServantDelegatesIfSheriff"](players[3], game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+});

@@ -71,6 +71,7 @@ describe("Game Play Maker Service", () => {
       applyPlayerDeathOutcomes: jest.SpyInstance;
       isElderKillable: jest.SpyInstance;
       getElderLivesCountAgainstWerewolves: jest.SpyInstance;
+      revealPlayerRole: jest.SpyInstance;
     };
     devotedServantGamePlayMakerService: {
       devotedServantStealsRole: jest.SpyInstance;
@@ -119,6 +120,7 @@ describe("Game Play Maker Service", () => {
         applyPlayerDeathOutcomes: jest.fn(),
         isElderKillable: jest.fn(),
         getElderLivesCountAgainstWerewolves: jest.fn(),
+        revealPlayerRole: jest.fn(),
       },
       devotedServantGamePlayMakerService: { devotedServantStealsRole: jest.fn() },
       gameHistoryRecordService: { getPreviousGameHistoryRecord: jest.fn() },
@@ -595,7 +597,8 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers: [createFakeDeadPlayer()] }));
       mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
-      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
       await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
 
       expect(mocks.devotedServantGamePlayMakerService.devotedServantStealsRole).toHaveBeenCalledExactlyOnceWith(targets[0].player, game);
@@ -606,10 +609,53 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers: [createFakeDeadPlayer()] }));
       mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
-      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
       await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
 
       expect(mocks.devotedServantGamePlayMakerService.devotedServantStealsRole).not.toHaveBeenCalled();
+    });
+
+    it("should reveal role for each player when game options say that they must be revealed on death.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ areRevealedOnDeath: true }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const deadPlayers = [createFakeDeadPlayer(players[1] as DeadPlayer), createFakeDeadPlayer(players[2] as DeadPlayer)];
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.playerKillerService.revealPlayerRole).toHaveBeenCalledTimes(deadPlayers.length);
+      expect(mocks.playerKillerService.revealPlayerRole).toHaveBeenCalledWith(players[1], game);
+      expect(mocks.playerKillerService.revealPlayerRole).toHaveBeenCalledWith(players[2], game);
+    });
+
+    it("should not reveal role for each player when game options say that they must not be revealed on death.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ areRevealedOnDeath: false }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const deadPlayers = [createFakeDeadPlayer(players[1] as DeadPlayer), createFakeDeadPlayer(players[2] as DeadPlayer)];
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.playerKillerService.revealPlayerRole).not.toHaveBeenCalled();
     });
 
     it("should apply player death outcomes for each dead players from previous game history record when called.", async() => {
@@ -619,12 +665,14 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ areRevealedOnDeath: false }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const play = createFakeMakeGamePlayWithRelationsDto();
       const deadPlayers = [createFakeDeadPlayer(players[1] as DeadPlayer), createFakeDeadPlayer(players[2] as DeadPlayer)];
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers }));
       mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
-      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
       await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
 
       expect(mocks.playerKillerService.applyPlayerDeathOutcomes).toHaveBeenCalledTimes(deadPlayers.length);
