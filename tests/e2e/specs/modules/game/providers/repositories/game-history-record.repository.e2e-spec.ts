@@ -23,7 +23,7 @@ import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordStutteringJudgeChooseSignPlay, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGamePlayCupidCharms, createFakeGamePlayPiedPiperCharms } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeElderAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeAccursedWolfFatherAlivePlayer, createFakeElderAlivePlayer, createFakeSeerAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
@@ -420,6 +420,7 @@ describe("Game History Record Repository", () => {
 
   describe("getGameHistoryAccursedWolfFatherInfectedRecords", () => {
     it("should get no record when there are no eat play.", async() => {
+      const accursedWolfFatherPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
@@ -428,24 +429,71 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId, accursedWolfFatherPlayerId);
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
 
     it("should get records of accursed wolf-father infected for this gameId when called.", async() => {
+      const accursedWolfFatherPlayerId = createFakeObjectId();
+      const players = [
+        createFakePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer({ _id: accursedWolfFatherPlayerId }),
+        createFakePlayer(),
+      ];
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [createFakeGameHistoryRecordPlayTarget({ isInfected: false })] }) }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [createFakeGameHistoryRecordPlayTarget({ isInfected: true })] }) }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({
+            targets: [createFakeGameHistoryRecordPlayTarget({ isInfected: false })],
+            source: createFakeGameHistoryRecordPlaySource({
+              name: PlayerGroups.WEREWOLVES,
+              players,
+            }),
+          }),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({
+            targets: [createFakeGameHistoryRecordPlayTarget({ isInfected: true })],
+            source: createFakeGameHistoryRecordPlaySource({
+              name: PlayerGroups.WEREWOLVES,
+              players,
+            }),
+          }),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({
+            targets: [createFakeGameHistoryRecordPlayTarget({ isInfected: true })],
+            source: createFakeGameHistoryRecordPlaySource({
+              name: PlayerGroups.WEREWOLVES,
+              players: [
+                createFakePlayer(),
+                createFakePlayer(),
+                createFakePlayer(),
+              ],
+            }),
+          }),
+        }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
-        createFakeGameHistoryRecord({ gameId: otherGameId, play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [createFakeGameHistoryRecordPlayTarget({ isInfected: true })] }) }),
+        createFakeGameHistoryRecord({
+          gameId: otherGameId,
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({
+            targets: [createFakeGameHistoryRecordPlayTarget({ isInfected: true })],
+            source: createFakeGameHistoryRecordPlaySource({
+              name: PlayerGroups.WEREWOLVES,
+              players,
+            }),
+          }),
+        }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId, accursedWolfFatherPlayerId);
       const expectedRecords = [gameHistoryRecords[2]];
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);

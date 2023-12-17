@@ -434,3 +434,38 @@ Feature: 🎀 Devoted Servant role
     Then the player named JB should be alive
     And the player named JB should not have the active protected from defender attribute
     And the game's current play should be survivors to vote
+
+  Scenario: 🎀 Devoted Servant can infect again as the accursed wolf-father even if he already infected
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name     | role                 |
+      | Antoine  | accursed-wolf-father |
+      | Olivia   | villager             |
+      | JB       | devoted-servant      |
+      | Juju     | villager             |
+      | Mathilde | villager             |
+    Then the game's current play should be werewolves to eat
+
+    When the accursed wolf-father infects the player named Mathilde
+    Then the player named Mathilde should be on werewolves current side and originally be on villagers side
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter    | target |
+      | Olivia   | Antoine   |
+      | Mathilde | Antoine   |
+    Then the player named Antoine should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Antoine
+    Then the player named Antoine should be currently a devoted-servant and originally a accursed-wolf-father
+    And the player named Antoine should be on villagers current side and originally be on werewolves side
+    And the player named Antoine should have his role revealed
+    And the player named JB should be currently a accursed-wolf-father and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the player named JB should be on werewolves current side and originally be on villagers side
+    And the game's current play should be werewolves to eat
+
+    When the accursed wolf-father infects the player named Juju
+    Then the player named Juju should be on werewolves current side and originally be on villagers side
+    And the game's current play should be survivors to vote

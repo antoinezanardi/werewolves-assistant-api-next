@@ -55,11 +55,17 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.find(filter);
   }
 
-  public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId, accursedWolfFatherPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GamePlayActions.EAT,
       "play.targets.isInfected": true,
+      "play.source.players": {
+        $elemMatch: {
+          "_id": accursedWolfFatherPlayerId,
+          "role.current": RoleNames.ACCURSED_WOLF_FATHER,
+        },
+      },
     };
     return this.gameHistoryRecordModel.find(filter);
   }

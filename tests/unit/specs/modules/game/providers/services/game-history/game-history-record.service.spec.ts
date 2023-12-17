@@ -180,10 +180,11 @@ describe("Game History Record Service", () => {
 
   describe("getGameHistoryAccursedWolfFatherInfectedRecords", () => {
     it("should get game history records when accursed wolf-father infected a player when called.", async() => {
+      const accursedWolfFatherPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
+      await services.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId, accursedWolfFatherPlayerId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords).toHaveBeenCalledExactlyOnceWith(gameId, accursedWolfFatherPlayerId);
     });
   });
 

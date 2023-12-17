@@ -56,8 +56,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, potion);
   }
 
-  public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
+  public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId, accursedWolfFatherPlayer: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryAccursedWolfFatherInfectedRecords(gameId, accursedWolfFatherPlayer);
   }
 
   public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {

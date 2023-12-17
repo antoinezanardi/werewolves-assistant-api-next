@@ -132,9 +132,12 @@ export class GamePlayValidatorService {
     if (!infectedTargets.length) {
       return;
     }
-    const hasAccursedWolfFatherInfected = (await this.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords(game._id)).length > 0;
     const accursedWolfFatherPlayer = getPlayerWithCurrentRole(game, RoleNames.ACCURSED_WOLF_FATHER);
-    if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game) || hasAccursedWolfFatherInfected) {
+    if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game)) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
+    }
+    const hasAccursedWolfFatherInfected = (await this.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords(game._id, accursedWolfFatherPlayer._id)).length > 0;
+    if (hasAccursedWolfFatherInfected) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
     }
     this.validateGamePlayTargetsBoundaries(infectedTargets, { min: 1, max: 1 });
