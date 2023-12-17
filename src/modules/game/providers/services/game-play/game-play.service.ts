@@ -184,11 +184,18 @@ export class GamePlayService {
     if (game instanceof CreateGameDto) {
       return !!getPlayerDtoWithRole(game, RoleNames.WITCH);
     }
-    const hasWitchUsedLifePotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.LIFE)).length > 0;
-    const hasWitchUsedDeathPotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.DEATH)).length > 0;
-    const { doSkipCallIfNoTarget } = game.options.roles;
     const witchPlayer = getPlayerWithCurrentRole(game, RoleNames.WITCH);
-    return !!witchPlayer && isPlayerAliveAndPowerful(witchPlayer, game) && (!doSkipCallIfNoTarget || !hasWitchUsedLifePotion || !hasWitchUsedDeathPotion);
+    if (!witchPlayer || !isPlayerAliveAndPowerful(witchPlayer, game)) {
+      return false;
+    }
+    const [lifePotionRecords, deathPotionRecords] = await Promise.all([
+      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.LIFE),
+      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.DEATH),
+    ]);
+    const hasWitchUsedLifePotion = lifePotionRecords.length > 0;
+    const hasWitchUsedDeathPotion = deathPotionRecords.length > 0;
+    const { doSkipCallIfNoTarget } = game.options.roles;
+    return !doSkipCallIfNoTarget || !hasWitchUsedLifePotion || !hasWitchUsedDeathPotion;
   }
 
   private shouldBeCalledOnCurrentTurnInterval(wakingUpInterval: number, game: CreateGameDto | Game): boolean {

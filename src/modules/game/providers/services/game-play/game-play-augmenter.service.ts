@@ -315,9 +315,13 @@ export class GamePlayAugmenterService {
   }
 
   private async getWitchGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets> {
+    const witchPlayer = getPlayerWithCurrentRole(game, RoleNames.WITCH);
+    if (!witchPlayer) {
+      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getWitchGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.WITCH });
+    }
     const [lifeRecords, deathRecords] = await Promise.all([
-      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.LIFE),
-      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.DEATH),
+      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.LIFE),
+      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.DEATH),
     ]);
     const hasWitchUsedLifePotion = lifeRecords.length > 0;
     const hasWitchUsedDeathPotion = deathRecords.length > 0;

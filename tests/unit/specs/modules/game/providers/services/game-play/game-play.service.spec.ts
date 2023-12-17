@@ -1276,30 +1276,30 @@ describe("Game Play Service", () => {
 
     it("should return true when witch is in the game but options specify that her turn must be skipped with no more potions but has still death potion.", async() => {
       const players = [
+        createFakeWitchAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeWitchAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) });
       const game = createFakeGame({ players, options });
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.LIFE).mockResolvedValue([]);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue([createFakeGameHistoryRecord()]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue([createFakeGameHistoryRecord()]);
 
       await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(true);
     });
 
     it("should return true when witch is in the game but options specify that her turn must be skipped with no more potions but has still life potion.", async() => {
       const players = [
+        createFakeWitchAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeSeerAlivePlayer(),
-        createFakeWitchAlivePlayer(),
         createFakeAngelAlivePlayer(),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) });
       const game = createFakeGame({ players, options });
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.LIFE).mockResolvedValue([createFakeGameHistoryRecord()]);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, WitchPotions.DEATH).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockResolvedValue([createFakeGameHistoryRecord()]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue([]);
 
       await expect(services.gamePlay["isWitchGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(true);
     });

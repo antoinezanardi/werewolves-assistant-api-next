@@ -19,7 +19,7 @@ import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
-import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerWithCurrentRoleUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.type";
 
 @Injectable()
@@ -116,9 +116,13 @@ export class GamePlayValidatorService {
   }
 
   private async validateGamePlayWitchTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
-    const hasWitchUsedLifePotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.LIFE)).length > 0;
+    const witchPlayer = getPlayerWithCurrentRole(game, RoleNames.WITCH);
+    if (!witchPlayer) {
+      throw createCantFindPlayerWithCurrentRoleUnexpectedException("validateGamePlayWitchTargets", { gameId: game._id, roleName: RoleNames.WITCH });
+    }
+    const hasWitchUsedLifePotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.LIFE)).length > 0;
     const drankLifePotionTargets = playTargets.filter(({ drankPotion }) => drankPotion === WitchPotions.LIFE);
-    const hasWitchUsedDeathPotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.DEATH)).length > 0;
+    const hasWitchUsedDeathPotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.DEATH)).length > 0;
     const drankDeathPotionTargets = playTargets.filter(({ drankPotion }) => drankPotion === WitchPotions.DEATH);
     if (hasWitchUsedLifePotion && drankLifePotionTargets.length || hasWitchUsedDeathPotion && drankDeathPotionTargets.length) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);

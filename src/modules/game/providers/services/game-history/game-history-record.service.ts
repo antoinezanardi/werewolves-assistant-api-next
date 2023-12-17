@@ -52,8 +52,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord(gameId, action);
   }
 
-  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, potion);
+  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, witchPlayerId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, potion);
   }
 
   public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId, accursedWolfFatherPlayer: Types.ObjectId): Promise<GameHistoryRecord[]> {

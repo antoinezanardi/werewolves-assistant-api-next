@@ -45,11 +45,12 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
-  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, witchPlayerId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
-      "play.source.name": RoleNames.WITCH,
       "play.action": GamePlayActions.USE_POTIONS,
+      "play.source.name": RoleNames.WITCH,
+      "play.source.players": { $elemMatch: { _id: witchPlayerId } },
       "play.targets.drankPotion": potion,
     };
     return this.gameHistoryRecordModel.find(filter);

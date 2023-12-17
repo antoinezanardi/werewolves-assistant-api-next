@@ -1495,8 +1495,27 @@ describe("Game Play Augmenter Service", () => {
       mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers = jest.spyOn(services.gamePlayAugmenter as unknown as { getWitchGamePlayEligibleTargetsInteractablePlayers }, "getWitchGamePlayEligibleTargetsInteractablePlayers").mockImplementation();
     });
 
+    it("should throw error when witch is not in the game.", async() => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const mockedError = new UnexpectedException("getWitchGamePlayEligibleTargets", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: RoleNames.WITCH });
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException.mockReturnValue(mockedError);
+
+      await expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getWitchGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.WITCH });
+    });
+
     it("should get interactable players from game when called and there is no history for life potion and death potion.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1505,7 +1524,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get interactable players from game with life potion used when called and there is history for life potion.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1514,7 +1538,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get interactable players from game with death potion used when called and there is history for death potion.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1523,7 +1552,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get targets boundaries for witch when called and no potions are used.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1532,7 +1566,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get targets boundaries for witch when called and life potion is used.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1541,7 +1580,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get targets boundaries for witch when called and death potion is used.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1550,7 +1594,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should return eligible targets with interactable players and boundaries when called.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       const expectedBoundaries = createFakeGamePlayEligibleTargetsBoundaries();
       const expectedInteractablePlayers = [
         createFakeInteractablePlayer(),

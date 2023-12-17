@@ -164,17 +164,19 @@ describe("Game History Record Service", () => {
 
   describe("getGameHistoryWitchUsesSpecificPotionRecords", () => {
     it("should get game history records when witch used life potion when called.", async() => {
+      const witchPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, WitchPotions.LIFE);
+      await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, WitchPotions.LIFE);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, WitchPotions.LIFE);
+      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, witchPlayerId, WitchPotions.LIFE);
     });
 
     it("should get game history records when witch used death potion when called.", async() => {
+      const witchPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, WitchPotions.DEATH);
+      await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, WitchPotions.DEATH);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, WitchPotions.DEATH);
+      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, witchPlayerId, WitchPotions.DEATH);
     });
   });
 
