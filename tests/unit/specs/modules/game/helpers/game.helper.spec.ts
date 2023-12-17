@@ -17,7 +17,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGamePlayHunterShoots } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -884,7 +884,12 @@ describe("Game Helper", () => {
       },
       {
         test: "should return false when game has no upcoming play source and action.",
-        game: createFakeGame({ upcomingPlays: [createFakeGamePlayHunterShoots()] }),
+        game: createFakeGame({
+          upcomingPlays: [
+            createFakeGamePlayHunterShoots(),
+            createFakeGamePlayWerewolvesEat(),
+          ],
+        }),
         role: RoleNames.HUNTER,
         action: GamePlayActions.EAT,
         expected: false,

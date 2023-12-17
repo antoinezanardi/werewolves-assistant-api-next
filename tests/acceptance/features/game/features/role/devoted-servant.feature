@@ -355,3 +355,82 @@ Feature: 🎀 Devoted Servant role
     And the player named JB should be currently a villager and originally a devoted-servant
     And the player named JB should not have his role revealed
     And the player named JB should not have the active charmed from pied-piper attribute
+
+  Scenario: 🎀 Devoted servant remains infected if she steals a role and so, as bear tamer, growls everyday
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name     | role                 |
+      | Antoine  | accursed-wolf-father |
+      | Olivia   | villager             |
+      | JB       | devoted-servant      |
+      | Thomas   | bear-tamer           |
+      | Juju     | villager             |
+      | Mathilde | villager             |
+    Then the game's current play should be werewolves to eat
+
+    When the accursed wolf-father infects the player named JB
+    Then the player named JB should be on werewolves current side and originally be on villagers side
+    And the player named Thomas should have the active growled from bear-tamer attribute
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter    | target |
+      | Mathilde | Thomas |
+    Then the player named Thomas should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Thomas
+    Then the player named Thomas should be currently a devoted-servant and originally a bear-tamer
+    And the player named Thomas should be on villagers current side and originally be on villagers side
+    And the player named Thomas should have his role revealed
+    And the player named JB should be currently a bear-tamer and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the player named JB should be on werewolves current side and originally be on villagers side
+    And the game's current play should be werewolves to eat
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+      | JB      |
+
+    When the werewolves eat the player named Juju
+    Then the player named Juju should be murdered by werewolves from eaten
+    And the player named JB should have the active growled from bear-tamer attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+  Scenario: 🎀 Devoted Servant can protect whoever she wants as a defender, even the last target of the previous one
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | villager        |
+      | JB      | devoted-servant |
+      | Thomas  | defender        |
+    And the game's current play should be defender to protect
+
+    When the defender protects the player named JB
+    Then the player named JB should have the active protected from defender attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should be murdered by werewolves from eaten
+    And the player named JB should not have the active protected from defender attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Thomas
+    Then the player named Thomas should be currently a devoted-servant and originally a defender
+    And the player named Thomas should have his role revealed
+    And the player named JB should be currently a defender and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be defender to protect
+
+    When the defender protects the player named JB
+    Then the player named JB should have the active protected from defender attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the player named JB should be alive
+    And the player named JB should not have the active protected from defender attribute
+    And the game's current play should be survivors to vote

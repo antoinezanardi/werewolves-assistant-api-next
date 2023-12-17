@@ -242,16 +242,26 @@ describe("Game Mutator", () => {
     it("should return game with player without his sheriff from sheriff attribute when called.", () => {
       const players = [
         createFakePlayer(),
-        createFakePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakeSheriffBySheriffPlayerAttribute()] }),
+        createFakePlayer({
+          attributes: [
+            createFakeSheriffBySurvivorsPlayerAttribute(),
+            createFakeSheriffBySheriffPlayerAttribute(),
+            createFakeCharmedByPiedPiperPlayerAttribute({ source: PlayerAttributeNames.SHERIFF }),
+          ],
+        }),
         createFakePlayer(),
         createFakePlayer(),
       ];
       const game = createFakeGame({ players });
+      const expectedAttributes = [
+        createFakeSheriffBySurvivorsPlayerAttribute(),
+        createFakeCharmedByPiedPiperPlayerAttribute({ source: PlayerAttributeNames.SHERIFF }),
+      ];
       const expectedGame = createFakeGame({
         ...game,
         players: [
           game.players[0],
-          createFakePlayer({ ...players[1], attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+          createFakePlayer({ ...players[1], attributes: expectedAttributes }),
           game.players[2],
           game.players[3],
         ],

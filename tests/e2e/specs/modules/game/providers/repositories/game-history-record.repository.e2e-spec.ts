@@ -176,36 +176,97 @@ describe("Game History Record Repository", () => {
 
   describe("getLastGameHistoryDefenderProtectsRecord", () => {
     it("should return no record when there is no defender play in the history.", async() => {
+      const defenderPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
       await populate([
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
       ]);
 
-      await expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId)).resolves.toBeNull();
+      await expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId, defenderPlayerId)).resolves.toBeNull();
     });
 
     it("should return no record when there gameId is not the good one.", async() => {
+      const defenderPlayerId = createFakeObjectId();
+      const players = [
+        createFakePlayer(),
+        createFakePlayer({ _id: defenderPlayerId }),
+        createFakePlayer(),
+      ];
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       await populate([
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay() }),
+        createFakeGameHistoryRecord({
+          gameId, play: createFakeGameHistoryRecordDefenderProtectPlay({
+            source: createFakeGameHistoryRecordPlaySource({
+              name: RoleNames.DEFENDER,
+              players,
+            }),
+          }),
+        }),
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
       ]);
 
-      await expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(otherGameId)).resolves.toBeNull();
+      await expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(otherGameId, defenderPlayerId)).resolves.toBeNull();
     });
 
     it("should return the last defender game history play record when called.", async() => {
+      const defenderPlayerId = createFakeObjectId();
+      const players = [
+        createFakePlayer(),
+        createFakePlayer({ _id: defenderPlayerId }),
+        createFakePlayer(),
+      ];
       const gameId = createFakeObjectId();
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay(), createdAt: new Date("2020-01-01") }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2021-01-01") }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordDefenderProtectPlay(), createdAt: new Date("2022-01-01") }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay(), createdAt: new Date("2023-01-01") }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordDefenderProtectPlay({
+            source: createFakeGameHistoryRecordPlaySource({
+              name: RoleNames.DEFENDER,
+              players,
+            }),
+          }),
+          createdAt: new Date("2020-01-01"),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordWitchUsePotionsPlay({
+            source: createFakeGameHistoryRecordPlaySource({
+              name: RoleNames.WITCH,
+              players,
+            }),
+          }),
+          createdAt: new Date("2021-01-01"),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordDefenderProtectPlay({
+            source: createFakeGameHistoryRecordPlaySource({
+              name: RoleNames.DEFENDER,
+              players,
+            }),
+          }),
+          createdAt: new Date("2022-01-01"),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordWitchUsePotionsPlay(),
+          createdAt: new Date("2023-01-01"),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordDefenderProtectPlay({
+            source: createFakeGameHistoryRecordPlaySource({
+              name: RoleNames.DEFENDER,
+              players: [createFakePlayer()],
+            }),
+          }),
+          createdAt: new Date("2024-01-01"),
+        }),
       ];
       await populate(gameHistoryRecords);
-      const record = await repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId);
+      const record = await repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId, defenderPlayerId);
 
       expect(toJSON(record)).toStrictEqual<GameHistoryRecord>(toJSON(gameHistoryRecords[2]) as GameHistoryRecord);
     });

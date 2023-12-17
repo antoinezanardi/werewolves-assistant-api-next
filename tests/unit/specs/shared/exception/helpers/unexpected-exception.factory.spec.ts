@@ -1,19 +1,34 @@
-import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNominatedPlayersUnexpectedException, createCantFindPlayerUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { RoleNames } from "@/modules/role/enums/role.enum";
+
+import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNominatedPlayersUnexpectedException, createCantFindPlayerWithCurrentRoleUnexpectedException, createCantFindPlayerWithIdUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";
 
 describe("Unexpected Exception Factory", () => {
-  describe("createCantFindPlayerUnexpectedException", () => {
+  describe("createCantFindPlayerWithIdUnexpectedException", () => {
     it("should create player is dead unexpected exception when called.", () => {
       const interpolations = { gameId: createFakeObjectId(), playerId: createFakeObjectId() };
-      const exception = createCantFindPlayerUnexpectedException("werewolvesEat", interpolations);
+      const exception = createCantFindPlayerWithIdUnexpectedException("werewolvesEat", interpolations);
 
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
         statusCode: 500,
         message: "Unexpected exception in werewolvesEat",
         error: `Can't find player with id "${interpolations.playerId.toString()}" for game with id "${interpolations.gameId.toString()}"`,
+      });
+    });
+  });
+
+  describe("createCantFindPlayerWithCurrentRoleUnexpectedException", () => {
+    it("should create can't find player with current role unexpected exception when called.", () => {
+      const interpolations = { gameId: createFakeObjectId(), roleName: RoleNames.WEREWOLF };
+      const exception = createCantFindPlayerWithCurrentRoleUnexpectedException("werewolvesEat", interpolations);
+
+      expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
+        statusCode: 500,
+        message: "Unexpected exception in werewolvesEat",
+        error: `Can't find player with role "${interpolations.roleName}" for game with id "${interpolations.gameId.toString()}"`,
       });
     });
   });

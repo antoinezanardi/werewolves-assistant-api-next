@@ -61,7 +61,7 @@ describe("Player Killer Service", () => {
       doesGameHaveCurrentOrUpcomingPlaySourceAndAction: jest.SpyInstance;
     };
     unexpectedExceptionFactory: {
-      createCantFindPlayerUnexpectedException: jest.SpyInstance;
+      createCantFindPlayerWithIdUnexpectedException: jest.SpyInstance;
       createPlayerIsDeadUnexpectedException: jest.SpyInstance;
     };
   };
@@ -102,7 +102,7 @@ describe("Player Killer Service", () => {
         doesGameHaveCurrentOrUpcomingPlaySourceAndAction: jest.spyOn(GameHelper, "doesGameHaveCurrentOrUpcomingPlaySourceAndAction").mockImplementation(),
       },
       unexpectedExceptionFactory: {
-        createCantFindPlayerUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerUnexpectedException").mockImplementation(),
+        createCantFindPlayerWithIdUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerWithIdUnexpectedException").mockImplementation(),
         createPlayerIsDeadUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createPlayerIsDeadUnexpectedException").mockImplementation(),
       },
     };
@@ -203,7 +203,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame({ players });
       const exception = new UnexpectedException("applyPlayerAttributesDeathOutcomes", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, { gameId: game._id.toString(), playerId: players[0]._id.toString() });
 
-      mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException.mockReturnValue(exception);
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException.mockReturnValue(exception);
       mocks.gameHelper.getPlayerWithIdOrThrow.mockReturnValue(players[0]);
       mocks.gameHelper.doesGameHaveCurrentOrUpcomingPlaySourceAndAction.mockReturnValue(true);
       mocks.playerKillerService.applyPlayerRoleDeathOutcomes.mockReturnValue(game);
@@ -211,7 +211,7 @@ describe("Player Killer Service", () => {
       mocks.playerKillerService.applyPlayerAttributesDeathOutcomes.mockReturnValue(game);
       services.playerKiller.applyPlayerDeathOutcomes(players[0] as DeadPlayer, game);
 
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyPlayerDeathOutcomes", { gameId: game._id, playerId: players[0]._id });
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyPlayerDeathOutcomes", { gameId: game._id, playerId: players[0]._id });
     });
 
     it("should apply player role death outcomes when called.", () => {
@@ -225,7 +225,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame({ players });
       const exception = new UnexpectedException("applyPlayerAttributesDeathOutcomes", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, { gameId: game._id.toString(), playerId: players[0]._id.toString() });
 
-      mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException.mockReturnValue(exception);
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException.mockReturnValue(exception);
       mocks.gameHelper.getPlayerWithIdOrThrow.mockReturnValue(players[0]);
       mocks.gameHelper.doesGameHaveCurrentOrUpcomingPlaySourceAndAction.mockReturnValue(true);
       mocks.playerKillerService.applyPlayerRoleDeathOutcomes.mockReturnValue(game);
@@ -247,7 +247,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame({ players });
       const exception = new UnexpectedException("applyPlayerAttributesDeathOutcomes", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, { gameId: game._id.toString(), playerId: players[0]._id.toString() });
 
-      mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException.mockReturnValue(exception);
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException.mockReturnValue(exception);
       mocks.gameHelper.getPlayerWithIdOrThrow.mockReturnValue(players[0]);
       mocks.gameHelper.doesGameHaveCurrentOrUpcomingPlaySourceAndAction.mockReturnValue(true);
       mocks.playerKillerService.applyPlayerRoleDeathOutcomes.mockReturnValue(game);
@@ -269,7 +269,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame({ players });
       const exception = new UnexpectedException("applyPlayerAttributesDeathOutcomes", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, { gameId: game._id.toString(), playerId: players[0]._id.toString() });
 
-      mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException.mockReturnValue(exception);
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException.mockReturnValue(exception);
       mocks.gameHelper.getPlayerWithIdOrThrow.mockReturnValue(players[0]);
       mocks.gameHelper.doesGameHaveCurrentOrUpcomingPlaySourceAndAction.mockReturnValue(true);
       mocks.playerKillerService.applyPlayerRoleDeathOutcomes.mockReturnValue(game);
@@ -291,7 +291,7 @@ describe("Player Killer Service", () => {
       const game = createFakeGame({ players });
       const exception = new UnexpectedException("applyPlayerAttributesDeathOutcomes", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, { gameId: game._id.toString(), playerId: players[0]._id.toString() });
 
-      mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException.mockReturnValue(exception);
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException.mockReturnValue(exception);
       mocks.gameHelper.getPlayerWithIdOrThrow.mockReturnValue(players[0]);
       mocks.gameHelper.doesGameHaveCurrentOrUpcomingPlaySourceAndAction.mockReturnValue(true);
       mocks.playerKillerService.applyPlayerRoleDeathOutcomes.mockReturnValue(game);
@@ -327,7 +327,7 @@ describe("Player Killer Service", () => {
       mocks.gameHelper.getPlayerWithIdOrThrow.mockReturnValue(players[0]);
       services.playerKiller.revealPlayerRole(players[0], game);
 
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("revealPlayerRole", expectedInterpolations);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException).toHaveBeenCalledExactlyOnceWith("revealPlayerRole", expectedInterpolations);
     });
 
     it("should reveal player role when called.", () => {
@@ -1093,10 +1093,10 @@ describe("Player Killer Service", () => {
       mocks.playerKillerService.applyInLovePlayerDeathOutcomes.mockReturnValue(game);
       mocks.playerKillerService.applyWorshipedPlayerDeathOutcomes.mockReturnValue(game);
       mocks.gameHelper.getPlayerWithIdOrThrow.mockReturnValue(game.players[2]);
-      mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException.mockReturnValue(exception);
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException.mockReturnValue(exception);
       services.playerKiller["applyPlayerAttributesDeathOutcomes"](game.players[2], game);
 
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyPlayerAttributesDeathOutcomes", expectedInterpolations);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyPlayerAttributesDeathOutcomes", expectedInterpolations);
       expect(mocks.playerKillerService.applySheriffPlayerDeathOutcomes).toHaveBeenCalledExactlyOnceWith(game.players[2], game);
       expect(mocks.playerKillerService.applyInLovePlayerDeathOutcomes).toHaveBeenCalledExactlyOnceWith(game.players[2], game);
       expect(mocks.playerKillerService.applyWorshipedPlayerDeathOutcomes).toHaveBeenCalledExactlyOnceWith(game.players[2], game);
@@ -1599,7 +1599,7 @@ describe("Player Killer Service", () => {
     beforeEach(() => {
       mocks.playerKillerService.removePlayerAttributesAfterDeath = jest.spyOn(services.playerKiller as unknown as { removePlayerAttributesAfterDeath }, "removePlayerAttributesAfterDeath").mockImplementation();
       mocks.playerKillerService.applyPlayerDeathOutcomes = jest.spyOn(services.playerKiller as unknown as { applyPlayerDeathOutcomes }, "applyPlayerDeathOutcomes").mockImplementation();
-      mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException = jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerUnexpectedException").mockImplementation();
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException = jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerWithIdUnexpectedException").mockImplementation();
       mocks.gameHelper.getPlayerWithIdOrThrow = jest.spyOn(GameHelper, "getPlayerWithIdOrThrow").mockImplementation();
     });
 
@@ -1673,13 +1673,13 @@ describe("Player Killer Service", () => {
       const playerIsDeadException = new UnexpectedException("getPlayerToKillOrRevealInGame", UnexpectedExceptionReasons.PLAYER_IS_DEAD, interpolations);
       const expectedInterpolations = { gameId: game._id, playerId: players[1]._id };
 
-      mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException.mockReturnValue(cantFindPlayerException);
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException.mockReturnValue(cantFindPlayerException);
       mocks.gameHelper.getPlayerWithIdOrThrow.mockReturnValue(players[1]);
-      mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException.mockReturnValue(cantFindPlayerException);
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException.mockReturnValue(cantFindPlayerException);
       mocks.unexpectedExceptionFactory.createPlayerIsDeadUnexpectedException.mockReturnValue(playerIsDeadException);
 
       expect(() => services.playerKiller["getPlayerToKillOrRevealInGame"](players[1]._id, game)).toThrow(playerIsDeadException);
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("getPlayerToKillOrRevealInGame", expectedInterpolations);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException).toHaveBeenCalledExactlyOnceWith("getPlayerToKillOrRevealInGame", expectedInterpolations);
       expect(mocks.unexpectedExceptionFactory.createPlayerIsDeadUnexpectedException).toHaveBeenCalledExactlyOnceWith("getPlayerToKillOrRevealInGame", expectedInterpolations);
     });
 

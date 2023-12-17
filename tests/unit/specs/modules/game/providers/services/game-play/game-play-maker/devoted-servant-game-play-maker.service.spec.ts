@@ -10,6 +10,8 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import * as GamePlayHelper from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import * as GameMutator from "@/modules/game/helpers/game.mutator";
 
+import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
+
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeStolenRoleByDevotedServantPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
@@ -29,6 +31,9 @@ describe("Devoted Servant Game Play Maker Service", () => {
     gameMutator: {
       removePlayerAttributeByNameAndSourceInGame: jest.SpyInstance;
     };
+    unexpectedExceptionFactory: {
+      createCantFindPlayerWithIdUnexpectedException: jest.SpyInstance;
+    };
   };
 
   beforeEach(async() => {
@@ -39,6 +44,7 @@ describe("Devoted Servant Game Play Maker Service", () => {
       },
       playerAttributeHelper: { canPlayerDelegateSheriffAttribute: jest.spyOn(GamePlayHelper, "canPlayerDelegateSheriffAttribute").mockReturnValue(true) },
       gameMutator: { removePlayerAttributeByNameAndSourceInGame: jest.spyOn(GameMutator, "removePlayerAttributeByNameAndSourceInGame").mockImplementation() },
+      unexpectedExceptionFactory: { createCantFindPlayerWithIdUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerWithIdUnexpectedException").mockImplementation() },
     };
     const module: TestingModule = await Test.createTestingModule({ providers: [DevotedServantGamePlayMakerService] }).compile();
 
@@ -61,6 +67,23 @@ describe("Devoted Servant Game Play Maker Service", () => {
       const game = createFakeGame({ players });
 
       expect(services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should create can't find player exception in case player is not found in game when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakePiedPiperAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+      ];
+      const game = createFakeGame({ players });
+      mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
+      services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
+      const interpolations = { gameId: game._id, playerId: players[3]._id };
+
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException).toHaveBeenCalledExactlyOnceWith("devotedServantStealsRole", interpolations);
     });
 
     it("should remove charmed from pied piper player attribute from devoted servant when called.", () => {
@@ -154,6 +177,26 @@ describe("Devoted Servant Game Play Maker Service", () => {
       expectedGame.players[0].role.current = RoleNames.DEVOTED_SERVANT;
       expectedGame.players[0].side.current = RoleSides.VILLAGERS;
       expectedGame.players[3].role.current = RoleNames.WEREWOLF;
+      expectedGame.players[3].side.current = RoleSides.WEREWOLVES;
+      expectedGame.players[3].role.isRevealed = false;
+
+      expect(services.devotedServantGamePlayMaker["swapTargetAndDevotedServantCurrentRoleAndSide"](players[0] as DeadPlayer, players[3], game)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should swap target and devoted servant current role but not side when devoted servant is currently in werewoles side.", () => {
+      const players = [
+        createFakeSeerAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      players[0].role.isRevealed = false;
+      players[3].side.current = RoleSides.WEREWOLVES;
+      const game = createFakeGame({ players });
+      const expectedGame = createFakeGame(game);
+      expectedGame.players[0].role.current = RoleNames.DEVOTED_SERVANT;
+      expectedGame.players[0].side.current = RoleSides.VILLAGERS;
+      expectedGame.players[3].role.current = RoleNames.SEER;
       expectedGame.players[3].side.current = RoleSides.WEREWOLVES;
       expectedGame.players[3].role.isRevealed = false;
 

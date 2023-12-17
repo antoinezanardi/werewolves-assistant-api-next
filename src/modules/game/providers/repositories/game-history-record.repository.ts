@@ -26,11 +26,12 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.create(gameHistoryRecord);
   }
 
-  public async getLastGameHistoryDefenderProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+  public async getLastGameHistoryDefenderProtectsRecord(gameId: Types.ObjectId, defenderPlayerId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GamePlayActions.PROTECT,
       "play.source.name": RoleNames.DEFENDER,
+      "play.source.players": { $elemMatch: { _id: defenderPlayerId } },
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }

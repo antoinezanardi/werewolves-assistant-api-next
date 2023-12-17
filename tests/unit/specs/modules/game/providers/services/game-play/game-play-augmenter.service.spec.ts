@@ -32,7 +32,7 @@ import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePla
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeAngelAlivePlayer, createFakeDevotedServantAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeAngelAlivePlayer, createFakeDefenderAlivePlayer, createFakeDevotedServantAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeDeadPlayer, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Augmenter Service", () => {
@@ -104,6 +104,7 @@ describe("Game Play Augmenter Service", () => {
       getPreviousGameHistoryRecord: jest.SpyInstance;
     };
     unexpectedExceptionFactory: {
+      createCantFindPlayerWithCurrentRoleUnexpectedException: jest.SpyInstance;
       createCantFindLastNominatedPlayersUnexpectedException: jest.SpyInstance;
       createMalformedCurrentGamePlayUnexpectedException: jest.SpyInstance;
       createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
@@ -179,6 +180,7 @@ describe("Game Play Augmenter Service", () => {
         getPreviousGameHistoryRecord: jest.fn(),
       },
       unexpectedExceptionFactory: {
+        createCantFindPlayerWithCurrentRoleUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerWithCurrentRoleUnexpectedException"),
         createCantFindLastNominatedPlayersUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindLastNominatedPlayersUnexpectedException"),
         createMalformedCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createMalformedCurrentGamePlayUnexpectedException"),
         createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException"),
@@ -341,10 +343,10 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getSheriffDelegatesGamePlayEligibleTargets", () => {
-    it("should return all alive players as interactable players with 1 to 1 targets boundaries when called.", () => {
+    it("should return all alive and not sheriff players as interactable players with 1 to 1 targets boundaries when called.", () => {
       const players = [
         createFakeAngelAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeWitchAlivePlayer(),
       ];
@@ -356,10 +358,6 @@ describe("Game Play Augmenter Service", () => {
       const expectedInteractablePlayers = [
         createFakeInteractablePlayer({
           player: players[0],
-          interactions: [expectedInteraction],
-        }),
-        createFakeInteractablePlayer({
-          player: players[1],
           interactions: [expectedInteraction],
         }),
         createFakeInteractablePlayer({
@@ -954,9 +952,24 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getDefenderGamePlayEligibleTargets", () => {
-    it("should return all alive players as interactable targets with boundaries from 1 to 1 when there is no last protected players.", async() => {
+    it("should throw error when there is no defender in the game.", async() => {
       const players = [
         createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: RoleNames.DEFENDER });
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException.mockReturnValue(mockedError);
+
+      await expect(services.gamePlayAugmenter["getDefenderGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getDefenderGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.DEFENDER });
+    });
+
+    it("should return all alive players as interactable targets with boundaries from 1 to 1 when there is no last protected players.", async() => {
+      const players = [
+        createFakeDefenderAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
@@ -995,7 +1008,7 @@ describe("Game Play Augmenter Service", () => {
 
     it("should return all alive players as interactable targets with boundaries from 1 to 1 when there is last protected players but defender can protect twice in a row.", async() => {
       const players = [
-        createFakeWerewolfAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeVillagerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
@@ -1032,7 +1045,7 @@ describe("Game Play Augmenter Service", () => {
 
     it("should return all alive players but last protected player as interactable targets with boundaries from 1 to 1 when there is last protected players but defender can't protect twice in a row.", async() => {
       const players = [
-        createFakeWerewolfAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeVillagerAlivePlayer(),
         createFakeVillagerAlivePlayer(),

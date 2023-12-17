@@ -10,9 +10,9 @@ import { canPlayerDelegateSheriffAttribute } from "@/modules/game/helpers/player
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { createCantFindPlayerUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerWithIdUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 @Injectable()
 export class DevotedServantGamePlayMakerService {
@@ -22,7 +22,7 @@ export class DevotedServantGamePlayMakerService {
     if (!devotedServantPlayer) {
       return clonedGame;
     }
-    const cantFindDevotedServantException = createCantFindPlayerUnexpectedException("devotedServantStealsRole", { gameId: game._id, playerId: devotedServantPlayer._id });
+    const cantFindDevotedServantException = createCantFindPlayerWithIdUnexpectedException("devotedServantStealsRole", { gameId: game._id, playerId: devotedServantPlayer._id });
     clonedGame = removePlayerAttributeByNameAndSourceInGame(devotedServantPlayer._id, clonedGame, PlayerAttributeNames.CHARMED, RoleNames.PIED_PIPER);
     devotedServantPlayer = getPlayerWithIdOrThrow(devotedServantPlayer._id, clonedGame, cantFindDevotedServantException);
     clonedGame = this.swapTargetAndDevotedServantCurrentRoleAndSide(targetedPlayer, devotedServantPlayer, clonedGame);
@@ -39,21 +39,23 @@ export class DevotedServantGamePlayMakerService {
         current: targetedPlayer.role.current,
         isRevealed: targetedPlayer.role.isRevealed,
       },
-      side: {
-        ...devotedServantPlayer.side,
-        current: targetedPlayer.side.current,
-      },
     };
     const targetPlayerDataToUpdate: Partial<Player> = {
       role: {
         ...targetedPlayer.role,
         current: devotedServantPlayer.role.current,
       },
-      side: {
+    };
+    if (devotedServantPlayer.side.current !== RoleSides.WEREWOLVES) {
+      devotedServantPlayerDataToUpdate.side = {
+        ...devotedServantPlayer.side,
+        current: targetedPlayer.side.current,
+      };
+      targetPlayerDataToUpdate.side = {
         ...targetedPlayer.side,
         current: devotedServantPlayer.side.current,
-      },
-    };
+      };
+    }
     clonedGame = updatePlayerInGame(devotedServantPlayer._id, devotedServantPlayerDataToUpdate, clonedGame);
     return updatePlayerInGame(targetedPlayer._id, targetPlayerDataToUpdate, clonedGame);
   }

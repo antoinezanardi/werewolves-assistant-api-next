@@ -1218,10 +1218,10 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ players, additionalCards });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenCard: additionalCards[0] });
@@ -1355,7 +1355,8 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
@@ -1462,7 +1463,8 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.VILLAGERS });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],

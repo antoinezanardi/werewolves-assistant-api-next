@@ -45,7 +45,7 @@ describe("Game Phase Service", () => {
       getNearestAliveNeighbor: jest.SpyInstance;
     };
     unexpectedExceptionFactory: {
-      createCantFindPlayerUnexpectedException: jest.SpyInstance;
+      createCantFindPlayerWithIdUnexpectedException: jest.SpyInstance;
     };
   };
 
@@ -71,7 +71,7 @@ describe("Game Phase Service", () => {
         getUpcomingDayPlays: jest.fn(),
       },
       gameHelper: { getNearestAliveNeighbor: jest.spyOn(GameHelper, "getNearestAliveNeighbor").mockImplementation() },
-      unexpectedExceptionFactory: { createCantFindPlayerUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerUnexpectedException").mockImplementation() },
+      unexpectedExceptionFactory: { createCantFindPlayerWithIdUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerWithIdUnexpectedException").mockImplementation() },
     };
     
     const module: TestingModule = await Test.createTestingModule({
@@ -205,13 +205,13 @@ describe("Game Phase Service", () => {
   });
 
   describe("applyEndingNightPlayerAttributesOutcomesToPlayer", () => {
-    it("should create cant find player exception in case player is not found in game when called.", async() => {
+    it("should create can't find player exception in case player is not found in game when called.", async() => {
       const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] });
       const game = createFakeGame({ players: [player] });
       const interpolations = { gameId: game._id, playerId: player._id };
       await services.gamePhase["applyEndingNightPlayerAttributesOutcomesToPlayer"](player, game);
 
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyEndingNightPlayerAttributesOutcomesToPlayer", interpolations);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithIdUnexpectedException).toHaveBeenCalledExactlyOnceWith("applyEndingNightPlayerAttributesOutcomesToPlayer", interpolations);
     });
 
     it("should do nothing when player doesn't have any ending night attributes.", async() => {

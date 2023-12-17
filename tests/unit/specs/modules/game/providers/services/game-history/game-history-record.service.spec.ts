@@ -145,10 +145,11 @@ describe("Game History Record Service", () => {
 
   describe("getLastGameHistoryDefenderProtectsRecord", () => {
     it("should get game history when defender protected when called.", async() => {
+      const defenderPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId);
+      await services.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId, defenderPlayerId);
 
-      expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord).toHaveBeenCalledExactlyOnceWith(gameId, defenderPlayerId);
     });
   });
 

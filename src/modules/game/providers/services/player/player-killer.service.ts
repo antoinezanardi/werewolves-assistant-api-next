@@ -19,7 +19,7 @@ import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/pla
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { createCantFindPlayerUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerWithIdUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 @Injectable()
 export class PlayerKillerService {
@@ -63,7 +63,7 @@ export class PlayerKillerService {
   public applyPlayerDeathOutcomes(deadPlayer: DeadPlayer, game: Game): Game {
     let clonedGame = createGame(game);
     let clonedDeadPlayer = createDeadPlayer(deadPlayer);
-    const cantFindPlayerException = createCantFindPlayerUnexpectedException("applyPlayerDeathOutcomes", { gameId: game._id, playerId: deadPlayer._id });
+    const cantFindPlayerException = createCantFindPlayerWithIdUnexpectedException("applyPlayerDeathOutcomes", { gameId: game._id, playerId: deadPlayer._id });
     clonedGame = this.applyPlayerRoleDeathOutcomes(clonedDeadPlayer, clonedGame);
     clonedDeadPlayer = getPlayerWithIdOrThrow(clonedDeadPlayer._id, clonedGame, cantFindPlayerException) as DeadPlayer;
     clonedGame = this.applyPlayerSideDeathOutcomes(clonedDeadPlayer, clonedGame);
@@ -75,7 +75,7 @@ export class PlayerKillerService {
   public revealPlayerRole(playerToReveal: Player, game: Game): Game {
     let clonedGame = createGame(game);
     let clonedPlayerToReveal = createPlayer(playerToReveal);
-    const cantFindPlayerException = createCantFindPlayerUnexpectedException("revealPlayerRole", { gameId: game._id, playerId: playerToReveal._id });
+    const cantFindPlayerException = createCantFindPlayerWithIdUnexpectedException("revealPlayerRole", { gameId: game._id, playerId: playerToReveal._id });
     clonedPlayerToReveal.role.isRevealed = true;
     clonedGame = updatePlayerInGame(playerToReveal._id, clonedPlayerToReveal, clonedGame);
     clonedPlayerToReveal = getPlayerWithIdOrThrow(playerToReveal._id, clonedGame, cantFindPlayerException);
@@ -164,7 +164,7 @@ export class PlayerKillerService {
   private applyPlayerAttributesDeathOutcomes(killedPlayer: Player, game: Game): Game {
     let clonedGame = createGame(game);
     let clonedKilledPlayer = createPlayer(killedPlayer);
-    const cantFindPlayerException = createCantFindPlayerUnexpectedException("applyPlayerAttributesDeathOutcomes", { gameId: game._id, playerId: killedPlayer._id });
+    const cantFindPlayerException = createCantFindPlayerWithIdUnexpectedException("applyPlayerAttributesDeathOutcomes", { gameId: game._id, playerId: killedPlayer._id });
     if (doesPlayerHaveActiveAttributeWithName(killedPlayer, PlayerAttributeNames.SHERIFF, clonedGame)) {
       clonedGame = this.applySheriffPlayerDeathOutcomes(clonedKilledPlayer, clonedGame);
       clonedKilledPlayer = getPlayerWithIdOrThrow(clonedKilledPlayer._id, clonedGame, cantFindPlayerException);
@@ -267,7 +267,7 @@ export class PlayerKillerService {
 
   private getPlayerToKillOrRevealInGame(playerId: Types.ObjectId, game: Game): Player {
     const exceptionInterpolations = { gameId: game._id, playerId };
-    const playerToKill = getPlayerWithIdOrThrow(playerId, game, createCantFindPlayerUnexpectedException("getPlayerToKillOrRevealInGame", exceptionInterpolations));
+    const playerToKill = getPlayerWithIdOrThrow(playerId, game, createCantFindPlayerWithIdUnexpectedException("getPlayerToKillOrRevealInGame", exceptionInterpolations));
     if (!playerToKill.isAlive) {
       throw createPlayerIsDeadUnexpectedException("getPlayerToKillOrRevealInGame", exceptionInterpolations);
     }
