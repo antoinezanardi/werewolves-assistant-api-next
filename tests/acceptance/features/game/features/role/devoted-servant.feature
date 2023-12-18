@@ -700,3 +700,325 @@ Feature: 🎀 Devoted Servant role
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
+
+  Scenario: 🎀 Devoted Servant must choose another model as wild-child and the old one is then obsolete
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | wild-child      |
+      | JB      | devoted-servant |
+      | Juju    | villager        |
+    Then the game's current play should be wild-child to choose-model
+
+    When the wild child chooses the player named JB as a model
+    Then the player named JB should have the active worshiped from wild-child attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the player named JB should have the active worshiped from wild-child attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a wild-child
+    And the player named Olivia should have his role revealed
+    And the player named Olivia should be on villagers current side and originally be on villagers side
+    And the player named JB should be currently a wild-child and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the player named JB should not have the active worshiped from wild-child attribute
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be wild-child to choose-model
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+
+    When the wild child chooses the player named Juju as a model
+    Then the player named Juju should have the active worshiped from wild-child attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the player named Juju should be murdered by werewolves from eaten
+    And the player named Juju should have the active worshiped from wild-child attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the player named JB should not have the active worshiped from wild-child attribute
+    And the player named Juju should not have the active worshiped from wild-child attribute
+    And the player named JB should be on werewolves current side and originally be on villagers side
+
+  Scenario: 🎀 Devoted Servant is not powerless anymore if she steals the big bad wolf role and one wolf is dead
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | big-bad-wolf    |
+      | JB      | devoted-servant |
+      | Juju    | defender        |
+      | Doudou  | witch           |
+    Then the game's current play should be defender to protect
+
+    When the defender protects the player named Doudou
+    Then the player named Doudou should have the active protected from defender attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Doudou
+    Then the player named Doudou should have the active eaten from werewolves attribute
+    And the game's current play should be big-bad-wolf to eat
+
+    When the big bad wolf eats the player named Juju
+    Then the game's current play should be witch to use-potions
+
+    When the witch uses death potion on the player named Antoine
+    Then the player named Antoine should be murdered by witch from death-potion
+    And the player named Juju should be murdered by big-bad-wolf from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the player named Olivia should have the active powerless from werewolves attribute
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter | target |
+      | JB    | Olivia |
+    Then the player named Olivia should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a big-bad-wolf
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a big-bad-wolf and originally a devoted-servant
+    And the player named JB should be on werewolves current side and originally be on villagers side
+    And the player named JB should not have his role revealed
+    And the player named JB should not have the active powerless from big-bad-wolf attribute
+    And the game's current play should be werewolves to eat
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+
+    When the werewolves eat the player named Doudou
+    Then the game's current play should be big-bad-wolf to eat
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+
+  Scenario: 🎀 Devoted Servant prevents scapegoat to ban from votes by stealing his role
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | scapegoat       |
+      | JB      | devoted-servant |
+      | Juju    | villager        |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter   | target  |
+      | Antoine | JB      |
+      | JB      | Antoine |
+    Then the player named Olivia should be murdered by survivors from vote-scapegoated
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a scapegoat
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a scapegoat and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the game's current play should be werewolves to eat
+
+  Scenario: 🎀 Devoted Servant steals the role of the white werewolf and wins
+
+    Given a created game with options described in files no-sheriff-option.json, white-werewolf-waking-up-every-night-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | white-werewolf  |
+      | JB      | devoted-servant |
+      | Juju    | villager        |
+      | Doudou  | villager        |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be white-werewolf to eat
+
+    When the player or group skips his turn
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Antoine | Olivia |
+    Then the player named Olivia should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a white-werewolf
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a white-werewolf and originally a devoted-servant
+    And the player named JB should be on werewolves current side and originally be on villagers side
+    And the player named JB should not have his role revealed
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Doudou
+    Then the game's current play should be white-werewolf to eat
+
+    When the white werewolf eats the player named Antoine
+    Then the player named Antoine should be murdered by white-werewolf from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
+    And the game's winners should be white-werewolf with the following players
+      | name |
+      | JB   |
+
+  Scenario: 🎀 Devoted Servant steals the role of angel and wins
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | angel           |
+      | JB      | devoted-servant |
+      | Juju    | hunter          |
+    And the game's current play should be survivors to vote because angel-presence
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Antoine | Juju   |
+    Then the player named Juju should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be hunter to shoot
+
+    When the hunter shoots at the player named Olivia
+    Then the player named Olivia should be murdered by hunter from shot
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a angel
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a angel and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the player named JB should not have his role revealed
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
+    And the game's winners should be angel with the following players
+      | name |
+      | JB   |
+
+  Scenario: 🎀 Devoted Servant steals the role of the pied piper and wins
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | pied-piper      |
+      | JB      | devoted-servant |
+      | Juju    | villager        |
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the game's current play should be pied-piper to charm
+
+    When the pied piper charms the following players
+      | name    |
+      | JB      |
+      | Antoine |
+    Then the player named JB should have the active charmed from pied-piper attribute
+    And the player named Antoine should have the active charmed from pied-piper attribute
+    And the game's current play should be charmed to meet-each-other
+
+    When the charmed people meet each other
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a pied-piper
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a pied-piper and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the player named JB should not have his role revealed
+    And the player named JB should not have the active charmed from pied-piper attribute
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the game's current play should be pied-piper to charm
+
+    When the pied piper charms the following players
+      | name |
+      | Juju |
+    Then the player named Juju should have the active charmed from pied-piper attribute
+    And the game's status should be over
+    And the game's winners should be pied-piper with the following players
+      | name |
+      | JB   |
+
+  Scenario: 🎀 Devoted Servant steals the role of the prejudiced manipulator and wins
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role                   | group |
+      | Antoine | prejudiced-manipulator | boy   |
+      | Olivia  | werewolf               | girl  |
+      | JB      | devoted-servant        | girl  |
+      | Thomas  | villager               | boy   |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Antoine
+    Then the player named Antoine should be currently a devoted-servant and originally a prejudiced-manipulator
+    And the player named Antoine should have his role revealed
+    And the player named JB should be currently a prejudiced-manipulator and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the player named JB should not have his role revealed
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter | target |
+      | JB    | Thomas |
+    Then the player named Thomas should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the player or group skips his turn
+    Then the game's status should be over
+    And the game's winners should be prejudiced-manipulator with the following players
+      | name |
+      | JB   |
+
+  Scenario: 🎀 Devoted Servant will have her role revealed if she steals the role of villager-villager
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role              |
+      | Antoine | werewolf          |
+      | Olivia  | villager-villager |
+      | JB      | devoted-servant   |
+      | Juju    | villager          |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a villager-villager
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a villager-villager and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the player named JB should have his role revealed

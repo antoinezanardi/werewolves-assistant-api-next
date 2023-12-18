@@ -13,9 +13,9 @@ import * as GameMutator from "@/modules/game/helpers/game.mutator";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeStolenRoleByDevotedServantPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeStolenRoleByDevotedServantPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeDevotedServantAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeDevotedServantAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Devoted Servant Game Play Maker Service", () => {
@@ -24,6 +24,8 @@ describe("Devoted Servant Game Play Maker Service", () => {
     devotedServantGamePlayMakerService: {
       swapTargetAndDevotedServantCurrentRoleAndSide: jest.SpyInstance;
       makeDevotedServantDelegatesIfSheriff: jest.SpyInstance;
+      applyTargetStolenRoleOutcomes: jest.SpyInstance;
+      applyWildChildStolenRoleOutcome: jest.SpyInstance;
     };
     playerAttributeHelper: {
       canPlayerDelegateSheriffAttribute: jest.SpyInstance;
@@ -41,6 +43,8 @@ describe("Devoted Servant Game Play Maker Service", () => {
       devotedServantGamePlayMakerService: {
         swapTargetAndDevotedServantCurrentRoleAndSide: jest.fn(),
         makeDevotedServantDelegatesIfSheriff: jest.fn(),
+        applyTargetStolenRoleOutcomes: jest.fn(),
+        applyWildChildStolenRoleOutcome: jest.fn(),
       },
       playerAttributeHelper: { canPlayerDelegateSheriffAttribute: jest.spyOn(GamePlayHelper, "canPlayerDelegateSheriffAttribute").mockReturnValue(true) },
       gameMutator: { removePlayerAttributeByNameAndSourceInGame: jest.spyOn(GameMutator, "removePlayerAttributeByNameAndSourceInGame").mockImplementation() },
@@ -55,6 +59,7 @@ describe("Devoted Servant Game Play Maker Service", () => {
     beforeEach(() => {
       mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide = jest.spyOn(services.devotedServantGamePlayMaker as unknown as { swapTargetAndDevotedServantCurrentRoleAndSide }, "swapTargetAndDevotedServantCurrentRoleAndSide").mockImplementation();
       mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff = jest.spyOn(services.devotedServantGamePlayMaker as unknown as { makeDevotedServantDelegatesIfSheriff }, "makeDevotedServantDelegatesIfSheriff").mockImplementation();
+      mocks.devotedServantGamePlayMakerService.applyTargetStolenRoleOutcomes = jest.spyOn(services.devotedServantGamePlayMaker as unknown as { applyTargetStolenRoleOutcomes }, "applyTargetStolenRoleOutcomes").mockImplementation();
     });
 
     it("should return game as is when devoted servant is not in the game.", () => {
@@ -80,6 +85,7 @@ describe("Devoted Servant Game Play Maker Service", () => {
       mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.applyTargetStolenRoleOutcomes.mockReturnValueOnce(game);
       services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
       const interpolations = { gameId: game._id, playerId: players[3]._id };
 
@@ -96,6 +102,7 @@ describe("Devoted Servant Game Play Maker Service", () => {
       const game = createFakeGame({ players });
       mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.applyTargetStolenRoleOutcomes.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
       services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
 
@@ -112,6 +119,7 @@ describe("Devoted Servant Game Play Maker Service", () => {
       const game = createFakeGame({ players });
       mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.applyTargetStolenRoleOutcomes.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
       services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
 
@@ -128,10 +136,28 @@ describe("Devoted Servant Game Play Maker Service", () => {
       const game = createFakeGame({ players });
       mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.applyTargetStolenRoleOutcomes.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
       services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
 
       expect(mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff).toHaveBeenCalledExactlyOnceWith(players[3], game);
+    });
+
+    it("should apply target stolen role outcomes when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ isAlive: false, death: createFakePlayerDeath() }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.applyTargetStolenRoleOutcomes.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
+      services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
+
+      expect(mocks.devotedServantGamePlayMakerService.applyTargetStolenRoleOutcomes).toHaveBeenCalledExactlyOnceWith(players[0], game);
     });
 
     it("should add stolen role by devoted servant player attribute to target when called.", () => {
@@ -156,10 +182,79 @@ describe("Devoted Servant Game Play Maker Service", () => {
       });
       mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.swapTargetAndDevotedServantCurrentRoleAndSide.mockReturnValueOnce(game);
+      mocks.devotedServantGamePlayMakerService.applyTargetStolenRoleOutcomes.mockReturnValueOnce(game);
       mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
       const result = services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
 
       expect(result).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("applyWildChildStolenRoleOutcome", () => {
+    it("should return game as is when worshiped player is not in the game.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+
+      expect(services.devotedServantGamePlayMaker["applyWildChildStolenRoleOutcome"](game)).toStrictEqual<Game>(game);
+    });
+
+    it("should remove worshiped player attribute from worshiped player when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeWorshipedByWildChildPlayerAttribute()] }),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          game.players[0],
+          game.players[1],
+          createFakePlayer({ ...game.players[2], attributes: [] }),
+          game.players[3],
+        ],
+      });
+
+      expect(services.devotedServantGamePlayMaker["applyWildChildStolenRoleOutcome"](game)).toStrictEqual<Game>(expectedGame);
+    });
+  });
+
+  describe("applyTargetStolenRoleOutcomes", () => {
+    beforeEach(() => {
+      mocks.devotedServantGamePlayMakerService.applyWildChildStolenRoleOutcome = jest.spyOn(services.devotedServantGamePlayMaker as unknown as { applyWildChildStolenRoleOutcome }, "applyWildChildStolenRoleOutcome").mockImplementation();
+    });
+
+    it("should return game as is when target role is not in role outcomes methods.", () => {
+      const players = [
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+
+      expect(services.devotedServantGamePlayMaker["applyTargetStolenRoleOutcomes"](players[0] as DeadPlayer, game)).toStrictEqual<Game>(game);
+    });
+
+    it("should apply wild child stolen role outcome when target role is wild child.", () => {
+      const players = [
+        createFakeWildChildAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const expectedGame = createFakeGame(game);
+      expectedGame.players[3].attributes = [];
+      services.devotedServantGamePlayMaker["applyTargetStolenRoleOutcomes"](players[0] as DeadPlayer, game);
+
+      expect(mocks.devotedServantGamePlayMakerService.applyWildChildStolenRoleOutcome).toHaveBeenCalledExactlyOnceWith(game);
     });
   });
 

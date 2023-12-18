@@ -3,8 +3,8 @@ import { Injectable } from "@nestjs/common";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGamePlaySheriffDelegates } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
-import { getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
-import { addPlayerAttributeInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameAndSourceInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
+import { addPlayerAttributeInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameAndSourceInGame, removePlayerAttributeByNameInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
 import { createStolenRoleByDevotedServantPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { canPlayerDelegateSheriffAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -28,7 +28,26 @@ export class DevotedServantGamePlayMakerService {
     clonedGame = this.swapTargetAndDevotedServantCurrentRoleAndSide(targetedPlayer, devotedServantPlayer, clonedGame);
     devotedServantPlayer = getPlayerWithIdOrThrow(devotedServantPlayer._id, clonedGame, cantFindDevotedServantException);
     clonedGame = this.makeDevotedServantDelegatesIfSheriff(devotedServantPlayer, clonedGame);
+    clonedGame = this.applyTargetStolenRoleOutcomes(targetedPlayer, clonedGame);
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, createStolenRoleByDevotedServantPlayerAttribute());
+  }
+
+  private applyWildChildStolenRoleOutcome(game: Game): Game {
+    const clonedGame = createGame(game);
+    const worshipedPlayer = getPlayerWithActiveAttributeName(clonedGame, PlayerAttributeNames.WORSHIPED);
+    if (!worshipedPlayer) {
+      return clonedGame;
+    }
+    return removePlayerAttributeByNameInGame(worshipedPlayer._id, clonedGame, PlayerAttributeNames.WORSHIPED);
+  }
+
+  private applyTargetStolenRoleOutcomes(targetedPlayer: DeadPlayer, game: Game): Game {
+    const roleOutcomesMethods: Partial<Record<RoleNames, (game: Game) => Game>> = { [RoleNames.WILD_CHILD]: () => this.applyWildChildStolenRoleOutcome(game) };
+    const roleOutcomeMethod = roleOutcomesMethods[targetedPlayer.role.current];
+    if (!roleOutcomeMethod) {
+      return game;
+    }
+    return roleOutcomeMethod(game);
   }
 
   private swapTargetAndDevotedServantCurrentRoleAndSide(targetedPlayer: DeadPlayer, devotedServantPlayer: Player, game: Game): Game {
