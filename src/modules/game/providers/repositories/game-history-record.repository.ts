@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import type { FilterQuery, Types, QueryOptions } from "mongoose";
 
+import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mapper";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
@@ -71,9 +72,15 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.find(filter);
   }
 
-  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId, stutteringJudgePlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
+      "play.source.players": {
+        $elemMatch: {
+          "_id": stutteringJudgePlayerId,
+          "role.current": RoleNames.STUTTERING_JUDGE,
+        },
+      },
       "play.didJudgeRequestAnotherVote": true,
     };
     return this.gameHistoryRecordModel.find(filter);
@@ -88,29 +95,40 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.find(filter);
   }
   
-  public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId, elderPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": GamePlayActions.EAT,
-      "play.targets.player.role.current": RoleNames.ELDER,
+      "play.targets": {
+        $elemMatch: {
+          "player._id": elderPlayerId,
+          "player.role.current": RoleNames.ELDER,
+        },
+      },
     };
     return this.gameHistoryRecordModel.find(filter);
   }
 
-  public async getGameHistoryElderProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryElderProtectedFromWerewolvesRecords(gameId: Types.ObjectId, elderPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       $or: [
         {
           "play.source.name": RoleNames.DEFENDER,
           "play.action": GamePlayActions.PROTECT,
-          "play.targets.player.role.current": RoleNames.ELDER,
+          "play.targets": {
+            $elemMatch: {
+              "player._id": elderPlayerId,
+              "player.role.current": RoleNames.ELDER,
+            },
+          },
         },
         {
           "play.source.name": RoleNames.WITCH,
           "play.action": GamePlayActions.USE_POTIONS,
           "play.targets": {
             $elemMatch: {
+              "player._id": elderPlayerId,
               "player.role.current": RoleNames.ELDER,
               "drankPotion": WitchPotions.LIFE,
             },
@@ -135,6 +153,22 @@ export class GameHistoryRecordRepository {
       gameId,
       "play.action": gamePlay.action,
       "play.source.name": gamePlay.source.name,
+      "play.cause": gamePlay.cause,
+    };
+    return this.gameHistoryRecordModel.find(filter, undefined, options);
+  }
+
+  public async getGameHistoryGamePlayMadeByPlayerRecords(
+    gameId: Types.ObjectId,
+    gamePlay: GamePlay,
+    player: Player,
+    options: QueryOptions<GameHistoryRecord> = {},
+  ): Promise<GameHistoryRecord[]> {
+    const filter: FilterQuery<GameHistoryRecord> = {
+      gameId,
+      "play.action": gamePlay.action,
+      "play.source.name": gamePlay.source.name,
+      "play.source.players": { $elemMatch: { _id: player._id } },
       "play.cause": gamePlay.cause,
     };
     return this.gameHistoryRecordModel.find(filter, undefined, options);

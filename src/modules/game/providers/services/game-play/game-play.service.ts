@@ -168,7 +168,7 @@ export class GamePlayService {
     if (!player || !isPlayerAliveAndPowerful(player, game)) {
       return false;
     }
-    return !await this.gameHistoryRecordService.hasGamePlayBeenMade(game._id, gamePlay);
+    return !await this.gameHistoryRecordService.hasGamePlayBeenMadeByPlayer(game._id, gamePlay, player);
   }
 
   private isActorGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {

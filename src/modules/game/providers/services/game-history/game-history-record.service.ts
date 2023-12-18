@@ -60,8 +60,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryAccursedWolfFatherInfectedRecords(gameId, accursedWolfFatherPlayer);
   }
 
-  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords(gameId);
+  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId, stutteringJudgePlayedId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords(gameId, stutteringJudgePlayedId);
   }
 
   public async didJudgeMakeHisSign(gameId: Types.ObjectId): Promise<boolean> {
@@ -69,12 +69,12 @@ export class GameHistoryRecordService {
     return records.length > 0;
   }
 
-  public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryWerewolvesEatElderRecords(gameId);
+  public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId, elderPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryWerewolvesEatElderRecords(gameId, elderPlayerId);
   }
 
-  public async getGameHistoryElderProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryElderProtectedFromWerewolvesRecords(gameId);
+  public async getGameHistoryElderProtectedFromWerewolvesRecords(gameId: Types.ObjectId, elderPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryElderProtectedFromWerewolvesRecords(gameId, elderPlayerId);
   }
 
   public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhases): Promise<GameHistoryRecord[]> {
@@ -106,8 +106,13 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistory(gameId, getGameHistoryDto);
   }
 
-  public async hasGamePlayBeenMade(gameId: Types.ObjectId, play: GamePlay): Promise<boolean> {
-    const records = await this.gameHistoryRecordRepository.getGameHistoryGamePlayRecords(gameId, play, { limit: 1 });
+  public async hasGamePlayBeenMade(gameId: Types.ObjectId, gamePlay: GamePlay): Promise<boolean> {
+    const records = await this.gameHistoryRecordRepository.getGameHistoryGamePlayRecords(gameId, gamePlay, { limit: 1 });
+    return records.length > 0;
+  }
+
+  public async hasGamePlayBeenMadeByPlayer(gameId: Types.ObjectId, gamePlay: GamePlay, player: Player): Promise<boolean> {
+    const records = await this.gameHistoryRecordRepository.getGameHistoryGamePlayMadeByPlayerRecords(gameId, gamePlay, player, { limit: 1 });
     return records.length > 0;
   }
 

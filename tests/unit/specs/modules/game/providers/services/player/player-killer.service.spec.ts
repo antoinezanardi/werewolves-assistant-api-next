@@ -436,6 +436,30 @@ describe("Player Killer Service", () => {
   });
   
   describe("getElderLivesCountAgainstWerewolves", () => {
+    it("should get elder lives count against werewolves when called.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
+      const elderPlayer = createFakeElderAlivePlayer();
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
+      await services.playerKiller.getElderLivesCountAgainstWerewolves(game, elderPlayer);
+
+      expect(mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords).toHaveBeenCalledExactlyOnceWith(game._id, elderPlayer._id);
+    });
+
+    it("should get elder protected from werewolves records when called.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
+      const elderPlayer = createFakeElderAlivePlayer();
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
+      await services.playerKiller.getElderLivesCountAgainstWerewolves(game, elderPlayer);
+
+      expect(mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords).toHaveBeenCalledExactlyOnceWith(game._id, elderPlayer._id);
+    });
+
     it("should return same amount of lives when no werewolves attack against elder.", async() => {
       const livesCountAgainstWerewolves = 3;
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });

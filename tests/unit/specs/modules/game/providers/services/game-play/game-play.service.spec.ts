@@ -68,6 +68,7 @@ describe("Game Play Service", () => {
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryPhaseRecords: jest.SpyInstance;
       hasGamePlayBeenMade: jest.SpyInstance;
+      hasGamePlayBeenMadeByPlayer: jest.SpyInstance;
     };
     gameHelper: {
       getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
@@ -113,6 +114,7 @@ describe("Game Play Service", () => {
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn().mockResolvedValue([]),
         getGameHistoryPhaseRecords: jest.fn().mockResolvedValue([]),
         hasGamePlayBeenMade: jest.fn().mockResolvedValue(false),
+        hasGamePlayBeenMadeByPlayer: jest.fn().mockResolvedValue(false),
       },
       gameHelper: {
         getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers").mockReturnValue([]),
@@ -945,21 +947,21 @@ describe("Game Play Service", () => {
       test: string;
       game: CreateGameDto | Game;
       gamePlay: GamePlay;
-      hasGamePlayBeenMade: boolean;
+      hasGamePlayBeenMadeByPlayer: boolean;
       expected: boolean;
     }>([
       {
         test: "should return false when game is dto and player is not among game players.",
         game: createFakeCreateGameDto({ players: [createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } })] }),
         gamePlay: createFakeGamePlayCupidCharms(),
-        hasGamePlayBeenMade: false,
+        hasGamePlayBeenMadeByPlayer: false,
         expected: false,
       },
       {
         test: "should return true when game is dto and player is among players",
         game: createFakeCreateGameDto({ players: [createFakeCreateGamePlayerDto({ role: { name: RoleNames.CUPID } })] }),
         gamePlay: createFakeGamePlayCupidCharms(),
-        hasGamePlayBeenMade: true,
+        hasGamePlayBeenMadeByPlayer: true,
         expected: true,
       },
       {
@@ -972,7 +974,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlayCupidCharms(),
-        hasGamePlayBeenMade: false,
+        hasGamePlayBeenMadeByPlayer: false,
         expected: false,
       },
       {
@@ -985,7 +987,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlayCupidCharms(),
-        hasGamePlayBeenMade: true,
+        hasGamePlayBeenMadeByPlayer: true,
         expected: false,
       },
       {
@@ -998,7 +1000,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlayCupidCharms(),
-        hasGamePlayBeenMade: false,
+        hasGamePlayBeenMadeByPlayer: false,
         expected: false,
       },
       {
@@ -1011,7 +1013,7 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlayCupidCharms(),
-        hasGamePlayBeenMade: true,
+        hasGamePlayBeenMadeByPlayer: true,
         expected: false,
       },
       {
@@ -1024,11 +1026,11 @@ describe("Game Play Service", () => {
           ],
         }),
         gamePlay: createFakeGamePlayCupidCharms(),
-        hasGamePlayBeenMade: false,
+        hasGamePlayBeenMadeByPlayer: false,
         expected: true,
       },
-    ])(`$test`, async({ game, gamePlay, hasGamePlayBeenMade, expected }) => {
-      mocks.gameHistoryRecordService.hasGamePlayBeenMade.mockResolvedValue(hasGamePlayBeenMade);
+    ])(`$test`, async({ game, gamePlay, hasGamePlayBeenMadeByPlayer, expected }) => {
+      mocks.gameHistoryRecordService.hasGamePlayBeenMadeByPlayer.mockResolvedValue(hasGamePlayBeenMadeByPlayer);
 
       await expect(services.gamePlay["isOneNightOnlyGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(expected);
     });

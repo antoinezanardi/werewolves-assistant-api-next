@@ -47,9 +47,9 @@ export class PlayerKillerService {
 
   public async getElderLivesCountAgainstWerewolves(game: Game, elderPlayer: Player): Promise<number> {
     const { livesCountAgainstWerewolves } = game.options.roles.elder;
-    const werewolvesEatElderRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords(game._id);
+    const werewolvesEatElderRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords(game._id, elderPlayer._id);
     const werewolvesEatElderOnPreviousTurnsRecords = werewolvesEatElderRecords.filter(({ turn }) => turn < game.turn);
-    const elderProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords(game._id);
+    const elderProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords(game._id, elderPlayer._id);
     const doesElderLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(elderPlayer, PlayerAttributeNames.EATEN, game) && this.canPlayerBeEaten(elderPlayer, game);
     return werewolvesEatElderOnPreviousTurnsRecords.reduce((acc, werewolvesEatElderRecord) => {
       const wasElderProtectedFromWerewolves = !!elderProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatElderRecord.turn);

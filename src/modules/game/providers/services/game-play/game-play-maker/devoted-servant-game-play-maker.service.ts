@@ -40,22 +40,22 @@ export class DevotedServantGamePlayMakerService {
         isRevealed: targetedPlayer.role.isRevealed,
       },
     };
+    if (devotedServantPlayer.side.current !== RoleSides.WEREWOLVES) {
+      devotedServantPlayerDataToUpdate.side = {
+        ...devotedServantPlayer.side,
+        current: targetedPlayer.side.original,
+      };
+    }
     const targetPlayerDataToUpdate: Partial<Player> = {
       role: {
         ...targetedPlayer.role,
         current: devotedServantPlayer.role.current,
       },
-    };
-    if (devotedServantPlayer.side.current !== RoleSides.WEREWOLVES) {
-      devotedServantPlayerDataToUpdate.side = {
-        ...devotedServantPlayer.side,
-        current: targetedPlayer.side.current,
-      };
-      targetPlayerDataToUpdate.side = {
+      side: {
         ...targetedPlayer.side,
-        current: devotedServantPlayer.side.current,
-      };
-    }
+        current: RoleSides.VILLAGERS,
+      },
+    };
     clonedGame = updatePlayerInGame(devotedServantPlayer._id, devotedServantPlayerDataToUpdate, clonedGame);
     return updatePlayerInGame(targetedPlayer._id, targetPlayerDataToUpdate, clonedGame);
   }

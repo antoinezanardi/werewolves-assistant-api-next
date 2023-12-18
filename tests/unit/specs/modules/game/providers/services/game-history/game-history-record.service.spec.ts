@@ -62,6 +62,7 @@ describe("Game History Record Service", () => {
       getGameHistory: jest.SpyInstance;
       getGameHistoryPhaseRecords: jest.SpyInstance;
       getGameHistoryGamePlayRecords: jest.SpyInstance;
+      getGameHistoryGamePlayMadeByPlayerRecords: jest.SpyInstance;
     };
     gameRepository: { findOne: jest.SpyInstance };
     gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
@@ -98,6 +99,7 @@ describe("Game History Record Service", () => {
         getGameHistory: jest.fn(),
         getGameHistoryPhaseRecords: jest.fn(),
         getGameHistoryGamePlayRecords: jest.fn(),
+        getGameHistoryGamePlayMadeByPlayerRecords: jest.fn(),
       },
       gameRepository: { findOne: jest.fn() },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
@@ -192,10 +194,11 @@ describe("Game History Record Service", () => {
 
   describe("getGameHistoryJudgeRequestRecords", () => {
     it("should get game history records when stuttering judge requested another vote when called.", async() => {
+      const stutteringJudgePlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId);
+      await services.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId, stutteringJudgePlayerId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryJudgeRequestRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getGameHistoryJudgeRequestRecords).toHaveBeenCalledExactlyOnceWith(gameId, stutteringJudgePlayerId);
     });
   });
 
@@ -215,19 +218,21 @@ describe("Game History Record Service", () => {
   
   describe("getGameHistoryWerewolvesEatElderRecords", () => {
     it("should get game history records when any kind of werewolves eat elder when called.", async() => {
+      const elderPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryWerewolvesEatElderRecords(gameId);
+      await services.gameHistoryRecord.getGameHistoryWerewolvesEatElderRecords(gameId, elderPlayerId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryWerewolvesEatElderRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getGameHistoryWerewolvesEatElderRecords).toHaveBeenCalledExactlyOnceWith(gameId, elderPlayerId);
     });
   });
 
   describe("getGameHistoryElderProtectedFromWerewolvesRecords", () => {
     it("should get game history records when elder is protected from werewolves when called.", async() => {
+      const elderPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryElderProtectedFromWerewolvesRecords(gameId);
+      await services.gameHistoryRecord.getGameHistoryElderProtectedFromWerewolvesRecords(gameId, elderPlayerId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryElderProtectedFromWerewolvesRecords).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(repositories.gameHistoryRecord.getGameHistoryElderProtectedFromWerewolvesRecords).toHaveBeenCalledExactlyOnceWith(gameId, elderPlayerId);
     });
   });
 
@@ -351,7 +356,7 @@ describe("Game History Record Service", () => {
   });
 
   describe("hasGamePlayBeenMade", () => {
-    it("should call getGameHistoryGamePlayRecords repository method when called.", async() => {
+    it("should call getGameHistoryGamePlayMadeByPlayerRecords repository method when called.", async() => {
       const game = createFakeGame();
       const gamePlay = createFakeGamePlay();
       mocks.gameHistoryRecordRepository.getGameHistoryGamePlayRecords.mockResolvedValueOnce([]);
@@ -374,6 +379,36 @@ describe("Game History Record Service", () => {
       mocks.gameHistoryRecordRepository.getGameHistoryGamePlayRecords.mockResolvedValueOnce([createFakeGameHistoryRecordPlay()]);
       
       await expect(services.gameHistoryRecord.hasGamePlayBeenMade(game._id, gamePlay)).resolves.toBe(true);
+    });
+  });
+
+  describe("hasGamePlayBeenMadeByPlayer", () => {
+    it("should call getGameHistoryGamePlayMadeByPlayerRecords repository method when called.", async() => {
+      const game = createFakeGame();
+      const gamePlay = createFakeGamePlay();
+      const player = createFakePlayer();
+      mocks.gameHistoryRecordRepository.getGameHistoryGamePlayMadeByPlayerRecords.mockResolvedValueOnce([]);
+      await services.gameHistoryRecord.hasGamePlayBeenMadeByPlayer(game._id, gamePlay, player);
+
+      expect(mocks.gameHistoryRecordRepository.getGameHistoryGamePlayMadeByPlayerRecords).toHaveBeenCalledExactlyOnceWith(game._id, gamePlay, player, { limit: 1 });
+    });
+
+    it("should return false when there is no game play record.", async() => {
+      const game = createFakeGame();
+      const gamePlay = createFakeGamePlay();
+      const player = createFakePlayer();
+      mocks.gameHistoryRecordRepository.getGameHistoryGamePlayMadeByPlayerRecords.mockResolvedValueOnce([]);
+
+      await expect(services.gameHistoryRecord.hasGamePlayBeenMadeByPlayer(game._id, gamePlay, player)).resolves.toBe(false);
+    });
+
+    it("should return true when there is a game play record.", async() => {
+      const game = createFakeGame();
+      const gamePlay = createFakeGamePlay();
+      const player = createFakePlayer();
+      mocks.gameHistoryRecordRepository.getGameHistoryGamePlayMadeByPlayerRecords.mockResolvedValueOnce([createFakeGameHistoryRecordPlay()]);
+
+      await expect(services.gameHistoryRecord.hasGamePlayBeenMadeByPlayer(game._id, gamePlay, player)).resolves.toBe(true);
     });
   });
 

@@ -506,3 +506,197 @@ Feature: 🎀 Devoted Servant role
     Then the player named Juju should be murdered by witch from death-potion
     And the player named JB should be alive
     And the game's current play should be survivors to bury-dead-bodies
+
+  Scenario: 🎀 Devoted Servant can sniff as the fox even if he was powerless by himself before
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name     | role            |
+      | Antoine  | werewolf        |
+      | Olivia   | fox             |
+      | JB       | devoted-servant |
+      | Juju     | villager        |
+      | Mathilde | villager        |
+    Then the game's current play should be fox to sniff
+
+    When the fox sniffs the player named Juju
+    Then the player named Olivia should have the active powerless from fox attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a fox
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a fox and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be fox to sniff
+
+  Scenario: 🎀 Devoted Servant can choose another side as the wolf-hound
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | wolf-hound      |
+      | JB      | devoted-servant |
+      | Juju    | villager        |
+    Then the game's current play should be wolf-hound to choose-side
+
+    When the wolf-hound chooses the werewolves side
+    Then the player named Olivia should be on werewolves current side and originally be on villagers side
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the player named Juju should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter | target |
+      | JB    | Olivia |
+    Then the player named Olivia should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a wolf-hound
+    And the player named Olivia should be on villagers current side and originally be on villagers side
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a wolf-hound and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the game's current play should be wolf-hound to choose-side
+
+    When the wolf-hound chooses the werewolves side
+    Then the player named JB should be on werewolves current side and originally be on villagers side
+    And the game's current play should be werewolves to eat
+
+  Scenario: 🎀 Devoted Servant regains the original amount of lives against werewolves the elder had when stealing his role
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | elder           |
+      | JB      | devoted-servant |
+      | Juju    | defender        |
+    Then the game's current play should be defender to protect
+
+    When the defender protects the player named Olivia
+    Then the player named Olivia should have the active protected from defender attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be alive
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be defender to protect
+
+    When the defender protects the player named Juju
+    Then the player named Juju should have the active protected from defender attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be alive
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be defender to protect
+
+    When the defender protects the player named JB
+    Then the player named JB should have the active protected from defender attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a elder
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a elder and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be defender to protect
+
+    When the defender protects the player named Juju
+    Then the player named Juju should have the active protected from defender attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the player named JB should be alive
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be defender to protect
+
+    When the defender protects the player named Antoine
+    Then the player named Antoine should have the active protected from defender attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the player named JB should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+  Scenario: 🎀 Devoted Servant can ask for another judgement as the judge even if he already asked for one
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name     | role             |
+      | Antoine  | werewolf         |
+      | Olivia   | stuttering-judge |
+      | JB       | devoted-servant  |
+      | Juju     | villager         |
+      | Mathilde | villager         |
+    Then the game's current play should be stuttering-judge to choose-sign
+
+    When the stuttering judge chooses his sign
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the player named Juju should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes and the stuttering judge does his sign
+      | voter    | target |
+      | Mathilde | Olivia |
+    Then the player named Olivia should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a stuttering-judge
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a stuttering-judge and originally a devoted-servant
+    And the player named JB should not have his role revealed
+    And the game's current play should be survivors to vote because stuttering-judge-request
+
+    When the player or group skips his turn
+    Then the game's current play should be stuttering-judge to choose-sign
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+
+    When the stuttering judge chooses his sign
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Mathilde
+    Then the player named Mathilde should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When nobody vote and the stuttering judge does his sign
+    Then the game's current play should be survivors to vote because stuttering-judge-request
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
