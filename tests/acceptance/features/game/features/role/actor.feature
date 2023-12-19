@@ -25,6 +25,7 @@ Feature: 🎭 Actor role
 
     When the actor chooses card with role seer
     Then the request should have succeeded with status code 200
+    And the player named Antoine should have the active acting from actor attribute
     And the player named Antoine should be currently a seer and originally a actor
     And the game's additional card with role seer for actor should be used
     And the game's current play should be seer to look
@@ -43,10 +44,12 @@ Feature: 🎭 Actor role
 
     When the player or group skips his turn
     Then the player named Antoine should be currently a actor and originally a actor
+    And the player named Antoine should not have the active acting from actor attribute
     And the game's current play should be actor to choose-card
 
     When the actor chooses card with role witch
     Then the player named Antoine should be currently a witch and originally a actor
+    And the player named Antoine should have the active acting from actor attribute
     And the game's additional card with role witch for actor should be used
     And the game's current play should be werewolves to eat
 
@@ -67,6 +70,7 @@ Feature: 🎭 Actor role
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
     And the player named Antoine should be currently a actor and originally a actor
+    And the player named Antoine should not have the active acting from actor attribute
     And the game's additional card with role little-girl for actor should not be used
     And the game's current play should be werewolves to eat
 
@@ -93,6 +97,7 @@ Feature: 🎭 Actor role
 
     When the player or group skips his turn
     Then the player named Antoine should be currently a actor and originally a actor
+    And the player named Antoine should not have the active acting from actor attribute
     And the game's current play should be werewolves to eat
 
   Scenario: 🎭 Actor can't choose an unknown card

@@ -1133,3 +1133,137 @@ Feature: 🎀 Devoted Servant role
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
+
+  Scenario: 🎀 Devoted Servant steals the actor role if he didn't choose a card and thus can choose unused actor cards
+
+    Given a created game with additional cards described in file seer-witch-little-girl-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | actor           |
+      | Olivia  | werewolf        |
+      | JB      | devoted-servant |
+      | Thomas  | villager        |
+    Then the game's current play should be actor to choose-card
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Antoine
+    Then the player named Antoine should be currently a devoted-servant and originally a actor
+    And the player named Antoine should have his role revealed
+    And the player named JB should be currently a actor and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be actor to choose-card
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+    When the actor chooses card with role seer
+    Then the player named JB should be currently a seer and originally a devoted-servant
+    And the player named JB should have the active acting from actor attribute
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the game's current play should be seer to look
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+
+    When the seer looks at the player named Olivia
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the player named JB should be currently a actor and originally a devoted-servant
+    And the player named JB should not have the active acting from actor attribute
+
+  Scenario: 🎀 Devoted Servant can't use a card the actor previously used
+
+    Given a created game with additional cards described in file seer-witch-little-girl-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | actor           |
+      | Olivia  | werewolf        |
+      | JB      | devoted-servant |
+      | Thomas  | villager        |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role little-girl
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be actor to choose-card
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Antoine
+    Then the player named Antoine should be currently a devoted-servant and originally a actor
+    And the player named Antoine should have his role revealed
+    And the player named JB should be currently a actor and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role little-girl
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Chosen card is already used"
+
+  Scenario: 🎀 Devoted Servant idiot role is revealed if he was revealed before
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | idiot           |
+      | Olivia  | werewolf        |
+      | JB      | devoted-servant |
+      | Thomas  | villager        |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter | target  |
+      | JB    | Antoine |
+    Then the player named Antoine should be alive
+    And the player named Antoine should have his role revealed
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should be murdered by werewolves from eaten
+    And the player named Antoine should have his role revealed
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Antoine
+    Then the player named Antoine should be currently a devoted-servant and originally a idiot
+    And the player named Antoine should have his role revealed
+    And the player named JB should be currently a idiot and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the player named JB should have his role revealed
