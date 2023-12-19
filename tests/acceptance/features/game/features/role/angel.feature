@@ -45,14 +45,14 @@ Feature: 👼 Angel role
       | Antoine | Olivia |
       | JB      | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
-    And 2 of the following players should have the active powerless from elder attribute
-      | name    |
-      | Antoine |
-      | JB      |
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be werewolves to eat
+    Then 2 of the following players should have the active powerless from elder attribute
+      | name    |
+      | Antoine |
+      | JB      |
+    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten

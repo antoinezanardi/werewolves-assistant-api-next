@@ -50,11 +50,14 @@ Feature: 🐒 Wild Child role
       | voter  | target |
       | Maxime | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
-    And the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should be on villagers current side and originally be on villagers side
+    And the player named Olivia should have the active worshiped from wild-child attribute
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be werewolves to eat
+    Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Olivia should not have the active worshiped from wild-child attribute
+    And the game's current play should be werewolves to eat
 
   Scenario: 🐒 Wild Child can't choose an unknown player
 

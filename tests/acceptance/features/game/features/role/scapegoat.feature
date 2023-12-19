@@ -123,15 +123,15 @@ Feature: 🐐 Scapegoat role
       | Olivia  | Thomas |
       | Thomas  | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
-    And 3 of the following players should have the active powerless from elder attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then 3 of the following players should have the active powerless from elder attribute
       | name    |
       | Antoine |
       | JB      |
       | Mom     |
-    And the game's current play should be survivors to bury-dead-bodies
-
-    When the survivors bury dead bodies
-    Then the game's current play should be werewolves to eat
+    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
@@ -236,6 +236,8 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
+    And the game's current play should not have eligible targets
+    And the game's current play can be skipped
 
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote

@@ -1,12 +1,12 @@
-import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameAndSourceInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGamePlayCupidCharms, createFakeGamePlayHunterShoots } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
@@ -227,6 +227,59 @@ describe("Game Mutator", () => {
       const game = createFakeGame({ players });
       const clonedGame = createFakeGame(game);
       removePlayerAttributeByNameInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF);
+
+      expect(game).toStrictEqual<Game>(clonedGame);
+    });
+  });
+
+  describe("removePlayerAttributeByNameAndSourceInGame", () => {
+    it("should return game as is when player is not found in game.", () => {
+      const game = createFakeGame();
+
+      expect(removePlayerAttributeByNameAndSourceInGame(createFakeObjectId(), game, PlayerAttributeNames.SHERIFF, PlayerGroups.SURVIVORS)).toStrictEqual<Game>(game);
+    });
+
+    it("should return game with player without his sheriff from sheriff attribute when called.", () => {
+      const players = [
+        createFakePlayer(),
+        createFakePlayer({
+          attributes: [
+            createFakeSheriffBySurvivorsPlayerAttribute(),
+            createFakeSheriffBySheriffPlayerAttribute(),
+            createFakeCharmedByPiedPiperPlayerAttribute({ source: PlayerAttributeNames.SHERIFF }),
+          ],
+        }),
+        createFakePlayer(),
+        createFakePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const expectedAttributes = [
+        createFakeSheriffBySurvivorsPlayerAttribute(),
+        createFakeCharmedByPiedPiperPlayerAttribute({ source: PlayerAttributeNames.SHERIFF }),
+      ];
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          game.players[0],
+          createFakePlayer({ ...players[1], attributes: expectedAttributes }),
+          game.players[2],
+          game.players[3],
+        ],
+      });
+
+      expect(removePlayerAttributeByNameAndSourceInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF, PlayerAttributeNames.SHERIFF)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should not mutate the original game when called.", () => {
+      const players = [
+        createFakePlayer(),
+        createFakePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakePlayer(),
+        createFakePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const clonedGame = createFakeGame(game);
+      removePlayerAttributeByNameAndSourceInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF, PlayerGroups.SURVIVORS);
 
       expect(game).toStrictEqual<Game>(clonedGame);
     });

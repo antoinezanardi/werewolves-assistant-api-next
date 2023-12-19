@@ -1,16 +1,18 @@
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
-import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource, doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource, getActivePlayerAttributeWithName, getPlayerAttributeWithName, getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { canPlayerDelegateSheriffAttribute, doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource, doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource, getActivePlayerAttributeWithName, getPlayerAttributeWithName, getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
+import { createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByElderPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Player Attribute Helper", () => {
-  describe("isPlayerAttributeActive", () => {
+  describe("isPlayerAttrimakeDevotedServantDelegatesIfSheriffbuteActive", () => {
     it.each<{
       test: string;
       attribute: PlayerAttribute;
@@ -278,6 +280,42 @@ describe("Player Attribute Helper", () => {
       const player = createFakePlayer({ attributes });
 
       expect(doesPlayerHaveActiveAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ELDER, game)).toBe(expected);
+    });
+  });
+
+  describe("canPlayerDelegateSheriffAttribute", () => {
+    it.each<{
+      test: string;
+      player: Player;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when player doesn't have the sheriff attribute.",
+        player: createFakeSeerAlivePlayer({ attributes: [] }),
+        game: createFakeGame(),
+        expected: false,
+      },
+      {
+        test: "should return false when player has the sheriff attribute but is the idiot and is powerful.",
+        player: createFakeIdiotAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
+        game: createFakeGame(),
+        expected: false,
+      },
+      {
+        test: "should return true when player has the sheriff attribute but is the idiot and powerless.",
+        player: createFakePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakePowerlessByActorPlayerAttribute()] }),
+        game: createFakeGame(),
+        expected: true,
+      },
+      {
+        test: "should return true when player has the sheriff attribute and is not powerful.",
+        player: createFakeVillagerAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute(), createFakePowerlessByWerewolvesPlayerAttribute()] }),
+        game: createFakeGame(),
+        expected: true,
+      },
+    ])("$test", ({ player, game, expected }) => {
+      expect(canPlayerDelegateSheriffAttribute(player, game)).toBe(expected);
     });
   });
 });

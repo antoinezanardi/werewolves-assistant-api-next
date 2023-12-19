@@ -33,7 +33,11 @@ Feature: 👴🏻 Elder role
       | voter  | target  |
       | Olivia | Antoine |
     Then the player named Antoine should be murdered by survivors from vote
-    And the following players should have the active powerless from elder attribute
+    And nobody should have the active powerless from elder attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the following players should have the active powerless from elder attribute
       | name      |
       | Juju      |
       | Doudou    |
@@ -57,10 +61,7 @@ Feature: 👴🏻 Elder role
       | Antoine |
       | Olivia  |
       | JB      |
-    And the game's current play should be survivors to bury-dead-bodies
-
-    When the survivors bury dead bodies
-    Then the game's current play should be werewolves to eat
+    And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Ali
     Then the player named Ali should be murdered by werewolves from eaten
@@ -115,15 +116,16 @@ Feature: 👴🏻 Elder role
 
     When the witch uses death potion on the player named Antoine
     Then the player named Antoine should be murdered by witch from death-potion
-    And the following players should have the active powerless from elder attribute
+    And nobody should have the active powerless from elder attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the following players should have the active powerless from elder attribute
       | name   |
       | Doudou |
       | JB     |
       | Thomas |
-    And the game's current play should be survivors to bury-dead-bodies
-
-    When the survivors bury dead bodies
-    Then the game's current play should be survivors to vote
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -152,13 +154,14 @@ Feature: 👴🏻 Elder role
 
     When the hunter shoots at the player named Antoine
     Then the player named Antoine should be murdered by hunter from shot
-    And the following players should have the active powerless from elder attribute
-      | name   |
-      | Doudou |
-      | JB     |
+    And nobody should have the active powerless from elder attribute
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
+    Then the following players should have the active powerless from elder attribute
+      | name   |
+      | Doudou |
+      | JB     |
     Then the game's current play should be survivors to vote
 
     When the player or group skips his turn

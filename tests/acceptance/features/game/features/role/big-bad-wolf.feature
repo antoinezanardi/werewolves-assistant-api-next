@@ -55,11 +55,12 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia | JB     |
       | Thomas | JB     |
     Then the player named JB should be murdered by survivors from vote
-    And the player named Olivia should have the active powerless from werewolves attribute
+    And the player named Olivia should not have the active powerless from werewolves attribute
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be seer to look
+    Then the player named Olivia should have the active powerless from werewolves attribute
+    And the game's current play should be seer to look
 
     When the seer looks at the player named Olivia
     Then the player named Olivia should have the active seen from seer attribute
@@ -218,7 +219,7 @@ Feature: 🐺👹 Big Bad Wolf role
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "There are too much targets for this current game's state"
 
-  Scenario: 🐺👹Big Bad Wolf eats every night and not powerless if one werewolf dies
+  Scenario: 🐺👹Big Bad Wolf eats every night and not powerless if one werewolf dies with right option
 
     Given a created game with options described in file no-sheriff-option.json, big-bad-wolf-not-powerless-if-werewolf-dies-option.json and with the following players
       | name    | role         |
@@ -263,7 +264,8 @@ Feature: 🐺👹 Big Bad Wolf role
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be seer to look
+    Then the player named Olivia should not have the active powerless from werewolves attribute
+    And the game's current play should be seer to look
 
     When the seer looks at the player named Olivia
     Then the player named Olivia should have the active seen from seer attribute

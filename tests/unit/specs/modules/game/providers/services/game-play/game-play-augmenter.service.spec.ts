@@ -30,9 +30,10 @@ import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayActorChoosesCard } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
+import { createFakeAngelAlivePlayer, createFakeDefenderAlivePlayer, createFakeDevotedServantAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeDeadPlayer, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Augmenter Service", () => {
   let services: { gamePlayAugmenter: GamePlayAugmenterService };
@@ -83,6 +84,7 @@ describe("Game Play Augmenter Service", () => {
       getCharmedMeetEachOtherGamePlayEligibleTargets: jest.SpyInstance;
       getCharmedGamePlayEligibleTargets: jest.SpyInstance;
       canSurvivorsSkipGamePlay: jest.SpyInstance;
+      getSurvivorsBuryDeadBodiesGamePlayEligibleTargets: jest.SpyInstance;
       getWitchGamePlayEligibleTargetsBoundaries: jest.SpyInstance;
       getWitchGamePlayEligibleTargetsInteractablePlayers: jest.SpyInstance;
       getCupidGamePlayEligibleTargets: jest.SpyInstance;
@@ -99,11 +101,14 @@ describe("Game Play Augmenter Service", () => {
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getLastGameHistoryDefenderProtectsRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
+      getPreviousGameHistoryRecord: jest.SpyInstance;
     };
     unexpectedExceptionFactory: {
+      createCantFindPlayerWithCurrentRoleUnexpectedException: jest.SpyInstance;
       createCantFindLastNominatedPlayersUnexpectedException: jest.SpyInstance;
       createMalformedCurrentGamePlayUnexpectedException: jest.SpyInstance;
       createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
+      createCantFindLastDeadPlayersUnexpectedException: jest.SpyInstance;
     };
   };
 
@@ -154,6 +159,7 @@ describe("Game Play Augmenter Service", () => {
         getWildChildGamePlayEligibleTargets: jest.fn(),
         getCharmedMeetEachOtherGamePlayEligibleTargets: jest.fn(),
         getCharmedGamePlayEligibleTargets: jest.fn(),
+        getSurvivorsBuryDeadBodiesGamePlayEligibleTargets: jest.fn(),
         canSurvivorsSkipGamePlay: jest.fn(),
         getWitchGamePlayEligibleTargetsBoundaries: jest.fn(),
         getWitchGamePlayEligibleTargetsInteractablePlayers: jest.fn(),
@@ -171,11 +177,14 @@ describe("Game Play Augmenter Service", () => {
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getLastGameHistoryDefenderProtectsRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
+        getPreviousGameHistoryRecord: jest.fn(),
       },
       unexpectedExceptionFactory: {
+        createCantFindPlayerWithCurrentRoleUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerWithCurrentRoleUnexpectedException"),
         createCantFindLastNominatedPlayersUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindLastNominatedPlayersUnexpectedException"),
         createMalformedCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createMalformedCurrentGamePlayUnexpectedException"),
         createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException"),
+        createCantFindLastDeadPlayersUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindLastDeadPlayersUnexpectedException"),
       },
     };
     const module: TestingModule = await Test.createTestingModule({
@@ -334,10 +343,10 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getSheriffDelegatesGamePlayEligibleTargets", () => {
-    it("should return all alive players as interactable players with 1 to 1 targets boundaries when called.", () => {
+    it("should return all alive and not sheriff players as interactable players with 1 to 1 targets boundaries when called.", () => {
       const players = [
         createFakeAngelAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeWitchAlivePlayer(),
       ];
@@ -349,10 +358,6 @@ describe("Game Play Augmenter Service", () => {
       const expectedInteractablePlayers = [
         createFakeInteractablePlayer({
           player: players[0],
-          interactions: [expectedInteraction],
-        }),
-        createFakeInteractablePlayer({
-          player: players[1],
           interactions: [expectedInteraction],
         }),
         createFakeInteractablePlayer({
@@ -598,16 +603,158 @@ describe("Game Play Augmenter Service", () => {
     });
   });
 
+  describe("getSurvivorsBuryDeadBodiesGamePlayEligibleTargets", () => {
+    it("should return undefined when there is no devoted servant in the game.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWitchAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlayEligibleTargets"](game)).resolves.toBeUndefined();
+    });
+
+    it("should return undefined when devoted servant is dead.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer({ isAlive: false }),
+      ];
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlayEligibleTargets"](game)).resolves.toBeUndefined();
+    });
+
+    it("should return undefined when devoted servant is powerless.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
+      ];
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlayEligibleTargets"](game)).resolves.toBeUndefined();
+    });
+
+    it("should return undefined when devoted servant is in love.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+      ];
+      const game = createFakeGame({ players });
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlayEligibleTargets"](game)).resolves.toBeUndefined();
+    });
+
+    it("should throw error when there is no previous game history record.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_DEAD_PLAYERS, { gameId: game._id.toString() });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValueOnce(null);
+      mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException.mockReturnValue(mockedError);
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSurvivorsBuryDeadBodiesGamePlayEligibleTargets", { gameId: game._id });
+    });
+
+    it("should throw error when dead players are undefined in previous game history record.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecord = createFakeGameHistoryRecord({ deadPlayers: undefined });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_DEAD_PLAYERS, { gameId: game._id.toString() });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValueOnce(gameHistoryRecord);
+      mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException.mockReturnValue(mockedError);
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSurvivorsBuryDeadBodiesGamePlayEligibleTargets", { gameId: game._id });
+    });
+
+    it("should throw error when dead players are empty in previous game history record.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecord = createFakeGameHistoryRecord({ deadPlayers: [] });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_DEAD_PLAYERS, { gameId: game._id.toString() });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValueOnce(gameHistoryRecord);
+      mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException.mockReturnValue(mockedError);
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSurvivorsBuryDeadBodiesGamePlayEligibleTargets", { gameId: game._id });
+    });
+
+    it("should return dead players as interactable players with boundaries from 0 to 1 when called.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const deadPlayers = [
+        createFakeDeadPlayer({ ...players[0], isAlive: false, death: createFakePlayerDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeath() }),
+      ];
+      const gameHistoryRecord = createFakeGameHistoryRecord({ deadPlayers });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValueOnce(gameHistoryRecord);
+      const expectedInteraction = createFakePlayerInteraction({
+        source: RoleNames.DEVOTED_SERVANT,
+        type: PlayerInteractionTypes.STEAL_ROLE,
+      });
+      const expectedInteractablePlayers = [
+        createFakeInteractablePlayer({
+          player: deadPlayers[0],
+          interactions: [expectedInteraction],
+        }),
+        createFakeInteractablePlayer({
+          player: deadPlayers[1],
+          interactions: [expectedInteraction],
+        }),
+      ];
+      const expectedGamePlayEligibleTargets = createFakeGamePlayEligibleTargets({
+        interactablePlayers: expectedInteractablePlayers,
+        boundaries: {
+          min: 0,
+          max: 1,
+        },
+      });
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlayEligibleTargets"](game)).resolves.toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
+    });
+  });
+
   describe("getSurvivorsGamePlayEligibleTargets", () => {
     beforeEach(() => {
       mocks.gamePlayAugmenterService.getSurvivorsElectSheriffGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsElectSheriffGamePlayEligibleTargets }, "getSurvivorsElectSheriffGamePlayEligibleTargets").mockImplementation();
       mocks.gamePlayAugmenterService.getSurvivorsVoteGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsVoteGamePlayEligibleTargets }, "getSurvivorsVoteGamePlayEligibleTargets").mockImplementation();
+      mocks.gamePlayAugmenterService.getSurvivorsBuryDeadBodiesGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsBuryDeadBodiesGamePlayEligibleTargets }, "getSurvivorsBuryDeadBodiesGamePlayEligibleTargets").mockImplementation();
     });
 
-    it("should return undefined when game play action is bury dead bodies.", async() => {
+    it("should call get survivors bury dead bodies game play eligible targets when game play action is bury dead bodies.", async() => {
       const gamePlay = createFakeGamePlaySurvivorsBuryDeadBodies();
       const game = createFakeGame();
-      await expect(services.gamePlayAugmenter["getSurvivorsGamePlayEligibleTargets"](game, gamePlay)).resolves.toBeUndefined();
+      await services.gamePlayAugmenter["getSurvivorsGamePlayEligibleTargets"](game, gamePlay);
+
+      expect(mocks.gamePlayAugmenterService.getSurvivorsBuryDeadBodiesGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call get survivors elect sheriff game play eligible targets when game play action is elect sheriff.", async() => {
@@ -805,9 +952,24 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getDefenderGamePlayEligibleTargets", () => {
-    it("should return all alive players as interactable targets with boundaries from 1 to 1 when there is no last protected players.", async() => {
+    it("should throw error when there is no defender in the game.", async() => {
       const players = [
         createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: RoleNames.DEFENDER });
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException.mockReturnValue(mockedError);
+
+      await expect(services.gamePlayAugmenter["getDefenderGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getDefenderGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.DEFENDER });
+    });
+
+    it("should return all alive players as interactable targets with boundaries from 1 to 1 when there is no last protected players.", async() => {
+      const players = [
+        createFakeDefenderAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
@@ -846,7 +1008,7 @@ describe("Game Play Augmenter Service", () => {
 
     it("should return all alive players as interactable targets with boundaries from 1 to 1 when there is last protected players but defender can protect twice in a row.", async() => {
       const players = [
-        createFakeWerewolfAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeVillagerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
@@ -883,7 +1045,7 @@ describe("Game Play Augmenter Service", () => {
 
     it("should return all alive players but last protected player as interactable targets with boundaries from 1 to 1 when there is last protected players but defender can't protect twice in a row.", async() => {
       const players = [
-        createFakeWerewolfAlivePlayer(),
+        createFakeDefenderAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeVillagerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
@@ -1333,8 +1495,27 @@ describe("Game Play Augmenter Service", () => {
       mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargetsInteractablePlayers = jest.spyOn(services.gamePlayAugmenter as unknown as { getWitchGamePlayEligibleTargetsInteractablePlayers }, "getWitchGamePlayEligibleTargetsInteractablePlayers").mockImplementation();
     });
 
+    it("should throw error when witch is not in the game.", async() => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const mockedError = new UnexpectedException("getWitchGamePlayEligibleTargets", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: RoleNames.WITCH });
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException.mockReturnValue(mockedError);
+
+      await expect(services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getWitchGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.WITCH });
+    });
+
     it("should get interactable players from game when called and there is no history for life potion and death potion.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1343,7 +1524,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get interactable players from game with life potion used when called and there is history for life potion.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1352,7 +1538,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get interactable players from game with death potion used when called and there is history for death potion.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1361,7 +1552,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get targets boundaries for witch when called and no potions are used.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1370,7 +1566,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get targets boundaries for witch when called and life potion is used.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1379,7 +1580,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should get targets boundaries for witch when called and death potion is used.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([]);
       mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords.mockResolvedValueOnce([createFakeGameHistoryRecord()]);
       await services.gamePlayAugmenter["getWitchGamePlayEligibleTargets"](game);
@@ -1388,7 +1594,12 @@ describe("Game Play Augmenter Service", () => {
     });
 
     it("should return eligible targets with interactable players and boundaries when called.", async() => {
-      const game = createFakeGame();
+      const players = [
+        createFakeWitchAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
       const expectedBoundaries = createFakeGamePlayEligibleTargetsBoundaries();
       const expectedInteractablePlayers = [
         createFakeInteractablePlayer(),
@@ -1631,6 +1842,12 @@ describe("Game Play Augmenter Service", () => {
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
         game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
         expected: false,
+      },
+      {
+        test: "should return true when game play action is bury dead bodies.",
+        gamePlay: createFakeGamePlay({ action: GamePlayActions.BURY_DEAD_BODIES }),
+        game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) }) }),
+        expected: true,
       },
       {
         test: "should return true when game play action is not elect sheriff and game options say that votes can be skipped.",

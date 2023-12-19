@@ -9,6 +9,23 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 import { toJSON } from "@/shared/misc/helpers/object.helper";
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
+function createActingByActorPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+  return createPlayerAttribute({
+    name: PlayerAttributeNames.ACTING,
+    source: RoleNames.ACTOR,
+    ...playerAttribute,
+  });
+}
+
+function createStolenRoleByDevotedServantPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
+  return createPlayerAttribute({
+    name: PlayerAttributeNames.STOLEN_ROLE,
+    source: RoleNames.DEVOTED_SERVANT,
+    doesRemainAfterDeath: true,
+    ...playerAttribute,
+  });
+}
+
 function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.CONTAMINATED,
@@ -212,6 +229,8 @@ function createPlayerAttribute(playerAttribute: PlayerAttribute): PlayerAttribut
 }
 
 export {
+  createActingByActorPlayerAttribute,
+  createStolenRoleByDevotedServantPlayerAttribute,
   createContaminatedByRustySwordKnightPlayerAttribute,
   createGrowledByBearTamerPlayerAttribute,
   createCharmedByPiedPiperPlayerAttribute,

@@ -1,9 +1,11 @@
 import { GamePhases } from "@/modules/game/enums/game.enum";
-import type { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameSource } from "@/modules/game/types/game.type";
+import { RoleNames } from "@/modules/role/enums/role.enum";
 
 function isPlayerAttributeActive({ activeAt }: PlayerAttribute, game: Game): boolean {
   return activeAt === undefined || activeAt.turn < game.turn ||
@@ -39,6 +41,10 @@ function doesPlayerHaveActiveAttributeWithNameAndSource(player: Player, attribut
   return !!attribute && isPlayerAttributeActive(attribute, game);
 }
 
+function canPlayerDelegateSheriffAttribute(player: Player, game: Game): boolean {
+  return doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.SHERIFF, game) && (player.role.current !== RoleNames.IDIOT || !isPlayerPowerful(player, game));
+}
+
 export {
   isPlayerAttributeActive,
   getPlayerAttributeWithName,
@@ -48,4 +54,5 @@ export {
   getPlayerAttributeWithNameAndSource,
   doesPlayerHaveAttributeWithNameAndSource,
   doesPlayerHaveActiveAttributeWithNameAndSource,
+  canPlayerDelegateSheriffAttribute,
 };
