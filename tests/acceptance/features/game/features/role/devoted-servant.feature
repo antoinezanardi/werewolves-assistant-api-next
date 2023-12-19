@@ -1022,3 +1022,114 @@ Feature: 🎀 Devoted Servant role
     And the player named JB should be currently a villager-villager and originally a devoted-servant
     And the player named JB should be on villagers current side and originally be on villagers side
     And the player named JB should have his role revealed
+
+  Scenario: 🎀 Devoted Servant prevents rusty sword knight to contaminate by stealing his role
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role               |
+      | Antoine | werewolf           |
+      | Olivia  | rusty-sword-knight |
+      | JB      | devoted-servant    |
+      | Juju    | villager           |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a rusty-sword-knight
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a rusty-sword-knight and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the player named JB should not have his role revealed
+    And the player named Antoine should not have the active contaminated from rusty-sword-knight attribute
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the player named Antoine should have the active contaminated from rusty-sword-knight attribute
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the player named Antoine should be murdered by rusty-sword-knight from disease
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
+
+  Scenario: 🎀 Devoted Servant can choose between the thief cards if he didn't choose one
+
+    Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | thief           |
+      | JB      | devoted-servant |
+      | Juju    | villager        |
+    Then the game's current play should be thief to choose-card
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a thief
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a thief and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be thief to choose-card
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+
+    When the thief chooses card with role seer
+    Then the player named JB should be currently a seer and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the game's current play should be seer to look
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+
+  Scenario: 🎀 Devoted Servant doesn't charm other players if there are already some in love
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role            |
+      | Antoine | werewolf        |
+      | Olivia  | cupid           |
+      | JB      | devoted-servant |
+      | Juju    | villager        |
+    And the game's current play should be cupid to charm
+
+    When the cupid shoots an arrow at the player named Antoine and the player named Juju
+    Then the player named Antoine should have the active in-love from cupid attribute
+    And the player named Juju should have the active in-love from cupid attribute
+    And the game's current play should be lovers to meet-each-other
+
+    When the lovers meet each other
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the devoted servant steals the role of the player named Olivia
+    Then the player named Olivia should be currently a devoted-servant and originally a cupid
+    And the player named Olivia should have his role revealed
+    And the player named JB should be currently a cupid and originally a devoted-servant
+    And the player named JB should be on villagers current side and originally be on villagers side
+    And the player named JB should not have his role revealed
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat

@@ -254,6 +254,18 @@ export class GamePlayService {
     return shouldTwoSistersBeCalledOnCurrentTurn && twoSistersPlayers.length > 0 && twoSistersPlayers.every(sister => sister.isAlive);
   }
 
+  private isCupidGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
+    if (game instanceof CreateGameDto) {
+      return !!getPlayerDtoWithRole(game, RoleNames.CUPID);
+    }
+    const cupidPlayer = getPlayerWithCurrentRole(game, RoleNames.CUPID);
+    if (!cupidPlayer || !isPlayerAliveAndPowerful(cupidPlayer, game)) {
+      return false;
+    }
+    const inLovePlayers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
+    return !inLovePlayers.length;
+  }
+
   private async isRoleGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
     const source = gamePlay.source.name as RoleNames;
     const player = game instanceof CreateGameDto ? getPlayerDtoWithRole(game, source) : getPlayerWithCurrentRole(game, source);
@@ -261,6 +273,7 @@ export class GamePlayService {
       return false;
     }
     const specificRoleMethods: Partial<Record<RoleNames, () => Promise<boolean> | boolean>> = {
+      [RoleNames.CUPID]: () => this.isCupidGamePlaySuitableForCurrentPhase(game),
       [RoleNames.TWO_SISTERS]: () => this.isTwoSistersGamePlaySuitableForCurrentPhase(game),
       [RoleNames.THREE_BROTHERS]: () => this.isThreeBrothersGamePlaySuitableForCurrentPhase(game),
       [RoleNames.BIG_BAD_WOLF]: () => this.isBigBadWolfGamePlaySuitableForCurrentPhase(game),
