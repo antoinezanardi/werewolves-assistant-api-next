@@ -1,13 +1,19 @@
 import type { Types } from "mongoose";
 
+import type { RoleNames } from "@/modules/role/enums/role.enum";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
-function createCantFindPlayerUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId; playerId: Types.ObjectId }): UnexpectedException {
+function createCantFindPlayerWithIdUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId; playerId: Types.ObjectId }): UnexpectedException {
   const { gameId, playerId } = interpolations;
   return new UnexpectedException(scope, UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, { gameId: gameId.toString(), playerId: playerId.toString() });
+}
+
+function createCantFindPlayerWithCurrentRoleUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId; roleName: RoleNames }): UnexpectedException {
+  const { gameId, roleName } = interpolations;
+  return new UnexpectedException(scope, UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: gameId.toString(), roleName });
 }
 
 function createPlayerIsDeadUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId; playerId: Types.ObjectId }): UnexpectedException {
@@ -38,12 +44,19 @@ function createCantFindLastNominatedPlayersUnexpectedException(scope: string, in
   return new UnexpectedException(scope, UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: gameId.toString() });
 }
 
+function createCantFindLastDeadPlayersUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId }): UnexpectedException {
+  const { gameId } = interpolations;
+  return new UnexpectedException(scope, UnexpectedExceptionReasons.CANT_FIND_LAST_DEAD_PLAYERS, { gameId: gameId.toString() });
+}
+
 export {
-  createCantFindPlayerUnexpectedException,
+  createCantFindPlayerWithIdUnexpectedException,
+  createCantFindPlayerWithCurrentRoleUnexpectedException,
   createPlayerIsDeadUnexpectedException,
   createCantGenerateGamePlaysUnexpectedException,
   createNoCurrentGamePlayUnexpectedException,
   createNoGamePlayPriorityUnexpectedException,
   createMalformedCurrentGamePlayUnexpectedException,
   createCantFindLastNominatedPlayersUnexpectedException,
+  createCantFindLastDeadPlayersUnexpectedException,
 };

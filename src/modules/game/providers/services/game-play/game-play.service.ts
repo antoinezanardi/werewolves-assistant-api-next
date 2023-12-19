@@ -168,7 +168,7 @@ export class GamePlayService {
     if (!player || !isPlayerAliveAndPowerful(player, game)) {
       return false;
     }
-    return !await this.gameHistoryRecordService.hasGamePlayBeenMade(game._id, gamePlay);
+    return !await this.gameHistoryRecordService.hasGamePlayBeenMadeByPlayer(game._id, gamePlay, player);
   }
 
   private isActorGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
@@ -184,11 +184,18 @@ export class GamePlayService {
     if (game instanceof CreateGameDto) {
       return !!getPlayerDtoWithRole(game, RoleNames.WITCH);
     }
-    const hasWitchUsedLifePotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.LIFE)).length > 0;
-    const hasWitchUsedDeathPotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.DEATH)).length > 0;
-    const { doSkipCallIfNoTarget } = game.options.roles;
     const witchPlayer = getPlayerWithCurrentRole(game, RoleNames.WITCH);
-    return !!witchPlayer && isPlayerAliveAndPowerful(witchPlayer, game) && (!doSkipCallIfNoTarget || !hasWitchUsedLifePotion || !hasWitchUsedDeathPotion);
+    if (!witchPlayer || !isPlayerAliveAndPowerful(witchPlayer, game)) {
+      return false;
+    }
+    const [lifePotionRecords, deathPotionRecords] = await Promise.all([
+      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.LIFE),
+      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.DEATH),
+    ]);
+    const hasWitchUsedLifePotion = lifePotionRecords.length > 0;
+    const hasWitchUsedDeathPotion = deathPotionRecords.length > 0;
+    const { doSkipCallIfNoTarget } = game.options.roles;
+    return !doSkipCallIfNoTarget || !hasWitchUsedLifePotion || !hasWitchUsedDeathPotion;
   }
 
   private shouldBeCalledOnCurrentTurnInterval(wakingUpInterval: number, game: CreateGameDto | Game): boolean {
@@ -247,6 +254,18 @@ export class GamePlayService {
     return shouldTwoSistersBeCalledOnCurrentTurn && twoSistersPlayers.length > 0 && twoSistersPlayers.every(sister => sister.isAlive);
   }
 
+  private isCupidGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
+    if (game instanceof CreateGameDto) {
+      return !!getPlayerDtoWithRole(game, RoleNames.CUPID);
+    }
+    const cupidPlayer = getPlayerWithCurrentRole(game, RoleNames.CUPID);
+    if (!cupidPlayer || !isPlayerAliveAndPowerful(cupidPlayer, game)) {
+      return false;
+    }
+    const inLovePlayers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
+    return !inLovePlayers.length;
+  }
+
   private async isRoleGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
     const source = gamePlay.source.name as RoleNames;
     const player = game instanceof CreateGameDto ? getPlayerDtoWithRole(game, source) : getPlayerWithCurrentRole(game, source);
@@ -254,6 +273,7 @@ export class GamePlayService {
       return false;
     }
     const specificRoleMethods: Partial<Record<RoleNames, () => Promise<boolean> | boolean>> = {
+      [RoleNames.CUPID]: () => this.isCupidGamePlaySuitableForCurrentPhase(game),
       [RoleNames.TWO_SISTERS]: () => this.isTwoSistersGamePlaySuitableForCurrentPhase(game),
       [RoleNames.THREE_BROTHERS]: () => this.isThreeBrothersGamePlaySuitableForCurrentPhase(game),
       [RoleNames.BIG_BAD_WOLF]: () => this.isBigBadWolfGamePlaySuitableForCurrentPhase(game),

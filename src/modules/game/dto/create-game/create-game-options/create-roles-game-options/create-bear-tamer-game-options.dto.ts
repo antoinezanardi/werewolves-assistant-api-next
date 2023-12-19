@@ -6,12 +6,12 @@ import { BEAR_TAMER_GAME_OPTIONS_API_PROPERTIES, BEAR_TAMER_GAME_OPTIONS_FIELDS_
 
 class CreateBearTamerGameOptionsDto {
   @ApiProperty({
-    ...BEAR_TAMER_GAME_OPTIONS_API_PROPERTIES.doesGrowlIfInfected,
+    ...BEAR_TAMER_GAME_OPTIONS_API_PROPERTIES.doesGrowlOnWerewolvesSide,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
-  public doesGrowlIfInfected: boolean = BEAR_TAMER_GAME_OPTIONS_FIELDS_SPECS.doesGrowlIfInfected.default;
+  public doesGrowlOnWerewolvesSide: boolean = BEAR_TAMER_GAME_OPTIONS_FIELDS_SPECS.doesGrowlOnWerewolvesSide.default;
 }
 
 export { CreateBearTamerGameOptionsDto };

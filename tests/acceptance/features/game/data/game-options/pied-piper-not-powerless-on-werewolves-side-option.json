@@ -1,7 +1,7 @@
 {
   "roles": {
     "piedPiper": {
-      "isPowerlessIfInfected": false
+      "isPowerlessOnWerewolvesSide": false
     }
   }
 }

@@ -11,7 +11,7 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameSource, GetNearestPlayerOptions } from "@/modules/game/types/game.type";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { createCantFindPlayerUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerWithIdUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 function getPlayerDtoWithRole(game: CreateGameDto, role: RoleNames): CreateGamePlayerDto | undefined {
   return game.players.find(player => player.role.name === role);
@@ -39,6 +39,10 @@ function getPlayerWithIdOrThrow(playerId: Types.ObjectId, game: Game, exception:
     throw exception;
   }
   return player;
+}
+
+function getPlayersWithIds(ids: Types.ObjectId[], game: Game): Player[] {
+  return game.players.filter(({ _id }) => ids.some(id => id.equals(_id)));
 }
 
 function getPlayerWithName(game: Game, playerName: string): Player | undefined {
@@ -138,7 +142,7 @@ function getNonexistentPlayer(game: Game, candidatePlayers?: Player[]): Player |
 }
 
 function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Player[] {
-  const cantFindPlayerException = createCantFindPlayerUnexpectedException("getFoxSniffedTargets", { gameId: game._id, playerId: sniffedTargetId });
+  const cantFindPlayerException = createCantFindPlayerWithIdUnexpectedException("getFoxSniffedTargets", { gameId: game._id, playerId: sniffedTargetId });
   const sniffedTarget = getPlayerWithIdOrThrow(sniffedTargetId, game, cantFindPlayerException);
   const leftAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "left" });
   const rightAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "right" });
@@ -172,7 +176,7 @@ function getNearestAliveNeighborInSortedPlayers(seekingNeighborPlayer: Player, s
 }
 
 function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: GetNearestPlayerOptions): Player | undefined {
-  const cantFindPlayerException = createCantFindPlayerUnexpectedException("getNearestAliveNeighbor", { gameId: game._id, playerId });
+  const cantFindPlayerException = createCantFindPlayerWithIdUnexpectedException("getNearestAliveNeighbor", { gameId: game._id, playerId });
   const player = getPlayerWithIdOrThrow(playerId, game, cantFindPlayerException);
   const sortedPlayers = game.players.toSorted((a, b) => a.position - b.position);
   return getNearestAliveNeighborInSortedPlayers(player, sortedPlayers, options);
@@ -180,6 +184,11 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
 
 function getAllowedToVotePlayers(game: Game): Player[] {
   return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
+}
+
+function doesGameHaveUpcomingPlaySourceAndAction(game: Game, source: GameSource, action: GamePlayActions): boolean {
+  const { upcomingPlays } = game;
+  return upcomingPlays.some(play => play.source.name === source && play.action === action);
 }
 
 function doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game: Game, source: GameSource, action: GamePlayActions): boolean {
@@ -195,6 +204,7 @@ export {
   getPlayersWithCurrentSide,
   getPlayerWithId,
   getPlayerWithIdOrThrow,
+  getPlayersWithIds,
   getPlayerWithName,
   getPlayerWithNameOrThrow,
   getAdditionalCardWithId,
@@ -217,5 +227,6 @@ export {
   getFoxSniffedPlayers,
   getNearestAliveNeighbor,
   getAllowedToVotePlayers,
+  doesGameHaveUpcomingPlaySourceAndAction,
   doesGameHaveCurrentOrUpcomingPlaySourceAndAction,
 };

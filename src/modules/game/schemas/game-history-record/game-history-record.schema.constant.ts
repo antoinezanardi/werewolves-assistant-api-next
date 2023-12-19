@@ -2,6 +2,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { SchemaTypes } from "mongoose";
 import type { ReadonlyDeep } from "type-fest";
 
+import { DEAD_PLAYER_SCHEMA } from "@/modules/game/schemas/player/dead-player.schema";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 import { GAME_HISTORY_RECORD_PLAY_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { GamePhases } from "@/modules/game/enums/game.enum";
@@ -39,7 +40,7 @@ const GAME_HISTORY_RECORD_FIELDS_SPECS = {
   },
   deadPlayers: {
     required: false,
-    type: [PLAYER_SCHEMA],
+    type: [DEAD_PLAYER_SCHEMA],
     default: undefined,
   },
   createdAt: { required: true },

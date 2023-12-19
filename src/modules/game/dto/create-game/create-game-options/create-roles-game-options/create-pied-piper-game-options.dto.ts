@@ -16,12 +16,12 @@ class CreatePiedPiperGameOptionsDto {
   public charmedPeopleCountPerNight: number = PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.charmedPeopleCountPerNight.default;
 
   @ApiProperty({
-    ...PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfInfected,
+    ...PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.isPowerlessOnWerewolvesSide,
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
   @IsBoolean()
-  public isPowerlessIfInfected: boolean = PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected.default;
+  public isPowerlessOnWerewolvesSide: boolean = PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide.default;
 }
 
 export { CreatePiedPiperGameOptionsDto };

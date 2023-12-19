@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 
-import type { GameSource } from "@/modules/game/types/game.type";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
@@ -14,9 +13,10 @@ import { GamePlayService } from "@/modules/game/providers/services/game-play/gam
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { GameSource } from "@/modules/game/types/game.type";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { createCantFindPlayerUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerWithIdUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 @Injectable()
 export class GamePhaseService {
@@ -49,7 +49,7 @@ export class GamePhaseService {
     if (clonedGame.phase === GamePhases.DAY) {
       return this.applyStartingDayPlayerRoleOutcomesToPlayers(clonedGame);
     }
-    return this.applyStartingNightPlayerRoleOutcomes(clonedGame);
+    return this.applyStartingNightPlayerAttributesOutcomes(clonedGame);
   }
 
   private async applyEndingGamePhasePlayerAttributesOutcomesToPlayers(game: Game): Promise<Game> {
@@ -74,7 +74,7 @@ export class GamePhaseService {
     let clonedPlayer = createPlayer(player);
     const eatenAttribute = getActivePlayerAttributeWithName(clonedPlayer, PlayerAttributeNames.EATEN, clonedGame);
     const notFoundPlayerExceptionInterpolations = { gameId: clonedGame._id, playerId: clonedPlayer._id };
-    const notFoundPlayerException = createCantFindPlayerUnexpectedException("applyEndingNightPlayerAttributesOutcomesToPlayer", notFoundPlayerExceptionInterpolations);
+    const notFoundPlayerException = createCantFindPlayerWithIdUnexpectedException("applyEndingNightPlayerAttributesOutcomesToPlayer", notFoundPlayerExceptionInterpolations);
     if (eatenAttribute) {
       clonedGame = await this.playerAttributeService.applyEatenAttributeOutcomes(clonedPlayer, clonedGame, eatenAttribute);
     }
@@ -99,9 +99,9 @@ export class GamePhaseService {
     const leftAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, clonedGame, { direction: "left" });
     const rightAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, clonedGame, { direction: "right" });
     const doesBearTamerHaveWerewolfSidedNeighbor = leftAliveNeighbor?.side.current === RoleSides.WEREWOLVES || rightAliveNeighbor?.side.current === RoleSides.WEREWOLVES;
-    const { doesGrowlIfInfected } = clonedGame.options.roles.bearTamer;
+    const { doesGrowlOnWerewolvesSide } = clonedGame.options.roles.bearTamer;
     const isBearTamerInfected = bearTamerPlayer.side.current === RoleSides.WEREWOLVES;
-    if (doesGrowlIfInfected && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor) {
+    if (doesGrowlOnWerewolvesSide && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor) {
       const growledByBearTamerPlayerAttribute = createGrowledByBearTamerPlayerAttribute();
       return addPlayerAttributeInGame(bearTamerPlayer._id, clonedGame, growledByBearTamerPlayerAttribute);
     }
@@ -118,19 +118,21 @@ export class GamePhaseService {
     return clonedGame;
   }
 
-  private applyStartingNightActorRoleOutcomes(actorPlayer: Player, game: Game): Game {
+  private applyStartingNightActingPlayerOutcomes(actingPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
     const stickyPowerlessSources: GameSource[] = [RoleNames.ACCURSED_WOLF_FATHER, RoleNames.ACTOR];
-    const attributes = actorPlayer.attributes.filter(({ name, source }) => name !== PlayerAttributeNames.POWERLESS || stickyPowerlessSources.includes(source));
-    const playerDataToUpdate: Partial<Player> = { role: { ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }, attributes };
-    return updatePlayerInGame(actorPlayer._id, playerDataToUpdate, clonedGame);
+    const attributes = actingPlayer.attributes.filter(({ name, source }) =>
+      name !== PlayerAttributeNames.ACTING && name !== PlayerAttributeNames.POWERLESS ||
+      name === PlayerAttributeNames.POWERLESS && stickyPowerlessSources.includes(source));
+    const playerDataToUpdate: Partial<Player> = { role: { ...actingPlayer.role, current: RoleNames.ACTOR, isRevealed: false }, attributes };
+    return updatePlayerInGame(actingPlayer._id, playerDataToUpdate, clonedGame);
   }
 
-  private applyStartingNightPlayerRoleOutcomes(game: Game): Game {
+  private applyStartingNightPlayerAttributesOutcomes(game: Game): Game {
     let clonedGame = createGame(game);
     for (const player of clonedGame.players) {
-      if (player.role.original === RoleNames.ACTOR && player.isAlive) {
-        clonedGame = this.applyStartingNightActorRoleOutcomes(player, clonedGame);
+      if (doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.ACTING, clonedGame)) {
+        clonedGame = this.applyStartingNightActingPlayerOutcomes(player, clonedGame);
       }
     }
     return clonedGame;

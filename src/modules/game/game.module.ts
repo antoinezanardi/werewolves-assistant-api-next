@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 
+import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
 import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
 import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { DatabaseModule } from "@/modules/config/database/database.module";
@@ -9,7 +10,7 @@ import { GameHistoryRecordRepository } from "@/modules/game/providers/repositori
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
-import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker.service";
+import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/game-play-maker.service";
 import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
@@ -35,6 +36,7 @@ import { Game, GAME_SCHEMA } from "@/modules/game/schemas/game.schema";
     GamePlayService,
     GamePlayValidatorService,
     GamePlayMakerService,
+    DevotedServantGamePlayMakerService,
     GamePlayVoteService,
     GamePlayAugmenterService,
     GamePhaseService,

@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
 
 import { VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
-import { createPlayer } from "@/modules/game/helpers/player/player.factory";
-import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { createGamePlayEligibleTargetsBoundaries } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.factory";
-import { createInteractablePlayer } from "@/modules/game/helpers/game-play/game-play-eligible-targets/interactable-player/interactable-player.factory";
-import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
+import { createGamePlayEligibleTargetsBoundaries } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.factory";
 import { createGamePlayEligibleTargets } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets.factory";
+import { createInteractablePlayer } from "@/modules/game/helpers/game-play/game-play-eligible-targets/interactable-player/interactable-player.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
-import { getAlivePlayers, getAliveVillagerSidedPlayers, getAllowedToVotePlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { getAlivePlayers, getAliveVillagerSidedPlayers, getAllowedToVotePlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { createPlayer } from "@/modules/game/helpers/player/player.factory";
+import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema";
 import type { GamePlayEligibleTargets } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets.schema";
@@ -18,11 +18,12 @@ import type { InteractablePlayer } from "@/modules/game/schemas/game-play/game-p
 import type { PlayerInteraction } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import { WEREWOLF_ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { createCantFindLastNominatedPlayersUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNominatedPlayersUnexpectedException, createCantFindPlayerWithCurrentRoleUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 @Injectable()
 export class GamePlayAugmenterService {
@@ -94,9 +95,9 @@ export class GamePlayAugmenterService {
   }
 
   private getSheriffDelegatesGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
-    const alivePlayers = getAlivePlayers(game);
+    const alivePlayersWithoutCurrentSheriff = getAlivePlayers(game).filter(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.SHERIFF, game));
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE, source: PlayerAttributeNames.SHERIFF }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
+    const interactablePlayers: InteractablePlayer[] = alivePlayersWithoutCurrentSheriff.map(player => ({ player, interactions }));
     const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
@@ -145,17 +146,36 @@ export class GamePlayAugmenterService {
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
-  private async getSurvivorsGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets | undefined> {
-    if (gamePlay.action === GamePlayActions.BURY_DEAD_BODIES) {
+  private async getSurvivorsBuryDeadBodiesGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets | undefined> {
+    const devotedServantPlayer = getPlayerWithCurrentRole(game, RoleNames.DEVOTED_SERVANT);
+    if (!devotedServantPlayer || !isPlayerAliveAndPowerful(devotedServantPlayer, game) ||
+      doesPlayerHaveActiveAttributeWithName(devotedServantPlayer, PlayerAttributeNames.IN_LOVE, game)) {
       return undefined;
     }
-    if (gamePlay.action === GamePlayActions.VOTE) {
-      return this.getSurvivorsVoteGamePlayEligibleTargets(game, gamePlay);
+    const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(game._id);
+    if (previousGameHistoryRecord?.deadPlayers === undefined || previousGameHistoryRecord.deadPlayers.length === 0) {
+      throw createCantFindLastDeadPlayersUnexpectedException("getSurvivorsBuryDeadBodiesGamePlayEligibleTargets", { gameId: game._id });
     }
-    if (gamePlay.action === GamePlayActions.ELECT_SHERIFF) {
-      return this.getSurvivorsElectSheriffGamePlayEligibleTargets(game);
+    const interaction: PlayerInteraction = { type: PlayerInteractionTypes.STEAL_ROLE, source: RoleNames.DEVOTED_SERVANT };
+    const interactablePlayers = previousGameHistoryRecord.deadPlayers.map(player => ({ player, interactions: [interaction] }));
+    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
+    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+  }
+
+  private async getSurvivorsGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets | undefined> {
+    const survivorsGameActionEligibleTargetsMethods: Partial<Record<
+    GamePlayActions,
+    (game: Game, gamePlay: GamePlay) => GamePlayEligibleTargets | Promise<GamePlayEligibleTargets | undefined> | undefined
+    >> = {
+      [GamePlayActions.BURY_DEAD_BODIES]: async() => this.getSurvivorsBuryDeadBodiesGamePlayEligibleTargets(game),
+      [GamePlayActions.VOTE]: async() => this.getSurvivorsVoteGamePlayEligibleTargets(game, gamePlay),
+      [GamePlayActions.ELECT_SHERIFF]: () => this.getSurvivorsElectSheriffGamePlayEligibleTargets(game),
+    };
+    const eligibleTargetsMethod = survivorsGameActionEligibleTargetsMethods[gamePlay.action];
+    if (!eligibleTargetsMethod) {
+      throw createMalformedCurrentGamePlayUnexpectedException("getSurvivorsGamePlayEligibleTargets", gamePlay, game._id);
     }
-    throw createMalformedCurrentGamePlayUnexpectedException("getSurvivorsGamePlayEligibleTargets", gamePlay, game._id);
+    return eligibleTargetsMethod(game, gamePlay);
   }
 
   private getWerewolvesGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
@@ -194,7 +214,11 @@ export class GamePlayAugmenterService {
   private async getDefenderGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets> {
     const { canProtectTwice } = game.options.roles.defender;
     const alivePlayers = getAlivePlayers(game);
-    const lastDefenderProtectRecord = await this.gameHistoryRecordService.getLastGameHistoryDefenderProtectsRecord(game._id);
+    const defenderPlayer = getPlayerWithCurrentRole(game, RoleNames.DEFENDER);
+    if (!defenderPlayer) {
+      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getDefenderGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.DEFENDER });
+    }
+    const lastDefenderProtectRecord = await this.gameHistoryRecordService.getLastGameHistoryDefenderProtectsRecord(game._id, defenderPlayer._id);
     const lastProtectedPlayer = lastDefenderProtectRecord?.play.targets?.[0].player;
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.PROTECT, source: RoleNames.DEFENDER }];
     const possibleDefenderTargets = canProtectTwice || !lastProtectedPlayer ? alivePlayers : alivePlayers.filter(player => !player._id.equals(lastProtectedPlayer._id));
@@ -291,9 +315,13 @@ export class GamePlayAugmenterService {
   }
 
   private async getWitchGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets> {
+    const witchPlayer = getPlayerWithCurrentRole(game, RoleNames.WITCH);
+    if (!witchPlayer) {
+      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getWitchGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.WITCH });
+    }
     const [lifeRecords, deathRecords] = await Promise.all([
-      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.LIFE),
-      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.DEATH),
+      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.LIFE),
+      this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.DEATH),
     ]);
     const hasWitchUsedLifePotion = lifeRecords.length > 0;
     const hasWitchUsedDeathPotion = deathRecords.length > 0;
@@ -318,7 +346,7 @@ export class GamePlayAugmenterService {
     if (gamePlay.action === GamePlayActions.ELECT_SHERIFF || isGamePlayVoteCauseAngelPresence) {
       return false;
     }
-    return canBeSkipped;
+    return gamePlay.action === GamePlayActions.BURY_DEAD_BODIES || canBeSkipped;
   }
 
   private canBigBadWolfSkipGamePlay(game: Game): boolean {

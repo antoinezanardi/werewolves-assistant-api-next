@@ -1,14 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
 
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
+import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlaySheriffSettlesVotes, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
-import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { getFoxSniffedPlayers, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
-import { createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByActorPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySheriffPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createActingByActorPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByActorPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySheriffPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteBySheriffDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
@@ -24,7 +27,7 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import { getRoleWithName } from "@/modules/role/helpers/role.helper";
 import type { Role } from "@/modules/role/types/role.type";
 
-import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindLastDeadPlayersUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
 @Injectable()
 export class GamePlayMakerService {
@@ -52,6 +55,8 @@ export class GamePlayMakerService {
   public constructor(
     private readonly playerKillerService: PlayerKillerService,
     private readonly gamePlayVoteService: GamePlayVoteService,
+    private readonly gameHistoryRecordService: GameHistoryRecordService,
+    private readonly devotedServantGamePlayMakerService: DevotedServantGamePlayMakerService,
   ) {}
 
   public async makeGamePlay(play: MakeGamePlayWithRelationsDto, game: Game): Promise<Game> {
@@ -73,8 +78,11 @@ export class GamePlayMakerService {
     if (!chosenRole) {
       return clonedGame;
     }
-    const newActorRole: PlayerRole = { ...actorPlayer.role, current: chosenRole.name };
-    clonedGame = updatePlayerInGame(actorPlayer._id, { role: newActorRole }, clonedGame);
+    const actorDataToUpdate: Partial<Player> = {
+      role: { ...actorPlayer.role, current: chosenRole.name },
+      attributes: [...actorPlayer.attributes, createActingByActorPlayerAttribute()],
+    };
+    clonedGame = updatePlayerInGame(actorPlayer._id, actorDataToUpdate, clonedGame);
     return updateAdditionalCardInGame(chosenCard._id, { isUsed: true }, clonedGame);
   }
 
@@ -115,6 +123,28 @@ export class GamePlayMakerService {
       return clonedGame;
     }
     return sheriffPlayMethod();
+  }
+
+  private async survivorsBuryDeadBodies({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
+    let clonedGame = createGame(game);
+    const { areRevealedOnDeath: areRolesRevealedOnDeath } = clonedGame.options.roles;
+    const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(clonedGame._id);
+    if (previousGameHistoryRecord?.deadPlayers === undefined || previousGameHistoryRecord.deadPlayers.length === 0) {
+      throw createCantFindLastDeadPlayersUnexpectedException("survivorsBuryDeadBodies", { gameId: clonedGame._id });
+    }
+    const expectedTargetCountForDevotedServant = 1;
+    if (targets?.length === expectedTargetCountForDevotedServant) {
+      clonedGame = this.devotedServantGamePlayMakerService.devotedServantStealsRole(targets[0].player as DeadPlayer, clonedGame);
+    }
+    const previousDeadPlayersIds = previousGameHistoryRecord.deadPlayers.map(({ _id }) => _id);
+    const previousDeadPlayersInGame = getPlayersWithIds(previousDeadPlayersIds, clonedGame) as DeadPlayer[];
+    for (const deadPlayer of previousDeadPlayersInGame) {
+      if (areRolesRevealedOnDeath) {
+        clonedGame = this.playerKillerService.revealPlayerRole(deadPlayer, clonedGame);
+      }
+      clonedGame = this.playerKillerService.applyPlayerDeathOutcomes(deadPlayer, clonedGame);
+    }
+    return clonedGame;
   }
 
   private async handleTieInVotes(game: GameWithCurrentPlay): Promise<Game> {
@@ -187,6 +217,7 @@ export class GamePlayMakerService {
     const survivorsPlayMethods: Partial<Record<GamePlayActions, () => Game | Promise<Game>>> = {
       [GamePlayActions.ELECT_SHERIFF]: () => this.survivorsElectSheriff(play, clonedGame),
       [GamePlayActions.VOTE]: async() => this.survivorsVote(play, clonedGame),
+      [GamePlayActions.BURY_DEAD_BODIES]: async() => this.survivorsBuryDeadBodies(play, clonedGame),
     };
     const survivorsPlayMethod = survivorsPlayMethods[clonedGame.currentPlay.action];
     if (survivorsPlayMethod === undefined) {
@@ -196,7 +227,7 @@ export class GamePlayMakerService {
   }
   
   private thiefChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
-    const clonedGame = createGame(game);
+    let clonedGame = createGame(game);
     const thiefPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.THIEF);
     if (!thiefPlayer || !chosenCard) {
       return clonedGame;
@@ -208,7 +239,8 @@ export class GamePlayMakerService {
     const newThiefSide: PlayerSide = { ...thiefPlayer.side, current: chosenRole.side };
     const newThiefRole: PlayerRole = { ...thiefPlayer.role, current: chosenRole.name };
     const playerDataToUpdate: Partial<Player> = { side: newThiefSide, role: newThiefRole };
-    return updatePlayerInGame(thiefPlayer._id, playerDataToUpdate, clonedGame);
+    clonedGame = updatePlayerInGame(thiefPlayer._id, playerDataToUpdate, clonedGame);
+    return updateAdditionalCardInGame(chosenCard._id, { isUsed: true }, clonedGame);
   }
   
   private scapegoatBansVoting({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
@@ -222,13 +254,14 @@ export class GamePlayMakerService {
   
   private wolfHoundChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
+    const { roles } = clonedGame.options;
     const wolfHoundPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.WOLF_HOUND);
     if (!wolfHoundPlayer) {
       return clonedGame;
     }
     const wolfHoundSide = chosenSide ?? sample([RoleSides.VILLAGERS, RoleSides.WEREWOLVES]);
     const playerDataToUpdate: Partial<Player> = { side: { ...wolfHoundPlayer.side, current: wolfHoundSide } };
-    if (wolfHoundPlayer.role.original === RoleNames.ACTOR && wolfHoundSide === RoleSides.WEREWOLVES) {
+    if (wolfHoundPlayer.role.original === RoleNames.ACTOR && wolfHoundSide === RoleSides.WEREWOLVES && roles.actor.isPowerlessOnWerewolvesSide) {
       playerDataToUpdate.attributes = [...wolfHoundPlayer.attributes, createPowerlessByActorPlayerAttribute()];
     }
     return updatePlayerInGame(wolfHoundPlayer._id, playerDataToUpdate, clonedGame);
@@ -367,9 +400,9 @@ export class GamePlayMakerService {
     let clonedGame = createGame(game);
     const { roles } = game.options;
     const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES } };
-    if (targetedPlayer.role.current === RoleNames.PREJUDICED_MANIPULATOR && roles.prejudicedManipulator.isPowerlessIfInfected ||
-      targetedPlayer.role.current === RoleNames.PIED_PIPER && roles.piedPiper.isPowerlessIfInfected ||
-      targetedPlayer.role.current === RoleNames.ACTOR) {
+    if (targetedPlayer.role.current === RoleNames.PREJUDICED_MANIPULATOR && roles.prejudicedManipulator.isPowerlessOnWerewolvesSide ||
+      targetedPlayer.role.current === RoleNames.PIED_PIPER && roles.piedPiper.isPowerlessOnWerewolvesSide ||
+      targetedPlayer.role.current === RoleNames.ACTOR && roles.actor.isPowerlessOnWerewolvesSide) {
       clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, createPowerlessByAccursedWolfFatherPlayerAttribute());
     }
     return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);

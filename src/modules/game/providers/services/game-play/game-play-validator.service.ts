@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerInteractableWithInteractionType } from "@/modules/game/helpers/game-play/game-play.helper";
 import { STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS, TARGET_ACTIONS, VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
@@ -15,11 +16,10 @@ import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
-import { WEREWOLF_ROLES } from "@/modules/role/constants/role.constant";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
-import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { createCantFindPlayerWithCurrentRoleUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.type";
 
 @Injectable()
@@ -54,13 +54,10 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayThiefChosenCard(chosenCard: GameAdditionalCard | undefined, game: GameWithCurrentPlay): void {
-    const { mustChooseBetweenWerewolves } = game.options.roles.thief;
-    if (!game.additionalCards || !mustChooseBetweenWerewolves) {
+    if (!game.additionalCards) {
       return;
     }
-    const werewolfRoleNames = WEREWOLF_ROLES.map(({ name }) => name);
-    const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => werewolfRoleNames.includes(roleName));
-    if (areAllAdditionalCardsWerewolves && !chosenCard) {
+    if (!chosenCard && game.currentPlay.canBeSkipped === false) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.THIEF_MUST_CHOOSE_CARD);
     }
     if (chosenCard && chosenCard.recipient !== RoleNames.THIEF) {
@@ -83,6 +80,23 @@ export class GamePlayValidatorService {
     }
   }
 
+  private validateGamePlaySurvivorsTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+    const { action } = game.currentPlay;
+    if (!playTargets.length || action !== GamePlayActions.BURY_DEAD_BODIES) {
+      return;
+    }
+    const devotedServantPlayer = getPlayerWithCurrentRole(game, RoleNames.DEVOTED_SERVANT);
+    if (!devotedServantPlayer || !isPlayerAliveAndPowerful(devotedServantPlayer, game) ||
+      doesPlayerHaveActiveAttributeWithName(devotedServantPlayer, PlayerAttributeNames.IN_LOVE, game)) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.DEVOTED_SERVANT_CANT_STEAL_ROLE);
+    }
+    const targetedPlayer = playTargets[0].player;
+    const canRoleTargetedPlayerBeStolen = isPlayerInteractableWithInteractionType(targetedPlayer._id, PlayerInteractionTypes.STEAL_ROLE, game);
+    if (!canRoleTargetedPlayerBeStolen) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_DEVOTED_SERVANT_TARGET);
+    }
+  }
+
   private validateDrankLifePotionTargets(drankLifePotionTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
     if (drankLifePotionTargets.length > 1) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.TOO_MUCH_DRANK_LIFE_POTION_TARGETS);
@@ -102,9 +116,13 @@ export class GamePlayValidatorService {
   }
 
   private async validateGamePlayWitchTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
-    const hasWitchUsedLifePotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.LIFE)).length > 0;
+    const witchPlayer = getPlayerWithCurrentRole(game, RoleNames.WITCH);
+    if (!witchPlayer) {
+      throw createCantFindPlayerWithCurrentRoleUnexpectedException("validateGamePlayWitchTargets", { gameId: game._id, roleName: RoleNames.WITCH });
+    }
+    const hasWitchUsedLifePotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.LIFE)).length > 0;
     const drankLifePotionTargets = playTargets.filter(({ drankPotion }) => drankPotion === WitchPotions.LIFE);
-    const hasWitchUsedDeathPotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, WitchPotions.DEATH)).length > 0;
+    const hasWitchUsedDeathPotion = (await this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.DEATH)).length > 0;
     const drankDeathPotionTargets = playTargets.filter(({ drankPotion }) => drankPotion === WitchPotions.DEATH);
     if (hasWitchUsedLifePotion && drankLifePotionTargets.length || hasWitchUsedDeathPotion && drankDeathPotionTargets.length) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
@@ -118,9 +136,12 @@ export class GamePlayValidatorService {
     if (!infectedTargets.length) {
       return;
     }
-    const hasAccursedWolfFatherInfected = (await this.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords(game._id)).length > 0;
     const accursedWolfFatherPlayer = getPlayerWithCurrentRole(game, RoleNames.ACCURSED_WOLF_FATHER);
-    if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game) || hasAccursedWolfFatherInfected) {
+    if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game)) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
+    }
+    const hasAccursedWolfFatherInfected = (await this.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords(game._id, accursedWolfFatherPlayer._id)).length > 0;
+    if (hasAccursedWolfFatherInfected) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
     }
     this.validateGamePlayTargetsBoundaries(infectedTargets, { min: 1, max: 1 });
@@ -237,6 +258,7 @@ export class GamePlayValidatorService {
   private async validateGamePlaySourceTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
     const gamePlaySourceValidationMethods: Partial<Record<GamePlaySourceName, () => Promise<void> | void>> = {
       [PlayerAttributeNames.SHERIFF]: () => this.validateGamePlaySheriffTargets(playTargets, game),
+      [PlayerGroups.SURVIVORS]: () => this.validateGamePlaySurvivorsTargets(playTargets, game),
       [PlayerGroups.WEREWOLVES]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.BIG_BAD_WOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.WHITE_WEREWOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
@@ -349,12 +371,14 @@ export class GamePlayValidatorService {
     }
     const { voteRequestsCount } = game.options.roles.stutteringJudge;
     const didJudgeMakeHisSign = await this.gameHistoryRecordService.didJudgeMakeHisSign(game._id);
-    const gameHistoryJudgeRequestRecords = await this.gameHistoryRecordService.getGameHistoryJudgeRequestRecords(game._id);
     const stutteringJudgePlayer = getPlayerWithCurrentRole(game, RoleNames.STUTTERING_JUDGE);
     const stutteringJudgeRequestOpportunityActions: GamePlayActions[] = [...STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS];
     if (!stutteringJudgeRequestOpportunityActions.includes(game.currentPlay.action) || !didJudgeMakeHisSign ||
-        !stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer, game) ||
-        gameHistoryJudgeRequestRecords.length >= voteRequestsCount) {
+      !stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer, game)) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
+    }
+    const gameHistoryJudgeRequestRecords = await this.gameHistoryRecordService.getGameHistoryJudgeRequestRecords(game._id, stutteringJudgePlayer._id);
+    if (gameHistoryJudgeRequestRecords.length >= voteRequestsCount) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
     }
   }

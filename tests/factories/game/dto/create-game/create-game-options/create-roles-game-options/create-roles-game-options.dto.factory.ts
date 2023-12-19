@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { CreateActorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-actor-game-options.dto";
 import { CreatePrejudicedManipulatorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-prejudiced-manipulator-game-options.dto";
 import { CreateCupidGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-game-options.dto";
 import { CreateCupidLoversGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-lovers-game-options.dto";
@@ -29,12 +30,20 @@ import { GamePhases } from "@/modules/game/enums/game.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
+function createFakeCreateActorGameOptionsDto(actorGameOptions: Partial<CreateActorGameOptionsDto> = {}, override: object = {}): CreateActorGameOptionsDto {
+  return plainToInstance(CreateActorGameOptionsDto, {
+    isPowerlessOnWerewolvesSide: actorGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
+    additionalCardsCount: actorGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakeCreatePrejudicedManipulatorGameOptionsDto(
   prejudicedManipulatorGameOptions: Partial<CreatePrejudicedManipulatorGameOptionsDto> = {},
   override: object = {},
 ): CreatePrejudicedManipulatorGameOptionsDto {
   return plainToInstance(CreatePrejudicedManipulatorGameOptionsDto, {
-    isPowerlessIfInfected: prejudicedManipulatorGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    isPowerlessOnWerewolvesSide: prejudicedManipulatorGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -59,7 +68,7 @@ function createFakeCreateScandalmongerGameOptionsDto(
 function createFakeCreatePiedPiperGameOptionsDto(piedPiperGameOptions: Partial<CreatePiedPiperGameOptionsDto> = {}, override: object = {}): CreatePiedPiperGameOptionsDto {
   return plainToInstance(CreatePiedPiperGameOptionsDto, {
     charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.number.int({ min: 1, max: 5 }),
-    isPowerlessIfInfected: piedPiperGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    isPowerlessOnWerewolvesSide: piedPiperGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -100,7 +109,7 @@ function createFakeCreateStutteringJudgeGameOptionsDto(
 
 function createFakeCreateBearTamerGameOptionsDto(bearTamerGameOptions: Partial<CreateBearTamerGameOptionsDto> = {}, override: object = {}): CreateBearTamerGameOptionsDto {
   return plainToInstance(CreateBearTamerGameOptionsDto, {
-    doesGrowlIfInfected: bearTamerGameOptions.doesGrowlIfInfected ?? faker.datatype.boolean(),
+    doesGrowlOnWerewolvesSide: bearTamerGameOptions.doesGrowlOnWerewolvesSide ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -243,11 +252,13 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     scandalmonger: createFakeCreateScandalmongerGameOptionsDto(rolesGameOptions.scandalmonger),
     witch: createFakeCreateWitchGameOptionsDto(rolesGameOptions.witch),
     prejudicedManipulator: createFakeCreatePrejudicedManipulatorGameOptionsDto(rolesGameOptions.prejudicedManipulator),
+    actor: createFakeCreateActorGameOptionsDto(rolesGameOptions.actor),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakeCreateActorGameOptionsDto,
   createFakeCreatePrejudicedManipulatorGameOptionsDto,
   createFakeCreateWitchGameOptionsDto,
   createFakeCreateScandalmongerGameOptionsDto,

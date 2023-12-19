@@ -3,6 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
+import { CreateActorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-actor-game-options.dto";
 import { CreatePrejudicedManipulatorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-prejudiced-manipulator-game-options.dto";
 import { CreateCupidGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-game-options.dto";
 import { CreateWitchGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-witch-game-options.dto";
@@ -231,6 +232,15 @@ class CreateRolesGameOptionsDto {
   @Type(() => CreatePrejudicedManipulatorGameOptionsDto)
   @ValidateNested()
   public prejudicedManipulator: CreatePrejudicedManipulatorGameOptionsDto = new CreatePrejudicedManipulatorGameOptionsDto();
+
+  @ApiProperty({
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.actor,
+    required: false,
+  } as ApiPropertyOptions)
+  @IsOptional()
+  @Type(() => CreateActorGameOptionsDto)
+  @ValidateNested()
+  public actor: CreateActorGameOptionsDto = new CreateActorGameOptionsDto();
 }
 
 export { CreateRolesGameOptionsDto };

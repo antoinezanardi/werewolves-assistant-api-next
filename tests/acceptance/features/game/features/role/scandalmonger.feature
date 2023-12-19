@@ -67,11 +67,14 @@ Feature: 🐦‍⬛ Scandalmonger role
 
     When the werewolves eat the player named JB
     Then the player named JB should be murdered by werewolves from eaten
-    And the player named JB should not have the active scandalmonger-marked from scandalmonger attribute
+    And the player named JB should have the active scandalmonger-marked from scandalmonger attribute
     And the game's current play should be survivors to bury-dead-bodies
+    And the game's current play should not have eligible targets
+    And the game's current play can be skipped
 
     When the survivors bury dead bodies
-    Then the game's current play should be survivors to vote
+    Then the player named JB should not have the active scandalmonger-marked from scandalmonger attribute
+    And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be scandalmonger to mark

@@ -1,5 +1,6 @@
 import type { Types } from "mongoose";
 
+import type { GameSource } from "@/modules/game/types/game.type";
 import { createGameAdditionalCard } from "@/modules/game/helpers/game-additional-card/game-additional-card.factory";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
@@ -53,6 +54,16 @@ function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game,
   return updatePlayerInGame(playerId, player, clonedGame);
 }
 
+function removePlayerAttributeByNameAndSourceInGame(playerId: Types.ObjectId, game: Game, attributeName: PlayerAttributeNames, attributeSource: GameSource): Game {
+  const clonedGame = createGame(game);
+  const player = getPlayerWithId(clonedGame, playerId);
+  if (!player) {
+    return clonedGame;
+  }
+  player.attributes = player.attributes.filter(({ name, source }) => name !== attributeName || source !== attributeSource);
+  return updatePlayerInGame(playerId, player, clonedGame);
+}
+
 function prependUpcomingPlayInGame(gamePlay: GamePlay, game: Game): Game {
   const clonedGame = createGame(game);
   clonedGame.upcomingPlays.unshift(gamePlay);
@@ -83,6 +94,7 @@ export {
   addPlayerAttributeInGame,
   addPlayersAttributeInGame,
   removePlayerAttributeByNameInGame,
+  removePlayerAttributeByNameAndSourceInGame,
   prependUpcomingPlayInGame,
   appendUpcomingPlayInGame,
   updateAdditionalCardInGame,

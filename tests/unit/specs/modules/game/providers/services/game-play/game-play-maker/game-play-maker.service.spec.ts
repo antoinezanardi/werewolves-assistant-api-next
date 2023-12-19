@@ -2,10 +2,13 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import lodash from "lodash";
 
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
+import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { GamePlayCauses, GamePlayOccurrences, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import * as GameMutator from "@/modules/game/helpers/game.mutator";
-import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker.service";
+import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/game-play-maker.service";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -15,18 +18,19 @@ import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
+import { createFakeGameHistoryRecord } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeFoxGameOptions, createFakePiedPiperGameOptions, createFakePrejudicedManipulatorGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
-import { createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeActorGameOptions, createFakeFoxGameOptions, createFakePiedPiperGameOptions, createFakePrejudicedManipulatorGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeActingByActorPlayerAttribute, createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeActorAlivePlayer, createFakeElderAlivePlayer, createFakeFoxAlivePlayer, createFakePiedPiperAlivePlayer, createFakePrejudicedManipulatorAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeDeadPlayer, createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Maker Service", () => {
   let services: { gamePlayMaker: GamePlayMakerService };
@@ -56,17 +60,27 @@ describe("Game Play Maker Service", () => {
       handleTieInSheriffElection: jest.SpyInstance;
       survivorsElectSheriff: jest.SpyInstance;
       survivorsVote: jest.SpyInstance;
+      survivorsBuryDeadBodies: jest.SpyInstance;
       actorChoosesCard: jest.SpyInstance;
+    };
+    gameHistoryRecordService: {
+      getPreviousGameHistoryRecord: jest.SpyInstance;
     };
     playerKillerService: {
       killOrRevealPlayer: jest.SpyInstance;
+      applyPlayerDeathOutcomes: jest.SpyInstance;
       isElderKillable: jest.SpyInstance;
       getElderLivesCountAgainstWerewolves: jest.SpyInstance;
+      revealPlayerRole: jest.SpyInstance;
+    };
+    devotedServantGamePlayMakerService: {
+      devotedServantStealsRole: jest.SpyInstance;
     };
     gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
     gameMutator: { prependUpcomingPlayInGame: jest.SpyInstance };
     unexpectedExceptionFactory: {
       createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
+      createCantFindLastDeadPlayersUnexpectedException: jest.SpyInstance;
     };
     lodash: { sample: jest.SpyInstance };
   };
@@ -98,16 +112,24 @@ describe("Game Play Maker Service", () => {
         handleTieInSheriffElection: jest.fn(),
         survivorsElectSheriff: jest.fn(),
         survivorsVote: jest.fn(),
+        survivorsBuryDeadBodies: jest.fn(),
         actorChoosesCard: jest.fn(),
       },
       playerKillerService: {
         killOrRevealPlayer: jest.fn(),
+        applyPlayerDeathOutcomes: jest.fn(),
         isElderKillable: jest.fn(),
         getElderLivesCountAgainstWerewolves: jest.fn(),
+        revealPlayerRole: jest.fn(),
       },
+      devotedServantGamePlayMakerService: { devotedServantStealsRole: jest.fn() },
+      gameHistoryRecordService: { getPreviousGameHistoryRecord: jest.fn() },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
       gameMutator: { prependUpcomingPlayInGame: jest.spyOn(GameMutator, "prependUpcomingPlayInGame").mockImplementation() },
-      unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
+      unexpectedExceptionFactory: {
+        createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation(),
+        createCantFindLastDeadPlayersUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindLastDeadPlayersUnexpectedException").mockImplementation(),
+      },
       lodash: { sample: jest.spyOn(lodash, "sample").mockImplementation() },
     };
 
@@ -120,6 +142,14 @@ describe("Game Play Maker Service", () => {
         {
           provide: PlayerKillerService,
           useValue: mocks.playerKillerService,
+        },
+        {
+          provide: GameHistoryRecordService,
+          useValue: mocks.gameHistoryRecordService,
+        },
+        {
+          provide: DevotedServantGamePlayMakerService,
+          useValue: mocks.devotedServantGamePlayMakerService,
         },
         GamePlayMakerService,
       ],
@@ -420,7 +450,7 @@ describe("Game Play Maker Service", () => {
       expect(services.gamePlayMaker["actorChoosesCard"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should return game with actor having chosen card role and make it used when actor chose a card.", () => {
+    it("should return game with actor having chosen card role, acting attribute and make it used when actor chose a card.", () => {
       const additionalCards = [
         createFakeGameAdditionalCard({ isUsed: false }),
         createFakeGameAdditionalCard({ roleName: RoleNames.SEER, isUsed: false }),
@@ -435,7 +465,11 @@ describe("Game Play Maker Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ players, additionalCards });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenCard: additionalCards[1] });
-      const expectedActor = createFakePlayer({ ...players[0], role: createFakePlayerRole({ ...players[0].role, current: additionalCards[1].roleName }) });
+      const expectedActor = createFakePlayer({
+        ...players[0],
+        role: createFakePlayerRole({ ...players[0].role, current: additionalCards[1].roleName }),
+        attributes: [createFakeActingByActorPlayerAttribute()],
+      });
       const expectedGame = createFakeGame({
         ...game,
         players: [
@@ -535,6 +569,119 @@ describe("Game Play Maker Service", () => {
       await services.gamePlayMaker["sheriffPlays"](play, game);
 
       expect(mocks.gamePlayMakerService.sheriffSettlesVotes).toHaveBeenCalledExactlyOnceWith(play, game);
+    });
+  });
+
+  describe("survivorsBuryDeadBodies", () => {
+    it("should throw error when previous game history record is not found.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const mockedError = new UnexpectedException("survivorsBuryDeadBodies", UnexpectedExceptionReasons.CANT_FIND_LAST_DEAD_PLAYERS, { gameId: game._id.toString() });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(undefined);
+      mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException.mockReturnValueOnce(mockedError);
+
+      await expect(services.gamePlayMaker["survivorsBuryDeadBodies"](play, game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("survivorsBuryDeadBodies", { gameId: game._id });
+    });
+
+    it("should throw error when previous game history record doesn't have dead players.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const mockedError = new UnexpectedException("survivorsBuryDeadBodies", UnexpectedExceptionReasons.CANT_FIND_LAST_DEAD_PLAYERS, { gameId: game._id.toString() });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers: [] }));
+      mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException.mockReturnValueOnce(mockedError);
+
+      await expect(services.gamePlayMaker["survivorsBuryDeadBodies"](play, game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("survivorsBuryDeadBodies", { gameId: game._id });
+    });
+
+    it("should make devoted servant steal role game play when there is one target.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto()];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers: [createFakeDeadPlayer()] }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.devotedServantGamePlayMakerService.devotedServantStealsRole).toHaveBeenCalledExactlyOnceWith(targets[0].player, game);
+    });
+
+    it("should not make devoted servant steal role game play when there is no target.", async() => {
+      const game = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers: [createFakeDeadPlayer()] }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.devotedServantGamePlayMakerService.devotedServantStealsRole).not.toHaveBeenCalled();
+    });
+
+    it("should reveal role for each player when game options say that they must be revealed on death.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ areRevealedOnDeath: true }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const deadPlayers = [createFakeDeadPlayer(players[1] as DeadPlayer), createFakeDeadPlayer(players[2] as DeadPlayer)];
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.playerKillerService.revealPlayerRole).toHaveBeenCalledTimes(deadPlayers.length);
+      expect(mocks.playerKillerService.revealPlayerRole).toHaveBeenCalledWith(players[1], game);
+      expect(mocks.playerKillerService.revealPlayerRole).toHaveBeenCalledWith(players[2], game);
+    });
+
+    it("should not reveal role for each player when game options say that they must not be revealed on death.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ areRevealedOnDeath: false }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const deadPlayers = [createFakeDeadPlayer(players[1] as DeadPlayer), createFakeDeadPlayer(players[2] as DeadPlayer)];
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.playerKillerService.revealPlayerRole).not.toHaveBeenCalled();
+    });
+
+    it("should apply player death outcomes for each dead players from previous game history record when called.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ areRevealedOnDeath: false }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const deadPlayers = [createFakeDeadPlayer(players[1] as DeadPlayer), createFakeDeadPlayer(players[2] as DeadPlayer)];
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockReturnValueOnce(createFakeGameHistoryRecord({ deadPlayers }));
+      mocks.devotedServantGamePlayMakerService.devotedServantStealsRole.mockReturnValueOnce(game);
+      mocks.playerKillerService.revealPlayerRole.mockReturnValue(game);
+      mocks.playerKillerService.applyPlayerDeathOutcomes.mockReturnValue(game);
+      await services.gamePlayMaker["survivorsBuryDeadBodies"](play, game);
+
+      expect(mocks.playerKillerService.applyPlayerDeathOutcomes).toHaveBeenCalledTimes(deadPlayers.length);
+      expect(mocks.playerKillerService.applyPlayerDeathOutcomes).toHaveBeenCalledWith(players[1], game);
+      expect(mocks.playerKillerService.applyPlayerDeathOutcomes).toHaveBeenCalledWith(players[2], game);
     });
   });
 
@@ -970,6 +1117,7 @@ describe("Game Play Maker Service", () => {
     beforeEach(() => {
       mocks.gamePlayMakerService.survivorsElectSheriff = jest.spyOn(services.gamePlayMaker as unknown as { survivorsElectSheriff }, "survivorsElectSheriff").mockImplementation();
       mocks.gamePlayMakerService.survivorsVote = jest.spyOn(services.gamePlayMaker as unknown as { survivorsVote }, "survivorsVote").mockImplementation();
+      mocks.gamePlayMakerService.survivorsBuryDeadBodies = jest.spyOn(services.gamePlayMaker as unknown as { survivorsBuryDeadBodies }, "survivorsBuryDeadBodies").mockImplementation();
     });
 
     it("should return game as is when upcoming play is not for all.", async() => {
@@ -994,6 +1142,14 @@ describe("Game Play Maker Service", () => {
       await services.gamePlayMaker["survivorsPlay"](play, game);
 
       expect(mocks.gamePlayMakerService.survivorsVote).toHaveBeenCalledExactlyOnceWith(play, game);
+    });
+
+    it("should call survivorsBuryDeadBodies method when upcoming play is burying dead bodies.", async() => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsBuryDeadBodies() });
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      await services.gamePlayMaker["survivorsPlay"](play, game);
+
+      expect(mocks.gamePlayMakerService.survivorsBuryDeadBodies).toHaveBeenCalledExactlyOnceWith(play, game);
     });
   });
 
@@ -1058,7 +1214,7 @@ describe("Game Play Maker Service", () => {
       expect(services.gamePlayMaker["thiefChoosesCard"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should update thief role and side when called.", () => {
+    it("should update thief role and side and make his card used when called.", () => {
       const players = [
         createFakeThiefAlivePlayer(),
         createFakeScandalmongerAlivePlayer(),
@@ -1066,10 +1222,10 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
-        createFakeGameAdditionalCard(),
+        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
+        createFakeGameAdditionalCard({ isUsed: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ players, additionalCards });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenCard: additionalCards[0] });
@@ -1085,6 +1241,12 @@ describe("Game Play Maker Service", () => {
           players[1],
           players[2],
           players[3],
+        ],
+        additionalCards: [
+          createFakeGameAdditionalCard({ ...additionalCards[0], isUsed: true }),
+          additionalCards[1],
+          additionalCards[2],
+          additionalCards[3],
         ],
       });
 
@@ -1197,7 +1359,8 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
@@ -1223,12 +1386,40 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },
         attributes: [createFakePowerlessByActorPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedWolfHoundPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlayMaker["wolfHoundChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should return wolf-hound on the werewolves side but without powerless attribute when chosen side is werewolves and wolf-hound is actor in disguise but game options are changed.", () => {
+      const players = [
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWolfHoundAlivePlayer({ role: createFakePlayerRole({ original: RoleNames.ACTOR, current: RoleNames.WOLF_HOUND }) }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
+      const expectedWolfHoundPlayer = createFakePlayer({
+        ...players[1],
+        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -1276,7 +1467,8 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
       const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.VILLAGERS });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
@@ -1876,7 +2068,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -1902,7 +2094,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -1929,7 +2121,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessIfInfected: false }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -1955,7 +2147,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -1982,7 +2174,13 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: false }) }) });
+      const options = createFakeGameOptions({
+        roles: createFakeRolesGameOptions({
+          piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }),
+          prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessOnWerewolvesSide: true }),
+          actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }),
+        }),
+      });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -2008,12 +2206,38 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessIfInfected: true }) }) });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },
         attributes: [createFakePowerlessByAccursedWolfFatherPlayerAttribute()],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+
+      expect(services.gamePlayMaker["accursedWolfFatherInfects"](players[1], game)).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should change target's side to werewolves but not add powerless attribute from accursed wolf-father when target is actor and game options are changed.", () => {
+      const players = [
+        createFakeFoxAlivePlayer(),
+        createFakeActorAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
+      const game = createFakeGameWithCurrentPlay({ players, options });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
       });
       const expectedGame = createFakeGame({
         ...game,

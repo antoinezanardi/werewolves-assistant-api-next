@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { ActorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/actor-game-options/actor-game-options.schema";
 import { PrejudicedManipulatorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";
 import { CupidGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";
 import { CupidLoversGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-lovers-game-options/cupid-game-options.schema";
@@ -29,12 +30,20 @@ import { WildChildGameOptions } from "@/modules/game/schemas/game-options/roles-
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
+function createFakeActorGameOptions(actorGameOptions: Partial<ActorGameOptions> = {}, override: object = {}): ActorGameOptions {
+  return plainToInstance(ActorGameOptions, {
+    isPowerlessOnWerewolvesSide: actorGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
+    additionalCardsCount: actorGameOptions.additionalCardsCount ?? faker.number.int({ min: 1, max: 5 }),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakePrejudicedManipulatorGameOptions(
   prejudicedManipulatorGameOptions: Partial<PrejudicedManipulatorGameOptions> = {},
   override: object = {},
 ): PrejudicedManipulatorGameOptions {
   return plainToInstance(PrejudicedManipulatorGameOptions, {
-    isPowerlessIfInfected: prejudicedManipulatorGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    isPowerlessOnWerewolvesSide: prejudicedManipulatorGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -56,7 +65,7 @@ function createFakeScandalmongerGameOptions(scandalmongerGameOptions: Partial<Sc
 function createFakePiedPiperGameOptions(piedPiperGameOptions: Partial<PiedPiperGameOptions> = {}, override: object = {}): PiedPiperGameOptions {
   return plainToInstance(PiedPiperGameOptions, {
     charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.number.int({ min: 1, max: 5 }),
-    isPowerlessIfInfected: piedPiperGameOptions.isPowerlessIfInfected ?? faker.datatype.boolean(),
+    isPowerlessOnWerewolvesSide: piedPiperGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -94,7 +103,7 @@ function createFakeStutteringJudgeGameOptions(stutteringJudgeGameOptions: Partia
 
 function createFakeBearTamerGameOptions(bearTamerGameOptions: Partial<BearTamerGameOptions> = {}, override: object = {}): BearTamerGameOptions {
   return plainToInstance(BearTamerGameOptions, {
-    doesGrowlIfInfected: bearTamerGameOptions.doesGrowlIfInfected ?? faker.datatype.boolean(),
+    doesGrowlOnWerewolvesSide: bearTamerGameOptions.doesGrowlOnWerewolvesSide ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -228,11 +237,13 @@ function createFakeRolesGameOptions(rolesGameOptions: Partial<RolesGameOptions> 
     scandalmonger: createFakeScandalmongerGameOptions(rolesGameOptions.scandalmonger),
     witch: createFakeWitchGameOptions(rolesGameOptions.witch),
     prejudicedManipulator: createFakePrejudicedManipulatorGameOptions(rolesGameOptions.prejudicedManipulator),
+    actor: createFakeActorGameOptions(rolesGameOptions.actor),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {
+  createFakeActorGameOptions,
   createFakePrejudicedManipulatorGameOptions,
   createFakeWitchGameOptions,
   createFakeScandalmongerGameOptions,

@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_SOURCES } from "@/modules/game/constants/game.constant";
+import { GAME_PLAY_SOURCE_NAMES } from "@/modules/game/constants/game-play/game-play.constant";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
@@ -280,7 +280,7 @@ function createFakeGameHistoryRecordSheriffSettleVotesPlay(gameHistoryRecordPlay
 
 function createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlaySource: Partial<GameHistoryRecordPlaySource> = {}, override: object = {}): GameHistoryRecordPlaySource {
   return plainToInstance(GameHistoryRecordPlaySource, {
-    name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(GAME_SOURCES),
+    name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(GAME_PLAY_SOURCE_NAMES),
     players: gameHistoryRecordPlaySource.players ?? [createFakePlayer()],
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);

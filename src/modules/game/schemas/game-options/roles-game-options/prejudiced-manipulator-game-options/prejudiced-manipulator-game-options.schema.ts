@@ -11,10 +11,10 @@ import { PREJUDICED_MANIPULATOR_GAME_OPTIONS_API_PROPERTIES, PREJUDICED_MANIPULA
   _id: false,
 })
 class PrejudicedManipulatorGameOptions {
-  @ApiProperty(PREJUDICED_MANIPULATOR_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfInfected as ApiPropertyOptions)
-  @Prop(PREJUDICED_MANIPULATOR_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected)
+  @ApiProperty(PREJUDICED_MANIPULATOR_GAME_OPTIONS_API_PROPERTIES.isPowerlessOnWerewolvesSide as ApiPropertyOptions)
+  @Prop(PREJUDICED_MANIPULATOR_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide)
   @Expose()
-  public isPowerlessIfInfected: boolean;
+  public isPowerlessOnWerewolvesSide: boolean;
 }
 
 const PREJUDICED_MANIPULATOR_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(PrejudicedManipulatorGameOptions);

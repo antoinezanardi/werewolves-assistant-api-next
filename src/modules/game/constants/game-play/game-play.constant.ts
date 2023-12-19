@@ -41,6 +41,7 @@ const TARGET_ACTIONS = [
   GamePlayActions.MARK,
   GamePlayActions.SNIFF,
   GamePlayActions.BAN_VOTING,
+  GamePlayActions.BURY_DEAD_BODIES,
 ] as const satisfies Readonly<GamePlayActions[]>;
 
 const VOTE_ACTIONS = [

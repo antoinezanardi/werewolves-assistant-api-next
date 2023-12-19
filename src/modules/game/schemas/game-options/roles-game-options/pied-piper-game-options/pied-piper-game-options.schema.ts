@@ -16,10 +16,10 @@ class PiedPiperGameOptions {
   @Expose()
   public charmedPeopleCountPerNight: number;
 
-  @ApiProperty(PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.isPowerlessIfInfected as ApiPropertyOptions)
-  @Prop(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessIfInfected)
+  @ApiProperty(PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.isPowerlessOnWerewolvesSide as ApiPropertyOptions)
+  @Prop(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide)
   @Expose()
-  public isPowerlessIfInfected: boolean;
+  public isPowerlessOnWerewolvesSide: boolean;
 }
 
 const PIED_PIPER_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(PiedPiperGameOptions);

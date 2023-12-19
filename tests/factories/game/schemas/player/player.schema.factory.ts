@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
 import { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import { Player } from "@/modules/game/schemas/player/player.schema";
@@ -28,6 +29,15 @@ function createFakePlayerRole(playerRole: Partial<PlayerRole> = {}, override: ob
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
+function createFakeDeadPlayer(deadPlayer: Partial<DeadPlayer> = {}, override: object = {}): DeadPlayer {
+  return plainToInstance(DeadPlayer, {
+    ...createFakePlayer(deadPlayer),
+    death: createFakePlayerDeath(deadPlayer.death),
+    isAlive: false,
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakePlayer(player: Partial<Player> = {}, override: object = {}): Player {
   return plainToInstance(Player, {
     _id: player._id ?? createFakeObjectId(),
@@ -46,5 +56,6 @@ function createFakePlayer(player: Partial<Player> = {}, override: object = {}): 
 export {
   createFakePlayerSide,
   createFakePlayerRole,
+  createFakeDeadPlayer,
   createFakePlayer,
 };

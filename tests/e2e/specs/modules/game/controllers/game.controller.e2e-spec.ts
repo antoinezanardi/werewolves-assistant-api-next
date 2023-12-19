@@ -32,7 +32,7 @@ import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
-import { createFakeCreateThiefGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
+import { createFakeCreateActorGameOptionsDto, createFakeCreateThiefGameOptionsDto, createFakeRolesGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
 import { bulkCreateFakeCreateGamePlayerDto, createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
@@ -704,7 +704,26 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
           ],
         }),
-        errorMessage: "additionalCards length for actor must be equal to 3",
+        errorMessage: "additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount",
+      },
+      {
+        test: "should not allow game creation when actor additional cards are more than the expected changed limit set in options.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.SEER, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.HUNTER, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.IDIOT, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.ELDER, recipient: RoleNames.ACTOR }),
+          ],
+          options: createFakeGameOptionsDto({ roles: createFakeRolesGameOptionsDto({ actor: createFakeCreateActorGameOptionsDto({ additionalCardsCount: 1 }) }) }),
+        }),
+        errorMessage: "additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount",
       },
       {
         test: "should not allow game creation when one actor additional card (werewolf role) is is not available for actor.",
@@ -773,6 +792,22 @@ describe("Game Controller", () => {
           ],
         }),
         errorMessage: `additionalCards.roleName for actor must be one of the following values: ${ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES.toString()}`,
+      },
+      {
+        test: "should not allow game creation when one actor additional role card exceeds the maximum occurrences in game possible because another player has it.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.PIED_PIPER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.ACTOR } }),
+          ],
+          additionalCards: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WITCH, recipient: RoleNames.ACTOR }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.SEER, recipient: RoleNames.ACTOR }),
+          ],
+        }),
+        errorMessage: "additionalCards.roleName can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles",
       },
     ])("$test", async({
       payload,
@@ -1025,7 +1060,7 @@ describe("Game Controller", () => {
           twoSisters: { wakingUpInterval: 0 },
           threeBrothers: { wakingUpInterval: 5 },
           fox: { isPowerlessIfMissesWerewolf: false },
-          bearTamer: { doesGrowlIfInfected: false },
+          bearTamer: { doesGrowlOnWerewolvesSide: false },
           stutteringJudge: { voteRequestsCount: 3 },
           wildChild: { isTransformationRevealed: true },
           wolfHound: {
@@ -1039,11 +1074,15 @@ describe("Game Controller", () => {
           },
           piedPiper: {
             charmedPeopleCountPerNight: 1,
-            isPowerlessIfInfected: false,
+            isPowerlessOnWerewolvesSide: false,
           },
           scandalmonger: { markPenalty: 5 },
           witch: { doesKnowWerewolvesTargets: false },
-          prejudicedManipulator: { isPowerlessIfInfected: false },
+          prejudicedManipulator: { isPowerlessOnWerewolvesSide: false },
+          actor: {
+            isPowerlessOnWerewolvesSide: false,
+            additionalCardsCount: 5,
+          },
         },
       };
       const payload = createFakeCreateGameWithPlayersDto({}, { options });

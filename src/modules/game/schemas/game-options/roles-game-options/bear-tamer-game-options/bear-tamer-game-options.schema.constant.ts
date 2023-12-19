@@ -8,16 +8,16 @@ import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/hel
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
 const BEAR_TAMER_GAME_OPTIONS_FIELDS_SPECS = {
-  doesGrowlIfInfected: {
+  doesGrowlOnWerewolvesSide: {
     required: true,
-    default: DEFAULT_GAME_OPTIONS.roles.bearTamer.doesGrowlIfInfected,
+    default: DEFAULT_GAME_OPTIONS.roles.bearTamer.doesGrowlOnWerewolvesSide,
   },
 } as const satisfies Record<keyof BearTamerGameOptions, MongoosePropOptions>;
 
 const BEAR_TAMER_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof BearTamerGameOptions, ApiPropertyOptions>> = {
-  doesGrowlIfInfected: {
-    description: "If set to `true`, the bear tamer will have the `growls` attribute until he dies if he is `infected`",
-    ...convertMongoosePropOptionsToApiPropertyOptions(BEAR_TAMER_GAME_OPTIONS_FIELDS_SPECS.doesGrowlIfInfected),
+  doesGrowlOnWerewolvesSide: {
+    description: "If set to `true`, the bear tamer will have the `growls` attribute until he dies if he is on the werewolves side.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(BEAR_TAMER_GAME_OPTIONS_FIELDS_SPECS.doesGrowlOnWerewolvesSide),
   },
 };
 

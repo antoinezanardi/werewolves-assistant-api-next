@@ -48,7 +48,7 @@ Feature: 🐻 Bear Tamer role
 
   Scenario: 🐻 Bear Tamer's bear doesn't growl when he is infected even if any of his neighbor is a werewolf with the right option
 
-    Given a created game with options described in file no-sheriff-option.json, bear-tamer-bear-doesnt-growl-if-infected-option.json and with the following players
+    Given a created game with options described in file no-sheriff-option.json, bear-tamer-bear-doesnt-growl-on-werewolves-side-option.json and with the following players
       | name    | role                 |
       | Olivia  | villager             |
       | Antoine | bear-tamer           |

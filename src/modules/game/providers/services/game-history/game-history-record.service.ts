@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
@@ -43,24 +44,24 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.create(gameHistoryRecordToInsert);
   }
 
-  public async getLastGameHistoryDefenderProtectsRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
-    return this.gameHistoryRecordRepository.getLastGameHistoryDefenderProtectsRecord(gameId);
+  public async getLastGameHistoryDefenderProtectsRecord(gameId: Types.ObjectId, defenderPlayerId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    return this.gameHistoryRecordRepository.getLastGameHistoryDefenderProtectsRecord(gameId, defenderPlayerId);
   }
 
   public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayActions): Promise<GameHistoryRecord | null> {
     return this.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord(gameId, action);
   }
 
-  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, potion);
+  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, witchPlayerId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, potion);
   }
 
-  public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryAccursedWolfFatherInfectedRecords(gameId);
+  public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId, accursedWolfFatherPlayer: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryAccursedWolfFatherInfectedRecords(gameId, accursedWolfFatherPlayer);
   }
 
-  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords(gameId);
+  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId, stutteringJudgePlayedId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords(gameId, stutteringJudgePlayedId);
   }
 
   public async didJudgeMakeHisSign(gameId: Types.ObjectId): Promise<boolean> {
@@ -68,12 +69,12 @@ export class GameHistoryRecordService {
     return records.length > 0;
   }
 
-  public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryWerewolvesEatElderRecords(gameId);
+  public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId, elderPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryWerewolvesEatElderRecords(gameId, elderPlayerId);
   }
 
-  public async getGameHistoryElderProtectedFromWerewolvesRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryElderProtectedFromWerewolvesRecords(gameId);
+  public async getGameHistoryElderProtectedFromWerewolvesRecords(gameId: Types.ObjectId, elderPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryElderProtectedFromWerewolvesRecords(gameId, elderPlayerId);
   }
 
   public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhases): Promise<GameHistoryRecord[]> {
@@ -105,17 +106,22 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistory(gameId, getGameHistoryDto);
   }
 
-  public async hasGamePlayBeenMade(gameId: Types.ObjectId, play: GamePlay): Promise<boolean> {
-    const records = await this.gameHistoryRecordRepository.getGameHistoryGamePlayRecords(gameId, play, { limit: 1 });
+  public async hasGamePlayBeenMade(gameId: Types.ObjectId, gamePlay: GamePlay): Promise<boolean> {
+    const records = await this.gameHistoryRecordRepository.getGameHistoryGamePlayRecords(gameId, gamePlay, { limit: 1 });
     return records.length > 0;
   }
 
-  private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
+  public async hasGamePlayBeenMadeByPlayer(gameId: Types.ObjectId, gamePlay: GamePlay, player: Player): Promise<boolean> {
+    const records = await this.gameHistoryRecordRepository.getGameHistoryGamePlayMadeByPlayerRecords(gameId, gamePlay, player, { limit: 1 });
+    return records.length > 0;
+  }
+
+  private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): DeadPlayer[] | undefined {
     const { players: newPlayers } = newGame;
     const currentDeadPlayers = newPlayers.filter(player => {
       const matchingBasePlayer = getPlayerWithId(baseGame, player._id);
       return matchingBasePlayer?.isAlive === true && !player.isAlive;
-    });
+    }) as DeadPlayer[];
     return currentDeadPlayers.length ? currentDeadPlayers : undefined;
   }
 
@@ -151,7 +157,7 @@ export class GameHistoryRecordService {
     const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, PlayerAttributeNames.SHERIFF);
     const areSomePlayersDeadFromCurrentVotes = gameHistoryRecordToInsert.deadPlayers?.some(({ death }) => {
       const deathFromVoteCauses = [PlayerDeathCauses.VOTE, PlayerDeathCauses.VOTE_SCAPEGOATED];
-      return death?.cause !== undefined && deathFromVoteCauses.includes(death.cause);
+      return deathFromVoteCauses.includes(death.cause);
     }) === true;
     if (baseGame.currentPlay.action === GamePlayActions.ELECT_SHERIFF) {
       return sheriffPlayer ? GameHistoryRecordVotingResults.SHERIFF_ELECTION : GameHistoryRecordVotingResults.TIE;

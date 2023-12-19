@@ -85,6 +85,8 @@ Feature: 🐺 Accursed Wolf-Father role
       | voter  | against |
       | Olivia | Antoine |
     Then the game's current play should be survivors to bury-dead-bodies
+    And the game's current play should not have eligible targets
+    And the game's current play can be skipped
 
     When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat

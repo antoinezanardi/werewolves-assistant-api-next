@@ -68,11 +68,11 @@ export class GameVictoryService {
   }
 
   private doesPiedPiperWin(game: Game): boolean {
-    const { isPowerlessIfInfected } = game.options.roles.piedPiper;
+    const { isPowerlessOnWerewolvesSide } = game.options.roles.piedPiper;
     const piedPiperPlayer = getPlayerWithCurrentRole(game, RoleNames.PIED_PIPER);
     const leftToCharmPlayers = getLeftToCharmByPiedPiperPlayers(game);
     return !!piedPiperPlayer && isPlayerAliveAndPowerful(piedPiperPlayer, game) && !leftToCharmPlayers.length &&
-      (!isPowerlessIfInfected || piedPiperPlayer.side.current === RoleSides.VILLAGERS);
+      (!isPowerlessOnWerewolvesSide || piedPiperPlayer.side.current === RoleSides.VILLAGERS);
   }
 
   private doesAngelWin(game: Game): boolean {
