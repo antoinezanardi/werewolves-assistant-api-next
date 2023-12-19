@@ -1,5 +1,39 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.26.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.25.0...v1.26.0) (2023-12-19)
+
+
+### 🚀 Features
+
+* **game-options:** actor additional cards count game option ([#747](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/747)) ([5c6b062](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/5c6b062b1dafd004b2e6296ead5577b07172cceb)), closes [#735](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/735)
+* **game-options:** actor not powerless on werewolves side game option ([#745](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/745)) ([8a7f3a8](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/8a7f3a8e5537eb81301f4eb083fc0abef35da6be)), closes [#734](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/734)
+* **servant:** devoted servant role ([#752](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/752)) ([ee85bac](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ee85bacf3ff84e8c129fca27c9b3cb7d56554a7c)), closes [#672](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/672)
+* **thief:** chosen thief card is used when played ([#741](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/741)) ([a6806ea](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a6806ea0e9e6eab56f1dfe9c1aca763b480de35c)), closes [#727](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/727)
+
+
+### 🔩 Refactor
+
+* **game-options:** rename powerless if infected to powerless on werewolves side ([#746](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/746)) ([9423611](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/9423611a8f864e8c9303784bb052fb01db84b717)), closes [#743](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/743)
+* **game-play-validation:** use `canBeSkipped` variable for validating thief play ([#740](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/740)) ([482cd53](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/482cd53c24b5a4ff8efa1f8dfdf08c364362b83a)), closes [#724](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/724)
+
+
+### ✅ Tests
+
+* **rusty-sword-knight:** acceptance test for powerless rusty sword knight ([#742](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/742)) ([072ed25](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/072ed25610ab871a5005098680033913db806d64)), closes [#731](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/731)
+
+
+### 🧹 Chore
+
+* **deps:** bump semantic-release from 22.0.10 to 22.0.12 ([#738](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/738)) ([df7c16b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/df7c16b9b05e675ac86fdb27b764601f3e144973))
+* **deps:** bump the eslint group with 1 update ([#757](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/757)) ([4294657](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/4294657f5eb6152ded57525c6891dd31348f8434))
+* **deps:** bump the eslint group with 1 update ([#762](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/762)) ([f81b5a7](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f81b5a7b6a3559f3f345f8cadf73af1c41211ac3))
+* **deps:** bump the nest group with 1 update ([#756](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/756)) ([9843a9e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/9843a9e2ea42f3e8acdc280621a3cc49c113b8cd))
+* **deps:** bump the nest group with 5 updates ([#764](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/764)) ([d488944](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d488944277e22a68bb76beed793c844671482c25))
+* **deps:** bump the types group with 1 update ([#761](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/761)) ([f27b285](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f27b2852aef1c4ef9940e4616d9d3d723f9a033f))
+* **deps:** bump the types group with 2 updates ([#736](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/736)) ([919049a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/919049a5e0813db9ecdfdbda0c780ae4fc0fcb0d))
+* **deps:** bump the types group with 2 updates ([#765](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/765)) ([d5b5332](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d5b533204ff36d124e97fdfb54e87d3dd258551c))
+* **github-actions:** bump github/codeql-action from 2 to 3 ([#753](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/753)) ([fbb87c8](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/fbb87c89686fa78ac051626bc05466055a264d66))
+
 ## [1.25.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.24.0...v1.25.0) (2023-12-11)
 
 
