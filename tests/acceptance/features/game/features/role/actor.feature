@@ -170,6 +170,39 @@ Feature: 🎭 Actor role
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "Chosen card is not for actor"
 
+  Scenario: 🎭 Actor can't choose another card if he becomes powerless by elder
+
+    Given a created game with additional cards described in file cupid-defender-hunter-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | villager |
+      | JB      | werewolf |
+      | Thomas  | elder    |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role hunter
+    Then the player named Antoine should be currently a hunter and originally a actor
+    And the game's additional card with role hunter for actor should be used
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should be alive
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter | target |
+      | JB    | Thomas |
+    Then the player named Thomas should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the following players should have the active powerless from elder attribute
+      | name    |
+      | Antoine |
+      | Olivia  |
+    And the game's current play should be werewolves to eat
+
+
   Scenario: 🎭 Actor acts as cupid, defender and hunter
 
     Given a created game with additional cards described in file cupid-defender-hunter-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
@@ -717,7 +750,70 @@ Feature: 🎭 Actor role
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
-  Scenario: 🎭 Actor doesn't become powerless when he is infected by the accursed wolf-father with good game option
+  Scenario: 🎭 Actor becomes powerless when he is infected by the accursed wolf-father, even if his role is not powerless if infected
+
+    Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, pied-piper-not-powerless-on-werewolves-side-option.json and with the following players
+      | name    | role                 |
+      | Antoine | actor                |
+      | Olivia  | villager             |
+      | JB      | werewolf             |
+      | Thomas  | villager             |
+      | Louise  | accursed-wolf-father |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role pied-piper
+    Then the player named Antoine should be currently a pied-piper and originally a actor
+    And the game's additional card with role pied-piper for actor should be used
+    And the game's current play should be werewolves to eat
+
+    When the accursed wolf-father infects the player named Antoine
+    Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should not have the active powerless from accursed-wolf-father attribute
+    And the game's current play should be pied-piper to charm
+
+    When the pied piper charms the following players
+      | name   |
+      | JB     |
+      | Thomas |
+    Then the player named JB should have the active charmed from pied-piper attribute
+    And the player named Thomas should have the active charmed from pied-piper attribute
+    And the game's current play should be charmed to meet-each-other
+
+    When the charmed people meet each other
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the player named Antoine should be currently a actor and originally a actor
+    And the player named Antoine should have the active powerless from accursed-wolf-father attribute
+    And the game's current play should be werewolves to eat
+
+  Scenario: 🎭 Actor doesn't become powerless when he is infected by the accursed wolf-father with good game option when acting with a role that is powerless if infected
+
+    Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, actor-not-powerless-on-werewolves-side-option.json and with the following players
+      | name    | role                 |
+      | Antoine | actor                |
+      | Olivia  | villager             |
+      | JB      | werewolf             |
+      | Thomas  | villager             |
+      | Louise  | accursed-wolf-father |
+    Then the game's current play should be actor to choose-card
+
+    When the actor chooses card with role pied-piper
+    Then the player named Antoine should be currently a pied-piper and originally a actor
+    And the game's additional card with role pied-piper for actor should be used
+    And the game's current play should be werewolves to eat
+
+    When the accursed wolf-father infects the player named Antoine
+    Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the player named Antoine should have the active powerless from accursed-wolf-father attribute
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the player named Antoine should be currently a actor and originally a actor
+    And the player named Antoine should not have the active powerless from accursed-wolf-father attribute
+    And the game's current play should be actor to choose-card
+
+  Scenario: 🎭 Actor doesn't become powerless when he is infected by the accursed wolf-father with good game option when acting with a role that is not powerless if infected
 
     Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, actor-not-powerless-on-werewolves-side-option.json and with the following players
       | name    | role                 |
