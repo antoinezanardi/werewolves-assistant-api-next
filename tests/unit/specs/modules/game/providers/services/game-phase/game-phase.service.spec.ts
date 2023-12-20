@@ -1,6 +1,7 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helper";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
@@ -12,11 +13,11 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeBearTamerGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeActorGameOptions, createFakeBearTamerGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeActingByActorPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeGrowledByBearTamerPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeActorAlivePlayer, createFakeBearTamerAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeActingByActorPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeGrowledByBearTamerPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeActorAlivePlayer, createFakeBearTamerAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer, createFakePlayerRole, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Phase Service", () => {
@@ -386,6 +387,52 @@ describe("Game Phase Service", () => {
     });
   });
 
+  describe("isActingPlayerAttributeRelevantOnStartingNight", () => {
+    it.each<{
+      test: string;
+      attribute: PlayerAttribute;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when attribute is nor acting or powerless.",
+        attribute: createFakeEatenByWerewolvesPlayerAttribute(),
+        game: createFakeGame(),
+        expected: true,
+      },
+      {
+        test: "should return false when attribute is acting.",
+        attribute: createFakeActingByActorPlayerAttribute(),
+        game: createFakeGame(),
+        expected: false,
+      },
+      {
+        test: "should return true when attribute is powerless from actor.",
+        attribute: createFakePowerlessByActorPlayerAttribute(),
+        game: createFakeGame(),
+        expected: true,
+      },
+      {
+        test: "should return true when attribute is powerless from elder.",
+        attribute: createFakePowerlessByElderPlayerAttribute(),
+        game: createFakeGame(),
+        expected: true,
+      },
+      {
+        test: "should return true when attribute is powerless from accursed wolf-father and game options say that actor is powerless on werewolves side.",
+        attribute: createFakePowerlessByActorPlayerAttribute(),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) }) }),
+        expected: true,
+      },
+      {
+        test: "should return false when attribute is powerless from accursed wolf-father and game options say that actor is not powerless on werewolves side.",
+        attribute: createFakePowerlessByActorPlayerAttribute(),
+        game: createFakeGame({ options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) }) }),
+        expected: false,
+      },
+    ]);
+  });
+
   describe("applyStartingNightActingPlayerOutcomes", () => {
     it("should set player current role to actor and remove obsolete powerless and acting attributes when called.", () => {
       const actorRole = createFakePlayerRole({
@@ -399,9 +446,11 @@ describe("Game Phase Service", () => {
         createFakePowerlessByActorPlayerAttribute(),
         createFakeContaminatedByRustySwordKnightPlayerAttribute(),
         createFakeActingByActorPlayerAttribute(),
+        createFakePowerlessByFoxPlayerAttribute(),
       ];
       const actorPlayer = createFakeWerewolfAlivePlayer({ role: actorRole, attributes });
-      const game = createFakeGame({ players: [actorPlayer] });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGame({ players: [actorPlayer], options });
       const expectedGame = createFakeGame({
         ...game,
         players: [
@@ -409,9 +458,149 @@ describe("Game Phase Service", () => {
             ...actorPlayer,
             role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
             attributes: [
+              attributes[0],
               attributes[1],
               attributes[2],
               attributes[3],
+            ],
+          }),
+        ],
+      });
+      const result = services.gamePhase["applyStartingNightActingPlayerOutcomes"](actorPlayer, game);
+
+      expect(result).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should add powerless attribute from accursed wolf-father when actor is powerless on werewolves side and doesn't have it yet.", () => {
+      const actorRole = createFakePlayerRole({
+        original: RoleNames.ACTOR,
+        current: RoleNames.WEREWOLF,
+        isRevealed: true,
+      });
+      const attributes = [
+        createFakePowerlessByElderPlayerAttribute(),
+        createFakePowerlessByActorPlayerAttribute(),
+        createFakeContaminatedByRustySwordKnightPlayerAttribute(),
+        createFakeActingByActorPlayerAttribute(),
+      ];
+      const actorPlayer = createFakeWerewolfAlivePlayer({ role: actorRole, attributes });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGame({ players: [actorPlayer], options });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakeActorAlivePlayer({
+            ...actorPlayer,
+            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            attributes: [
+              attributes[0],
+              attributes[1],
+              attributes[2],
+              createFakePowerlessByAccursedWolfFatherPlayerAttribute(),
+            ],
+          }),
+        ],
+      });
+      const result = services.gamePhase["applyStartingNightActingPlayerOutcomes"](actorPlayer, game);
+
+      expect(result).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should not add powerless attribute from accursed wolf-father when actor is powerless on werewolves side and already has it.", () => {
+      const actorRole = createFakePlayerRole({
+        original: RoleNames.ACTOR,
+        current: RoleNames.WEREWOLF,
+        isRevealed: true,
+      });
+      const attributes = [
+        createFakePowerlessByElderPlayerAttribute(),
+        createFakePowerlessByActorPlayerAttribute(),
+        createFakePowerlessByAccursedWolfFatherPlayerAttribute(),
+        createFakeContaminatedByRustySwordKnightPlayerAttribute(),
+        createFakeActingByActorPlayerAttribute(),
+      ];
+      const actorPlayer = createFakeWerewolfAlivePlayer({ role: actorRole, attributes });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGame({ players: [actorPlayer], options });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakeActorAlivePlayer({
+            ...actorPlayer,
+            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            attributes: [
+              attributes[0],
+              attributes[1],
+              attributes[2],
+              attributes[3],
+            ],
+          }),
+        ],
+      });
+      const result = services.gamePhase["applyStartingNightActingPlayerOutcomes"](actorPlayer, game);
+
+      expect(result).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should not add powerless attribute from accursed wolf-father when actor is not powerless on werewolves side.", () => {
+      const actorRole = createFakePlayerRole({
+        original: RoleNames.ACTOR,
+        current: RoleNames.WEREWOLF,
+        isRevealed: true,
+      });
+      const attributes = [
+        createFakePowerlessByElderPlayerAttribute(),
+        createFakePowerlessByActorPlayerAttribute(),
+        createFakeContaminatedByRustySwordKnightPlayerAttribute(),
+        createFakeActingByActorPlayerAttribute(),
+      ];
+      const actorPlayer = createFakeWerewolfAlivePlayer({ role: actorRole, attributes });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
+      const game = createFakeGame({ players: [actorPlayer], options });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakeActorAlivePlayer({
+            ...actorPlayer,
+            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            attributes: [
+              attributes[0],
+              attributes[1],
+              attributes[2],
+            ],
+          }),
+        ],
+      });
+      const result = services.gamePhase["applyStartingNightActingPlayerOutcomes"](actorPlayer, game);
+
+      expect(result).toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should not add powerless attribute from accursed wolf-father when actor is powerless on werewolves side but on villagers side.", () => {
+      const actorRole = createFakePlayerRole({
+        original: RoleNames.ACTOR,
+        current: RoleNames.VILLAGER,
+        isRevealed: true,
+      });
+      const attributes = [
+        createFakePowerlessByElderPlayerAttribute(),
+        createFakePowerlessByActorPlayerAttribute(),
+        createFakeContaminatedByRustySwordKnightPlayerAttribute(),
+        createFakeActingByActorPlayerAttribute(),
+      ];
+      const actorPlayer = createFakeSeerAlivePlayer({ role: actorRole, attributes });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
+      const game = createFakeGame({ players: [actorPlayer], options });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          createFakeActorAlivePlayer({
+            ...actorPlayer,
+            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            attributes: [
+              attributes[0],
+              attributes[1],
+              attributes[2],
             ],
           }),
         ],
