@@ -9,8 +9,9 @@ USER node
 
 WORKDIR /app
 
+COPY --chown=node:node package.json ./
+COPY --chown=node:node pnpm-lock.yaml ./
 COPY --chown=node:node tsconfig*.json ./
-COPY --chown=node:node package*.json ./
 
 RUN pnpm install --ignore-scripts
 
@@ -30,7 +31,8 @@ USER node
 
 WORKDIR /app
 
-COPY --chown=node:node package*.json ./
+COPY --chown=node:node package.json ./
+COPY --chown=node:node pnpm-lock.yaml ./
 COPY --chown=node:node tsconfig*.json ./
 COPY --chown=node:node src/ src/
 COPY --chown=node:node --from=development /app/node_modules node_modules/

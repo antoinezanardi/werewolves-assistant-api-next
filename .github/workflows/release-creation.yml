@@ -46,21 +46,27 @@ jobs:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
 
-      - name: Setup NodeJS ⚙️
+      - name: Install pnpm 🏗️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup NodeJS ✨
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Cache npm dependencies 🥡
+      - name: Cache pnpm dependencies 🥡
         uses: actions/cache@v3
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-pnpm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Install project dependencies 📦
-        run: npm ci --ignore-scripts
+        run: pnpm ci --ignore-scripts
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
 
   mutant-tests:
@@ -75,27 +81,33 @@ jobs:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
 
-      - name: Setup NodeJS ⚙️
+      - name: Install pnpm 🏗️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup NodeJS ✨
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Restore npm dependencies from cache 🥡
+      - name: Restore pnpm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-pnpm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Start Docker containers 🐳
-        run: npm run docker:test:start
+        run: pnpm run docker:test:start
 
       - name: Mutant tests 👽
-        run: npm run test:stryker:ci
+        run: pnpm run test:stryker:ci
 
       - name: Stop Docker containers 🐳
-        run: npm run docker:test:stop
+        run: pnpm run docker:test:stop
 
   release:
     name: Release 🏷️
@@ -108,18 +120,24 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Setup NodeJS ⚙️
+      - name: Install pnpm 🏗️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup NodeJS ✨
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Restore npm dependencies from cache 🥡
+      - name: Restore pnpm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-pnpm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Release 🏷️
         id: release
@@ -148,24 +166,30 @@ jobs:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
 
-      - name: Setup NodeJS ⚙️
+      - name: Install pnpm 🏗️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup NodeJS ✨
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Restore npm dependencies from cache 🥡
+      - name: Restore pnpm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-pnpm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Start Docker containers 🐳
-        run: npm run docker:test:start
+        run: pnpm run docker:test:start
 
       - name: All tests 🧬
-        run: npm run test:cov 2>&1 | ./scripts/transform-jest-results-as-env-variables.sh >> "$GITHUB_ENV"
+        run: pnpm run test:cov 2>&1 | ./scripts/transform-jest-results-as-env-variables.sh >> "$GITHUB_ENV"
 
       - name: Set Jest Results As Outputs 📝
         id: outputs
@@ -188,7 +212,7 @@ jobs:
           key: ${{ runner.os }}-tests-coverage-v3-${{hashFiles('tests/coverage/lcov.info')}}
 
       - name: Stop Docker containers 🐳
-        run: npm run docker:test:stop
+        run: pnpm run docker:test:stop
 
   acceptance-tests:
     name: Acceptance Tests 🥒
@@ -203,31 +227,37 @@ jobs:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
 
-      - name: Setup NodeJS ⚙️
+      - name: Install pnpm 🏗️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup NodeJS ✨
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Restore npm dependencies from cache 🥡
+      - name: Restore pnpm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-pnpm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Start Docker containers 🐳
-        run: npm run docker:test:start
+        run: pnpm run docker:test:start
 
       - name: Acceptance Tests 🥒
-        run: npm run test:cucumber:publish
+        run: pnpm run test:cucumber:publish
 
       - name: Set Cucumber Results As Outputs 📝
         id: outputs
         run: ./scripts/transform-cucumber-report-as-env-variables.sh >> "$GITHUB_OUTPUT"
 
       - name: Stop Docker containers 🐳
-        run: npm run docker:test:stop
+        run: pnpm run docker:test:stop
 
   badges:
     name: Generate Badges 💠

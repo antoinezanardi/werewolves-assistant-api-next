@@ -27,7 +27,7 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Install project dependencies 📦
         run: npm ci --ignore-scripts
@@ -65,7 +65,7 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-npm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Get next release version and create release changelog 🏷️
         id: release
