@@ -12,6 +12,10 @@ module.exports = {
     "!**/*.schema.ts",
     "!**/*.constant.ts",
   ],
+  plugins: [
+    "@stryker-mutator/jest-runner",
+    "@stryker-mutator/typescript-checker",
+  ],
   jest: { configFile: "config/jest/jest-global.ts" },
   reporters: ["clear-text", "progress", "html", "json"],
   htmlReporter: { fileName: "tests/stryker/coverage/index.html" },
