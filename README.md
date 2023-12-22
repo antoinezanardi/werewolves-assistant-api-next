@@ -14,7 +14,7 @@
 [![GitHub release](https://img.shields.io/github/release/antoinezanardi/werewolves-assistant-api-next.svg)](https://GitHub.com/antoinezanardi/werewolves-assistant-api-next/releases/)
 [![semantic-release: conventional commits](https://img.shields.io/badge/semantic--release-conventional%20commits-Æ1A7DBD?logo=semantic-release&color=1E7FBF)](https://github.com/semantic-release/semantic-release)
 [![GitHub license](https://img.shields.io/github/license/antoinezanardi/werewolves-assistant-api-next.svg)](https://github.com/antoinezanardi/https://img.shields.io/github/license/werewolves-assistant-api-next.svg/blob/main/LICENSE)
-![NPM](https://img.shields.io/badge/-npm-black?style=flat-square&logoColor=white&logo=npm&color=CE0201)[![Known Vulnerabilities](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next/badge.svg?targetFile=package.json&style=flat-square)](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next?targetFile=package.json)
+![Dependencies](https://img.shields.io/badge/-dependencies-black?style=flat-square&logoColor=white&logo=pnpm&color=B76507)[![Known Vulnerabilities](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next/badge.svg?targetFile=package.json&style=flat-square)](https://snyk.io/test/github/antoinezanardi/werewolves-assistant-api-next?targetFile=package.json)
 
 [![Tests count](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/tests-count)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/tests-count)
 [![Scenarios](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)](https://byob.yarr.is/antoinezanardi/werewolves-assistant-api-next/scenarios)
@@ -66,17 +66,22 @@ This is the **next** version of the current **[Werewolves Assistant API](https:/
 
 To install this project, you will need to have on your machine :
 
-![NPM](https://img.shields.io/badge/-npm-black?style=for-the-badge&logoColor=white&logo=npm&color=CE0201)
+![Node](https://img.shields.io/badge/-nodejs-black?style=for-the-badge&logoColor=white&logo=node.js&color=366A31)
+![PNPM](https://img.shields.io/badge/-pnpm-black?style=for-the-badge&logoColor=white&logo=pnpm&color=B76507)
 ![Docker](https://img.shields.io/badge/-Docker-black?style=for-the-badge&logoColor=white&logo=docker&color=004EA2)
+
+We recommend to use the node version specified in the `.nvmrc` file.
+
+**If you don't have pnpm installed, you can still use `npm` for all commands above.**
 
 Then, run the following commands :
 
 ```bash
 # Install dependencies and Husky hooks
-npm install
+pnpm install
 
 # Run the app in dev mode
-npm run start:dev
+pnpm run start:dev
 ```
 
 The above command will start the app in development mode and watch for changes on local.
@@ -89,10 +94,10 @@ In order to build the app for production, run the following command :
 
 ```bash
 # Build the app
-npm run build
+pnpm run build
 
 # Run the app in production mode
-npm run start:prod
+pnpm run start:prod
 ```
 
 You can also run the app in production mode with Docker, more information in the **[Docker section](#docker)**.
@@ -109,13 +114,13 @@ To run the app in development mode with Docker, multiple commands are available 
 
 ```bash
 # Run the app in development mode with Docker
-npm run docker:dev:start
+pnpm run docker:dev:start
 
 # Stop the app in development mode with Docker
-npm run docker:dev:stop
+pnpm run docker:dev:stop
 
 # Reset the app in development mode with Docker (stop, remove image, containers and volumes, then start)
-npm run docker:dev:reset
+pnpm run docker:dev:reset
 ```
 
 When starting the app in development mode with Docker, a container for the API and a container for the MongoDB database are created.
@@ -130,13 +135,13 @@ To run the app in production mode with Docker, multiple commands are available :
 
 ```bash
 # Run the app in production mode with Docker
-npm run docker:production:start
+pnpm run docker:production:start
 
 # Stop the app in production mode with Docker
-npm run docker:production:stop
+pnpm run docker:production:stop
 
 # Reset the app in production mode with Docker (stop, remove image, containers and volumes, then start)
-npm run docker:production:reset
+pnpm run docker:production:reset
 ```
 
 When starting the app in production mode with Docker, a container for the API and a container for the MongoDB database are created.
@@ -151,13 +156,13 @@ To run the tests available in this project thanks to Docker, multiple commands a
 
 ```bash
 # Deploy test containers (4 databases are created to parallelize tests)
-npm run docker:test:start
+pnpm run docker:test:start
 
 # Stop test containers
-npm run docker:test:stop
+pnpm run docker:test:stop
 
 # Reset test containers (stop, remove image, containers and volumes, then start)
-npm run docker:test:reset
+pnpm run docker:test:reset
 ```
 
 For more information, please check the **[docker-compose.yml file](https://github.com/antoinezanardi/werewolves-assistant-api-next/blob/main/docker/werewolves-assistant-api-test/docker-compose.yml)**.
@@ -204,38 +209,38 @@ Then, run one of the following commands :
 
 ```bash
 # Assure you started test Docker containers (4 databases are created to parallelize tests)
-npm run docker:test:start
+pnpm run docker:test:start
 
 # Run unit tests with coverage
-npm run test:unit:cov
+pnpm run test:unit:cov
 
 # Run e2e tests with coverage
-npm run test:e2e:cov
+pnpm run test:e2e:cov
 
 # Run both unit and e2e tests with coverage
-npm run test:cov
+pnpm run test:cov
 
 # Run both unit and e2e tests only on staged files (run on pre-commit)
-npm run test:staged
+pnpm run test:staged
 
 # Run acceptance tests
-npm run test:cucumber
+pnpm run test:cucumber
 
 # Run acceptance tests and publish the report
-npm run test:cucumber:publish
+pnpm run test:cucumber:publish
 
 # Run mutant tests with coverage
-npm run test:stryker
+pnpm run test:stryker
 
 # Run mutant tests with coverage from scratch (without using the incremental file)
-npm run test:stryker:force
+pnpm run test:stryker:force
 ```
 
 ## <a name="env-variables">🌿 Env variables</a>
 
 Environnement files are available in the **[env directory](https://github.com/antoinezanardi/werewolves-assistant-api-next/tree/main/env)**.
 
-You can create a `.env` file in this directory to override the default values when starting the API locally with `npm run start` command.
+You can create a `.env` file in this directory to override the default values when starting the API locally with `pnpm run start` command.
 
 Environment variables are :
 
@@ -269,13 +274,13 @@ Then, run one of the following commands :
 
 ```bash
 # Lint 
-npm run lint
+pnpm run lint
 
 # Lint and fix
-npm run lint:fix
+pnpm run lint:fix
 
 # Lint and fix only on staged files (runs on pre-commit)
-npm run lint:staged
+pnpm run lint:staged
 ```
 
 ### 🥇 Project quality scanner
@@ -338,17 +343,17 @@ You can find all the workflows in the **[.github/workflows directory](https://gi
 ### 🌳 Animated tree visualisation of the project's evolution with **[Gource](https://gource.io/)**
 ```shell
 # Please ensure that `gource` is installed on your system.
-npm run gource
+pnpm run gource
 ```
 
 ### 🔀 Create git branch with a conventional name
 ```shell
-npm run script:create-branch
+pnpm run script:create-branch
 ```
 
 ### ⤴️ Create pull request against the `develop` branch from current branch
 ```shell
-npm run script:create-pull-request
+pnpm run script:create-pull-request
 ```
 
 ### 📣 To all IntelliJ IDEs users (IntelliJ, Webstorm, PHPStorm, etc.)
