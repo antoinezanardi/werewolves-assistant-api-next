@@ -16,21 +16,27 @@ jobs:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
 
-      - name: Setup NodeJS ⚙️
+      - name: Install pnpm 🏗️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup NodeJS ✨
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Cache npm dependencies 🥡
         uses: actions/cache@v3
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-pnpm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Install project dependencies 📦
-        run: npm ci --ignore-scripts
+        run: pnpm install --ignore-scripts
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
 
   get-next-release-version:
@@ -54,11 +60,17 @@ jobs:
           git checkout develop
           git merge main
 
-      - name: Setup NodeJS ⚙️
+      - name: Install pnpm 🏗️
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: false
+
+      - name: Setup NodeJS ✨
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Restore npm dependencies from cache 🥡
         uses: actions/cache/restore@v3

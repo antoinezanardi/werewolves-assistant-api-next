@@ -72,7 +72,7 @@ To install this project, you will need to have on your machine :
 
 We recommend to use the node version specified in the `.nvmrc` file.
 
-**If you don't have `pnpm` installed, you can still use `npm` for all commands above, but we recommend to use `pnpm` for faster and more reliable installs.**
+**If you don't have `pnpm` installed, you can still use `npm` for all commands below, but we recommend to use `pnpm` for faster and more reliable installs.**
 
 Then, run the following commands :
 
