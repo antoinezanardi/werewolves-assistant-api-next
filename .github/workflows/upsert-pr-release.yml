@@ -77,7 +77,7 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-pnpm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Get next release version and create release changelog 🏷️
         id: release
