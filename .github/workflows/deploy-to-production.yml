@@ -45,14 +45,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: 'npm'
+          cache: 'pnpm'
 
-      - name: Restore npm dependencies from cache 🥡
+      - name: Restore pnpm dependencies from cache 🥡
         uses: actions/cache/restore@v3
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-npm-v3-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-pnpm-v3-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Write production .env file 📝
         run: |
@@ -65,7 +65,7 @@ jobs:
           cat env/.env.production
 
       - name: Build app ✨
-        run: npm run build
+        run: pnpm run build
 
       - name: Auth to GCP ☁️
         uses: 'google-github-actions/auth@v2'
@@ -79,7 +79,7 @@ jobs:
           version=${version//./-}
           echo "FORMATTED_VERSION_FOR_GCP=${version}" >> $GITHUB_OUTPUT
 
-      - name: Deploy to production 🛰️
+      - name: Deploy to production 🚀
         uses: 'google-github-actions/deploy-appengine@v2'
         with:
           project_id: ${{ secrets.PRODUCTION_GCP_PROJECT_ID }}
