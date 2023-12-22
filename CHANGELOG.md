@@ -1,5 +1,24 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.27.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.26.0...v1.27.0) (2023-12-22)
+
+
+### 🚀 Features
+
+* **pnpm:** use pnpm instead of npm ([#768](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/768)) ([6408a42](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/6408a42fe25a819c1de348cbcc0281e36629a087)), closes [#748](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/748)
+
+
+### 🐛 Bug Fixes
+
+* **actor:** actor not powerless on some interactions with elder and accursed wolf-father ([#766](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/766)) ([e6ec0c0](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/e6ec0c0e72084e77ee9ebdf989e128e320c272c4)), closes [#744](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/744)
+* **pnpm:** correct install on upsert pr release workflow ([#771](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/771)) ([afcb096](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/afcb0962c9987bd9bbd0cbd125529b43978f1166))
+
+
+### 🧹 Chore
+
+* **deps:** bump @cucumber/cucumber from 10.0.1 to 10.1.0 ([#770](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/770)) ([95204c4](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/95204c4f9f909e58055906f4da1769b35331e0b3))
+* **deps:** bump the types group with 1 update ([#769](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/769)) ([8fd0099](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/8fd00990c71f918d34b1d5376dde6cd511197d7f))
+
 ## [1.26.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.25.0...v1.26.0) (2023-12-19)
 
 
