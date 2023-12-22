@@ -13,7 +13,7 @@ COPY --chown=node:node package.json ./
 COPY --chown=node:node pnpm-lock.yaml ./
 COPY --chown=node:node tsconfig*.json ./
 
-RUN pnpm install --ignore-scripts
+RUN pnpm install
 
 COPY --chown=node:node src/ src/
 COPY --chown=node:node public/ public/
@@ -41,7 +41,7 @@ RUN pnpm run build
 
 ENV NODE_ENV production
 
-RUN pnpm install --prod --ignore-scripts
+RUN pnpm install --prod
 
 FROM node:21-alpine AS production
 ENV PNPM_HOME="/pnpm"
