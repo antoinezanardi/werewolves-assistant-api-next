@@ -28,7 +28,7 @@
     "url": "git+https://github.com/antoinezanardi/werewolves-assistant-api-next.git"
   },
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "is-ci || husky install",
     "prebuild": "rimraf dist",
     "build": "NODE_ENV=production nest build",
     "docker:dev:start": "docker rmi antoinezanardi/werewolves-assistant-api-dev; docker-compose -f docker/werewolves-assistant-api-dev/docker-compose.yml up -d",
@@ -85,6 +85,7 @@
     "class-validator": "^0.14.0",
     "dot-object": "^2.1.4",
     "fastify": "^4.25.1",
+    "is-ci": "^3.0.1",
     "isobject": "^4.0.0",
     "lodash": "^4.17.21",
     "mongoose": "^8.0.3",
