@@ -1,5 +1,19 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.27.2](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.27.1...v1.27.2) (2023-12-22)
+
+
+### 🔁 CI
+
+* **package:** remove ignore scripts flag from installs ([#774](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/774)) ([c63da00](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/c63da00cbff3a0b5e1803c0edd15f7004be1aa25))
+
+## [1.27.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.27.0...v1.27.1) (2023-12-22)
+
+
+### 🔁 CI
+
+* **pnpm:** install pnpm during production deployment ([#772](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/772)) ([dd27889](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/dd278893d3e68e950845ebe3710703da37d6ec97))
+
 ## [1.27.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.26.0...v1.27.0) (2023-12-22)
 
 
