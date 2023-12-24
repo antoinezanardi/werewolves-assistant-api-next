@@ -4,7 +4,7 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, doesGameHaveUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getFoxSniffedPlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, doesGameHaveUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getFoxSniffedPlayers, getGroupOfPlayers, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole, getEligibleCupidTargets } from "@/modules/game/helpers/game.helper";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GetNearestPlayerOptions } from "@/modules/game/types/game.type";
@@ -14,13 +14,15 @@ import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-
 import type { ExceptionInterpolations } from "@/shared/exception/types/exception.type";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
+import { createFakeCupidGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeCupidAlivePlayer, createFakePiedPiperAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
@@ -445,7 +447,7 @@ describe("Game Helper", () => {
     });
   });
 
-  describe("getLeftToCharmByPiedPiperPlayers", () => {
+  describe("getEligiblePiedPiperTargets", () => {
     it("should get left to charm by pied piper players when called.", () => {
       const players = [
         createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
@@ -456,11 +458,11 @@ describe("Game Helper", () => {
       ];
       const game = createFakeGame({ players });
       
-      expect(getLeftToCharmByPiedPiperPlayers(game)).toStrictEqual<Player[]>([players[2], players[4]]);
+      expect(getEligiblePiedPiperTargets(game)).toStrictEqual<Player[]>([players[2], players[4]]);
     });
   });
 
-  describe("getLeftToEatByWerewolvesPlayers", () => {
+  describe("getEligibleWerewolvesTargets", () => {
     it("should return left to eat by werewolves players when called.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
@@ -471,11 +473,11 @@ describe("Game Helper", () => {
       ];
       const game = createFakeGame({ players });
 
-      expect(getLeftToEatByWerewolvesPlayers(game)).toStrictEqual<Player[]>([players[1]]);
+      expect(getEligibleWerewolvesTargets(game)).toStrictEqual<Player[]>([players[1]]);
     });
   });
 
-  describe("getLeftToEatByWhiteWerewolfPlayers", () => {
+  describe("getEligibleWhiteWerewolfTargets", () => {
     it("should return left to eat by white werewolf players when called.", () => {
       const players = [
         createFakeWhiteWerewolfAlivePlayer(),
@@ -486,7 +488,46 @@ describe("Game Helper", () => {
       ];
       const game = createFakeGame({ players });
 
-      expect(getLeftToEatByWhiteWerewolfPlayers(game)).toStrictEqual<Player[]>([players[4]]);
+      expect(getEligibleWhiteWerewolfTargets(game)).toStrictEqual<Player[]>([players[4]]);
+    });
+  });
+
+  describe("getEligibleCupidTargets", () => {
+    it("should return left to charm by cupid players when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeCupidAlivePlayer(),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: false }) }) });
+      const game = createFakeGame({ players, options });
+
+      expect(getEligibleCupidTargets(game)).toStrictEqual<Player[]>([
+        players[0],
+        players[1],
+        players[2],
+        players[4],
+      ]);
+    });
+
+    it("should return left to charm by cupid players without cupid himself when called with cupid must win with lovers option.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeCupidAlivePlayer(),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }) }) });
+      const game = createFakeGame({ players, options });
+
+      expect(getEligibleCupidTargets(game)).toStrictEqual<Player[]>([
+        players[0],
+        players[2],
+        players[4],
+      ]);
     });
   });
 

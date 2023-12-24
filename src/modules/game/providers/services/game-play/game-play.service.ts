@@ -11,7 +11,7 @@ import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.
 import { createGamePlay, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { areGamePlaysEqual, canSurvivorsVote, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
-import { getGroupOfPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { getGroupOfPlayers, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -209,7 +209,7 @@ export class GamePlayService {
       return shouldWhiteWerewolfBeCalledOnCurrentTurn && !!getPlayerDtoWithRole(game, RoleNames.WHITE_WEREWOLF);
     }
     const { doSkipCallIfNoTarget } = game.options.roles;
-    const availableTargets = getLeftToEatByWhiteWerewolfPlayers(game);
+    const availableTargets = getEligibleWhiteWerewolfTargets(game);
     const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, RoleNames.WHITE_WEREWOLF);
     return shouldWhiteWerewolfBeCalledOnCurrentTurn && !!whiteWerewolfPlayer && isPlayerAliveAndPowerful(whiteWerewolfPlayer, game) &&
       (!doSkipCallIfNoTarget || !!availableTargets.length);
@@ -228,7 +228,7 @@ export class GamePlayService {
       return !!getPlayerDtoWithRole(game, RoleNames.BIG_BAD_WOLF);
     }
     const { doSkipCallIfNoTarget } = game.options.roles;
-    const availableTargets = getLeftToEatByWerewolvesPlayers(game);
+    const availableTargets = getEligibleWerewolvesTargets(game);
     const bigBadWolfPlayer = getPlayerWithCurrentRole(game, RoleNames.BIG_BAD_WOLF);
     return !!bigBadWolfPlayer && isPlayerAliveAndPowerful(bigBadWolfPlayer, game) && (!doSkipCallIfNoTarget || !!availableTargets.length);
   }
