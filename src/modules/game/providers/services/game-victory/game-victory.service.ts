@@ -54,10 +54,12 @@ export class GameVictoryService {
   }
 
   private doLoversWin(game: Game): boolean {
+    const { mustWinWithLovers: mustCupidWinWithLovers } = game.options.roles.cupid;
     const lovers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
     return lovers.length > 0 && game.players.every(player => {
+      const isPlayerCupid = player.role.current === RoleNames.CUPID;
       const isPlayerInLove = doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game);
-      return isPlayerInLove && player.isAlive || !isPlayerInLove && !player.isAlive;
+      return isPlayerInLove && player.isAlive || !isPlayerInLove && !player.isAlive || isPlayerCupid && mustCupidWinWithLovers;
     });
   }
 

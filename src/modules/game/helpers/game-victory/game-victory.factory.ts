@@ -1,7 +1,8 @@
 import { plainToInstance } from "class-transformer";
 
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
-import { getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
@@ -27,10 +28,13 @@ function createAngelGameVictory(game: Game, gameVictory: Partial<GameVictory> = 
 }
 
 function createLoversGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
-  const inLovePlayers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
+  const { mustWinWithLovers: mustCupidWinWithLovers } = game.options.roles.cupid;
+  const winners = game.players.filter(player =>
+    doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game) ||
+    player.role.current === RoleNames.CUPID && mustCupidWinWithLovers);
   return createGameVictory({
     type: GameVictoryTypes.LOVERS,
-    winners: inLovePlayers,
+    winners,
     ...gameVictory,
   });
 }

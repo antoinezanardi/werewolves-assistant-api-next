@@ -5,7 +5,7 @@
     <scripts>
       <script value="test:cucumber" />
     </scripts>
-    <arguments value="-- --tags &quot;@angel-role&quot;" />
+    <arguments value="--tags &quot;@angel-role&quot;" />
     <node-interpreter value="project" />
     <envs />
     <method v="2" />

@@ -185,6 +185,7 @@ function createFakeCreateCupidLoversGameOptionsDto(cupidLoversGameOptions: Parti
 function createFakeCreateCupidGameOptionsDto(cupidGameOptions: Partial<CreateCupidGameOptionsDto> = {}, override: object = {}): CreateCupidGameOptionsDto {
   return plainToInstance(CreateCupidGameOptionsDto, {
     lovers: createFakeCreateCupidLoversGameOptionsDto(cupidGameOptions.lovers),
+    mustWinWithLovers: cupidGameOptions.mustWinWithLovers ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

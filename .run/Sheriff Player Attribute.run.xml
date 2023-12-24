@@ -5,7 +5,7 @@
     <scripts>
       <script value="test:cucumber" />
     </scripts>
-    <arguments value="-- --tags &quot;@sheriff-player-attribute&quot;" />
+    <arguments value="--tags &quot;@sheriff-player-attribute&quot;" />
     <node-interpreter value="project" />
     <envs />
     <method v="2" />

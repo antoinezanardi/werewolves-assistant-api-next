@@ -196,9 +196,11 @@ export class GamePlayAugmenterService {
   }
 
   private getCupidGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+    const { mustWinWithLovers: mustCupidWinWithLovers } = game.options.roles.cupid;
     const alivePlayers = getAlivePlayers(game);
+    const possibleCupidTargets = mustCupidWinWithLovers ? alivePlayers.filter(player => player.role.current !== RoleNames.CUPID) : alivePlayers;
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.CHARM, source: RoleNames.CUPID }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
+    const interactablePlayers: InteractablePlayer[] = possibleCupidTargets.map(player => ({ player, interactions }));
     const boundaries: GamePlayEligibleTargetsBoundaries = { min: 2, max: 2 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }

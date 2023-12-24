@@ -1049,7 +1049,10 @@ describe("Game Controller", () => {
             isTalkative: false,
             canSeeRoles: false,
           },
-          cupid: { lovers: { doRevealRoleToEachOther: true } },
+          cupid: {
+            lovers: { doRevealRoleToEachOther: true },
+            mustWinWithLovers: true,
+          },
           littleGirl: { isProtectedByDefender: true },
           defender: { canProtectTwice: true },
           elder: {

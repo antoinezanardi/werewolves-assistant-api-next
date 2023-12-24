@@ -183,3 +183,120 @@ Feature: 💘 Cupid role
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "At least one of the cupid targets can't be charmed"
+
+  Scenario: 💘 Cupid wins with lovers with right good option
+
+    Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json and with the following players
+      | name    | role     |
+      | Antoine | cupid    |
+      | Olivia  | werewolf |
+      | JB      | villager |
+      | Thomas  | idiot    |
+      | Louise  | villager |
+    Then the game's current play should be cupid to charm
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be one-night-only
+    And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 2 to 2
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Olivia |
+      | JB     |
+      | Thomas |
+      | Louise |
+
+    When the cupid shoots an arrow at the player named Olivia and the player named Thomas
+    Then the game's current play should be lovers to meet-each-other
+
+    When the lovers meet each other
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Louise
+    Then the player named Louise should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | source  | target |
+      | Antoine | JB     |
+      | Thomas  | JB     |
+    Then the player named JB should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
+    And the game's winners should be lovers with the following players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | Thomas  |
+
+  Scenario: 💘 Cupid can't choose himself when he must win with lovers
+
+    Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json and with the following players
+      | name    | role     |
+      | Antoine | cupid    |
+      | Olivia  | werewolf |
+      | JB      | villager |
+      | Thomas  | idiot    |
+      | Louise  | villager |
+    Then the game's current play should be cupid to charm
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be one-night-only
+    And the game's current play can not be skipped
+    And the game's current play should have eligible targets boundaries from 2 to 2
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Olivia |
+      | JB     |
+      | Thomas |
+      | Louise |
+
+    When the cupid shoots an arrow at the player named Antoine and the player named Thomas
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "At least one of the cupid targets can't be charmed"
+
+  Scenario: 💘 Lovers win anyway even if cupid is dead and he must win with them
+
+    Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json and with the following players
+      | name    | role     |
+      | Antoine | cupid    |
+      | Olivia  | werewolf |
+      | JB      | villager |
+      | Thomas  | idiot    |
+
+    When the cupid shoots an arrow at the player named Olivia and the player named Thomas
+    Then the game's current play should be lovers to meet-each-other
+
+    When the lovers meet each other
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | source | target |
+      | Olivia | JB     |
+      | Thomas | JB     |
+    Then the player named JB should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's status should be over
+    And the game's winners should be lovers with the following players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | Thomas  |
