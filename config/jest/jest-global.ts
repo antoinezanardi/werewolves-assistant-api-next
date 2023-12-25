@@ -18,7 +18,7 @@ const JEST_GLOBAL_CONFIG: Config = {
   maxWorkers: 4,
   setupFiles: ["<rootDir>/tests/global-setup.ts"],
   setupFilesAfterEnv: ["jest-extended/all"],
-  coverageReporters: ["clover", "json-summary", "lcov", "text", "text-summary"],
+  coverageReporters: ["clover", "json-summary", "lcov", "text", "text-summary", "html-spa"],
   collectCoverageFrom: [
     "src/**/*.ts",
     "!src/main.ts",

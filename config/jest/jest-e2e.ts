@@ -17,7 +17,7 @@ const JEST_E2E_CONFIG: Config = {
   maxWorkers: 4,
   clearMocks: true,
   setupFilesAfterEnv: ["jest-extended/all"],
-  coverageReporters: ["clover", "json", "lcov", "text", "text-summary"],
+  coverageReporters: ["clover", "json", "lcov", "text", "text-summary", "html-spa"],
   collectCoverageFrom: [
     "src/**/*.module.ts",
     "src/**/*.controller.ts",
