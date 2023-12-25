@@ -21,7 +21,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeDefenderGameOptions, createFakePiedPiperGameOptions, createFakeRolesGameOptions, createFakeThiefGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeCupidGameOptions, createFakeDefenderGameOptions, createFakePiedPiperGameOptions, createFakeRolesGameOptions, createFakeThiefGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
 import { createFakeGamePlayEligibleTargetsBoundaries } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema.factory";
 import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
@@ -32,7 +32,7 @@ import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePla
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeAngelAlivePlayer, createFakeDefenderAlivePlayer, createFakeDevotedServantAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeAngelAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeDevotedServantAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeDeadPlayer, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Augmenter Service", () => {
@@ -90,11 +90,13 @@ describe("Game Play Augmenter Service", () => {
       getCupidGamePlayEligibleTargets: jest.SpyInstance;
       canBigBadWolfSkipGamePlay: jest.SpyInstance;
       canThiefSkipGamePlay: jest.SpyInstance;
+      canCupidSkipGamePlay: jest.SpyInstance;
     };
     gameHelper: {
-      getLeftToEatByWerewolvesPlayers: jest.SpyInstance;
-      getLeftToEatByWhiteWerewolfPlayers: jest.SpyInstance;
-      getLeftToCharmByPiedPiperPlayers: jest.SpyInstance;
+      getEligibleWerewolvesTargets: jest.SpyInstance;
+      getEligibleWhiteWerewolfTargets: jest.SpyInstance;
+      getEligiblePiedPiperTargets: jest.SpyInstance;
+      getEligibleCupidTargets: jest.SpyInstance;
       getAllowedToVotePlayers: jest.SpyInstance;
     };
     gameHistoryRecordService: {
@@ -166,11 +168,13 @@ describe("Game Play Augmenter Service", () => {
         getCupidGamePlayEligibleTargets: jest.fn(),
         canBigBadWolfSkipGamePlay: jest.fn(),
         canThiefSkipGamePlay: jest.fn(),
+        canCupidSkipGamePlay: jest.fn(),
       },
       gameHelper: {
-        getLeftToEatByWerewolvesPlayers: jest.spyOn(GameHelper, "getLeftToEatByWerewolvesPlayers"),
-        getLeftToEatByWhiteWerewolfPlayers: jest.spyOn(GameHelper, "getLeftToEatByWhiteWerewolfPlayers"),
-        getLeftToCharmByPiedPiperPlayers: jest.spyOn(GameHelper, "getLeftToCharmByPiedPiperPlayers"),
+        getEligibleWerewolvesTargets: jest.spyOn(GameHelper, "getEligibleWerewolvesTargets"),
+        getEligibleWhiteWerewolfTargets: jest.spyOn(GameHelper, "getEligibleWhiteWerewolfTargets"),
+        getEligiblePiedPiperTargets: jest.spyOn(GameHelper, "getEligiblePiedPiperTargets"),
+        getEligibleCupidTargets: jest.spyOn(GameHelper, "getEligibleCupidTargets"),
         getAllowedToVotePlayers: jest.spyOn(GameHelper, "getAllowedToVotePlayers"),
       },
       gameHistoryRecordService: {
@@ -830,7 +834,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValueOnce([
+      mocks.gameHelper.getEligibleWerewolvesTargets.mockReturnValueOnce([
         players[0],
         players[1],
       ]);
@@ -867,7 +871,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      mocks.gameHelper.getLeftToEatByWerewolvesPlayers.mockReturnValueOnce([]);
+      mocks.gameHelper.getEligibleWerewolvesTargets.mockReturnValueOnce([]);
 
       const expectedInteractablePlayers = [];
       const expectedGamePlayEligibleTargets = createFakeGamePlayEligibleTargets({
@@ -887,9 +891,10 @@ describe("Game Play Augmenter Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer({ isAlive: false }),
         createFakeVillagerAlivePlayer({ isAlive: false }),
-        createFakeVillagerAlivePlayer(),
+        createFakeCupidAlivePlayer(),
       ];
-      const game = createFakeGame({ players });
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: false }) }) });
+      const game = createFakeGame({ players, options });
       const expectedInteraction = createFakePlayerInteraction({
         source: RoleNames.CUPID,
         type: PlayerInteractionTypes.CHARM,
@@ -913,6 +918,53 @@ describe("Game Play Augmenter Service", () => {
       });
 
       expect(services.gamePlayAugmenter["getCupidGamePlayEligibleTargets"](game)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
+    });
+
+    it("should return all alive and not cupid interactable players with 2 to 2 targets boundaries when game options says that cupid must win with lovers.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeCupidAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }) }) });
+      const game = createFakeGame({ players, options });
+      const expectedInteraction = createFakePlayerInteraction({
+        source: RoleNames.CUPID,
+        type: PlayerInteractionTypes.CHARM,
+      });
+      const expectedInteractablePlayers = [
+        createFakeInteractablePlayer({
+          player: players[0],
+          interactions: [expectedInteraction],
+        }),
+        createFakeInteractablePlayer({
+          player: players[1],
+          interactions: [expectedInteraction],
+        }),
+      ];
+      const expectedGamePlayEligibleTargets = createFakeGamePlayEligibleTargets({
+        interactablePlayers: expectedInteractablePlayers,
+        boundaries: {
+          min: 2,
+          max: 2,
+        },
+      });
+
+      expect(services.gamePlayAugmenter["getCupidGamePlayEligibleTargets"](game)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
+    });
+
+    it("should return undefined when there is not enough targets for cupid.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ isAlive: false }),
+        createFakeVillagerAlivePlayer({ isAlive: false }),
+        createFakeCupidAlivePlayer(),
+      ];
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }) }) });
+      const game = createFakeGame({ players, options });
+
+      expect(services.gamePlayAugmenter["getCupidGamePlayEligibleTargets"](game)).toBeUndefined();
     });
   });
 
@@ -1126,7 +1178,7 @@ describe("Game Play Augmenter Service", () => {
         players,
         options,
       });
-      mocks.gameHelper.getLeftToCharmByPiedPiperPlayers.mockReturnValueOnce([
+      mocks.gameHelper.getEligiblePiedPiperTargets.mockReturnValueOnce([
         players[0],
         players[1],
       ]);
@@ -1167,7 +1219,7 @@ describe("Game Play Augmenter Service", () => {
         players,
         options,
       });
-      mocks.gameHelper.getLeftToCharmByPiedPiperPlayers.mockReturnValueOnce([
+      mocks.gameHelper.getEligiblePiedPiperTargets.mockReturnValueOnce([
         players[0],
         players[1],
       ]);
@@ -1309,7 +1361,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValueOnce([
+      mocks.gameHelper.getEligibleWhiteWerewolfTargets.mockReturnValueOnce([
         players[0],
         players[1],
       ]);
@@ -1346,7 +1398,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      mocks.gameHelper.getLeftToEatByWhiteWerewolfPlayers.mockReturnValueOnce([]);
+      mocks.gameHelper.getEligibleWhiteWerewolfTargets.mockReturnValueOnce([]);
       const expectedInteractablePlayers = [];
       const expectedGamePlayEligibleTargets = createFakeGamePlayEligibleTargets({
         interactablePlayers: expectedInteractablePlayers,
@@ -1879,6 +1931,32 @@ describe("Game Play Augmenter Service", () => {
     });
   });
 
+  describe("canCupidSkipGamePlay", () => {
+    it.each<{
+      test: string;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when expected there are at least 2 targets for cupid.",
+        game: createFakeGame({
+          players: [
+            createFakeVillagerAlivePlayer(),
+            createFakeVillagerAlivePlayer(),
+          ],
+        }),
+        expected: false,
+      },
+      {
+        test: "should return true when expected there are less than 2 targets for cupid.",
+        game: createFakeGame({ players: [createFakeVillagerAlivePlayer()] }),
+        expected: true,
+      },
+    ])("$test", ({ game, expected }) => {
+      expect(services.gamePlayAugmenter["canCupidSkipGamePlay"](game)).toBe(expected);
+    });
+  });
+
   describe("canBigBadWolfSkipGamePlay", () => {
     it.each<{
       test: string;
@@ -1959,6 +2037,7 @@ describe("Game Play Augmenter Service", () => {
       mocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canSurvivorsSkipGamePlay }, "canSurvivorsSkipGamePlay").mockImplementation();
       mocks.gamePlayAugmenterService.canBigBadWolfSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canBigBadWolfSkipGamePlay }, "canBigBadWolfSkipGamePlay").mockImplementation();
       mocks.gamePlayAugmenterService.canThiefSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canThiefSkipGamePlay }, "canThiefSkipGamePlay").mockImplementation();
+      mocks.gamePlayAugmenterService.canCupidSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canCupidSkipGamePlay }, "canCupidSkipGamePlay").mockImplementation();
     });
 
     it("should return false when game play source name is not in canBeSkippedPlayMethods.", () => {
@@ -2040,6 +2119,14 @@ describe("Game Play Augmenter Service", () => {
       services.gamePlayAugmenter["canGamePlayBeSkipped"](game, gamePlay);
 
       expect(mocks.gamePlayAugmenterService.canThiefSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call canCupidSkipGamePlay method when game play source name is cupid.", () => {
+      const gamePlay = createFakeGamePlayCupidCharms();
+      const game = createFakeGame();
+      services.gamePlayAugmenter["canGamePlayBeSkipped"](game, gamePlay);
+
+      expect(mocks.gamePlayAugmenterService.canCupidSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
     });
   });
 

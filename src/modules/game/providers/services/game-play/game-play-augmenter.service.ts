@@ -7,7 +7,7 @@ import { createGamePlayEligibleTargetsBoundaries } from "@/modules/game/helpers/
 import { createGamePlayEligibleTargets } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets.factory";
 import { createInteractablePlayer } from "@/modules/game/helpers/game-play/game-play-eligible-targets/interactable-player/interactable-player.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
-import { getAlivePlayers, getAliveVillagerSidedPlayers, getAllowedToVotePlayers, getGroupOfPlayers, getLeftToCharmByPiedPiperPlayers, getLeftToEatByWerewolvesPlayers, getLeftToEatByWhiteWerewolfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { getAlivePlayers, getAliveVillagerSidedPlayers, getAllowedToVotePlayers, getGroupOfPlayers, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, getEligibleCupidTargets, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
@@ -28,7 +28,7 @@ import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNom
 @Injectable()
 export class GamePlayAugmenterService {
   private readonly getEligibleTargetsPlayMethods: Partial<
-  Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlayEligibleTargets | Promise<GamePlayEligibleTargets | undefined>>
+  Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlayEligibleTargets | Promise<GamePlayEligibleTargets | undefined> | undefined>
   > = {
       [PlayerAttributeNames.SHERIFF]: async(game, gamePlay) => this.getSheriffGamePlayEligibleTargets(game, gamePlay),
       [PlayerGroups.SURVIVORS]: async(game, gamePlay) => this.getSurvivorsGamePlayEligibleTargets(game, gamePlay),
@@ -61,6 +61,7 @@ export class GamePlayAugmenterService {
     [RoleNames.WHITE_WEREWOLF]: () => true,
     [RoleNames.WITCH]: () => true,
     [RoleNames.ACTOR]: () => true,
+    [RoleNames.CUPID]: (game: Game) => this.canCupidSkipGamePlay(game),
   };
 
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
@@ -187,19 +188,23 @@ export class GamePlayAugmenterService {
   }
 
   private getBigBadWolfGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
-    const leftToEatByBigBadWolfPlayers = getLeftToEatByWerewolvesPlayers(game);
-    const leftToEatByBigBadWolfPlayersCount = leftToEatByBigBadWolfPlayers.length ? 1 : 0;
+    const eligibleWerewolvesTargets = getEligibleWerewolvesTargets(game);
+    const eligibleBigBadWolfTargetsCount = eligibleWerewolvesTargets.length ? 1 : 0;
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.EAT, source: RoleNames.BIG_BAD_WOLF }];
-    const interactablePlayers: InteractablePlayer[] = leftToEatByBigBadWolfPlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: leftToEatByBigBadWolfPlayersCount, max: leftToEatByBigBadWolfPlayersCount };
+    const interactablePlayers: InteractablePlayer[] = eligibleWerewolvesTargets.map(player => ({ player, interactions }));
+    const boundaries: GamePlayEligibleTargetsBoundaries = { min: eligibleBigBadWolfTargetsCount, max: eligibleBigBadWolfTargetsCount };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
-  private getCupidGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
-    const alivePlayers = getAlivePlayers(game);
+  private getCupidGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets | undefined {
+    const expectedPlayersToCharmCount = 2;
+    const eligibleCupidTargets = getEligibleCupidTargets(game);
+    if (eligibleCupidTargets.length < expectedPlayersToCharmCount) {
+      return undefined;
+    }
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.CHARM, source: RoleNames.CUPID }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 2, max: 2 };
+    const interactablePlayers: InteractablePlayer[] = eligibleCupidTargets.map(player => ({ player, interactions }));
+    const boundaries: GamePlayEligibleTargetsBoundaries = { min: expectedPlayersToCharmCount, max: expectedPlayersToCharmCount };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
@@ -237,10 +242,10 @@ export class GamePlayAugmenterService {
 
   private getPiedPiperGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
     const { charmedPeopleCountPerNight } = game.options.roles.piedPiper;
-    const leftToCharmByPiedPiperPlayers = getLeftToCharmByPiedPiperPlayers(game);
-    const leftToCharmByPiedPiperPlayersCount = leftToCharmByPiedPiperPlayers.length;
+    const eligiblePiedPiperTargets = getEligiblePiedPiperTargets(game);
+    const leftToCharmByPiedPiperPlayersCount = eligiblePiedPiperTargets.length;
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.CHARM, source: RoleNames.PIED_PIPER }];
-    const interactablePlayers: InteractablePlayer[] = leftToCharmByPiedPiperPlayers.map(player => ({ player, interactions }));
+    const interactablePlayers: InteractablePlayer[] = eligiblePiedPiperTargets.map(player => ({ player, interactions }));
     const countToCharm = Math.min(charmedPeopleCountPerNight, leftToCharmByPiedPiperPlayersCount);
     const boundaries: GamePlayEligibleTargetsBoundaries = { min: countToCharm, max: countToCharm };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
@@ -272,7 +277,7 @@ export class GamePlayAugmenterService {
   }
 
   private getWhiteWerewolfGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
-    const leftToEatByWhiteWerewolfPlayers = getLeftToEatByWhiteWerewolfPlayers(game);
+    const leftToEatByWhiteWerewolfPlayers = getEligibleWhiteWerewolfTargets(game);
     const maxTargetsToEatCount = leftToEatByWhiteWerewolfPlayers.length ? 1 : 0;
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.EAT, source: RoleNames.WHITE_WEREWOLF }];
     const interactablePlayers: InteractablePlayer[] = leftToEatByWhiteWerewolfPlayers.map(player => ({ player, interactions }));
@@ -349,8 +354,14 @@ export class GamePlayAugmenterService {
     return gamePlay.action === GamePlayActions.BURY_DEAD_BODIES || canBeSkipped;
   }
 
+  private canCupidSkipGamePlay(game: Game): boolean {
+    const expectedPlayersToCharmCount = 2;
+    const eligibleCupidTargets = getEligibleCupidTargets(game);
+    return eligibleCupidTargets.length < expectedPlayersToCharmCount;
+  }
+
   private canBigBadWolfSkipGamePlay(game: Game): boolean {
-    const leftToEatByWerewolvesPlayers = getLeftToEatByWerewolvesPlayers(game);
+    const leftToEatByWerewolvesPlayers = getEligibleWerewolvesTargets(game);
     return leftToEatByWerewolvesPlayers.length === 0;
   }
 

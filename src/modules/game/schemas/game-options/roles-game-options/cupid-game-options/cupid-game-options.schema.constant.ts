@@ -14,12 +14,20 @@ const CUPID_GAME_OPTIONS_FIELDS_SPECS = {
     type: CUPID_LOVERS_GAME_OPTIONS_SCHEMA,
     default: DEFAULT_GAME_OPTIONS.roles.cupid.lovers,
   },
+  mustWinWithLovers: {
+    required: false,
+    default: DEFAULT_GAME_OPTIONS.roles.cupid.mustWinWithLovers,
+  },
 } as const satisfies Record<keyof CupidGameOptions, MongoosePropOptions>;
 
 const CUPID_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof CupidGameOptions, ApiPropertyOptions>> = {
   lovers: {
     description: "Game lovers from `cupid` role options.",
     ...convertMongoosePropOptionsToApiPropertyOptions(CUPID_GAME_OPTIONS_FIELDS_SPECS.lovers),
+  },
+  mustWinWithLovers: {
+    description: "If set to `true`, cupid teams up with the lovers he chooses. Thus, if the lovers and him are the only ones left alive, they win the game together.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(CUPID_GAME_OPTIONS_FIELDS_SPECS.mustWinWithLovers),
   },
 };
 

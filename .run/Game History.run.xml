@@ -5,7 +5,7 @@
     <scripts>
       <script value="test:cucumber" />
     </scripts>
-    <arguments value="-- --tags &quot;@game-history&quot;" />
+    <arguments value="--tags &quot;@game-history&quot;" />
     <node-interpreter value="project" />
     <envs />
     <method v="2" />

@@ -4,7 +4,7 @@ import { createAngelGameVictory, createLoversGameVictory, createNoneGameVictory,
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { areAllPlayersDead, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getLeftToCharmByPiedPiperPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { areAllPlayersDead, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getEligiblePiedPiperTargets, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
@@ -54,10 +54,12 @@ export class GameVictoryService {
   }
 
   private doLoversWin(game: Game): boolean {
+    const { mustWinWithLovers: mustCupidWinWithLovers } = game.options.roles.cupid;
     const lovers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
     return lovers.length > 0 && game.players.every(player => {
+      const isPlayerCupid = player.role.current === RoleNames.CUPID;
       const isPlayerInLove = doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game);
-      return isPlayerInLove && player.isAlive || !isPlayerInLove && !player.isAlive;
+      return isPlayerInLove && player.isAlive || !isPlayerInLove && !player.isAlive || isPlayerCupid && mustCupidWinWithLovers;
     });
   }
 
@@ -70,7 +72,7 @@ export class GameVictoryService {
   private doesPiedPiperWin(game: Game): boolean {
     const { isPowerlessOnWerewolvesSide } = game.options.roles.piedPiper;
     const piedPiperPlayer = getPlayerWithCurrentRole(game, RoleNames.PIED_PIPER);
-    const leftToCharmPlayers = getLeftToCharmByPiedPiperPlayers(game);
+    const leftToCharmPlayers = getEligiblePiedPiperTargets(game);
     return !!piedPiperPlayer && isPlayerAliveAndPowerful(piedPiperPlayer, game) && !leftToCharmPlayers.length &&
       (!isPowerlessOnWerewolvesSide || piedPiperPlayer.side.current === RoleSides.VILLAGERS);
   }

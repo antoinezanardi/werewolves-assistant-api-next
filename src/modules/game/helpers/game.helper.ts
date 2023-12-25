@@ -95,18 +95,24 @@ function getAliveWerewolfSidedPlayers(game: Game): Player[] {
   return game.players.filter(player => player.isAlive && player.side.current === RoleSides.WEREWOLVES);
 }
 
-function getLeftToCharmByPiedPiperPlayers(game: Game): Player[] {
+function getEligiblePiedPiperTargets(game: Game): Player[] {
   return game.players.filter(player => player.isAlive && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CHARMED, game) &&
     player.role.current !== RoleNames.PIED_PIPER);
 }
 
-function getLeftToEatByWerewolvesPlayers(game: Game): Player[] {
+function getEligibleWerewolvesTargets(game: Game): Player[] {
   return game.players.filter(player => player.isAlive && player.side.current === RoleSides.VILLAGERS &&
     !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.EATEN, game));
 }
 
-function getLeftToEatByWhiteWerewolfPlayers(game: Game): Player[] {
+function getEligibleWhiteWerewolfTargets(game: Game): Player[] {
   return game.players.filter(player => player.isAlive && player.side.current === RoleSides.WEREWOLVES && player.role.current !== RoleNames.WHITE_WEREWOLF);
+}
+
+function getEligibleCupidTargets(game: Game): Player[] {
+  const { mustWinWithLovers: mustCupidWinWithLovers } = game.options.roles.cupid;
+  const alivePlayers = getAlivePlayers(game);
+  return mustCupidWinWithLovers ? alivePlayers.filter(player => player.role.current !== RoleNames.CUPID) : alivePlayers;
 }
 
 function getGroupOfPlayers(game: Game, group: PlayerGroups): Player[] {
@@ -216,9 +222,10 @@ export {
   getAlivePlayers,
   getAliveVillagerSidedPlayers,
   getAliveWerewolfSidedPlayers,
-  getLeftToCharmByPiedPiperPlayers,
-  getLeftToEatByWerewolvesPlayers,
-  getLeftToEatByWhiteWerewolfPlayers,
+  getEligiblePiedPiperTargets,
+  getEligibleWerewolvesTargets,
+  getEligibleWhiteWerewolfTargets,
+  getEligibleCupidTargets,
   getGroupOfPlayers,
   isGameSourceRole,
   isGameSourceGroup,
