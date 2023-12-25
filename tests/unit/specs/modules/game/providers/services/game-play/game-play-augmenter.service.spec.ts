@@ -90,11 +90,13 @@ describe("Game Play Augmenter Service", () => {
       getCupidGamePlayEligibleTargets: jest.SpyInstance;
       canBigBadWolfSkipGamePlay: jest.SpyInstance;
       canThiefSkipGamePlay: jest.SpyInstance;
+      canCupidSkipGamePlay: jest.SpyInstance;
     };
     gameHelper: {
       getEligibleWerewolvesTargets: jest.SpyInstance;
       getEligibleWhiteWerewolfTargets: jest.SpyInstance;
       getEligiblePiedPiperTargets: jest.SpyInstance;
+      getEligibleCupidTargets: jest.SpyInstance;
       getAllowedToVotePlayers: jest.SpyInstance;
     };
     gameHistoryRecordService: {
@@ -166,11 +168,13 @@ describe("Game Play Augmenter Service", () => {
         getCupidGamePlayEligibleTargets: jest.fn(),
         canBigBadWolfSkipGamePlay: jest.fn(),
         canThiefSkipGamePlay: jest.fn(),
+        canCupidSkipGamePlay: jest.fn(),
       },
       gameHelper: {
         getEligibleWerewolvesTargets: jest.spyOn(GameHelper, "getEligibleWerewolvesTargets"),
         getEligibleWhiteWerewolfTargets: jest.spyOn(GameHelper, "getEligibleWhiteWerewolfTargets"),
         getEligiblePiedPiperTargets: jest.spyOn(GameHelper, "getEligiblePiedPiperTargets"),
+        getEligibleCupidTargets: jest.spyOn(GameHelper, "getEligibleCupidTargets"),
         getAllowedToVotePlayers: jest.spyOn(GameHelper, "getAllowedToVotePlayers"),
       },
       gameHistoryRecordService: {
@@ -1927,6 +1931,32 @@ describe("Game Play Augmenter Service", () => {
     });
   });
 
+  describe("canCupidSkipGamePlay", () => {
+    it.each<{
+      test: string;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when expected there are at least 2 targets for cupid.",
+        game: createFakeGame({
+          players: [
+            createFakeVillagerAlivePlayer(),
+            createFakeVillagerAlivePlayer(),
+          ],
+        }),
+        expected: false,
+      },
+      {
+        test: "should return true when expected there are less than 2 targets for cupid.",
+        game: createFakeGame({ players: [createFakeVillagerAlivePlayer()] }),
+        expected: true,
+      },
+    ])("$test", ({ game, expected }) => {
+      expect(services.gamePlayAugmenter["canCupidSkipGamePlay"](game)).toBe(expected);
+    });
+  });
+
   describe("canBigBadWolfSkipGamePlay", () => {
     it.each<{
       test: string;
@@ -2007,6 +2037,7 @@ describe("Game Play Augmenter Service", () => {
       mocks.gamePlayAugmenterService.canSurvivorsSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canSurvivorsSkipGamePlay }, "canSurvivorsSkipGamePlay").mockImplementation();
       mocks.gamePlayAugmenterService.canBigBadWolfSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canBigBadWolfSkipGamePlay }, "canBigBadWolfSkipGamePlay").mockImplementation();
       mocks.gamePlayAugmenterService.canThiefSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canThiefSkipGamePlay }, "canThiefSkipGamePlay").mockImplementation();
+      mocks.gamePlayAugmenterService.canCupidSkipGamePlay = jest.spyOn(services.gamePlayAugmenter as unknown as { canCupidSkipGamePlay }, "canCupidSkipGamePlay").mockImplementation();
     });
 
     it("should return false when game play source name is not in canBeSkippedPlayMethods.", () => {
@@ -2088,6 +2119,14 @@ describe("Game Play Augmenter Service", () => {
       services.gamePlayAugmenter["canGamePlayBeSkipped"](game, gamePlay);
 
       expect(mocks.gamePlayAugmenterService.canThiefSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call canCupidSkipGamePlay method when game play source name is cupid.", () => {
+      const gamePlay = createFakeGamePlayCupidCharms();
+      const game = createFakeGame();
+      services.gamePlayAugmenter["canGamePlayBeSkipped"](game, gamePlay);
+
+      expect(mocks.gamePlayAugmenterService.canCupidSkipGamePlay).toHaveBeenCalledExactlyOnceWith(game);
     });
   });
 

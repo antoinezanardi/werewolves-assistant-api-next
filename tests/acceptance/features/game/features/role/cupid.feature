@@ -300,3 +300,70 @@ Feature: 💘 Cupid role
       | Antoine |
       | Olivia  |
       | Thomas  |
+
+  Scenario: 💘 Cupid can skip if he doesn't have enough targets to charm
+
+    Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json and with the following players
+      | name    | role     |
+      | Antoine | cupid    |
+      | Olivia  | werewolf |
+      | JB      | hunter   |
+      | Thomas  | angel    |
+    And the game's current play should be survivors to vote because angel-presence
+
+    When the survivors vote with the following votes
+      | source | target |
+      | Olivia | JB     |
+      | Thomas | JB     |
+    Then the player named JB should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be hunter to shoot
+
+    When the hunter shoots at the player named Thomas
+    Then the player named Thomas should be murdered by hunter from shot
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be cupid to charm
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be one-night-only
+    And the game's current play can be skipped
+    And the game's current play should not have eligible targets boundaries
+    And the game's current play should not have eligible targets interactable players
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should be murdered by werewolves from eaten
+
+  Scenario: 💘 Cupid turn is skipped if he has no targets and options say that roles must be skipped if no targets
+
+    Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json, skip-roles-call-if-no-target-option.json and with the following players
+      | name    | role     |
+      | Antoine | cupid    |
+      | Olivia  | werewolf |
+      | JB      | hunter   |
+      | Thomas  | angel    |
+    And the game's current play should be survivors to vote because angel-presence
+
+    When the survivors vote with the following votes
+      | source | target |
+      | Olivia | JB     |
+      | Thomas | JB     |
+    Then the player named JB should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be hunter to shoot
+
+    When the hunter shoots at the player named Thomas
+    Then the player named Thomas should be murdered by hunter from shot
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat

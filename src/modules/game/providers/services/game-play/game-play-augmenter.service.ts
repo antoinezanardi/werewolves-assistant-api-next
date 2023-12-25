@@ -61,6 +61,7 @@ export class GamePlayAugmenterService {
     [RoleNames.WHITE_WEREWOLF]: () => true,
     [RoleNames.WITCH]: () => true,
     [RoleNames.ACTOR]: () => true,
+    [RoleNames.CUPID]: (game: Game) => this.canCupidSkipGamePlay(game),
   };
 
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
@@ -351,6 +352,12 @@ export class GamePlayAugmenterService {
       return false;
     }
     return gamePlay.action === GamePlayActions.BURY_DEAD_BODIES || canBeSkipped;
+  }
+
+  private canCupidSkipGamePlay(game: Game): boolean {
+    const expectedPlayersToCharmCount = 2;
+    const eligibleCupidTargets = getEligibleCupidTargets(game);
+    return eligibleCupidTargets.length < expectedPlayersToCharmCount;
   }
 
   private canBigBadWolfSkipGamePlay(game: Game): boolean {

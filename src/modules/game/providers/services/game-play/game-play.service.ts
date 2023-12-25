@@ -11,7 +11,7 @@ import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.
 import { createGamePlay, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { areGamePlaysEqual, canSurvivorsVote, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helper";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
-import { getGroupOfPlayers, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { getGroupOfPlayers, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole, getEligibleCupidTargets } from "@/modules/game/helpers/game.helper";
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -258,8 +258,12 @@ export class GamePlayService {
     if (game instanceof CreateGameDto) {
       return !!getPlayerDtoWithRole(game, RoleNames.CUPID);
     }
+    const { doSkipCallIfNoTarget } = game.options.roles;
+    const expectedPlayersToCharmCount = 2;
     const cupidPlayer = getPlayerWithCurrentRole(game, RoleNames.CUPID);
-    if (!cupidPlayer || !isPlayerAliveAndPowerful(cupidPlayer, game)) {
+    const availableTargets = getEligibleCupidTargets(game);
+    if (!cupidPlayer || !isPlayerAliveAndPowerful(cupidPlayer, game) ||
+      doSkipCallIfNoTarget && availableTargets.length < expectedPlayersToCharmCount) {
       return false;
     }
     const inLovePlayers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
