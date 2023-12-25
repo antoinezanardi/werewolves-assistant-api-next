@@ -418,7 +418,6 @@ Feature: 🎲 Game Creation
     And the request exception messages should be
       | message                                                                                                            |
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles             |
-      | additionalCards.roleName can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are no additional cards for thief
 
@@ -692,6 +691,21 @@ Feature: 🎲 Game Creation
     And the request exception messages should be
       | message                                                                                |
       | any player can't have a group if there is no player with role `prejudiced-manipulator` |
+
+  Scenario: 🎲 Game can't be created if there are two actors
+
+    Given a created game with additional cards described in file elder-idiot-scapegoat-additional-cards-for-actor.json and with the following players
+      | name    | role     |
+      | Antoine | actor    |
+      | Olivia  | actor    |
+      | JB      | villager |
+      | Thomas  | werewolf |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                                            |
+      | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles             |
 
   Scenario: 🎲 Game can't be created if there are no additional cards for actor
 

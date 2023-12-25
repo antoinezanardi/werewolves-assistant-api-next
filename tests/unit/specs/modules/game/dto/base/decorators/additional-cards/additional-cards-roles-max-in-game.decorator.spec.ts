@@ -54,6 +54,31 @@ describe("Additional Cards Roles Max in Game Decorator", () => {
         expected: false,
       },
       {
+        test: "should return false when one of the roles is not found in game additional cards.",
+        additionalCards: [
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.HUNTER }, { roleName: "unknown" }),
+        ],
+        validationArguments: {
+          value: [
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.HUNTER }),
+          ],
+          object: createFakeCreateGameDto({
+            players: [
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.SEER } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.WEREWOLF } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.WITCH } }),
+              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: RoleNames.THIEF } }),
+            ],
+          }),
+          constraints: [],
+          targetName: "",
+          property: "additionalCards",
+        },
+        expected: false,
+      },
+      {
         test: "should return false when at least one role max in game is not respected due to additional cards only.",
         additionalCards: [
           createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WITCH }),
@@ -104,7 +129,7 @@ describe("Additional Cards Roles Max in Game Decorator", () => {
         expected: false,
       },
       {
-        test: "should return true when at every role max in game are respected among additional cards and player roles together.",
+        test: "should return true when every role max in game are respected among additional cards and player roles together.",
         additionalCards: [
           createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
           createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.HUNTER }),
