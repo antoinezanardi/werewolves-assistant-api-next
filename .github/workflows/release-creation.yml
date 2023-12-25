@@ -106,6 +106,12 @@ jobs:
       - name: Mutant tests 👽
         run: pnpm run test:stryker:ci
 
+      - name: Save stryker report as artifact 💎
+        uses: actions/upload-artifact@v4
+        with:
+          name: stryker-html-report
+          path: tests/stryker/coverage/index.html
+
       - name: Stop Docker containers 🐳
         run: pnpm run docker:test:stop
 
@@ -211,6 +217,12 @@ jobs:
           path: tests/coverage
           key: ${{ runner.os }}-tests-coverage-v3-${{hashFiles('tests/coverage/lcov.info')}}
 
+      - name: Save global tests coverage report as artifact 💎
+        uses: actions/upload-artifact@v4
+        with:
+          name: global-tests-coverage-report
+          path: tests/coverage
+
       - name: Stop Docker containers 🐳
         run: pnpm run docker:test:stop
 
@@ -255,6 +267,12 @@ jobs:
       - name: Set Cucumber Results As Outputs 📝
         id: outputs
         run: ./scripts/transform-cucumber-report-as-env-variables.sh >> "$GITHUB_OUTPUT"
+
+      - name: Save cucumber report as artifact 💎
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-html-report
+          path: tests/acceptance/reports/cucumber-report.html
 
       - name: Stop Docker containers 🐳
         run: pnpm run docker:test:stop
