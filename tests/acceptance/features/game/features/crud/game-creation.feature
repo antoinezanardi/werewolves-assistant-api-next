@@ -416,8 +416,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                                                                                            |
-      | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles             |
+      | message                                                                                                |
+      | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are no additional cards for thief
 
@@ -669,13 +669,30 @@ Feature: 🎲 Game Creation
       | Antoine | prejudiced-manipulator | boy   |
       | Olivia  | villager               | boy   |
       | JB      | idiot                  | girl  |
+      | Olivier | villager               | girl  |
       | Thomas  | werewolf               | alien |
+      | Simon   | werewolf               | alien |
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
       | message                                                                                  |
       | there must be exactly two groups among players when `prejudiced-manipulator` in the game |
+
+  Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but there is only one group among players
+
+    Given a created game with the following players
+      | name    | role                   | group |
+      | Antoine | prejudiced-manipulator | boy   |
+      | Olivia  | villager               | boy   |
+      | JB      | idiot                  | boy   |
+      | Thomas  | werewolf               | girl  |
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception error should be "Bad Request"
+    And the request exception messages should be
+      | message                                                                                                   |
+      | groups among players must contain at least two players when there is a prejudiced manipulator in the game |
 
   Scenario: 🎲 Game can't be created if there is no prejudiced manipulator but there are groups among players
 
@@ -704,8 +721,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                                                                                            |
-      | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles             |
+      | message                                                                                                |
+      | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are no additional cards for actor
 

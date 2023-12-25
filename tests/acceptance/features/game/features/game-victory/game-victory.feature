@@ -398,10 +398,20 @@ Feature: 🏆 Game Victory
       | JB      | werewolf               | boy   |
       | Olivia  | villager               | boy   |
       | Thomas  | villager               | girl  |
+      | Maxime  | villager               | girl  |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | source  | target |
+      | Antoine | Maxime |
+    Then the player named Maxime should be murdered by survivors from vote
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
