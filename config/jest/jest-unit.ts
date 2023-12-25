@@ -17,7 +17,7 @@ const JEST_UNIT_CONFIG: Config = {
   clearMocks: true,
   setupFiles: ["<rootDir>/tests/unit/unit-setup.ts"],
   setupFilesAfterEnv: ["jest-extended/all"],
-  coverageReporters: ["clover", "json", "lcov", "text", "text-summary"],
+  coverageReporters: ["clover", "json", "lcov", "text", "text-summary", "html-spa"],
   collectCoverageFrom: [
     "src/**/*.ts",
     "!src/main.ts",

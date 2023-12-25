@@ -25,7 +25,14 @@ module.exports = {
   parser: "@typescript-eslint/parser",
   extends: ["plugin:@typescript-eslint/recommended"],
   plugins: ["@typescript-eslint", "import", "jest"],
-  ignorePatterns: ["node_modules/", "dist/", "!.releaserc.js"],
+  ignorePatterns: [
+    "node_modules/",
+    "dist/",
+    "!.releaserc.js",
+    "tests/coverage/",
+    "tests/e2e/coverage/",
+    "tests/unit/coverage/",
+  ],
   parserOptions: {
     parser: "@typescript-eslint/parser",
     ecmaVersion: 2022,
