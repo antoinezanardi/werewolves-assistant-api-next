@@ -3,6 +3,7 @@ import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, Equals, IsArray, IsOptional, ValidateNested } from "class-validator";
 
+import { CompositionGroupsSize } from "@/modules/game/dto/base/decorators/composition/composition-groups-size.decorator";
 import { AdditionalCardsForActorRoles } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-actor-roles.decorator";
 import { AdditionalCardsForActorSize } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-actor-size.decorator";
 import { CompositionHasTwoGroupsWithPrejudicedManipulator } from "@/modules/game/dto/base/decorators/composition/composition-has-two-groups-with-prejudiced-manipulator.decorator";
@@ -50,6 +51,7 @@ class CreateGameDto {
   @CompositionHasWerewolf()
   @CompositionPositionsConsistency()
   @CompositionGroupsPresence()
+  @CompositionGroupsSize()
   @CompositionHasTwoGroupsWithPrejudicedManipulator()
   public players: CreateGamePlayerDto[];
 
