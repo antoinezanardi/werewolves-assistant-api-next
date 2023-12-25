@@ -218,8 +218,8 @@ jobs:
       - name: Save unit tests coverage report as artifact 💎
         uses: actions/upload-artifact@v4
         with:
-          name: unit-tests-html-report
-          path: tests/unit/coverage/src
+          name: unit-tests-coverage-report
+          path: tests/unit/coverage
 
   e2e-tests:
     name: E2E Tests ⚗️
@@ -258,8 +258,8 @@ jobs:
       - name: Save e2e tests coverage report as artifact 💎
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-tests-html-report
-          path: tests/e2e/coverage/src
+          name: e2e-tests-coverage-report
+          path: tests/e2e/coverage
 
       - name: Stop Docker containers 🐳
         run: pnpm run docker:test:stop
@@ -308,8 +308,8 @@ jobs:
       - name: Save global tests coverage report as artifact 💎
         uses: actions/upload-artifact@v4
         with:
-          name: global-tests-html-report
-          path: tests/coverage/src
+          name: global-tests-coverage-report
+          path: tests/coverage
 
       - name: Stop Docker containers 🐳
         run: pnpm run docker:test:stop
