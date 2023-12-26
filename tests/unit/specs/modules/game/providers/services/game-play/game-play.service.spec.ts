@@ -27,10 +27,10 @@ import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFak
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeCupidGameOptions, createFakeRolesGameOptions, createFakeSheriffElectionGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlay, createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlay, createFakeGamePlayActorChoosesCard, createFakeGamePlayBearTamerGrowls, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeAccursedWolfFatherAlivePlayer, createFakeActorAlivePlayer, createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeFoxAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeAccursedWolfFatherAlivePlayer, createFakeActorAlivePlayer, createFakeAngelAlivePlayer, createFakeBearTamerAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeFoxAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 
 describe("Game Play Service", () => {
   let services: { gamePlay: GamePlayService };
@@ -58,6 +58,7 @@ describe("Game Play Service", () => {
       isRoleGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isGroupGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isOneNightOnlyGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+      isBearTamerGamePlaySuitableForCurrentPhase: jest.SpyInstance;
     };
     gamePlayAugmenterService: {
       setGamePlayCanBeSkipped: jest.SpyInstance;
@@ -104,6 +105,7 @@ describe("Game Play Service", () => {
         isRoleGamePlaySuitableForCurrentPhase: jest.fn(),
         isGroupGamePlaySuitableForCurrentPhase: jest.fn(),
         isOneNightOnlyGamePlaySuitableForCurrentPhase: jest.fn(),
+        isBearTamerGamePlaySuitableForCurrentPhase: jest.fn(),
       },
       gamePlayAugmenterService: {
         setGamePlayCanBeSkipped: jest.fn(),
@@ -731,7 +733,21 @@ describe("Game Play Service", () => {
         expected: true,
       },
       {
-        test: "should return true when game play's action is VOTE but reason is not angel presence.",
+        test: "should return true when game play's action is BURY_DEAD_BODIES.",
+        game: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WHITE_WEREWOLF } }),
+          ],
+        }),
+        gamePlay: createFakeGamePlaySurvivorsBuryDeadBodies(),
+        hasGamePlayBeenMade: false,
+        expected: true,
+      },
+      {
+        test: "should return true when game play's action is VOTE but reason is not angel presence and game is dto.",
         game: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
@@ -743,6 +759,34 @@ describe("Game Play Service", () => {
         gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
         hasGamePlayBeenMade: false,
         expected: true,
+      },
+      {
+        test: "should return true when game play's action is VOTE but reason is not angel presence and at least one survivor can vote.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer({ isAlive: false }),
+            createFakeVillagerAlivePlayer({ isAlive: false }),
+            createFakeWerewolfAlivePlayer({ isAlive: false }),
+            createFakeWerewolfAlivePlayer({ isAlive: true }),
+          ],
+        }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
+        hasGamePlayBeenMade: false,
+        expected: true,
+      },
+      {
+        test: "should return false when game play's action is VOTE but reason is not angel presence and nobody can vote.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer({ isAlive: false }),
+            createFakeVillagerAlivePlayer({ isAlive: false }),
+            createFakeWerewolfAlivePlayer({ isAlive: false }),
+            createFakeWerewolfAlivePlayer({ isAlive: false }),
+          ],
+        }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
+        hasGamePlayBeenMade: false,
+        expected: false,
       },
       {
         test: "should return false when there is no angel in the game dto.",
@@ -2117,6 +2161,7 @@ describe("Game Play Service", () => {
       mocks.gamePlayService.isWhiteWerewolfGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isWhiteWerewolfGamePlaySuitableForCurrentPhase }, "isWhiteWerewolfGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isWitchGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isWitchGamePlaySuitableForCurrentPhase }, "isWitchGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isActorGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isActorGamePlaySuitableForCurrentPhase }, "isActorGamePlaySuitableForCurrentPhase").mockImplementation();
+      mocks.gamePlayService.isBearTamerGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isBearTamerGamePlaySuitableForCurrentPhase }, "isBearTamerGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isOneNightOnlyGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isOneNightOnlyGamePlaySuitableForCurrentPhase }, "isOneNightOnlyGamePlaySuitableForCurrentPhase").mockImplementation();
     });
 
@@ -2230,6 +2275,20 @@ describe("Game Play Service", () => {
       await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
       expect(mocks.gamePlayService.isActorGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call bear tamer method when game plays source role is bear tamer.", async() => {
+      const players = [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+        createFakeBearTamerAlivePlayer(),
+        createFakeWildChildAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gamePlay = createFakeGamePlayBearTamerGrowls();
+      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
+
+      expect(mocks.gamePlayService.isBearTamerGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call one night only method when game plays occurrence is one night only.", async() => {

@@ -51,6 +51,7 @@ describe("Game History Record Service", () => {
     gameHistoryRecordRepository: {
       create: jest.SpyInstance;
       getLastGameHistoryDefenderProtectsRecord: jest.SpyInstance;
+      getLastGameHistorySurvivorsVoteRecord: jest.SpyInstance;
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getGameHistoryAccursedWolfFatherInfectedRecords: jest.SpyInstance;
@@ -88,6 +89,7 @@ describe("Game History Record Service", () => {
       gameHistoryRecordRepository: {
         create: jest.fn(),
         getLastGameHistoryDefenderProtectsRecord: jest.fn(),
+        getLastGameHistorySurvivorsVoteRecord: jest.fn(),
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getGameHistoryAccursedWolfFatherInfectedRecords: jest.fn(),
@@ -152,6 +154,15 @@ describe("Game History Record Service", () => {
       await services.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId, defenderPlayerId);
 
       expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord).toHaveBeenCalledExactlyOnceWith(gameId, defenderPlayerId);
+    });
+  });
+
+  describe("getLastGameHistorySurvivorsVoteRecord", () => {
+    it("should get last game history when survivors voted when called.", async() => {
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getLastGameHistorySurvivorsVoteRecord(gameId);
+
+      expect(repositories.gameHistoryRecord.getLastGameHistorySurvivorsVoteRecord).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 
