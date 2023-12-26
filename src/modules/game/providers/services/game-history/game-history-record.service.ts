@@ -48,6 +48,10 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getLastGameHistoryDefenderProtectsRecord(gameId, defenderPlayerId);
   }
 
+  public async getLastGameHistorySurvivorsVoteRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    return this.gameHistoryRecordRepository.getLastGameHistorySurvivorsVoteRecord(gameId);
+  }
+
   public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayActions): Promise<GameHistoryRecord | null> {
     return this.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord(gameId, action);
   }

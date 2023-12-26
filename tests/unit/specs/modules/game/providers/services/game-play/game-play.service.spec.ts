@@ -29,7 +29,7 @@ import { createFakeCupidGameOptions, createFakeRolesGameOptions, createFakeSheri
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAccursedWolfFatherAlivePlayer, createFakeActorAlivePlayer, createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeFoxAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 
 describe("Game Play Service", () => {
@@ -40,8 +40,7 @@ describe("Game Play Service", () => {
       getNewUpcomingPlaysForCurrentPhase: jest.SpyInstance;
       sortUpcomingPlaysByPriority: jest.SpyInstance;
       augmentCurrentGamePlay: jest.SpyInstance;
-      getUpcomingDayPlays: jest.SpyInstance;
-      getUpcomingNightPlays: jest.SpyInstance;
+      getPhaseUpcomingPlays: jest.SpyInstance;
       isUpcomingPlayNewForCurrentPhase: jest.SpyInstance;
       isSurvivorsGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isLoversGamePlaySuitableForCurrentPhase: jest.SpyInstance;
@@ -87,8 +86,7 @@ describe("Game Play Service", () => {
         getNewUpcomingPlaysForCurrentPhase: jest.fn(),
         sortUpcomingPlaysByPriority: jest.fn(),
         augmentCurrentGamePlay: jest.fn(),
-        getUpcomingDayPlays: jest.fn(),
-        getUpcomingNightPlays: jest.fn(),
+        getPhaseUpcomingPlays: jest.fn(),
         isUpcomingPlayNewForCurrentPhase: jest.fn(),
         isCupidGamePlaySuitableForCurrentPhase: jest.fn(),
         isSurvivorsGamePlaySuitableForCurrentPhase: jest.fn(),
@@ -260,44 +258,7 @@ describe("Game Play Service", () => {
     });
   });
 
-  describe("getUpcomingDayPlays", () => {
-    it("should get empty array when survivors can't vote.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
-        createFakeHunterAlivePlayer({ attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()] }),
-      ];
-      const game = createFakeGame({ players, turn: 1, phase: GamePhases.DAY });
-
-      expect(services.gamePlay.getUpcomingDayPlays(game)).toStrictEqual<GamePlay[]>([]);
-    });
-
-    it("should get survivors vote game play when alive players can vote.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-      ];
-      const game = createFakeGame({ players, turn: 1, phase: GamePhases.DAY });
-
-      expect(services.gamePlay.getUpcomingDayPlays(game)).toStrictEqual<GamePlay[]>([createFakeGamePlaySurvivorsVote()]);
-    });
-
-    it("should get upcoming day plays with sheriff election and survivors vote when it's sheriff election time.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ isEnabled: true, electedAt: createFakeSheriffElectionGameOptions({ phase: GamePhases.DAY, turn: 3 }) }) }) });
-      const game = createFakeGame({ players, turn: 3, phase: GamePhases.DAY, options });
-      const expectedUpcomingPlays = [
-        createFakeGamePlaySurvivorsElectSheriff(),
-        createFakeGamePlaySurvivorsVote(),
-      ];
-
-      expect(services.gamePlay.getUpcomingDayPlays(game)).toStrictEqual<GamePlay[]>(expectedUpcomingPlays);
-    });
-  });
-
-  describe("getUpcomingNightPlays", () => {
+  describe("getPhaseUpcomingPlays", () => {
     it.each<{
       test: string;
       game: Game;
@@ -395,8 +356,41 @@ describe("Game Play Service", () => {
           createFakeGamePlayWerewolvesEat(),
         ],
       },
+      {
+        test: "should get only vote play when it's phase day and it's not sheriff election time.",
+        game: createFakeGame({
+          turn: 1,
+          phase: GamePhases.DAY,
+          players: [
+            createFakeVillagerAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+          ],
+          options: DEFAULT_GAME_OPTIONS,
+        }),
+        output: [createFakeGamePlaySurvivorsVote()],
+      },
+      {
+        test: "should get sheriff election and vote plays when it's phase day and it's sheriff election time.",
+        game: createFakeGame({
+          turn: 1,
+          phase: GamePhases.DAY,
+          players: [
+            createFakeVillagerAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+          ],
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ isEnabled: true, electedAt: createFakeSheriffElectionGameOptions({ phase: GamePhases.DAY, turn: 1 }) }) }) }),
+        }),
+        output: [
+          createFakeGamePlaySurvivorsElectSheriff(),
+          createFakeGamePlaySurvivorsVote(),
+        ],
+      },
     ])("$test", async({ game, output }) => {
-      await expect(services.gamePlay.getUpcomingNightPlays(game)).resolves.toStrictEqual<GamePlay[]>(output);
+      await expect(services.gamePlay.getPhaseUpcomingPlays(game)).resolves.toStrictEqual<GamePlay[]>(output);
     });
   });
 
@@ -509,25 +503,16 @@ describe("Game Play Service", () => {
 
   describe("getNewUpcomingPlaysForCurrentPhase", () => {
     beforeEach(() => {
-      mocks.gamePlayService.getUpcomingDayPlays = jest.spyOn(services.gamePlay as unknown as { getUpcomingDayPlays }, "getUpcomingDayPlays").mockReturnValue([]);
-      mocks.gamePlayService.getUpcomingNightPlays = jest.spyOn(services.gamePlay as unknown as { getUpcomingNightPlays }, "getUpcomingNightPlays").mockResolvedValue([]);
+      mocks.gamePlayService.getPhaseUpcomingPlays = jest.spyOn(services.gamePlay as unknown as { getPhaseUpcomingPlays }, "getPhaseUpcomingPlays").mockReturnValue([]);
       mocks.gamePlayService.isUpcomingPlayNewForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isUpcomingPlayNewForCurrentPhase }, "isUpcomingPlayNewForCurrentPhase");
     });
 
-    it("should call getUpcomingNightPlays method with night phase when game phase is night.", async() => {
+    it("should call getPhaseUpcomingPlays method when called.", async() => {
       const game = createFakeGame({ phase: GamePhases.NIGHT });
       await services.gamePlay["getNewUpcomingPlaysForCurrentPhase"](game);
 
-      expect(mocks.gamePlayService.getUpcomingNightPlays).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayService.getPhaseUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
       expect(mocks.gameHistoryRecordService.getGameHistoryPhaseRecords).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, GamePhases.NIGHT);
-    });
-
-    it("should call getUpcomingNightPlays method with day phase when game phase is day.", async() => {
-      const game = createFakeGame({ phase: GamePhases.DAY });
-      await services.gamePlay["getNewUpcomingPlaysForCurrentPhase"](game);
-
-      expect(mocks.gamePlayService.getUpcomingDayPlays).toHaveBeenCalledExactlyOnceWith(game);
-      expect(mocks.gameHistoryRecordService.getGameHistoryPhaseRecords).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, GamePhases.DAY);
     });
 
     it("should call isUpcomingPlayNewForCurrentPhase method for as much times as there are upcoming phase plays when filtering them.", async() => {
@@ -537,7 +522,7 @@ describe("Game Play Service", () => {
         createFakeGamePlaySeerLooks(),
         createFakeGamePlayWerewolvesEat(),
       ];
-      mocks.gamePlayService.getUpcomingNightPlays.mockResolvedValue(upcomingPlays);
+      mocks.gamePlayService.getPhaseUpcomingPlays.mockResolvedValue(upcomingPlays);
       await services.gamePlay["getNewUpcomingPlaysForCurrentPhase"](game);
 
       expect(mocks.gamePlayService.isUpcomingPlayNewForCurrentPhase).toHaveBeenNthCalledWith(1, upcomingPlays[0], game, []);

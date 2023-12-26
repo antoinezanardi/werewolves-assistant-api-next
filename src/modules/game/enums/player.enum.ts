@@ -19,7 +19,6 @@ enum PlayerAttributeNames {
   POWERLESS = "powerless",
   CANT_VOTE = "cant-vote",
   CHARMED = "charmed",
-  GROWLED = "growled",
   CONTAMINATED = "contaminated",
   STOLEN_ROLE = "stolen-role",
   ACTING = "acting",

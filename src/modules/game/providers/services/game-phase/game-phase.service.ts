@@ -5,12 +5,11 @@ import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attri
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
-import { getNearestAliveNeighbor, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
-import { addPlayerAttributeInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
-import { createGrowledByBearTamerPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
+import { updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { createPowerlessByAccursedWolfFatherPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource, getActivePlayerAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
-import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -38,19 +37,17 @@ export class GamePhaseService {
     if (clonedGame.phase === GamePhases.NIGHT) {
       clonedGame.turn++;
     }
-    const upcomingNightPlays = await this.gamePlayService.getUpcomingNightPlays(clonedGame);
-    const upcomingDayPlays = this.gamePlayService.getUpcomingDayPlays(clonedGame);
-    const phaseUpcomingPlays = clonedGame.phase === GamePhases.NIGHT ? upcomingNightPlays : upcomingDayPlays;
+    const phaseUpcomingPlays = await this.gamePlayService.getPhaseUpcomingPlays(clonedGame);
     clonedGame.upcomingPlays = [...clonedGame.upcomingPlays, ...phaseUpcomingPlays];
     return clonedGame;
   }
 
   public applyStartingGamePhaseOutcomes(game: Game): Game {
     const clonedGame = createGame(game);
-    if (clonedGame.phase === GamePhases.DAY) {
-      return this.applyStartingDayPlayerRoleOutcomesToPlayers(clonedGame);
+    if (clonedGame.phase === GamePhases.NIGHT) {
+      return this.applyStartingNightPlayerAttributesOutcomes(clonedGame);
     }
-    return this.applyStartingNightPlayerAttributesOutcomes(clonedGame);
+    return clonedGame;
   }
 
   private async applyEndingGamePhasePlayerAttributesOutcomesToPlayers(game: Game): Promise<Game> {
@@ -93,30 +90,6 @@ export class GamePhaseService {
       return this.applyEndingNightPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);
     }
     return this.applyEndingDayPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);
-  }
-
-  private applyStartingDayBearTamerRoleOutcomes(bearTamerPlayer: Player, game: Game): Game {
-    const clonedGame = createGame(game);
-    const leftAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, clonedGame, { direction: "left" });
-    const rightAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, clonedGame, { direction: "right" });
-    const doesBearTamerHaveWerewolfSidedNeighbor = leftAliveNeighbor?.side.current === RoleSides.WEREWOLVES || rightAliveNeighbor?.side.current === RoleSides.WEREWOLVES;
-    const { doesGrowlOnWerewolvesSide } = clonedGame.options.roles.bearTamer;
-    const isBearTamerInfected = bearTamerPlayer.side.current === RoleSides.WEREWOLVES;
-    if (doesGrowlOnWerewolvesSide && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor) {
-      const growledByBearTamerPlayerAttribute = createGrowledByBearTamerPlayerAttribute();
-      return addPlayerAttributeInGame(bearTamerPlayer._id, clonedGame, growledByBearTamerPlayerAttribute);
-    }
-    return clonedGame;
-  }
-
-  private applyStartingDayPlayerRoleOutcomesToPlayers(game: Game): Game {
-    let clonedGame = createGame(game);
-    for (const player of clonedGame.players) {
-      if (player.role.current === RoleNames.BEAR_TAMER && isPlayerAliveAndPowerful(player, clonedGame)) {
-        clonedGame = this.applyStartingDayBearTamerRoleOutcomes(player, clonedGame);
-      }
-    }
-    return clonedGame;
   }
 
   private isActingPlayerAttributeRelevantOnStartingNight(attribute: PlayerAttribute, game: Game): boolean {

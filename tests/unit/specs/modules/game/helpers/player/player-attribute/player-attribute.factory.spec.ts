@@ -1,6 +1,6 @@
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createCantVoteBySurvivorsPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createGrowledByBearTamerPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByElderPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByWerewolvesPlayerAttribute, createPowerlessByActorPlayerAttribute, createStolenRoleByDevotedServantPlayerAttribute, createActingByActorPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
+import { createCantVoteBySurvivorsPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByElderPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByWerewolvesPlayerAttribute, createPowerlessByActorPlayerAttribute, createStolenRoleByDevotedServantPlayerAttribute, createActingByActorPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -40,18 +40,6 @@ describe("Player Attribute Factory", () => {
       });
       
       expect(createContaminatedByRustySwordKnightPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
-    });
-  });
-
-  describe("createGrowledByBearTamerPlayerAttribute", () => {
-    it("should create growled attribute by bear tamer when called.", () => {
-      const expectedAttribute = createFakePlayerAttribute({
-        name: PlayerAttributeNames.GROWLED,
-        source: RoleNames.BEAR_TAMER,
-        remainingPhases: 1,
-      });
-      
-      expect(createGrowledByBearTamerPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
 
@@ -314,13 +302,13 @@ describe("Player Attribute Factory", () => {
   describe("createPlayerAttribute", () => {
     it("should create player attribute when called.", () => {
       const playerAttribute: PlayerAttribute = {
-        name: PlayerAttributeNames.GROWLED,
-        source: RoleNames.BEAR_TAMER,
+        name: PlayerAttributeNames.EATEN,
+        source: PlayerGroups.WEREWOLVES,
       };
       
       expect(createPlayerAttribute(playerAttribute)).toStrictEqual<PlayerAttribute>(createFakePlayerAttribute({
-        name: PlayerAttributeNames.GROWLED,
-        source: RoleNames.BEAR_TAMER,
+        name: PlayerAttributeNames.EATEN,
+        source: PlayerGroups.WEREWOLVES,
       }));
     });
   });

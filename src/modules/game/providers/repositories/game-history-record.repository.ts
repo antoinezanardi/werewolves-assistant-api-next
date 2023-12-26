@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import type { FilterQuery, Types, QueryOptions } from "mongoose";
 
+import { PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mapper";
@@ -33,6 +34,15 @@ export class GameHistoryRecordRepository {
       "play.action": GamePlayActions.PROTECT,
       "play.source.name": RoleNames.DEFENDER,
       "play.source.players": { $elemMatch: { _id: defenderPlayerId } },
+    };
+    return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
+  }
+
+  public async getLastGameHistorySurvivorsVoteRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    const filter: FilterQuery<GameHistoryRecord> = {
+      gameId,
+      "play.action": GamePlayActions.VOTE,
+      "play.source.name": PlayerGroups.SURVIVORS,
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }

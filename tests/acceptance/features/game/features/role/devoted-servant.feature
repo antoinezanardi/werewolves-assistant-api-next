@@ -370,8 +370,10 @@ Feature: 🎀 Devoted Servant role
 
     When the accursed wolf-father infects the player named JB
     Then the player named JB should be on werewolves current side and originally be on villagers side
-    And the player named Thomas should have the active growled from bear-tamer attribute
-    And the game's current play should be survivors to vote
+    And the game's current play should be bear-tamer to growl
+
+    When the bear tamer calms his bear
+    Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
       | voter    | target |
@@ -394,8 +396,13 @@ Feature: 🎀 Devoted Servant role
 
     When the werewolves eat the player named Juju
     Then the player named Juju should be murdered by werewolves from eaten
-    And the player named JB should have the active growled from bear-tamer attribute
     And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be bear-tamer to growl
+
+    When the bear tamer calms his bear
+    Then the game's current play should be survivors to vote
 
   Scenario: 🎀 Devoted Servant can protect whoever she wants as a defender, even the last target of the previous one
 

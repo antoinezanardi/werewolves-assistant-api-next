@@ -26,6 +26,7 @@ const GAME_PLAY_SOURCE_NAMES = [
   RoleNames.WILD_CHILD,
   RoleNames.WITCH,
   RoleNames.ACTOR,
+  RoleNames.BEAR_TAMER,
 ] as const satisfies Readonly<(PlayerAttributeNames | PlayerGroups | RoleNames)[]>;
 
 const TARGET_ACTIONS = [

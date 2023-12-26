@@ -52,7 +52,7 @@ describe("Game Service", () => {
       createGameHistoryRecord: jest.SpyInstance;
     };
     gamePlayService: {
-      getUpcomingNightPlays: jest.SpyInstance;
+      getPhaseUpcomingPlays: jest.SpyInstance;
       proceedToNextGamePlay: jest.SpyInstance;
       refreshUpcomingPlays: jest.SpyInstance;
       augmentCurrentGamePlay: jest.SpyInstance;
@@ -95,7 +95,7 @@ describe("Game Service", () => {
         createGameHistoryRecord: jest.fn(),
       },
       gamePlayService: {
-        getUpcomingNightPlays: jest.fn(),
+        getPhaseUpcomingPlays: jest.fn(),
         proceedToNextGamePlay: jest.fn(),
         refreshUpcomingPlays: jest.fn(),
         augmentCurrentGamePlay: jest.fn(),
@@ -181,7 +181,7 @@ describe("Game Service", () => {
     });
 
     it("should throw error when can't generate upcoming plays.", async() => {
-      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([]);
+      mocks.gamePlayService.getPhaseUpcomingPlays.mockReturnValue([]);
       const toCreateGame = createFakeCreateGameDto();
       const exception = new UnexpectedException("createGame", UnexpectedExceptionReasons.CANT_GENERATE_GAME_PLAYS);
 
@@ -190,7 +190,7 @@ describe("Game Service", () => {
 
     it("should call createGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
-      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
+      mocks.gamePlayService.getPhaseUpcomingPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
       await services.game.createGame(toCreateGame);
       const expectedGame = createFakeCreateGameDto({
         ...toCreateGame,
@@ -203,7 +203,7 @@ describe("Game Service", () => {
 
     it("should call augmentCurrentGamePlay method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
-      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
+      mocks.gamePlayService.getPhaseUpcomingPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
       await services.game.createGame(toCreateGame);
 
       expect(mocks.gamePlayService.augmentCurrentGamePlay).toHaveBeenCalledExactlyOnceWith(createdGame);
@@ -211,7 +211,7 @@ describe("Game Service", () => {
 
     it("should call updateGame repository method when called.", async() => {
       const toCreateGame = createFakeCreateGameDto();
-      mocks.gamePlayService.getUpcomingNightPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
+      mocks.gamePlayService.getPhaseUpcomingPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
       await services.game.createGame(toCreateGame);
 
       expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, createdGame);

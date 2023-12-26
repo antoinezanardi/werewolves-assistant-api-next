@@ -260,6 +260,11 @@ When(/^the devoted servant steals the role of the player named (?<name>.+)$/u, a
   setGameInContext(this.response, this);
 });
 
+When(/^the bear tamer calms his bear$/u, async function(this: CustomWorld): Promise<void> {
+  this.response = await makeGamePlayRequest({}, this.game, this.app);
+  setGameInContext(this.response, this);
+});
+
 When(/^the player or group skips his turn$/u, async function(this: CustomWorld): Promise<void> {
   this.response = await makeGamePlayRequest({}, this.game, this.app);
   setGameInContext(this.response, this);
