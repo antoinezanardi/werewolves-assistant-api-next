@@ -22,7 +22,7 @@ import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordStutteringJudgeChooseSignPlay, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
-import { createFakeGamePlayCupidCharms, createFakeGamePlayPiedPiperCharms, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayCupidCharms, createFakeGamePlayPiedPiperCharms, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeAccursedWolfFatherAlivePlayer, createFakeElderAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
@@ -274,7 +274,6 @@ describe("Game History Record Repository", () => {
 
   describe("getLastGameHistorySurvivorsVoteRecord", () => {
     it("should return no record when there is no defender play in the history.", async() => {
-      const defenderPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
       await populate([
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
@@ -285,7 +284,6 @@ describe("Game History Record Repository", () => {
     });
 
     it("should return no record when there gameId is not the good one.", async() => {
-      const defenderPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       await populate([
@@ -306,12 +304,17 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay(),
-          createdAt: new Date("2021-01-01"),
+          createdAt: new Date("2019-01-01"),
         }),
         createFakeGameHistoryRecord({
           gameId,
           play: createFakeGameHistoryRecordSurvivorsVotePlay(),
           createdAt: new Date("2020-01-01"),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordSurvivorsVotePlay(),
+          createdAt: new Date("2021-01-01"),
         }),
         createFakeGameHistoryRecord({
           gameId: otherGameId,
@@ -327,7 +330,7 @@ describe("Game History Record Repository", () => {
       await populate(gameHistoryRecords);
       const record = await repositories.gameHistoryRecord.getLastGameHistorySurvivorsVoteRecord(gameId);
 
-      expect(toJSON(record)).toStrictEqual<GameHistoryRecord>(toJSON(gameHistoryRecords[1]) as GameHistoryRecord);
+      expect(toJSON(record)).toStrictEqual<GameHistoryRecord>(toJSON(gameHistoryRecords[2]) as GameHistoryRecord);
     });
   });
 
