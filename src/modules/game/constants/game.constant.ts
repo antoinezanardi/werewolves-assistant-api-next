@@ -67,6 +67,11 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,
   },
   {
+    source: { name: RoleNames.BEAR_TAMER },
+    action: GamePlayActions.GROWL,
+    occurrence: GamePlayOccurrences.ON_DAYS,
+  },
+  {
     source: { name: PlayerGroups.SURVIVORS },
     action: GamePlayActions.VOTE,
     occurrence: GamePlayOccurrences.ON_DAYS,
@@ -170,8 +175,11 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
 
 const NIGHT_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => [GamePlayOccurrences.ONE_NIGHT_ONLY, GamePlayOccurrences.ON_NIGHTS].includes(occurrence));
 
+const DAY_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => occurrence === GamePlayOccurrences.ON_DAYS);
+
 export {
   GAME_SOURCES,
   GAME_PLAYS_PRIORITY_LIST,
   NIGHT_GAME_PLAYS_PRIORITY_LIST,
+  DAY_GAME_PLAYS_PRIORITY_LIST,
 };

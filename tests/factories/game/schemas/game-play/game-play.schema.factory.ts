@@ -10,6 +10,15 @@ import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants
 
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 
+function createFakeGamePlayBearTamerGrowls(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+  return createFakeGamePlay({
+    action: GamePlayActions.GROWL,
+    source: createFakeGamePlaySource({ name: RoleNames.BEAR_TAMER }),
+    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    ...gamePlay,
+  }, override);
+}
+
 function createFakeGamePlayActorChoosesCard(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: RoleNames.ACTOR }),
@@ -262,6 +271,7 @@ function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object =
 }
 
 export {
+  createFakeGamePlayBearTamerGrowls,
   createFakeGamePlayActorChoosesCard,
   createFakeGamePlaySurvivorsBuryDeadBodies,
   createFakeGamePlaySheriffSettlesVotes,

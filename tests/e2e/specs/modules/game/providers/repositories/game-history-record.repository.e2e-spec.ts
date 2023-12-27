@@ -272,6 +272,68 @@ describe("Game History Record Repository", () => {
     });
   });
 
+  describe("getLastGameHistorySurvivorsVoteRecord", () => {
+    it("should return no record when there is no defender play in the history.", async() => {
+      const gameId = createFakeObjectId();
+      await populate([
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay() }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
+      ]);
+
+      await expect(repositories.gameHistoryRecord.getLastGameHistorySurvivorsVoteRecord(gameId)).resolves.toBeNull();
+    });
+
+    it("should return no record when there gameId is not the good one.", async() => {
+      const gameId = createFakeObjectId();
+      const otherGameId = createFakeObjectId();
+      await populate([
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordSurvivorsVotePlay(),
+        }),
+        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
+      ]);
+
+      await expect(repositories.gameHistoryRecord.getLastGameHistorySurvivorsVoteRecord(otherGameId)).resolves.toBeNull();
+    });
+
+    it("should one record when game history contains one survivors vote.", async() => {
+      const gameId = createFakeObjectId();
+      const otherGameId = createFakeObjectId();
+      const gameHistoryRecords = [
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordWitchUsePotionsPlay(),
+          createdAt: new Date("2019-01-01"),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordSurvivorsVotePlay(),
+          createdAt: new Date("2020-01-01"),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordSurvivorsVotePlay(),
+          createdAt: new Date("2021-01-01"),
+        }),
+        createFakeGameHistoryRecord({
+          gameId: otherGameId,
+          play: createFakeGameHistoryRecordSurvivorsVotePlay(),
+          createdAt: new Date("2022-01-01"),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordSurvivorsElectSheriffPlay(),
+          createdAt: new Date("2023-01-01"),
+        }),
+      ];
+      await populate(gameHistoryRecords);
+      const record = await repositories.gameHistoryRecord.getLastGameHistorySurvivorsVoteRecord(gameId);
+
+      expect(toJSON(record)).toStrictEqual<GameHistoryRecord>(toJSON(gameHistoryRecords[2]) as GameHistoryRecord);
+    });
+  });
+
   describe("getLastGameHistoryTieInVotesRecord", () => {
     it("should return no record when there is no vote play in the history.", async() => {
       const gameId = createFakeObjectId();

@@ -208,15 +208,6 @@ function createFakeCharmedByPiedPiperPlayerAttribute(attribute: Partial<PlayerAt
   }, override);
 }
 
-function createFakeGrowledByBearTamerPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
-  return createFakePlayerAttribute({
-    name: PlayerAttributeNames.GROWLED,
-    source: RoleNames.BEAR_TAMER,
-    remainingPhases: 1,
-    ...attribute,
-  }, override);
-}
-
 function createFakeContaminatedByRustySwordKnightPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: PlayerAttributeNames.CONTAMINATED,
@@ -268,7 +259,6 @@ export {
   createFakeCantVoteBySurvivorsPlayerAttribute,
   createFakeCantVoteByScapegoatPlayerAttribute,
   createFakeCharmedByPiedPiperPlayerAttribute,
-  createFakeGrowledByBearTamerPlayerAttribute,
   createFakeContaminatedByRustySwordKnightPlayerAttribute,
   createFakePlayerAttributeActivation,
   createFakePlayerAttribute,
