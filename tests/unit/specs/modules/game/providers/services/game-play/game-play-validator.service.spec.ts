@@ -84,7 +84,7 @@ describe("Game Play Validator Service", () => {
       getLastGameHistoryDefenderProtectsRecord: jest.SpyInstance;
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
-      getGameHistoryAccursedWolfFatherInfectedRecords: jest.SpyInstance;
+      getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
       didJudgeMakeHisSign: jest.SpyInstance;
     };
@@ -145,7 +145,7 @@ describe("Game Play Validator Service", () => {
         getLastGameHistoryDefenderProtectsRecord: jest.fn(),
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
-        getGameHistoryAccursedWolfFatherInfectedRecords: jest.fn(),
+        getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
         didJudgeMakeHisSign: jest.fn(),
       },
@@ -767,8 +767,7 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
-      const gameHistoryRecords = [];
-      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords.mockResolvedValue(gameHistoryRecords);
+      mocks.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord.mockResolvedValue(null);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
 
       await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
@@ -783,9 +782,7 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
-      const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true })];
-      const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: gameHistoryRecordTargets }) })];
-      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords.mockResolvedValue(gameHistoryRecords);
+      mocks.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord.mockResolvedValue(createFakeGameHistoryRecord());
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
 
       await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
@@ -804,8 +801,7 @@ describe("Game Play Validator Service", () => {
         createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: true }),
         createFakeMakeGamePlayTargetWithRelationsDto({ isInfected: false }),
       ];
-      const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: gameHistoryRecordTargets }) })];
-      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords.mockResolvedValue(gameHistoryRecords);
+      mocks.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord.mockResolvedValue(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: gameHistoryRecordTargets }) }));
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
 
       await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expectedError);
@@ -827,7 +823,7 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWerewolvesEat(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true })];
-      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord.mockResolvedValue(null);
 
       await expect(services.gamePlayValidator["validateGamePlayInfectedTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
     });

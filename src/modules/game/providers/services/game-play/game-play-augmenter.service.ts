@@ -8,7 +8,7 @@ import { createGamePlayEligibleTargets } from "@/modules/game/helpers/game-play/
 import { createInteractablePlayer } from "@/modules/game/helpers/game-play/game-play-eligible-targets/interactable-player/interactable-player.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
 import { getAlivePlayers, getAliveVillagerSidedPlayers, getAllowedToVotePlayers, getGroupOfPlayers, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, getEligibleCupidTargets, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
-import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
@@ -45,6 +45,7 @@ export class GamePlayAugmenterService {
       [RoleNames.WHITE_WEREWOLF]: game => this.getWhiteWerewolfGamePlayEligibleTargets(game),
       [RoleNames.WILD_CHILD]: game => this.getWildChildGamePlayEligibleTargets(game),
       [RoleNames.WITCH]: async game => this.getWitchGamePlayEligibleTargets(game),
+      [RoleNames.ACCURSED_WOLF_FATHER]: game => this.getAccursedWolfFatherGamePlayEligibleTargets(game),
     };
 
   private readonly canBeSkippedPlayMethods: Partial<Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => boolean>> = {
@@ -62,6 +63,7 @@ export class GamePlayAugmenterService {
     [RoleNames.WITCH]: () => true,
     [RoleNames.ACTOR]: () => true,
     [RoleNames.CUPID]: (game: Game) => this.canCupidSkipGamePlay(game),
+    [RoleNames.ACCURSED_WOLF_FATHER]: () => true,
   };
 
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
@@ -332,6 +334,15 @@ export class GamePlayAugmenterService {
     const hasWitchUsedDeathPotion = deathRecords.length > 0;
     const interactablePlayers: InteractablePlayer[] = this.getWitchGamePlayEligibleTargetsInteractablePlayers(game, hasWitchUsedLifePotion, hasWitchUsedDeathPotion);
     const boundaries = this.getWitchGamePlayEligibleTargetsBoundaries(hasWitchUsedLifePotion, hasWitchUsedDeathPotion);
+    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+  }
+
+  private getAccursedWolfFatherGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+    const eatenByWerewolvesPlayers = game.players.filter(player =>
+      doesPlayerHaveActiveAttributeWithNameAndSource(player, PlayerAttributeNames.EATEN, PlayerGroups.WEREWOLVES, game));
+    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.INFECT, source: RoleNames.ACCURSED_WOLF_FATHER }];
+    const interactablePlayers: InteractablePlayer[] = eatenByWerewolvesPlayers.map(player => ({ player, interactions }));
+    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 

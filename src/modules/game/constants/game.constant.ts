@@ -147,6 +147,11 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: GamePlayOccurrences.ON_NIGHTS,
   },
   {
+    source: { name: RoleNames.ACCURSED_WOLF_FATHER },
+    action: GamePlayActions.INFECT,
+    occurrence: GamePlayOccurrences.ON_NIGHTS,
+  },
+  {
     source: { name: RoleNames.WHITE_WEREWOLF },
     action: GamePlayActions.EAT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,

@@ -24,6 +24,19 @@ import { createNoGamePlayPriorityUnexpectedException } from "@/shared/exception/
 
 @Injectable()
 export class GamePlayService {
+  private readonly specificRoleGamePlaySuitabilityMethods: Partial<Record<RoleNames, (game: CreateGameDto | Game) => Promise<boolean> | boolean>> = {
+    [RoleNames.CUPID]: (game: Game) => this.isCupidGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.TWO_SISTERS]: (game: Game) => this.isTwoSistersGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.THREE_BROTHERS]: (game: Game) => this.isThreeBrothersGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.BIG_BAD_WOLF]: (game: Game) => this.isBigBadWolfGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.PIED_PIPER]: (game: Game) => this.isPiedPiperGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.WHITE_WEREWOLF]: (game: Game) => this.isWhiteWerewolfGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.WITCH]: async(game: Game) => this.isWitchGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.ACTOR]: (game: Game) => this.isActorGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.BEAR_TAMER]: async(game: Game) => this.isBearTamerGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.ACCURSED_WOLF_FATHER]: async(game: Game) => this.isAccursedWolfFatherGamePlaySuitableForCurrentPhase(game),
+  };
+
   public constructor(
     private readonly gamePlayAugmenterService: GamePlayAugmenterService,
     private readonly gameHistoryRecordService: GameHistoryRecordService,
@@ -125,6 +138,19 @@ export class GamePlayService {
     }
     const inLovePlayers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
     return inLovePlayers.length > 0 && inLovePlayers.every(player => player.isAlive) && !await this.gameHistoryRecordService.hasGamePlayBeenMade(game._id, gamePlay);
+  }
+
+  private async isAccursedWolfFatherGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {
+    const { doSkipCallIfNoTarget: doesSkipCallIfNoTarget } = game.options.roles;
+    if (game instanceof CreateGameDto) {
+      return !!getPlayerDtoWithRole(game, RoleNames.ACCURSED_WOLF_FATHER);
+    }
+    const accursedWolfFatherPlayer = getPlayerWithCurrentRole(game, RoleNames.ACCURSED_WOLF_FATHER);
+    if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game)) {
+      return false;
+    }
+    const lastAccursedWolfFatherGamePlay = await this.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord(game._id, accursedWolfFatherPlayer._id);
+    return !doesSkipCallIfNoTarget || !lastAccursedWolfFatherGamePlay;
   }
 
   private async isBearTamerGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {
@@ -287,21 +313,11 @@ export class GamePlayService {
     if (!player) {
       return false;
     }
-    const specificRoleMethods: Partial<Record<RoleNames, () => Promise<boolean> | boolean>> = {
-      [RoleNames.CUPID]: () => this.isCupidGamePlaySuitableForCurrentPhase(game),
-      [RoleNames.TWO_SISTERS]: () => this.isTwoSistersGamePlaySuitableForCurrentPhase(game),
-      [RoleNames.THREE_BROTHERS]: () => this.isThreeBrothersGamePlaySuitableForCurrentPhase(game),
-      [RoleNames.BIG_BAD_WOLF]: () => this.isBigBadWolfGamePlaySuitableForCurrentPhase(game),
-      [RoleNames.PIED_PIPER]: () => this.isPiedPiperGamePlaySuitableForCurrentPhase(game),
-      [RoleNames.WHITE_WEREWOLF]: () => this.isWhiteWerewolfGamePlaySuitableForCurrentPhase(game),
-      [RoleNames.WITCH]: async() => this.isWitchGamePlaySuitableForCurrentPhase(game),
-      [RoleNames.HUNTER]: () => player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game),
-      [RoleNames.SCAPEGOAT]: () => player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game),
-      [RoleNames.ACTOR]: () => this.isActorGamePlaySuitableForCurrentPhase(game),
-      [RoleNames.BEAR_TAMER]: async() => this.isBearTamerGamePlaySuitableForCurrentPhase(game),
-    };
-    if (specificRoleMethods[source] !== undefined) {
-      return await specificRoleMethods[source]?.() === true;
+    if ([RoleNames.HUNTER, RoleNames.SCAPEGOAT].includes(source)) {
+      return player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game);
+    }
+    if (this.specificRoleGamePlaySuitabilityMethods[source] !== undefined) {
+      return await this.specificRoleGamePlaySuitabilityMethods[source]?.(game) === true;
     }
     if (gamePlay.occurrence === GamePlayOccurrences.ONE_NIGHT_ONLY) {
       return this.isOneNightOnlyGamePlaySuitableForCurrentPhase(game, gamePlay);

@@ -28,11 +28,11 @@ import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas
 import { createFakeInteractablePlayer } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/interactable-player.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayActorChoosesCard } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlay, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayFoxSniffs, createFakeGamePlayDefenderProtects, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayActorChoosesCard, createFakeGamePlayAccursedWolfFatherInfects } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeAngelAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeDevotedServantAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeAccursedWolfFatherAlivePlayer, createFakeAngelAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeDevotedServantAlivePlayer, createFakeHunterAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeDeadPlayer, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Augmenter Service", () => {
@@ -88,6 +88,7 @@ describe("Game Play Augmenter Service", () => {
       getWitchGamePlayEligibleTargetsBoundaries: jest.SpyInstance;
       getWitchGamePlayEligibleTargetsInteractablePlayers: jest.SpyInstance;
       getCupidGamePlayEligibleTargets: jest.SpyInstance;
+      getAccursedWolfFatherGamePlayEligibleTargets: jest.SpyInstance;
       canBigBadWolfSkipGamePlay: jest.SpyInstance;
       canThiefSkipGamePlay: jest.SpyInstance;
       canCupidSkipGamePlay: jest.SpyInstance;
@@ -165,6 +166,7 @@ describe("Game Play Augmenter Service", () => {
         canSurvivorsSkipGamePlay: jest.fn(),
         getWitchGamePlayEligibleTargetsBoundaries: jest.fn(),
         getWitchGamePlayEligibleTargetsInteractablePlayers: jest.fn(),
+        getAccursedWolfFatherGamePlayEligibleTargets: jest.fn(),
         getCupidGamePlayEligibleTargets: jest.fn(),
         canBigBadWolfSkipGamePlay: jest.fn(),
         canThiefSkipGamePlay: jest.fn(),
@@ -1670,6 +1672,35 @@ describe("Game Play Augmenter Service", () => {
     });
   });
 
+  describe("getAccursedWolfFatherGamePlayEligibleTargets", () => {
+    it("should return all eaten by werewolves players as interactable targets with boundaries from 0 to 1 when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
+        createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }),
+      ];
+      const game = createFakeGame({ players });
+      const expectedInteraction = createFakePlayerInteraction({
+        source: RoleNames.ACCURSED_WOLF_FATHER,
+        type: PlayerInteractionTypes.INFECT,
+      });
+      const expectedInteractablePlayers = [
+        createFakeInteractablePlayer({
+          player: players[3],
+          interactions: [expectedInteraction],
+        }),
+      ];
+
+      const expectedGamePlayEligibleTargets = createFakeGamePlayEligibleTargets({
+        interactablePlayers: expectedInteractablePlayers,
+        boundaries: { min: 0, max: 1 },
+      });
+
+      expect(services.gamePlayAugmenter["getAccursedWolfFatherGamePlayEligibleTargets"](game)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
+    });
+  });
+
   describe("getGamePlayEligibleTargets", () => {
     beforeEach(() => {
       mocks.gamePlayAugmenterService.getSheriffGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
@@ -1717,6 +1748,9 @@ describe("Game Play Augmenter Service", () => {
       mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
         getWitchGamePlayEligibleTargets;
       }, "getWitchGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
+      mocks.gamePlayAugmenterService.getAccursedWolfFatherGamePlayEligibleTargets = jest.spyOn(services.gamePlayAugmenter as unknown as {
+        getAccursedWolfFatherGamePlayEligibleTargets;
+      }, "getAccursedWolfFatherGamePlayEligibleTargets").mockImplementation().mockReturnValue({});
     });
 
     it("should return undefined when game play source name is not in getGamePlayEligibleTargetsMethods.", async() => {
@@ -1873,6 +1907,14 @@ describe("Game Play Augmenter Service", () => {
       await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
 
       expect(mocks.gamePlayAugmenterService.getWitchGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call get game play eligible targets for accursed wolf-father when game play source name is accursed wolf-father.", async() => {
+      const gamePlay = createFakeGamePlayAccursedWolfFatherInfects();
+      const game = createFakeGame();
+      await services.gamePlayAugmenter["getGamePlayEligibleTargets"](gamePlay, game);
+
+      expect(mocks.gamePlayAugmenterService.getAccursedWolfFatherGamePlayEligibleTargets).toHaveBeenCalledExactlyOnceWith(game);
     });
   });
 
@@ -2090,6 +2132,10 @@ describe("Game Play Augmenter Service", () => {
       {
         gamePlay: createFakeGamePlayActorChoosesCard(),
         test: "should return true when game play source name is actor.",
+      },
+      {
+        gamePlay: createFakeGamePlayAccursedWolfFatherInfects(),
+        test: "should return true when game play source name is accursed wolf-father.",
       },
     ])("$test", ({ gamePlay }) => {
       const game = createFakeGame();

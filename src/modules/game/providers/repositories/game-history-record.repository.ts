@@ -56,6 +56,16 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
+  public async getLastGameHistoryAccursedWolfFatherInfectsRecord(gameId: Types.ObjectId, accursedWolfFatherPlayerId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    const filter: FilterQuery<GameHistoryRecord> = {
+      gameId,
+      "play.action": GamePlayActions.INFECT,
+      "play.source.name": RoleNames.ACCURSED_WOLF_FATHER,
+      "play.source.players": { $elemMatch: { _id: accursedWolfFatherPlayerId } },
+    };
+    return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
+  }
+
   public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, witchPlayerId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
@@ -63,21 +73,6 @@ export class GameHistoryRecordRepository {
       "play.source.name": RoleNames.WITCH,
       "play.source.players": { $elemMatch: { _id: witchPlayerId } },
       "play.targets.drankPotion": potion,
-    };
-    return this.gameHistoryRecordModel.find(filter);
-  }
-
-  public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId, accursedWolfFatherPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    const filter: FilterQuery<GameHistoryRecord> = {
-      gameId,
-      "play.action": GamePlayActions.EAT,
-      "play.targets.isInfected": true,
-      "play.source.players": {
-        $elemMatch: {
-          "_id": accursedWolfFatherPlayerId,
-          "role.current": RoleNames.ACCURSED_WOLF_FATHER,
-        },
-      },
     };
     return this.gameHistoryRecordModel.find(filter);
   }
