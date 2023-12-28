@@ -131,23 +131,18 @@ export class GamePlayValidatorService {
     this.validateDrankDeathPotionTargets(drankDeathPotionTargets, game);
   }
 
-  private async validateGamePlayInfectedTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): Promise<void> {
-    const infectedTargets = playTargets.filter(({ isInfected }) => isInfected === true);
-    if (!infectedTargets.length) {
+  private validateGamePlayAccursedWolfFatherTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+    if (!playTargets.length) {
       return;
     }
-    const accursedWolfFatherPlayer = getPlayerWithCurrentRole(game, RoleNames.ACCURSED_WOLF_FATHER);
-    if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game)) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
+    const targetedPlayer = playTargets[0].player;
+    const canTargetedPlayerBeInfected = isPlayerInteractableWithInteractionType(targetedPlayer._id, PlayerInteractionTypes.INFECT, game);
+    if (!canTargetedPlayerBeInfected) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_ACCURSED_WOLF_FATHER_TARGET);
     }
-    const hasAccursedWolfFatherInfected = !!await this.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord(game._id, accursedWolfFatherPlayer._id);
-    if (hasAccursedWolfFatherInfected) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
-    }
-    this.validateGamePlayTargetsBoundaries(infectedTargets, { min: 1, max: 1 });
   }
 
-  private async validateGamePlayWerewolvesTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
+  private validateGamePlayWerewolvesTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
     if (!playTargets.length) {
       return;
     }
@@ -162,7 +157,6 @@ export class GamePlayValidatorService {
     if (game.currentPlay.source.name === RoleNames.WHITE_WEREWOLF && !canTargetedPlayerBeEaten) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WHITE_WEREWOLF_TARGET);
     }
-    await this.validateGamePlayInfectedTargets(playTargets, game);
   }
 
   private validateGamePlayHunterTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
@@ -259,9 +253,10 @@ export class GamePlayValidatorService {
     const gamePlaySourceValidationMethods: Partial<Record<GamePlaySourceName, () => Promise<void> | void>> = {
       [PlayerAttributeNames.SHERIFF]: () => this.validateGamePlaySheriffTargets(playTargets, game),
       [PlayerGroups.SURVIVORS]: () => this.validateGamePlaySurvivorsTargets(playTargets, game),
-      [PlayerGroups.WEREWOLVES]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
-      [RoleNames.BIG_BAD_WOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
-      [RoleNames.WHITE_WEREWOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
+      [PlayerGroups.WEREWOLVES]: () => this.validateGamePlayWerewolvesTargets(playTargets, game),
+      [RoleNames.ACCURSED_WOLF_FATHER]: () => this.validateGamePlayAccursedWolfFatherTargets(playTargets, game),
+      [RoleNames.BIG_BAD_WOLF]: () => this.validateGamePlayWerewolvesTargets(playTargets, game),
+      [RoleNames.WHITE_WEREWOLF]: () => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.DEFENDER]: () => this.validateGamePlayDefenderTargets(playTargets, game),
       [RoleNames.PIED_PIPER]: () => this.validateGamePlayPiedPiperTargets(playTargets, game),
       [RoleNames.WILD_CHILD]: () => this.validateGamePlayWildChildTargets(playTargets, game),
@@ -279,12 +274,8 @@ export class GamePlayValidatorService {
     }
   }
 
-  private validateInfectedTargetsAndPotionUsage(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+  private validateTargetsPotionUsage(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
     const { source: currentPlaySource, action: currentPlayAction } = game.currentPlay;
-    const isSomeTargetInfected = playTargets.some(({ isInfected }) => isInfected);
-    if (isSomeTargetInfected && (currentPlayAction !== GamePlayActions.EAT || currentPlaySource.name !== PlayerGroups.WEREWOLVES)) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
-    }
     const hasSomePlayerDrankPotion = playTargets.some(({ drankPotion }) => drankPotion);
     if (hasSomePlayerDrankPotion && (currentPlayAction !== GamePlayActions.USE_POTIONS || currentPlaySource.name !== RoleNames.WITCH)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
@@ -309,7 +300,7 @@ export class GamePlayValidatorService {
     if (currentPlay.eligibleTargets?.boundaries) {
       this.validateGamePlayTargetsBoundaries(playTargets, currentPlay.eligibleTargets.boundaries);
     }
-    this.validateInfectedTargetsAndPotionUsage(playTargets, game);
+    this.validateTargetsPotionUsage(playTargets, game);
     await this.validateGamePlaySourceTargets(playTargets, game);
   }
 
