@@ -20,6 +20,7 @@ import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpect
 import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.type";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
+import { getError } from "@tests/helpers/exception/exception.helper";
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
@@ -805,7 +806,21 @@ describe("Game Play Validator Service", () => {
       expect(() => services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).not.toThrow();
     });
 
-    it("should throw error when source are werewolves and targeted player can't be eaten by them.", () => {
+    it("should do nothing when game's current play action is not werewolves eat.", () => {
+      const players = [
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySeerLooks(), players });
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] })];
+      mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
+
+      expect(() => services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).not.toThrow();
+    });
+
+    it("should throw error when source are werewolves and targeted player can't be eaten by them.", async() => {
       const players = [
         createFakeVillagerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -816,11 +831,13 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WEREWOLVES_TARGET);
+      const error = await getError(() => services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game));
 
-      expect(() => services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
+      expect(error).toStrictEqual<BadGamePlayPayloadException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "Werewolves can't eat this target" });
     });
 
-    it("should throw error when source is big bad wolf and targeted player can't be eaten by him.", () => {
+    it("should throw error when source is big bad wolf and targeted player can't be eaten by him.", async() => {
       const players = [
         createFakeVillagerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }),
         createFakeWerewolfAlivePlayer(),
@@ -831,11 +848,13 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_BIG_BAD_WOLF_TARGET);
+      const error = await getError(() => services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game));
 
-      expect(() => services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
+      expect(error).toStrictEqual<BadGamePlayPayloadException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "Big bad wolf can't eat this target" });
     });
 
-    it("should throw error when source is white werewolf and targeted player can't be eaten by him.", () => {
+    it("should throw error when source is white werewolf and targeted player can't be eaten by him.", async() => {
       const whiteWerewolfPlayer = createFakeWhiteWerewolfAlivePlayer();
       const players = [
         whiteWerewolfPlayer,
@@ -846,15 +865,11 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWhiteWerewolfEats(), players });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: whiteWerewolfPlayer })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionType.mockReturnValue(false);
-      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WHITE_WEREWOLF_TARGET);
-      try {
-        services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game);
-      } catch (error: unknown) {
-        expect(error).toBeInstanceOf(BadGamePlayPayloadException);
-        expect(error).toHaveProperty("options", { description: "White werewolf can't eat this target" });
-      }
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_ACCURSED_WOLF_FATHER_TARGET);
+      const error = await getError(() => services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game));
 
-      expect(() => services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game)).toThrow(expectedError);
+      expect(error).toStrictEqual<BadGamePlayPayloadException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "White werewolf can't eat this target" });
     });
 
     it("should do nothing when white werewolf eaten target is valid.", () => {
