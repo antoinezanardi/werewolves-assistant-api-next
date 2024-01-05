@@ -95,8 +95,8 @@
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.4.3",
-    "@commitlint/config-conventional": "^18.4.3",
+    "@commitlint/cli": "^18.4.4",
+    "@commitlint/config-conventional": "^18.4.4",
     "@cucumber/cucumber": "^10.1.0",
     "@faker-js/faker": "^8.3.1",
     "@nestjs/cli": "^10.2.1",
