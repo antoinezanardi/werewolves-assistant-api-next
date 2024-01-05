@@ -1,12 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
 
-import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
-import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlaySheriffSettlesVotes, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
 import { getFoxSniffedPlayers, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
@@ -14,9 +11,12 @@ import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlay
 import { createActingByActorPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByActorPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySheriffPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteBySheriffDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { isPlayerAliveAndPowerful, isPlayerPowerlessOnWerewolvesSide } from "@/modules/game/helpers/player/player.helper";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
@@ -404,8 +404,7 @@ export class GamePlayMakerService {
       return clonedGame;
     }
     const { player: targetedPlayer } = targets[0];
-    const elderLivesCount = await this.playerKillerService.getElderLivesCountAgainstWerewolves(clonedGame, targetedPlayer);
-    if (targetedPlayer.role.current === RoleNames.ELDER && elderLivesCount > 1) {
+    if (targetedPlayer.role.current === RoleNames.ELDER && !await this.playerKillerService.isElderKillable(clonedGame, targetedPlayer, PlayerDeathCauses.EATEN)) {
       return clonedGame;
     }
     const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES }, attributes: targetedPlayer.attributes };

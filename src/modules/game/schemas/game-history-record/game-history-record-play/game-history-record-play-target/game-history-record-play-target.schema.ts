@@ -19,11 +19,6 @@ class GameHistoryRecordPlayTarget {
   @Expose()
   public player: Player;
 
-  @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.isInfected as ApiPropertyOptions)
-  @Prop(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.isInfected)
-  @Expose()
-  public isInfected?: boolean;
-
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES.drankPotion as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.drankPotion)
   @Expose()

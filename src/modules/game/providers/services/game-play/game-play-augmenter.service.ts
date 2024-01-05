@@ -45,7 +45,7 @@ export class GamePlayAugmenterService {
       [RoleNames.WHITE_WEREWOLF]: game => this.getWhiteWerewolfGamePlayEligibleTargets(game),
       [RoleNames.WILD_CHILD]: game => this.getWildChildGamePlayEligibleTargets(game),
       [RoleNames.WITCH]: async game => this.getWitchGamePlayEligibleTargets(game),
-      [RoleNames.ACCURSED_WOLF_FATHER]: game => this.getAccursedWolfFatherGamePlayEligibleTargets(game),
+      [RoleNames.ACCURSED_WOLF_FATHER]: async game => this.getAccursedWolfFatherGamePlayEligibleTargets(game),
     };
 
   private readonly canBeSkippedPlayMethods: Partial<Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => boolean>> = {
@@ -337,7 +337,15 @@ export class GamePlayAugmenterService {
     return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
   }
 
-  private getAccursedWolfFatherGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private async getAccursedWolfFatherGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets | undefined> {
+    const accursedWolfFatherPlayer = getPlayerWithCurrentRole(game, RoleNames.ACCURSED_WOLF_FATHER);
+    if (!accursedWolfFatherPlayer) {
+      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getAccursedWolfFatherGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.ACCURSED_WOLF_FATHER });
+    }
+    const infectedTargetRecords = await this.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectsWithTargetRecords(game._id, accursedWolfFatherPlayer._id);
+    if (infectedTargetRecords.length) {
+      return undefined;
+    }
     const eatenByWerewolvesPlayers = game.players.filter(player =>
       doesPlayerHaveActiveAttributeWithNameAndSource(player, PlayerAttributeNames.EATEN, PlayerGroups.WEREWOLVES, game));
     const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.INFECT, source: RoleNames.ACCURSED_WOLF_FATHER }];

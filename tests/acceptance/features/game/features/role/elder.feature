@@ -64,6 +64,9 @@ Feature: 👴🏻 Elder role
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Ali
+    Then the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
     Then the player named Ali should be murdered by werewolves from eaten
     And the game's status should be playing
     And the game's current play should be survivors to bury-dead-bodies
@@ -81,6 +84,9 @@ Feature: 👴🏻 Elder role
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Romain
+    Then the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
     Then the player named Romain should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
 
@@ -91,6 +97,9 @@ Feature: 👴🏻 Elder role
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Aurelien
+    Then the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
     Then the player named Aurelien should be murdered by werewolves from eaten
     And nobody should have the active contaminated from rusty-sword-night attribute
 

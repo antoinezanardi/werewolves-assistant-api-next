@@ -12,7 +12,6 @@ function createFakeMakeGamePlayTargetWithRelationsDto(
 ): MakeGamePlayTargetWithRelationsDto {
   return plainToInstance(MakeGamePlayTargetWithRelationsDto, {
     player: makeGamePlayTargetWithRelationsDto.player ?? createFakePlayer(),
-    isInfected: makeGamePlayTargetWithRelationsDto.isInfected ?? undefined,
     drankPotion: makeGamePlayTargetWithRelationsDto.drankPotion ?? undefined,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);

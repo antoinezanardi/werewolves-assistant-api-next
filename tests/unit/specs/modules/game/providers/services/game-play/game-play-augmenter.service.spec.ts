@@ -105,6 +105,7 @@ describe("Game Play Augmenter Service", () => {
       getLastGameHistoryDefenderProtectsRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getPreviousGameHistoryRecord: jest.SpyInstance;
+      getGameHistoryAccursedWolfFatherInfectsWithTargetRecords: jest.SpyInstance;
     };
     unexpectedExceptionFactory: {
       createCantFindPlayerWithCurrentRoleUnexpectedException: jest.SpyInstance;
@@ -184,6 +185,7 @@ describe("Game Play Augmenter Service", () => {
         getLastGameHistoryDefenderProtectsRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getPreviousGameHistoryRecord: jest.fn(),
+        getGameHistoryAccursedWolfFatherInfectsWithTargetRecords: jest.fn(),
       },
       unexpectedExceptionFactory: {
         createCantFindPlayerWithCurrentRoleUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerWithCurrentRoleUnexpectedException"),
@@ -1673,7 +1675,39 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getAccursedWolfFatherGamePlayEligibleTargets", () => {
-    it("should return all eaten by werewolves players as interactable targets with boundaries from 0 to 1 when called.", () => {
+    beforeEach(() => {
+      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectsWithTargetRecords.mockResolvedValue([]);
+    });
+
+    it("should throw error when there is no accursed wolf father in the game.", async() => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const mockedError = new UnexpectedException("getAccursedWolfFatherGamePlayEligibleTargets", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: RoleNames.ACCURSED_WOLF_FATHER });
+      mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException.mockReturnValue(mockedError);
+
+      await expect(services.gamePlayAugmenter["getAccursedWolfFatherGamePlayEligibleTargets"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getAccursedWolfFatherGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.ACCURSED_WOLF_FATHER });
+    });
+
+    it("should return undefined when there is a record for accursed wolf father infects with target.", async() => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeAccursedWolfFatherAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gameHistoryRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ targets: [{ player: players[3] }] }) });
+      mocks.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectsWithTargetRecords.mockResolvedValueOnce([gameHistoryRecord]);
+
+      await expect(services.gamePlayAugmenter["getAccursedWolfFatherGamePlayEligibleTargets"](game)).resolves.toBeUndefined();
+    });
+
+    it("should return all eaten by werewolves players as interactable targets with boundaries from 0 to 1 when called.", async() => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -1697,7 +1731,7 @@ describe("Game Play Augmenter Service", () => {
         boundaries: { min: 0, max: 1 },
       });
 
-      expect(services.gamePlayAugmenter["getAccursedWolfFatherGamePlayEligibleTargets"](game)).toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
+      await expect(services.gamePlayAugmenter["getAccursedWolfFatherGamePlayEligibleTargets"](game)).resolves.toStrictEqual<GamePlayEligibleTargets>(expectedGamePlayEligibleTargets);
     });
   });
 

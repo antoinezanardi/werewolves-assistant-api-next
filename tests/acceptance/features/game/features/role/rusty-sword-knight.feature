@@ -5,12 +5,12 @@ Feature: 🤺 Rusty Sword Knight role
   Scenario: 🤺 Rusty Sword Knight kills the first alive werewolf on his left when he died at the end of the day
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                 |
-      | Antoine | rusty-sword-knight   |
-      | JB      | werewolf             |
-      | Olivia  | accursed-wolf-father |
-      | Thomas  | villager             |
-      | Babou   | werewolf             |
+      | name    | role               |
+      | Antoine | rusty-sword-knight |
+      | JB      | werewolf           |
+      | Olivia  | werewolf           |
+      | Thomas  | villager           |
+      | Babou   | werewolf           |
     Then the request should have succeeded with status code 201
     And the game's current play should be werewolves to eat
 
@@ -33,12 +33,12 @@ Feature: 🤺 Rusty Sword Knight role
   Scenario: 🤺 Rusty Sword Knight doesn't kill the left werewolf if he's already dead
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                 |
-      | Antoine | rusty-sword-knight   |
-      | JB      | werewolf             |
-      | Olivia  | accursed-wolf-father |
-      | Thomas  | villager             |
-      | Babou   | werewolf             |
+      | name    | role               |
+      | Antoine | rusty-sword-knight |
+      | JB      | werewolf           |
+      | Olivia  | werewolf           |
+      | Thomas  | villager           |
+      | Babou   | werewolf           |
     Then the request should have succeeded with status code 201
     And the game's current play should be werewolves to eat
 

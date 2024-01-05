@@ -368,6 +368,9 @@ Feature: 🎀 Devoted Servant role
       | Mathilde | villager             |
     Then the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named JB
+    Then the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named JB
     Then the player named JB should be on werewolves current side and originally be on villagers side
     And the game's current play should be bear-tamer to growl
@@ -395,8 +398,11 @@ Feature: 🎀 Devoted Servant role
       | JB      |
 
     When the werewolves eat the player named Juju
-    Then the player named Juju should be murdered by werewolves from eaten
-    And the game's current play should be survivors to bury-dead-bodies
+    Then the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
+    Then the game's current play should be survivors to bury-dead-bodies
+    And the player named Juju should be murdered by werewolves from eaten
 
     When the survivors bury dead bodies
     Then the game's current play should be bear-tamer to growl
@@ -453,6 +459,9 @@ Feature: 🎀 Devoted Servant role
       | Mathilde | villager             |
     Then the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Mathilde
+    Then the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Mathilde
     Then the player named Mathilde should be on werewolves current side and originally be on villagers side
     And the game's current play should be survivors to vote
@@ -472,6 +481,9 @@ Feature: 🎀 Devoted Servant role
     And the player named JB should not have his role revealed
     And the player named JB should be on werewolves current side and originally be on villagers side
     And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Juju
+    Then the game's current play should be accursed-wolf-father to infect
 
     When the accursed wolf-father infects the player named Juju
     Then the player named Juju should be on werewolves current side and originally be on villagers side

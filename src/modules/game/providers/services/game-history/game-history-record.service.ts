@@ -64,6 +64,10 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, potion);
   }
 
+  public async getGameHistoryAccursedWolfFatherInfectsWithTargetRecords(gameId: Types.ObjectId, accursedWolfFatherPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryAccursedWolfFatherInfectsWithTargetRecords(gameId, accursedWolfFatherPlayerId);
+  }
+
   public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId, stutteringJudgePlayedId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords(gameId, stutteringJudgePlayedId);
   }

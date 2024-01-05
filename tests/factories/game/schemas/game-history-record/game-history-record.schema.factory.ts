@@ -308,7 +308,6 @@ function createFakeGameHistoryRecordPlayVote(gameHistoryRecordPlayVote: Partial<
 function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Partial<GameHistoryRecordPlayTarget> = {}, override: object = {}): GameHistoryRecordPlayTarget {
   return plainToInstance(GameHistoryRecordPlayTarget, {
     player: gameHistoryRecordPlayTarget.player ?? createFakePlayer(),
-    isInfected: gameHistoryRecordPlayTarget.isInfected ?? undefined,
     drankPotion: gameHistoryRecordPlayTarget.drankPotion ?? undefined,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);

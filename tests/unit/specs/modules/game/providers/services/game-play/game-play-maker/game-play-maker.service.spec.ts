@@ -2085,13 +2085,13 @@ describe("Game Play Maker Service", () => {
       const targets = [];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedGame = createFakeGame(game);
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockResolvedValueOnce(1);
+      mocks.playerKillerService.isElderKillable.mockResolvedValueOnce(true);
       mocks.playerHelper.isPlayerPowerlessOnWerewolvesSide.mockReturnValue(true);
 
       await expect(services.gamePlayMaker["accursedWolfFatherInfects"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should return game as is when target is elder and has more than 1 life left.", async() => {
+    it("should return game as is when target is elder and is not killable.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
         createFakeElderAlivePlayer(),
@@ -2102,13 +2102,13 @@ describe("Game Play Maker Service", () => {
       const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedGame = createFakeGame(game);
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockResolvedValueOnce(2);
+      mocks.playerKillerService.isElderKillable.mockResolvedValueOnce(false);
       mocks.playerHelper.isPlayerPowerlessOnWerewolvesSide.mockReturnValue(true);
 
       await expect(services.gamePlayMaker["accursedWolfFatherInfects"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should change target's side to werewolves and remove eaten by werewolves attribute when elder has only one life left.", async() => {
+    it("should change target's side to werewolves and remove eaten by werewolves attribute when elder is killable.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
         createFakeElderAlivePlayer({
@@ -2141,7 +2141,7 @@ describe("Game Play Maker Service", () => {
           players[3],
         ],
       });
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockResolvedValueOnce(1);
+      mocks.playerKillerService.isElderKillable.mockResolvedValueOnce(true);
       mocks.playerHelper.isPlayerPowerlessOnWerewolvesSide.mockReturnValue(false);
 
       await expect(services.gamePlayMaker["accursedWolfFatherInfects"](play, game)).resolves.toStrictEqual<Game>(expectedGame);

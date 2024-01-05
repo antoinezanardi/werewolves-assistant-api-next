@@ -742,6 +742,9 @@ Feature: 🎭 Actor role
     And the game's additional card with role pied-piper for actor should be used
     And the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Antoine should have the active powerless from accursed-wolf-father attribute
@@ -765,6 +768,9 @@ Feature: 🎭 Actor role
     Then the player named Antoine should be currently a pied-piper and originally a actor
     And the game's additional card with role pied-piper for actor should be used
     And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be accursed-wolf-father to infect
 
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
@@ -803,6 +809,9 @@ Feature: 🎭 Actor role
     And the game's additional card with role pied-piper for actor should be used
     And the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Antoine should have the active powerless from accursed-wolf-father attribute
@@ -831,6 +840,9 @@ Feature: 🎭 Actor role
 
     When the seer looks at the player named Olivia
     And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be accursed-wolf-father to infect
 
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side

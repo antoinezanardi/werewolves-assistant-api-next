@@ -48,6 +48,9 @@ Feature: 👺 Prejudiced Manipulator role
       | Maxime  | villager               | girl  |
     Then the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should have the active powerless from accursed-wolf-father attribute
     And the game's current play should be survivors to vote
@@ -62,6 +65,9 @@ Feature: 👺 Prejudiced Manipulator role
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Maxime
+    Then the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
     Then the player named Maxime should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
 
@@ -79,6 +85,9 @@ Feature: 👺 Prejudiced Manipulator role
       | Maxime  | villager               | girl  |
     Then the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should not have the active powerless from accursed-wolf-father attribute
     And the game's current play should be survivors to vote
@@ -93,6 +102,9 @@ Feature: 👺 Prejudiced Manipulator role
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Maxime
+    Then the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
     Then the player named Maxime should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
 

@@ -140,13 +140,13 @@ describe("Game Play Helper", () => {
       const game = createFakeGame({ players });
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         targets: [
-          { playerId: game.players[0]._id, isInfected: true },
+          { playerId: game.players[0]._id },
           { playerId: game.players[1]._id },
           { playerId: game.players[2]._id, drankPotion: WitchPotions.DEATH },
         ],
       });
       const expectedTargets = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2], drankPotion: WitchPotions.DEATH }),
       ];
@@ -213,7 +213,7 @@ describe("Game Play Helper", () => {
           { sourceId: game.players[1]._id, targetId: game.players[0]._id },
         ],
         targets: [
-          { playerId: game.players[0]._id, isInfected: true },
+          { playerId: game.players[0]._id },
           { playerId: game.players[1]._id },
           { playerId: game.players[2]._id, drankPotion: WitchPotions.DEATH },
         ],
@@ -227,7 +227,7 @@ describe("Game Play Helper", () => {
           { source: game.players[1], target: game.players[0] },
         ],
         targets: [
-          { player: game.players[0], isInfected: true },
+          { player: game.players[0] },
           { player: game.players[1] },
           { player: game.players[2], drankPotion: WitchPotions.DEATH },
         ],
