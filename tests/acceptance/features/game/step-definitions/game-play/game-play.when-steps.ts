@@ -78,15 +78,7 @@ When(/^the werewolves eat the player named (?<name>.+)$/u, async function(this: 
 
 When(/^the accursed wolf-father infects the player named (?<name>.+)$/u, async function(this: CustomWorld, targetName: string): Promise<void> {
   const target = getPlayerWithNameOrThrow(targetName, this.game, new Error("Player name not found"));
-  const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id, isInfected: true }] };
-
-  this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
-  setGameInContext(this.response, this);
-});
-
-When(/^the accursed wolf-father infects the following players$/u, async function(this: CustomWorld, targetsDatatable: DataTable): Promise<void> {
-  const makeGamePlayDto = { targets: convertDatatableToMakeGamePlayTargets(targetsDatatable.rows(), this.game) };
-  makeGamePlayDto.targets = makeGamePlayDto.targets.map(target => ({ ...target, isInfected: true }));
+  const makeGamePlayDto: MakeGamePlayDto = { targets: [{ playerId: target._id }] };
 
   this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
   setGameInContext(this.response, this);

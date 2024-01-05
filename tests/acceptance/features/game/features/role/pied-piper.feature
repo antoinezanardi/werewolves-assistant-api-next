@@ -17,7 +17,10 @@ Feature: 🪈 Pied Piper role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should have the active eaten from werewolves attribute
-    And the game's current play should be pied-piper to charm
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
+    Then the game's current play should be pied-piper to charm
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -77,7 +80,10 @@ Feature: 🪈 Pied Piper role
 
     When the werewolves eat the player named Dad
     Then the player named Dad should have the active eaten from werewolves attribute
-    And the game's current play should be pied-piper to charm
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
+    Then the game's current play should be pied-piper to charm
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -115,6 +121,10 @@ Feature: 🪈 Pied Piper role
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Antoine should have the active powerless from accursed-wolf-father attribute
@@ -139,11 +149,11 @@ Feature: 🪈 Pied Piper role
   Scenario: 🪈 Pied Piper can't skip his turn
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                 |
-      | Antoine | pied-piper           |
-      | Olivia  | accursed-wolf-father |
-      | JB      | villager             |
-      | Thomas  | villager             |
+      | name    | role       |
+      | Antoine | pied-piper |
+      | Olivia  | werewolf   |
+      | JB      | villager   |
+      | Thomas  | villager   |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -158,11 +168,11 @@ Feature: 🪈 Pied Piper role
   Scenario: 🪈 Pied Piper can't charm an unknown player
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                 |
-      | Antoine | pied-piper           |
-      | Olivia  | accursed-wolf-father |
-      | JB      | villager             |
-      | Thomas  | villager             |
+      | name    | role       |
+      | Antoine | pied-piper |
+      | Olivia  | werewolf   |
+      | JB      | villager   |
+      | Thomas  | villager   |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -180,12 +190,12 @@ Feature: 🪈 Pied Piper role
   Scenario: 🪈 Pied Piper can't charm a dead player
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                 |
-      | Antoine | pied-piper           |
-      | Olivia  | accursed-wolf-father |
-      | JB      | angel                |
-      | Thomas  | villager             |
-      | Babou   | villager             |
+      | name    | role       |
+      | Antoine | pied-piper |
+      | Olivia  | werewolf   |
+      | JB      | angel      |
+      | Thomas  | villager   |
+      | Babou   | villager   |
     Then the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -212,12 +222,12 @@ Feature: 🪈 Pied Piper role
   Scenario: 🪈 Pied Piper can't charm himself
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                 |
-      | Antoine | pied-piper           |
-      | Olivia  | accursed-wolf-father |
-      | JB      | villager             |
-      | Thomas  | villager             |
-      | Babou   | villager             |
+      | name    | role       |
+      | Antoine | pied-piper |
+      | Olivia  | werewolf   |
+      | JB      | villager   |
+      | Thomas  | villager   |
+      | Babou   | villager   |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -235,12 +245,12 @@ Feature: 🪈 Pied Piper role
   Scenario: 🪈 Pied Piper can't charm an already charmed player
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                 |
-      | Antoine | pied-piper           |
-      | Olivia  | accursed-wolf-father |
-      | JB      | villager             |
-      | Thomas  | villager             |
-      | Babou   | villager             |
+      | name    | role       |
+      | Antoine | pied-piper |
+      | Olivia  | werewolf   |
+      | JB      | villager   |
+      | Thomas  | villager   |
+      | Babou   | villager   |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -276,11 +286,11 @@ Feature: 🪈 Pied Piper role
   Scenario: 🪈 Pied Piper can't charm less than 2 players with default rules
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                 |
-      | Antoine | pied-piper           |
-      | Olivia  | accursed-wolf-father |
-      | JB      | villager             |
-      | Thomas  | villager             |
+      | name    | role       |
+      | Antoine | pied-piper |
+      | Olivia  | werewolf   |
+      | JB      | villager   |
+      | Thomas  | villager   |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -297,12 +307,12 @@ Feature: 🪈 Pied Piper role
   Scenario: 🪈 Pied Piper can't charm more than 2 players with default rules
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
-      | name    | role                 |
-      | Antoine | pied-piper           |
-      | Olivia  | accursed-wolf-father |
-      | JB      | villager             |
-      | Thomas  | villager             |
-      | Babou   | villager             |
+      | name    | role       |
+      | Antoine | pied-piper |
+      | Olivia  | werewolf   |
+      | JB      | villager   |
+      | Thomas  | villager   |
+      | Babou   | villager   |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -327,6 +337,10 @@ Feature: 🪈 Pied Piper role
       | JB      | villager             |
       | Thomas  | villager             |
       | Dad     | villager             |
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
 
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
@@ -362,7 +376,10 @@ Feature: 🪈 Pied Piper role
 
     When the werewolves eat the player named Thomas
     Then the player named Thomas should have the active eaten from werewolves attribute
-    And the game's current play should be pied-piper to charm
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
+    Then the game's current play should be pied-piper to charm
     And the game's current play should have eligible targets boundaries from 1 to 1
     And the game's current play should have the following eligible targets interactable players
       | name |

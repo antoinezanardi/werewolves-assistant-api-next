@@ -54,7 +54,7 @@ describe("Game History Record Service", () => {
       getLastGameHistorySurvivorsVoteRecord: jest.SpyInstance;
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
-      getGameHistoryAccursedWolfFatherInfectedRecords: jest.SpyInstance;
+      getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.SpyInstance;
       getGameHistoryJudgeRequestRecords: jest.SpyInstance;
       getGameHistoryJudgeChoosesHisSignRecords: jest.SpyInstance;
       getGameHistoryWerewolvesEatElderRecords: jest.SpyInstance;
@@ -64,6 +64,7 @@ describe("Game History Record Service", () => {
       getGameHistoryPhaseRecords: jest.SpyInstance;
       getGameHistoryGamePlayRecords: jest.SpyInstance;
       getGameHistoryGamePlayMadeByPlayerRecords: jest.SpyInstance;
+      getGameHistoryAccursedWolfFatherInfectsWithTargetRecords: jest.SpyInstance;
     };
     gameRepository: { findOne: jest.SpyInstance };
     gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
@@ -84,7 +85,6 @@ describe("Game History Record Service", () => {
         generateCurrentGameHistoryRecordPlayVotingToInsert: jest.fn(),
         generateCurrentGameHistoryRecordPlayVotingResultToInsert: jest.fn(),
         generateCurrentGameHistoryRecordPlaySourceToInsert: jest.fn(),
-
       },
       gameHistoryRecordRepository: {
         create: jest.fn(),
@@ -92,7 +92,7 @@ describe("Game History Record Service", () => {
         getLastGameHistorySurvivorsVoteRecord: jest.fn(),
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
-        getGameHistoryAccursedWolfFatherInfectedRecords: jest.fn(),
+        getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.fn(),
         getGameHistoryJudgeRequestRecords: jest.fn(),
         getGameHistoryJudgeChoosesHisSignRecords: jest.fn(),
         getGameHistoryWerewolvesEatElderRecords: jest.fn(),
@@ -102,6 +102,7 @@ describe("Game History Record Service", () => {
         getGameHistoryPhaseRecords: jest.fn(),
         getGameHistoryGamePlayRecords: jest.fn(),
         getGameHistoryGamePlayMadeByPlayerRecords: jest.fn(),
+        getGameHistoryAccursedWolfFatherInfectsWithTargetRecords: jest.fn(),
       },
       gameRepository: { findOne: jest.fn() },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
@@ -143,7 +144,7 @@ describe("Game History Record Service", () => {
       });
       await services.gameHistoryRecord.createGameHistoryRecord(validPlay);
 
-      expect(repositories.gameHistoryRecord.create).toHaveBeenCalledExactlyOnceWith(validPlay);
+      expect(mocks.gameHistoryRecordRepository.create).toHaveBeenCalledExactlyOnceWith(validPlay);
     });
   });
 
@@ -153,7 +154,7 @@ describe("Game History Record Service", () => {
       const gameId = createFakeObjectId();
       await services.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord(gameId, defenderPlayerId);
 
-      expect(repositories.gameHistoryRecord.getLastGameHistoryDefenderProtectsRecord).toHaveBeenCalledExactlyOnceWith(gameId, defenderPlayerId);
+      expect(mocks.gameHistoryRecordRepository.getLastGameHistoryDefenderProtectsRecord).toHaveBeenCalledExactlyOnceWith(gameId, defenderPlayerId);
     });
   });
 
@@ -162,7 +163,7 @@ describe("Game History Record Service", () => {
       const gameId = createFakeObjectId();
       await services.gameHistoryRecord.getLastGameHistorySurvivorsVoteRecord(gameId);
 
-      expect(repositories.gameHistoryRecord.getLastGameHistorySurvivorsVoteRecord).toHaveBeenCalledExactlyOnceWith(gameId);
+      expect(mocks.gameHistoryRecordRepository.getLastGameHistorySurvivorsVoteRecord).toHaveBeenCalledExactlyOnceWith(gameId);
     });
   });
 
@@ -171,7 +172,7 @@ describe("Game History Record Service", () => {
       const gameId = createFakeObjectId();
       await services.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId, GamePlayActions.VOTE);
 
-      expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord).toHaveBeenCalledExactlyOnceWith(gameId, GamePlayActions.VOTE);
+      expect(mocks.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord).toHaveBeenCalledExactlyOnceWith(gameId, GamePlayActions.VOTE);
     });
   });
 
@@ -181,7 +182,7 @@ describe("Game History Record Service", () => {
       const gameId = createFakeObjectId();
       await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, WitchPotions.LIFE);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, witchPlayerId, WitchPotions.LIFE);
+      expect(mocks.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, witchPlayerId, WitchPotions.LIFE);
     });
 
     it("should get game history records when witch used death potion when called.", async() => {
@@ -189,17 +190,27 @@ describe("Game History Record Service", () => {
       const gameId = createFakeObjectId();
       await services.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, WitchPotions.DEATH);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, witchPlayerId, WitchPotions.DEATH);
+      expect(mocks.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords).toHaveBeenCalledExactlyOnceWith(gameId, witchPlayerId, WitchPotions.DEATH);
     });
   });
 
-  describe("getGameHistoryAccursedWolfFatherInfectedRecords", () => {
+  describe("getGameHistoryAccursedWolfFatherInfectsWithTargetRecords", () => {
     it("should get game history records when accursed wolf-father infected a player when called.", async() => {
       const accursedWolfFatherPlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords(gameId, accursedWolfFatherPlayerId);
+      await services.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectsWithTargetRecords(gameId, accursedWolfFatherPlayerId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryAccursedWolfFatherInfectedRecords).toHaveBeenCalledExactlyOnceWith(gameId, accursedWolfFatherPlayerId);
+      expect(mocks.gameHistoryRecordRepository.getGameHistoryAccursedWolfFatherInfectsWithTargetRecords).toHaveBeenCalledExactlyOnceWith(gameId, accursedWolfFatherPlayerId);
+    });
+  });
+
+  describe("getLastGameHistoryAccursedWolfFatherInfectsRecord", () => {
+    it("should get last game history records when accursed wolf-father infected a player when called.", async() => {
+      const accursedWolfFatherPlayerId = createFakeObjectId();
+      const gameId = createFakeObjectId();
+      await services.gameHistoryRecord.getLastGameHistoryAccursedWolfFatherInfectsRecord(gameId, accursedWolfFatherPlayerId);
+
+      expect(mocks.gameHistoryRecordRepository.getLastGameHistoryAccursedWolfFatherInfectsRecord).toHaveBeenCalledExactlyOnceWith(gameId, accursedWolfFatherPlayerId);
     });
   });
 
@@ -209,7 +220,7 @@ describe("Game History Record Service", () => {
       const gameId = createFakeObjectId();
       await services.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId, stutteringJudgePlayerId);
 
-      expect(repositories.gameHistoryRecord.getGameHistoryJudgeRequestRecords).toHaveBeenCalledExactlyOnceWith(gameId, stutteringJudgePlayerId);
+      expect(mocks.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords).toHaveBeenCalledExactlyOnceWith(gameId, stutteringJudgePlayerId);
     });
   });
 
@@ -542,7 +553,7 @@ describe("Game History Record Service", () => {
       const game = createFakeGameWithCurrentPlay();
       const play = createFakeMakeGamePlayWithRelationsDto({
         doesJudgeRequestAnotherVote: true,
-        targets: [createFakeGameHistoryRecordPlayTarget({ isInfected: true })],
+        targets: [createFakeGameHistoryRecordPlayTarget()],
         votes: [createFakeGameHistoryRecordPlayVote()],
         chosenCard: createFakeGameAdditionalCard(),
         chosenSide: RoleSides.VILLAGERS,

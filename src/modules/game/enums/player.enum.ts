@@ -52,6 +52,7 @@ enum PlayerInteractionTypes {
   TRANSFER_SHERIFF_ROLE = "transfer-sheriff-role",
   SENTENCE_TO_DEATH = "sentence-to-death",
   STEAL_ROLE = "steal-role",
+  INFECT = "infect",
 }
 
 export {

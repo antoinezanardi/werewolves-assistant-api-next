@@ -27,6 +27,7 @@ const GAME_PLAY_SOURCE_NAMES = [
   RoleNames.WITCH,
   RoleNames.ACTOR,
   RoleNames.BEAR_TAMER,
+  RoleNames.ACCURSED_WOLF_FATHER,
 ] as const satisfies Readonly<(PlayerAttributeNames | PlayerGroups | RoleNames)[]>;
 
 const TARGET_ACTIONS = [
@@ -43,6 +44,7 @@ const TARGET_ACTIONS = [
   GamePlayActions.SNIFF,
   GamePlayActions.BAN_VOTING,
   GamePlayActions.BURY_DEAD_BODIES,
+  GamePlayActions.INFECT,
 ] as const satisfies Readonly<GamePlayActions[]>;
 
 const VOTE_ACTIONS = [

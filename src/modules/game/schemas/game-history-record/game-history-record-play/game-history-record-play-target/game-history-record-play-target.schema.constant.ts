@@ -13,7 +13,6 @@ const GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS = {
     required: true,
     type: PLAYER_SCHEMA,
   },
-  isInfected: { required: false },
   drankPotion: {
     required: false,
     enum: Object.values(WitchPotions),
@@ -24,10 +23,6 @@ const GAME_HISTORY_RECORD_PLAY_TARGET_API_PROPERTIES: ReadonlyDeep<Record<keyof 
   player: {
     description: "Targeted player of this play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.player),
-  },
-  isInfected: {
-    description: "Only if there is the `accursed wolf-father` in the game and the action is eat from werewolves. If set to `true`, the target joined the werewolves side",
-    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS.isInfected),
   },
   drankPotion: {
     description: "Only if there is the `witch` in the game. The consequences depends on the type of potion",

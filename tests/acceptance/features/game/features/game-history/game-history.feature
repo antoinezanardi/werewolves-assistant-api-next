@@ -243,6 +243,11 @@ Feature: 📜 Game History
     Then the play's targets from the previous history record should be the following players
       | name    |
       | Antoine |
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
+    And the most recent history record is retrieved
+    Then the play's targets from the previous history record should be undefined
     And the game's current play should be witch to use-potions
 
     When the witch uses life potion on the player named Antoine and death potion on the player named JB
@@ -277,12 +282,18 @@ Feature: 📜 Game History
     Then the play's targets from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Thomas
+    And the most recent history record is retrieved
+    Then the play's targets from the previous history record should be the following players
+      | name   |
+      | Thomas |
+    And the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Thomas
     And the most recent history record is retrieved
     Then the play's targets from the previous history record should be the following players
       | name   |
       | Thomas |
-    And the play's target named Thomas from the previous history record should be infected
 
   Scenario: 📜 Votes of various roles actions are recorded in the game history
 

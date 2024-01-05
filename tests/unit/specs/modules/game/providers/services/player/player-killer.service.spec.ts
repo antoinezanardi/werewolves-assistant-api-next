@@ -356,6 +356,145 @@ describe("Player Killer Service", () => {
     });
   });
 
+  describe("getElderLivesCountAgainstWerewolves", () => {
+    it("should get elder lives count against werewolves when called.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
+      const elderPlayer = createFakeElderAlivePlayer();
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
+      await services.playerKiller["getElderLivesCountAgainstWerewolves"](game, elderPlayer);
+
+      expect(mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords).toHaveBeenCalledExactlyOnceWith(game._id, elderPlayer._id);
+    });
+
+    it("should get elder protected from werewolves records when called.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
+      const elderPlayer = createFakeElderAlivePlayer();
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
+      await services.playerKiller["getElderLivesCountAgainstWerewolves"](game, elderPlayer);
+
+      expect(mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords).toHaveBeenCalledExactlyOnceWith(game._id, elderPlayer._id);
+    });
+
+    it("should return same amount of lives when no werewolves attack against elder.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
+      const elderPlayer = createFakeElderAlivePlayer();
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() });
+      const elderProtectedFromWerewolvesRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          turn: 1,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue(elderProtectedFromWerewolvesRecords);
+
+      await expect(services.playerKiller["getElderLivesCountAgainstWerewolves"](game, elderPlayer)).resolves.toBe(3);
+    });
+
+    it("should return amount of lives minus one when werewolves attacked the elder on current turn.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
+      const elderPlayer = createFakeElderAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: elderPlayer });
+      const elderProtectedFromWerewolvesRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          turn: 1,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
+      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue(elderProtectedFromWerewolvesRecords);
+
+      await expect(services.playerKiller["getElderLivesCountAgainstWerewolves"](game, elderPlayer)).resolves.toBe(2);
+    });
+
+    it("should return amount of lives minus two when werewolves attacked the elder on current turn and also before that.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
+      const elderPlayer = createFakeElderAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: elderPlayer });
+      const werewolvesEatElderRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          turn: 1,
+        }),
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          turn: 2,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue(werewolvesEatElderRecords);
+      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
+
+      await expect(services.playerKiller["getElderLivesCountAgainstWerewolves"](game, elderPlayer)).resolves.toBe(1);
+    });
+
+    it("should return amount of lives minus one when elder was attacked three times but protected once and saved by witch once.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
+      const elderPlayer = createFakeElderAlivePlayer();
+      const game = createFakeGame({ turn: 4, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() });
+      const gameHistoryRecordPlayElderDrankLifePotionTarget = createFakeGameHistoryRecordPlayTarget({ ...gameHistoryRecordPlayElderTarget, drankPotion: WitchPotions.LIFE });
+      const werewolvesEatElderRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          turn: 1,
+        }),
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          turn: 2,
+        }),
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          turn: 3,
+        }),
+      ];
+      const elderProtectedFromWerewolvesRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          turn: 1,
+        }),
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: [gameHistoryRecordPlayElderDrankLifePotionTarget] }),
+          turn: 2,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue(werewolvesEatElderRecords);
+      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue(elderProtectedFromWerewolvesRecords);
+
+      await expect(services.playerKiller["getElderLivesCountAgainstWerewolves"](game, elderPlayer)).resolves.toBe(2);
+    });
+
+    it("should return amount of lives minus 1 when elder was attacked but not protected or saved by witch.", async() => {
+      const livesCountAgainstWerewolves = 3;
+      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
+      const elderPlayer = createFakeElderAlivePlayer();
+      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
+      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() });
+      const werewolvesEatElderRecords = [
+        createFakeGameHistoryRecord({
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
+          turn: 1,
+        }),
+      ];
+      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue(werewolvesEatElderRecords);
+      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
+
+      await expect(services.playerKiller["getElderLivesCountAgainstWerewolves"](game, elderPlayer)).resolves.toBe(2);
+    });
+  });
+
   describe("applyPlayerRoleRevelationOutcomes", () => {
     it("should add can't vote attribute when player is idiot.", () => {
       const players = [
@@ -432,145 +571,6 @@ describe("Player Killer Service", () => {
       mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(getElderLivesCountAgainstWerewolvesMockReturnValue);
 
       await expect(services.playerKiller.isElderKillable(game, elderPlayer, cause)).resolves.toBe(expected);
-    });
-  });
-  
-  describe("getElderLivesCountAgainstWerewolves", () => {
-    it("should get elder lives count against werewolves when called.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
-      const elderPlayer = createFakeElderAlivePlayer();
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
-      await services.playerKiller.getElderLivesCountAgainstWerewolves(game, elderPlayer);
-
-      expect(mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords).toHaveBeenCalledExactlyOnceWith(game._id, elderPlayer._id);
-    });
-
-    it("should get elder protected from werewolves records when called.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
-      const elderPlayer = createFakeElderAlivePlayer();
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
-      await services.playerKiller.getElderLivesCountAgainstWerewolves(game, elderPlayer);
-
-      expect(mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords).toHaveBeenCalledExactlyOnceWith(game._id, elderPlayer._id);
-    });
-
-    it("should return same amount of lives when no werewolves attack against elder.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
-      const elderPlayer = createFakeElderAlivePlayer();
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() });
-      const elderProtectedFromWerewolvesRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
-          turn: 1,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue(elderProtectedFromWerewolvesRecords);
-
-      await expect(services.playerKiller.getElderLivesCountAgainstWerewolves(game, elderPlayer)).resolves.toBe(3);
-    });
-
-    it("should return amount of lives minus one when werewolves attacked the elder on current turn.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
-      const elderPlayer = createFakeElderAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: elderPlayer });
-      const elderProtectedFromWerewolvesRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
-          turn: 1,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue([]);
-      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue(elderProtectedFromWerewolvesRecords);
-
-      await expect(services.playerKiller.getElderLivesCountAgainstWerewolves(game, elderPlayer)).resolves.toBe(2);
-    });
-
-    it("should return amount of lives minus two when werewolves attacked the elder on current turn and also before that.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
-      const elderPlayer = createFakeElderAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] });
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: elderPlayer });
-      const werewolvesEatElderRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
-          turn: 1,
-        }),
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
-          turn: 2,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue(werewolvesEatElderRecords);
-      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
-
-      await expect(services.playerKiller.getElderLivesCountAgainstWerewolves(game, elderPlayer)).resolves.toBe(1);
-    });
-
-    it("should return amount of lives minus one when elder was attacked three times but protected once and saved by witch once.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
-      const elderPlayer = createFakeElderAlivePlayer();
-      const game = createFakeGame({ turn: 4, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() });
-      const gameHistoryRecordPlayElderDrankLifePotionTarget = createFakeGameHistoryRecordPlayTarget({ ...gameHistoryRecordPlayElderTarget, drankPotion: WitchPotions.LIFE });
-      const werewolvesEatElderRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
-          turn: 1,
-        }),
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
-          turn: 2,
-        }),
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
-          turn: 3,
-        }),
-      ];
-      const elderProtectedFromWerewolvesRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordDefenderProtectPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
-          turn: 1,
-        }),
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: [gameHistoryRecordPlayElderDrankLifePotionTarget] }),
-          turn: 2,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue(werewolvesEatElderRecords);
-      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue(elderProtectedFromWerewolvesRecords);
-
-      await expect(services.playerKiller.getElderLivesCountAgainstWerewolves(game, elderPlayer)).resolves.toBe(2);
-    });
-
-    it("should return amount of lives minus 1 when elder was attacked but not protected or saved by witch.", async() => {
-      const livesCountAgainstWerewolves = 3;
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ elder: createFakeElderGameOptions({ livesCountAgainstWerewolves }) }) });
-      const elderPlayer = createFakeElderAlivePlayer();
-      const game = createFakeGame({ turn: 2, currentPlay: createFakeGamePlayHunterShoots(), options });
-      const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() });
-      const werewolvesEatElderRecords = [
-        createFakeGameHistoryRecord({
-          play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
-          turn: 1,
-        }),
-      ];
-      mocks.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords.mockResolvedValue(werewolvesEatElderRecords);
-      mocks.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords.mockResolvedValue([]);
-
-      await expect(services.playerKiller.getElderLivesCountAgainstWerewolves(game, elderPlayer)).resolves.toBe(2);
     });
   });
 

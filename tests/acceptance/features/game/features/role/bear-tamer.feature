@@ -46,6 +46,9 @@ Feature: 🐻 Bear Tamer role
       | Doudou  | villager             |
     Then the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be alive
     And the player named Antoine should be on werewolves current side and originally be on villagers side
@@ -61,6 +64,9 @@ Feature: 🐻 Bear Tamer role
       | Thomas  | accursed-wolf-father |
       | Doudou  | villager             |
     Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be accursed-wolf-father to infect
 
     When the accursed wolf-father infects the player named Antoine
     Then the player named Antoine should be alive
