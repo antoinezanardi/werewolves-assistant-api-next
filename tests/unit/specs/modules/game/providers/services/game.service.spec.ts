@@ -33,6 +33,7 @@ import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/
 import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { getError } from "@tests/helpers/exception/exception.helper";
 
 describe("Game Service", () => {
   let mocks: {
@@ -183,9 +184,11 @@ describe("Game Service", () => {
     it("should throw error when can't generate upcoming plays.", async() => {
       mocks.gamePlayService.getPhaseUpcomingPlays.mockReturnValue([]);
       const toCreateGame = createFakeCreateGameDto();
-      const exception = new UnexpectedException("createGame", UnexpectedExceptionReasons.CANT_GENERATE_GAME_PLAYS);
+      const exceptedError = new UnexpectedException("createGame", UnexpectedExceptionReasons.CANT_GENERATE_GAME_PLAYS);
+      const error = await getError<UnexpectedException>(async() => services.game.createGame(toCreateGame));
 
-      await expect(services.game.createGame(toCreateGame)).rejects.toThrow(exception);
+      expect(error).toStrictEqual<UnexpectedException>(exceptedError);
+      expect(error).toHaveProperty("options", { description: "Can't generate game plays" });
     });
 
     it("should call createGame repository method when called.", async() => {
@@ -228,8 +231,10 @@ describe("Game Service", () => {
     it("should throw error when game is not playing.", async() => {
       const canceledGame = createFakeGame({ status: GameStatuses.CANCELED });
       const expectedException = new BadResourceMutationException(ApiResources.GAMES, canceledGame._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
+      const error = await getError<BadResourceMutationException>(async() => services.game.cancelGame(canceledGame));
 
-      await expect(services.game.cancelGame(canceledGame)).rejects.toStrictEqual<BadResourceMutationException>(expectedException);
+      expect(error).toStrictEqual<BadResourceMutationException>(expectedException);
+      expect(error).toHaveProperty("options", { description: "Game doesn't have status with value \"playing\"" });
     });
 
     it("should call update method when game can be canceled.", async() => {
@@ -265,8 +270,10 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const canceledGame = createFakeGame({ status: GameStatuses.CANCELED });
       const expectedException = new BadResourceMutationException(ApiResources.GAMES, canceledGame._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
+      const error = await getError<BadResourceMutationException>(async() => services.game.makeGamePlay(canceledGame, makeGamePlayDto));
 
-      await expect(services.game.makeGamePlay(canceledGame, makeGamePlayDto)).rejects.toStrictEqual<BadResourceMutationException>(expectedException);
+      expect(error).toStrictEqual<BadResourceMutationException>(expectedException);
+      expect(error).toHaveProperty("options", { description: "Game doesn't have status with value \"playing\"" });
     });
 
     it("should call play validator method when called.", async() => {
@@ -365,11 +372,13 @@ describe("Game Service", () => {
   });
 
   describe("validateGameIsPlaying", () => {
-    it("should throw error when game is not playing.", () => {
+    it("should throw error when game is not playing.", async() => {
       const game = createFakeGame({ status: GameStatuses.CANCELED });
-      const expectedException = new BadResourceMutationException(ApiResources.GAMES, game._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
+      const expectedError = new BadResourceMutationException(ApiResources.GAMES, game._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
+      const error = await getError<BadResourceMutationException>(() => services.game["validateGameIsPlaying"](game));
 
-      expect(() => services.game["validateGameIsPlaying"](game)).toThrow(expectedException);
+      expect(error).toStrictEqual<BadResourceMutationException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "Game doesn't have status with value \"playing\"" });
     });
 
     it("should not throw error when game is playing.", () => {
@@ -445,9 +454,11 @@ describe("Game Service", () => {
     it("should throw an error when game not found by update repository method.", async() => {
       const unknownObjectId = createFakeObjectId();
       mocks.gameRepository.updateOne.mockResolvedValue(null);
-      const expectedException = new ResourceNotFoundException(ApiResources.GAMES, unknownObjectId.toString());
+      const expectedError = new ResourceNotFoundException(ApiResources.GAMES, unknownObjectId.toString());
+      const error = await getError<ResourceNotFoundException>(async() => services.game["updateGame"](unknownObjectId, { status: GameStatuses.OVER }));
 
-      await expect(services.game["updateGame"](unknownObjectId, { status: GameStatuses.OVER })).rejects.toStrictEqual<ResourceNotFoundException>(expectedException);
+      expect(error).toStrictEqual<ResourceNotFoundException>(expectedError);
+      expect(error).toHaveProperty("options", { description: undefined });
     });
 
     it("should return updated game when called.", async() => {
