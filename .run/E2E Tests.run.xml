@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="E2E Tests" type="JavaScriptTestRunnerJest">
+    <config-file value="$PROJECT_DIR$/config/jest/jest-e2e.ts" />
+    <node-interpreter value="project" />
+    <jest-package value="$PROJECT_DIR$/node_modules/jest" />
+    <working-dir value="$PROJECT_DIR$" />
+    <envs>
+      <env name="NODE_ENV" value="test" />
+    </envs>
+    <scope-kind value="DIRECTORY" />
+    <test-directory value="$PROJECT_DIR$/tests/e2e" />
+    <method v="2" />
+  </configuration>
+</component>

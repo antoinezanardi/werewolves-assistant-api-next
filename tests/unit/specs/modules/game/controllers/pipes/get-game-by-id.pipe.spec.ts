@@ -9,6 +9,7 @@ import { GameRepository } from "@/modules/game/providers/repositories/game.repos
 import { ApiResources } from "@/shared/api/enums/api.enum";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
 
+import { getError } from "@tests/helpers/exception/exception.helper";
 import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helper";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
@@ -39,15 +40,19 @@ describe("Get Game By Id Pipe", () => {
 
     it("should throw error when value is not a valid object id.", async() => {
       const expectedError = new BadRequestException("Validation failed (Mongo ObjectId is expected)");
+      const error = await getError<BadRequestException>(async() => getGameByIdPipe.transform("bad-id"));
 
-      await expect(getGameByIdPipe.transform("bad-id")).rejects.toThrow(expectedError);
+      expect(error).toStrictEqual<BadRequestException>(expectedError);
+      expect(error).toHaveProperty("options", { description: undefined });
     });
 
     it("should throw error when game is not found.", async() => {
       mocks.gameRepository.findOne.mockResolvedValue(null);
       const expectedError = new ResourceNotFoundException(ApiResources.GAMES, gameId.toString());
+      const error = await getError<ResourceNotFoundException>(async() => getGameByIdPipe.transform(gameId));
 
-      await expect(getGameByIdPipe.transform(gameId)).rejects.toThrow(expectedError);
+      expect(error).toStrictEqual<ResourceNotFoundException>(expectedError);
+      expect(error).toHaveProperty("options", { description: undefined });
     });
     
     it("should return existing game when game is found.", async() => {
