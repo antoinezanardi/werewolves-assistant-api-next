@@ -201,11 +201,6 @@ When(/^the wolf-hound chooses the (?<chosenSide>villagers|werewolves|unknown) si
   setGameInContext(this.response, this);
 });
 
-When(/^the stuttering judge chooses his sign$/u, async function(this: CustomWorld): Promise<void> {
-  this.response = await makeGamePlayRequest({}, this.game, this.app);
-  setGameInContext(this.response, this);
-});
-
 When(/^the (?:thief|actor) chooses card with role (?<cardRole>.+)$/u, async function(this: CustomWorld, cardRole: RoleNames): Promise<void> {
   const chosenCard = this.game.additionalCards?.find(({ roleName }) => roleName === cardRole);
   this.response = await makeGamePlayRequest({ chosenCardId: chosenCard?._id }, this.game, this.app);

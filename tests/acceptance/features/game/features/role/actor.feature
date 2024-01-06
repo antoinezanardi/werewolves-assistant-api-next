@@ -393,13 +393,6 @@ Feature: 🎭 Actor role
     When the actor chooses card with role stuttering-judge
     Then the player named Antoine should be currently a stuttering-judge and originally a actor
     And the game's additional card with role stuttering-judge for actor should be used
-    And the game's current play should be stuttering-judge to choose-sign
-    And the game's current play should be played by the following players
-      | name    |
-      | Antoine |
-
-    When the stuttering judge chooses his sign
-    Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Louise
     Then the player named Louise should be murdered by werewolves from eaten
@@ -408,7 +401,13 @@ Feature: 🎭 Actor role
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
-    When nobody vote and the stuttering judge does his sign
+    When the player or group skips his turn
+    Then the game's current play should be stuttering-judge to request-another-vote
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+
+    When the stuttering judge requests another vote
     Then the game's current play should be survivors to vote because stuttering-judge-request
 
     When the player or group skips his turn

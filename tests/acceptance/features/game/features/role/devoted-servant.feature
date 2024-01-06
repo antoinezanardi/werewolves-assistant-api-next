@@ -673,9 +673,7 @@ Feature: 🎀 Devoted Servant role
       | JB       | devoted-servant  |
       | Juju     | villager         |
       | Mathilde | villager         |
-    Then the game's current play should be stuttering-judge to choose-sign
-
-    When the stuttering judge chooses his sign
+      | Doudou   | villager         |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Juju
@@ -685,9 +683,24 @@ Feature: 🎀 Devoted Servant role
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
-    When the survivors vote with the following votes and the stuttering judge does his sign
-      | voter    | target |
-      | Mathilde | Olivia |
+    When the survivors vote with the following votes
+      | voter  | target   |
+      | Olivia | Mathilde |
+    Then the player named Mathilde should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be stuttering-judge to request-another-vote
+    And the game's current play should be played by the following players
+      | name   |
+      | Olivia |
+
+    When the stuttering judge requests another vote
+    Then the game's current play should be survivors to vote because stuttering-judge-request
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Antoine | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
     And the game's current play should be survivors to bury-dead-bodies
 
@@ -696,25 +709,22 @@ Feature: 🎀 Devoted Servant role
     And the player named Olivia should have his role revealed
     And the player named JB should be currently a stuttering-judge and originally a devoted-servant
     And the player named JB should not have his role revealed
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be werewolves to eat
 
-    When the player or group skips his turn
-    Then the game's current play should be stuttering-judge to choose-sign
-    And the game's current play should be played by the following players
-      | name |
-      | JB   |
-
-    When the stuttering judge chooses his sign
-    Then the game's current play should be werewolves to eat
-
-    When the werewolves eat the player named Mathilde
-    Then the player named Mathilde should be murdered by werewolves from eaten
+    When the werewolves eat the player named Doudou
+    Then the player named Doudou should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
-    When nobody vote and the stuttering judge does his sign
+    When the player or group skips his turn
+    Then the game's current play should be stuttering-judge to request-another-vote
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+
+    When the stuttering judge requests another vote
     Then the game's current play should be survivors to vote because stuttering-judge-request
 
     When the player or group skips his turn

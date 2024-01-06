@@ -2,7 +2,7 @@
   <configuration default="false" name="Accursed Wolf-Father Role" type="cucumber.js" factoryName="Cucumber.js" folderName="Tags">
     <option name="myFilePath" value="$PROJECT_DIR$/tests/acceptance" />
     <option name="myNameFilter" value="" />
-    <option name="cucumberJsArguments" value="--config config/cucumber/cucumber.json --tags @accursed-wolf-father-role" />
+    <option name="cucumberJsArguments" value="--config config/cucumber/cucumber.json --tags @accursed-wolf-father-role --parallel 1" />
     <option name="workingDirectory" value="$PROJECT_DIR$" />
     <envs>
       <env name="NODE_ENV" value="test" />
