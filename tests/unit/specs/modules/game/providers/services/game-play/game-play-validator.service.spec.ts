@@ -2,7 +2,6 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 
-import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helper";
@@ -10,8 +9,6 @@ import { GameHistoryRecordRepository } from "@/modules/game/providers/repositori
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
-import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
-import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
@@ -32,10 +29,10 @@ import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas
 import { createFakeInteractablePlayer } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/interactable-player.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeRequestsAnotherVote, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeDevotedServantAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeDevotedServantAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Validator Service", () => {
@@ -86,7 +83,7 @@ describe("Game Play Validator Service", () => {
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.SpyInstance;
-      getGameHistoryJudgeRequestRecords: jest.SpyInstance;
+      getGameHistoryStutteringJudgeRequestsAnotherVoteRecords: jest.SpyInstance;
       didJudgeMakeHisSign: jest.SpyInstance;
     };
     gamePlayHelper: {
@@ -147,7 +144,7 @@ describe("Game Play Validator Service", () => {
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.fn(),
-        getGameHistoryJudgeRequestRecords: jest.fn(),
+        getGameHistoryStutteringJudgeRequestsAnotherVoteRecords: jest.fn(),
         didJudgeMakeHisSign: jest.fn(),
       },
       gamePlayHelper: { isPlayerInteractableWithInteractionType: jest.spyOn(GamePlayHelper, "isPlayerInteractableWithInteractionType").mockImplementation() },
@@ -2123,121 +2120,28 @@ describe("Game Play Validator Service", () => {
       mocks.gameHistoryRecordService.didJudgeMakeHisSign.mockResolvedValue(true);
     });
 
-    it.each<{
-      test: string;
-      game: GameWithCurrentPlay;
-      makeGamePlayWithRelationsDto: MakeGamePlayWithRelationsDto;
-      didJudgeMakeHisSignMockResolvedValue: boolean;
-      getGameHistoryJudgeRequestRecordsMockResolvedValue: GameHistoryRecord[];
-      expected: BadGamePlayPayloadException;
-    }>([
-      {
-        test: "should throw error when judge request another vote but upcoming action is not vote.",
-        game: createFakeGameWithCurrentPlay({
-          currentPlay: createFakeGamePlayWitchUsesPotions(),
-          players: [
-            createFakeWitchAlivePlayer(),
-            createFakeWolfHoundAlivePlayer(),
-            createFakeWerewolfAlivePlayer(),
-            createFakeStutteringJudgeAlivePlayer(),
-          ],
-        }),
-        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
-        didJudgeMakeHisSignMockResolvedValue: true,
-        getGameHistoryJudgeRequestRecordsMockResolvedValue: [],
-        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
-      },
-      {
-        test: "should throw error when judge request another vote but he didn't make his sign.",
-        game: createFakeGameWithCurrentPlay({
-          currentPlay: createFakeGamePlaySurvivorsVote(),
-          players: [
-            createFakeWitchAlivePlayer(),
-            createFakeWolfHoundAlivePlayer(),
-            createFakeWerewolfAlivePlayer(),
-            createFakeStutteringJudgeAlivePlayer(),
-          ],
-        }),
-        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
-        didJudgeMakeHisSignMockResolvedValue: false,
-        getGameHistoryJudgeRequestRecordsMockResolvedValue: [],
-        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
-      },
-      {
-        test: "should throw error when judge request another vote but there is no judge in the game.",
-        game: createFakeGameWithCurrentPlay({
-          players: [
-            createFakeWitchAlivePlayer(),
-            createFakeWolfHoundAlivePlayer(),
-            createFakeWerewolfAlivePlayer(),
-          ],
-          currentPlay: createFakeGamePlaySurvivorsVote(),
-        }),
-        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
-        didJudgeMakeHisSignMockResolvedValue: true,
-        getGameHistoryJudgeRequestRecordsMockResolvedValue: [],
-        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
-      },
-      {
-        test: "should throw error when judge request another vote but he is dead.",
-        game: createFakeGameWithCurrentPlay({
-          currentPlay: createFakeGamePlaySurvivorsVote(),
-          players: [
-            createFakeWitchAlivePlayer(),
-            createFakeWolfHoundAlivePlayer(),
-            createFakeWerewolfAlivePlayer(),
-            createFakeStutteringJudgeAlivePlayer({ isAlive: false }),
-          ],
-        }),
-        didJudgeMakeHisSignMockResolvedValue: true,
-        getGameHistoryJudgeRequestRecordsMockResolvedValue: [],
-        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
-        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
-      },
-      {
-        test: "should throw error when judge request another vote but he has reach the request limit.",
-        game: createFakeGameWithCurrentPlay({
-          currentPlay: createFakeGamePlaySurvivorsVote(),
-          players: [
-            createFakeWitchAlivePlayer(),
-            createFakeWolfHoundAlivePlayer(),
-            createFakeWerewolfAlivePlayer(),
-            createFakeStutteringJudgeAlivePlayer(),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ stutteringJudge: { voteRequestsCount: 1 } }) }),
-        }),
-        makeGamePlayWithRelationsDto: createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true }),
-        didJudgeMakeHisSignMockResolvedValue: true,
-        getGameHistoryJudgeRequestRecordsMockResolvedValue: [createFakeGameHistoryRecord()],
-        expected: new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST),
-      },
-    ])("$test", async({ game, makeGamePlayWithRelationsDto, didJudgeMakeHisSignMockResolvedValue, getGameHistoryJudgeRequestRecordsMockResolvedValue, expected }) => {
-      mocks.gameHistoryRecordService.didJudgeMakeHisSign.mockResolvedValue(didJudgeMakeHisSignMockResolvedValue);
-      mocks.gameHistoryRecordService.getGameHistoryJudgeRequestRecords.mockResolvedValue(getGameHistoryJudgeRequestRecordsMockResolvedValue);
+    it("should throw error when doesJudgeRequestAnotherVote is defined and game play action is not request another vote.", async() => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
+      const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
+      const error = await getError(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game));
 
-      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).rejects.toStrictEqual<BadGamePlayPayloadException>(expected);
+      expect(error).toStrictEqual<BadGamePlayPayloadException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "`doesJudgeRequestAnotherVote` can't be set on this current game's state" });
     });
 
-    it("should do nothing when doesJudgeRequestAnotherVote is undefined.", async() => {
+    it("should do nothing when doesJudgeRequestAnotherVote is undefined.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
 
-      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toResolve();
+      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).not.toThrow();
     });
 
-    it("should do nothing when judge request another vote and he can.", async() => {
-      const players = [
-        createFakeWitchAlivePlayer(),
-        createFakeWolfHoundAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeStutteringJudgeAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ stutteringJudge: { voteRequestsCount: 2 } }) });
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote(), players, options });
+    it("should do nothing when doesJudgeRequestAnotherVote defined and action is request another vote.", () => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayStutteringJudgeRequestsAnotherVote() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
-      mocks.gameHistoryRecordService.getGameHistoryJudgeRequestRecords.mockResolvedValue([createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordSurvivorsVotePlay({ didJudgeRequestAnotherVote: true }) })]);
 
-      await expect(services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).toResolve();
+      expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoJudgeRequest"](makeGamePlayWithRelationsDto, game)).not.toThrow();
     });
   });
 });

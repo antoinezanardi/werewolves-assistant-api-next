@@ -88,25 +88,12 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.find(filter);
   }
 
-  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId, stutteringJudgePlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryStutteringJudgeRequestsAnotherVoteRecords(gameId: Types.ObjectId, stutteringJudgePlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
-      "play.source.players": {
-        $elemMatch: {
-          "_id": stutteringJudgePlayerId,
-          "role.current": RoleNames.STUTTERING_JUDGE,
-        },
-      },
-      "play.didJudgeRequestAnotherVote": true,
-    };
-    return this.gameHistoryRecordModel.find(filter);
-  }
-
-  public async getGameHistoryJudgeChoosesHisSignRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    const filter: FilterQuery<GameHistoryRecord> = {
-      gameId,
-      "play.action": GamePlayActions.CHOOSE_SIGN,
       "play.source.name": RoleNames.STUTTERING_JUDGE,
+      "play.source.players": { $elemMatch: { _id: stutteringJudgePlayerId } },
+      "play.didJudgeRequestAnotherVote": true,
     };
     return this.gameHistoryRecordModel.find(filter);
   }

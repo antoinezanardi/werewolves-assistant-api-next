@@ -68,13 +68,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryAccursedWolfFatherInfectsWithTargetRecords(gameId, accursedWolfFatherPlayerId);
   }
 
-  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId, stutteringJudgePlayedId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords(gameId, stutteringJudgePlayedId);
-  }
-
-  public async didJudgeMakeHisSign(gameId: Types.ObjectId): Promise<boolean> {
-    const records = await this.gameHistoryRecordRepository.getGameHistoryJudgeChoosesHisSignRecords(gameId);
-    return records.length > 0;
+  public async getGameHistoryStutteringJudgeRequestsAnotherVoteRecords(gameId: Types.ObjectId, stutteringJudgePlayedId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryStutteringJudgeRequestsAnotherVoteRecords(gameId, stutteringJudgePlayedId);
   }
 
   public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId, elderPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {

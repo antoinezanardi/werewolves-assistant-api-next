@@ -18,8 +18,22 @@ import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeWolfHoundAlivePlayer, createFakeFoxAlivePlayer, createFakeDefenderAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeAccursedWolfFatherAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeWolfHoundAlivePlayer, createFakeFoxAlivePlayer, createFakeDefenderAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeAccursedWolfFatherAlivePlayer, createFakeStutteringJudgeAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
+
+function createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay(
+  gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {},
+  override: object = {},
+): GameHistoryRecordPlay {
+  return createFakeGameHistoryRecordPlay({
+    action: GamePlayActions.REQUEST_ANOTHER_VOTE,
+    source: {
+      name: RoleNames.STUTTERING_JUDGE,
+      players: gameHistoryRecordPlay.source?.players ?? [createFakeStutteringJudgeAlivePlayer()],
+    },
+    ...gameHistoryRecordPlay,
+  }, override);
+}
 
 function createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
@@ -223,17 +237,6 @@ function createFakeGameHistoryRecordScapegoatBanVotingPlay(gameHistoryRecordPlay
   }, override);
 }
 
-function createFakeGameHistoryRecordStutteringJudgeChooseSignPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
-  return createFakeGameHistoryRecordPlay({
-    action: GamePlayActions.CHOOSE_SIGN,
-    source: {
-      name: RoleNames.STUTTERING_JUDGE,
-      players: gameHistoryRecordPlay.source?.players ?? [createFakeStutteringJudgeAlivePlayer()],
-    },
-    ...gameHistoryRecordPlay,
-  }, override);
-}
-
 function createFakeGameHistoryRecordThiefChooseCardPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
   return createFakeGameHistoryRecordPlay({
     action: GamePlayActions.CHOOSE_CARD,
@@ -352,6 +355,7 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
 }
 
 export {
+  createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay,
   createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay,
   createFakeGameHistoryRecordWerewolvesEatPlay,
   createFakeGameHistoryRecordBigBadWolfEatPlay,
@@ -370,7 +374,6 @@ export {
   createFakeGameHistoryRecordWildChildChooseModelPlay,
   createFakeGameHistoryRecordWildWolfHoundChooseSidePlay,
   createFakeGameHistoryRecordScapegoatBanVotingPlay,
-  createFakeGameHistoryRecordStutteringJudgeChooseSignPlay,
   createFakeGameHistoryRecordThiefChooseCardPlay,
   createFakeGameHistoryRecordSurvivorsElectSheriffPlay,
   createFakeGameHistoryRecordSurvivorsVotePlay,

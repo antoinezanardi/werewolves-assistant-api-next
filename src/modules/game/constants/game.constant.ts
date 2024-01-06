@@ -67,6 +67,11 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,
   },
   {
+    source: { name: RoleNames.STUTTERING_JUDGE },
+    action: GamePlayActions.REQUEST_ANOTHER_VOTE,
+    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+  },
+  {
     source: { name: RoleNames.BEAR_TAMER },
     action: GamePlayActions.GROWL,
     occurrence: GamePlayOccurrences.ON_DAYS,
@@ -109,11 +114,6 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
   {
     source: { name: PlayerGroups.LOVERS },
     action: GamePlayActions.MEET_EACH_OTHER,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
-  },
-  {
-    source: { name: RoleNames.STUTTERING_JUDGE },
-    action: GamePlayActions.CHOOSE_SIGN,
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
   },
   {

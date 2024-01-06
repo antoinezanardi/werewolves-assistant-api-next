@@ -21,7 +21,7 @@ import { toJSON } from "@/shared/misc/helpers/object.helper";
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
-import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordStutteringJudgeChooseSignPlay, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGamePlayCupidCharms, createFakeGamePlayPiedPiperCharms, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeElderAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
@@ -821,7 +821,7 @@ describe("Game History Record Repository", () => {
     });
   });
 
-  describe("getGameHistoryJudgeRequestRecords", () => {
+  describe("getGameHistoryStutteringJudgeRequestsAnotherVoteRecords", () => {
     it("should get no record when there are no vote with judge request play.", async() => {
       const stutteringJudgePlayerId = createFakeObjectId();
       const players = [
@@ -848,7 +848,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId, stutteringJudgePlayerId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryStutteringJudgeRequestsAnotherVoteRecords(gameId, stutteringJudgePlayerId);
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
@@ -863,23 +863,26 @@ describe("Game History Record Repository", () => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
         createFakeGameHistoryRecord({
           gameId,
-          play: createFakeGameHistoryRecordSurvivorsVotePlay({
+          play: createFakeGameHistoryRecordSurvivorsVotePlay({ didJudgeRequestAnotherVote: true }),
+        }),
+        createFakeGameHistoryRecord({
+          gameId,
+          play: createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay({
             didJudgeRequestAnotherVote: true,
             source: createFakeGameHistoryRecordPlaySource({
-              name: PlayerGroups.SURVIVORS,
+              name: RoleNames.STUTTERING_JUDGE,
               players,
             }),
           }),
         }),
         createFakeGameHistoryRecord({
           gameId,
-          play: createFakeGameHistoryRecordSurvivorsVotePlay({
+          play: createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay({
             didJudgeRequestAnotherVote: false,
             source: createFakeGameHistoryRecordPlaySource({
-              name: PlayerGroups.SURVIVORS,
+              name: RoleNames.STUTTERING_JUDGE,
               players,
             }),
           }),
@@ -887,9 +890,9 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
         createFakeGameHistoryRecord({
           gameId: otherGameId,
-          play: createFakeGameHistoryRecordSurvivorsVotePlay({
+          play: createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: PlayerGroups.SURVIVORS,
+              name: RoleNames.STUTTERING_JUDGE,
               players,
             }),
             didJudgeRequestAnotherVote: true,
@@ -898,10 +901,10 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
         createFakeGameHistoryRecord({
           gameId,
-          play: createFakeGameHistoryRecordSurvivorsVotePlay({
+          play: createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay({
             didJudgeRequestAnotherVote: true,
             source: createFakeGameHistoryRecordPlaySource({
-              name: PlayerGroups.SURVIVORS,
+              name: RoleNames.STUTTERING_JUDGE,
               players: [
                 createFakePlayer(),
                 createFakePlayer(),
@@ -911,42 +914,8 @@ describe("Game History Record Repository", () => {
         }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId, stutteringJudgePlayerId);
+      const records = await repositories.gameHistoryRecord.getGameHistoryStutteringJudgeRequestsAnotherVoteRecords(gameId, stutteringJudgePlayerId);
       const expectedRecords = [gameHistoryRecords[1]];
-
-      expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
-    });
-  });
-
-  describe("getGameHistoryJudgeChoosesHisSignRecords", () => {
-    it("should get no records when stuttering judge did not choose his sign for game id.", async() => {
-      const gameId = createFakeObjectId();
-      const otherGameId = createFakeObjectId();
-      const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId: otherGameId, play: createFakeGameHistoryRecordStutteringJudgeChooseSignPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordStutteringJudgeChooseSignPlay({ action: GamePlayActions.VOTE }) }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay({ action: GamePlayActions.CHOOSE_SIGN }) }),
-      ];
-      await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryJudgeChoosesHisSignRecords(gameId);
-
-      expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
-    });
-
-    it("should get records when stuttering judge chose his sign for game id.", async() => {
-      const gameId = createFakeObjectId();
-      const otherGameId = createFakeObjectId();
-      const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId: otherGameId, play: createFakeGameHistoryRecordStutteringJudgeChooseSignPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordStutteringJudgeChooseSignPlay() }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordStutteringJudgeChooseSignPlay({ action: GamePlayActions.VOTE }) }),
-        createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay({ action: GamePlayActions.CHOOSE_SIGN }) }),
-      ];
-      await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryJudgeChoosesHisSignRecords(gameId);
-      const expectedRecords = [gameHistoryRecords[2]];
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
     });

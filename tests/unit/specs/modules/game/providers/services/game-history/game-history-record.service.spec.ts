@@ -55,7 +55,7 @@ describe("Game History Record Service", () => {
       getLastGameHistoryTieInVotesRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
       getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.SpyInstance;
-      getGameHistoryJudgeRequestRecords: jest.SpyInstance;
+      getGameHistoryStutteringJudgeRequestsAnotherVoteRecords: jest.SpyInstance;
       getGameHistoryJudgeChoosesHisSignRecords: jest.SpyInstance;
       getGameHistoryWerewolvesEatElderRecords: jest.SpyInstance;
       getGameHistoryElderProtectedFromWerewolvesRecords: jest.SpyInstance;
@@ -93,7 +93,7 @@ describe("Game History Record Service", () => {
         getLastGameHistoryTieInVotesRecord: jest.fn(),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn(),
         getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.fn(),
-        getGameHistoryJudgeRequestRecords: jest.fn(),
+        getGameHistoryStutteringJudgeRequestsAnotherVoteRecords: jest.fn(),
         getGameHistoryJudgeChoosesHisSignRecords: jest.fn(),
         getGameHistoryWerewolvesEatElderRecords: jest.fn(),
         getGameHistoryElderProtectedFromWerewolvesRecords: jest.fn(),
@@ -214,27 +214,13 @@ describe("Game History Record Service", () => {
     });
   });
 
-  describe("getGameHistoryJudgeRequestRecords", () => {
+  describe("getGameHistoryStutteringJudgeRequestsAnotherVoteRecords", () => {
     it("should get game history records when stuttering judge requested another vote when called.", async() => {
       const stutteringJudgePlayerId = createFakeObjectId();
       const gameId = createFakeObjectId();
-      await services.gameHistoryRecord.getGameHistoryJudgeRequestRecords(gameId, stutteringJudgePlayerId);
+      await services.gameHistoryRecord.getGameHistoryStutteringJudgeRequestsAnotherVoteRecords(gameId, stutteringJudgePlayerId);
 
-      expect(mocks.gameHistoryRecordRepository.getGameHistoryJudgeRequestRecords).toHaveBeenCalledExactlyOnceWith(gameId, stutteringJudgePlayerId);
-    });
-  });
-
-  describe("didJudgeMakeHisSign", () => {
-    it("should return true when there are records of stuttering judge make his sign.", async() => {
-      mocks.gameHistoryRecordRepository.getGameHistoryJudgeChoosesHisSignRecords.mockResolvedValueOnce([createFakeGameHistoryRecordPlay()]);
-
-      await expect(services.gameHistoryRecord.didJudgeMakeHisSign(createFakeObjectId())).resolves.toBe(true);
-    });
-
-    it("should return false when there are no records of stuttering judge make his sign.", async() => {
-      mocks.gameHistoryRecordRepository.getGameHistoryJudgeChoosesHisSignRecords.mockResolvedValueOnce([]);
-
-      await expect(services.gameHistoryRecord.didJudgeMakeHisSign(createFakeObjectId())).resolves.toBe(false);
+      expect(mocks.gameHistoryRecordRepository.getGameHistoryStutteringJudgeRequestsAnotherVoteRecords).toHaveBeenCalledExactlyOnceWith(gameId, stutteringJudgePlayerId);
     });
   });
   

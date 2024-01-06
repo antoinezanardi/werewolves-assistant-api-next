@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerInteractableWithInteractionType } from "@/modules/game/helpers/game-play/game-play.helper";
-import { STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS, TARGET_ACTIONS, VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
+import { TARGET_ACTIONS, VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
@@ -32,7 +32,7 @@ export class GamePlayValidatorService {
     }
     const clonedGameWithCurrentPlay = createGame(game) as GameWithCurrentPlay;
     const { votes, targets } = play;
-    await this.validateGamePlayWithRelationsDtoJudgeRequest(play, clonedGameWithCurrentPlay);
+    this.validateGamePlayWithRelationsDtoJudgeRequest(play, clonedGameWithCurrentPlay);
     this.validateGamePlayWithRelationsDtoChosenSide(play, clonedGameWithCurrentPlay);
     this.validateGamePlayVotesWithRelationsDto(votes, clonedGameWithCurrentPlay);
     await this.validateGamePlayTargetsWithRelationsDto(targets, clonedGameWithCurrentPlay);
@@ -356,20 +356,8 @@ export class GamePlayValidatorService {
     }
   }
 
-  private async validateGamePlayWithRelationsDtoJudgeRequest({ doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<void> {
-    if (doesJudgeRequestAnotherVote === undefined) {
-      return;
-    }
-    const { voteRequestsCount } = game.options.roles.stutteringJudge;
-    const didJudgeMakeHisSign = await this.gameHistoryRecordService.didJudgeMakeHisSign(game._id);
-    const stutteringJudgePlayer = getPlayerWithCurrentRole(game, RoleNames.STUTTERING_JUDGE);
-    const stutteringJudgeRequestOpportunityActions: GamePlayActions[] = [...STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS];
-    if (!stutteringJudgeRequestOpportunityActions.includes(game.currentPlay.action) || !didJudgeMakeHisSign ||
-      !stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer, game)) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
-    }
-    const gameHistoryJudgeRequestRecords = await this.gameHistoryRecordService.getGameHistoryJudgeRequestRecords(game._id, stutteringJudgePlayer._id);
-    if (gameHistoryJudgeRequestRecords.length >= voteRequestsCount) {
+  private validateGamePlayWithRelationsDtoJudgeRequest({ doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): void {
+    if (doesJudgeRequestAnotherVote !== undefined && game.currentPlay.action !== GamePlayActions.REQUEST_ANOTHER_VOTE) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
     }
   }

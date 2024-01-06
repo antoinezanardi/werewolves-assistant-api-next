@@ -21,23 +21,10 @@ When(/^the survivors elect sheriff with the following votes$/u, async function(t
 });
 
 When(
-  /^the survivors vote with the following votes(?<stutteringJudgeRequest> and the stuttering judge does his sign)?$/u,
-  async function(this: CustomWorld, stutteringJudgeRequest: string | null, votesDatatable: DataTable): Promise<void> {
+  /^the survivors vote with the following votes$/u,
+  async function(this: CustomWorld, votesDatatable: DataTable): Promise<void> {
     const votes = convertDatatableToMakeGameplayVotes(votesDatatable.rows(), this.game);
-    const makeGamePlayDto: MakeGamePlayDto = {
-      votes,
-      doesJudgeRequestAnotherVote: stutteringJudgeRequest !== null || undefined,
-    };
-
-    this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
-    setGameInContext(this.response, this);
-  },
-);
-
-When(
-  /^nobody vote and the stuttering judge does his sign$/u,
-  async function(this: CustomWorld): Promise<void> {
-    const makeGamePlayDto: MakeGamePlayDto = { doesJudgeRequestAnotherVote: true };
+    const makeGamePlayDto: MakeGamePlayDto = { votes };
 
     this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);
     setGameInContext(this.response, this);
@@ -254,6 +241,11 @@ When(/^the devoted servant steals the role of the player named (?<name>.+)$/u, a
 
 When(/^the bear tamer calms his bear$/u, async function(this: CustomWorld): Promise<void> {
   this.response = await makeGamePlayRequest({}, this.game, this.app);
+  setGameInContext(this.response, this);
+});
+
+When(/^the stuttering judge requests another vote$/u, async function(this: CustomWorld): Promise<void> {
+  this.response = await makeGamePlayRequest({ doesJudgeRequestAnotherVote: true }, this.game, this.app);
   setGameInContext(this.response, this);
 });
 
