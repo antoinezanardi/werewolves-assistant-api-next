@@ -11,7 +11,6 @@ enum GamePlayActions {
   CHOOSE_MODEL = "choose-model",
   CHOOSE_SIDE = "choose-side",
   BAN_VOTING = "ban-voting",
-  CHOOSE_SIGN = "choose-sign",
   CHOOSE_CARD = "choose-card",
   ELECT_SHERIFF = "elect-sheriff",
   VOTE = "vote",
@@ -20,6 +19,7 @@ enum GamePlayActions {
   BURY_DEAD_BODIES = "bury-dead-bodies",
   GROWL = "growl",
   INFECT = "infect",
+  REQUEST_ANOTHER_VOTE = "request-another-vote",
 }
 
 enum GamePlayCauses {

@@ -35,6 +35,7 @@ export class GamePlayService {
     [RoleNames.ACTOR]: (game: Game) => this.isActorGamePlaySuitableForCurrentPhase(game),
     [RoleNames.BEAR_TAMER]: async(game: Game) => this.isBearTamerGamePlaySuitableForCurrentPhase(game),
     [RoleNames.ACCURSED_WOLF_FATHER]: async(game: Game) => this.isAccursedWolfFatherGamePlaySuitableForCurrentPhase(game),
+    [RoleNames.STUTTERING_JUDGE]: async(game: Game) => this.isStutteringJudgeGamePlaySuitableForCurrentPhase(game),
   };
 
   public constructor(
@@ -140,6 +141,19 @@ export class GamePlayService {
     return inLovePlayers.length > 0 && inLovePlayers.every(player => player.isAlive) && !await this.gameHistoryRecordService.hasGamePlayBeenMade(game._id, gamePlay);
   }
 
+  private async isStutteringJudgeGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {
+    if (game instanceof CreateGameDto) {
+      return false;
+    }
+    const stutteringJudgePlayer = getPlayerWithCurrentRole(game, RoleNames.STUTTERING_JUDGE);
+    if (!stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer, game)) {
+      return false;
+    }
+    const { voteRequestsCount } = game.options.roles.stutteringJudge;
+    const judgeGamePlayRecords = await this.gameHistoryRecordService.getGameHistoryStutteringJudgeRequestsAnotherVoteRecords(game._id, stutteringJudgePlayer._id);
+    return judgeGamePlayRecords.length < voteRequestsCount;
+  }
+
   private async isAccursedWolfFatherGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {
     const { doSkipCallIfNoTarget: doesSkipCallIfNoTarget } = game.options.roles;
     if (game instanceof CreateGameDto) {
@@ -149,8 +163,8 @@ export class GamePlayService {
     if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game)) {
       return false;
     }
-    const lastAccursedWolfFatherGamePlay = await this.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord(game._id, accursedWolfFatherPlayer._id);
-    return !doesSkipCallIfNoTarget || !lastAccursedWolfFatherGamePlay;
+    const lastAccursedWolfFatherGamePlayRecord = await this.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord(game._id, accursedWolfFatherPlayer._id);
+    return !doesSkipCallIfNoTarget || !lastAccursedWolfFatherGamePlayRecord;
   }
 
   private async isBearTamerGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {

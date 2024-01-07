@@ -52,14 +52,8 @@ const VOTE_ACTIONS = [
   GamePlayActions.ELECT_SHERIFF,
 ] as const satisfies Readonly<GamePlayActions[]>;
 
-const STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS = [
-  GamePlayActions.VOTE,
-  GamePlayActions.SETTLE_VOTES,
-] as const satisfies Readonly<GamePlayActions[]>;
-
 export {
   GAME_PLAY_SOURCE_NAMES,
   TARGET_ACTIONS,
   VOTE_ACTIONS,
-  STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS,
 };

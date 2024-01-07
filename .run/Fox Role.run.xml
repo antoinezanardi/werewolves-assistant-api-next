@@ -1,13 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Fox Role" type="js.build_tools.npm" folderName="Cucumber Tags">
-    <package-json value="$PROJECT_DIR$/package.json" />
-    <command value="run" />
-    <scripts>
-      <script value="test:cucumber" />
-    </scripts>
-    <arguments value="--tags &quot;@fox-role&quot;" />
-    <node-interpreter value="project" />
-    <envs />
+  <configuration default="false" name="Fox Role" type="cucumber.js" factoryName="Cucumber.js" folderName="Tags">
+    <option name="myFilePath" value="$PROJECT_DIR$/tests/acceptance" />
+    <option name="myNameFilter" value="" />
+    <option name="cucumberJsArguments" value="--config config/cucumber/cucumber.json --tags @fox-role --parallel 1" />
+    <option name="workingDirectory" value="$PROJECT_DIR$" />
+    <envs>
+      <env name="NODE_ENV" value="test" />
+    </envs>
     <method v="2" />
   </configuration>
 </component>

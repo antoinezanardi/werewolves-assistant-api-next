@@ -569,12 +569,6 @@ Feature: 🗳️ Vote Game Play
       | Olivia  | villager         |
       | JB      | stuttering-judge |
       | Thomas  | villager         |
-    And the game's current play should be stuttering-judge to choose-sign
-    And the game's current play should be played by the following players
-      | name |
-      | JB   |
-
-    When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia
@@ -584,7 +578,7 @@ Feature: 🗳️ Vote Game Play
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
-    When the survivors vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes
       | voter  | target |
       | JB     | Thomas |
       | Thomas | JB     |
@@ -599,7 +593,10 @@ Feature: 🗳️ Vote Game Play
       | Thomas | JB     |
     Then the player named JB should be alive
     And the player named Thomas should be alive
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be stuttering-judge to request-another-vote
+
+    When the stuttering judge requests another vote
+    Then the game's current play should be survivors to vote because stuttering-judge-request
     And the game's current play occurrence should be consequential
 
     When the survivors vote with the following votes
@@ -619,9 +616,6 @@ Feature: 🗳️ Vote Game Play
       | Olivia  | villager         |
       | JB      | stuttering-judge |
       | Thomas  | villager         |
-    And the game's current play should be stuttering-judge to choose-sign
-
-    When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia
@@ -631,7 +625,7 @@ Feature: 🗳️ Vote Game Play
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
-    When the survivors vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes
       | voter  | target |
       | JB     | Thomas |
       | Thomas | JB     |
@@ -639,13 +633,16 @@ Feature: 🗳️ Vote Game Play
     And the player named Thomas should be alive
     And the game's current play should be survivors to vote because previous-votes-were-in-ties
 
-    When the survivors vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes
       | voter  | target |
       | JB     | Thomas |
       | Thomas | JB     |
     Then the player named JB should be alive
     And the player named Thomas should be alive
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be stuttering-judge to request-another-vote
+
+    When the stuttering judge requests another vote
+    Then the game's current play should be survivors to vote because stuttering-judge-request
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -662,7 +659,4 @@ Feature: 🗳️ Vote Game Play
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be survivors to vote because stuttering-judge-request
-
-    When the player or group skips his turn
     Then the game's current play should be werewolves to eat

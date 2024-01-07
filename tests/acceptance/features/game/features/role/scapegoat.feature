@@ -20,9 +20,6 @@ Feature: 🐐 Scapegoat role
       | JB     | Olivia |
       | Thomas | Olivia |
     Then the player named Olivia should have the active sheriff from survivors attribute
-    And the game's current play should be stuttering-judge to choose-sign
-
-    When the stuttering judge chooses his sign
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
@@ -32,7 +29,7 @@ Feature: 🐐 Scapegoat role
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
 
-    When the survivors vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes
       | voter   | target |
       | Antoine | Olivia |
       | Olivia  | Thomas |
@@ -74,7 +71,9 @@ Feature: 🐐 Scapegoat role
     And 1 of the following players should have the inactive cant-vote from scapegoat attribute
       | name   |
       | Olivia |
-    And the game's current play should be survivors to vote because stuttering-judge-request
+
+    When the stuttering judge requests another vote
+    Then the game's current play should be survivors to vote because stuttering-judge-request
     And the game's current play should have eligible targets boundaries from 0 to 4
     And the game's current play should have the following eligible targets interactable players
       | name   |
@@ -82,6 +81,7 @@ Feature: 🐐 Scapegoat role
       | Thomas |
       | Mom    |
       | Dad    |
+    And the game's current play should be survivors to vote because stuttering-judge-request
 
     When the survivors vote with the following votes
       | voter  | target |

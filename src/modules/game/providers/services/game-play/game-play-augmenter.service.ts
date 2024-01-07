@@ -64,6 +64,7 @@ export class GamePlayAugmenterService {
     [RoleNames.ACTOR]: () => true,
     [RoleNames.CUPID]: (game: Game) => this.canCupidSkipGamePlay(game),
     [RoleNames.ACCURSED_WOLF_FATHER]: () => true,
+    [RoleNames.STUTTERING_JUDGE]: () => true,
   };
 
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}

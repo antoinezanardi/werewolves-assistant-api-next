@@ -10,6 +10,15 @@ import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants
 
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 
+function createFakeGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+  return createFakeGamePlay({
+    source: createFakeGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
+    action: GamePlayActions.REQUEST_ANOTHER_VOTE,
+    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+    ...gamePlay,
+  }, override);
+}
+
 function createFakeGamePlayAccursedWolfFatherInfects(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     action: GamePlayActions.INFECT,
@@ -91,15 +100,6 @@ function createFakeGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}, ov
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: RoleNames.THIEF }),
     action: GamePlayActions.CHOOSE_CARD,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
-    ...gamePlay,
-  }, override);
-}
-
-function createFakeGamePlayStutteringJudgeChoosesSign(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
-  return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
-    action: GamePlayActions.CHOOSE_SIGN,
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   }, override);
@@ -280,6 +280,7 @@ function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object =
 }
 
 export {
+  createFakeGamePlayStutteringJudgeRequestsAnotherVote,
   createFakeGamePlayAccursedWolfFatherInfects,
   createFakeGamePlayBearTamerGrowls,
   createFakeGamePlayActorChoosesCard,
@@ -289,7 +290,6 @@ export {
   createFakeGamePlaySurvivorsVote,
   createFakeGamePlaySurvivorsElectSheriff,
   createFakeGamePlayThiefChoosesCard,
-  createFakeGamePlayStutteringJudgeChoosesSign,
   createFakeGamePlayScapegoatBansVoting,
   createFakeGamePlayWolfHoundChoosesSide,
   createFakeGamePlayWildChildChoosesModel,

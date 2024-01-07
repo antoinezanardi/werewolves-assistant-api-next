@@ -25,9 +25,9 @@ import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/c
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeBearTamerGameOptions, createFakeCupidGameOptions, createFakeRolesGameOptions, createFakeSheriffElectionGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeBearTamerGameOptions, createFakeCupidGameOptions, createFakeRolesGameOptions, createFakeSheriffElectionGameOptions, createFakeSheriffGameOptions, createFakeStutteringJudgeGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
-import { createFakeGamePlay, createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBearTamerGrowls, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlay, createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBearTamerGrowls, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeRequestsAnotherVote, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAccursedWolfFatherAlivePlayer, createFakeActorAlivePlayer, createFakeAngelAlivePlayer, createFakeBearTamerAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeFoxAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -61,6 +61,7 @@ describe("Game Play Service", () => {
       isOneNightOnlyGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isBearTamerGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isAccursedWolfFatherGamePlaySuitableForCurrentPhase: jest.SpyInstance;
+      isStutteringJudgeGamePlaySuitableForCurrentPhase: jest.SpyInstance;
     };
     gamePlayAugmenterService: {
       setGamePlayCanBeSkipped: jest.SpyInstance;
@@ -74,6 +75,7 @@ describe("Game Play Service", () => {
       getGameHistoryPhaseRecords: jest.SpyInstance;
       hasGamePlayBeenMade: jest.SpyInstance;
       hasGamePlayBeenMadeByPlayer: jest.SpyInstance;
+      getGameHistoryStutteringJudgeRequestsAnotherVoteRecords: jest.SpyInstance;
     };
     gameHelper: {
       getEligibleWerewolvesTargets: jest.SpyInstance;
@@ -111,6 +113,7 @@ describe("Game Play Service", () => {
         isOneNightOnlyGamePlaySuitableForCurrentPhase: jest.fn(),
         isBearTamerGamePlaySuitableForCurrentPhase: jest.fn(),
         isAccursedWolfFatherGamePlaySuitableForCurrentPhase: jest.fn(),
+        isStutteringJudgeGamePlaySuitableForCurrentPhase: jest.fn(),
       },
       gamePlayAugmenterService: {
         setGamePlayCanBeSkipped: jest.fn(),
@@ -124,6 +127,7 @@ describe("Game Play Service", () => {
         getGameHistoryPhaseRecords: jest.fn().mockResolvedValue([]),
         hasGamePlayBeenMade: jest.fn().mockResolvedValue(false),
         hasGamePlayBeenMadeByPlayer: jest.fn().mockResolvedValue(false),
+        getGameHistoryStutteringJudgeRequestsAnotherVoteRecords: jest.fn().mockResolvedValue([]),
       },
       gameHelper: {
         getEligibleWerewolvesTargets: jest.spyOn(GameHelper, "getEligibleWerewolvesTargets").mockReturnValue([]),
@@ -331,7 +335,6 @@ describe("Game Play Service", () => {
           createFakeGamePlayCupidCharms(),
           createFakeGamePlaySeerLooks(),
           createFakeGamePlayFoxSniffs(),
-          createFakeGamePlayStutteringJudgeChoosesSign(),
           createFakeGamePlayTwoSistersMeetEachOther(),
           createFakeGamePlayThreeBrothersMeetEachOther(),
           createFakeGamePlayWildChildChoosesModel(),
@@ -714,6 +717,97 @@ describe("Game Play Service", () => {
       mocks.gameHistoryRecordService.hasGamePlayBeenMade.mockResolvedValue(hasGamePlayBeenMade);
 
       await expect(services.gamePlay["isLoversGamePlaySuitableForCurrentPhase"](game, gamePlay)).resolves.toBe(expected);
+    });
+  });
+
+  describe("isStutteringJudgeGamePlaySuitableForCurrentPhase", () => {
+    it.each<{
+      test: string;
+      game: CreateGameDto | Game;
+      stutteringJudgeRequestsRecords: GameHistoryRecord[];
+      expected: boolean;
+    }>([
+      {
+        test: "should return false when game is dto.",
+        game: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+            createFakeCreateGamePlayerDto({ role: { name: RoleNames.STUTTERING_JUDGE } }),
+          ],
+        }),
+        stutteringJudgeRequestsRecords: [],
+        expected: false,
+      },
+      {
+        test: "should return false when there no stuttering judge in the game.",
+        game: createFakeGame({
+          players: [
+            createFakeWhiteWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeCupidAlivePlayer(),
+          ],
+        }),
+        stutteringJudgeRequestsRecords: [],
+        expected: false,
+      },
+      {
+        test: "should return false when stuttering judge is dead.",
+        game: createFakeGame({
+          players: [
+            createFakeWhiteWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeStutteringJudgeAlivePlayer({ isAlive: false }),
+          ],
+        }),
+        stutteringJudgeRequestsRecords: [],
+        expected: false,
+      },
+      {
+        test: "should return false when stuttering judge is powerless.",
+        game: createFakeGame({
+          players: [
+            createFakeWhiteWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeStutteringJudgeAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
+          ],
+        }),
+        stutteringJudgeRequestsRecords: [],
+        expected: false,
+      },
+      {
+        test: "should return false when stuttering judge has reached the limit of his requests.",
+        game: createFakeGame({
+          players: [
+            createFakeWhiteWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeStutteringJudgeAlivePlayer(),
+          ],
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ stutteringJudge: createFakeStutteringJudgeGameOptions({ voteRequestsCount: 2 }) }) }),
+        }),
+        stutteringJudgeRequestsRecords: [
+          createFakeGameHistoryRecord(),
+          createFakeGameHistoryRecord(),
+        ],
+        expected: false,
+      },
+      {
+        test: "should return true when stuttering judge didn't request to skip yet.",
+        game: createFakeGame({
+          players: [
+            createFakeWhiteWerewolfAlivePlayer(),
+            createFakeSeerAlivePlayer(),
+            createFakeStutteringJudgeAlivePlayer(),
+          ],
+        }),
+        stutteringJudgeRequestsRecords: [],
+        expected: true,
+      },
+    ])("$test", async({ game, stutteringJudgeRequestsRecords, expected }) => {
+      mocks.gameHistoryRecordService.getGameHistoryStutteringJudgeRequestsAnotherVoteRecords.mockResolvedValue(stutteringJudgeRequestsRecords);
+
+      await expect(services.gamePlay["isStutteringJudgeGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(expected);
     });
   });
 
@@ -2492,6 +2586,7 @@ describe("Game Play Service", () => {
       mocks.gamePlayService.isActorGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isActorGamePlaySuitableForCurrentPhase }, "isActorGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isBearTamerGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isBearTamerGamePlaySuitableForCurrentPhase }, "isBearTamerGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isAccursedWolfFatherGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isAccursedWolfFatherGamePlaySuitableForCurrentPhase }, "isAccursedWolfFatherGamePlaySuitableForCurrentPhase").mockImplementation();
+      mocks.gamePlayService.isStutteringJudgeGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isStutteringJudgeGamePlaySuitableForCurrentPhase }, "isStutteringJudgeGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isOneNightOnlyGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isOneNightOnlyGamePlaySuitableForCurrentPhase }, "isOneNightOnlyGamePlaySuitableForCurrentPhase").mockImplementation();
     });
 
@@ -2633,6 +2728,20 @@ describe("Game Play Service", () => {
       await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
       expect(mocks.gamePlayService.isAccursedWolfFatherGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should call stuttering judge method when game plays source role is stuttering judge.", async() => {
+      const players = [
+        createFakeWhiteWerewolfAlivePlayer(),
+        createFakeBigBadWolfAlivePlayer(),
+        createFakeStutteringJudgeAlivePlayer(),
+        createFakeWildChildAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const gamePlay = createFakeGamePlayStutteringJudgeRequestsAnotherVote();
+      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
+
+      expect(mocks.gamePlayService.isStutteringJudgeGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call one night only method when game plays occurrence is one night only.", async() => {
