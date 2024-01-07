@@ -26,6 +26,8 @@ const GAME_PLAY_SOURCE_NAMES = [
   RoleNames.WILD_CHILD,
   RoleNames.WITCH,
   RoleNames.ACTOR,
+  RoleNames.BEAR_TAMER,
+  RoleNames.ACCURSED_WOLF_FATHER,
 ] as const satisfies Readonly<(PlayerAttributeNames | PlayerGroups | RoleNames)[]>;
 
 const TARGET_ACTIONS = [
@@ -42,6 +44,7 @@ const TARGET_ACTIONS = [
   GamePlayActions.SNIFF,
   GamePlayActions.BAN_VOTING,
   GamePlayActions.BURY_DEAD_BODIES,
+  GamePlayActions.INFECT,
 ] as const satisfies Readonly<GamePlayActions[]>;
 
 const VOTE_ACTIONS = [
@@ -49,14 +52,8 @@ const VOTE_ACTIONS = [
   GamePlayActions.ELECT_SHERIFF,
 ] as const satisfies Readonly<GamePlayActions[]>;
 
-const STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS = [
-  GamePlayActions.VOTE,
-  GamePlayActions.SETTLE_VOTES,
-] as const satisfies Readonly<GamePlayActions[]>;
-
 export {
   GAME_PLAY_SOURCE_NAMES,
   TARGET_ACTIONS,
   VOTE_ACTIONS,
-  STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS,
 };

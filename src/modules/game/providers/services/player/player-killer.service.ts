@@ -45,21 +45,6 @@ export class PlayerKillerService {
     return elderLivesCountAgainstWerewolves <= 0;
   }
 
-  public async getElderLivesCountAgainstWerewolves(game: Game, elderPlayer: Player): Promise<number> {
-    const { livesCountAgainstWerewolves } = game.options.roles.elder;
-    const werewolvesEatElderRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords(game._id, elderPlayer._id);
-    const werewolvesEatElderOnPreviousTurnsRecords = werewolvesEatElderRecords.filter(({ turn }) => turn < game.turn);
-    const elderProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords(game._id, elderPlayer._id);
-    const doesElderLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(elderPlayer, PlayerAttributeNames.EATEN, game) && this.canPlayerBeEaten(elderPlayer, game);
-    return werewolvesEatElderOnPreviousTurnsRecords.reduce((acc, werewolvesEatElderRecord) => {
-      const wasElderProtectedFromWerewolves = !!elderProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatElderRecord.turn);
-      if (!wasElderProtectedFromWerewolves) {
-        return acc - 1;
-      }
-      return acc;
-    }, doesElderLooseALifeOnCurrentTurn ? livesCountAgainstWerewolves - 1 : livesCountAgainstWerewolves);
-  }
-
   public applyPlayerDeathOutcomes(deadPlayer: DeadPlayer, game: Game): Game {
     let clonedGame = createGame(game);
     let clonedDeadPlayer = createDeadPlayer(deadPlayer);
@@ -80,6 +65,21 @@ export class PlayerKillerService {
     clonedGame = updatePlayerInGame(playerToReveal._id, clonedPlayerToReveal, clonedGame);
     clonedPlayerToReveal = getPlayerWithIdOrThrow(playerToReveal._id, clonedGame, cantFindPlayerException);
     return this.applyPlayerRoleRevelationOutcomes(clonedPlayerToReveal, clonedGame);
+  }
+
+  private async getElderLivesCountAgainstWerewolves(game: Game, elderPlayer: Player): Promise<number> {
+    const { livesCountAgainstWerewolves } = game.options.roles.elder;
+    const werewolvesEatElderRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords(game._id, elderPlayer._id);
+    const werewolvesEatElderOnPreviousTurnsRecords = werewolvesEatElderRecords.filter(({ turn }) => turn < game.turn);
+    const elderProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords(game._id, elderPlayer._id);
+    const doesElderLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(elderPlayer, PlayerAttributeNames.EATEN, game) && this.canPlayerBeEaten(elderPlayer, game);
+    return werewolvesEatElderOnPreviousTurnsRecords.reduce((acc, werewolvesEatElderRecord) => {
+      const wasElderProtectedFromWerewolves = !!elderProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatElderRecord.turn);
+      if (!wasElderProtectedFromWerewolves) {
+        return acc - 1;
+      }
+      return acc;
+    }, doesElderLooseALifeOnCurrentTurn ? livesCountAgainstWerewolves - 1 : livesCountAgainstWerewolves);
   }
 
   private applyPlayerRoleRevelationOutcomes(revealedPlayer: Player, game: Game): Game {

@@ -1,11 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Two Sisters Role" type="js.build_tools.npm" folderName="Cucumber Tags">
+  <configuration default="false" name="Docker Test Reset" type="js.build_tools.npm">
     <package-json value="$PROJECT_DIR$/package.json" />
     <command value="run" />
     <scripts>
-      <script value="test:cucumber" />
+      <script value="docker:test:reset" />
     </scripts>
-    <arguments value="-- --tags &quot;@two-sisters-role&quot;" />
     <node-interpreter value="project" />
     <envs />
     <method v="2" />

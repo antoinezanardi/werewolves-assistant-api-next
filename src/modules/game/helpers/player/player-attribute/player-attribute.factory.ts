@@ -35,15 +35,6 @@ function createContaminatedByRustySwordKnightPlayerAttribute(playerAttribute: Pa
   });
 }
 
-function createGrowledByBearTamerPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
-  return createPlayerAttribute({
-    name: PlayerAttributeNames.GROWLED,
-    source: RoleNames.BEAR_TAMER,
-    remainingPhases: 1,
-    ...playerAttribute,
-  });
-}
-
 function createCharmedByPiedPiperPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: PlayerAttributeNames.CHARMED,
@@ -232,7 +223,6 @@ export {
   createActingByActorPlayerAttribute,
   createStolenRoleByDevotedServantPlayerAttribute,
   createContaminatedByRustySwordKnightPlayerAttribute,
-  createGrowledByBearTamerPlayerAttribute,
   createCharmedByPiedPiperPlayerAttribute,
   createCantVoteBySurvivorsPlayerAttribute,
   createCantVoteByScapegoatPlayerAttribute,

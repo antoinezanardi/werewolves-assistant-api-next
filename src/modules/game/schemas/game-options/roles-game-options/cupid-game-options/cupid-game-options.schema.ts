@@ -17,6 +17,11 @@ class CupidGameOptions {
   @Type(() => CupidLoversGameOptions)
   @Expose()
   public lovers: CupidLoversGameOptions;
+
+  @ApiProperty(CUPID_GAME_OPTIONS_API_PROPERTIES.mustWinWithLovers as ApiPropertyOptions)
+  @Prop(CUPID_GAME_OPTIONS_FIELDS_SPECS.mustWinWithLovers)
+  @Expose()
+  public mustWinWithLovers: boolean;
 }
 
 const CUPID_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(CupidGameOptions);

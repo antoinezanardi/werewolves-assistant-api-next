@@ -58,6 +58,9 @@ Feature: 🦊 Fox role
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Coco
+    Then the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
     Then the player named Coco should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
 
@@ -76,6 +79,9 @@ Feature: 🦊 Fox role
     Then the player named Antoine should not have the active powerless from fox attribute
 
     When the werewolves eat the player named Juju
+    Then the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
     Then the player named Juju should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
 
@@ -90,6 +96,9 @@ Feature: 🦊 Fox role
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
+    Then the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
     Then the player named Thomas should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
 

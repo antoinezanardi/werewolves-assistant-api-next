@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createGamePlay, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayWolfHoundChoosesSide, createGamePlayFoxSniffs, createGamePlayDefenderProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayScandalmongerMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlayStutteringJudgeChoosesSign, createGamePlaySurvivorsBuryDeadBodies, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlay, createGamePlayBigBadWolfEats, createGamePlayCharmedMeetEachOther, createGamePlayCupidCharms, createGamePlayWolfHoundChoosesSide, createGamePlayFoxSniffs, createGamePlayDefenderProtects, createGamePlayHunterShoots, createGamePlayLoversMeetEachOther, createGamePlayPiedPiperCharms, createGamePlayScandalmongerMarks, createGamePlayScapegoatBansVoting, createGamePlaySeerLooks, createGamePlaySheriffDelegates, createGamePlaySheriffSettlesVotes, createGamePlaySource, createGamePlaySurvivorsBuryDeadBodies, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote, createGamePlayThiefChoosesCard, createGamePlayThreeBrothersMeetEachOther, createGamePlayTwoSistersMeetEachOther, createGamePlayWerewolvesEat, createGamePlayWhiteWerewolfEats, createGamePlayWildChildChoosesModel, createGamePlayWitchUsesPotions, createGamePlayStutteringJudgeRequestsAnotherVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
@@ -12,6 +12,18 @@ import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Factory", () => {
+  describe("createGamePlayStutteringJudgeRequestsAnotherVote", () => {
+    it("should create game play stuttering judge requests another vote when called.", () => {
+      const expectedGamePlay = createFakeGamePlay({
+        source: createFakeGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
+        action: GamePlayActions.REQUEST_ANOTHER_VOTE,
+        occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+      });
+
+      expect(createGamePlayStutteringJudgeRequestsAnotherVote()).toStrictEqual<GamePlay>(expectedGamePlay);
+    });
+  });
+
   describe("createGamePlaySurvivorsBuryDeadBodies", () => {
     it("should create game play survivors bury dead bodies when called.", () => {
       const expectedGamePlay = createFakeGamePlay({
@@ -96,6 +108,16 @@ describe("Game Play Factory", () => {
     ])("$test", ({ expectedGamePlay, cause }) => {
       expect(createGamePlaySurvivorsVote({ cause })).toStrictEqual<GamePlay>(expectedGamePlay);
     });
+
+    it("should create default game play survivors vote when called with overridden cause.", () => {
+      const expectedGamePlay = createFakeGamePlay({
+        source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
+        action: GamePlayActions.VOTE,
+        occurrence: GamePlayOccurrences.ON_DAYS,
+      });
+
+      expect(createGamePlaySurvivorsVote()).toStrictEqual<GamePlay>(expectedGamePlay);
+    });
   });
 
   describe("createGamePlaySurvivorsElectSheriff", () => {
@@ -119,18 +141,6 @@ describe("Game Play Factory", () => {
       });
 
       expect(createGamePlayThiefChoosesCard()).toStrictEqual<GamePlay>(expectedGamePlay);
-    });
-  });
-
-  describe("createGamePlayStutteringJudgeChoosesSign", () => {
-    it("should create game play stuttering judge chooses sign when called.", () => {
-      const expectedGamePlay = createFakeGamePlay({
-        source: createFakeGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
-        action: GamePlayActions.CHOOSE_SIGN,
-        occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
-      });
-
-      expect(createGamePlayStutteringJudgeChoosesSign()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
   });
 

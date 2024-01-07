@@ -43,7 +43,7 @@ export class GameService {
   }
 
   public async createGame(game: CreateGameDto): Promise<Game> {
-    const upcomingPlays = await this.gamePlayService.getUpcomingNightPlays(game);
+    const upcomingPlays = await this.gamePlayService.getPhaseUpcomingPlays(game);
     if (!upcomingPlays.length) {
       throw createCantGenerateGamePlaysUnexpectedException("createGame");
     }

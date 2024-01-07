@@ -8,6 +8,15 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
+function createGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
+  return createGamePlay({
+    source: createGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
+    action: GamePlayActions.REQUEST_ANOTHER_VOTE,
+    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+    ...gamePlay,
+  });
+}
+
 function createGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
     source: createGamePlaySource({ name: PlayerGroups.SURVIVORS }),
@@ -63,15 +72,6 @@ function createGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}): GameP
   return createGamePlay({
     source: createGamePlaySource({ name: RoleNames.THIEF }),
     action: GamePlayActions.CHOOSE_CARD,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
-    ...gamePlay,
-  });
-}
-
-function createGamePlayStutteringJudgeChoosesSign(gamePlay: Partial<GamePlay> = {}): GamePlay {
-  return createGamePlay({
-    source: createGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
-    action: GamePlayActions.CHOOSE_SIGN,
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   });
@@ -248,13 +248,13 @@ function createGamePlay(gamePlay: GamePlay): GamePlay {
 }
 
 export {
+  createGamePlayStutteringJudgeRequestsAnotherVote,
   createGamePlaySurvivorsBuryDeadBodies,
   createGamePlaySheriffSettlesVotes,
   createGamePlaySheriffDelegates,
   createGamePlaySurvivorsVote,
   createGamePlaySurvivorsElectSheriff,
   createGamePlayThiefChoosesCard,
-  createGamePlayStutteringJudgeChoosesSign,
   createGamePlayScapegoatBansVoting,
   createGamePlayWolfHoundChoosesSide,
   createGamePlayWildChildChoosesModel,

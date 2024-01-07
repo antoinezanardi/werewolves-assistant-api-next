@@ -14,9 +14,13 @@ function areAdditionalCardsRolesMaxInGameRespected(value: unknown, validationArg
     return false;
   }
   const additionalCards = value as CreateGameAdditionalCardDto[];
-  return ROLES.every(role => {
+  return additionalCards.every(additionalCard => {
+    const role = ROLES.find(({ name }) => name === additionalCard.roleName);
+    if (role === undefined) {
+      return false;
+    }
     const playersRoleCount = players.filter(player => player.role.name === role.name).length;
-    const additionalCardsRoleCount = additionalCards.filter(additionalCard => additionalCard.roleName === role.name).length;
+    const additionalCardsRoleCount = additionalCards.filter(({ roleName }) => roleName === role.name).length;
     return playersRoleCount + additionalCardsRoleCount <= role.maxInGame;
   });
 }

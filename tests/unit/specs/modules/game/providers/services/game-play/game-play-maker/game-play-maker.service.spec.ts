@@ -2,34 +2,36 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import lodash from "lodash";
 
-import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
-import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { GamePlayCauses, GamePlayOccurrences, WitchPotions } from "@/modules/game/enums/game-play.enum";
+import { PlayerGroups } from "@/modules/game/enums/player.enum";
 import * as GameMutator from "@/modules/game/helpers/game.mutator";
+import * as PlayerHelper from "@/modules/game/helpers/player/player.helper";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
 import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/game-play-maker.service";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
-import { createFakeGameHistoryRecord } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { createFakeGameHistoryRecord } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeActorGameOptions, createFakeFoxGameOptions, createFakePiedPiperGameOptions, createFakePrejudicedManipulatorGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
-import { createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeChoosesSign, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeActorGameOptions, createFakeFoxGameOptions, createFakeRolesGameOptions, createFakeSheriffGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeRequestsAnotherVote, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeActingByActorPlayerAttribute, createFakeCantVoteByScapegoatPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeDrankLifePotionByWitchPlayerAttribute, createFakeEatenByBigBadWolfPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeEatenByWhiteWerewolfPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeProtectedByDefenderPlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySheriffPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute, createFakeWorshipedByWildChildPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerShotByHunterDeath, createFakePlayerVoteBySheriffDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeActorAlivePlayer, createFakeElderAlivePlayer, createFakeFoxAlivePlayer, createFakePiedPiperAlivePlayer, createFakePrejudicedManipulatorAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeActorAlivePlayer, createFakeElderAlivePlayer, createFakeFoxAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeDeadPlayer, createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Maker Service", () => {
@@ -62,6 +64,7 @@ describe("Game Play Maker Service", () => {
       survivorsVote: jest.SpyInstance;
       survivorsBuryDeadBodies: jest.SpyInstance;
       actorChoosesCard: jest.SpyInstance;
+      stutteringJudgeRequestsAnotherVote: jest.SpyInstance;
     };
     gameHistoryRecordService: {
       getPreviousGameHistoryRecord: jest.SpyInstance;
@@ -78,6 +81,7 @@ describe("Game Play Maker Service", () => {
     };
     gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
     gameMutator: { prependUpcomingPlayInGame: jest.SpyInstance };
+    playerHelper: { isPlayerPowerlessOnWerewolvesSide: jest.SpyInstance };
     unexpectedExceptionFactory: {
       createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
       createCantFindLastDeadPlayersUnexpectedException: jest.SpyInstance;
@@ -114,6 +118,7 @@ describe("Game Play Maker Service", () => {
         survivorsVote: jest.fn(),
         survivorsBuryDeadBodies: jest.fn(),
         actorChoosesCard: jest.fn(),
+        stutteringJudgeRequestsAnotherVote: jest.fn(),
       },
       playerKillerService: {
         killOrRevealPlayer: jest.fn(),
@@ -126,6 +131,7 @@ describe("Game Play Maker Service", () => {
       gameHistoryRecordService: { getPreviousGameHistoryRecord: jest.fn() },
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
       gameMutator: { prependUpcomingPlayInGame: jest.spyOn(GameMutator, "prependUpcomingPlayInGame").mockImplementation() },
+      playerHelper: { isPlayerPowerlessOnWerewolvesSide: jest.spyOn(PlayerHelper, "isPlayerPowerlessOnWerewolvesSide").mockImplementation() },
       unexpectedExceptionFactory: {
         createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation(),
         createCantFindLastDeadPlayersUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindLastDeadPlayersUnexpectedException").mockImplementation(),
@@ -178,6 +184,8 @@ describe("Game Play Maker Service", () => {
       mocks.gamePlayMakerService.scandalmongerMarks = jest.spyOn(services.gamePlayMaker as unknown as { scandalmongerMarks }, "scandalmongerMarks").mockImplementation();
       mocks.gamePlayMakerService.sheriffPlays = jest.spyOn(services.gamePlayMaker as unknown as { sheriffPlays }, "sheriffPlays").mockImplementation();
       mocks.gamePlayMakerService.actorChoosesCard = jest.spyOn(services.gamePlayMaker as unknown as { actorChoosesCard }, "actorChoosesCard").mockImplementation();
+      mocks.gamePlayMakerService.accursedWolfFatherInfects = jest.spyOn(services.gamePlayMaker as unknown as { accursedWolfFatherInfects }, "accursedWolfFatherInfects").mockImplementation();
+      mocks.gamePlayMakerService.stutteringJudgeRequestsAnotherVote = jest.spyOn(services.gamePlayMaker as unknown as { stutteringJudgeRequestsAnotherVote }, "stutteringJudgeRequestsAnotherVote").mockImplementation();
     });
 
     it("should throw error when game's current play is not set.", async() => {
@@ -381,11 +389,20 @@ describe("Game Play Maker Service", () => {
       await expect(services.gamePlayMaker.makeGamePlay(play, game)).resolves.toStrictEqual<Game>(game);
     });
 
-    it("should return game as is when it's stuttering judge turn.", async() => {
+    it("should call accursed wolf father infects method when it's accursed wolf father's turn.", async() => {
       const play = createFakeMakeGamePlayWithRelationsDto();
-      const game = createFakeGame({ currentPlay: createFakeGamePlayStutteringJudgeChoosesSign() });
+      const game = createFakeGame({ currentPlay: createFakeGamePlayAccursedWolfFatherInfects() });
+      await services.gamePlayMaker.makeGamePlay(play, game);
 
-      await expect(services.gamePlayMaker.makeGamePlay(play, game)).resolves.toStrictEqual<Game>(game);
+      expect(mocks.gamePlayMakerService.accursedWolfFatherInfects).toHaveBeenCalledExactlyOnceWith(play, game);
+    });
+
+    it("should call stuttering judge requests another vote method when it's stuttering judge's turn.", async() => {
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const game = createFakeGame({ currentPlay: createFakeGamePlayStutteringJudgeRequestsAnotherVote() });
+      await services.gamePlayMaker.makeGamePlay(play, game);
+
+      expect(mocks.gamePlayMakerService.stutteringJudgeRequestsAnotherVote).toHaveBeenCalledExactlyOnceWith(play, game);
     });
   });
 
@@ -868,7 +885,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }), players });
       const play = createFakeMakeGamePlayWithRelationsDto();
       const expectedGame = createFakeGame(game);
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue([]);
@@ -883,7 +900,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }), players });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
@@ -903,7 +920,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }), players });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
@@ -916,28 +933,36 @@ describe("Game Play Maker Service", () => {
       expect(mocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(game);
     });
 
-    it("should call handleTieInVotes method with prepended all vote game play from judge when there are several nominated players and judge requested it.", async() => {
-      const players = [
-        createFakeSeerAlivePlayer(),
-        createFakeScandalmongerAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
+    it("should prepend stuttering judge request another vote game play when current play cause is undefined.", async() => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
-        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
+        createFakeMakeGamePlayVoteWithRelationsDto(),
+        createFakeMakeGamePlayVoteWithRelationsDto(),
       ];
-      const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: true });
-      const nominatedPlayers = [players[1], players[2]];
-      const expectedGame = createFakeGameWithCurrentPlay({
-        ...game,
-        upcomingPlays: [createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST, occurrence: GamePlayOccurrences.CONSEQUENTIAL })],
-      });
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes });
+      const nominatedPlayers = [createFakePlayer()];
+      const gamePlayStutteringJudgeRequestsAnotherVote = createFakeGamePlayStutteringJudgeRequestsAnotherVote();
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
       await services.gamePlayMaker["survivorsVote"](play, game);
 
-      expect(mocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(expectedGame);
+      expect(mocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayStutteringJudgeRequestsAnotherVote, game);
+    });
+
+    it("should prepend stuttering judge request another vote game play when current play cause is angel presence.", async() => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }) });
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto(),
+        createFakeMakeGamePlayVoteWithRelationsDto(),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes });
+      const nominatedPlayers = [createFakePlayer()];
+      const gamePlayStutteringJudgeRequestsAnotherVote = createFakeGamePlayStutteringJudgeRequestsAnotherVote();
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
+      await services.gamePlayMaker["survivorsVote"](play, game);
+
+      expect(mocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayStutteringJudgeRequestsAnotherVote, game);
     });
 
     it("should call killOrRevealPlayer method when there is one nominated player.", async() => {
@@ -947,7 +972,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }), players });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
@@ -2061,130 +2086,63 @@ describe("Game Play Maker Service", () => {
   });
 
   describe("accursedWolfFatherInfects", () => {
-    it("should change target's side to werewolves when called.", () => {
+    it("should return game as is when target count is not reached.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
         createFakeScandalmongerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, options });
-      const expectedTargetedPlayer = createFakePlayer({
-        ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
-      });
-      const expectedGame = createFakeGame({
-        ...game,
-        players: [
-          players[0],
-          expectedTargetedPlayer,
-          players[2],
-          players[3],
-        ],
-      });
+      const game = createFakeGameWithCurrentPlay({ players });
+      const targets = [];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedGame = createFakeGame(game);
+      mocks.playerKillerService.isElderKillable.mockResolvedValueOnce(true);
+      mocks.playerHelper.isPlayerPowerlessOnWerewolvesSide.mockReturnValue(true);
 
-      expect(services.gamePlayMaker["accursedWolfFatherInfects"](players[1], game)).toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["accursedWolfFatherInfects"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should change target's side to werewolves and add powerless attribute from accursed wolf-father when target is prejudiced manipulator.", () => {
+    it("should return game as is when target is elder and is not killable.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakePrejudicedManipulatorAlivePlayer(),
+        createFakeElderAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, options });
-      const expectedTargetedPlayer = createFakePlayer({
-        ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
-        attributes: [createFakePowerlessByAccursedWolfFatherPlayerAttribute()],
-      });
-      const expectedGame = createFakeGame({
-        ...game,
-        players: [
-          players[0],
-          expectedTargetedPlayer,
-          players[2],
-          players[3],
-        ],
-      });
+      const game = createFakeGameWithCurrentPlay({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedGame = createFakeGame(game);
+      mocks.playerKillerService.isElderKillable.mockResolvedValueOnce(false);
+      mocks.playerHelper.isPlayerPowerlessOnWerewolvesSide.mockReturnValue(true);
 
-      expect(services.gamePlayMaker["accursedWolfFatherInfects"](players[1], game)).toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["accursedWolfFatherInfects"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should change target's side to werewolves but not add powerless attribute from accursed wolf-father when target is prejudiced manipulator and game options are changed.", () => {
+    it("should change target's side to werewolves and remove eaten by werewolves attribute when elder is killable.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakePrejudicedManipulatorAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, options });
-      const expectedTargetedPlayer = createFakePlayer({
-        ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
-      });
-      const expectedGame = createFakeGame({
-        ...game,
-        players: [
-          players[0],
-          expectedTargetedPlayer,
-          players[2],
-          players[3],
-        ],
-      });
-
-      expect(services.gamePlayMaker["accursedWolfFatherInfects"](players[1], game)).toStrictEqual<Game>(expectedGame);
-    });
-
-    it("should change target's side to werewolves and add powerless attribute from accursed wolf-father when target is pied piper.", () => {
-      const players = [
-        createFakeFoxAlivePlayer(),
-        createFakePiedPiperAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, options });
-      const expectedTargetedPlayer = createFakePlayer({
-        ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
-        attributes: [createFakePowerlessByAccursedWolfFatherPlayerAttribute()],
-      });
-      const expectedGame = createFakeGame({
-        ...game,
-        players: [
-          players[0],
-          expectedTargetedPlayer,
-          players[2],
-          players[3],
-        ],
-      });
-
-      expect(services.gamePlayMaker["accursedWolfFatherInfects"](players[1], game)).toStrictEqual<Game>(expectedGame);
-    });
-
-    it("should change target's side to werewolves but not add powerless attribute from accursed wolf-father when target is pied piper and game options are changed.", () => {
-      const players = [
-        createFakeFoxAlivePlayer(),
-        createFakePiedPiperAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({
-        roles: createFakeRolesGameOptions({
-          piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }),
-          prejudicedManipulator: createFakePrejudicedManipulatorGameOptions({ isPowerlessOnWerewolvesSide: true }),
-          actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }),
+        createFakeElderAlivePlayer({
+          attributes: [
+            createFakeEatenByWerewolvesPlayerAttribute(),
+            createFakeEatenByWerewolvesPlayerAttribute({ source: RoleNames.SEER }),
+            createFakeEatenByWhiteWerewolfPlayerAttribute(),
+          ],
         }),
-      });
-      const game = createFakeGameWithCurrentPlay({ players, options });
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },
+        attributes: [
+          createFakeEatenByWerewolvesPlayerAttribute({ source: RoleNames.SEER }),
+          createFakeEatenByWhiteWerewolfPlayerAttribute(),
+        ],
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -2195,19 +2153,63 @@ describe("Game Play Maker Service", () => {
           players[3],
         ],
       });
+      mocks.playerKillerService.isElderKillable.mockResolvedValueOnce(true);
+      mocks.playerHelper.isPlayerPowerlessOnWerewolvesSide.mockReturnValue(false);
 
-      expect(services.gamePlayMaker["accursedWolfFatherInfects"](players[1], game)).toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["accursedWolfFatherInfects"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
 
-    it("should change target's side to werewolves and add powerless attribute from accursed wolf-father when target is actor.", () => {
+    it("should change target's side to werewolves and remove eaten by werewolves attribute when player is not elder.", async() => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeActorAlivePlayer(),
+        createFakeScandalmongerAlivePlayer({
+          attributes: [
+            createFakeEatenByWerewolvesPlayerAttribute(),
+            createFakeSeenBySeerPlayerAttribute(),
+            createFakeWorshipedByWildChildPlayerAttribute({ source: PlayerGroups.WEREWOLVES }),
+            createFakeEatenByWhiteWerewolfPlayerAttribute(),
+          ],
+        }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, options });
+      const game = createFakeGameWithCurrentPlay({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
+      const expectedTargetedPlayer = createFakePlayer({
+        ...players[1],
+        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
+        attributes: [
+          createFakeSeenBySeerPlayerAttribute(),
+          createFakeWorshipedByWildChildPlayerAttribute({ source: PlayerGroups.WEREWOLVES }),
+          createFakeEatenByWhiteWerewolfPlayerAttribute(),
+        ],
+      });
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          expectedTargetedPlayer,
+          players[2],
+          players[3],
+        ],
+      });
+      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockResolvedValueOnce(2);
+      mocks.playerHelper.isPlayerPowerlessOnWerewolvesSide.mockReturnValue(false);
+
+      await expect(services.gamePlayMaker["accursedWolfFatherInfects"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+    });
+
+    it("should change target's side to werewolves, remove eaten by werewolves attribute and add powerless by accursed wolf-father attribute when target is powerless on joining the werewolves side.", async() => {
+      const players = [
+        createFakeFoxAlivePlayer(),
+        createFakeScandalmongerAlivePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ players });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
         side: { ...players[1].side, current: RoleSides.WEREWOLVES },
@@ -2222,43 +2224,15 @@ describe("Game Play Maker Service", () => {
           players[3],
         ],
       });
+      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockResolvedValueOnce(1);
+      mocks.playerHelper.isPlayerPowerlessOnWerewolvesSide.mockReturnValue(true);
 
-      expect(services.gamePlayMaker["accursedWolfFatherInfects"](players[1], game)).toStrictEqual<Game>(expectedGame);
-    });
-
-    it("should change target's side to werewolves but not add powerless attribute from accursed wolf-father when target is actor and game options are changed.", () => {
-      const players = [
-        createFakeFoxAlivePlayer(),
-        createFakeActorAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
-      const game = createFakeGameWithCurrentPlay({ players, options });
-      const expectedTargetedPlayer = createFakePlayer({
-        ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
-      });
-      const expectedGame = createFakeGame({
-        ...game,
-        players: [
-          players[0],
-          expectedTargetedPlayer,
-          players[2],
-          players[3],
-        ],
-      });
-
-      expect(services.gamePlayMaker["accursedWolfFatherInfects"](players[1], game)).toStrictEqual<Game>(expectedGame);
+      await expect(services.gamePlayMaker["accursedWolfFatherInfects"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
     });
   });
 
   describe("werewolvesEat", () => {
-    beforeEach(() => {
-      mocks.gamePlayMakerService.accursedWolfFatherInfects = jest.spyOn(services.gamePlayMaker as unknown as { accursedWolfFatherInfects }, "accursedWolfFatherInfects").mockImplementation();
-    });
-
-    it("should return game as is when expected target count is not reached.", async() => {
+    it("should return game as is when expected target count is not reached.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
         createFakeScandalmongerAlivePlayer(),
@@ -2270,10 +2244,10 @@ describe("Game Play Maker Service", () => {
       const expectedGame = createFakeGame(game);
       mocks.gamePlayMakerService.accursedWolfFatherInfects.mockReturnValue(expectedGame);
 
-      await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["werewolvesEat"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should add eaten attribute by werewolves to target when target is not infected.", async() => {
+    it("should add eaten attribute by werewolves to the target when called.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
         createFakeScandalmongerAlivePlayer(),
@@ -2281,7 +2255,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
-      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: false })];
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
@@ -2299,117 +2273,37 @@ describe("Game Play Maker Service", () => {
       mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(2);
       mocks.gamePlayMakerService.accursedWolfFatherInfects.mockReturnValue(expectedGame);
 
-      await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["werewolvesEat"](play, game)).toStrictEqual<Game>(expectedGame);
     });
+  });
 
-    it("should add eaten attribute by werewolves to target when target is infected but not killable elder.", async() => {
+  describe("stutteringJudgeRequestsAnotherVote", () => {
+    it("should return game as is when stuttering judge does not request another vote.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeElderAlivePlayer(),
+        createFakeStutteringJudgeAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
-      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
-      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      const expectedTargetedPlayer = createFakePlayer({
-        ...players[1],
-        attributes: [createFakeEatenByWerewolvesPlayerAttribute()],
-      });
-      const expectedGame = createFakeGame({
-        ...game,
-        players: [
-          players[0],
-          expectedTargetedPlayer,
-          players[2],
-          players[3],
-        ],
-      });
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(2);
-      mocks.gamePlayMakerService.accursedWolfFatherInfects.mockReturnValue(expectedGame);
+      const play = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: false });
+      const expectedGame = createFakeGame(game);
 
-      await expect(services.gamePlayMaker["werewolvesEat"](play, game)).resolves.toStrictEqual<Game>(expectedGame);
+      expect(services.gamePlayMaker["stutteringJudgeRequestsAnotherVote"](play, game)).toStrictEqual<Game>(expectedGame);
     });
 
-    it("should not infect target when target is not infected.", async() => {
+    it("should return game with prepended vote of cause stuttering judge request when stuttering judge does request another vote.", () => {
       const players = [
         createFakeFoxAlivePlayer(),
-        createFakeSeerAlivePlayer(),
+        createFakeStutteringJudgeAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
-      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: false })];
-      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(2);
-      await services.gamePlayMaker["werewolvesEat"](play, game);
+      const play = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
+      services.gamePlayMaker["stutteringJudgeRequestsAnotherVote"](play, game);
 
-      expect(mocks.gamePlayMakerService.accursedWolfFatherInfects).not.toHaveBeenCalled();
-    });
-
-    it("should not infect target when target is infected but not killable elder.", async() => {
-      const players = [
-        createFakeFoxAlivePlayer(),
-        createFakeElderAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
-      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(2);
-      await services.gamePlayMaker["werewolvesEat"](play, game);
-
-      expect(mocks.gamePlayMakerService.accursedWolfFatherInfects).not.toHaveBeenCalled();
-    });
-
-    it("should infect target when he's infected and not the elder.", async() => {
-      const players = [
-        createFakeFoxAlivePlayer(),
-        createFakeScandalmongerAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
-      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(2);
-      await services.gamePlayMaker["werewolvesEat"](play, game);
-
-      expect(mocks.gamePlayMakerService.accursedWolfFatherInfects).toHaveBeenCalledExactlyOnceWith(players[1], game);
-    });
-
-    it("should infect target when he's infected and elder with only one life left.", async() => {
-      const players = [
-        createFakeFoxAlivePlayer(),
-        createFakeElderAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
-      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(1);
-      await services.gamePlayMaker["werewolvesEat"](play, game);
-
-      expect(mocks.gamePlayMakerService.accursedWolfFatherInfects).toHaveBeenCalledExactlyOnceWith(players[1], game);
-    });
-
-    it("should infect target when he's infected and elder with zero one life left.", async() => {
-      const players = [
-        createFakeFoxAlivePlayer(),
-        createFakeElderAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1], isInfected: true })];
-      const play = createFakeMakeGamePlayWithRelationsDto({ targets });
-      mocks.playerKillerService.getElderLivesCountAgainstWerewolves.mockReturnValue(0);
-      mocks.gamePlayMakerService.accursedWolfFatherInfects.mockReturnValue(game);
-      await services.gamePlayMaker["werewolvesEat"](play, game);
-
-      expect(mocks.gamePlayMakerService.accursedWolfFatherInfects).toHaveBeenCalledExactlyOnceWith(players[1], game);
+      expect(mocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST }), game);
     });
   });
 });

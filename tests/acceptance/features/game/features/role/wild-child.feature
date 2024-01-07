@@ -153,3 +153,29 @@ Feature: 🐒 Wild Child role
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "Wild child can't choose this target as a model"
+
+  Scenario: 🐒 Wild Child doesn't join the werewolves side if he's powerless
+
+    When a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role       |
+      | Antoine | wild-child |
+      | Olivia  | werewolf   |
+      | JB      | elder      |
+      | Maxime  | villager   |
+    Then the game's current play should be wild-child to choose-model
+
+    When the wild child chooses the player named JB as a model
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the player named JB should be alive
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter  | target |
+      | Maxime | JB     |
+    Then the player named JB should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the player named Antoine should be on villagers current side and originally be on villagers side

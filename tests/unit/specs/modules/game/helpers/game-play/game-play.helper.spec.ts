@@ -27,6 +27,7 @@ import { createFakeCantVoteBySurvivorsPlayerAttribute } from "@tests/factories/g
 import { createFakeHunterAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { getError } from "@tests/helpers/exception/exception.helper";
 
 describe("Game Play Helper", () => {
   describe("getVotesWithRelationsFromMakeGamePlayDto", () => {
@@ -37,7 +38,7 @@ describe("Game Play Helper", () => {
       expect(getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toBeUndefined();
     });
 
-    it("should throw error when votes contains one unknown source.", () => {
+    it("should throw error when votes contains one unknown source.", async() => {
       const players = [
         createFakePlayer(),
         createFakePlayer(),
@@ -52,12 +53,14 @@ describe("Game Play Helper", () => {
           { sourceId: fakePlayerId, targetId: game.players[0]._id },
         ],
       });
-      const expectedException = new ResourceNotFoundException(ApiResources.PLAYERS, fakePlayerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
+      const expectedError = new ResourceNotFoundException(ApiResources.PLAYERS, fakePlayerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_SOURCE);
+      const error = await getError<ResourceNotFoundException>(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game));
 
-      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(expectedException);
+      expect(error).toStrictEqual<ResourceNotFoundException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "Game Play - Player in `votes.source` is not in the game players" });
     });
 
-    it("should throw error when votes contains one unknown target.", () => {
+    it("should throw error when votes contains one unknown target.", async() => {
       const players = [
         createFakePlayer(),
         createFakePlayer(),
@@ -72,9 +75,11 @@ describe("Game Play Helper", () => {
           { sourceId: game.players[1]._id, targetId: fakePlayerId },
         ],
       });
-      const expectedException = new ResourceNotFoundException(ApiResources.PLAYERS, fakePlayerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
+      const expectedError = new ResourceNotFoundException(ApiResources.PLAYERS, fakePlayerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_VOTE_TARGET);
+      const error = await getError<ResourceNotFoundException>(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game));
 
-      expect(() => getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(expectedException);
+      expect(error).toStrictEqual<ResourceNotFoundException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "Game Play - Player in `votes.target` is not in the game players" });
     });
 
     it("should fill votes with game players when called.", () => {
@@ -109,7 +114,7 @@ describe("Game Play Helper", () => {
       expect(getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toBeUndefined();
     });
 
-    it("should throw error when targets contains one unknown player.", () => {
+    it("should throw error when targets contains one unknown player.", async() => {
       const players = [
         createFakePlayer(),
         createFakePlayer(),
@@ -125,9 +130,11 @@ describe("Game Play Helper", () => {
           { playerId: fakePlayerId },
         ],
       });
-      const expectedException = new ResourceNotFoundException(ApiResources.PLAYERS, fakePlayerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
+      const expectedError = new ResourceNotFoundException(ApiResources.PLAYERS, fakePlayerId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_PLAYER_TARGET);
+      const error = await getError<ResourceNotFoundException>(() => getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game));
 
-      expect(() => getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(expectedException);
+      expect(error).toStrictEqual<ResourceNotFoundException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "Game Play - Player in `targets.player` is not in the game players" });
     });
 
     it("should fill targets with game players when called.", () => {
@@ -140,13 +147,13 @@ describe("Game Play Helper", () => {
       const game = createFakeGame({ players });
       const makeGamePlayDto = createFakeMakeGamePlayDto({
         targets: [
-          { playerId: game.players[0]._id, isInfected: true },
+          { playerId: game.players[0]._id },
           { playerId: game.players[1]._id },
           { playerId: game.players[2]._id, drankPotion: WitchPotions.DEATH },
         ],
       });
       const expectedTargets = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0], isInfected: true }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2], drankPotion: WitchPotions.DEATH }),
       ];
@@ -163,7 +170,7 @@ describe("Game Play Helper", () => {
       expect(getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toBeUndefined();
     });
 
-    it("should throw error when chosen card is unknown from game cards.", () => {
+    it("should throw error when chosen card is unknown from game cards.", async() => {
       const additionalCards = [
         createFakeGameAdditionalCard(),
         createFakeGameAdditionalCard(),
@@ -173,9 +180,11 @@ describe("Game Play Helper", () => {
       const game = createFakeGame({ additionalCards });
       const fakeCardId = createFakeObjectId();
       const makeGamePlayDto = createFakeMakeGamePlayDto({ chosenCardId: fakeCardId });
-      const expectedException = new ResourceNotFoundException(ApiResources.GAME_ADDITIONAL_CARDS, fakeCardId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
+      const expectedError = new ResourceNotFoundException(ApiResources.GAME_ADDITIONAL_CARDS, fakeCardId.toString(), ResourceNotFoundReasons.UNMATCHED_GAME_PLAY_CHOSEN_CARD);
+      const error = await getError<ResourceNotFoundException>(() => getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game));
 
-      expect(() => getChosenCardFromMakeGamePlayDto(makeGamePlayDto, game)).toThrow(expectedException);
+      expect(error).toStrictEqual<ResourceNotFoundException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "Game Play - Chosen card is not in the game additional cards" });
     });
 
     it("should return chosen card when called.", () => {
@@ -213,7 +222,7 @@ describe("Game Play Helper", () => {
           { sourceId: game.players[1]._id, targetId: game.players[0]._id },
         ],
         targets: [
-          { playerId: game.players[0]._id, isInfected: true },
+          { playerId: game.players[0]._id },
           { playerId: game.players[1]._id },
           { playerId: game.players[2]._id, drankPotion: WitchPotions.DEATH },
         ],
@@ -227,7 +236,7 @@ describe("Game Play Helper", () => {
           { source: game.players[1], target: game.players[0] },
         ],
         targets: [
-          { player: game.players[0], isInfected: true },
+          { player: game.players[0] },
           { player: game.players[1] },
           { player: game.players[2], drankPotion: WitchPotions.DEATH },
         ],

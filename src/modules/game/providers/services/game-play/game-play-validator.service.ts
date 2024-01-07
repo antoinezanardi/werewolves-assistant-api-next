@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerInteractableWithInteractionType } from "@/modules/game/helpers/game-play/game-play.helper";
-import { STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS, TARGET_ACTIONS, VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
+import { TARGET_ACTIONS, VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
@@ -32,7 +32,7 @@ export class GamePlayValidatorService {
     }
     const clonedGameWithCurrentPlay = createGame(game) as GameWithCurrentPlay;
     const { votes, targets } = play;
-    await this.validateGamePlayWithRelationsDtoJudgeRequest(play, clonedGameWithCurrentPlay);
+    this.validateGamePlayWithRelationsDtoJudgeRequest(play, clonedGameWithCurrentPlay);
     this.validateGamePlayWithRelationsDtoChosenSide(play, clonedGameWithCurrentPlay);
     this.validateGamePlayVotesWithRelationsDto(votes, clonedGameWithCurrentPlay);
     await this.validateGamePlayTargetsWithRelationsDto(targets, clonedGameWithCurrentPlay);
@@ -131,23 +131,18 @@ export class GamePlayValidatorService {
     this.validateDrankDeathPotionTargets(drankDeathPotionTargets, game);
   }
 
-  private async validateGamePlayInfectedTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: Game): Promise<void> {
-    const infectedTargets = playTargets.filter(({ isInfected }) => isInfected === true);
-    if (!infectedTargets.length) {
+  private validateGamePlayAccursedWolfFatherTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+    if (!playTargets.length) {
       return;
     }
-    const accursedWolfFatherPlayer = getPlayerWithCurrentRole(game, RoleNames.ACCURSED_WOLF_FATHER);
-    if (!accursedWolfFatherPlayer || !isPlayerAliveAndPowerful(accursedWolfFatherPlayer, game)) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
+    const targetedPlayer = playTargets[0].player;
+    const canTargetedPlayerBeInfected = isPlayerInteractableWithInteractionType(targetedPlayer._id, PlayerInteractionTypes.INFECT, game);
+    if (!canTargetedPlayerBeInfected) {
+      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_ACCURSED_WOLF_FATHER_TARGET);
     }
-    const hasAccursedWolfFatherInfected = (await this.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectedRecords(game._id, accursedWolfFatherPlayer._id)).length > 0;
-    if (hasAccursedWolfFatherInfected) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
-    }
-    this.validateGamePlayTargetsBoundaries(infectedTargets, { min: 1, max: 1 });
   }
 
-  private async validateGamePlayWerewolvesTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): Promise<void> {
+  private validateGamePlayWerewolvesTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
     if (!playTargets.length) {
       return;
     }
@@ -162,7 +157,6 @@ export class GamePlayValidatorService {
     if (game.currentPlay.source.name === RoleNames.WHITE_WEREWOLF && !canTargetedPlayerBeEaten) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_WHITE_WEREWOLF_TARGET);
     }
-    await this.validateGamePlayInfectedTargets(playTargets, game);
   }
 
   private validateGamePlayHunterTargets(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
@@ -259,9 +253,10 @@ export class GamePlayValidatorService {
     const gamePlaySourceValidationMethods: Partial<Record<GamePlaySourceName, () => Promise<void> | void>> = {
       [PlayerAttributeNames.SHERIFF]: () => this.validateGamePlaySheriffTargets(playTargets, game),
       [PlayerGroups.SURVIVORS]: () => this.validateGamePlaySurvivorsTargets(playTargets, game),
-      [PlayerGroups.WEREWOLVES]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
-      [RoleNames.BIG_BAD_WOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
-      [RoleNames.WHITE_WEREWOLF]: async() => this.validateGamePlayWerewolvesTargets(playTargets, game),
+      [PlayerGroups.WEREWOLVES]: () => this.validateGamePlayWerewolvesTargets(playTargets, game),
+      [RoleNames.ACCURSED_WOLF_FATHER]: () => this.validateGamePlayAccursedWolfFatherTargets(playTargets, game),
+      [RoleNames.BIG_BAD_WOLF]: () => this.validateGamePlayWerewolvesTargets(playTargets, game),
+      [RoleNames.WHITE_WEREWOLF]: () => this.validateGamePlayWerewolvesTargets(playTargets, game),
       [RoleNames.DEFENDER]: () => this.validateGamePlayDefenderTargets(playTargets, game),
       [RoleNames.PIED_PIPER]: () => this.validateGamePlayPiedPiperTargets(playTargets, game),
       [RoleNames.WILD_CHILD]: () => this.validateGamePlayWildChildTargets(playTargets, game),
@@ -279,12 +274,8 @@ export class GamePlayValidatorService {
     }
   }
 
-  private validateInfectedTargetsAndPotionUsage(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
+  private validateTargetsPotionUsage(playTargets: MakeGamePlayTargetWithRelationsDto[], game: GameWithCurrentPlay): void {
     const { source: currentPlaySource, action: currentPlayAction } = game.currentPlay;
-    const isSomeTargetInfected = playTargets.some(({ isInfected }) => isInfected);
-    if (isSomeTargetInfected && (currentPlayAction !== GamePlayActions.EAT || currentPlaySource.name !== PlayerGroups.WEREWOLVES)) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_INFECTED_TARGET);
-    }
     const hasSomePlayerDrankPotion = playTargets.some(({ drankPotion }) => drankPotion);
     if (hasSomePlayerDrankPotion && (currentPlayAction !== GamePlayActions.USE_POTIONS || currentPlaySource.name !== RoleNames.WITCH)) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
@@ -309,7 +300,7 @@ export class GamePlayValidatorService {
     if (currentPlay.eligibleTargets?.boundaries) {
       this.validateGamePlayTargetsBoundaries(playTargets, currentPlay.eligibleTargets.boundaries);
     }
-    this.validateInfectedTargetsAndPotionUsage(playTargets, game);
+    this.validateTargetsPotionUsage(playTargets, game);
     await this.validateGamePlaySourceTargets(playTargets, game);
   }
 
@@ -365,20 +356,8 @@ export class GamePlayValidatorService {
     }
   }
 
-  private async validateGamePlayWithRelationsDtoJudgeRequest({ doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<void> {
-    if (doesJudgeRequestAnotherVote === undefined) {
-      return;
-    }
-    const { voteRequestsCount } = game.options.roles.stutteringJudge;
-    const didJudgeMakeHisSign = await this.gameHistoryRecordService.didJudgeMakeHisSign(game._id);
-    const stutteringJudgePlayer = getPlayerWithCurrentRole(game, RoleNames.STUTTERING_JUDGE);
-    const stutteringJudgeRequestOpportunityActions: GamePlayActions[] = [...STUTTERING_JUDGE_REQUEST_OPPORTUNITY_ACTIONS];
-    if (!stutteringJudgeRequestOpportunityActions.includes(game.currentPlay.action) || !didJudgeMakeHisSign ||
-      !stutteringJudgePlayer || !isPlayerAliveAndPowerful(stutteringJudgePlayer, game)) {
-      throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
-    }
-    const gameHistoryJudgeRequestRecords = await this.gameHistoryRecordService.getGameHistoryJudgeRequestRecords(game._id, stutteringJudgePlayer._id);
-    if (gameHistoryJudgeRequestRecords.length >= voteRequestsCount) {
+  private validateGamePlayWithRelationsDtoJudgeRequest({ doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): void {
+    if (doesJudgeRequestAnotherVote !== undefined && game.currentPlay.action !== GamePlayActions.REQUEST_ANOTHER_VOTE) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_STUTTERING_JUDGE_VOTE_REQUEST);
     }
   }

@@ -62,12 +62,6 @@ Then(/^the play's target named (?<name>.+?) from the previous history record sho
   expect(target?.drankPotion).toBe(potion);
 });
 
-Then(/^the play's target named (?<name>.+?) from the previous history record should be infected$/u, function(this: CustomWorld, playerName: string): void {
-  const target = this.lastGameHistoryRecord.play.targets?.find(({ player }) => player.name === playerName);
-
-  expect(target?.isInfected).toBe(true);
-});
-
 Then(/^the play's votes from the previous history record should be the following votes$/u, function(this: CustomWorld, expectedVotesDatatable: DataTable): void {
   const votes = convertDatatableToGameHistoryRecordPlayVotes(expectedVotesDatatable.rows(), this.gameOnPreviousGamePlay);
 

@@ -1,6 +1,6 @@
 const defaultConfig = require("./stryker.conf");
 
-const reporters = ["progress-append-only"];
+const reporters = ["progress-append-only", "html"];
 
 const dashboard = {
   project: "github.com/antoinezanardi/werewolves-assistant-api-next",

@@ -67,6 +67,16 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,
   },
   {
+    source: { name: RoleNames.STUTTERING_JUDGE },
+    action: GamePlayActions.REQUEST_ANOTHER_VOTE,
+    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+  },
+  {
+    source: { name: RoleNames.BEAR_TAMER },
+    action: GamePlayActions.GROWL,
+    occurrence: GamePlayOccurrences.ON_DAYS,
+  },
+  {
     source: { name: PlayerGroups.SURVIVORS },
     action: GamePlayActions.VOTE,
     occurrence: GamePlayOccurrences.ON_DAYS,
@@ -107,11 +117,6 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
   },
   {
-    source: { name: RoleNames.STUTTERING_JUDGE },
-    action: GamePlayActions.CHOOSE_SIGN,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
-  },
-  {
     source: { name: RoleNames.TWO_SISTERS },
     action: GamePlayActions.MEET_EACH_OTHER,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -139,6 +144,11 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
   {
     source: { name: PlayerGroups.WEREWOLVES },
     action: GamePlayActions.EAT,
+    occurrence: GamePlayOccurrences.ON_NIGHTS,
+  },
+  {
+    source: { name: RoleNames.ACCURSED_WOLF_FATHER },
+    action: GamePlayActions.INFECT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
   },
   {
@@ -170,8 +180,11 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
 
 const NIGHT_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => [GamePlayOccurrences.ONE_NIGHT_ONLY, GamePlayOccurrences.ON_NIGHTS].includes(occurrence));
 
+const DAY_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => occurrence === GamePlayOccurrences.ON_DAYS);
+
 export {
   GAME_SOURCES,
   GAME_PLAYS_PRIORITY_LIST,
   NIGHT_GAME_PLAYS_PRIORITY_LIST,
+  DAY_GAME_PLAYS_PRIORITY_LIST,
 };

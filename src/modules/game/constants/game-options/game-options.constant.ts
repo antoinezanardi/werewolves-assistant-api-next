@@ -24,7 +24,10 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       isTalkative: true,
       canSeeRoles: true,
     },
-    cupid: { lovers: { doRevealRoleToEachOther: false } },
+    cupid: {
+      lovers: { doRevealRoleToEachOther: false },
+      mustWinWithLovers: false,
+    },
     littleGirl: { isProtectedByDefender: false },
     defender: { canProtectTwice: false },
     elder: {

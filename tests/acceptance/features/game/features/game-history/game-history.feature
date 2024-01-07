@@ -114,6 +114,16 @@ Feature: 📜 Game History
       | JB      |
       | Thomas  |
     And the play's cause from the previous history record should be undefined
+    And the game's current play should be stuttering-judge to request-another-vote
+
+    When the player or group skips his turn
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be request-another-vote
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+    And the play's source name from the previous history record should be stuttering-judge
+    And the play's cause from the previous history record should be undefined
     And the game's current play should be seer to look
 
     When the seer looks at the player named Thomas
@@ -123,16 +133,6 @@ Feature: 📜 Game History
       | name |
       | JB   |
     And the play's source name from the previous history record should be seer
-    And the play's cause from the previous history record should be undefined
-    And the game's current play should be stuttering-judge to choose-sign
-
-    When the stuttering judge chooses his sign
-    And the most recent history record is retrieved
-    Then the play's action from the previous history record should be choose-sign
-    And the play's source players from the previous history record should be the following players
-      | name    |
-      | Antoine |
-    And the play's source name from the previous history record should be stuttering-judge
     And the play's cause from the previous history record should be undefined
     And the game's current play should be scandalmonger to mark
 
@@ -168,7 +168,7 @@ Feature: 📜 Game History
     And the play's source name from the previous history record should be survivors
     And the game's current play should be survivors to vote
 
-    When the survivors vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes
       | name    | vote |
       | Antoine | Juju |
     And the most recent history record is retrieved
@@ -192,6 +192,16 @@ Feature: 📜 Game History
       | Babou   |
       | JB      |
     And the play's source name from the previous history record should be survivors
+    And the game's current play should be stuttering-judge to request-another-vote
+
+    When the stuttering judge requests another vote
+    And the most recent history record is retrieved
+    Then the play's action from the previous history record should be request-another-vote
+    And the play's source players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+    And the play's source name from the previous history record should be stuttering-judge
+    And the play's cause from the previous history record should be undefined
     And the game's current play should be survivors to vote because stuttering-judge-request
 
     When the survivors vote with the following votes
@@ -243,6 +253,11 @@ Feature: 📜 Game History
     Then the play's targets from the previous history record should be the following players
       | name    |
       | Antoine |
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
+    And the most recent history record is retrieved
+    Then the play's targets from the previous history record should be undefined
     And the game's current play should be witch to use-potions
 
     When the witch uses life potion on the player named Antoine and death potion on the player named JB
@@ -277,12 +292,18 @@ Feature: 📜 Game History
     Then the play's targets from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Thomas
+    And the most recent history record is retrieved
+    Then the play's targets from the previous history record should be the following players
+      | name   |
+      | Thomas |
+    And the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Thomas
     And the most recent history record is retrieved
     Then the play's targets from the previous history record should be the following players
       | name   |
       | Thomas |
-    And the play's target named Thomas from the previous history record should be infected
 
   Scenario: 📜 Votes of various roles actions are recorded in the game history
 
@@ -314,12 +335,6 @@ Feature: 📜 Game History
       | name |
       | Juju |
     And the play's targets from the previous history record should be undefined
-    And the game's current play should be stuttering-judge to choose-sign
-
-    When the stuttering judge chooses his sign
-    And the most recent history record is retrieved
-    Then the play's votes from the previous history record should be undefined
-    Then the play's targets from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -332,7 +347,7 @@ Feature: 📜 Game History
     Then the play's votes from the previous history record should be undefined
     And the game's current play should be survivors to vote
 
-    When the survivors vote with the following votes and the stuttering judge does his sign
+    When the survivors vote with the following votes
       | name   | vote   |
       | JB     | Juju   |
       | Juju   | Doudou |
@@ -348,7 +363,6 @@ Feature: 📜 Game History
       | name   |
       | Juju   |
       | Doudou |
-    And the play's from the previous history record should have the stuttering judge request
     And the game's current play should be sheriff to settle-votes
 
     When the sheriff breaks the tie in votes by choosing the player named Doudou
@@ -359,6 +373,13 @@ Feature: 📜 Game History
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the game's current play should be stuttering-judge to request-another-vote
+
+    When the stuttering judge requests another vote
+    And the most recent history record is retrieved
+    Then the play's votes from the previous history record should be undefined
+    And the play's targets from the previous history record should be undefined
+    And the play's from the previous history record should have the stuttering judge request
     And the game's current play should be survivors to vote because stuttering-judge-request
 
     When the survivors vote with the following votes

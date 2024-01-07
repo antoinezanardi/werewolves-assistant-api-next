@@ -18,10 +18,27 @@ Feature: 🐺 Accursed Wolf-Father role
       | name    |
       | Antoine |
 
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
+    And the game's current play should have eligible targets boundaries from 0 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Olivia |
+    And the game's current play eligible targets interactable player named Olivia should have the following interactions
+      | source               | interaction |
+      | accursed-wolf-father | infect      |
+
     When the accursed wolf-father infects the player named Olivia
     Then the request should have succeeded with status code 200
     And the player named Olivia should be on werewolves current side and originally be on villagers side
     And the player named Olivia should be alive
+    And the player named Olivia should not have the active eaten from werewolves attribute
     And the game's current play should be survivors to vote
 
     When the player or group skips his turn
@@ -37,6 +54,10 @@ Feature: 🐺 Accursed Wolf-Father role
       | Thomas  | villager             |
     Then the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Olivia
     Then the player named Olivia should be on villagers current side and originally be on villagers side
     And the player named Olivia should be alive
@@ -51,25 +72,13 @@ Feature: 🐺 Accursed Wolf-Father role
       | Thomas  | villager             |
     Then the game's current play should be werewolves to eat
 
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+
     When the accursed wolf-father infects the player named Olivia
     Then the player named Olivia should be on werewolves current side and originally be on villagers side
     And the player named Olivia should be alive
-
-  Scenario: 🐺 Accursed Wolf-Father can't infect if he's not in the game
-
-    Given a created game with options described in files no-sheriff-option.json and with the following players
-      | name    | role     |
-      | Olivia  | elder    |
-      | JB      | villager |
-      | Thomas  | villager |
-      | Antoine | werewolf |
-    Then the game's current play should be werewolves to eat
-
-    When the accursed wolf-father infects the player named Olivia
-    Then the request should have failed with status code 400
-    And the request exception status code should be 400
-    And the request exception message should be "Bad game play payload"
-    And the request exception error should be "`targets.isInfected` can't be set on this current game's state"
 
   Scenario: 🐺 Accursed Wolf-Father can't infect if he's dead
 
@@ -91,29 +100,50 @@ Feature: 🐺 Accursed Wolf-Father role
     When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
 
-    When the accursed wolf-father infects the player named Thomas
-    Then the request should have failed with status code 400
-    And the request exception status code should be 400
-    And the request exception message should be "Bad game play payload"
-    And the request exception error should be "`targets.isInfected` can't be set on this current game's state"
+    When the werewolves eat the player named Thomas
+    Then the game's current play should be survivors to bury-dead-bodies
 
-  Scenario: 🐺 Accursed Wolf-Father can't infect if it's not werewolves turn
+  Scenario: 🐺 Accursed Wolf-Father can't infect an unknown target
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
-      | Olivia  | scandalmonger        |
+      | Olivia  | villager             |
       | JB      | werewolf             |
       | Thomas  | villager             |
-    Then the game's current play should be scandalmonger to mark
+    Then the game's current play should be werewolves to eat
 
-    When the accursed wolf-father infects the player named Olivia
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the player or group targets an unknown player
+    Then the request should have failed with status code 404
+    And the request exception status code should be 404
+    And the request exception message should be "Player with id "4c1b96d4dfe5af0ddfa19e35" not found"
+    And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
+
+  Scenario: 🐺 Accursed Wolf-Father can't infect a target which is not a werewolves target
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role                 |
+      | Antoine | accursed-wolf-father |
+      | Olivia  | villager             |
+      | JB      | werewolf             |
+      | Thomas  | villager             |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the accursed wolf-father infects the player named Thomas
     Then the request should have failed with status code 400
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
-    And the request exception error should be "`targets.isInfected` can't be set on this current game's state"
+    And the request exception error should be "Accursed Wolf-father can't infect this target"
 
-  Scenario: 🐺 Accursed Wolf-Father can't infect multiple times
+  Scenario: 🐺 Accursed Wolf-Father can't infect multiple times but can skip his turn
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
@@ -123,17 +153,56 @@ Feature: 🐺 Accursed Wolf-Father role
       | Thomas  | villager             |
     Then the game's current play should be werewolves to eat
 
-    When the accursed wolf-father infects the player named Olivia
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the player or group skips his turn
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
+    And the game's current play should have eligible targets boundaries from 0 to 1
+    And the game's current play should have the following eligible targets interactable players
+      | name   |
+      | Thomas |
+    And the game's current play eligible targets interactable player named Thomas should have the following interactions
+      | source               | interaction |
+      | accursed-wolf-father | infect      |
+
+    When the accursed wolf-father infects the player named Thomas
+    Then the player named Thomas should be on werewolves current side and originally be on villagers side
+    And the player named Thomas should be alive
+    And the player named Thomas should not have the active eaten from werewolves attribute
     And the game's current play should be survivors to vote
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
-    When the accursed wolf-father infects the player named Thomas
-    Then the request should have failed with status code 400
-    And the request exception status code should be 400
-    And the request exception message should be "Bad game play payload"
-    And the request exception error should be "`targets.isInfected` can't be set on this current game's state"
+    When the werewolves eat the player named JB
+    Then the player named JB should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+    And the game's current play occurrence should be on-nights
+    And the game's current play can be skipped
+    And the game's current play should not have eligible targets
+
+    When the player or group skips his turn
+    Then the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 🐺 Accursed Wolf-Father can't infect multiple targets at once
 
@@ -145,7 +214,11 @@ Feature: 🐺 Accursed Wolf-Father role
       | Thomas  | villager             |
     Then the game's current play should be werewolves to eat
 
-    When the accursed wolf-father infects the following players
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should have the active eaten from werewolves attribute
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the player or group targets the following players
       | name   |
       | Olivia |
       | Thomas |
@@ -153,3 +226,27 @@ Feature: 🐺 Accursed Wolf-Father role
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "There are too much targets for this current game's state"
+
+  Scenario: 🐺 Accursed Wolf-Father turn is skipped if he already infected someone with the right game option
+
+    Given a created game with options described in files no-sheriff-option.json, skip-roles-call-if-no-target-option.json and with the following players
+      | name    | role                 |
+      | Antoine | accursed-wolf-father |
+      | Olivia  | villager             |
+      | JB      | villager             |
+      | Thomas  | villager             |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Olivia
+    Then the player named Olivia should have the active eaten from werewolves attribute
+
+    When the accursed wolf-father infects the player named Olivia
+    Then the player named Olivia should be on werewolves current side and originally be on villagers side
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the player named JB should have the active eaten from werewolves attribute
+    And the game's current play should be survivors to bury-dead-bodies

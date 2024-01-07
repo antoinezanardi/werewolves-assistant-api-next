@@ -10,6 +10,33 @@ import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants
 
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 
+function createFakeGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+  return createFakeGamePlay({
+    source: createFakeGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
+    action: GamePlayActions.REQUEST_ANOTHER_VOTE,
+    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+    ...gamePlay,
+  }, override);
+}
+
+function createFakeGamePlayAccursedWolfFatherInfects(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+  return createFakeGamePlay({
+    action: GamePlayActions.INFECT,
+    source: createFakeGamePlaySource({ name: RoleNames.ACCURSED_WOLF_FATHER }),
+    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    ...gamePlay,
+  }, override);
+}
+
+function createFakeGamePlayBearTamerGrowls(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+  return createFakeGamePlay({
+    action: GamePlayActions.GROWL,
+    source: createFakeGamePlaySource({ name: RoleNames.BEAR_TAMER }),
+    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    ...gamePlay,
+  }, override);
+}
+
 function createFakeGamePlayActorChoosesCard(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: RoleNames.ACTOR }),
@@ -73,15 +100,6 @@ function createFakeGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}, ov
   return createFakeGamePlay({
     source: createFakeGamePlaySource({ name: RoleNames.THIEF }),
     action: GamePlayActions.CHOOSE_CARD,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
-    ...gamePlay,
-  }, override);
-}
-
-function createFakeGamePlayStutteringJudgeChoosesSign(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
-  return createFakeGamePlay({
-    source: createFakeGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
-    action: GamePlayActions.CHOOSE_SIGN,
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
     ...gamePlay,
   }, override);
@@ -262,6 +280,9 @@ function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object =
 }
 
 export {
+  createFakeGamePlayStutteringJudgeRequestsAnotherVote,
+  createFakeGamePlayAccursedWolfFatherInfects,
+  createFakeGamePlayBearTamerGrowls,
   createFakeGamePlayActorChoosesCard,
   createFakeGamePlaySurvivorsBuryDeadBodies,
   createFakeGamePlaySheriffSettlesVotes,
@@ -269,7 +290,6 @@ export {
   createFakeGamePlaySurvivorsVote,
   createFakeGamePlaySurvivorsElectSheriff,
   createFakeGamePlayThiefChoosesCard,
-  createFakeGamePlayStutteringJudgeChoosesSign,
   createFakeGamePlayScapegoatBansVoting,
   createFakeGamePlayWolfHoundChoosesSide,
   createFakeGamePlayWildChildChoosesModel,

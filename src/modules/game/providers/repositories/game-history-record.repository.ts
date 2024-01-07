@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import type { FilterQuery, Types, QueryOptions } from "mongoose";
 
+import { PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mapper";
@@ -36,12 +37,31 @@ export class GameHistoryRecordRepository {
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
+
+  public async getLastGameHistorySurvivorsVoteRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    const filter: FilterQuery<GameHistoryRecord> = {
+      gameId,
+      "play.action": GamePlayActions.VOTE,
+      "play.source.name": PlayerGroups.SURVIVORS,
+    };
+    return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
+  }
   
   public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayActions): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": action,
       "play.voting.result": GameHistoryRecordVotingResults.TIE,
+    };
+    return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
+  }
+
+  public async getLastGameHistoryAccursedWolfFatherInfectsRecord(gameId: Types.ObjectId, accursedWolfFatherPlayerId: Types.ObjectId): Promise<GameHistoryRecord | null> {
+    const filter: FilterQuery<GameHistoryRecord> = {
+      gameId,
+      "play.action": GamePlayActions.INFECT,
+      "play.source.name": RoleNames.ACCURSED_WOLF_FATHER,
+      "play.source.players": { $elemMatch: { _id: accursedWolfFatherPlayerId } },
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
@@ -57,40 +77,23 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.find(filter);
   }
 
-  public async getGameHistoryAccursedWolfFatherInfectedRecords(gameId: Types.ObjectId, accursedWolfFatherPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryAccursedWolfFatherInfectsWithTargetRecords(gameId: Types.ObjectId, accursedWolfFatherPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
-      "play.action": GamePlayActions.EAT,
-      "play.targets.isInfected": true,
-      "play.source.players": {
-        $elemMatch: {
-          "_id": accursedWolfFatherPlayerId,
-          "role.current": RoleNames.ACCURSED_WOLF_FATHER,
-        },
-      },
+      "play.action": GamePlayActions.INFECT,
+      "play.source.name": RoleNames.ACCURSED_WOLF_FATHER,
+      "play.source.players": { $elemMatch: { _id: accursedWolfFatherPlayerId } },
+      "play.targets": { $exists: true, $ne: [] },
     };
     return this.gameHistoryRecordModel.find(filter);
   }
 
-  public async getGameHistoryJudgeRequestRecords(gameId: Types.ObjectId, stutteringJudgePlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryStutteringJudgeRequestsAnotherVoteRecords(gameId: Types.ObjectId, stutteringJudgePlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
-      "play.source.players": {
-        $elemMatch: {
-          "_id": stutteringJudgePlayerId,
-          "role.current": RoleNames.STUTTERING_JUDGE,
-        },
-      },
-      "play.didJudgeRequestAnotherVote": true,
-    };
-    return this.gameHistoryRecordModel.find(filter);
-  }
-
-  public async getGameHistoryJudgeChoosesHisSignRecords(gameId: Types.ObjectId): Promise<GameHistoryRecord[]> {
-    const filter: FilterQuery<GameHistoryRecord> = {
-      gameId,
-      "play.action": GamePlayActions.CHOOSE_SIGN,
       "play.source.name": RoleNames.STUTTERING_JUDGE,
+      "play.source.players": { $elemMatch: { _id: stutteringJudgePlayerId } },
+      "play.didJudgeRequestAnotherVote": true,
     };
     return this.gameHistoryRecordModel.find(filter);
   }

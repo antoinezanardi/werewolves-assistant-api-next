@@ -1,22 +1,22 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
 
-import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
-import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { createGamePlaySheriffSettlesVotes, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
+import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { createGamePlaySheriffSettlesVotes, createGamePlayStutteringJudgeRequestsAnotherVote, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
 import { getFoxSniffedPlayers, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
 import { createActingByActorPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByActorPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySheriffPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteBySheriffDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
-import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
+import { isPlayerAliveAndPowerful, isPlayerPowerlessOnWerewolvesSide } from "@/modules/game/helpers/player/player.helper";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
+import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
@@ -32,7 +32,7 @@ import { createCantFindLastDeadPlayersUnexpectedException, createNoCurrentGamePl
 @Injectable()
 export class GamePlayMakerService {
   private readonly gameSourcePlayMethods: Partial<Record<GamePlaySourceName, (play: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay) => Game | Promise<Game>>> = {
-    [PlayerGroups.WEREWOLVES]: async(play, game) => this.werewolvesEat(play, game),
+    [PlayerGroups.WEREWOLVES]: (play, game) => this.werewolvesEat(play, game),
     [PlayerGroups.SURVIVORS]: async(play, game) => this.survivorsPlay(play, game),
     [PlayerAttributeNames.SHERIFF]: async(play, game) => this.sheriffPlays(play, game),
     [RoleNames.BIG_BAD_WOLF]: (play, game) => this.bigBadWolfEats(play, game),
@@ -50,6 +50,8 @@ export class GamePlayMakerService {
     [RoleNames.THIEF]: (play, game) => this.thiefChoosesCard(play, game),
     [RoleNames.SCANDALMONGER]: (play, game) => this.scandalmongerMarks(play, game),
     [RoleNames.ACTOR]: (play, game) => this.actorChoosesCard(play, game),
+    [RoleNames.ACCURSED_WOLF_FATHER]: async(play, game) => this.accursedWolfFatherInfects(play, game),
+    [RoleNames.STUTTERING_JUDGE]: (play, game) => this.stutteringJudgeRequestsAnotherVote(play, game),
   };
 
   public constructor(
@@ -167,12 +169,13 @@ export class GamePlayMakerService {
     return clonedGame;
   }
 
-  private async survivorsVote({ votes, doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
+  private async survivorsVote({ votes }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     let clonedGame = createGame(game) as GameWithCurrentPlay;
+    const { currentPlay } = clonedGame;
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
-    if (doesJudgeRequestAnotherVote === true) {
-      const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST });
-      clonedGame = appendUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame) as GameWithCurrentPlay;
+    if (currentPlay.cause === undefined || currentPlay.cause === GamePlayCauses.ANGEL_PRESENCE) {
+      const gamePlayStutteringJudgeRequestsAnotherVote = createGamePlayStutteringJudgeRequestsAnotherVote();
+      clonedGame = prependUpcomingPlayInGame(gamePlayStutteringJudgeRequestsAnotherVote, clonedGame) as GameWithCurrentPlay;
     }
     if (nominatedPlayers.length > 1) {
       return this.handleTieInVotes(clonedGame);
@@ -396,30 +399,41 @@ export class GamePlayMakerService {
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, eatenByBigBadWolfPlayerAttribute);
   }
 
-  private accursedWolfFatherInfects(targetedPlayer: Player, game: GameWithCurrentPlay): Game {
-    let clonedGame = createGame(game);
-    const { roles } = game.options;
-    const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES } };
-    if (targetedPlayer.role.current === RoleNames.PREJUDICED_MANIPULATOR && roles.prejudicedManipulator.isPowerlessOnWerewolvesSide ||
-      targetedPlayer.role.current === RoleNames.PIED_PIPER && roles.piedPiper.isPowerlessOnWerewolvesSide ||
-      targetedPlayer.role.current === RoleNames.ACTOR && roles.actor.isPowerlessOnWerewolvesSide) {
-      clonedGame = addPlayerAttributeInGame(targetedPlayer._id, clonedGame, createPowerlessByAccursedWolfFatherPlayerAttribute());
-    }
-    return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);
-  }
-
-  private async werewolvesEat({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
+  private async accursedWolfFatherInfects({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Promise<Game> {
     const clonedGame = createGame(game);
     const expectedTargetCount = 1;
     if (targets?.length !== expectedTargetCount) {
       return clonedGame;
     }
-    const { player: targetedPlayer, isInfected: isTargetInfected } = targets[0];
-    const eatenByWerewolvesPlayerAttribute = createEatenByWerewolvesPlayerAttribute();
-    const elderLivesCount = await this.playerKillerService.getElderLivesCountAgainstWerewolves(clonedGame, targetedPlayer);
-    if (isTargetInfected === true && (targetedPlayer.role.current !== RoleNames.ELDER || elderLivesCount <= 1)) {
-      return this.accursedWolfFatherInfects(targetedPlayer, clonedGame as GameWithCurrentPlay);
+    const { player: targetedPlayer } = targets[0];
+    if (targetedPlayer.role.current === RoleNames.ELDER && !await this.playerKillerService.isElderKillable(clonedGame, targetedPlayer, PlayerDeathCauses.EATEN)) {
+      return clonedGame;
     }
+    const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES }, attributes: targetedPlayer.attributes };
+    if (isPlayerPowerlessOnWerewolvesSide(targetedPlayer, clonedGame)) {
+      playerDataToUpdate.attributes?.push(createPowerlessByAccursedWolfFatherPlayerAttribute());
+    }
+    playerDataToUpdate.attributes = playerDataToUpdate.attributes?.filter(({ name, source }) => name !== PlayerAttributeNames.EATEN || source !== PlayerGroups.WEREWOLVES);
+    return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);
+  }
+
+  private werewolvesEat({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
+    const clonedGame = createGame(game);
+    const expectedTargetCount = 1;
+    if (targets?.length !== expectedTargetCount) {
+      return clonedGame;
+    }
+    const { player: targetedPlayer } = targets[0];
+    const eatenByWerewolvesPlayerAttribute = createEatenByWerewolvesPlayerAttribute();
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, eatenByWerewolvesPlayerAttribute);
+  }
+
+  private stutteringJudgeRequestsAnotherVote({ doesJudgeRequestAnotherVote }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
+    const clonedGame = createGame(game);
+    if (doesJudgeRequestAnotherVote !== true) {
+      return clonedGame;
+    }
+    const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ cause: GamePlayCauses.STUTTERING_JUDGE_REQUEST });
+    return prependUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame);
   }
 }
