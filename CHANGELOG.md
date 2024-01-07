@@ -1,5 +1,49 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.28.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.27.2...v1.28.0) (2024-1-7)
+
+
+### 🚀 Features
+
+* **accursed-wolf-father:** accursed-wolf-father game play ([#790](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/790)) ([350e4fa](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/350e4fa94f1eb94c2d8610cec1ba7072dbd0f643)), closes [#789](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/789)
+* **bear-tamer:** bear-tamer game play ([#788](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/788)) ([f401f4d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f401f4d4294853e3bee9b9f7f149b0cf82fa470c)), closes [#759](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/759)
+* **game-options:** cupid must win with lovers game option ([#779](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/779)) ([ddf59bc](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ddf59bcbd1d19896aaa6ddea3f30a3cc1e95ed43)), closes [#749](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/749)
+* **stuttering-judge:** stuttering judge new game play ([#799](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/799)) ([b4b78fb](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/b4b78fbdd38c92a7cf4526d28d6edf0041da411b)), closes [#763](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/763)
+
+
+### 🐛 Bug Fixes
+
+* **prejudiced-manipulator:** groups must contain at least two players ([#786](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/786)) ([f70465d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f70465da8a3c3c9e6eb94035ac5ca08da709d8b3)), closes [#751](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/751)
+
+
+### 📖 Docs
+
+* **readme:** stryker logo in docs ([#777](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/777)) ([d717476](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/d717476569302bcac6856898505ac61c38a792ba)), closes [#760](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/760)
+
+
+### ✅ Tests
+
+* **errors:** better way to tests thrown errors ([#798](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/798)) ([02c788b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/02c788b9c91d2d26053f807ffff2b606c46d93e6)), closes [#796](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/796)
+* **game-creation:** two actors in game creation ([#782](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/782)) ([b316f6c](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/b316f6c05959810dd2f2132c4f53777ecb0b90db)), closes [#750](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/750)
+* **hunter:** acceptance test for hunter ([#784](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/784)) ([2e0fb4b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/2e0fb4b600d6519703ba7604a3ec8870d210cf82)), closes [#755](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/755)
+* **wild-child:** acceptance test for powerless Wild Child not joining the werewolves side ([#783](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/783)) ([ed101ba](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ed101ba39a9daa84571edc3878a95f615a31e2cb)), closes [#754](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/754)
+
+
+### 🔁 CI
+
+* **artifacts:** save various artifacts in workflows ([#785](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/785)) ([3d2ae41](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/3d2ae417e5acd4c34995be88c2d662b40cc00d17)), closes [#758](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/758)
+
+
+### 🧹 Chore
+
+* **deps:** bump the commitlint group with 2 updates ([#797](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/797)) ([7cfe83a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/7cfe83a6175de88010c2096321868135acfd5624))
+* **deps:** bump the eslint group with 1 update ([#794](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/794)) ([c3482a3](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/c3482a32b6a08294fbc950f719e2603d35a503f8))
+* **deps:** bump the types group with 1 update ([#780](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/780)) ([f2ffed4](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f2ffed460870fdd68736cccdb2dac42af89d18e5))
+* **deps:** bump the types group with 1 update ([#791](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/791)) ([8b942e6](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/8b942e6c4bf3d0c37de1043f5a5791e1a8607193))
+* **deps:** bump the types group with 2 updates ([#787](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/787)) ([9ed8956](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/9ed8956b01963195171aedc4ad586c71c986e07b))
+* **deps:** bump the types group with 3 updates ([#795](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/795)) ([e18614a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/e18614afa68bebbae8d1d8db6a8399348eacfe02))
+* **deps:** bump type-fest from 4.8.3 to 4.9.0 ([#792](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/792)) ([7e82a37](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/7e82a375dd6e46bdcdd93f69095e34b6328e1881))
+
 ## [1.27.2](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.27.1...v1.27.2) (2023-12-22)
 
 
