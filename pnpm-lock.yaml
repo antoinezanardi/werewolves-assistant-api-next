@@ -83,8 +83,8 @@ devDependencies:
     specifier: ^18.4.4
     version: 18.4.4
   '@cucumber/cucumber':
-    specifier: ^10.1.0
-    version: 10.1.0
+    specifier: ^10.2.1
+    version: 10.2.1
   '@faker-js/faker':
     specifier: ^8.3.1
     version: 8.3.1
@@ -914,8 +914,8 @@ packages:
       regexp-match-indices: 1.0.2
     dev: true
 
-  /@cucumber/cucumber@10.1.0:
-    resolution: {integrity: sha512-9itQdAccTqJAe9VfdmovinOlUPLroC2KbB+CeQty8BKXpLB6hKO32k9S9FhnuXinFqh+E5znUrPtbUxS948bwQ==}
+  /@cucumber/cucumber@10.2.1:
+    resolution: {integrity: sha512-jpJPhngRDHkPkTYQ4dtDHM30dhyM7OJJTMqp0ZoImeX2t7zwlVErfhPD5NlVnXL2yor6AJG6QFe/GwwI7IXc2w==}
     engines: {node: 18 || >=20}
     hasBin: true
     dependencies:
