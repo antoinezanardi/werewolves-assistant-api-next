@@ -84,7 +84,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dot-object": "^2.1.4",
-    "fastify": "^4.25.1",
+    "fastify": "^4.25.2",
     "is-ci": "^3.0.1",
     "isobject": "^4.0.0",
     "lodash": "^4.17.21",
