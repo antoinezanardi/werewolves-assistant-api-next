@@ -56,7 +56,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Cache pnpm dependencies 🥡
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-node-modules
         with:
           path: node_modules
@@ -115,7 +115,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Restore pnpm dependencies from cache 🥡
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         id: cache-node-modules
         with:
           path: node_modules
@@ -175,7 +175,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Restore pnpm dependencies from cache 🥡
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         id: cache-node-modules
         with:
           path: node_modules
@@ -206,7 +206,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Restore pnpm dependencies from cache 🥡
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         id: cache-node-modules
         with:
           path: node_modules
@@ -243,7 +243,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Restore pnpm dependencies from cache 🥡
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         id: cache-node-modules
         with:
           path: node_modules
@@ -286,7 +286,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Restore pnpm dependencies from cache 🥡
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         id: cache-node-modules
         with:
           path: node_modules
@@ -299,7 +299,7 @@ jobs:
         run: pnpm run test:cov
 
       - name: Save tests coverage in cache 🥡
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         id: cache-tests-coverage
         with:
           path: tests/coverage
@@ -339,7 +339,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Restore pnpm dependencies from cache 🥡
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         id: cache-node-modules
         with:
           path: node_modules
@@ -382,7 +382,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Restore pnpm dependencies from cache 🥡
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         id: cache-node-modules
         with:
           path: node_modules
@@ -416,7 +416,7 @@ jobs:
           fetch-depth: 0
 
       - name: Restore tests coverage from cache 🥡
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         id: cache-tests-coverage
         with:
           path: tests/coverage
