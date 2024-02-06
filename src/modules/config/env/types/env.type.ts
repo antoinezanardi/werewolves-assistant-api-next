@@ -40,6 +40,11 @@ class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   public DATABASE_PASSWORD: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  public CORS_ORIGIN: string = "*";
 }
 
 export { EnvironmentVariables };

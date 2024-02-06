@@ -29,6 +29,7 @@ describe("Server", () => {
             getUrl: jest.SpyInstance;
             useGlobalPipes: jest.SpyInstance;
             useStaticAssets: jest.SpyInstance;
+            enableCors: jest.SpyInstance;
             close: jest.SpyInstance;
           };
         };
@@ -69,6 +70,20 @@ describe("Server", () => {
       app = await bootstrap();
 
       expect(FastifyAdapter).toHaveBeenCalledExactlyOnceWith(FASTIFY_SERVER_DEFAULT_OPTIONS);
+    });
+
+    it("should call enableCors with specific origin when CORS_ORIGIN is in process.env.", async() => {
+      process.env.CORS_ORIGIN = "http://localhost:3000";
+      app = await bootstrap();
+
+      expect(mocks.NestFactory.create.resolvedValue.enableCors).toHaveBeenCalledExactlyOnceWith({ origin: "http://localhost:3000" });
+    });
+
+    it("should call enableCors with default origin when no origin is provided.", async() => {
+      process.env.CORS_ORIGIN = undefined;
+      app = await bootstrap();
+
+      expect(mocks.NestFactory.create.resolvedValue.enableCors).toHaveBeenCalledExactlyOnceWith({ origin: "*" });
     });
 
     it("should call listen with specific port when port is in process.env.PORT.", async() => {
