@@ -14,6 +14,7 @@ import { AppModule } from "@/app.module";
 
 async function bootstrap(): Promise<NestFastifyApplication> {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(FASTIFY_SERVER_DEFAULT_OPTIONS));
+  app.enableCors();
   app.useGlobalPipes(new ValidationPipe(DEFAULT_VALIDATION_PIPE_OPTIONS));
   const documentationPath = "docs";
   createSwaggerDocument(documentationPath, app);
