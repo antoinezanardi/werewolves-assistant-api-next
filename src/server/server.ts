@@ -1,9 +1,8 @@
 import { Logger, ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-
-import { DEFAULT_APP_HOST, DEFAULT_APP_PORT } from "@/modules/config/env/constants/env.constant";
 
 import { FASTIFY_SERVER_DEFAULT_OPTIONS } from "@/server/constants/server.constant";
 import { createSwaggerDocument } from "@/server/swagger/swagger";
@@ -14,7 +13,8 @@ import { AppModule } from "@/app.module";
 
 async function bootstrap(): Promise<NestFastifyApplication> {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(FASTIFY_SERVER_DEFAULT_OPTIONS));
-  app.enableCors({ origin: process.env.CORS_ORIGIN ?? "*" });
+  const configService = app.get<ConfigService>(ConfigService);
+  app.enableCors({ origin: configService.getOrThrow<string>("CORS_ORIGIN") });
   app.useGlobalPipes(new ValidationPipe(DEFAULT_VALIDATION_PIPE_OPTIONS));
   const documentationPath = "docs";
   createSwaggerDocument(documentationPath, app);
@@ -22,8 +22,8 @@ async function bootstrap(): Promise<NestFastifyApplication> {
     root: `${process.cwd()}/public`,
     prefix: "/public/",
   });
-  const host = process.env.HOST ?? DEFAULT_APP_HOST;
-  const port = process.env.PORT ?? DEFAULT_APP_PORT;
+  const host = configService.getOrThrow<string>("HOST");
+  const port = configService.getOrThrow<number>("PORT");
   await app.listen(port, host);
   const appUrl = await app.getUrl();
   Logger.log(`🐺 App is available at ${appUrl}`, "NestApplication");

@@ -3,6 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { INestApplication } from "@nestjs/common";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import { when } from "jest-when";
 
 import { FASTIFY_SERVER_DEFAULT_OPTIONS } from "@/server/constants/server.constant";
 import { bootstrap } from "@/server/server";
@@ -20,12 +21,14 @@ jest.mock("@/server/swagger/swagger");
 
 describe("Server", () => {
   describe("bootstrap", () => {
+    let configServiceGetOrThrow: jest.SpyInstance;
     let mocks: {
       NestFactory: {
         create: {
           implementation: jest.SpyInstance;
           resolvedValue: {
             listen: jest.SpyInstance;
+            get: jest.SpyInstance;
             getUrl: jest.SpyInstance;
             useGlobalPipes: jest.SpyInstance;
             useStaticAssets: jest.SpyInstance;
@@ -41,8 +44,10 @@ describe("Server", () => {
     const env = process.env;
 
     beforeEach(() => {
+      configServiceGetOrThrow = jest.fn();
       const NestFactoryCreateMockResolvedValue = {
         listen: jest.fn(),
+        get: jest.fn().mockReturnValue({ getOrThrow: configServiceGetOrThrow }),
         getUrl: jest.fn().mockReturnValue("http://127.0.0.1:3000"),
         useGlobalPipes: jest.fn(),
         useStaticAssets: jest.fn(),
@@ -72,46 +77,19 @@ describe("Server", () => {
       expect(FastifyAdapter).toHaveBeenCalledExactlyOnceWith(FASTIFY_SERVER_DEFAULT_OPTIONS);
     });
 
-    it("should call enableCors with specific origin when CORS_ORIGIN is in process.env.", async() => {
-      process.env.CORS_ORIGIN = "http://localhost:3000";
+    it("should call enableCors with specific origin when CORS_ORIGIN config service.", async() => {
+      when(configServiceGetOrThrow).calledWith("CORS_ORIGIN").mockReturnValue("http://localhost:3000");
       app = await bootstrap();
 
       expect(mocks.NestFactory.create.resolvedValue.enableCors).toHaveBeenCalledExactlyOnceWith({ origin: "http://localhost:3000" });
     });
 
-    it("should call enableCors with default origin when no origin is provided.", async() => {
-      process.env.CORS_ORIGIN = undefined;
+    it("should call listen with specific port and host when they are in config service.", async() => {
+      when(configServiceGetOrThrow).calledWith("HOST").mockReturnValue("0.0.0.0");
+      when(configServiceGetOrThrow).calledWith("PORT").mockReturnValue(8081);
       app = await bootstrap();
 
-      expect(mocks.NestFactory.create.resolvedValue.enableCors).toHaveBeenCalledExactlyOnceWith({ origin: "*" });
-    });
-
-    it("should call listen with specific port when port is in process.env.PORT.", async() => {
-      process.env.PORT = "8081";
-      app = await bootstrap();
-
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8081", "127.0.0.1");
-    });
-
-    it("should call listen with the default port when no port is provided.", async() => {
-      process.env.PORT = undefined;
-      app = await bootstrap();
-
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith(8080, "127.0.0.1");
-    });
-
-    it("should call listen with specific host when host is in process.env.HOST.", async() => {
-      process.env.HOST = "0.0.0.0";
-      app = await bootstrap();
-
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "0.0.0.0");
-    });
-
-    it("should call listen with the default host when no host is provided.", async() => {
-      process.env.HOST = undefined;
-      app = await bootstrap();
-
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith("8080", "127.0.0.1");
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith(8081, "0.0.0.0");
     });
 
     it("should add validation pipe with transform when Validation Pipe constructor is called.", async() => {
