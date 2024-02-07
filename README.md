@@ -281,7 +281,7 @@ pnpm run lint
 pnpm run lint:fix
 
 # Lint and fix only on staged files (runs on pre-commit)
-pnpm run lint:staged
+pnpm run lint:staged:fix
 ```
 
 ### 🥇 Project quality scanner
