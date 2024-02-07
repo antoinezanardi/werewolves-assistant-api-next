@@ -29,6 +29,7 @@ describe("Server", () => {
             getUrl: jest.SpyInstance;
             useGlobalPipes: jest.SpyInstance;
             useStaticAssets: jest.SpyInstance;
+            enableCors: jest.SpyInstance;
             close: jest.SpyInstance;
           };
         };
@@ -45,6 +46,7 @@ describe("Server", () => {
         getUrl: jest.fn().mockReturnValue("http://127.0.0.1:3000"),
         useGlobalPipes: jest.fn(),
         useStaticAssets: jest.fn(),
+        enableCors: jest.fn(),
         close: jest.fn(),
       };
       mocks = {
@@ -66,8 +68,22 @@ describe("Server", () => {
 
     it("should create FastifyAdapter with default fastify server options when called.", async() => {
       app = await bootstrap();
-      
+
       expect(FastifyAdapter).toHaveBeenCalledExactlyOnceWith(FASTIFY_SERVER_DEFAULT_OPTIONS);
+    });
+
+    it("should call enableCors with specific origin when CORS_ORIGIN is in process.env.", async() => {
+      process.env.CORS_ORIGIN = "http://localhost:3000";
+      app = await bootstrap();
+
+      expect(mocks.NestFactory.create.resolvedValue.enableCors).toHaveBeenCalledExactlyOnceWith({ origin: "http://localhost:3000" });
+    });
+
+    it("should call enableCors with default origin when no origin is provided.", async() => {
+      process.env.CORS_ORIGIN = undefined;
+      app = await bootstrap();
+
+      expect(mocks.NestFactory.create.resolvedValue.enableCors).toHaveBeenCalledExactlyOnceWith({ origin: "*" });
     });
 
     it("should call listen with specific port when port is in process.env.PORT.", async() => {
@@ -100,7 +116,7 @@ describe("Server", () => {
 
     it("should add validation pipe with transform when Validation Pipe constructor is called.", async() => {
       app = await bootstrap();
-      
+
       expect(NestCommon.ValidationPipe).toHaveBeenCalledExactlyOnceWith({
         transform: true,
         whitelist: true,
@@ -113,7 +129,7 @@ describe("Server", () => {
 
     it("should serve public directory when called.", async() => {
       app = await bootstrap();
-      
+
       expect(mocks.NestFactory.create.resolvedValue.useStaticAssets).toHaveBeenCalledExactlyOnceWith({
         root: `${process.cwd()}/public`,
         prefix: "/public/",
@@ -123,7 +139,7 @@ describe("Server", () => {
     it("should print server and docs address with specific port when port is provided.", async() => {
       mocks.NestFactory.create.resolvedValue.getUrl.mockReturnValue(`http://127.0.0.1:8080`);
       app = await bootstrap();
-      
+
       expect(mocks.NestCommonLogger.log).toHaveBeenNthCalledWith(1, "🐺 App is available at http://127.0.0.1:8080", "NestApplication");
       expect(mocks.NestCommonLogger.log).toHaveBeenNthCalledWith(2, "📖 API Documentation is available at http://127.0.0.1:8080/docs", "NestApplication");
     });

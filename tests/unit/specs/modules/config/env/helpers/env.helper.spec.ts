@@ -14,6 +14,7 @@ describe("Config Env Helper", () => {
       DATABASE_NAME: "db",
       DATABASE_USERNAME: "john",
       DATABASE_PASSWORD: "doe",
+      CORS_ORIGIN: "http://localhost:3000",
     };
 
     it("should return the validated config when there is no error in env variables.", () => {
@@ -35,6 +36,7 @@ describe("Config Env Helper", () => {
         HOST: "127.0.0.1",
         PORT: 8080,
         DATABASE_PORT: undefined,
+        CORS_ORIGIN: "*",
       }, { enableImplicitConversion: true });
 
       expect(validate(validEnvVariablesWithoutOptional)).toStrictEqual(expectedValidatedEnvVariables);
@@ -161,6 +163,13 @@ describe("Config Env Helper", () => {
         badEnvVariables: {
           ...validEnvVariables,
           DATABASE_PASSWORD: "",
+        },
+      },
+      {
+        test: "should throw validate error when CORS_ORIGIN is empty.",
+        badEnvVariables: {
+          ...validEnvVariables,
+          CORS_ORIGIN: "",
         },
       },
     ])("$test", ({ badEnvVariables }) => {

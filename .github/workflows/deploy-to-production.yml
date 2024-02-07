@@ -68,6 +68,7 @@ jobs:
           echo DATABASE_NAME="${{ secrets.PRODUCTION_DATABASE_NAME }}" >> env/.env.production
           echo DATABASE_USERNAME="${{ secrets.PRODUCTION_DATABASE_USERNAME }}" >> env/.env.production
           echo DATABASE_PASSWORD="${{ secrets.PRODUCTION_DATABASE_PASSWORD }}" >> env/.env.production
+          echo CORS_ORIGIN="${{ secrets.PRODUCTION_CORS_ORIGIN }}" >> env/.env.production
           cat env/.env.production
 
       - name: Build app ✨
