@@ -4,8 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "04:00"
-      timezone: "UTC"
+      time: "05:00"
+      timezone: "Europe/Paris"
     assignees:
       - "antoinezanardi"
     reviewers:
@@ -18,8 +18,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-      time: "04:00"
-      timezone: "UTC"
+      time: "05:00"
+      timezone: "Europe/Paris"
     assignees:
       - "antoinezanardi"
     reviewers:
@@ -32,9 +32,6 @@ updates:
       nest:
         patterns:
           - "@nestjs*"
-      types:
-        patterns:
-          - "@types*"
       commitlint:
         patterns:
           - "@commitlint*"
@@ -44,10 +41,15 @@ updates:
       eslint:
         patterns:
           - "eslint*"
+          - "@eslint*"
           - "@typescript-eslint*"
+          - "@stylistic/eslint-plugin"
       jest:
         patterns:
           - "jest*"
       semantic-release:
         patterns:
           - "@semantic-release*"
+      types:
+        patterns:
+          - "@types*"
