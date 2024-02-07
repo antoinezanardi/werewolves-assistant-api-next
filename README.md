@@ -254,6 +254,7 @@ Environment variables are :
 |   `DATABASE_NAME`   |          MongoDB database name          |    ✅     |       ❌       |              Can't be empty string               |
 | `DATABASE_USERNAME` |          MongoDB database user          |    ✅     |       ❌       |              Can't be empty string               |
 | `DATABASE_PASSWORD` |        MongoDB database password        |    ✅     |       ❌       |              Can't be empty string               |
+|    `CORS_ORIGIN`    |           CORS allowed origin           |    ❌     |      `*`      |          If set, can't be empty string           |
 
 
 ## <a name="code-analysis-and-consistency">☑️ Code analysis and consistency</a>
@@ -280,7 +281,7 @@ pnpm run lint
 pnpm run lint:fix
 
 # Lint and fix only on staged files (runs on pre-commit)
-pnpm run lint:staged
+pnpm run lint:staged:fix
 ```
 
 ### 🥇 Project quality scanner
