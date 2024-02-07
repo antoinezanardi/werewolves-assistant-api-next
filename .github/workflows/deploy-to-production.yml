@@ -22,13 +22,21 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Build and push Docker image 🐳
+      - name: Build and push Docker image on tag name 🐳
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
           tags: antoinezanardi/werewolves-assistant-api:${{ github.event.release.tag_name }}
+
+      - name: Build and push Docker image on latest 🐳
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: antoinezanardi/werewolves-assistant-api:latest
 
   deploy:
     name: Deploy to production 🚀
