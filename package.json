@@ -28,7 +28,7 @@
     "url": "git+https://github.com/antoinezanardi/werewolves-assistant-api-next.git"
   },
   "scripts": {
-    "prepare": "is-ci || husky install",
+    "prepare": "is-ci || husky",
     "prebuild": "rimraf dist",
     "build": "cross-env NODE_ENV=production nest build",
     "docker:dev:start": "docker rmi antoinezanardi/werewolves-assistant-api-dev; docker-compose -f docker/werewolves-assistant-api-dev/docker-compose.yml up -d",
@@ -45,8 +45,8 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main.js",
     "lint": "eslint .",
-    "lint:staged": "lint-staged -c config/lintstaged/.lintstagedrc.json",
     "lint:fix": "eslint . --fix",
+    "lint:staged:fix": "lint-staged -c config/lintstaged/.lintstagedrc.eslint.json",
     "test": "cross-env NODE_ENV=test jest --config config/jest/jest-global.ts",
     "test:staged": "cross-env NODE_ENV=test jest --config config/jest/jest-global.ts -o",
     "test:watch": "cross-env NODE_ENV=test jest --watch --config config/jest/jest-global.ts",
