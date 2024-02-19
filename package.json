@@ -78,7 +78,7 @@
     "@nestjs/platform-express": "^10.3.3",
     "@nestjs/platform-fastify": "^10.3.3",
     "@nestjs/swagger": "^7.3.0",
-    "@nestjs/terminus": "^10.2.2",
+    "@nestjs/terminus": "^10.2.3",
     "@types/lodash": "^4.14.202",
     "@types/validator": "^13.11.9",
     "class-transformer": "^0.5.1",
