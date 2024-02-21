@@ -66,8 +66,8 @@ dependencies:
     specifier: ^6.11.2
     version: 6.11.2
   radash:
-    specifier: ^11.0.0
-    version: 11.0.0
+    specifier: ^12.0.0
+    version: 12.0.0
   reflect-metadata:
     specifier: ^0.2.1
     version: 0.2.1
@@ -7664,8 +7664,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /radash@11.0.0:
-    resolution: {integrity: sha512-CRWxTFTDff0IELGJ/zz58yY4BDgyI14qSM5OLNKbCItJrff7m7dXbVF0kWYVCXQtPb3SXIVhXvAImH6eT7VLSg==}
+  /radash@12.0.0:
+    resolution: {integrity: sha512-CiemtIwEZH9XZAzl+/X6CQndV8lCcP8sMHCFs4ryI1011Y/PeWHYQwkOs4nyqFMNnqrbVL8WuvVlexqDceG29Q==}
     engines: {node: '>=14.18.0'}
     dev: false
 
