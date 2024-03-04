@@ -53,6 +53,7 @@ jobs:
 
       - name: Merge main branch into develop branch 🤝
         run: |
+          git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
           git fetch --all
           git checkout main
@@ -117,7 +118,7 @@ jobs:
             ${{ runner.os }}-release-changelog-
 
       - name: List open PR into main 📋
-        run: | 
+        run: |
           OPEN_PR_INTO_MAIN=$(gh pr list --state open -B main --search "Release in:title" --json number,title)
           echo "OPEN_PR_INTO_MAIN=$OPEN_PR_INTO_MAIN" >> $GITHUB_ENV
 
