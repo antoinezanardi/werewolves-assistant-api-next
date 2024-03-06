@@ -194,8 +194,8 @@ devDependencies:
     specifier: ^4.2.0
     version: 4.2.0
   type-fest:
-    specifier: ^4.11.0
-    version: 4.11.0
+    specifier: ^4.11.1
+    version: 4.11.1
   typescript:
     specifier: ^5.3.3
     version: 5.3.3
@@ -953,7 +953,7 @@ packages:
       strip-ansi: 6.0.1
       supports-color: 8.1.1
       tmp: 0.2.1
-      type-fest: 4.11.0
+      type-fest: 4.11.1
       util-arity: 1.1.0
       xmlbuilder: 15.1.1
       yaml: 2.3.4
@@ -7327,7 +7327,7 @@ packages:
     dependencies:
       '@babel/code-frame': 7.23.5
       index-to-position: 0.1.2
-      type-fest: 4.11.0
+      type-fest: 4.11.1
     dev: true
 
   /parse5-htmlparser2-tree-adapter@6.0.1:
@@ -7633,7 +7633,7 @@ packages:
     dependencies:
       find-up-simple: 1.0.0
       read-pkg: 9.0.1
-      type-fest: 4.11.0
+      type-fest: 4.11.1
     dev: true
 
   /read-pkg-up@7.0.1:
@@ -7662,7 +7662,7 @@ packages:
       '@types/normalize-package-data': 2.4.4
       normalize-package-data: 6.0.0
       parse-json: 8.1.0
-      type-fest: 4.11.0
+      type-fest: 4.11.1
       unicorn-magic: 0.1.0
     dev: true
 
@@ -8849,8 +8849,8 @@ packages:
     engines: {node: '>=14.16'}
     dev: true
 
-  /type-fest@4.11.0:
-    resolution: {integrity: sha512-DPsoHKtnCUqqoB5Y4OPyat7ObSLz1XOkhHTmz+gOkz2p1xs+BBneTvHWriTwc313eozfBWh8b45EpaV3ZrrPPQ==}
+  /type-fest@4.11.1:
+    resolution: {integrity: sha512-MFMf6VkEVZAETidGGSYW2B1MjXbGX+sWIywn2QPEaJ3j08V+MwVRHMXtf2noB8ENJaD0LIun9wh5Z6OPNf1QzQ==}
     engines: {node: '>=16'}
     dev: true
 
