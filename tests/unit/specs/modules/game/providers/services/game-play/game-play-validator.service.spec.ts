@@ -17,6 +17,7 @@ import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpect
 import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.type";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
 
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { getError } from "@tests/helpers/exception/exception.helper";
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
@@ -28,7 +29,6 @@ import { createFakePiedPiperGameOptions, createFakeRolesGameOptions, createFakeW
 import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
 import { createFakeInteractablePlayer } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/interactable-player.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
-import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeRequestsAnotherVote, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -153,7 +153,7 @@ describe("Game Play Validator Service", () => {
         createCantFindPlayerWithCurrentRoleUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerWithCurrentRoleUnexpectedException").mockImplementation(),
       },
     };
-    
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
@@ -171,10 +171,10 @@ describe("Game Play Validator Service", () => {
         GamePlayValidatorService,
       ],
     }).compile();
-    
+
     services = { gamePlayValidator: module.get<GamePlayValidatorService>(GamePlayValidatorService) };
   });
-  
+
   describe("validateGamePlayWithRelationsDto", () => {
     beforeEach(() => {
       mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoJudgeRequest = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoJudgeRequest }, "validateGamePlayWithRelationsDtoJudgeRequest").mockImplementation();
@@ -183,7 +183,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayValidatorService.validateGamePlayTargetsWithRelationsDto = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayTargetsWithRelationsDto }, "validateGamePlayTargetsWithRelationsDto").mockImplementation();
       mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoChosenCard = jest.spyOn(services.gamePlayValidator as unknown as { validateGamePlayWithRelationsDtoChosenCard }, "validateGamePlayWithRelationsDtoChosenCard").mockImplementation();
     });
-    
+
     it("should throw error when game's current play is not set.", async() => {
       const game = createFakeGame();
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
@@ -199,7 +199,7 @@ describe("Game Play Validator Service", () => {
       const game = createFakeGame({ currentPlay: createFakeGamePlaySurvivorsVote() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
       await services.gamePlayValidator.validateGamePlayWithRelationsDto(makeGamePlayWithRelationsDto, game);
-      
+
       expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoJudgeRequest).toHaveBeenCalledOnce();
       expect(mocks.gamePlayValidatorService.validateGamePlayWithRelationsDtoChosenSide).toHaveBeenCalledOnce();
       expect(mocks.gamePlayValidatorService.validateGamePlayVotesWithRelationsDto).toHaveBeenCalledOnce();
@@ -340,7 +340,7 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when chosen card is not defined and not expected.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
-      
+
       expect(() => services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game)).not.toThrow();
     });
 
@@ -604,7 +604,7 @@ describe("Game Play Validator Service", () => {
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
       expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("validateGamePlayWitchTargets", { gameId: game._id, roleName: RoleNames.WITCH });
     });
-    
+
     it("should throw error when witch targeted someone with life potion but already used it with death potion before.", async() => {
       const players = [
         createFakeWitchAlivePlayer(),
@@ -1466,7 +1466,7 @@ describe("Game Play Validator Service", () => {
       expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayAccursedWolfFatherTargets).not.toHaveBeenCalled();
     });
-    
+
     it("should call pied piper validator when game current play is for the pied piper.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayPiedPiperCharms() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
@@ -1486,7 +1486,7 @@ describe("Game Play Validator Service", () => {
       expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayAccursedWolfFatherTargets).not.toHaveBeenCalled();
     });
-    
+
     it("should call wild child validator when game current play is for the wild child.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWildChildChoosesModel() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
@@ -1506,7 +1506,7 @@ describe("Game Play Validator Service", () => {
       expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayAccursedWolfFatherTargets).not.toHaveBeenCalled();
     });
-    
+
     it("should call scandalmonger validator when game current play is for the scandalmonger.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayScandalmongerMarks() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);
@@ -1526,7 +1526,7 @@ describe("Game Play Validator Service", () => {
       expect(mocks.gamePlayValidatorService.validateGamePlayWitchTargets).not.toHaveBeenCalled();
       expect(mocks.gamePlayValidatorService.validateGamePlayAccursedWolfFatherTargets).not.toHaveBeenCalled();
     });
-    
+
     it("should call seer validator when game current play is for the seer.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySeerLooks() });
       await services.gamePlayValidator["validateGamePlaySourceTargets"]([], game);

@@ -7,7 +7,7 @@ import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-sourc
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 

@@ -28,6 +28,7 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import { ApiSortOrder } from "@/shared/api/enums/api.enum";
 import { toJSON } from "@/shared/misc/helpers/object.helper";
 
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
@@ -46,7 +47,6 @@ import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-o
 import { createFakeGamePlayEligibleTargetsBoundaries } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema.factory";
 import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
 import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
-import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -919,7 +919,7 @@ describe("Game Controller", () => {
       expect(response.statusCode).toBe(HttpStatus.CREATED);
       expect(response.json<Game>()).toStrictEqual<Game>(expectedGame);
     });
-    
+
     it(`should create game with additional cards when thief is in the game.`, async() => {
       const payload = createFakeCreateGameDto({
         players: [
@@ -1364,7 +1364,7 @@ describe("Game Controller", () => {
         updatedAt: expect.any(String) as Date,
       });
     });
-    
+
     it("should make a game play when called with targets.", async() => {
       const players = [
         createFakeWerewolfAlivePlayer(),

@@ -10,6 +10,7 @@ function createFakeGamePlaySource(gamePlaySource: Partial<GamePlaySource> = {}, 
   return plainToInstance(GamePlaySource, {
     name: gamePlaySource.name ?? faker.helpers.arrayElement(GAME_SOURCES),
     players: gamePlaySource.players ?? undefined,
+    interactions: gamePlaySource.interactions ?? undefined,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
