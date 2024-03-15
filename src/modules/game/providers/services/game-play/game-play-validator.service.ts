@@ -329,9 +329,10 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayVotesTieBreakerWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): void {
-    const { cause } = game.currentPlay;
+    const { action, cause } = game.currentPlay;
+    const interactionType = action === GamePlayActions.VOTE ? PlayerInteractionTypes.VOTE : PlayerInteractionTypes.CHOOSE_AS_SHERIFF;
     const areEveryTargetsInNominatedPlayers = playVotes.every(({ target }) =>
-      isPlayerInteractableWithInteractionTypeInCurrentGamePlay(target._id, PlayerInteractionTypes.VOTE, game));
+      isPlayerInteractableWithInteractionTypeInCurrentGamePlay(target._id, interactionType, game));
     if (cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES && !areEveryTargetsInNominatedPlayers) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_TARGET_FOR_TIE_BREAKER);
     }

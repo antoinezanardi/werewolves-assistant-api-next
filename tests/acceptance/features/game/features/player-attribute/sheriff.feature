@@ -22,26 +22,16 @@ Feature: 🎖️ Sheriff player attribute
       | Babou   |
     And the game's current play occurrence should be anytime
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 5
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type              | source    | minBoundary | maxBoundary |
+      | choose-as-sheriff | survivors | 1           | 5           |
+    And the game's current play source interaction with type choose-as-sheriff should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |
       | Thomas  |
       | JB      |
       | Babou   |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source    | interaction       |
-      | survivors | choose-as-sheriff |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source    | interaction       |
-      | survivors | choose-as-sheriff |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source    | interaction       |
-      | survivors | choose-as-sheriff |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source    | interaction       |
-      | survivors | choose-as-sheriff |
 
     When the survivors elect sheriff with the following votes
       | voter   | target |
@@ -70,17 +60,13 @@ Feature: 🎖️ Sheriff player attribute
       | name   |
       | Olivia |
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type              | source  | minBoundary | maxBoundary |
+      | sentence-to-death | sheriff | 1           | 1           |
+    And the game's current play source interaction with type sentence-to-death should have the following eligible targets
       | name   |
       | Thomas |
       | JB     |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source  | interaction       |
-      | sheriff | sentence-to-death |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source  | interaction       |
-      | sheriff | sentence-to-death |
 
     When the sheriff breaks the tie in votes by choosing the player named Thomas
     Then the request should have succeeded with status code 200
@@ -128,8 +114,10 @@ Feature: 🎖️ Sheriff player attribute
       | Olivia  |
       | Thomas  |
       | JB      |
-    And the game's current play should have eligible targets boundaries from 0 to 4
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 0           | 4           |
+    And the game's current play source interaction with type vote should have the following eligible targets
       | name   |
       | Thomas |
       | JB     |
@@ -405,8 +393,10 @@ Feature: 🎖️ Sheriff player attribute
     When the survivors bury dead bodies
     Then the game's current play should be survivors to elect-sheriff
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 4
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type              | source    | minBoundary | maxBoundary |
+      | choose-as-sheriff | survivors | 1           | 4           |
+    And the game's current play source interaction with type choose-as-sheriff should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |
@@ -464,25 +454,15 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas |
     And the game's current play occurrence should be consequential
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type                  | source  | minBoundary | maxBoundary |
+      | transfer-sheriff-role | sheriff | 1           | 1           |
+    And the game's current play source interaction with type transfer-sheriff-role should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |
       | JB      |
       | Babou   |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source  | interaction           |
-      | sheriff | transfer-sheriff-role |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source  | interaction           |
-      | sheriff | transfer-sheriff-role |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source  | interaction           |
-      | sheriff | transfer-sheriff-role |
-    And the game's current play eligible targets interactable player named Babou should have the following interactions
-      | source  | interaction           |
-      | sheriff | transfer-sheriff-role |
 
     When the sheriff delegates his role to the player named Olivia
     Then the request should have succeeded with status code 200
@@ -655,6 +635,13 @@ Feature: 🎖️ Sheriff player attribute
       | Olivia  | Antoine |
     Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
     But nobody should have the active sheriff from survivors attribute
+    And the game's current play source should have the following interactions
+      | type              | source    | minBoundary | maxBoundary |
+      | choose-as-sheriff | survivors | 1           | 4           |
+    And the game's current play source interaction with type choose-as-sheriff should have the following eligible targets
+      | name    |
+      | JB      |
+      | Antoine |
 
     When the survivors elect sheriff with the following votes
       | source  | target  |

@@ -62,7 +62,7 @@ Feature: 🎀 Devoted Servant role
     Then the player named JB should be murdered by survivors from vote
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the devoted servant steals the role of the player named JB
     Then the request should have failed with status code 400
@@ -94,7 +94,7 @@ Feature: 🎀 Devoted Servant role
     Then the player named Juju should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the devoted servant steals the role of the player named Juju
     Then the request should have failed with status code 400
@@ -122,7 +122,7 @@ Feature: 🎀 Devoted Servant role
     Then the player named Thomas should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the devoted servant steals the role of the player named Thomas
     Then the request should have failed with status code 400

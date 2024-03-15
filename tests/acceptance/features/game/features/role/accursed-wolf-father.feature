@@ -26,13 +26,12 @@ Feature: 🐺 Accursed Wolf-Father role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type   | source               | minBoundary | maxBoundary |
+      | infect | accursed-wolf-father | 0           | 1           |
+    And the game's current play source interaction with type infect should have the following eligible targets
       | name   |
       | Olivia |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source               | interaction |
-      | accursed-wolf-father | infect      |
 
     When the accursed wolf-father infects the player named Olivia
     Then the request should have succeeded with status code 200
@@ -94,7 +93,7 @@ Feature: 🐺 Accursed Wolf-Father role
       | voter  | against |
       | Olivia | Antoine |
     Then the game's current play should be survivors to bury-dead-bodies
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
     And the game's current play can be skipped
 
     When the survivors bury dead bodies
@@ -174,13 +173,12 @@ Feature: 🐺 Accursed Wolf-Father role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type   | source               | minBoundary | maxBoundary |
+      | infect | accursed-wolf-father | 0           | 1           |
+    And the game's current play source interaction with type infect should have the following eligible targets
       | name   |
       | Thomas |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source               | interaction |
-      | accursed-wolf-father | infect      |
 
     When the accursed wolf-father infects the player named Thomas
     Then the player named Thomas should be on werewolves current side and originally be on villagers side
@@ -199,7 +197,7 @@ Feature: 🐺 Accursed Wolf-Father role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the player or group skips his turn
     Then the game's current play should be survivors to bury-dead-bodies

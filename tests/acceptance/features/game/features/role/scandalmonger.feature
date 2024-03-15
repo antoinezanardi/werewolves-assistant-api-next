@@ -69,7 +69,7 @@ Feature: 🐦‍⬛ Scandalmonger role
     Then the player named JB should be murdered by werewolves from eaten
     And the player named JB should have the active scandalmonger-marked from scandalmonger attribute
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
     And the game's current play can be skipped
 
     When the survivors bury dead bodies

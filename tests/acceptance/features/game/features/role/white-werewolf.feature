@@ -120,7 +120,7 @@ Feature: 🐺🦴White Werewolf role
       | name   |
       | Olivia |
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the player or group skips his turn
     Then the player named Thomas should be murdered by werewolves from eaten
@@ -202,7 +202,7 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Antoine
     Then the game's current play should be white-werewolf to eat
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the player or group skips his turn
     And the game's current play should be survivors to bury-dead-bodies

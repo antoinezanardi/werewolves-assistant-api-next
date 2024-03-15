@@ -26,21 +26,14 @@ Feature: 🗳️ Vote Game Play
       | Thomas  |
     And the game's current play occurrence should be on-days
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 3
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 0           | 3           |
+    And the game's current play source interaction with type vote should have the following eligible targets
       | name    |
       | Antoine |
       | JB      |
       | Thomas  |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source    | interaction |
-      | survivors | vote        |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source    | interaction |
-      | survivors | vote        |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source    | interaction |
-      | survivors | vote        |
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -88,7 +81,7 @@ Feature: 🗳️ Vote Game Play
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
     And the game's current play can be skipped
 
     When the survivors bury dead bodies
@@ -244,7 +237,9 @@ Feature: 🗳️ Vote Game Play
       | JB      |
       | Thomas  |
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 3
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 0           | 3           |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -294,11 +289,13 @@ Feature: 🗳️ Vote Game Play
       | Thomas | JB     |
     Then the game's current play should be survivors to vote because previous-votes-were-in-ties
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 3
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 0           | 3           |
+    And the game's current play source interaction with type vote should have the following eligible targets
       | name   |
-      | JB     |
       | Thomas |
+      | JB     |
 
     When the survivors vote with the following votes
       | voter  | target  |
@@ -546,8 +543,10 @@ Feature: 🗳️ Vote Game Play
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
-    And the game's current play should have eligible targets boundaries from 0 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 0           | 1           |
+    And the game's current play source interaction with type vote should have the following eligible targets
       | name    |
       | Antoine |
       | Juju    |

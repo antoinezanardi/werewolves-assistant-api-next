@@ -159,7 +159,7 @@ Feature: 🪄 Witch role
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be witch to use-potions
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
   Scenario: 🪄 Witch is not called anymore if she used all of her potions with the right option
 

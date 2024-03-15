@@ -66,7 +66,7 @@ Feature: 🪈 Pied Piper role
       | Thomas |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the charmed people meet each other
     Then the request should have succeeded with status code 200

@@ -123,7 +123,7 @@ export class GamePlayAugmenterService {
     const alivePlayers = getAlivePlayers(game);
     const isVoteCauseOfTie = gamePlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES;
     if (isVoteCauseOfTie) {
-      const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, GamePlayActions.VOTE);
+      const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, gamePlay.action);
       if (lastTieInVotesRecord?.play.voting?.nominatedPlayers === undefined || lastTieInVotesRecord.play.voting.nominatedPlayers.length === 0) {
         throw createCantFindLastNominatedPlayersUnexpectedException("getSurvivorsVoteGamePlaySourceInteractionEligibleTargets", { gameId: game._id });
       }
@@ -145,13 +145,13 @@ export class GamePlayAugmenterService {
     return [interaction];
   }
 
-  private getSurvivorsElectSheriffGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
-    const alivePlayers = getAlivePlayers(game);
+  private async getSurvivorsElectSheriffGamePlaySourceInteractions(game: Game, gamePlay: GamePlay): Promise<GamePlaySourceInteraction[]> {
+    const eligibleTargets = await this.getSurvivorsVoteGamePlaySourceInteractionEligibleTargets(game, gamePlay);
     const maxBoundaries = getAllowedToVotePlayers(game).length;
     const interaction = createGamePlaySourceInteraction({
       source: PlayerGroups.SURVIVORS,
       type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF,
-      eligibleTargets: alivePlayers,
+      eligibleTargets,
       boundaries: { min: 1, max: maxBoundaries },
     });
     return [interaction];
@@ -184,7 +184,7 @@ export class GamePlayAugmenterService {
     >> = {
       [GamePlayActions.BURY_DEAD_BODIES]: async() => this.getSurvivorsBuryDeadBodiesGamePlaySourceInteractions(game),
       [GamePlayActions.VOTE]: async() => this.getSurvivorsVoteGamePlaySourceInteractions(game, gamePlay),
-      [GamePlayActions.ELECT_SHERIFF]: () => this.getSurvivorsElectSheriffGamePlaySourceInteractions(game),
+      [GamePlayActions.ELECT_SHERIFF]: async() => this.getSurvivorsElectSheriffGamePlaySourceInteractions(game, gamePlay),
     };
     const sourceInteractionsMethod = survivorsGamePlaySourceInteractionMethods[gamePlay.action];
     if (!sourceInteractionsMethod) {
@@ -206,12 +206,14 @@ export class GamePlayAugmenterService {
 
   private getBigBadWolfGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const eligibleWerewolvesTargets = getEligibleWerewolvesTargets(game);
-    const eligibleBigBadWolfTargetsCount = eligibleWerewolvesTargets.length ? 1 : 0;
+    if (eligibleWerewolvesTargets.length === 0) {
+      return [];
+    }
     const interaction = createGamePlaySourceInteraction({
       source: RoleNames.BIG_BAD_WOLF,
       type: PlayerInteractionTypes.EAT,
       eligibleTargets: eligibleWerewolvesTargets,
-      boundaries: { min: eligibleBigBadWolfTargetsCount, max: eligibleBigBadWolfTargetsCount },
+      boundaries: { min: 1, max: 1 },
     });
     return [interaction];
   }
