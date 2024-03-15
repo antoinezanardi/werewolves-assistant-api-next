@@ -95,12 +95,15 @@ function canSurvivorsVote(game: Game): boolean {
   return survivors.some(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
 }
 
-function isPlayerInteractableWithInteractionType(playerId: Types.ObjectId, interactionType: PlayerInteractionTypes, game: GameWithCurrentPlay): boolean {
-  const { eligibleTargets } = game.currentPlay;
-  return !!eligibleTargets?.interactablePlayers?.find(({ player, interactions }) => {
-    const doesPlayerHaveInteraction = interactions.find(({ type }) => type === interactionType);
-    return player._id.equals(playerId) && doesPlayerHaveInteraction !== undefined;
-  });
+function isPlayerInteractableInCurrentGamePlay(playerId: Types.ObjectId, game: GameWithCurrentPlay): boolean {
+  const { interactions } = game.currentPlay.source;
+  return !!interactions?.find(({ eligibleTargets }) => eligibleTargets.find(({ _id }) => _id.equals(playerId)));
+}
+
+function isPlayerInteractableWithInteractionTypeInCurrentGamePlay(playerId: Types.ObjectId, interactionType: PlayerInteractionTypes, game: GameWithCurrentPlay): boolean {
+  const { interactions } = game.currentPlay.source;
+  const interaction = interactions?.find(({ type }) => type === interactionType);
+  return !!interaction?.eligibleTargets.find(({ _id }) => _id.equals(playerId));
 }
 
 export {
@@ -111,5 +114,6 @@ export {
   findPlayPriorityIndex,
   areGamePlaysEqual,
   canSurvivorsVote,
-  isPlayerInteractableWithInteractionType,
+  isPlayerInteractableInCurrentGamePlay,
+  isPlayerInteractableWithInteractionTypeInCurrentGamePlay,
 };

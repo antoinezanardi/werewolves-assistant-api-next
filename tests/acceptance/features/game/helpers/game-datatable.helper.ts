@@ -1,6 +1,6 @@
 import { plainToInstance } from "class-transformer";
 
-import type { PlayerInteraction } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema";
+// import type { PlayerInteraction } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema";
 import type { MakeGamePlayTargetDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target.dto";
 import type { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
@@ -54,11 +54,12 @@ function convertDatatableToPlayers(datatable: string[][], game: Game): Player[] 
   return datatable.map(([playerName]) => getPlayerWithNameOrThrow(playerName, game, new Error(`Player with name ${playerName} not found`)));
 }
 
-function convertDatatableToPlayerInteractions(datatable: string[][]): PlayerInteraction[] {
-  return datatable.map(([source, interactionType]) => ({
-    source,
-    type: interactionType,
-  } as PlayerInteraction));
+function convertDatatableToPlayerInteractions(datatable: string[][]): [] {
+  // return datatable.map(([source, interactionType]) => ({
+  //   source,
+  //   type: interactionType,
+  // } as PlayerInteraction));
+  return [];
 }
 
 function convertDatatableToCreateGamePlayersDto(datatable: string[][]): CreateGamePlayerDto[] {

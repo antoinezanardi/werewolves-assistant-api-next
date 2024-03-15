@@ -488,7 +488,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeWitchAlivePlayer(),
       ];
-      const gamePlay = createFakeGamePlaySurvivorsVote();
+      const gamePlay = createFakeGamePlaySurvivorsVote({ canBeSkipped: false });
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
         source: PlayerGroups.SURVIVORS,
@@ -513,14 +513,14 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeWitchAlivePlayer(),
       ];
-      const gamePlay = createFakeGamePlaySurvivorsVote();
+      const gamePlay = createFakeGamePlaySurvivorsVote({ canBeSkipped: true });
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
         source: PlayerGroups.SURVIVORS,
         type: PlayerInteractionTypes.VOTE,
         eligibleTargets: [],
         boundaries: {
-          min: 1,
+          min: 0,
           max: 3,
         },
       });

@@ -3,10 +3,10 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
+import { GamePlaySourceInteractionBoundaries } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction-boundaries/game-play-source-interaction-boundaries.schema";
 import { GameSource } from "@/modules/game/types/game.type";
 import { GAME_PLAY_SOURCE_INTERACTION_API_PROPERTIES, GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema.constant";
 import { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema";
 import { Player } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
@@ -33,9 +33,9 @@ class GamePlaySourceInteraction {
 
   @ApiProperty(GAME_PLAY_SOURCE_INTERACTION_API_PROPERTIES.boundaries as ApiPropertyOptions)
   @Prop(GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS.boundaries)
-  @Type(() => GamePlayEligibleTargetsBoundaries)
+  @Type(() => GamePlaySourceInteractionBoundaries)
   @Expose()
-  public boundaries: GamePlayEligibleTargetsBoundaries;
+  public boundaries: GamePlaySourceInteractionBoundaries;
 }
 
 const GAME_PLAY_SOURCE_INTERACTION_SCHEMA = SchemaFactory.createForClass(GamePlaySourceInteraction);

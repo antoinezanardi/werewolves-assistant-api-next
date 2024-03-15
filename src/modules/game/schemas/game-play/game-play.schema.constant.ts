@@ -1,9 +1,8 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { GAME_PLAY_ELIGIBLE_TARGETS_SCHEMA } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets.schema";
-import { GAME_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
+import { GAME_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helper";
@@ -21,10 +20,6 @@ const GAME_PLAY_SPECS_FIELDS = {
   cause: {
     required: false,
     enum: Object.values(GamePlayCauses),
-  },
-  eligibleTargets: {
-    required: false,
-    type: GAME_PLAY_ELIGIBLE_TARGETS_SCHEMA,
   },
   canBeSkipped: { required: false },
   occurrence: {
@@ -46,10 +41,6 @@ const GAME_PLAY_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePlay, ApiPropertyO
   cause: {
     description: "Why this play needs to be performed",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SPECS_FIELDS.cause),
-  },
-  eligibleTargets: {
-    description: "Who can be targeted by this play",
-    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SPECS_FIELDS.eligibleTargets),
   },
   canBeSkipped: {
     description: "Whether this play can be skipped or not. Only set for the current game play (first in the upcoming game plays)",

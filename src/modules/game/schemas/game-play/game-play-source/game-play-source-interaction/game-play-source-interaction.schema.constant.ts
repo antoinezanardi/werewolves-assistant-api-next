@@ -1,9 +1,9 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_PLAY_SOURCE_INTERACTION_BOUNDARIES_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction-boundaries/game-play-source-interaction-boundaries.schema";
 import { GAME_SOURCES } from "@/modules/game/constants/game.constant";
 import { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import { GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_SCHEMA } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema";
 import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 
@@ -25,7 +25,7 @@ const GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS = {
   },
   boundaries: {
     required: true,
-    type: GAME_PLAY_ELIGIBLE_TARGETS_BOUNDARIES_SCHEMA,
+    type: GAME_PLAY_SOURCE_INTERACTION_BOUNDARIES_SCHEMA,
   },
 } as const satisfies Record<keyof GamePlaySourceInteraction, MongoosePropOptions>;
 

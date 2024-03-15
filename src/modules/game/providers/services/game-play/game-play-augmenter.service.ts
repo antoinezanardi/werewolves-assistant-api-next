@@ -4,7 +4,6 @@ import { isDefined } from "class-validator";
 import { VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import { createGamePlayEligibleTargetsBoundaries } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.factory";
 import { createGamePlaySourceInteraction } from "@/modules/game/helpers/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
 import { getAlivePlayers, getAllowedToVotePlayers, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
@@ -257,7 +256,7 @@ export class GamePlayAugmenterService {
       source: RoleNames.DEFENDER,
       type: PlayerInteractionTypes.PROTECT,
       eligibleTargets: eligibleDefenderTargets,
-      boundaries: createGamePlayEligibleTargetsBoundaries({ min: 1, max: 1 }),
+      boundaries: { min: 1, max: 1 },
     });
     return [interaction];
   }

@@ -7,7 +7,6 @@ import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 
-import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role.constant";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
@@ -19,16 +18,15 @@ import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/playe
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
-import type { PlayerInteraction } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
+import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role.constant";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enum";
 import { toJSON } from "@/shared/misc/helpers/object.helper";
 
-import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
@@ -44,10 +42,9 @@ import { createFakeCompositionGameOptions } from "@tests/factories/game/schemas/
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
-import { createFakeGamePlayEligibleTargetsBoundaries } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema.factory";
-import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
-import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
-import { createFakeGamePlayCupidCharms, createFakeGamePlayWolfHoundChoosesSide, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySourceInteraction } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema.factory";
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
+import { createFakeGamePlayCupidCharms, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -855,46 +852,21 @@ describe("Game Controller", () => {
         position: index,
         isAlive: true,
       }));
-      const interaction: PlayerInteraction = {
-        source: PlayerGroups.SURVIVORS,
-        type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF,
-      };
       const expectedCurrentPlay: GamePlay = {
         action: GamePlayActions.ELECT_SHERIFF,
-        source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
-        occurrence: GamePlayOccurrences.ANYTIME,
-        eligibleTargets: {
-          boundaries: {
-            min: 1,
-            max: 6,
-          },
-          interactablePlayers: [
+        source: {
+          name: PlayerGroups.SURVIVORS,
+          players: expectedPlayers,
+          interactions: [
             {
-              player: expectedPlayers[0],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[1],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[2],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[3],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[4],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[5],
-              interactions: [interaction],
+              source: PlayerGroups.SURVIVORS,
+              type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF,
+              eligibleTargets: expectedPlayers,
+              boundaries: { min: 1, max: 6 },
             },
           ],
         },
+        occurrence: GamePlayOccurrences.ANYTIME,
         canBeSkipped: false,
       };
       const expectedGame: Game = {
@@ -957,46 +929,21 @@ describe("Game Controller", () => {
         recipient: additionalCard.recipient,
         isUsed: false,
       }));
-      const interaction: PlayerInteraction = {
-        source: PlayerGroups.SURVIVORS,
-        type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF,
-      };
       const expectedCurrentPlay: GamePlay = {
         action: GamePlayActions.ELECT_SHERIFF,
-        source: { name: PlayerGroups.SURVIVORS, players: expectedPlayers },
-        occurrence: GamePlayOccurrences.ANYTIME,
-        eligibleTargets: {
-          boundaries: {
-            min: 1,
-            max: 6,
-          },
-          interactablePlayers: [
+        source: {
+          name: PlayerGroups.SURVIVORS,
+          players: expectedPlayers,
+          interactions: [
             {
-              player: expectedPlayers[0],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[1],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[2],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[3],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[4],
-              interactions: [interaction],
-            },
-            {
-              player: expectedPlayers[5],
-              interactions: [interaction],
+              source: PlayerGroups.SURVIVORS,
+              type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF,
+              eligibleTargets: expectedPlayers,
+              boundaries: { min: 1, max: 6 },
             },
           ],
         },
+        occurrence: GamePlayOccurrences.ANYTIME,
         canBeSkipped: false,
       };
       const expectedGame: Game = {
@@ -1286,23 +1233,18 @@ describe("Game Controller", () => {
       ];
       const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
       const currentPlay = createFakeGamePlaySurvivorsVote({
-        source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players }),
-        eligibleTargets: {
-          boundaries: createFakeGamePlayEligibleTargetsBoundaries({
-            min: 1,
-            max: 4,
-          }),
-          interactablePlayers: [
-            {
-              player: players[0],
-              interactions: [createFakePlayerInteraction({ type: PlayerInteractionTypes.VOTE })],
-            },
-            {
-              player: players[1],
-              interactions: [createFakePlayerInteraction({ type: PlayerInteractionTypes.VOTE })],
-            },
+        source: createFakeGamePlaySource({
+          name: PlayerGroups.SURVIVORS,
+          players,
+          interactions: [
+            createFakeGamePlaySourceInteraction({
+              source: PlayerGroups.SURVIVORS,
+              type: PlayerInteractionTypes.VOTE,
+              eligibleTargets: [players[0], players[1]],
+              boundaries: { min: 1, max: 4 },
+            }),
           ],
-        },
+        }),
       });
       const game = createFakeGame({
         status: GameStatuses.PLAYING,
@@ -1321,29 +1263,20 @@ describe("Game Controller", () => {
           { sourceId: players[1]._id, targetId: players[0]._id },
         ],
       });
-      const interaction = createFakePlayerInteraction({
-        source: PlayerGroups.SURVIVORS,
-        type: PlayerInteractionTypes.VOTE,
-      });
       const expectedCurrentPlay = createFakeGamePlaySurvivorsVote({
         cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES,
-        source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players }),
-        eligibleTargets: {
-          boundaries: createFakeGamePlayEligibleTargetsBoundaries({
-            min: 1,
-            max: 4,
-          }),
-          interactablePlayers: [
-            {
-              player: players[0],
-              interactions: [interaction],
-            },
-            {
-              player: players[1],
-              interactions: [interaction],
-            },
+        source: createFakeGamePlaySource({
+          name: PlayerGroups.SURVIVORS,
+          players,
+          interactions: [
+            createFakeGamePlaySourceInteraction({
+              source: PlayerGroups.SURVIVORS,
+              type: PlayerInteractionTypes.VOTE,
+              eligibleTargets: [players[1], players[0]],
+              boundaries: { min: 1, max: 4 },
+            }),
           ],
-        },
+        }),
         canBeSkipped: false,
       });
       const expectedGame = createFakeGame({
@@ -1376,17 +1309,13 @@ describe("Game Controller", () => {
         source: createFakeGamePlaySource({
           name: RoleNames.SEER,
           players: [players[1]],
-        }),
-        eligibleTargets: createFakeGamePlayEligibleTargets({
-          boundaries: createFakeGamePlayEligibleTargetsBoundaries({
-            min: 1,
-            max: 1,
-          }),
-          interactablePlayers: [
-            {
-              player: players[0],
-              interactions: [createFakePlayerInteraction({ type: PlayerInteractionTypes.LOOK })],
-            },
+          interactions: [
+            createFakeGamePlaySourceInteraction({
+              source: RoleNames.SEER,
+              type: PlayerInteractionTypes.LOOK,
+              eligibleTargets: [players[0]],
+              boundaries: { min: 1, max: 1 },
+            }),
           ],
         }),
       });
@@ -1399,31 +1328,19 @@ describe("Game Controller", () => {
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
-      const interaction = createFakePlayerInteraction({
-        source: PlayerGroups.WEREWOLVES,
-        type: PlayerInteractionTypes.EAT,
-      });
       const expectedCurrentPlay = createFakeGamePlayWerewolvesEat({
         source: createFakeGamePlaySource({
           name: PlayerGroups.WEREWOLVES,
           players: [createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }), players[3]],
-        }),
-        eligibleTargets: {
-          interactablePlayers: [
-            {
-              player: players[1],
-              interactions: [interaction],
-            },
-            {
-              player: players[2],
-              interactions: [interaction],
-            },
+          interactions: [
+            createFakeGamePlaySourceInteraction({
+              source: PlayerGroups.WEREWOLVES,
+              type: PlayerInteractionTypes.EAT,
+              eligibleTargets: [players[1], players[2]],
+              boundaries: { min: 1, max: 1 },
+            }),
           ],
-          boundaries: {
-            min: 1,
-            max: 1,
-          },
-        },
+        }),
         canBeSkipped: false,
       });
       const expectedGame = createFakeGame({
