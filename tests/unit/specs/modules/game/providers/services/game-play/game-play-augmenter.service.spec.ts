@@ -533,13 +533,14 @@ describe("Game Play Augmenter Service", () => {
   });
 
   describe("getSurvivorsElectSheriffGamePlaySourceInteractions", () => {
-    it("should return alive players as eligible targets with boundaries from 1 to 1 when called.", () => {
+    it("should return alive players as eligible targets with boundaries from 1 to 1 when called.", async() => {
       const players = [
         createFakeAngelAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer({ isAlive: false }),
         createFakeWitchAlivePlayer(),
       ];
+      const gamePlay = createFakeGamePlaySurvivorsElectSheriff();
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
         source: PlayerGroups.SURVIVORS,
@@ -551,7 +552,7 @@ describe("Game Play Augmenter Service", () => {
         },
       });
 
-      expect(services.gamePlayAugmenter["getSurvivorsElectSheriffGamePlaySourceInteractions"](game)).toStrictEqual<GamePlaySourceInteraction[]>([expectedGamePlaySourceInteraction]);
+      await expect(services.gamePlayAugmenter["getSurvivorsElectSheriffGamePlaySourceInteractions"](game, gamePlay)).resolves.toStrictEqual<GamePlaySourceInteraction[]>([expectedGamePlaySourceInteraction]);
     });
   });
 
@@ -702,7 +703,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame();
       await services.gamePlayAugmenter["getSurvivorsGamePlaySourceInteractions"](game, gamePlay);
 
-      expect(mocks.gamePlayAugmenterService.getSurvivorsElectSheriffGamePlaySourceInteractions).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gamePlayAugmenterService.getSurvivorsElectSheriffGamePlaySourceInteractions).toHaveBeenCalledExactlyOnceWith(game, gamePlay);
       expect(mocks.gamePlayAugmenterService.getSurvivorsVoteGamePlaySourceInteractions).not.toHaveBeenCalled();
     });
 
@@ -785,17 +786,7 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame({ players });
       mocks.gameHelper.getEligibleWerewolvesTargets.mockReturnValueOnce([]);
 
-      const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.BIG_BAD_WOLF,
-        type: PlayerInteractionTypes.EAT,
-        eligibleTargets: [],
-        boundaries: {
-          min: 0,
-          max: 0,
-        },
-      });
-
-      expect(services.gamePlayAugmenter["getBigBadWolfGamePlaySourceInteractions"](game)).toStrictEqual<GamePlaySourceInteraction[]>([expectedGamePlaySourceInteraction]);
+      expect(services.gamePlayAugmenter["getBigBadWolfGamePlaySourceInteractions"](game)).toStrictEqual<GamePlaySourceInteraction[]>([]);
     });
   });
 
@@ -1140,18 +1131,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       mocks.gameHelper.getEligibleWhiteWerewolfTargets.mockReturnValueOnce([]);
-      const expectedInteractablePlayers = [];
-      const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.WHITE_WEREWOLF,
-        type: PlayerInteractionTypes.EAT,
-        eligibleTargets: expectedInteractablePlayers,
-        boundaries: {
-          min: 0,
-          max: 0,
-        },
-      });
 
-      expect(services.gamePlayAugmenter["getWhiteWerewolfGamePlaySourceInteractions"](game)).toStrictEqual<GamePlaySourceInteraction[]>([expectedGamePlaySourceInteraction]);
+      expect(services.gamePlayAugmenter["getWhiteWerewolfGamePlaySourceInteractions"](game)).toStrictEqual<GamePlaySourceInteraction[]>([]);
     });
   });
 

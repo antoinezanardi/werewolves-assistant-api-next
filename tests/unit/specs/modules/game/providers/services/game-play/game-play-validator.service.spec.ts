@@ -27,7 +27,7 @@ import { createFakePiedPiperGameOptions, createFakeRolesGameOptions, createFakeW
 import { createFakeGamePlaySourceInteractionBoundaries } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction-boundaries/game-play-source-interaction-boundaries.schema.factory";
 import { createFakeGamePlaySourceInteraction } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
-import { createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeRequestsAnotherVote, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeRequestsAnotherVote, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeDevotedServantAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -2013,7 +2013,7 @@ describe("Game Play Validator Service", () => {
   });
 
   describe("validateGamePlayVotesTieBreakerWithRelationsDto", () => {
-    it("should throw error when cause is previous votes were in tie but one voted player is not in the previous tie.", async() => {
+    it("should throw error when action is vote and cause is previous votes were in tie but one voted player is not in the previous tie.", async() => {
       const players = [
         createFakeSeerAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -2035,6 +2035,70 @@ describe("Game Play Validator Service", () => {
 
       expect(error).toStrictEqual<BadGamePlayPayloadException>(expectedError);
       expect(error).toHaveProperty("options", { description: "One vote's target is not in the previous tie in votes" });
+    });
+
+    it("should throw error when action is elect sheriff and cause is previous votes were in tie but one voted player is not in the previous tie.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeIdiotAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const source = createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players: [players[2]] });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ source, cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const game = createFakeGameWithCurrentPlay({ currentPlay, players });
+      const makeGamePlayVotesWithRelationsDto = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[2] }),
+      ];
+      mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValueOnce(false);
+      mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
+      const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_TARGET_FOR_TIE_BREAKER);
+      const error = await getError(() => services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game));
+
+      expect(error).toStrictEqual<BadGamePlayPayloadException>(expectedError);
+      expect(error).toHaveProperty("options", { description: "One vote's target is not in the previous tie in votes" });
+    });
+
+    it("should call isPlayerInteractableWithInteractionTypeInCurrentGamePlay with vote interaction type when action is vote.", () => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeIdiotAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const currentPlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const game = createFakeGameWithCurrentPlay({ currentPlay, players });
+      const makeGamePlayVotesWithRelationsDto = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[1] }),
+      ];
+      mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
+      services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game);
+
+      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(1, players[0]._id, PlayerInteractionTypes.VOTE, game);
+      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(2, players[1]._id, PlayerInteractionTypes.VOTE, game);
+    });
+
+    it("should call isPlayerInteractableWithInteractionTypeInCurrentGamePlay with choose as sheriff interaction type when action is elect sheriff.", () => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeIdiotAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const game = createFakeGameWithCurrentPlay({ currentPlay, players });
+      const makeGamePlayVotesWithRelationsDto = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ target: players[1] }),
+      ];
+      mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
+      services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game);
+
+      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(1, players[0]._id, PlayerInteractionTypes.CHOOSE_AS_SHERIFF, game);
+      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(2, players[1]._id, PlayerInteractionTypes.CHOOSE_AS_SHERIFF, game);
     });
 
     it("should do nothing when cause is previous votes were in tie and all voted players were in previous tie.", () => {

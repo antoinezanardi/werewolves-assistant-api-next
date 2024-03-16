@@ -121,8 +121,7 @@ export class GamePlayAugmenterService {
 
   private async getSurvivorsVoteGamePlaySourceInteractionEligibleTargets(game: Game, gamePlay: GamePlay): Promise<Player[]> {
     const alivePlayers = getAlivePlayers(game);
-    const isVoteCauseOfTie = gamePlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES;
-    if (isVoteCauseOfTie) {
+    if (gamePlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES) {
       const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, gamePlay.action);
       if (lastTieInVotesRecord?.play.voting?.nominatedPlayers === undefined || lastTieInVotesRecord.play.voting.nominatedPlayers.length === 0) {
         throw createCantFindLastNominatedPlayersUnexpectedException("getSurvivorsVoteGamePlaySourceInteractionEligibleTargets", { gameId: game._id });
