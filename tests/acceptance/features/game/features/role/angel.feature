@@ -18,6 +18,7 @@ Feature: 👼 Angel role
       | Olivia  |
       | JB      |
       | Thomas  |
+    And the game's current play type should be vote
     And the game's current play occurrence should be one-night-only
     And the game's current play can not be skipped
     And the game's current play source should have the following interactions

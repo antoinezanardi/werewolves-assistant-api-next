@@ -38,7 +38,7 @@ export class GameHistoryRecordService {
     private readonly gameHistoryRecordRepository: GameHistoryRecordRepository,
     private readonly gameRepository: GameRepository,
   ) {}
-  
+
   public async createGameHistoryRecord(gameHistoryRecordToInsert: GameHistoryRecordToInsert): Promise<GameHistoryRecord> {
     await this.validateGameHistoryRecordToInsertData(gameHistoryRecordToInsert);
     return this.gameHistoryRecordRepository.create(gameHistoryRecordToInsert);
@@ -87,7 +87,7 @@ export class GameHistoryRecordService {
   public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     return this.gameHistoryRecordRepository.getPreviousGameHistoryRecord(gameId);
   }
-  
+
   public generateCurrentGameHistoryRecordToInsert(baseGame: Game, newGame: Game, play: MakeGamePlayWithRelationsDto): GameHistoryRecordToInsert {
     if (baseGame.currentPlay === null) {
       throw createNoCurrentGamePlayUnexpectedException("generateCurrentGameHistoryRecordToInsert", { gameId: baseGame._id });
@@ -136,9 +136,10 @@ export class GameHistoryRecordService {
     });
     return currentRevealedPlayers.length ? currentRevealedPlayers : undefined;
   }
-  
+
   private generateCurrentGameHistoryRecordPlayToInsert(baseGame: GameWithCurrentPlay, play: MakeGamePlayWithRelationsDto): GameHistoryRecordPlay {
     const gameHistoryRecordPlayToInsert: GameHistoryRecordPlay = {
+      type: baseGame.currentPlay.type,
       source: this.generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame),
       action: baseGame.currentPlay.action,
       cause: baseGame.currentPlay.cause,
@@ -150,7 +151,7 @@ export class GameHistoryRecordService {
     };
     return plainToInstance(GameHistoryRecordPlay, toJSON(gameHistoryRecordPlayToInsert), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }
-  
+
   private generateCurrentGameHistoryRecordPlayVotingResultToInsert(
     baseGame: GameWithCurrentPlay,
     newGame: Game,
@@ -189,7 +190,7 @@ export class GameHistoryRecordService {
     };
     return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }
-  
+
   private generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame: GameWithCurrentPlay): GameHistoryRecordPlaySource {
     return plainToInstance(GameHistoryRecordPlaySource, toJSON(baseGame.currentPlay.source), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }

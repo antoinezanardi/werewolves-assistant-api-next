@@ -24,6 +24,7 @@ Feature: 🪈 Pied Piper role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play type should be target
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
     And the game's current play source should have the following interactions
@@ -51,6 +52,7 @@ Feature: 🪈 Pied Piper role
       | name   |
       | Olivia |
       | Thomas |
+    And the game's current play type should be no-action
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
     And the game's current play source should not have interactions
@@ -74,6 +76,7 @@ Feature: 🪈 Pied Piper role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play type should be target
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
     And the game's current play source should have the following interactions

@@ -1,6 +1,15 @@
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { RoleNames } from "@/modules/role/enums/role.enum";
+
+const GAME_PLAY_TYPES = [
+  "no-action",
+  "vote",
+  "target",
+  "choose-card",
+  "choose-side",
+  "request-another-vote",
+  "bury-dead-bodies",
+] as const;
 
 const GAME_PLAY_SOURCE_NAMES = [
   PlayerAttributeNames.SHERIFF,
@@ -30,30 +39,7 @@ const GAME_PLAY_SOURCE_NAMES = [
   RoleNames.ACCURSED_WOLF_FATHER,
 ] as const satisfies Readonly<(PlayerAttributeNames | PlayerGroups | RoleNames)[]>;
 
-const TARGET_ACTIONS = [
-  GamePlayActions.LOOK,
-  GamePlayActions.CHARM,
-  GamePlayActions.SHOOT,
-  GamePlayActions.PROTECT,
-  GamePlayActions.CHOOSE_MODEL,
-  GamePlayActions.DELEGATE,
-  GamePlayActions.SETTLE_VOTES,
-  GamePlayActions.EAT,
-  GamePlayActions.USE_POTIONS,
-  GamePlayActions.MARK,
-  GamePlayActions.SNIFF,
-  GamePlayActions.BAN_VOTING,
-  GamePlayActions.BURY_DEAD_BODIES,
-  GamePlayActions.INFECT,
-] as const satisfies Readonly<GamePlayActions[]>;
-
-const VOTE_ACTIONS = [
-  GamePlayActions.VOTE,
-  GamePlayActions.ELECT_SHERIFF,
-] as const satisfies Readonly<GamePlayActions[]>;
-
 export {
+  GAME_PLAY_TYPES,
   GAME_PLAY_SOURCE_NAMES,
-  TARGET_ACTIONS,
-  VOTE_ACTIONS,
 };

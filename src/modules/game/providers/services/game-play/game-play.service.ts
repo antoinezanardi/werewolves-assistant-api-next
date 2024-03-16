@@ -94,8 +94,8 @@ export class GamePlayService {
     const { currentPlay } = game;
     const isAlreadyPlayed = gameHistoryPhaseRecords.some(({ play }) => {
       const { occurrence } = upcomingPlay;
-      const { source, action, cause } = play;
-      return areGamePlaysEqual({ source, action, cause, occurrence }, upcomingPlay);
+      const { type, source, action, cause } = play;
+      return areGamePlaysEqual({ type, source, action, cause, occurrence }, upcomingPlay);
     });
     const isInUpcomingPlays = game.upcomingPlays.some(gamePlay => areGamePlaysEqual(gamePlay, upcomingPlay));
     const isCurrentPlay = !!currentPlay && areGamePlaysEqual(currentPlay, upcomingPlay);

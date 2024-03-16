@@ -23,6 +23,7 @@ Feature: 🎀 Devoted Servant role
     Then the player named Olivia should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
+    And the game's current play type should be bury-dead-bodies
     And the game's current play occurrence should be consequential
     And the game's current play source should have the following interactions
       | type       | source          | minBoundary | maxBoundary |
