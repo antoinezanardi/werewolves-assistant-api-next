@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { isPlayerInteractableInCurrentGamePlay, isPlayerInteractableWithInteractionTypeInCurrentGamePlay } from "@/modules/game/helpers/game-play/game-play.helper";
-import { TARGET_ACTIONS, VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
@@ -14,7 +13,7 @@ import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.h
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
+import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.type";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
@@ -310,9 +309,9 @@ export class GamePlayValidatorService {
   }
 
   private async validateGamePlayTargetsWithRelationsDto(playTargets: MakeGamePlayTargetWithRelationsDto[] | undefined, game: GameWithCurrentPlay): Promise<void> {
-    const targetActions: GamePlayActions[] = [...TARGET_ACTIONS];
+    const targetActionsTypes: GamePlayType[] = ["target", "bury-dead-bodies"];
     const { currentPlay } = game;
-    if (!targetActions.includes(game.currentPlay.action)) {
+    if (!targetActionsTypes.includes(game.currentPlay.type)) {
       if (playTargets) {
         throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_TARGETS);
       }
@@ -353,8 +352,7 @@ export class GamePlayValidatorService {
 
   private validateGamePlayVotesWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): void {
     const { currentPlay } = game;
-    const voteActions: GamePlayActions[] = [...VOTE_ACTIONS];
-    if (!voteActions.includes(currentPlay.action)) {
+    if (currentPlay.type !== "vote") {
       if (playVotes) {
         throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_VOTES);
       }

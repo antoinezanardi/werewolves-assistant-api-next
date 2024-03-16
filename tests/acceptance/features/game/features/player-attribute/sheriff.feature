@@ -20,6 +20,7 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  |
       | JB      |
       | Babou   |
+    And the game's current play type should be vote
     And the game's current play occurrence should be anytime
     And the game's current play can not be skipped
     And the game's current play source should have the following interactions
@@ -56,6 +57,8 @@ Feature: 🎖️ Sheriff player attribute
     Then the player named JB should be alive
     And the player named Thomas should be alive
     And the game's current play should be sheriff to settle-votes
+    And the game's current play type should be target
+    And the game's current play occurrence should be consequential
     And the game's current play should be played by the following players
       | name   |
       | Olivia |
@@ -452,6 +455,7 @@ Feature: 🎖️ Sheriff player attribute
     And the game's current play should be played by the following players
       | name   |
       | Thomas |
+    And the game's current play type should be target
     And the game's current play occurrence should be consequential
     And the game's current play can not be skipped
     And the game's current play source should have the following interactions

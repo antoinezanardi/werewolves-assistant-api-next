@@ -853,6 +853,7 @@ describe("Game Controller", () => {
         isAlive: true,
       }));
       const expectedCurrentPlay: GamePlay = {
+        type: "vote",
         action: GamePlayActions.ELECT_SHERIFF,
         source: {
           name: PlayerGroups.SURVIVORS,
@@ -930,6 +931,7 @@ describe("Game Controller", () => {
         isUsed: false,
       }));
       const expectedCurrentPlay: GamePlay = {
+        type: "vote",
         action: GamePlayActions.ELECT_SHERIFF,
         source: {
           name: PlayerGroups.SURVIVORS,

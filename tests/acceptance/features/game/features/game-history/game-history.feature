@@ -51,7 +51,7 @@ Feature: 📜 Game History
     And the game's phase from the previous history record should be night
     And the game's turn from the previous history record should be 2
 
-  Scenario: 📜 Game play's action, sources and cause are recorded in the game history
+  Scenario: 📜 Game play's type, action, sources and cause are recorded in the game history
 
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
@@ -79,6 +79,7 @@ Feature: 📜 Game History
       | Babou   |
       | JB      |
       | Thomas  |
+    And the play's type from the previous history record should be vote
     And the play's source name from the previous history record should be survivors
     And the play's cause from the previous history record should be angel-presence
     And the game's current play should be survivors to vote because previous-votes-were-in-ties
@@ -98,6 +99,7 @@ Feature: 📜 Game History
       | Babou   |
       | JB      |
       | Thomas  |
+    And the play's type from the previous history record should be vote
     And the play's source name from the previous history record should be survivors
     And the play's cause from the previous history record should be previous-votes-were-in-ties
     And the game's current play should be survivors to bury-dead-bodies
@@ -105,6 +107,7 @@ Feature: 📜 Game History
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the play's action from the previous history record should be bury-dead-bodies
+    And the play's type from the previous history record should be bury-dead-bodies
     And the play's source name from the previous history record should be survivors
     And the play's source players from the previous history record should be the following players
       | name    |
@@ -132,6 +135,7 @@ Feature: 📜 Game History
     And the play's source players from the previous history record should be the following players
       | name |
       | JB   |
+    And the play's type from the previous history record should be target
     And the play's source name from the previous history record should be seer
     And the play's cause from the previous history record should be undefined
     And the game's current play should be scandalmonger to mark
@@ -197,6 +201,7 @@ Feature: 📜 Game History
     When the stuttering judge requests another vote
     And the most recent history record is retrieved
     Then the play's action from the previous history record should be request-another-vote
+    And the play's type from the previous history record should be request-another-vote
     And the play's source players from the previous history record should be the following players
       | name    |
       | Antoine |

@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constant";
 import { GAME_ADDITIONAL_CARD_SCHEMA } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GAME_HISTORY_RECORD_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
 import { GAME_HISTORY_RECORD_PLAY_TARGET_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
@@ -14,6 +15,10 @@ import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/hel
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
 const GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS = {
+  type: {
+    required: true,
+    enum: GAME_PLAY_TYPES,
+  },
   action: {
     required: true,
     enum: Object.values(GamePlayActions),
@@ -52,6 +57,10 @@ const GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS = {
 } as const satisfies Record<keyof GameHistoryRecordPlay, MongoosePropOptions>;
 
 const GAME_HISTORY_RECORD_PLAY_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryRecordPlay, ApiPropertyOptions>> = {
+  type: {
+    description: "Play's type",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.type),
+  },
   action: {
     description: "Play's action",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.action),

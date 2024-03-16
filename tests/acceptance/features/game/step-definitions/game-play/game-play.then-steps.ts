@@ -4,10 +4,14 @@ import { expect } from "expect";
 
 import type { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import type { GamePlayOccurrences, GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
-import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
+import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.type";
 
 import { convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
+
+Then(/^the game's current play type should be (?<type>.+?)$/u, function(this: CustomWorld, type: GamePlayType): void {
+  expect(this.game.currentPlay?.type).toBe(type);
+});
 
 Then(
   /^the game's current play should be (?<source>.+?) to (?<action>.+?)(?: because (?<cause>.+?))?$/u,

@@ -547,6 +547,7 @@ describe("Game History Record Service", () => {
       const expectedGameHistoryRecordPlaySource = { name: undefined, players: undefined };
       mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlaySourceToInsert.mockReturnValue(expectedGameHistoryRecordPlaySource);
       const expectedGameHistoryRecordPlay = createFakeGameHistoryRecordPlay({
+        type: game.currentPlay.type,
         action: game.currentPlay.action,
         didJudgeRequestAnotherVote: play.doesJudgeRequestAnotherVote,
         targets: play.targets,

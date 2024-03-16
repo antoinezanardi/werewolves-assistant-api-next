@@ -2,7 +2,7 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
+import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.type";
 import type { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import type { RoleNames } from "@/modules/role/enums/role.enum";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
@@ -22,6 +22,10 @@ Then(/^the game's turn from the previous history record should be (?<turn>\d)$/u
 
 Then(/^the game's phase from the previous history record should be (?<phase>night|day)$/u, function(this: CustomWorld, phase: GamePhases): void {
   expect(this.lastGameHistoryRecord.phase).toBe(phase);
+});
+
+Then(/^the play's type from the previous history record should be (?<type>.+)$/u, function(this: CustomWorld, type: GamePlayType): void {
+  expect(this.lastGameHistoryRecord.play.type).toBe(type);
 });
 
 Then(/^the play's action from the previous history record should be (?<action>.+)$/u, function(this: CustomWorld, action: GamePlayActions): void {

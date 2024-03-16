@@ -3,14 +3,13 @@ import { Expose, Type } from "class-transformer";
 import { ArrayUnique, IsArray, IsBoolean, IsEnum, IsMongoId, IsOptional, ValidateNested } from "class-validator";
 import { Types } from "mongoose";
 
-import { VOTE_ACTIONS, TARGET_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import { MakeGamePlayTargetDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target.dto";
 import { MakeGamePlayVoteDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote.dto";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 class MakeGamePlayDto {
-  @ApiProperty({ description: `Players affected by the play. Must be set when game's upcoming play action is one of the following : ${TARGET_ACTIONS.toString()}` })
+  @ApiProperty({ description: `Players affected by the play. Must be set when game's current play action is type "action"` })
   @IsOptional()
   @Type(() => MakeGamePlayTargetDto)
   @ValidateNested()
@@ -19,7 +18,7 @@ class MakeGamePlayDto {
   @Expose()
   public targets?: MakeGamePlayTargetDto[];
 
-  @ApiProperty({ description: `Players votes. Must be set when game's upcoming play action is one of the following : ${VOTE_ACTIONS.toString()}` })
+  @ApiProperty({ description: `Players votes. Must be set when game's current play is of type "vote"` })
   @IsOptional()
   @Type(() => MakeGamePlayVoteDto)
   @ValidateNested()

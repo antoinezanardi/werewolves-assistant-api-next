@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { isDefined } from "class-validator";
 
-import { VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { createGamePlaySourceInteraction } from "@/modules/game/helpers/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.factory";
@@ -462,7 +461,6 @@ export class GamePlayAugmenterService {
   private getExpectedPlayersToPlay(game: Game): Player[] {
     const { currentPlay } = game;
     const mustIncludeDeadPlayersGamePlayActions = [GamePlayActions.SHOOT, GamePlayActions.BAN_VOTING, GamePlayActions.DELEGATE];
-    const voteActions: GamePlayActions[] = [...VOTE_ACTIONS];
     let expectedPlayersToPlay: Player[] = [];
     if (currentPlay === null) {
       throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
@@ -477,7 +475,7 @@ export class GamePlayAugmenterService {
     if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
       expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);
     }
-    if (voteActions.includes(currentPlay.action)) {
+    if (currentPlay.type === "vote") {
       expectedPlayersToPlay = expectedPlayersToPlay.filter(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
     }
     return expectedPlayersToPlay.map(player => createPlayer(player));

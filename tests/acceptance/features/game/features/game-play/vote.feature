@@ -24,6 +24,7 @@ Feature: 🗳️ Vote Game Play
       | Antoine |
       | JB      |
       | Thomas  |
+    And the game's current play type should be vote
     And the game's current play occurrence should be on-days
     And the game's current play can be skipped
     And the game's current play source should have the following interactions
@@ -251,6 +252,7 @@ Feature: 🗳️ Vote Game Play
       | Antoine |
       | JB      |
       | Thomas  |
+    And the game's current play type should be vote
     And the game's current play occurrence should be consequential
     And the game's current play can be skipped
 
@@ -584,6 +586,7 @@ Feature: 🗳️ Vote Game Play
     Then the player named JB should be alive
     And the player named Thomas should be alive
     And the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play type should be vote
     And the game's current play occurrence should be consequential
 
     When the survivors vote with the following votes
@@ -596,6 +599,7 @@ Feature: 🗳️ Vote Game Play
 
     When the stuttering judge requests another vote
     Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play type should be vote
     And the game's current play occurrence should be consequential
 
     When the survivors vote with the following votes

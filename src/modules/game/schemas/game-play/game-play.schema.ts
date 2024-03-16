@@ -3,6 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
+import { GamePlayType } from "@/modules/game/types/game-play.type";
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import { GAME_PLAY_API_PROPERTIES, GAME_PLAY_SPECS_FIELDS } from "@/modules/game/schemas/game-play/game-play.schema.constant";
@@ -13,6 +14,11 @@ import { GAME_PLAY_API_PROPERTIES, GAME_PLAY_SPECS_FIELDS } from "@/modules/game
   _id: false,
 })
 class GamePlay {
+  @ApiProperty(GAME_PLAY_API_PROPERTIES.type as ApiPropertyOptions)
+  @Prop(GAME_PLAY_SPECS_FIELDS.type)
+  @Expose()
+  public type: GamePlayType;
+
   @ApiProperty(GAME_PLAY_API_PROPERTIES.source as ApiPropertyOptions)
   @Prop(GAME_PLAY_SPECS_FIELDS.source)
   @Type(() => GamePlaySource)

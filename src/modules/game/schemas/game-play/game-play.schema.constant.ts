@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constant";
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { GAME_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
@@ -9,6 +10,10 @@ import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/hel
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
 const GAME_PLAY_SPECS_FIELDS = {
+  type: {
+    required: true,
+    enum: GAME_PLAY_TYPES,
+  },
   source: {
     required: true,
     type: GAME_PLAY_SOURCE_SCHEMA,
@@ -29,6 +34,10 @@ const GAME_PLAY_SPECS_FIELDS = {
 } as const satisfies Record<keyof GamePlay, MongoosePropOptions>;
 
 const GAME_PLAY_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePlay, ApiPropertyOptions>> = {
+  type: {
+    description: "Type of this play",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SPECS_FIELDS.type),
+  },
   source: {
     description: "Which role or group of people need to perform this action, with expected players to play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SPECS_FIELDS.source),

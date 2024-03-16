@@ -30,6 +30,8 @@ Feature: 🐻 Bear Tamer role
 
     When the survivors bury dead bodies
     Then the game's current play should be bear-tamer to growl
+    And the game's current play type should be no-action
+    And the game's current play occurrence should be on-days
 
     When the bear tamer calms his bear
     Then the request should have succeeded with status code 200

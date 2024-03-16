@@ -51,6 +51,7 @@ Feature: 🛡️ Defender role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play type should be target
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
     And the game's current play source should have the following interactions
