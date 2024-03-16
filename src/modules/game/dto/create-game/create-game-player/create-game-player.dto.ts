@@ -12,7 +12,7 @@ import { CreateGamePlayerSideDto } from "@/modules/game/dto/create-game/create-g
 
 class CreateGamePlayerDto extends IntersectionType(
   PickType(GamePlayerBaseDto, ["name"] as const),
-  PickType(PartialType(GamePlayerBaseDto), ["position", "group"] as const),
+  PartialType(PickType(GamePlayerBaseDto, ["position", "group"] as const)),
 ) {
   @Transform(playerRoleTransformer)
   @ApiProperty(PLAYER_API_PROPERTIES.role as ApiPropertyOptions)
