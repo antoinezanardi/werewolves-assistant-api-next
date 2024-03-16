@@ -20,25 +20,18 @@ Feature: 🪄 Witch role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 2
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type              | source | minBoundary | maxBoundary |
+      | give-life-potion  | witch  | 0           | 1           |
+      | give-death-potion | witch  | 0           | 1           |
+    And the game's current play source interaction with type give-life-potion should have the following eligible targets
+      | name |
+      | Juju |
+    And the game's current play source interaction with type give-death-potion should have the following eligible targets
       | name    |
       | Antoine |
-      | Juju    |
       | Doudou  |
       | Thom    |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source | interaction       |
-      | witch  | give-death-potion |
-    And the game's current play eligible targets interactable player named Juju should have the following interactions
-      | source | interaction      |
-      | witch  | give-life-potion |
-    And the game's current play eligible targets interactable player named Doudou should have the following interactions
-      | source | interaction       |
-      | witch  | give-death-potion |
-    And the game's current play eligible targets interactable player named Thom should have the following interactions
-      | source | interaction       |
-      | witch  | give-death-potion |
 
     When the witch uses life potion on the player named Juju
     Then the request should have succeeded with status code 200
@@ -49,21 +42,14 @@ Feature: 🪄 Witch role
 
     When the werewolves eat the player named Juju
     Then the game's current play should be witch to use-potions
-    And the game's current play should have eligible targets boundaries from 0 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type              | source | minBoundary | maxBoundary |
+      | give-death-potion | witch  | 0           | 1           |
+    And the game's current play source interaction with type give-death-potion should have the following eligible targets
       | name    |
       | Antoine |
       | Doudou  |
       | Thom    |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source | interaction       |
-      | witch  | give-death-potion |
-    And the game's current play eligible targets interactable player named Doudou should have the following interactions
-      | source | interaction       |
-      | witch  | give-death-potion |
-    And the game's current play eligible targets interactable player named Thom should have the following interactions
-      | source | interaction       |
-      | witch  | give-death-potion |
 
   Scenario: 🪄 Witch uses death potion to kill someone
 
@@ -80,7 +66,10 @@ Feature: 🪄 Witch role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
-    And the game's current play should have eligible targets boundaries from 0 to 2
+    And the game's current play source should have the following interactions
+      | type              | source | minBoundary | maxBoundary |
+      | give-life-potion  | witch  | 0           | 1           |
+      | give-death-potion | witch  | 0           | 1           |
 
     When the witch uses death potion on the player named Doudou
     Then the request should have succeeded with status code 200
@@ -96,13 +85,12 @@ Feature: 🪄 Witch role
 
     When the werewolves eat the player named Antoine
     Then the game's current play should be witch to use-potions
-    And the game's current play should have eligible targets boundaries from 0 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type             | source | minBoundary | maxBoundary |
+      | give-life-potion | witch  | 0           | 1           |
+    And the game's current play source interaction with type give-life-potion should have the following eligible targets
       | name    |
       | Antoine |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source | interaction      |
-      | witch  | give-life-potion |
 
   Scenario: 🪄 Witch can skip her turn
 

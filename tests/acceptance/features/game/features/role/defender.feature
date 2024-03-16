@@ -16,8 +16,10 @@ Feature: 🛡️ Defender role
     Then the request should have succeeded with status code 201
     And the game's current play should be defender to protect
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type    | source   | minBoundary | maxBoundary |
+      | protect | defender | 1           | 1           |
+    And the game's current play source interaction with type protect should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |
@@ -26,27 +28,6 @@ Feature: 🛡️ Defender role
       | Nana    |
       | Juju    |
       | Cari    |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source   | interaction |
-      | defender | protect     |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source   | interaction |
-      | defender | protect     |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source   | interaction |
-      | defender | protect     |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source   | interaction |
-      | defender | protect     |
-    And the game's current play eligible targets interactable player named Nana should have the following interactions
-      | source   | interaction |
-      | defender | protect     |
-    And the game's current play eligible targets interactable player named Juju should have the following interactions
-      | source   | interaction |
-      | defender | protect     |
-    And the game's current play eligible targets interactable player named Cari should have the following interactions
-      | source   | interaction |
-      | defender | protect     |
 
     When the defender protects the player named Antoine
     Then the request should have succeeded with status code 200
@@ -72,9 +53,11 @@ Feature: 🛡️ Defender role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 1
-    And the game's current play should have the following eligible targets interactable players
-      | name   |
+    And the game's current play source should have the following interactions
+      | type    | source   | minBoundary | maxBoundary |
+      | protect | defender | 1           | 1           |
+    And the game's current play source interaction with type protect should have the following eligible targets
+      | name    |
       | Olivia |
       | JB     |
       | Thomas |
@@ -267,7 +250,10 @@ Feature: 🛡️ Defender role
 
     When the player or group skips his turn
     Then the game's current play should be defender to protect
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type    | source   | minBoundary | maxBoundary |
+      | protect | defender | 1           | 1           |
+    And the game's current play source interaction with type protect should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |

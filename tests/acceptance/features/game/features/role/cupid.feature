@@ -17,25 +17,15 @@ Feature: 💘 Cupid role
       | Antoine |
     And the game's current play occurrence should be one-night-only
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 2 to 2
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type  | source | minBoundary | maxBoundary |
+      | charm | cupid  | 2           | 2           |
+    And the game's current play source interaction with type charm should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |
       | JB      |
       | Thomas  |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source | interaction |
-      | cupid  | charm       |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source | interaction |
-      | cupid  | charm       |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source | interaction |
-      | cupid  | charm       |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source | interaction |
-      | cupid  | charm       |
 
     When the cupid shoots an arrow at the player named JB and the player named Thomas
     Then the request should have succeeded with status code 200
@@ -50,8 +40,7 @@ Feature: 💘 Cupid role
       | Thomas |
     And the game's current play occurrence should be one-night-only
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets boundaries
-    And the game's current play should not have eligible targets interactable players
+    And the game's current play source should not have interactions
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
@@ -199,8 +188,10 @@ Feature: 💘 Cupid role
       | Antoine |
     And the game's current play occurrence should be one-night-only
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 2 to 2
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type  | source | minBoundary | maxBoundary |
+      | charm | cupid  | 2           | 2           |
+    And the game's current play source interaction with type charm should have the following eligible targets
       | name   |
       | Olivia |
       | JB     |
@@ -250,8 +241,10 @@ Feature: 💘 Cupid role
       | Antoine |
     And the game's current play occurrence should be one-night-only
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 2 to 2
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type  | source | minBoundary | maxBoundary |
+      | charm | cupid  | 2           | 2           |
+    And the game's current play source interaction with type charm should have the following eligible targets
       | name   |
       | Olivia |
       | JB     |
@@ -332,8 +325,7 @@ Feature: 💘 Cupid role
       | Antoine |
     And the game's current play occurrence should be one-night-only
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets boundaries
-    And the game's current play should not have eligible targets interactable players
+    And the game's current play source should not have interactions
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat

@@ -324,12 +324,14 @@ export class GamePlayAugmenterService {
 
   private getWhiteWerewolfGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const leftToEatByWhiteWerewolfPlayers = getEligibleWhiteWerewolfTargets(game);
-    const maxTargetsToEatCount = leftToEatByWhiteWerewolfPlayers.length ? 1 : 0;
+    if (leftToEatByWhiteWerewolfPlayers.length === 0) {
+      return [];
+    }
     const interactions = createGamePlaySourceInteraction({
       source: RoleNames.WHITE_WEREWOLF,
       type: PlayerInteractionTypes.EAT,
       eligibleTargets: leftToEatByWhiteWerewolfPlayers,
-      boundaries: { min: 0, max: maxTargetsToEatCount },
+      boundaries: { min: 0, max: 1 },
     });
     return [interactions];
   }
