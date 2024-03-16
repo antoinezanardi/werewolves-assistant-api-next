@@ -1,6 +1,6 @@
 import { plainToInstance } from "class-transformer";
 
-import type { PlayerInteraction } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema";
+import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
 import type { MakeGamePlayTargetDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target.dto";
 import type { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
@@ -54,11 +54,13 @@ function convertDatatableToPlayers(datatable: string[][], game: Game): Player[] 
   return datatable.map(([playerName]) => getPlayerWithNameOrThrow(playerName, game, new Error(`Player with name ${playerName} not found`)));
 }
 
-function convertDatatableToPlayerInteractions(datatable: string[][]): PlayerInteraction[] {
-  return datatable.map(([source, interactionType]) => ({
+function convertDatatableToGamePlaySourceInteractions(datatable: string[][]): GamePlaySourceInteraction[] {
+  return datatable.map(([type, source, minBoundary, maxBoundary]) => ({
+    type,
     source,
-    type: interactionType,
-  } as PlayerInteraction));
+    eligibleTargets: [],
+    boundaries: { min: parseInt(minBoundary), max: parseInt(maxBoundary) },
+  } as GamePlaySourceInteraction));
 }
 
 function convertDatatableToCreateGamePlayersDto(datatable: string[][]): CreateGamePlayerDto[] {
@@ -74,6 +76,6 @@ export {
   convertDatatableToMakeGamePlayTargets,
   convertDatatableToGameHistoryRecordPlayVotes,
   convertDatatableToPlayers,
-  convertDatatableToPlayerInteractions,
+  convertDatatableToGamePlaySourceInteractions,
   convertDatatableToCreateGamePlayersDto,
 };

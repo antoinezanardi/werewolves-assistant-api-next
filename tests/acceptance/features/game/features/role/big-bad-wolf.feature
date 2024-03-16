@@ -29,13 +29,12 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia |
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type | source       | minBoundary | maxBoundary |
+      | eat  | big-bad-wolf | 1           | 1           |
+    And the game's current play source interaction with type eat should have the following eligible targets
       | name   |
       | Thomas |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source       | interaction |
-      | big-bad-wolf | eat         |
 
     When the big bad wolf eats the player named Thomas
     Then the request should have succeeded with status code 200
@@ -143,8 +142,10 @@ Feature: 🐺👹 Big Bad Wolf role
     When the werewolves eat the player named Antoine
     Then the game's current play should be big-bad-wolf to eat
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type | source       | minBoundary | maxBoundary |
+      | eat  | big-bad-wolf | 1           | 1           |
+    And the game's current play source interaction with type eat should have the following eligible targets
       | name   |
       | Thomas |
       | Babou  |
@@ -309,7 +310,13 @@ Feature: 🐺👹 Big Bad Wolf role
     And the game's current play should be played by the following players
       | name   |
       | Olivia |
-    And the game's current play should have eligible targets boundaries from 1 to 1
+    And the game's current play source should have the following interactions
+      | type | source       | minBoundary | maxBoundary |
+      | eat  | big-bad-wolf | 1           | 1           |
+    And the game's current play source interaction with type eat should have the following eligible targets
+      | name   |
+      | Thomas |
+      | Doudou |
 
     When the big bad wolf eats the player named Doudou
     Then the player named Doudou should have the active eaten from big-bad-wolf attribute
@@ -394,7 +401,7 @@ Feature: 🐺👹 Big Bad Wolf role
     When the werewolves eat the player named Antoine
     Then the game's current play should be big-bad-wolf to eat
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200

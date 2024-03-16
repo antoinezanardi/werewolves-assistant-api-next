@@ -19,7 +19,7 @@ Feature: 🤺 Rusty Sword Knight role
     And the player named Babou should not have the active contaminated from rusty-sword-knight attribute
     And the player named Babou should be alive
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
     And the game's current play can be skipped
 
     When the survivors bury dead bodies

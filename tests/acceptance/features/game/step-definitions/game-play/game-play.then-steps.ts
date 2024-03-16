@@ -2,10 +2,11 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
+import type { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import type { GamePlayOccurrences, GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
 
-import { convertDatatableToPlayerInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
+import { convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 
 Then(
@@ -32,41 +33,28 @@ Then(/^the game's current play occurrence should be (?<occurrence>one-night-only
   expect(this.game.currentPlay?.occurrence).toBe(occurrence);
 });
 
-Then(/^the game's current play should not have eligible targets$/u, function(this: CustomWorld): void {
-  expect(this.game.currentPlay?.eligibleTargets).toBeUndefined();
+Then(/^the game's current play source should not have interactions$/u, function(this: CustomWorld): void {
+  expect(this.game.currentPlay?.source.interactions).toBeUndefined();
 });
 
-Then(/^the game's current play should have the following eligible targets interactable players$/u, function(this: CustomWorld, expectedPlayersDatatable: DataTable): void {
-  const expectedInteractablePlayers = convertDatatableToPlayers(expectedPlayersDatatable.rows(), this.game);
-  const interactablePlayers = this.game.currentPlay?.eligibleTargets?.interactablePlayers?.map(interactablePlayer => interactablePlayer.player);
+Then(/^the game's current play source should have the following interactions$/u, function(this: CustomWorld, expectedInteractionsDatatable: DataTable): void {
+  const expectedInteractions = convertDatatableToGamePlaySourceInteractions(expectedInteractionsDatatable.rows());
+  const interactions = this.game.currentPlay?.source.interactions;
 
-  expect(interactablePlayers).toStrictEqual(expectedInteractablePlayers);
+  expect(interactions?.length).toBe(expectedInteractions.length);
+  expectedInteractions.forEach(expectedInteraction => {
+    const existingInteraction = interactions?.find(interaction => interaction.type === expectedInteraction.type);
+    expect(existingInteraction).toBeDefined();
+    expect(existingInteraction?.source).toBe(expectedInteraction.source);
+    expect(existingInteraction?.boundaries).toStrictEqual(expectedInteraction.boundaries);
+  });
 });
 
-Then(/^the game's current play should not have eligible targets interactable players$/u, function(this: CustomWorld): void {
-  expect(this.game.currentPlay?.eligibleTargets?.interactablePlayers).toBeUndefined();
-});
+Then(/^the game's current play source interaction with type (?<type>.+?) should have the following eligible targets$/u, function(this: CustomWorld, interactionType: PlayerInteractionTypes, expectedEligibleTargetsDatatable: DataTable): void {
+  const expectedEligibleTargets = convertDatatableToPlayers(expectedEligibleTargetsDatatable.rows(), this.game);
+  const interaction = this.game.currentPlay?.source.interactions?.find(({ type }) => type === interactionType);
 
-Then(/^the game's current play eligible targets interactable player named (?<playerName>.+?) should have the following interactions$/u, function(this: CustomWorld, playerName: string, expectedInteractionsDatatable: DataTable): void {
-  const interactablePlayer = this.game.currentPlay?.eligibleTargets?.interactablePlayers?.find(({ player }) => player.name === playerName);
-  if (interactablePlayer === undefined) {
-    throw new Error(`Interactable player named ${playerName} not found`);
-  }
-  const expectedInteractions = convertDatatableToPlayerInteractions(expectedInteractionsDatatable.rows());
-
-  expect(interactablePlayer.interactions).toStrictEqual(expectedInteractions);
-});
-
-Then(/^the game's current play should have eligible targets boundaries from (?<min>[0-9]+) to (?<max>[0-9]+)$/u, function(this: CustomWorld, min: string, max: string): void {
-  const expectedMin = parseInt(min);
-  const expectedMax = parseInt(max);
-
-  expect(this.game.currentPlay?.eligibleTargets?.boundaries?.min).toBe(expectedMin);
-  expect(this.game.currentPlay?.eligibleTargets?.boundaries?.max).toBe(expectedMax);
-});
-
-Then(/^the game's current play should not have eligible targets boundaries$/u, function(this: CustomWorld): void {
-  expect(this.game.currentPlay?.eligibleTargets?.boundaries).toBeUndefined();
+  expect(interaction?.eligibleTargets).toStrictEqual(expectedEligibleTargets);
 });
 
 Then(/^the game's current play can(?<cantBeSkipped> not)? be skipped$/u, function(this: CustomWorld, canBeSkipped: string | null): void {

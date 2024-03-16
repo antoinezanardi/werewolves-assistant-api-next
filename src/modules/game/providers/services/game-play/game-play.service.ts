@@ -66,7 +66,7 @@ export class GamePlayService {
   public async augmentCurrentGamePlay(game: GameWithCurrentPlay): Promise<GameWithCurrentPlay> {
     const clonedGame = createGameWithCurrentGamePlay(game);
     clonedGame.currentPlay = this.gamePlayAugmenterService.setGamePlayCanBeSkipped(clonedGame.currentPlay, clonedGame);
-    clonedGame.currentPlay = await this.gamePlayAugmenterService.setGamePlayEligibleTargets(clonedGame.currentPlay, clonedGame);
+    clonedGame.currentPlay = await this.gamePlayAugmenterService.setGamePlaySourceInteractions(clonedGame.currentPlay, clonedGame);
     clonedGame.currentPlay = this.gamePlayAugmenterService.setGamePlaySourcePlayers(clonedGame.currentPlay, clonedGame);
     return clonedGame;
   }
@@ -210,7 +210,7 @@ export class GamePlayService {
     };
     return specificGroupMethods[source](game, gamePlay);
   }
-  
+
   private async isOneNightOnlyGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
     if (game instanceof CreateGameDto) {
       return !!getPlayerDtoWithRole(game, gamePlay.source.name as RoleNames);

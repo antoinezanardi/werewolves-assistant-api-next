@@ -26,29 +26,16 @@ Feature: 🪈 Pied Piper role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 2 to 2
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type  | source     | minBoundary | maxBoundary |
+      | charm | pied-piper | 2           | 2           |
+    And the game's current play source interaction with type charm should have the following eligible targets
       | name   |
       | Olivia |
       | JB     |
       | Thomas |
       | Dad    |
       | Mom    |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source     | interaction |
-      | pied-piper | charm       |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source     | interaction |
-      | pied-piper | charm       |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source     | interaction |
-      | pied-piper | charm       |
-    And the game's current play eligible targets interactable player named Dad should have the following interactions
-      | source     | interaction |
-      | pied-piper | charm       |
-    And the game's current play eligible targets interactable player named Mom should have the following interactions
-      | source     | interaction |
-      | pied-piper | charm       |
 
     When the pied piper charms the following players
       | name   |
@@ -66,7 +53,7 @@ Feature: 🪈 Pied Piper role
       | Thomas |
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the charmed people meet each other
     Then the request should have succeeded with status code 200
@@ -89,8 +76,10 @@ Feature: 🪈 Pied Piper role
       | Antoine |
     And the game's current play occurrence should be on-nights
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 2 to 2
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type  | source     | minBoundary | maxBoundary |
+      | charm | pied-piper | 2           | 2           |
+    And the game's current play source interaction with type charm should have the following eligible targets
       | name |
       | JB   |
       | Dad  |
@@ -349,7 +338,9 @@ Feature: 🪈 Pied Piper role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
-    And the game's current play should have eligible targets boundaries from 3 to 3
+    And the game's current play source should have the following interactions
+      | type  | source     | minBoundary | maxBoundary |
+      | charm | pied-piper | 3           | 3           |
 
     When the pied piper charms the following players
       | name   |
@@ -380,8 +371,10 @@ Feature: 🪈 Pied Piper role
 
     When the player or group skips his turn
     Then the game's current play should be pied-piper to charm
-    And the game's current play should have eligible targets boundaries from 1 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type  | source     | minBoundary | maxBoundary |
+      | charm | pied-piper | 1           | 1           |
+    And the game's current play source interaction with type charm should have the following eligible targets
       | name |
       | Dad  |
 

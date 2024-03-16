@@ -1,21 +1,17 @@
 import { Injectable } from "@nestjs/common";
+import { isDefined } from "class-validator";
 
 import { VOTE_ACTIONS } from "@/modules/game/constants/game-play/game-play.constant";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import { createGamePlayEligibleTargetsBoundaries } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.factory";
-import { createGamePlayEligibleTargets } from "@/modules/game/helpers/game-play/game-play-eligible-targets/game-play-eligible-targets.factory";
-import { createInteractablePlayer } from "@/modules/game/helpers/game-play/game-play-eligible-targets/interactable-player/interactable-player.factory";
+import { createGamePlaySourceInteraction } from "@/modules/game/helpers/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
-import { getAlivePlayers, getAliveVillagerSidedPlayers, getAllowedToVotePlayers, getGroupOfPlayers, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, getEligibleCupidTargets, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
+import { getAlivePlayers, getAllowedToVotePlayers, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
 import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
-import type { GamePlayEligibleTargetsBoundaries } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets-boundaries/game-play-eligible-targets-boundaries.schema";
-import type { GamePlayEligibleTargets } from "@/modules/game/schemas/game-play/game-play-eligible-targets/game-play-eligible-targets.schema";
-import type { InteractablePlayer } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/interactable-player.schema";
-import type { PlayerInteraction } from "@/modules/game/schemas/game-play/game-play-eligible-targets/interactable-player/player-interaction/player-interaction.schema";
+import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
@@ -27,25 +23,25 @@ import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNom
 
 @Injectable()
 export class GamePlayAugmenterService {
-  private readonly getEligibleTargetsPlayMethods: Partial<
-  Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlayEligibleTargets | Promise<GamePlayEligibleTargets | undefined> | undefined>
+  private readonly getPlaySourceInteractionsMethods: Partial<
+  Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlaySourceInteraction[] | Promise<GamePlaySourceInteraction[]>>
   > = {
-      [PlayerAttributeNames.SHERIFF]: async(game, gamePlay) => this.getSheriffGamePlayEligibleTargets(game, gamePlay),
-      [PlayerGroups.SURVIVORS]: async(game, gamePlay) => this.getSurvivorsGamePlayEligibleTargets(game, gamePlay),
-      [PlayerGroups.WEREWOLVES]: game => this.getWerewolvesGamePlayEligibleTargets(game),
-      [RoleNames.BIG_BAD_WOLF]: game => this.getBigBadWolfGamePlayEligibleTargets(game),
-      [RoleNames.CUPID]: game => this.getCupidGamePlayEligibleTargets(game),
-      [RoleNames.FOX]: game => this.getFoxGamePlayEligibleTargets(game),
-      [RoleNames.DEFENDER]: async game => this.getDefenderGamePlayEligibleTargets(game),
-      [RoleNames.HUNTER]: game => this.getHunterGamePlayEligibleTargets(game),
-      [RoleNames.PIED_PIPER]: game => this.getPiedPiperGamePlayEligibleTargets(game),
-      [RoleNames.SCANDALMONGER]: game => this.getScandalmongerGamePlayEligibleTargets(game),
-      [RoleNames.SCAPEGOAT]: game => this.getScapegoatGamePlayEligibleTargets(game),
-      [RoleNames.SEER]: game => this.getSeerGamePlayEligibleTargets(game),
-      [RoleNames.WHITE_WEREWOLF]: game => this.getWhiteWerewolfGamePlayEligibleTargets(game),
-      [RoleNames.WILD_CHILD]: game => this.getWildChildGamePlayEligibleTargets(game),
-      [RoleNames.WITCH]: async game => this.getWitchGamePlayEligibleTargets(game),
-      [RoleNames.ACCURSED_WOLF_FATHER]: async game => this.getAccursedWolfFatherGamePlayEligibleTargets(game),
+      [PlayerAttributeNames.SHERIFF]: async(game, gamePlay) => this.getSheriffGamePlaySourceInteractions(game, gamePlay),
+      [PlayerGroups.SURVIVORS]: async(game, gamePlay) => this.getSurvivorsGamePlaySourceInteractions(game, gamePlay),
+      [PlayerGroups.WEREWOLVES]: game => this.getWerewolvesGamePlaySourceInteractions(game),
+      [RoleNames.BIG_BAD_WOLF]: game => this.getBigBadWolfGamePlaySourceInteractions(game),
+      [RoleNames.CUPID]: game => this.getCupidGamePlaySourceInteractions(game),
+      [RoleNames.FOX]: game => this.getFoxGamePlaySourceInteractions(game),
+      [RoleNames.DEFENDER]: async game => this.getDefenderGamePlaySourceInteractions(game),
+      [RoleNames.HUNTER]: game => this.getHunterGamePlaySourceInteractions(game),
+      [RoleNames.PIED_PIPER]: game => this.getPiedPiperGamePlaySourceInteractions(game),
+      [RoleNames.SCANDALMONGER]: game => this.getScandalmongerGamePlaySourceInteractions(game),
+      [RoleNames.SCAPEGOAT]: game => this.getScapegoatGamePlaySourceInteractions(game),
+      [RoleNames.SEER]: game => this.getSeerGamePlaySourceInteractions(game),
+      [RoleNames.WHITE_WEREWOLF]: game => this.getWhiteWerewolfGamePlaySourceInteractions(game),
+      [RoleNames.WILD_CHILD]: game => this.getWildChildGamePlaySourceInteractions(game),
+      [RoleNames.WITCH]: async game => this.getWitchGamePlaySourceInteractions(game),
+      [RoleNames.ACCURSED_WOLF_FATHER]: async game => this.getAccursedWolfFatherGamePlaySourceInteractions(game),
     };
 
   private readonly canBeSkippedPlayMethods: Partial<Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => boolean>> = {
@@ -75,9 +71,9 @@ export class GamePlayAugmenterService {
     return clonedGamePlay;
   }
 
-  public async setGamePlayEligibleTargets(gamePlay: GamePlay, game: Game): Promise<GamePlay> {
+  public async setGamePlaySourceInteractions(gamePlay: GamePlay, game: Game): Promise<GamePlay> {
     const clonedGamePlay = createGamePlay(gamePlay);
-    clonedGamePlay.eligibleTargets = await this.getGamePlayEligibleTargets(gamePlay, game);
+    clonedGamePlay.source.interactions = await this.getGamePlaySourceInteractions(gamePlay, game);
     return clonedGamePlay;
   }
 
@@ -87,245 +83,302 @@ export class GamePlayAugmenterService {
     return clonedGamePlay;
   }
 
-  private async getSheriffSettlesVotesGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets> {
+  private async getSheriffSettlesVotesGamePlaySourceInteractions(game: Game): Promise<GamePlaySourceInteraction[]> {
     const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, GamePlayActions.VOTE);
     if (lastTieInVotesRecord?.play.voting?.nominatedPlayers === undefined || lastTieInVotesRecord.play.voting.nominatedPlayers.length === 0) {
-      throw createCantFindLastNominatedPlayersUnexpectedException("getSheriffSettlesVotesGamePlayEligibleTargets", { gameId: game._id });
+      throw createCantFindLastNominatedPlayersUnexpectedException("getSheriffSettlesVotesGamePlaySourceInteractions", { gameId: game._id });
     }
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.SENTENCE_TO_DEATH, source: PlayerAttributeNames.SHERIFF }];
-    const interactablePlayers: InteractablePlayer[] = lastTieInVotesRecord.play.voting.nominatedPlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const eligibleTargets = lastTieInVotesRecord.play.voting.nominatedPlayers;
+    const interaction = createGamePlaySourceInteraction({
+      source: PlayerAttributeNames.SHERIFF,
+      type: PlayerInteractionTypes.SENTENCE_TO_DEATH,
+      eligibleTargets,
+      boundaries: { min: 1, max: 1 },
+    });
+    return [interaction];
   }
 
-  private getSheriffDelegatesGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getSheriffDelegatesGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const alivePlayersWithoutCurrentSheriff = getAlivePlayers(game).filter(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.SHERIFF, game));
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE, source: PlayerAttributeNames.SHERIFF }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayersWithoutCurrentSheriff.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: PlayerAttributeNames.SHERIFF,
+      type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE,
+      eligibleTargets: alivePlayersWithoutCurrentSheriff,
+      boundaries: { min: 1, max: 1 },
+    });
+    return [interaction];
   }
 
-  private async getSheriffGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets> {
+  private async getSheriffGamePlaySourceInteractions(game: Game, gamePlay: GamePlay): Promise<GamePlaySourceInteraction[]> {
     if (gamePlay.action === GamePlayActions.DELEGATE) {
-      return this.getSheriffDelegatesGamePlayEligibleTargets(game);
+      return this.getSheriffDelegatesGamePlaySourceInteractions(game);
     }
     if (gamePlay.action === GamePlayActions.SETTLE_VOTES) {
-      return this.getSheriffSettlesVotesGamePlayEligibleTargets(game);
+      return this.getSheriffSettlesVotesGamePlaySourceInteractions(game);
     }
-    throw createMalformedCurrentGamePlayUnexpectedException("getSheriffGamePlayEligibleTargets", gamePlay, game._id);
+    throw createMalformedCurrentGamePlayUnexpectedException("getSheriffGamePlaySourceInteractions", gamePlay, game._id);
   }
 
-  private async getSurvivorsVoteGamePlayInteractablePlayers(game: Game, gamePlay: GamePlay): Promise<InteractablePlayer[]> {
+  private async getSurvivorsVoteGamePlaySourceInteractionEligibleTargets(game: Game, gamePlay: GamePlay): Promise<Player[]> {
     const alivePlayers = getAlivePlayers(game);
-    const isVoteCauseOfTie = gamePlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES;
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.VOTE, source: PlayerGroups.SURVIVORS }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => createInteractablePlayer({ player, interactions }));
-    if (isVoteCauseOfTie) {
-      const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, GamePlayActions.VOTE);
+    if (gamePlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES) {
+      const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, gamePlay.action);
       if (lastTieInVotesRecord?.play.voting?.nominatedPlayers === undefined || lastTieInVotesRecord.play.voting.nominatedPlayers.length === 0) {
-        throw createCantFindLastNominatedPlayersUnexpectedException("getSurvivorsVoteGamePlayInteractablePlayers", { gameId: game._id });
+        throw createCantFindLastNominatedPlayersUnexpectedException("getSurvivorsVoteGamePlaySourceInteractionEligibleTargets", { gameId: game._id });
       }
-      const { nominatedPlayers } = lastTieInVotesRecord.play.voting;
-      return interactablePlayers.filter(({ player }) => nominatedPlayers.some(nominatedPlayer => nominatedPlayer._id.equals(player._id)));
+      return lastTieInVotesRecord.play.voting.nominatedPlayers;
     }
-    return interactablePlayers;
+    return alivePlayers;
   }
 
-  private async getSurvivorsVoteGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets> {
-    const canSurvivorsSkipVotes = this.canSurvivorsSkipGamePlay(game, gamePlay);
-    const interactablePlayers = await this.getSurvivorsVoteGamePlayInteractablePlayers(game, gamePlay);
-    const minBoundaries = canSurvivorsSkipVotes ? 0 : 1;
+  private async getSurvivorsVoteGamePlaySourceInteractions(game: Game, gamePlay: GamePlay): Promise<GamePlaySourceInteraction[]> {
+    const eligibleTargets = await this.getSurvivorsVoteGamePlaySourceInteractionEligibleTargets(game, gamePlay);
+    const minBoundaries = gamePlay.canBeSkipped === true ? 0 : 1;
     const maxBoundaries = getAllowedToVotePlayers(game).length;
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: minBoundaries, max: maxBoundaries };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: PlayerGroups.SURVIVORS,
+      type: PlayerInteractionTypes.VOTE,
+      eligibleTargets,
+      boundaries: { min: minBoundaries, max: maxBoundaries },
+    });
+    return [interaction];
   }
 
-  private getSurvivorsElectSheriffGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
-    const alivePlayers = getAlivePlayers(game);
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF, source: PlayerGroups.SURVIVORS }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
+  private async getSurvivorsElectSheriffGamePlaySourceInteractions(game: Game, gamePlay: GamePlay): Promise<GamePlaySourceInteraction[]> {
+    const eligibleTargets = await this.getSurvivorsVoteGamePlaySourceInteractionEligibleTargets(game, gamePlay);
     const maxBoundaries = getAllowedToVotePlayers(game).length;
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: maxBoundaries };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: PlayerGroups.SURVIVORS,
+      type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF,
+      eligibleTargets,
+      boundaries: { min: 1, max: maxBoundaries },
+    });
+    return [interaction];
   }
 
-  private async getSurvivorsBuryDeadBodiesGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets | undefined> {
+  private async getSurvivorsBuryDeadBodiesGamePlaySourceInteractions(game: Game): Promise<GamePlaySourceInteraction[]> {
     const devotedServantPlayer = getPlayerWithCurrentRole(game, RoleNames.DEVOTED_SERVANT);
     if (!devotedServantPlayer || !isPlayerAliveAndPowerful(devotedServantPlayer, game) ||
       doesPlayerHaveActiveAttributeWithName(devotedServantPlayer, PlayerAttributeNames.IN_LOVE, game)) {
-      return undefined;
+      return [];
     }
     const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(game._id);
     if (previousGameHistoryRecord?.deadPlayers === undefined || previousGameHistoryRecord.deadPlayers.length === 0) {
-      throw createCantFindLastDeadPlayersUnexpectedException("getSurvivorsBuryDeadBodiesGamePlayEligibleTargets", { gameId: game._id });
+      throw createCantFindLastDeadPlayersUnexpectedException("getSurvivorsBuryDeadBodiesGamePlaySourceInteractions", { gameId: game._id });
     }
-    const interaction: PlayerInteraction = { type: PlayerInteractionTypes.STEAL_ROLE, source: RoleNames.DEVOTED_SERVANT };
-    const interactablePlayers = previousGameHistoryRecord.deadPlayers.map(player => ({ player, interactions: [interaction] }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const eligibleTargets = previousGameHistoryRecord.deadPlayers;
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.DEVOTED_SERVANT,
+      type: PlayerInteractionTypes.STEAL_ROLE,
+      eligibleTargets,
+      boundaries: { min: 0, max: 1 },
+    });
+    return [interaction];
   }
 
-  private async getSurvivorsGamePlayEligibleTargets(game: Game, gamePlay: GamePlay): Promise<GamePlayEligibleTargets | undefined> {
-    const survivorsGameActionEligibleTargetsMethods: Partial<Record<
+  private async getSurvivorsGamePlaySourceInteractions(game: Game, gamePlay: GamePlay): Promise<GamePlaySourceInteraction[]> {
+    const survivorsGamePlaySourceInteractionMethods: Partial<Record<
     GamePlayActions,
-    (game: Game, gamePlay: GamePlay) => GamePlayEligibleTargets | Promise<GamePlayEligibleTargets | undefined> | undefined
+    (game: Game, gamePlay: GamePlay) => GamePlaySourceInteraction[] | Promise<GamePlaySourceInteraction[]>
     >> = {
-      [GamePlayActions.BURY_DEAD_BODIES]: async() => this.getSurvivorsBuryDeadBodiesGamePlayEligibleTargets(game),
-      [GamePlayActions.VOTE]: async() => this.getSurvivorsVoteGamePlayEligibleTargets(game, gamePlay),
-      [GamePlayActions.ELECT_SHERIFF]: () => this.getSurvivorsElectSheriffGamePlayEligibleTargets(game),
+      [GamePlayActions.BURY_DEAD_BODIES]: async() => this.getSurvivorsBuryDeadBodiesGamePlaySourceInteractions(game),
+      [GamePlayActions.VOTE]: async() => this.getSurvivorsVoteGamePlaySourceInteractions(game, gamePlay),
+      [GamePlayActions.ELECT_SHERIFF]: async() => this.getSurvivorsElectSheriffGamePlaySourceInteractions(game, gamePlay),
     };
-    const eligibleTargetsMethod = survivorsGameActionEligibleTargetsMethods[gamePlay.action];
-    if (!eligibleTargetsMethod) {
-      throw createMalformedCurrentGamePlayUnexpectedException("getSurvivorsGamePlayEligibleTargets", gamePlay, game._id);
+    const sourceInteractionsMethod = survivorsGamePlaySourceInteractionMethods[gamePlay.action];
+    if (!sourceInteractionsMethod) {
+      throw createMalformedCurrentGamePlayUnexpectedException("getSurvivorsGamePlaySourceInteractions", gamePlay, game._id);
     }
-    return eligibleTargetsMethod(game, gamePlay);
+    return sourceInteractionsMethod(game, gamePlay);
   }
 
-  private getWerewolvesGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
-    const aliveVillagerSidedPlayers = getAliveVillagerSidedPlayers(game);
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.EAT, source: PlayerGroups.WEREWOLVES }];
-    const interactablePlayers: InteractablePlayer[] = aliveVillagerSidedPlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+  private getWerewolvesGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
+    const aliveVillagerSidedPlayers = getEligibleWerewolvesTargets(game);
+    const interaction = createGamePlaySourceInteraction({
+      source: PlayerGroups.WEREWOLVES,
+      type: PlayerInteractionTypes.EAT,
+      eligibleTargets: aliveVillagerSidedPlayers,
+      boundaries: { min: 1, max: 1 },
+    });
+    return [interaction];
   }
 
-  private getBigBadWolfGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getBigBadWolfGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const eligibleWerewolvesTargets = getEligibleWerewolvesTargets(game);
-    const eligibleBigBadWolfTargetsCount = eligibleWerewolvesTargets.length ? 1 : 0;
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.EAT, source: RoleNames.BIG_BAD_WOLF }];
-    const interactablePlayers: InteractablePlayer[] = eligibleWerewolvesTargets.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: eligibleBigBadWolfTargetsCount, max: eligibleBigBadWolfTargetsCount };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    if (eligibleWerewolvesTargets.length === 0) {
+      return [];
+    }
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.BIG_BAD_WOLF,
+      type: PlayerInteractionTypes.EAT,
+      eligibleTargets: eligibleWerewolvesTargets,
+      boundaries: { min: 1, max: 1 },
+    });
+    return [interaction];
   }
 
-  private getCupidGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets | undefined {
+  private getCupidGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const expectedPlayersToCharmCount = 2;
     const eligibleCupidTargets = getEligibleCupidTargets(game);
     if (eligibleCupidTargets.length < expectedPlayersToCharmCount) {
-      return undefined;
+      return [];
     }
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.CHARM, source: RoleNames.CUPID }];
-    const interactablePlayers: InteractablePlayer[] = eligibleCupidTargets.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: expectedPlayersToCharmCount, max: expectedPlayersToCharmCount };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.CUPID,
+      type: PlayerInteractionTypes.CHARM,
+      eligibleTargets: eligibleCupidTargets,
+      boundaries: { min: expectedPlayersToCharmCount, max: expectedPlayersToCharmCount },
+    });
+    return [interaction];
   }
 
-  private getFoxGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getFoxGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const alivePlayers = getAlivePlayers(game);
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.SNIFF, source: RoleNames.FOX }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.FOX,
+      type: PlayerInteractionTypes.SNIFF,
+      eligibleTargets: alivePlayers,
+      boundaries: { min: 0, max: 1 },
+    });
+    return [interaction];
   }
 
-  private async getDefenderGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets> {
+  private async getDefenderGamePlaySourceInteractions(game: Game): Promise<GamePlaySourceInteraction[]> {
     const { canProtectTwice } = game.options.roles.defender;
     const alivePlayers = getAlivePlayers(game);
     const defenderPlayer = getPlayerWithCurrentRole(game, RoleNames.DEFENDER);
     if (!defenderPlayer) {
-      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getDefenderGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.DEFENDER });
+      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getDefenderGamePlaySourceInteractions", { gameId: game._id, roleName: RoleNames.DEFENDER });
     }
     const lastDefenderProtectRecord = await this.gameHistoryRecordService.getLastGameHistoryDefenderProtectsRecord(game._id, defenderPlayer._id);
     const lastProtectedPlayer = lastDefenderProtectRecord?.play.targets?.[0].player;
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.PROTECT, source: RoleNames.DEFENDER }];
-    const possibleDefenderTargets = canProtectTwice || !lastProtectedPlayer ? alivePlayers : alivePlayers.filter(player => !player._id.equals(lastProtectedPlayer._id));
-    const interactablePlayers: InteractablePlayer[] = possibleDefenderTargets.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const eligibleDefenderTargets = canProtectTwice || !lastProtectedPlayer ? alivePlayers : alivePlayers.filter(player => !player._id.equals(lastProtectedPlayer._id));
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.DEFENDER,
+      type: PlayerInteractionTypes.PROTECT,
+      eligibleTargets: eligibleDefenderTargets,
+      boundaries: { min: 1, max: 1 },
+    });
+    return [interaction];
   }
 
-  private getHunterGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getHunterGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const alivePlayers = getAlivePlayers(game);
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.SHOOT, source: RoleNames.HUNTER }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.HUNTER,
+      type: PlayerInteractionTypes.SHOOT,
+      eligibleTargets: alivePlayers,
+      boundaries: { min: 1, max: 1 },
+    });
+    return [interaction];
   }
 
-  private getPiedPiperGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getPiedPiperGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const { charmedPeopleCountPerNight } = game.options.roles.piedPiper;
     const eligiblePiedPiperTargets = getEligiblePiedPiperTargets(game);
     const leftToCharmByPiedPiperPlayersCount = eligiblePiedPiperTargets.length;
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.CHARM, source: RoleNames.PIED_PIPER }];
-    const interactablePlayers: InteractablePlayer[] = eligiblePiedPiperTargets.map(player => ({ player, interactions }));
     const countToCharm = Math.min(charmedPeopleCountPerNight, leftToCharmByPiedPiperPlayersCount);
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: countToCharm, max: countToCharm };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.PIED_PIPER,
+      type: PlayerInteractionTypes.CHARM,
+      eligibleTargets: eligiblePiedPiperTargets,
+      boundaries: { min: countToCharm, max: countToCharm },
+    });
+    return [interaction];
   }
 
-  private getScandalmongerGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getScandalmongerGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const alivePlayers = getAlivePlayers(game);
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.MARK, source: RoleNames.SCANDALMONGER }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.SCANDALMONGER,
+      type: PlayerInteractionTypes.MARK,
+      eligibleTargets: alivePlayers,
+      boundaries: { min: 0, max: 1 },
+    });
+    return [interaction];
   }
 
-  private getScapegoatGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getScapegoatGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const alivePlayers = getAlivePlayers(game);
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.BAN_VOTING, source: RoleNames.SCAPEGOAT }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: alivePlayers.length };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.SCAPEGOAT,
+      type: PlayerInteractionTypes.BAN_VOTING,
+      eligibleTargets: alivePlayers,
+      boundaries: { min: 0, max: alivePlayers.length },
+    });
+    return [interaction];
   }
 
-  private getSeerGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getSeerGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const alivePlayers = getAlivePlayers(game);
     const alivePlayersWithoutSeer = alivePlayers.filter(({ role }) => role.current !== RoleNames.SEER);
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.LOOK, source: RoleNames.SEER }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayersWithoutSeer.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.SEER,
+      type: PlayerInteractionTypes.LOOK,
+      eligibleTargets: alivePlayersWithoutSeer,
+      boundaries: { min: 1, max: 1 },
+    });
+    return [interaction];
   }
 
-  private getWhiteWerewolfGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getWhiteWerewolfGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const leftToEatByWhiteWerewolfPlayers = getEligibleWhiteWerewolfTargets(game);
-    const maxTargetsToEatCount = leftToEatByWhiteWerewolfPlayers.length ? 1 : 0;
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.EAT, source: RoleNames.WHITE_WEREWOLF }];
-    const interactablePlayers: InteractablePlayer[] = leftToEatByWhiteWerewolfPlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: maxTargetsToEatCount };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    if (leftToEatByWhiteWerewolfPlayers.length === 0) {
+      return [];
+    }
+    const interactions = createGamePlaySourceInteraction({
+      source: RoleNames.WHITE_WEREWOLF,
+      type: PlayerInteractionTypes.EAT,
+      eligibleTargets: leftToEatByWhiteWerewolfPlayers,
+      boundaries: { min: 0, max: 1 },
+    });
+    return [interactions];
   }
 
-  private getWildChildGamePlayEligibleTargets(game: Game): GamePlayEligibleTargets {
+  private getWildChildGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
     const alivePlayers = getAlivePlayers(game);
     const alivePlayersWithoutWildChild = alivePlayers.filter(({ role }) => role.current !== RoleNames.WILD_CHILD);
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.CHOOSE_AS_MODEL, source: RoleNames.WILD_CHILD }];
-    const interactablePlayers: InteractablePlayer[] = alivePlayersWithoutWildChild.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 1, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.WILD_CHILD,
+      type: PlayerInteractionTypes.CHOOSE_AS_MODEL,
+      eligibleTargets: alivePlayersWithoutWildChild,
+      boundaries: { min: 1, max: 1 },
+    });
+    return [interaction];
   }
 
-  private getWitchGamePlayEligibleTargetsBoundaries(hasWitchUsedLifePotion: boolean, hasWitchUsedDeathPotion: boolean): GamePlayEligibleTargetsBoundaries {
-    let max = 2;
-    if (hasWitchUsedLifePotion) {
-      max--;
-    }
+  private getWitchGamePlaySourceGiveDeathPotionInteraction(game: Game, hasWitchUsedDeathPotion: boolean): GamePlaySourceInteraction | undefined {
     if (hasWitchUsedDeathPotion) {
-      max--;
+      return undefined;
     }
-    return createGamePlayEligibleTargetsBoundaries({ min: 0, max });
-  }
-
-  private getWitchGamePlayEligibleTargetsInteractablePlayers(game: Game, hasWitchUsedLifePotion: boolean, hasWitchUsedDeathPotion: boolean): InteractablePlayer[] {
     const alivePlayers = getAlivePlayers(game);
-    return alivePlayers.reduce<InteractablePlayer[]>((acc, player) => {
-      const interactions: PlayerInteraction[] = [];
-      if (!hasWitchUsedLifePotion && doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.EATEN, game)) {
-        interactions.push({ type: PlayerInteractionTypes.GIVE_LIFE_POTION, source: RoleNames.WITCH });
-      }
-      if (!hasWitchUsedDeathPotion && !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.EATEN, game)) {
-        interactions.push({ type: PlayerInteractionTypes.GIVE_DEATH_POTION, source: RoleNames.WITCH });
-      }
-      return interactions.length === 0 ? acc : [...acc, createInteractablePlayer({ player, interactions })];
-    }, []);
+    const eligibleTargets = alivePlayers.filter(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.EATEN, game));
+    return createGamePlaySourceInteraction({
+      source: RoleNames.WITCH,
+      type: PlayerInteractionTypes.GIVE_DEATH_POTION,
+      eligibleTargets,
+      boundaries: { min: 0, max: 1 },
+    });
   }
 
-  private async getWitchGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets> {
+  private getWitchGamePlaySourceGiveLifePotionInteraction(game: Game, hasWitchUsedLifePotion: boolean): GamePlaySourceInteraction | undefined {
+    if (hasWitchUsedLifePotion) {
+      return undefined;
+    }
+    const alivePlayers = getAlivePlayers(game);
+    const eligibleTargets = alivePlayers.filter(player => doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.EATEN, game));
+    return createGamePlaySourceInteraction({
+      source: RoleNames.WITCH,
+      type: PlayerInteractionTypes.GIVE_LIFE_POTION,
+      eligibleTargets,
+      boundaries: { min: 0, max: 1 },
+    });
+  }
+
+  private async getWitchGamePlaySourceInteractions(game: Game): Promise<GamePlaySourceInteraction[]> {
     const witchPlayer = getPlayerWithCurrentRole(game, RoleNames.WITCH);
     if (!witchPlayer) {
-      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getWitchGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.WITCH });
+      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getWitchGamePlaySourceInteractions", { gameId: game._id, roleName: RoleNames.WITCH });
     }
     const [lifeRecords, deathRecords] = await Promise.all([
       this.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords(game._id, witchPlayer._id, WitchPotions.LIFE),
@@ -333,36 +386,39 @@ export class GamePlayAugmenterService {
     ]);
     const hasWitchUsedLifePotion = lifeRecords.length > 0;
     const hasWitchUsedDeathPotion = deathRecords.length > 0;
-    const interactablePlayers: InteractablePlayer[] = this.getWitchGamePlayEligibleTargetsInteractablePlayers(game, hasWitchUsedLifePotion, hasWitchUsedDeathPotion);
-    const boundaries = this.getWitchGamePlayEligibleTargetsBoundaries(hasWitchUsedLifePotion, hasWitchUsedDeathPotion);
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const giveLifePotionInteraction = this.getWitchGamePlaySourceGiveLifePotionInteraction(game, hasWitchUsedLifePotion);
+    const giveDeathPotionInteraction = this.getWitchGamePlaySourceGiveDeathPotionInteraction(game, hasWitchUsedDeathPotion);
+    return [giveLifePotionInteraction, giveDeathPotionInteraction].filter(isDefined);
   }
 
-  private async getAccursedWolfFatherGamePlayEligibleTargets(game: Game): Promise<GamePlayEligibleTargets | undefined> {
+  private async getAccursedWolfFatherGamePlaySourceInteractions(game: Game): Promise<GamePlaySourceInteraction[]> {
     const accursedWolfFatherPlayer = getPlayerWithCurrentRole(game, RoleNames.ACCURSED_WOLF_FATHER);
+    const exceptionInterpolations = { gameId: game._id, roleName: RoleNames.ACCURSED_WOLF_FATHER };
     if (!accursedWolfFatherPlayer) {
-      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getAccursedWolfFatherGamePlayEligibleTargets", { gameId: game._id, roleName: RoleNames.ACCURSED_WOLF_FATHER });
+      throw createCantFindPlayerWithCurrentRoleUnexpectedException("getAccursedWolfFatherGamePlaySourceInteractions", exceptionInterpolations);
     }
     const infectedTargetRecords = await this.gameHistoryRecordService.getGameHistoryAccursedWolfFatherInfectsWithTargetRecords(game._id, accursedWolfFatherPlayer._id);
     if (infectedTargetRecords.length) {
-      return undefined;
+      return [];
     }
     const eatenByWerewolvesPlayers = game.players.filter(player =>
       doesPlayerHaveActiveAttributeWithNameAndSource(player, PlayerAttributeNames.EATEN, PlayerGroups.WEREWOLVES, game));
-    const interactions: PlayerInteraction[] = [{ type: PlayerInteractionTypes.INFECT, source: RoleNames.ACCURSED_WOLF_FATHER }];
-    const interactablePlayers: InteractablePlayer[] = eatenByWerewolvesPlayers.map(player => ({ player, interactions }));
-    const boundaries: GamePlayEligibleTargetsBoundaries = { min: 0, max: 1 };
-    return createGamePlayEligibleTargets({ interactablePlayers, boundaries });
+    const interaction = createGamePlaySourceInteraction({
+      source: RoleNames.ACCURSED_WOLF_FATHER,
+      type: PlayerInteractionTypes.INFECT,
+      eligibleTargets: eatenByWerewolvesPlayers,
+      boundaries: { min: 0, max: 1 },
+    });
+    return [interaction];
   }
 
-  private async getGamePlayEligibleTargets(gamePlay: GamePlay, game: Game): Promise<GamePlayEligibleTargets | undefined> {
-    const eligibleTargetsPlayMethod = this.getEligibleTargetsPlayMethods[gamePlay.source.name];
-    if (!eligibleTargetsPlayMethod) {
+  private async getGamePlaySourceInteractions(gamePlay: GamePlay, game: Game): Promise<GamePlaySourceInteraction[] | undefined> {
+    const playSourceInteractionsMethod = this.getPlaySourceInteractionsMethods[gamePlay.source.name];
+    if (!playSourceInteractionsMethod) {
       return undefined;
     }
-    const eligibleTargets = await eligibleTargetsPlayMethod(game, gamePlay);
-    const areEligibleTargetsRelevant = eligibleTargets?.interactablePlayers !== undefined && eligibleTargets.interactablePlayers.length > 0;
-    return areEligibleTargetsRelevant ? eligibleTargets : undefined;
+    const gamePlaySourceInteractions = await playSourceInteractionsMethod(game, gamePlay);
+    return gamePlaySourceInteractions.length ? gamePlaySourceInteractions : undefined;
   }
 
   private canSurvivorsSkipGamePlay(game: Game, gamePlay: GamePlay): boolean {

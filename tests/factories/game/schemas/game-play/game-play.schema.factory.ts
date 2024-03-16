@@ -8,7 +8,7 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
 
-import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 
 function createFakeGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
@@ -273,7 +273,6 @@ function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object =
     source: createFakeGamePlaySource(gamePlay.source),
     cause: gamePlay.cause ?? undefined,
     occurrence: gamePlay.occurrence ?? faker.helpers.arrayElement(Object.values(GamePlayOccurrences)),
-    eligibleTargets: gamePlay.eligibleTargets ?? undefined,
     canBeSkipped: gamePlay.canBeSkipped ?? undefined,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);

@@ -24,13 +24,12 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
     And the game's current play occurrence should be consequential
-    And the game's current play should have eligible targets boundaries from 0 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type       | source          | minBoundary | maxBoundary |
+      | steal-role | devoted-servant | 0           | 1           |
+    And the game's current play source interaction with type steal-role should have the following eligible targets
       | name   |
       | Olivia |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source          | interaction |
-      | devoted-servant | steal-role  |
 
     When the devoted servant steals the role of the player named Olivia
     Then the player named Olivia should have the active stolen-role from devoted-servant attribute
@@ -62,7 +61,7 @@ Feature: 🎀 Devoted Servant role
     Then the player named JB should be murdered by survivors from vote
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the devoted servant steals the role of the player named JB
     Then the request should have failed with status code 400
@@ -94,7 +93,7 @@ Feature: 🎀 Devoted Servant role
     Then the player named Juju should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the devoted servant steals the role of the player named Juju
     Then the request should have failed with status code 400
@@ -122,7 +121,7 @@ Feature: 🎀 Devoted Servant role
     Then the player named Thomas should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the devoted servant steals the role of the player named Thomas
     Then the request should have failed with status code 400
@@ -218,17 +217,13 @@ Feature: 🎀 Devoted Servant role
     Then the player named Thomas should be murdered by werewolves from eaten
     And the player named Juju should be murdered by witch from death-potion
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play should have eligible targets boundaries from 0 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type       | source          | minBoundary | maxBoundary |
+      | steal-role | devoted-servant | 0           | 1           |
+    And the game's current play source interaction with type steal-role should have the following eligible targets
       | name   |
       | Thomas |
       | Juju   |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source          | interaction |
-      | devoted-servant | steal-role  |
-    And the game's current play eligible targets interactable player named Juju should have the following interactions
-      | source          | interaction |
-      | devoted-servant | steal-role  |
 
     When the player or group targets the following players
       | target |
@@ -267,16 +262,13 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be played by the following players
       | name |
       | JB   |
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type                  | source  | minBoundary | maxBoundary |
+      | transfer-sheriff-role | sheriff | 1           | 1           |
+    And the game's current play source interaction with type transfer-sheriff-role should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source  | interaction           |
-      | sheriff | transfer-sheriff-role |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source  | interaction           |
-      | sheriff | transfer-sheriff-role |
 
   Scenario: 🎀 Devoted servant doesn't delegate if she was sheriff and steals the role of idiot
 

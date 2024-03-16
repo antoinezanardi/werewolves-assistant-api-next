@@ -35,11 +35,13 @@ Feature: 🤪 Idiot role
 
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
-    And the game's current play should have eligible targets boundaries from 0 to 1
-    And the game's current play should have the following eligible targets interactable players
-      | name    | interaction |
-      | Antoine | vote        |
-      | Thomas  | vote        |
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 0           | 1           |
+    And the game's current play source interaction with type vote should have the following eligible targets
+      | name    |
+      | Antoine |
+      | Thomas  |
 
     When the survivors vote with the following votes
       | voter   | target |

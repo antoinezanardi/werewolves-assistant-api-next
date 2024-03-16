@@ -27,7 +27,7 @@ Feature: ⚖️ Stuttering Judge Role
       | Antoine |
     And the game's current play occurrence should be consequential
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the stuttering judge requests another vote
     Then the game's current play should be survivors to vote because stuttering-judge-request

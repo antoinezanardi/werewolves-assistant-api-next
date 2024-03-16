@@ -1,13 +1,16 @@
+import type { Types } from "mongoose";
+
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import { areGamePlaysEqual, canSurvivorsVote, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto, isPlayerInteractableWithInteractionType } from "@/modules/game/helpers/game-play/game-play.helper";
+import { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
+import { areGamePlaysEqual, canSurvivorsVote, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto, isPlayerInteractableInCurrentGamePlay, isPlayerInteractableWithInteractionTypeInCurrentGamePlay } from "@/modules/game/helpers/game-play/game-play.helper";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiResources } from "@/shared/api/enums/api.enum";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
@@ -18,10 +21,9 @@ import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/gam
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGamePlayEligibleTargets } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/game-play-eligible-targets.schema.factory";
-import { createFakeInteractablePlayer } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/interactable-player.schema.factory";
-import { createFakePlayerInteraction } from "@tests/factories/game/schemas/game-play/game-play-eligibile-targets/interactable-player/player-interaction/player-interaction.schema.factory";
-import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlaySourceInteraction } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema.factory";
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
+import { createFakeGamePlay, createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeHunterAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -342,70 +344,141 @@ describe("Game Play Helper", () => {
     });
   });
 
-  describe("isPlayerInteractableWithInteractionType", () => {
-    it("should return false when player is not found.", () => {
-      const players = [
-        createFakeHunterAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const eligibleTargets = createFakeGamePlayEligibleTargets({ interactablePlayers: [createFakeInteractablePlayer({ player: players[1] })] });
-      const currentPlay = createFakeGamePlay({ eligibleTargets });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay });
-      const interactionType = PlayerInteractionTypes.EAT;
+  describe("isPlayerInteractableInCurrentGamePlay", () => {
+    const players = [
+      createFakeHunterAlivePlayer(),
+      createFakeWerewolfAlivePlayer(),
+      createFakeWerewolfAlivePlayer(),
+    ];
 
-      expect(isPlayerInteractableWithInteractionType(players[0]._id, interactionType, game)).toBe(false);
+    it.each<{
+      playerId: Types.ObjectId;
+      game: GameWithCurrentPlay;
+      expected: boolean;
+      test: string;
+    }>([
+      {
+        playerId: players[0]._id,
+        game: createFakeGameWithCurrentPlay({
+          players, currentPlay: createFakeGamePlay({
+            source: createFakeGamePlaySource({
+              interactions: [
+                createFakeGamePlaySourceInteraction({ eligibleTargets: [players[0]] }),
+                createFakeGamePlaySourceInteraction({ eligibleTargets: [players[0], players[1]] }),
+              ],
+            }),
+          }),
+        }),
+        expected: true,
+        test: "should return true when player is in current play interactions",
+      },
+      {
+        playerId: players[2]._id,
+        game: createFakeGameWithCurrentPlay({
+          players, currentPlay: createFakeGamePlay({
+            source: createFakeGamePlaySource({
+              interactions: [
+                createFakeGamePlaySourceInteraction({ eligibleTargets: [players[0]] }),
+                createFakeGamePlaySourceInteraction({ eligibleTargets: [players[0], players[1]] }),
+              ],
+            }),
+          }),
+        }),
+        expected: false,
+        test: "should return false when player is not in current play interactions",
+      },
+    ])(`$test`, ({ playerId, game, expected }) => {
+      expect(isPlayerInteractableInCurrentGamePlay(playerId, game)).toBe(expected);
     });
+  });
 
-    it("should return false when interaction for player is not found.", () => {
-      const players = [
-        createFakeHunterAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const badInteraction = createFakePlayerInteraction({
-        type: PlayerInteractionTypes.CHARM,
-        source: RoleNames.PIED_PIPER,
-      });
-      const goodInteraction = createFakePlayerInteraction({
-        type: PlayerInteractionTypes.EAT,
-        source: PlayerGroups.WEREWOLVES,
-      });
-      const eligibleTargets = createFakeGamePlayEligibleTargets({
-        interactablePlayers: [
-          createFakeInteractablePlayer({ player: players[0], interactions: [badInteraction] }),
-          createFakeInteractablePlayer({ player: players[1], interactions: [goodInteraction] }),
-        ],
-      });
-      const currentPlay = createFakeGamePlay({ eligibleTargets });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay });
-      const interactionType = PlayerInteractionTypes.EAT;
+  describe("isPlayerInteractableWithInteractionTypeInCurrentGamePlay", () => {
+    const players = [
+      createFakeHunterAlivePlayer(),
+      createFakeWerewolfAlivePlayer(),
+      createFakeWerewolfAlivePlayer(),
+    ];
 
-      expect(isPlayerInteractableWithInteractionType(players[0]._id, interactionType, game)).toBe(false);
-    });
-
-    it("should return false when interaction for player is found.", () => {
-      const players = [
-        createFakeHunterAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-      ];
-      const badInteraction = createFakePlayerInteraction({
-        type: PlayerInteractionTypes.CHARM,
-        source: RoleNames.PIED_PIPER,
-      });
-      const goodInteraction = createFakePlayerInteraction({
-        type: PlayerInteractionTypes.EAT,
-        source: PlayerGroups.WEREWOLVES,
-      });
-      const eligibleTargets = createFakeGamePlayEligibleTargets({
-        interactablePlayers: [
-          createFakeInteractablePlayer({ player: players[0], interactions: [goodInteraction] }),
-          createFakeInteractablePlayer({ player: players[1], interactions: [badInteraction] }),
-        ],
-      });
-      const currentPlay = createFakeGamePlay({ eligibleTargets });
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay });
-      const interactionType = PlayerInteractionTypes.EAT;
-
-      expect(isPlayerInteractableWithInteractionType(players[0]._id, interactionType, game)).toBe(true);
+    it.each<{
+      playerId: Types.ObjectId;
+      interactionType: PlayerInteractionTypes;
+      game: GameWithCurrentPlay;
+      expected: boolean;
+      test: string;
+    }>([
+      {
+        playerId: players[0]._id,
+        interactionType: PlayerInteractionTypes.VOTE,
+        game: createFakeGameWithCurrentPlay({
+          players, currentPlay: createFakeGamePlay({
+            source: createFakeGamePlaySource({
+              interactions: [
+                createFakeGamePlaySourceInteraction({
+                  type: PlayerInteractionTypes.SHOOT,
+                  eligibleTargets: [players[0]],
+                }),
+                createFakeGamePlaySourceInteraction({
+                  type: PlayerInteractionTypes.VOTE,
+                  eligibleTargets: [players[0], players[1]],
+                }),
+              ],
+            }),
+          }),
+        }),
+        expected: true,
+        test: "should return true when player is in current play interactions with the given interaction type",
+      },
+      {
+        playerId: players[2]._id,
+        interactionType: PlayerInteractionTypes.VOTE,
+        game: createFakeGameWithCurrentPlay({
+          players, currentPlay: createFakeGamePlay({
+            source: createFakeGamePlaySource({
+              interactions: [
+                createFakeGamePlaySourceInteraction({
+                  type: PlayerInteractionTypes.VOTE,
+                  eligibleTargets: [players[0]],
+                }),
+                createFakeGamePlaySourceInteraction({
+                  type: PlayerInteractionTypes.VOTE,
+                  eligibleTargets: [players[0], players[1]],
+                }),
+              ],
+            }),
+          }),
+        }),
+        expected: false,
+        test: "should return false when player is not in current play interactions with the given interaction type",
+      },
+      {
+        playerId: players[1]._id,
+        interactionType: PlayerInteractionTypes.VOTE,
+        game: createFakeGameWithCurrentPlay({
+          players,
+          currentPlay: createFakeGamePlay({
+            source: createFakeGamePlaySource({
+              interactions: [
+                createFakeGamePlaySourceInteraction({
+                  type: PlayerInteractionTypes.LOOK,
+                  eligibleTargets: [players[0], players[1]],
+                }),
+                createFakeGamePlaySourceInteraction({
+                  type: PlayerInteractionTypes.VOTE,
+                  eligibleTargets: [players[0]],
+                }),
+                createFakeGamePlaySourceInteraction({
+                  type: PlayerInteractionTypes.SHOOT,
+                  eligibleTargets: [players[0], players[1]],
+                }),
+              ],
+            }),
+          }),
+        }),
+        expected: false,
+        test: "should return false when player is in current play interactions but not for the given interaction type",
+      },
+    ])(`$test`, ({ playerId, interactionType, game, expected }) => {
+      expect(isPlayerInteractableWithInteractionTypeInCurrentGamePlay(playerId, interactionType, game)).toBe(expected);
     });
   });
 });
