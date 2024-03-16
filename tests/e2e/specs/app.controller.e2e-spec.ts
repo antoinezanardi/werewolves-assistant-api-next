@@ -1,6 +1,6 @@
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
-import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
+import { initNestApp } from "@tests/e2e/helpers/nest-app.helpers";
 
 describe("App Controller", () => {
   let app: NestFastifyApplication;

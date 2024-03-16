@@ -1,7 +1,7 @@
 import { registerDecorator } from "class-validator";
 import type { ValidationArguments, ValidationOptions } from "class-validator";
 
-import { GAME_ADDITIONAL_CARDS_RECIPIENTS } from "@/modules/game/constants/game-additional-card/game-additional-card.constant";
+import { GAME_ADDITIONAL_CARDS_RECIPIENTS } from "@/modules/game/constants/game-additional-card/game-additional-card.constants";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { RoleNames } from "@/modules/role/enums/role.enum";
 

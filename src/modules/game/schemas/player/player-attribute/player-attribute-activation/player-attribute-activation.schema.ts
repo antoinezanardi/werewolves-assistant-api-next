@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES, PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema.constant";
+import { PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES, PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema.constants";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 
 @Schema({

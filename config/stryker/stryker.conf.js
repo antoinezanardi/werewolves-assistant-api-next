@@ -10,7 +10,7 @@ module.exports = {
     "src/**/*.ts",
     "!**/*.dto.ts",
     "!**/*.schema.ts",
-    "!**/*.constant.ts",
+    "!**/*.constants.ts",
   ],
   plugins: [
     "@stryker-mutator/jest-runner",

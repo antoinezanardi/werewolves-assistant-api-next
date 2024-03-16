@@ -1,6 +1,6 @@
 import { areAdditionalCardsForThiefRolesRespected, getAdditionalCardsForThiefRolesDefaultMessage } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-thief-roles.decorator";
 import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
-import { ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role.constant";
+import { ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role.constants";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";

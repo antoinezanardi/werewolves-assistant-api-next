@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { PREJUDICED_MANIPULATOR_GAME_OPTIONS_API_PROPERTIES, PREJUDICED_MANIPULATOR_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema.constant";
+import { PREJUDICED_MANIPULATOR_GAME_OPTIONS_API_PROPERTIES, PREJUDICED_MANIPULATOR_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema.constants";
 
 @Schema({
   versionKey: false,

@@ -2,11 +2,11 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 
-import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
-import * as GameHelper from "@/modules/game/helpers/game.helper";
+import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
@@ -14,7 +14,7 @@ import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-reco
 import type { SheriffGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.types";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";

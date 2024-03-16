@@ -6,13 +6,13 @@ import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlayHunterShoots, createGamePlayScapegoatBansVoting, createGamePlaySheriffDelegates, createGamePlaySurvivorsBuryDeadBodies } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
-import { doesGameHaveUpcomingPlaySourceAndAction, getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { doesGameHaveUpcomingPlaySourceAndAction, getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helpers";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutators";
 import { createCantVoteBySurvivorsPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createPowerlessByActorPlayerAttribute, createPowerlessByElderPlayerAttribute, createPowerlessByWerewolvesPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
-import { canPlayerDelegateSheriffAttribute, doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { canPlayerDelegateSheriffAttribute, doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import { createPlayerBrokenHeartByCupidDeath, createPlayerDeath, createPlayerReconsiderPardonBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { createDeadPlayer, createPlayer } from "@/modules/game/helpers/player/player.factory";
-import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
@@ -24,7 +24,7 @@ import { createCantFindPlayerWithIdUnexpectedException, createPlayerIsDeadUnexpe
 @Injectable()
 export class PlayerKillerService {
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}
-  
+
   public async killOrRevealPlayer(playerId: Types.ObjectId, game: Game, death: PlayerDeath): Promise<Game> {
     const clonedGame = createGame(game);
     const playerToKill = this.getPlayerToKillOrRevealInGame(playerId, clonedGame);

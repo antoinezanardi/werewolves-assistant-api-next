@@ -3,9 +3,9 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { PLAYER_DEATH_API_PROPERTIES, PLAYER_DEATH_FIELDS_SPECS } from "@/modules/game/schemas/player/player-death/player-death.schema.constant";
+import { PLAYER_DEATH_API_PROPERTIES, PLAYER_DEATH_FIELDS_SPECS } from "@/modules/game/schemas/player/player-death/player-death.schema.constants";
 import { PlayerDeathCauses } from "@/modules/game/enums/player.enum";
-import { GameSource } from "@/modules/game/types/game.type";
+import { GameSource } from "@/modules/game/types/game.types";
 
 @Schema({
   versionKey: false,

@@ -3,10 +3,10 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GamePlayType } from "@/modules/game/types/game-play.type";
+import { GamePlayType } from "@/modules/game/types/game-play.types";
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
-import { GAME_PLAY_API_PROPERTIES, GAME_PLAY_SPECS_FIELDS } from "@/modules/game/schemas/game-play/game-play.schema.constant";
+import { GAME_PLAY_API_PROPERTIES, GAME_PLAY_SPECS_FIELDS } from "@/modules/game/schemas/game-play/game-play.schema.constants";
 
 @Schema({
   versionKey: false,

@@ -1,25 +1,25 @@
 import { Injectable } from "@nestjs/common";
 
-import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
-import { isPlayerInteractableInCurrentGamePlay, isPlayerInteractableWithInteractionTypeInCurrentGamePlay } from "@/modules/game/helpers/game-play/game-play.helper";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
+import { isPlayerInteractableInCurrentGamePlay, isPlayerInteractableWithInteractionTypeInCurrentGamePlay } from "@/modules/game/helpers/game-play/game-play.helpers";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
-import { getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
-import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
+import { getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
+import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.type";
-import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.types";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
 import { createCantFindPlayerWithCurrentRoleUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
-import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.type";
+import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.types";
 
 @Injectable()
 export class GamePlayValidatorService {

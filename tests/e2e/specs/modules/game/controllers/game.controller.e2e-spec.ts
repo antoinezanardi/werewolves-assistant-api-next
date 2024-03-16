@@ -7,7 +7,7 @@ import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 
-import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
@@ -21,14 +21,14 @@ import type { GameOptions } from "@/modules/game/schemas/game-options/game-optio
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role.constant";
+import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role.constants";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enum";
-import { toJSON } from "@/shared/misc/helpers/object.helper";
+import { toJSON } from "@/shared/misc/helpers/object.helpers";
 
-import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
-import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
+import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helpers";
+import { initNestApp } from "@tests/e2e/helpers/nest-app.helpers";
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
 import { createFakeCreateActorGameOptionsDto, createFakeCreateThiefGameOptionsDto, createFakeRolesGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
@@ -49,7 +49,7 @@ import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/
 import { createFakeSeenBySeerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helper";
+import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helpers";
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";
 
 describe("Game Controller", () => {

@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_SOURCES } from "@/modules/game/constants/game.constant";
+import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -9,7 +9,7 @@ import { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-
 import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeActingByActorPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({

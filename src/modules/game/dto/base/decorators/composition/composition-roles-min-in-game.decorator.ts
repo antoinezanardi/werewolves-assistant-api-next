@@ -2,9 +2,9 @@ import { registerDecorator } from "class-validator";
 import { has } from "lodash";
 import type { ValidationOptions } from "class-validator";
 
-import { ROLES } from "@/modules/role/constants/role.constant";
+import { ROLES } from "@/modules/role/constants/role.constants";
 import type { RoleNames } from "@/modules/role/enums/role.enum";
-import type { Role } from "@/modules/role/types/role.type";
+import type { Role } from "@/modules/role/types/role.types";
 
 function areCompositionRolesMinInGameRespected(value?: unknown): boolean {
   if (!Array.isArray(value) || value.some(player => !has(player, ["role", "name"]))) {

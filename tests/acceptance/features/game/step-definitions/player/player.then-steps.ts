@@ -4,12 +4,12 @@ import { expect } from "expect";
 import { parseInt } from "lodash";
 
 import type { PlayerAttributeNames, PlayerDeathCauses } from "@/modules/game/enums/player.enum";
-import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helper";
-import { getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
-import type { GameSource } from "@/modules/game/types/game.type";
+import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helpers";
+import { getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
+import type { GameSource } from "@/modules/game/types/game.types";
 import type { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
+import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 
 Then(

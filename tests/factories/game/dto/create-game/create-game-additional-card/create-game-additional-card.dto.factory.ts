@@ -4,7 +4,7 @@ import { plainToInstance } from "class-transformer";
 import { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeCreateGameAdditionalCardDto(
   createGameAdditionalCardDto: Partial<CreateGameAdditionalCardDto> = {},

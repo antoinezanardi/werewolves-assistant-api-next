@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { createPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
-import { isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import { createPlayerDiseaseByRustySwordKnightDeath, createPlayerDeathPotionByWitchDeath, createPlayerEatenByWerewolvesDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
@@ -42,7 +42,7 @@ export class PlayerAttributeService {
     }
     return clonedAttribute;
   }
-  
+
   private decreaseRemainingPhasesAndRemoveObsoleteAttributes(player: Player, game: Game): Player {
     const clonedPlayer = createPlayer(player);
     if (!clonedPlayer.isAlive) {

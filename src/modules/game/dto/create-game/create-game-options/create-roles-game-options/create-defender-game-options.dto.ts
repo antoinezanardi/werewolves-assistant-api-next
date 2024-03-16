@@ -2,7 +2,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsOptional } from "class-validator";
 
-import { DEFENDER_GAME_OPTIONS_API_PROPERTIES, DEFENDER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/defender-game-options/defender-game-options.schema.constant";
+import { DEFENDER_GAME_OPTIONS_API_PROPERTIES, DEFENDER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/defender-game-options/defender-game-options.schema.constants";
 
 class CreateDefenderGameOptionsDto {
   @ApiProperty({

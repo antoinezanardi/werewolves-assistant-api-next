@@ -10,16 +10,16 @@ import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
-import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
-import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
+import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.types";
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.types";
 import type { RoleSides } from "@/modules/role/enums/role.enum";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enum";
-import { toJSON } from "@/shared/misc/helpers/object.helper";
+import { toJSON } from "@/shared/misc/helpers/object.helpers";
 
-import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helper";
-import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
+import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helpers";
+import { initNestApp } from "@tests/e2e/helpers/nest-app.helpers";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay, createFakeGameHistoryRecordBigBadWolfEatPlay, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVoting, createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay, createFakeGameHistoryRecordSurvivorsElectSheriffPlay, createFakeGameHistoryRecordSurvivorsVotePlay, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGamePlayCupidCharms, createFakeGamePlayPiedPiperCharms, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";

@@ -3,8 +3,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional } from "class-validator";
 
-import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
-import { COMPOSITION_GAME_OPTIONS_API_PROPERTIES } from "@/modules/game/schemas/game-options/composition-game-options/composition-game-options.schema.constant";
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
+import { COMPOSITION_GAME_OPTIONS_API_PROPERTIES } from "@/modules/game/schemas/game-options/composition-game-options/composition-game-options.schema.constants";
 
 class CreateCompositionGameOptionsDto {
   @ApiProperty({

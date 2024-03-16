@@ -4,7 +4,7 @@ import type { RoleNames } from "@/modules/role/enums/role.enum";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
-import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
 function createCantFindPlayerWithIdUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId; playerId: Types.ObjectId }): UnexpectedException {
   const { gameId, playerId } = interpolations;

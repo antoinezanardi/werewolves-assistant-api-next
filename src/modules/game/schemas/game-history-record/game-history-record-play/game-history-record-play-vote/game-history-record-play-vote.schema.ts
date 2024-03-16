@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GAME_HISTORY_RECORD_PLAY_VOTE_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_VOTE_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema.constant";
+import { GAME_HISTORY_RECORD_PLAY_VOTE_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_VOTE_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema.constants";
 import { Player } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({

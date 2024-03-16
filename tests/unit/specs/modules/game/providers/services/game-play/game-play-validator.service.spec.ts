@@ -4,7 +4,7 @@ import { when } from "jest-when";
 
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helper";
+import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helpers";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
@@ -14,8 +14,8 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
-import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.type";
-import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.types";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayVoteWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-vote-with-relations.dto.factory";
@@ -32,7 +32,7 @@ import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeDevotedServantAlivePlayer, createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { getError } from "@tests/helpers/exception/exception.helper";
+import { getError } from "@tests/helpers/exception/exception.helpers";
 
 describe("Game Play Validator Service", () => {
   let mocks: {

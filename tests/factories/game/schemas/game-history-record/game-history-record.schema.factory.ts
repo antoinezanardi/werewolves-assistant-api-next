@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_PLAY_SOURCE_NAMES, GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constant";
+import { GAME_PLAY_SOURCE_NAMES, GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
@@ -14,7 +14,7 @@ import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-recor
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";

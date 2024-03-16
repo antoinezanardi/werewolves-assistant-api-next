@@ -1,13 +1,13 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constant";
+import { GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 

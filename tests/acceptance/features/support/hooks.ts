@@ -6,7 +6,7 @@ import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/ga
 import { Game } from "@/modules/game/schemas/game.schema";
 
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
-import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
+import { initNestApp } from "@tests/e2e/helpers/nest-app.helpers";
 
 Before(async function(this: CustomWorld) {
   const { app, module } = await initNestApp();

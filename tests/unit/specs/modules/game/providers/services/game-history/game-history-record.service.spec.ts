@@ -15,13 +15,13 @@ import type { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-hi
 import type { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
 import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
+import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.types";
 import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiResources } from "@/shared/api/enums/api.enum";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
-import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";

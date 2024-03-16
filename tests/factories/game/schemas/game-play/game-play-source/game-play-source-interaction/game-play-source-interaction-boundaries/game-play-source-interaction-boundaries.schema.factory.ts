@@ -3,7 +3,7 @@ import { plainToInstance } from "class-transformer";
 
 import { GamePlaySourceInteractionBoundaries } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction-boundaries/game-play-source-interaction-boundaries.schema";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeGamePlaySourceInteractionBoundaries(
   gamePlayEligibleTargetsBoundaries: Partial<GamePlaySourceInteractionBoundaries> = {},

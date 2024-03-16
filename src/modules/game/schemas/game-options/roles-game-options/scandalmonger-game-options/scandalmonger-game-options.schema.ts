@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { SCANDALMONGER_GAME_OPTIONS_API_PROPERTIES, SCANDALMONGER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/scandalmonger-game-options/scandalmonger-game-options.schema.constant";
+import { SCANDALMONGER_GAME_OPTIONS_API_PROPERTIES, SCANDALMONGER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/scandalmonger-game-options/scandalmonger-game-options.schema.constants";
 
 @Schema({
   versionKey: false,

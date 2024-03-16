@@ -1,11 +1,11 @@
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
-import { ROLES } from "@/modules/role/constants/role.constant";
-import type { Role } from "@/modules/role/types/role.type";
+import { ROLES } from "@/modules/role/constants/role.constants";
+import type { Role } from "@/modules/role/types/role.types";
 
-import { toJSON } from "@/shared/misc/helpers/object.helper";
+import { toJSON } from "@/shared/misc/helpers/object.helpers";
 
-import { initNestApp } from "@tests/e2e/helpers/nest-app.helper";
+import { initNestApp } from "@tests/e2e/helpers/nest-app.helpers";
 
 describe("Role Controller", () => {
   let app: NestFastifyApplication;

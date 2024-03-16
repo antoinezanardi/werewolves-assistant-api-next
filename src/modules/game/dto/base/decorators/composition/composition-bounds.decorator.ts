@@ -1,7 +1,7 @@
 import { applyDecorators } from "@nestjs/common";
 import { ArrayMaxSize, ArrayMinSize } from "class-validator";
 
-import { GAME_FIELDS_SPECS } from "@/modules/game/schemas/game.schema.constant";
+import { GAME_FIELDS_SPECS } from "@/modules/game/schemas/game.schema.constants";
 
 function CompositionBounds(): <TFunction extends () => void, Y>(target: (TFunction | object), propertyKey?: (string | symbol), descriptor?: TypedPropertyDescriptor<Y>) => void {
   return applyDecorators(

@@ -4,7 +4,7 @@ import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules
 import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createPlayerDiseaseByRustySwordKnightDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({

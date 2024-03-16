@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeMakeGamePlayDto(makeGamePlayDto: Partial<MakeGamePlayDto> = {}, override: object = {}): MakeGamePlayDto {
   return plainToInstance(MakeGamePlayDto, {

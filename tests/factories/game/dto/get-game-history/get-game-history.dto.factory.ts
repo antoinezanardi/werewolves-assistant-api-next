@@ -3,7 +3,7 @@ import { plainToInstance } from "class-transformer";
 import { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enum";
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeGetGameHistoryDto(getGameRandomCompositionDto: Partial<GetGameHistoryDto> = {}, override: object = {}): GetGameHistoryDto {
   return plainToInstance(GetGameHistoryDto, {

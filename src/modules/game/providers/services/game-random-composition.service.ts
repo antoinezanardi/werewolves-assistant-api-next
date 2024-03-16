@@ -4,10 +4,10 @@ import { sample, shuffle } from "lodash";
 
 import { GetGameRandomCompositionPlayerResponseDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
-import { DEFAULT_VILLAGER_ROLE, DEFAULT_WEREWOLF_ROLE, ROLES } from "@/modules/role/constants/role.constant";
+import { DEFAULT_VILLAGER_ROLE, DEFAULT_WEREWOLF_ROLE, ROLES } from "@/modules/role/constants/role.constants";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
-import { getRolesWithSide } from "@/modules/role/helpers/role.helper";
-import { Role } from "@/modules/role/types/role.type";
+import { getRolesWithSide } from "@/modules/role/helpers/role.helpers";
+import { Role } from "@/modules/role/types/role.types";
 
 @Injectable()
 export class GameRandomCompositionService {
