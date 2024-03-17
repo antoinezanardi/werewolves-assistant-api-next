@@ -3,7 +3,7 @@ import { plainToInstance } from "class-transformer";
 
 import { CreateCompositionGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-composition-game-options/create-composition-game-options.dto";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeCompositionGameOptionsDto(
   createCompositionGameOptionsDto: Partial<CreateCompositionGameOptionsDto> = {},

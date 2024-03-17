@@ -5,7 +5,7 @@ import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-reco
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enum";
 
-import { getGameHistory } from "@tests/acceptance/features/game/helpers/game-request.helper";
+import { getGameHistory } from "@tests/acceptance/features/game/helpers/game-request.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 
 When(/^the most recent history record is retrieved$/u, async function(this: CustomWorld): Promise<void> {

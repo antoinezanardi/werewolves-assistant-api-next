@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GAME_VICTORY_API_PROPERTIES, GAME_VICTORY_FIELDS_SPECS } from "@/modules/game/schemas/game-victory/game-victory.schema.constant";
+import { GAME_VICTORY_API_PROPERTIES, GAME_VICTORY_FIELDS_SPECS } from "@/modules/game/schemas/game-victory/game-victory.schema.constants";
 import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
 import { Player } from "@/modules/game/schemas/player/player.schema";
 

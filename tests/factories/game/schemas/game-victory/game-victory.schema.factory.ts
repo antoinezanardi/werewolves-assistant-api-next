@@ -4,7 +4,7 @@ import { plainToInstance } from "class-transformer";
 import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
 import { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeGameVictory(gameVictory: Partial<GameVictory> = {}, override: object = {}): GameVictory {
   return plainToInstance(GameVictory, {

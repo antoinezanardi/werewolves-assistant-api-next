@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { PLAYER_ROLE_API_PROPERTIES, PLAYER_ROLE_FIELDS_SPECS } from "@/modules/game/schemas/player/player-role/player-role.schema.constant";
+import { PLAYER_ROLE_API_PROPERTIES, PLAYER_ROLE_FIELDS_SPECS } from "@/modules/game/schemas/player/player-role/player-role.schema.constants";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Schema({

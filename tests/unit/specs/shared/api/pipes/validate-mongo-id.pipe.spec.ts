@@ -4,7 +4,7 @@ import type { Types } from "mongoose";
 import { ValidateMongoId } from "@/shared/api/pipes/validate-mongo-id.pipe";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helper";
+import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helpers";
 
 describe("Validate MongoId Pipe", () => {
   const pipe = new ValidateMongoId();

@@ -3,9 +3,9 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
-import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constant";
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import { CreateCupidLoversGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-lovers-game-options.dto";
-import { CUPID_GAME_OPTIONS_API_PROPERTIES } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema.constant";
+import { CUPID_GAME_OPTIONS_API_PROPERTIES } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema.constants";
 
 class CreateCupidGameOptionsDto {
   @ApiProperty({

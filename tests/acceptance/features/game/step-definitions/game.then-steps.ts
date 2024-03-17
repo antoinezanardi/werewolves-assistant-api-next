@@ -6,7 +6,7 @@ import type { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
 import type { GameStatuses, GamePhases } from "@/modules/game/enums/game.enum";
 
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
-import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
+import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 
 Then(/^the game's tick should be (?<tick>\d)$/u, function(this: CustomWorld, tick: string): void {
   expect(this.game.tick).toBe(parseInt(tick));

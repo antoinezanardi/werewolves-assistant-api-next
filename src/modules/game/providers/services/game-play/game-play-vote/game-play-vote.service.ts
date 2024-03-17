@@ -4,12 +4,12 @@ import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-g
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
-import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
-import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import type { PlayerVoteCount } from "@/modules/game/types/game-play.type";
-import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import type { PlayerVoteCount } from "@/modules/game/types/game-play.types";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Injectable()
@@ -21,7 +21,7 @@ export class GamePlayVoteService {
     const maxVotes = Math.max(...playerVoteCounts.map(playerVoteCount => playerVoteCount[1]));
     return playerVoteCounts.filter(playerVoteCount => playerVoteCount[1] === maxVotes).map(playerVoteCount => createPlayer(playerVoteCount[0]));
   }
-  
+
   private getPlayerVoteCounts(votes: MakeGamePlayVoteWithRelationsDto[] | undefined, game: GameWithCurrentPlay): PlayerVoteCount[] {
     if (!votes) {
       return [];
@@ -40,7 +40,7 @@ export class GamePlayVoteService {
       return [...acc, [vote.target, voteValue]];
     }, []);
   }
-  
+
   private addScandalmongerMarkVoteToPlayerVoteCounts(playerVoteCounts: PlayerVoteCount[], game: GameWithCurrentPlay): PlayerVoteCount[] {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     const scandalmongerPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.SCANDALMONGER);

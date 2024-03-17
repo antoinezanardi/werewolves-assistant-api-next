@@ -28,7 +28,7 @@ import { TwoSistersGameOptions } from "@/modules/game/schemas/game-options/roles
 import { WhiteWerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/white-werewolf-game-options/white-werewolf-game-options.schema";
 import { WildChildGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options/wild-child-game-options.schema";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeActorGameOptions(actorGameOptions: Partial<ActorGameOptions> = {}, override: object = {}): ActorGameOptions {
   return plainToInstance(ActorGameOptions, {

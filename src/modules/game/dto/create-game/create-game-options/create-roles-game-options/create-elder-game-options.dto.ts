@@ -2,7 +2,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsBoolean, IsInt, IsOptional, Max, Min } from "class-validator";
 
-import { ELDER_GAME_OPTIONS_API_PROPERTIES, ELDER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema.constant";
+import { ELDER_GAME_OPTIONS_API_PROPERTIES, ELDER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/elder-game-options/elder-game-options.schema.constants";
 
 class CreateElderGameOptionsDto {
   @ApiProperty({

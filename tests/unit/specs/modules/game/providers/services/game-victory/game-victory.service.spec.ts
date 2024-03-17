@@ -11,7 +11,7 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
-import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeCupidGameOptions, createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";

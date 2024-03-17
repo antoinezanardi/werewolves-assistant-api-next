@@ -1,9 +1,9 @@
 import { has } from "lodash";
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 
-import { getRoleWithName } from "@/modules/role/helpers/role.helper";
-import type { Role } from "@/modules/role/types/role.type";
-import { ROLES } from "@/modules/role/constants/role.constant";
+import { getRoleWithName } from "@/modules/role/helpers/role.helpers";
+import type { Role } from "@/modules/role/types/role.types";
+import { ROLES } from "@/modules/role/constants/role.constants";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 function playerRoleTransformer(params: TransformFnParams): unknown {

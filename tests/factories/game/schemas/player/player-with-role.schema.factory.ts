@@ -1,10 +1,10 @@
 import type { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { VILLAGER_ROLES } from "@/modules/role/constants/role.constant";
+import { VILLAGER_ROLES } from "@/modules/role/constants/role.constants";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
-import { getRoleWithName } from "@/modules/role/helpers/role.helper";
-import type { Role } from "@/modules/role/types/role.type";
+import { getRoleWithName } from "@/modules/role/helpers/role.helpers";
+import type { Role } from "@/modules/role/types/role.types";
 
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 

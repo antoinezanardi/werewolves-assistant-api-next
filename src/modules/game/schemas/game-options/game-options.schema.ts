@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GAME_OPTIONS_API_PROPERTIES, GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/game-options.schema.constant";
+import { GAME_OPTIONS_API_PROPERTIES, GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/game-options.schema.constants";
 import { CompositionGameOptions } from "@/modules/game/schemas/game-options/composition-game-options/composition-game-options.schema";
 import { RolesGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/roles-game-options.schema";
 import { VotesGameOptions } from "@/modules/game/schemas/game-options/votes-game-options/votes-game-options.schema";

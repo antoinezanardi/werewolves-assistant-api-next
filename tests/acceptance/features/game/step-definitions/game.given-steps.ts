@@ -7,13 +7,13 @@ import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
-import { setGameInContext } from "@tests/acceptance/shared/helpers/context.helper";
+import { setGameInContext } from "@tests/acceptance/shared/helpers/context.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
-import { readJsonFile } from "@tests/acceptance/shared/helpers/file.helper";
-import { createGameRequest } from "@tests/acceptance/features/game/helpers/game-request.helper";
-import { convertDatatableToCreateGamePlayersDto } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
+import { readJsonFile } from "@tests/acceptance/shared/helpers/file.helpers";
+import { createGameRequest } from "@tests/acceptance/features/game/helpers/game-request.helpers";
+import { convertDatatableToCreateGamePlayersDto } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 
 Given(/^a created game described in file (?<filename>.+\.json)$/u, async function(this: CustomWorld, fileName: string): Promise<void> {
   const createGameDto = readJsonFile<CreateGameDto>("game", fileName);

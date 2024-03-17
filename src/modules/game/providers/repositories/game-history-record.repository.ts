@@ -6,13 +6,13 @@ import type { FilterQuery, Types, QueryOptions } from "mongoose";
 import { PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
-import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mapper";
+import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mappers";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import type { GamePhases } from "@/modules/game/enums/game.enum";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
-import type { GameHistoryRecordDocument, GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
+import type { GameHistoryRecordDocument, GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.types";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Injectable()
@@ -46,7 +46,7 @@ export class GameHistoryRecordRepository {
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
-  
+
   public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayActions): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
@@ -97,7 +97,7 @@ export class GameHistoryRecordRepository {
     };
     return this.gameHistoryRecordModel.find(filter);
   }
-  
+
   public async getGameHistoryWerewolvesEatElderRecords(gameId: Types.ObjectId, elderPlayerId: Types.ObjectId): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
@@ -141,7 +141,7 @@ export class GameHistoryRecordRepository {
     };
     return this.gameHistoryRecordModel.find(filter);
   }
-  
+
   public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = { gameId };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });

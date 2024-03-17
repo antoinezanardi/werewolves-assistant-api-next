@@ -25,7 +25,7 @@ import { CreateGameOptionsDto } from "@/modules/game/dto/create-game/create-game
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
-import { GAME_API_PROPERTIES, GAME_FIELDS_SPECS } from "@/modules/game/schemas/game.schema.constant";
+import { GAME_API_PROPERTIES, GAME_FIELDS_SPECS } from "@/modules/game/schemas/game.schema.constants";
 
 class CreateGameDto {
   @ApiHideProperty()

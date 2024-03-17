@@ -5,8 +5,8 @@ import type { Types } from "mongoose";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
 import { GameStatuses } from "@/modules/game/enums/game.enum";
-import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.helper";
-import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-play/game-play.helper";
+import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.helpers";
+import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-play/game-play.helpers";
 import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { createGame as createGameFromFactory } from "@/modules/game/helpers/game.factory";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
@@ -17,13 +17,13 @@ import { GamePlayValidatorService } from "@/modules/game/providers/services/game
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 
 import { ApiResources } from "@/shared/api/enums/api.enum";
 import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
 import { createCantGenerateGamePlaysUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
-import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.type";
-import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 
 @Injectable()
 export class GameService {

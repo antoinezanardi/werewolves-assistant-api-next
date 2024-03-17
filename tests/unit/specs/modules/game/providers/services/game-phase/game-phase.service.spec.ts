@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { GamePhases } from "@/modules/game/enums/game.enum";
-import * as GameHelper from "@/modules/game/helpers/game.helper";
+import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
@@ -68,7 +68,7 @@ describe("Game Phase Service", () => {
       gameHelper: { getNearestAliveNeighbor: jest.spyOn(GameHelper, "getNearestAliveNeighbor").mockImplementation() },
       unexpectedExceptionFactory: { createCantFindPlayerWithIdUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createCantFindPlayerWithIdUnexpectedException").mockImplementation() },
     };
-    
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
@@ -152,7 +152,7 @@ describe("Game Phase Service", () => {
       expect(mocks.gamePhaseService.applyStartingNightPlayerAttributesOutcomes).not.toHaveBeenCalled();
     });
   });
-  
+
   describe("applyEndingGamePhasePlayerAttributesOutcomesToPlayers", () => {
     beforeEach(() => {
       mocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer = jest.spyOn(services.gamePhase as unknown as { applyEndingGamePhasePlayerAttributesOutcomesToPlayer }, "applyEndingGamePhasePlayerAttributesOutcomesToPlayer").mockImplementation();
@@ -180,7 +180,7 @@ describe("Game Phase Service", () => {
     it("should do nothing when player doesn't have the contaminated attribute.", async() => {
       const player = createFakeWerewolfAlivePlayer({ attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] });
       const game = createFakeGame({ players: [player] });
-      
+
       await expect(services.gamePhase["applyEndingDayPlayerAttributesOutcomesToPlayer"](player, game)).resolves.toStrictEqual<Game>(game);
       expect(mocks.playerAttributeService.applyContaminatedAttributeOutcomes).not.toHaveBeenCalled();
     });

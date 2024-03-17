@@ -5,7 +5,7 @@ import type { INestApplication } from "@nestjs/common";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { when } from "jest-when";
 
-import { FASTIFY_SERVER_DEFAULT_OPTIONS } from "@/server/constants/server.constant";
+import { FASTIFY_SERVER_DEFAULT_OPTIONS } from "@/server/constants/server.constants";
 import { bootstrap } from "@/server/server";
 
 jest.mock<typeof NestCommon>("@nestjs/common", () => {

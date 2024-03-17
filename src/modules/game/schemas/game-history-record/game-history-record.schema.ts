@@ -5,7 +5,7 @@ import { Expose, Transform, Type } from "class-transformer";
 import { Types } from "mongoose";
 
 import { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import { GAME_HISTORY_RECORD_API_PROPERTIES, GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record.schema.constant";
+import { GAME_HISTORY_RECORD_API_PROPERTIES, GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record.schema.constants";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { Player } from "@/modules/game/schemas/player/player.schema";

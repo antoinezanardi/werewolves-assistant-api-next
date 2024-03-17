@@ -1,15 +1,15 @@
 import { plainToInstance } from "class-transformer";
 
-import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
-import { getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
+import { getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
 import { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 
-import { toJSON } from "@/shared/misc/helpers/object.helper";
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { toJSON } from "@/shared/misc/helpers/object.helpers";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createNoneGameVictory(gameVictory: Partial<GameVictory> = {}): GameVictory {
   return createGameVictory({

@@ -4,7 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
 import { Player } from "@/modules/game/schemas/player/player.schema";
-import { PLAYER_API_PROPERTIES, PLAYER_FIELDS_SPECS } from "@/modules/game/schemas/player/player.schema.constant";
+import { PLAYER_API_PROPERTIES, PLAYER_FIELDS_SPECS } from "@/modules/game/schemas/player/player.schema.constants";
 import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 
 @Schema({ versionKey: false })

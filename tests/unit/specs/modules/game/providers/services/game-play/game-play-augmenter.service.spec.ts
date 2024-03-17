@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 
 import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import * as GameHelper from "@/modules/game/helpers/game.helper";
+import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
 import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
@@ -14,7 +14,7 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
-import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";

@@ -2,7 +2,7 @@ import { registerDecorator } from "class-validator";
 import { has } from "lodash";
 import type { ValidationOptions } from "class-validator";
 
-import { ROLES } from "@/modules/role/constants/role.constant";
+import { ROLES } from "@/modules/role/constants/role.constants";
 import type { RoleNames } from "@/modules/role/enums/role.enum";
 import { RoleSides } from "@/modules/role/enums/role.enum";
 

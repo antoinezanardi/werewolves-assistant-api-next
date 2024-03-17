@@ -5,17 +5,17 @@ import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/en
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { createGamePlaySourceInteraction } from "@/modules/game/helpers/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
-import { getAlivePlayers, getAllowedToVotePlayers, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helper";
-import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { getAlivePlayers, getAllowedToVotePlayers, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
+import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
-import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helper";
+import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
-import { WEREWOLF_ROLES } from "@/modules/role/constants/role.constant";
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.types";
+import { WEREWOLF_ROLES } from "@/modules/role/constants/role.constants";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNominatedPlayersUnexpectedException, createCantFindPlayerWithCurrentRoleUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";

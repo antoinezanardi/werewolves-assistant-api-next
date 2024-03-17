@@ -11,7 +11,7 @@ import type { WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import type { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerDeathCauses } from "@/modules/game/enums/player.enum";
-import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "@/modules/game/helpers/game.helper";
+import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "@/modules/game/helpers/game.helpers";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
@@ -21,15 +21,15 @@ import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-recor
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
-import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.types";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 
-import { toJSON } from "@/shared/misc/helpers/object.helper";
+import { toJSON } from "@/shared/misc/helpers/object.helpers";
 import { ApiResources } from "@/shared/api/enums/api.enum";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
-import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 @Injectable()
 export class GameHistoryRecordService {

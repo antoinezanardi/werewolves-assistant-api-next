@@ -3,9 +3,9 @@ import { plainToInstance } from "class-transformer";
 
 import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
 import { Game } from "@/modules/game/schemas/game.schema";
-import { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
+import { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
