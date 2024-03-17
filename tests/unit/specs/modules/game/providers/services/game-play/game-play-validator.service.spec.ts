@@ -1475,7 +1475,18 @@ describe("Game Play Validator Service", () => {
   describe("validateGamePlayTargetsBoundaries", () => {
     it("should do nothing when interaction is not found.", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
-      const game = createFakeGameWithCurrentPlay();
+      const game = createFakeGameWithCurrentPlay({
+        currentPlay: createFakeGamePlaySheriffDelegates({
+          source: createFakeGamePlaySource({
+            interactions: [
+              createFakeGamePlaySourceInteraction({
+                type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE,
+                boundaries: createFakeGamePlaySourceInteractionBoundaries({ min: 4, max: 4 }),
+              }),
+            ],
+          }),
+        }),
+      });
 
       expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.CHARM, game)).not.toThrow();
     });
