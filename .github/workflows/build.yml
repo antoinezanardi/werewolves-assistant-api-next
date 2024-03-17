@@ -392,16 +392,22 @@ jobs:
         run: pnpm run docker:test:start
 
       - name: Acceptance Tests 🥒
+        id: acceptance-tests
+        continue-on-error: true
         run: pnpm run test:cucumber
 
       - name: Save cucumber report as artifact 💎
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-html-report
-          path: tests/acceptance/reports/cucumber-report.html
+          path: tests/acceptance/reports
 
       - name: Stop Docker containers 🐳
         run: pnpm run docker:test:stop
+
+      - name: Exit with error if acceptance tests failed 🚨
+        if: steps.acceptance-tests.outcome != 'success'
+        run: exit 1;
 
   sonarcloud:
     name: SonarCloud Analysis 🌥️
