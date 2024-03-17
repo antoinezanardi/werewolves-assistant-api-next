@@ -4,7 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform, Type } from "class-transformer";
 import { Types } from "mongoose";
 
-import { PLAYER_API_PROPERTIES, PLAYER_FIELDS_SPECS } from "@/modules/game/schemas/player/player.schema.constant";
+import { PLAYER_API_PROPERTIES, PLAYER_FIELDS_SPECS } from "@/modules/game/schemas/player/player.schema.constants";
 import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";

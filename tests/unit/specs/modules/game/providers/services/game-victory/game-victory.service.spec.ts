@@ -11,11 +11,11 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
-import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeCupidGameOptions, createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
-import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
@@ -318,7 +318,7 @@ describe("Game Victory Service", () => {
       expect(services.gameVictory.generateGameVictoryData(game)).toBeUndefined();
     });
   });
-  
+
   describe("doWerewolvesWin", () => {
     it.each<{
       test: string;
@@ -367,7 +367,7 @@ describe("Game Victory Service", () => {
     ])("$test", ({ game, expected }) => {
       expect(services.gameVictory["doWerewolvesWin"](game)).toBe(expected);
     });
-    
+
     it("should return false when there are no players provided.", () => {
       const game = createFakeGame();
 
@@ -408,7 +408,7 @@ describe("Game Victory Service", () => {
       expect(services.gameVictory["doWerewolvesWin"](game)).toBe(true);
     });
   });
-  
+
   describe("doVillagersWin", () => {
     it("should return false when there are no players provided.", () => {
       const game = createFakeGame();

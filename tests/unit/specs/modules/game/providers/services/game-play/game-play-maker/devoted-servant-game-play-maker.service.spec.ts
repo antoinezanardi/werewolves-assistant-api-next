@@ -7,8 +7,8 @@ import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/ser
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
-import * as GamePlayHelper from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
-import * as GameMutator from "@/modules/game/helpers/game.mutator";
+import * as GamePlayHelper from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
+import * as GameMutator from "@/modules/game/helpers/game.mutators";
 
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 

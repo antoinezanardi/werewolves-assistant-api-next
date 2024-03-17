@@ -4,10 +4,10 @@ import { NestFactory } from "@nestjs/core";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
-import { FASTIFY_SERVER_DEFAULT_OPTIONS } from "@/server/constants/server.constant";
+import { FASTIFY_SERVER_DEFAULT_OPTIONS } from "@/server/constants/server.constants";
 import { createSwaggerDocument } from "@/server/swagger/swagger";
 
-import { DEFAULT_VALIDATION_PIPE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_VALIDATION_PIPE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 import { AppModule } from "@/app.module";
 

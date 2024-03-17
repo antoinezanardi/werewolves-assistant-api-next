@@ -3,12 +3,12 @@ import { When } from "@cucumber/cucumber";
 
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
 import type { WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helper";
+import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helpers";
 import type { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { convertDatatableToMakeGamePlayTargets, convertDatatableToMakeGameplayVotes } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
-import { makeGamePlayRequest } from "@tests/acceptance/features/game/helpers/game-request.helper";
-import { setGameInContext } from "@tests/acceptance/shared/helpers/context.helper";
+import { convertDatatableToMakeGamePlayTargets, convertDatatableToMakeGameplayVotes } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
+import { makeGamePlayRequest } from "@tests/acceptance/features/game/helpers/game-request.helpers";
+import { setGameInContext } from "@tests/acceptance/shared/helpers/context.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 

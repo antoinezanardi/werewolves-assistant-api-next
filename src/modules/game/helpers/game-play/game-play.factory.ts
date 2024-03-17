@@ -6,10 +6,11 @@ import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-sourc
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "request-another-vote",
     source: createGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
     action: GamePlayActions.REQUEST_ANOTHER_VOTE,
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,
@@ -19,6 +20,7 @@ function createGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<Game
 
 function createGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "bury-dead-bodies",
     source: createGamePlaySource({ name: PlayerGroups.SURVIVORS }),
     action: GamePlayActions.BURY_DEAD_BODIES,
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,
@@ -28,6 +30,7 @@ function createGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {})
 
 function createGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: PlayerAttributeNames.SHERIFF }),
     action: GamePlayActions.SETTLE_VOTES,
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,
@@ -37,6 +40,7 @@ function createGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}): Ga
 
 function createGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: PlayerAttributeNames.SHERIFF }),
     action: GamePlayActions.DELEGATE,
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,
@@ -52,6 +56,7 @@ function createGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}): GamePlay
     occurrence = GamePlayOccurrences.CONSEQUENTIAL;
   }
   return createGamePlay({
+    type: "vote",
     source: createGamePlaySource({ name: PlayerGroups.SURVIVORS }),
     action: GamePlayActions.VOTE,
     occurrence,
@@ -61,6 +66,7 @@ function createGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}): GamePlay
 
 function createGamePlaySurvivorsElectSheriff(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "vote",
     source: createGamePlaySource({ name: PlayerGroups.SURVIVORS }),
     action: GamePlayActions.ELECT_SHERIFF,
     occurrence: GamePlayOccurrences.ANYTIME,
@@ -70,6 +76,7 @@ function createGamePlaySurvivorsElectSheriff(gamePlay: Partial<GamePlay> = {}): 
 
 function createGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "choose-card",
     source: createGamePlaySource({ name: RoleNames.THIEF }),
     action: GamePlayActions.CHOOSE_CARD,
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
@@ -79,6 +86,7 @@ function createGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}): GameP
 
 function createGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.SCAPEGOAT }),
     action: GamePlayActions.BAN_VOTING,
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,
@@ -88,6 +96,7 @@ function createGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {}): Ga
 
 function createGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "choose-side",
     source: createGamePlaySource({ name: RoleNames.WOLF_HOUND }),
     action: GamePlayActions.CHOOSE_SIDE,
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
@@ -97,6 +106,7 @@ function createGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}): G
 
 function createGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.WILD_CHILD }),
     action: GamePlayActions.CHOOSE_MODEL,
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
@@ -106,6 +116,7 @@ function createGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {}): 
 
 function createGamePlayFoxSniffs(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.FOX }),
     action: GamePlayActions.SNIFF,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -115,6 +126,7 @@ function createGamePlayFoxSniffs(gamePlay: Partial<GamePlay> = {}): GamePlay {
 
 function createGamePlayCharmedMeetEachOther(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "no-action",
     source: createGamePlaySource({ name: PlayerGroups.CHARMED }),
     action: GamePlayActions.MEET_EACH_OTHER,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -124,6 +136,7 @@ function createGamePlayCharmedMeetEachOther(gamePlay: Partial<GamePlay> = {}): G
 
 function createGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "no-action",
     source: createGamePlaySource({ name: PlayerGroups.LOVERS }),
     action: GamePlayActions.MEET_EACH_OTHER,
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
@@ -133,6 +146,7 @@ function createGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {}): Ga
 
 function createGamePlayThreeBrothersMeetEachOther(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "no-action",
     source: createGamePlaySource({ name: RoleNames.THREE_BROTHERS }),
     action: GamePlayActions.MEET_EACH_OTHER,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -142,6 +156,7 @@ function createGamePlayThreeBrothersMeetEachOther(gamePlay: Partial<GamePlay> = 
 
 function createGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "no-action",
     source: createGamePlaySource({ name: RoleNames.TWO_SISTERS }),
     action: GamePlayActions.MEET_EACH_OTHER,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -151,6 +166,7 @@ function createGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> = {})
 
 function createGamePlayScandalmongerMarks(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.SCANDALMONGER }),
     action: GamePlayActions.MARK,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -160,6 +176,7 @@ function createGamePlayScandalmongerMarks(gamePlay: Partial<GamePlay> = {}): Gam
 
 function createGamePlayDefenderProtects(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.DEFENDER }),
     action: GamePlayActions.PROTECT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -169,6 +186,7 @@ function createGamePlayDefenderProtects(gamePlay: Partial<GamePlay> = {}): GameP
 
 function createGamePlayHunterShoots(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.HUNTER }),
     action: GamePlayActions.SHOOT,
     occurrence: GamePlayOccurrences.CONSEQUENTIAL,
@@ -178,6 +196,7 @@ function createGamePlayHunterShoots(gamePlay: Partial<GamePlay> = {}): GamePlay 
 
 function createGamePlayWitchUsesPotions(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.WITCH }),
     action: GamePlayActions.USE_POTIONS,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -187,6 +206,7 @@ function createGamePlayWitchUsesPotions(gamePlay: Partial<GamePlay> = {}): GameP
 
 function createGamePlayPiedPiperCharms(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.PIED_PIPER }),
     action: GamePlayActions.CHARM,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -196,6 +216,7 @@ function createGamePlayPiedPiperCharms(gamePlay: Partial<GamePlay> = {}): GamePl
 
 function createGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.CUPID }),
     action: GamePlayActions.CHARM,
     occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
@@ -205,6 +226,7 @@ function createGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}): GamePlay {
 
 function createGamePlaySeerLooks(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.SEER }),
     action: GamePlayActions.LOOK,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -214,6 +236,7 @@ function createGamePlaySeerLooks(gamePlay: Partial<GamePlay> = {}): GamePlay {
 
 function createGamePlayWhiteWerewolfEats(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.WHITE_WEREWOLF }),
     action: GamePlayActions.EAT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -223,6 +246,7 @@ function createGamePlayWhiteWerewolfEats(gamePlay: Partial<GamePlay> = {}): Game
 
 function createGamePlayBigBadWolfEats(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: RoleNames.BIG_BAD_WOLF }),
     action: GamePlayActions.EAT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,
@@ -232,6 +256,7 @@ function createGamePlayBigBadWolfEats(gamePlay: Partial<GamePlay> = {}): GamePla
 
 function createGamePlayWerewolvesEat(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
+    type: "target",
     source: createGamePlaySource({ name: PlayerGroups.WEREWOLVES }),
     action: GamePlayActions.EAT,
     occurrence: GamePlayOccurrences.ON_NIGHTS,

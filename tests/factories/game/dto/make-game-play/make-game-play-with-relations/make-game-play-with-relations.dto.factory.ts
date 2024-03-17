@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeMakeGamePlayWithRelationsDto(makeGamePlayWithRelationsDto: Partial<MakeGamePlayWithRelationsDto> = {}, override: object = {}): MakeGamePlayWithRelationsDto {
   return plainToInstance(MakeGamePlayWithRelationsDto, {

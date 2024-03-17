@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeGetGameRandomCompositionDto(getGameRandomCompositionDto: Partial<GetGameRandomCompositionDto> = {}, override: object = {}): GetGameRandomCompositionDto {
   return plainToInstance(GetGameRandomCompositionDto, {

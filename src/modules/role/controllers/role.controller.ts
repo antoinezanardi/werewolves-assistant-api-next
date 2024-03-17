@@ -1,8 +1,8 @@
 import { Controller, Get, HttpStatus } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
-import { ROLES } from "@/modules/role/constants/role.constant";
-import { Role } from "@/modules/role/types/role.type";
+import { ROLES } from "@/modules/role/constants/role.constants";
+import { Role } from "@/modules/role/types/role.types";
 
 import { ApiResources } from "@/shared/api/enums/api.enum";
 

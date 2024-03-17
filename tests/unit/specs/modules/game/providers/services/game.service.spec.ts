@@ -2,8 +2,8 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
 import { GameStatuses } from "@/modules/game/enums/game.enum";
-import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helper";
-import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helper";
+import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helpers";
+import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helpers";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
@@ -20,9 +20,9 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import { ApiResources } from "@/shared/api/enums/api.enum";
 import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
-import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.type";
-import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
-import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
@@ -33,7 +33,7 @@ import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/
 import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { getError } from "@tests/helpers/exception/exception.helper";
+import { getError } from "@tests/helpers/exception/exception.helpers";
 
 describe("Game Service", () => {
   let mocks: {
@@ -174,7 +174,7 @@ describe("Game Service", () => {
 
   describe("createGame", () => {
     const createdGame = createFakeGameWithCurrentPlay();
-    
+
     beforeEach(() => {
       mocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(createdGame);
       mocks.gameRepository.create.mockResolvedValue(createdGame);

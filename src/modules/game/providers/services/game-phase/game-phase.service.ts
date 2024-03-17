@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 
-import type { GameSource } from "@/modules/game/types/game.type";
+import type { GameSource } from "@/modules/game/types/game.types";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
-import { getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helper";
-import { updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helpers";
+import { updatePlayerInGame } from "@/modules/game/helpers/game.mutators";
 import { createPowerlessByAccursedWolfFatherPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
-import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource, getActivePlayerAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
+import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource, getActivePlayerAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
@@ -82,7 +82,7 @@ export class GamePhaseService {
     }
     return clonedGame;
   }
-  
+
   private async applyEndingGamePhasePlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     const clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);

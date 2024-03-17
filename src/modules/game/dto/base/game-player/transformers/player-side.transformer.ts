@@ -2,9 +2,9 @@ import isObject from "isobject";
 import { has } from "lodash";
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 
-import type { Role } from "@/modules/role/types/role.type";
-import { getRoleWithName } from "@/modules/role/helpers/role.helper";
-import { ROLES } from "@/modules/role/constants/role.constant";
+import type { Role } from "@/modules/role/types/role.types";
+import { getRoleWithName } from "@/modules/role/helpers/role.helpers";
+import { ROLES } from "@/modules/role/constants/role.constants";
 import type { RoleSides, RoleNames } from "@/modules/role/enums/role.enum";
 
 function playerSideTransformer(params: TransformFnParams): unknown {

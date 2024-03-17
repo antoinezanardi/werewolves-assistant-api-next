@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsOptional, ValidateNested } from "class-validator";
 
-import { GAME_OPTIONS_API_PROPERTIES } from "@/modules/game/schemas/game-options/game-options.schema.constant";
+import { GAME_OPTIONS_API_PROPERTIES } from "@/modules/game/schemas/game-options/game-options.schema.constants";
 import { CreateCompositionGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-composition-game-options/create-composition-game-options.dto";
 import { CreateRolesGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto";
 import { CreateVotesGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-votes-game-options/create-votes-game-options.dto";

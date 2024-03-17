@@ -19,9 +19,10 @@ Feature: 🎭 Actor role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play type should be choose-card
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the actor chooses card with role seer
     Then the request should have succeeded with status code 200
@@ -250,7 +251,7 @@ Feature: 🎭 Actor role
     Then the game's current play should be survivors to bury-dead-bodies
     And the player named Louise should be murdered by werewolves from eaten
     And the player named Thomas should be alive
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
     And the game's current play can be skipped
 
     When the survivors bury dead bodies

@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { WILD_CHILD_GAME_OPTIONS_API_PROPERTIES, WILD_CHILD_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options/wild-child-game-options.schema.constant";
+import { WILD_CHILD_GAME_OPTIONS_API_PROPERTIES, WILD_CHILD_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/wild-child-game-options/wild-child-game-options.schema.constants";
 
 @Schema({
   versionKey: false,

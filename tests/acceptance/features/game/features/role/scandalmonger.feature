@@ -16,31 +16,19 @@ Feature: 🐦‍⬛ Scandalmonger role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play type should be target
     And the game's current play occurrence should be on-nights
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type | source        | minBoundary | maxBoundary |
+      | mark | scandalmonger | 0           | 1           |
+    And the game's current play source interaction with type mark should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |
       | JB      |
       | Camille |
       | Thomas  |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source        | interaction |
-      | scandalmonger | mark        |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source        | interaction |
-      | scandalmonger | mark        |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source        | interaction |
-      | scandalmonger | mark        |
-    And the game's current play eligible targets interactable player named Camille should have the following interactions
-      | source        | interaction |
-      | scandalmonger | mark        |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source        | interaction |
-      | scandalmonger | mark        |
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
@@ -69,7 +57,7 @@ Feature: 🐦‍⬛ Scandalmonger role
     Then the player named JB should be murdered by werewolves from eaten
     And the player named JB should have the active scandalmonger-marked from scandalmonger attribute
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
     And the game's current play can be skipped
 
     When the survivors bury dead bodies
@@ -81,7 +69,10 @@ Feature: 🐦‍⬛ Scandalmonger role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type | source        | minBoundary | maxBoundary |
+      | mark | scandalmonger | 0           | 1           |
+    And the game's current play source interaction with type mark should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |

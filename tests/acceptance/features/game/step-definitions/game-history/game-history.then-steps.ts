@@ -2,14 +2,14 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
+import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.types";
 import type { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import type { RoleNames } from "@/modules/role/enums/role.enum";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 
-import { convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helper";
+import { convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 
 Then(/^the game's tick from the previous history record should be (?<tick>\d)$/u, function(this: CustomWorld, tick: string): void {
@@ -22,6 +22,10 @@ Then(/^the game's turn from the previous history record should be (?<turn>\d)$/u
 
 Then(/^the game's phase from the previous history record should be (?<phase>night|day)$/u, function(this: CustomWorld, phase: GamePhases): void {
   expect(this.lastGameHistoryRecord.phase).toBe(phase);
+});
+
+Then(/^the play's type from the previous history record should be (?<type>.+)$/u, function(this: CustomWorld, type: GamePlayType): void {
+  expect(this.lastGameHistoryRecord.play.type).toBe(type);
 });
 
 Then(/^the play's action from the previous history record should be (?<action>.+)$/u, function(this: CustomWorld, action: GamePlayActions): void {

@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { WOLF_HOUND_GAME_OPTIONS_API_PROPERTIES, WOLF_HOUND_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/wolf-hound-game-options/wolf-hound-game-options.schema.constant";
+import { WOLF_HOUND_GAME_OPTIONS_API_PROPERTIES, WOLF_HOUND_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/wolf-hound-game-options/wolf-hound-game-options.schema.constants";
 
 @Schema({
   versionKey: false,

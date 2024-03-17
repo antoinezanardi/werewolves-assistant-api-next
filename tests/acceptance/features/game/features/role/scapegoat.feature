@@ -42,27 +42,18 @@ Feature: 🐐 Scapegoat role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play type should be target
     And the game's current play occurrence should be consequential
     And the game's current play can be skipped
-    And the game's current play should have eligible targets boundaries from 0 to 4
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type       | source    | minBoundary | maxBoundary |
+      | ban-voting | scapegoat | 0           | 4           |
+    And the game's current play source interaction with type ban-voting should have the following eligible targets
       | name   |
       | Olivia |
       | Thomas |
       | Mom    |
       | Dad    |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source    | interaction |
-      | scapegoat | ban-voting  |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source    | interaction |
-      | scapegoat | ban-voting  |
-    And the game's current play eligible targets interactable player named Mom should have the following interactions
-      | source    | interaction |
-      | scapegoat | ban-voting  |
-    And the game's current play eligible targets interactable player named Dad should have the following interactions
-      | source    | interaction |
-      | scapegoat | ban-voting  |
 
     When the scapegoat bans from vote the following players
       | name   |
@@ -74,13 +65,9 @@ Feature: 🐐 Scapegoat role
 
     When the stuttering judge requests another vote
     Then the game's current play should be survivors to vote because stuttering-judge-request
-    And the game's current play should have eligible targets boundaries from 0 to 4
-    And the game's current play should have the following eligible targets interactable players
-      | name   |
-      | Olivia |
-      | Thomas |
-      | Mom    |
-      | Dad    |
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 0           | 4           |
     And the game's current play should be survivors to vote because stuttering-judge-request
 
     When the survivors vote with the following votes
@@ -166,7 +153,9 @@ Feature: 🐐 Scapegoat role
 
     When the survivors bury dead bodies
     Then the game's current play should be scapegoat to ban-voting
-    And the game's current play should have eligible targets boundaries from 0 to 4
+    And the game's current play source should have the following interactions
+      | type       | source    | minBoundary | maxBoundary |
+      | ban-voting | scapegoat | 0           | 4           |
 
     When the scapegoat bans from vote the following players
       | name   |
@@ -236,7 +225,7 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
     And the game's current play can be skipped
 
     When the survivors bury dead bodies

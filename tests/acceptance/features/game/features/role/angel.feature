@@ -18,27 +18,18 @@ Feature: 👼 Angel role
       | Olivia  |
       | JB      |
       | Thomas  |
+    And the game's current play type should be vote
     And the game's current play occurrence should be one-night-only
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 4
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 1           | 4           |
+    And the game's current play source interaction with type vote should have the following eligible targets
       | name    |
       | Antoine |
       | Olivia  |
       | JB      |
       | Thomas  |
-    And the game's current play eligible targets interactable player named Antoine should have the following interactions
-      | source    | interaction |
-      | survivors | vote        |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source    | interaction |
-      | survivors | vote        |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source    | interaction |
-      | survivors | vote        |
-    And the game's current play eligible targets interactable player named Thomas should have the following interactions
-      | source    | interaction |
-      | survivors | vote        |
 
     When the survivors vote with the following votes
       | source  | vote   |

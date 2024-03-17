@@ -7,20 +7,20 @@ import { GetGameByIdPipe } from "@/modules/game/controllers/pipes/get-game-by-id
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 
 import { ApiResources } from "@/shared/api/enums/api.enum";
-import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 
-import { getError } from "@tests/helpers/exception/exception.helper";
-import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helper";
+import { getError } from "@tests/helpers/exception/exception.helpers";
+import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helpers";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Get Game By Id Pipe", () => {
   let getGameByIdPipe: GetGameByIdPipe;
   let mocks: { gameRepository: { findOne: jest.SpyInstance } };
   let repositories: { game: GameRepository };
-  
+
   beforeEach(async() => {
     mocks = { gameRepository: { findOne: jest.fn() } };
-    
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         GameRepository,
@@ -30,11 +30,11 @@ describe("Get Game By Id Pipe", () => {
         },
       ],
     }).compile();
-    
+
     repositories = { game: module.get<GameRepository>(GameRepository) };
     getGameByIdPipe = new GetGameByIdPipe(repositories.game);
   });
-  
+
   describe("transform", () => {
     const gameId = faker.database.mongodbObjectId();
 
@@ -54,11 +54,11 @@ describe("Get Game By Id Pipe", () => {
       expect(error).toStrictEqual<ResourceNotFoundException>(expectedError);
       expect(error).toHaveProperty("options", { description: undefined });
     });
-    
+
     it("should return existing game when game is found.", async() => {
       const game = createFakeGame();
       mocks.gameRepository.findOne.mockResolvedValue(game);
-      
+
       await expect(getGameByIdPipe.transform(gameId)).resolves.toStrictEqual(game);
       expect(mocks.gameRepository.findOne).toHaveBeenCalledExactlyOnceWith({ _id: createObjectIdFromString(gameId) });
     });

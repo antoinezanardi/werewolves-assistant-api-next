@@ -3,7 +3,8 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GAME_HISTORY_RECORD_PLAY_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema.constant";
+import { GamePlayType } from "@/modules/game/types/game-play.types";
+import { GAME_HISTORY_RECORD_PLAY_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema.constants";
 import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
@@ -18,6 +19,11 @@ import { RoleSides } from "@/modules/role/enums/role.enum";
   _id: false,
 })
 class GameHistoryRecordPlay {
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.type as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.type)
+  @Expose()
+  public type: GamePlayType;
+
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.action as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.action)
   @Expose()

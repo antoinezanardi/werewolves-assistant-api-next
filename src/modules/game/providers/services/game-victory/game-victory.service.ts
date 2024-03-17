@@ -4,9 +4,9 @@ import { createAngelGameVictory, createLoversGameVictory, createNoneGameVictory,
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { areAllPlayersDead, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getEligiblePiedPiperTargets, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
-import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helper";
-import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helper";
+import { areAllPlayersDead, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getEligiblePiedPiperTargets, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
+import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
+import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";

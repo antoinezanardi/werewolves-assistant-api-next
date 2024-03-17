@@ -28,7 +28,7 @@ import { CreateWhiteWerewolfGameOptionsDto } from "@/modules/game/dto/create-gam
 import { CreateWildChildGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-wild-child-game-options.dto";
 import { GamePhases } from "@/modules/game/enums/game.enum";
 
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constant";
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeCreateActorGameOptionsDto(actorGameOptions: Partial<CreateActorGameOptionsDto> = {}, override: object = {}): CreateActorGameOptionsDto {
   return plainToInstance(CreateActorGameOptionsDto, {

@@ -15,19 +15,19 @@ import type { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-hi
 import type { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
 import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.type";
+import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.types";
 import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiResources } from "@/shared/api/enums/api.enum";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
-import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.type";
+import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 
+import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote, createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
-import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source.schema.factory";
 import { createFakeGamePlay, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -108,7 +108,7 @@ describe("Game History Record Service", () => {
       gamePlayVoteService: { getNominatedPlayers: jest.fn() },
       unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
     };
-    
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
@@ -223,7 +223,7 @@ describe("Game History Record Service", () => {
       expect(mocks.gameHistoryRecordRepository.getGameHistoryStutteringJudgeRequestsAnotherVoteRecords).toHaveBeenCalledExactlyOnceWith(gameId, stutteringJudgePlayerId);
     });
   });
-  
+
   describe("getGameHistoryWerewolvesEatElderRecords", () => {
     it("should get game history records when any kind of werewolves eat elder when called.", async() => {
       const elderPlayerId = createFakeObjectId();
@@ -269,7 +269,7 @@ describe("Game History Record Service", () => {
       mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordDeadPlayersToInsert = jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordDeadPlayersToInsert }, "generateCurrentGameHistoryRecordDeadPlayersToInsert").mockImplementation();
       mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert = jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordPlayVotingToInsert }, "generateCurrentGameHistoryRecordPlayVotingToInsert").mockImplementation();
     });
-    
+
     it("should throw error when there is no current play for the game.", () => {
       const baseGame = createFakeGame();
       const newGame = createFakeGame();
@@ -281,7 +281,7 @@ describe("Game History Record Service", () => {
       expect(() => services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play)).toThrow(mockedError);
       expect(mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("generateCurrentGameHistoryRecordToInsert", interpolations);
     });
-    
+
     it("should generate current game history to insert when called.", () => {
       const baseGame = createFakeGameWithCurrentPlay();
       const newGame = createFakeGameWithCurrentPlay();
@@ -295,7 +295,7 @@ describe("Game History Record Service", () => {
         tick: baseGame.tick,
         play: expectedCurrentGameHistoryPlayToInsert,
       });
-      
+
       expect(services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play)).toStrictEqual<GameHistoryRecordToInsert>(expectedCurrentGameHistoryToInsert);
     });
 
@@ -331,7 +331,7 @@ describe("Game History Record Service", () => {
 
       expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordDeadPlayersToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame);
     });
-    
+
     it("should call generateCurrentGameHistoryRecordPlayVotingToInsert method when called with votes.", () => {
       const baseGame = createFakeGameWithCurrentPlay();
       const newGame = createFakeGameWithCurrentPlay();
@@ -385,7 +385,7 @@ describe("Game History Record Service", () => {
       const game = createFakeGame();
       const gamePlay = createFakeGamePlay();
       mocks.gameHistoryRecordRepository.getGameHistoryGamePlayRecords.mockResolvedValueOnce([createFakeGameHistoryRecordPlay()]);
-      
+
       await expect(services.gameHistoryRecord.hasGamePlayBeenMade(game._id, gamePlay)).resolves.toBe(true);
     });
   });
@@ -547,6 +547,7 @@ describe("Game History Record Service", () => {
       const expectedGameHistoryRecordPlaySource = { name: undefined, players: undefined };
       mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlaySourceToInsert.mockReturnValue(expectedGameHistoryRecordPlaySource);
       const expectedGameHistoryRecordPlay = createFakeGameHistoryRecordPlay({
+        type: game.currentPlay.type,
         action: game.currentPlay.action,
         didJudgeRequestAnotherVote: play.doesJudgeRequestAnotherVote,
         targets: play.targets,
@@ -783,7 +784,7 @@ describe("Game History Record Service", () => {
     beforeEach(() => {
       mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert = jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordPlayVotingResultToInsert }, "generateCurrentGameHistoryRecordPlayVotingResultToInsert").mockImplementation();
     });
-    
+
     it("should generate current game history record play voting when called.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
@@ -803,7 +804,7 @@ describe("Game History Record Service", () => {
 
       expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert)).toStrictEqual<GameHistoryRecordPlayVoting>(expectedCurrentGameHistoryRecordPlayVoting);
     });
-    
+
     it("should generate current game history record play voting without nominated players when no nominated players are found.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
@@ -964,7 +965,7 @@ describe("Game History Record Service", () => {
       },
     ])("$test", ({ play, errorParameters }) => {
       const expectedException = new ResourceNotFoundException(...errorParameters);
-      
+
       expect(() => services.gameHistoryRecord["validateGameHistoryRecordToInsertPlayData"](play, fakeGame)).toThrow(expectedException);
     });
 

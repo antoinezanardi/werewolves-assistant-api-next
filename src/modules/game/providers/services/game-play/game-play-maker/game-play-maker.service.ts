@@ -6,11 +6,11 @@ import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/en
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlaySheriffSettlesVotes, createGamePlayStutteringJudgeRequestsAnotherVote, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
-import { getFoxSniffedPlayers, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helper";
-import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutator";
+import { getFoxSniffedPlayers, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
+import { addPlayerAttributeInGame, addPlayersAttributeInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutators";
 import { createActingByActorPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByActorPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySheriffPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { createPlayerShotByHunterDeath, createPlayerVoteBySheriffDeath, createPlayerVoteBySurvivorsDeath, createPlayerVoteScapegoatedBySurvivorsDeath } from "@/modules/game/helpers/player/player-death/player-death.factory";
-import { isPlayerAliveAndPowerful, isPlayerPowerlessOnWerewolvesSide } from "@/modules/game/helpers/player/player.helper";
+import { isPlayerAliveAndPowerful, isPlayerPowerlessOnWerewolvesSide } from "@/modules/game/helpers/player/player.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
@@ -20,12 +20,12 @@ import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schem
 import type { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import type { GamePlaySourceName } from "@/modules/game/types/game-play.type";
-import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play";
-import { ROLES } from "@/modules/role/constants/role.constant";
+import type { GamePlaySourceName } from "@/modules/game/types/game-play.types";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
+import { ROLES } from "@/modules/role/constants/role.constants";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
-import { getRoleWithName } from "@/modules/role/helpers/role.helper";
-import type { Role } from "@/modules/role/types/role.type";
+import { getRoleWithName } from "@/modules/role/helpers/role.helpers";
+import type { Role } from "@/modules/role/types/role.types";
 
 import { createCantFindLastDeadPlayersUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -228,7 +228,7 @@ export class GamePlayMakerService {
     }
     return survivorsPlayMethod();
   }
-  
+
   private thiefChoosesCard({ chosenCard }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     let clonedGame = createGame(game);
     const thiefPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.THIEF);
@@ -245,7 +245,7 @@ export class GamePlayMakerService {
     clonedGame = updatePlayerInGame(thiefPlayer._id, playerDataToUpdate, clonedGame);
     return updateAdditionalCardInGame(chosenCard._id, { isUsed: true }, clonedGame);
   }
-  
+
   private scapegoatBansVoting({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
     if (!targets) {
@@ -254,7 +254,7 @@ export class GamePlayMakerService {
     const cantVoteByScapegoatPlayerAttribute = createCantVoteByScapegoatPlayerAttribute(clonedGame);
     return addPlayersAttributeInGame(targets.map(({ player }) => player._id), clonedGame, cantVoteByScapegoatPlayerAttribute);
   }
-  
+
   private wolfHoundChoosesSide({ chosenSide }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
     const { roles } = clonedGame.options;
@@ -269,7 +269,7 @@ export class GamePlayMakerService {
     }
     return updatePlayerInGame(wolfHoundPlayer._id, playerDataToUpdate, clonedGame);
   }
-  
+
   private wildChildChoosesModel({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
     const expectedTargetCount = 1;
@@ -298,7 +298,7 @@ export class GamePlayMakerService {
     }
     return clonedGame;
   }
-  
+
   private scandalmongerMarks({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
     const expectedTargetCount = 1;
@@ -309,7 +309,7 @@ export class GamePlayMakerService {
     const scandalmongerMarkByScandalmongerPlayerAttribute = createScandalmongerMarkByScandalmongerPlayerAttribute();
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, scandalmongerMarkByScandalmongerPlayerAttribute);
   }
-  
+
   private defenderProtects({ targets }: MakeGamePlayWithRelationsDto, game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game);
     const expectedTargetCount = 1;

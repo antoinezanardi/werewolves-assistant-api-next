@@ -4,7 +4,7 @@ import { Test } from "@nestjs/testing";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerDeathCauses } from "@/modules/game/enums/player.enum";
-import * as GameHelper from "@/modules/game/helpers/game.helper";
+import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -14,7 +14,7 @@ import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
-import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.type";
+import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordDefenderProtectPlay, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordWerewolvesEatPlay, createFakeGameHistoryRecordWitchUsePotionsPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
@@ -106,7 +106,7 @@ describe("Player Killer Service", () => {
         createPlayerIsDeadUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createPlayerIsDeadUnexpectedException").mockImplementation(),
       },
     };
-    
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
@@ -532,7 +532,7 @@ describe("Player Killer Service", () => {
       expect(services.playerKiller["applyPlayerRoleRevelationOutcomes"](game.players[1], game)).toStrictEqual<Game>(game);
     });
   });
-  
+
   describe("isElderKillable", () => {
     beforeEach(() => {
       mocks.playerKillerService.getElderLivesCountAgainstWerewolves = jest.spyOn(services.playerKiller as unknown as { getElderLivesCountAgainstWerewolves }, "getElderLivesCountAgainstWerewolves").mockImplementation();
@@ -660,7 +660,7 @@ describe("Player Killer Service", () => {
           player.attributes[2],
         ],
       });
-      
+
       expect(services.playerKiller["removePlayerAttributesAfterDeath"](player)).toStrictEqual<Player>(expectedPlayer);
     });
   });

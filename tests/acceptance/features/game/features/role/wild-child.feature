@@ -16,23 +16,17 @@ Feature: 🐒 Wild Child role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play type should be target
     And the game's current play occurrence should be one-night-only
     And the game's current play can not be skipped
-    And the game's current play should have eligible targets boundaries from 1 to 1
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type            | source     | minBoundary | maxBoundary |
+      | choose-as-model | wild-child | 1           | 1           |
+    And the game's current play source interaction with type choose-as-model should have the following eligible targets
       | name   |
       | Olivia |
       | JB     |
       | Maxime |
-    And the game's current play eligible targets interactable player named Olivia should have the following interactions
-      | source     | interaction     |
-      | wild-child | choose-as-model |
-    And the game's current play eligible targets interactable player named JB should have the following interactions
-      | source     | interaction     |
-      | wild-child | choose-as-model |
-    And the game's current play eligible targets interactable player named Maxime should have the following interactions
-      | source     | interaction     |
-      | wild-child | choose-as-model |
 
     When the wild child chooses the player named Olivia as a model
     Then the request should have succeeded with status code 200
@@ -92,7 +86,10 @@ Feature: 🐒 Wild Child role
 
     When the survivors bury dead bodies
     Then the game's current play should be wild-child to choose-model
-    And the game's current play should have the following eligible targets interactable players
+    And the game's current play source should have the following interactions
+      | type            | source     | minBoundary | maxBoundary |
+      | choose-as-model | wild-child | 1           | 1           |
+    And the game's current play source interaction with type choose-as-model should have the following eligible targets
       | name   |
       | Olivia |
       | Maxime |

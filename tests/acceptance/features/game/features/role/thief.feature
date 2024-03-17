@@ -15,9 +15,10 @@ Feature: 👺 Thief role
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
+    And the game's current play type should be choose-card
     And the game's current play occurrence should be one-night-only
     And the game's current play can be skipped
-    And the game's current play should not have eligible targets
+    And the game's current play source should not have interactions
 
     When the thief chooses card with role seer
     Then the player named Antoine should be currently a seer and originally a thief

@@ -3,7 +3,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { SEER_GAME_OPTIONS_API_PROPERTIES, SEER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options/seer-game-options.schema.constant";
+import { SEER_GAME_OPTIONS_API_PROPERTIES, SEER_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/seer-game-options/seer-game-options.schema.constants";
 
 @Schema({
   versionKey: false,
