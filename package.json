@@ -112,7 +112,7 @@
     "@types/jest": "^29.5.12",
     "@types/jest-when": "^3.5.5",
     "@types/node": "^20.11.30",
-    "@types/qs": "^6.9.13",
+    "@types/qs": "^6.9.14",
     "@types/supertest": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
