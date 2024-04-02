@@ -71,7 +71,7 @@
     "gcloud:deploy": "gcloud app deploy"
   },
   "dependencies": {
-    "@fastify/static": "^7.0.1",
+    "@fastify/static": "^7.0.2",
     "@nestjs/common": "^10.3.7",
     "@nestjs/config": "^3.2.1",
     "@nestjs/core": "^10.3.7",
