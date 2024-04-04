@@ -2,7 +2,6 @@ import { plainToInstance } from "class-transformer";
 
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
@@ -24,7 +23,7 @@ function createFakeCreateGameWithPlayersDto(createGameDto: Partial<CreateGameDto
 function createFakeCreateGameDto(createGameDto: Partial<CreateGameDto> = {}, override: object = {}): CreateGameDto {
   return plainToInstance(CreateGameDto, {
     turn: createGameDto.turn ?? 1,
-    phase: createGameDto.phase ?? GamePhases.NIGHT,
+    phase: createGameDto.phase ?? "night",
     players: createGameDto.players ?? [],
     upcomingPlays: createGameDto.upcomingPlays ?? [],
     currentPlay: createGameDto.currentPlay ?? null,

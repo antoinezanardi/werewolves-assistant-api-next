@@ -2,9 +2,9 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
+import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play/game-play.types";
 import type { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import type { GamePlayOccurrences, GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
-import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.types";
 
 import { convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";

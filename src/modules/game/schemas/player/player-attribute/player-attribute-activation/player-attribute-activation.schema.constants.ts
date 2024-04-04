@@ -1,7 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { GamePhases } from "@/modules/game/enums/game.enum";
+import { GAME_PHASES } from "@/modules/game/constants/game.constants";
 import type { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema";
 
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
@@ -14,7 +14,7 @@ const PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS = {
   },
   phase: {
     required: true,
-    enum: Object.values(GamePhases),
+    enum: GAME_PHASES,
   },
 } as const satisfies Record<keyof PlayerAttributeActivation, MongoosePropOptions>;
 

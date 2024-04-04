@@ -4,7 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { ROLES } from "@/modules/role/constants/role.constants";
 import { Role } from "@/modules/role/types/role.types";
 
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 
 @ApiTags("🃏 Roles")
 @Controller(ApiResources.ROLES)

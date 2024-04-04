@@ -13,7 +13,6 @@ import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.d
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
-import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
 import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -24,7 +23,7 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role.constants";
 import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
-import { ApiSortOrder } from "@/shared/api/enums/api.enum";
+import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
 
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helpers";
@@ -872,8 +871,8 @@ describe("Game Controller", () => {
       };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
-        phase: GamePhases.NIGHT,
-        status: GameStatuses.PLAYING,
+        phase: "night",
+        status: "playing",
         turn: 1,
         tick: 1,
         players: expectedPlayers,
@@ -950,8 +949,8 @@ describe("Game Controller", () => {
       };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
-        phase: GamePhases.NIGHT,
-        status: GameStatuses.PLAYING,
+        phase: "night",
+        status: "playing",
         turn: 1,
         tick: 1,
         players: expectedPlayers,
@@ -987,7 +986,7 @@ describe("Game Controller", () => {
             isEnabled: false,
             electedAt: {
               turn: 5,
-              phase: GamePhases.DAY,
+              phase: "day",
             },
             hasDoubledVote: false,
             mustSettleTieInVotes: false,
@@ -1077,7 +1076,7 @@ describe("Game Controller", () => {
     });
 
     it("should get a bad request error when game doesn't have playing status.", async() => {
-      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.CANCELED, currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ status: "canceled", currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
@@ -1093,7 +1092,7 @@ describe("Game Controller", () => {
     });
 
     it("should update game status to canceled when called.", async() => {
-      const game = createFakeGameWithCurrentPlay({ status: GameStatuses.PLAYING, currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
+      const game = createFakeGameWithCurrentPlay({ status: "playing", currentPlay: createFakeGamePlayWolfHoundChoosesSide() });
       await models.game.create(game);
       const response = await app.inject({
         method: "DELETE",
@@ -1103,7 +1102,7 @@ describe("Game Controller", () => {
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
         ...toJSON(game) as Game,
-        status: GameStatuses.CANCELED,
+        status: "canceled",
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -1174,7 +1173,7 @@ describe("Game Controller", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({
-        status: GameStatuses.PLAYING,
+        status: "playing",
         currentPlay: createFakeGamePlayWolfHoundChoosesSide(),
         upcomingPlays: [createFakeGamePlaySurvivorsVote()],
         players,
@@ -1205,7 +1204,7 @@ describe("Game Controller", () => {
       ];
       const options = createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) });
       const game = createFakeGame({
-        status: GameStatuses.PLAYING,
+        status: "playing",
         currentPlay: createFakeGamePlaySurvivorsVote({ canBeSkipped: false }),
         players,
         options,
@@ -1249,7 +1248,7 @@ describe("Game Controller", () => {
         }),
       });
       const game = createFakeGame({
-        status: GameStatuses.PLAYING,
+        status: "playing",
         currentPlay,
         upcomingPlays: [
           createFakeGamePlaySeerLooks(),
@@ -1322,8 +1321,8 @@ describe("Game Controller", () => {
         }),
       });
       const game = createFakeGame({
-        phase: GamePhases.NIGHT,
-        status: GameStatuses.PLAYING,
+        phase: "night",
+        status: "playing",
         currentPlay,
         upcomingPlays: [createFakeGamePlayWerewolvesEat()],
         players,

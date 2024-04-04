@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 
+import { GamePhase } from "@/modules/game/types/game.types";
 import { DAY_GAME_PLAYS_PRIORITY_LIST, NIGHT_GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constants";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { GamePlayActions, GamePlayCauses, GamePlayOccurrences, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlay, createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { areGamePlaysEqual, canSurvivorsVote, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helpers";
@@ -73,7 +73,7 @@ export class GamePlayService {
 
   public async getPhaseUpcomingPlays(game: CreateGameDto | Game): Promise<GamePlay[]> {
     const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase);
-    const phaseGamePlaysPriorityList = game.phase === GamePhases.NIGHT ? NIGHT_GAME_PLAYS_PRIORITY_LIST : DAY_GAME_PLAYS_PRIORITY_LIST;
+    const phaseGamePlaysPriorityList = game.phase === "night" ? NIGHT_GAME_PLAYS_PRIORITY_LIST : DAY_GAME_PLAYS_PRIORITY_LIST;
     const suitabilityPromises = phaseGamePlaysPriorityList.map(async eligiblePlay => this.isGamePlaySuitableForCurrentPhase(game, eligiblePlay as GamePlay));
     const suitabilityResults = await Promise.all(suitabilityPromises);
     const upcomingNightPlays = phaseGamePlaysPriorityList
@@ -128,7 +128,7 @@ export class GamePlayService {
     });
   }
 
-  private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GamePhases): boolean {
+  private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GamePhase): boolean {
     const { electedAt, isEnabled } = sheriffGameOptions;
     return isEnabled && electedAt.turn === currentTurn && electedAt.phase === currentPhase;
   }

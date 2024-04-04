@@ -3,16 +3,15 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import type { FilterQuery, Types, QueryOptions } from "mongoose";
 
+import { GameHistoryRecordDocument, GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record/game-history-record.types";
+import { GamePhase } from "@/modules/game/types/game.types";
 import { PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mappers";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
-import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import type { GamePhases } from "@/modules/game/enums/game.enum";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
-import type { GameHistoryRecordDocument, GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.types";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
 @Injectable()
@@ -51,7 +50,7 @@ export class GameHistoryRecordRepository {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       "play.action": action,
-      "play.voting.result": GameHistoryRecordVotingResults.TIE,
+      "play.voting.result": "tie",
     };
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
@@ -147,7 +146,7 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
-  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhases): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhase): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordModel.find({ gameId, turn, phase });
   }
 

@@ -2,8 +2,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 import { IsArray, IsEnum, IsInt, IsOptional, Min } from "class-validator";
 
+import { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card/game-additional-card.types";
 import { GAME_ADDITIONAL_CARDS_RECIPIENTS } from "@/modules/game/constants/game-additional-card/game-additional-card.constants";
-import type { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card.types";
 import { RoleNames, RoleOrigins, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
 
 class Role {

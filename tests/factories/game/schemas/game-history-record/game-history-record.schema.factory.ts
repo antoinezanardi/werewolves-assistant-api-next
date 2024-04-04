@@ -1,10 +1,10 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/constants/game-history-record/game-history-record.constants";
+import { GAME_PHASES } from "@/modules/game/constants/game.constants";
 import { GAME_PLAY_SOURCE_NAMES, GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
-import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
 import { GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
@@ -342,7 +342,7 @@ function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Part
 
 function createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlayVoting: Partial<GameHistoryRecordPlayVoting> = {}, override: object = {}): GameHistoryRecordPlayVoting {
   return plainToInstance(GameHistoryRecordPlayVoting, {
-    result: gameHistoryRecordPlayVoting.result ?? faker.helpers.arrayElement(Object.values(GameHistoryRecordVotingResults)),
+    result: gameHistoryRecordPlayVoting.result ?? faker.helpers.arrayElement(GAME_HISTORY_RECORD_VOTING_RESULTS),
     nominatedPlayers: gameHistoryRecordPlayVoting.nominatedPlayers ?? undefined,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
@@ -370,7 +370,7 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
     gameId: gameHistoryRecord.gameId ?? createFakeObjectId(),
     tick: gameHistoryRecord.tick ?? faker.number.int({ min: 1 }),
     turn: gameHistoryRecord.turn ?? faker.number.int({ min: 1 }),
-    phase: gameHistoryRecord.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
+    phase: gameHistoryRecord.phase ?? faker.helpers.arrayElement(GAME_PHASES),
     play: createFakeGameHistoryRecordPlay(gameHistoryRecord.play),
     revealedPlayers: gameHistoryRecord.revealedPlayers ?? undefined,
     deadPlayers: gameHistoryRecord.deadPlayers ?? undefined,

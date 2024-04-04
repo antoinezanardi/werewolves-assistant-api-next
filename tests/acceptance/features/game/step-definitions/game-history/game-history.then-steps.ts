@@ -2,12 +2,12 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.types";
+import type { GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
+import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play/game-play.types";
+import type { GamePhase } from "@/modules/game/types/game.types";
 import type { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import type { RoleNames } from "@/modules/role/enums/role.enum";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
-import type { GamePhases } from "@/modules/game/enums/game.enum";
-import type { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 
 import { convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -20,7 +20,7 @@ Then(/^the game's turn from the previous history record should be (?<turn>\d)$/u
   expect(this.lastGameHistoryRecord.turn).toBe(parseInt(turn));
 });
 
-Then(/^the game's phase from the previous history record should be (?<phase>night|day)$/u, function(this: CustomWorld, phase: GamePhases): void {
+Then(/^the game's phase from the previous history record should be (?<phase>night|day)$/u, function(this: CustomWorld, phase: GamePhase): void {
   expect(this.lastGameHistoryRecord.phase).toBe(phase);
 });
 
@@ -76,7 +76,7 @@ Then(/^the play's votes from the previous history record should be undefined$/u,
   expect(this.lastGameHistoryRecord.play.votes).toBeUndefined();
 });
 
-Then(/^the play's voting result from the previous history record should be (?<votingResult>sheriff-election|tie|death|inconsequential|skipped)$/u, function(this: CustomWorld, votingResult: GameHistoryRecordVotingResults): void {
+Then(/^the play's voting result from the previous history record should be (?<votingResult>sheriff-election|tie|death|inconsequential|skipped)$/u, function(this: CustomWorld, votingResult: GameHistoryRecordVotingResult): void {
   expect(this.lastGameHistoryRecord.play.voting?.result).toBe(votingResult);
 });
 

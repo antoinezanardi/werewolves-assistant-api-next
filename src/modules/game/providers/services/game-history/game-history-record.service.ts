@@ -2,14 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
+import { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
+import { GamePhase } from "@/modules/game/types/game.types";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
-import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import type { WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
-import type { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerDeathCauses } from "@/modules/game/enums/player.enum";
 import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "@/modules/game/helpers/game.helpers";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
@@ -21,11 +21,10 @@ import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-recor
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record.types";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
@@ -80,7 +79,7 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryElderProtectedFromWerewolvesRecords(gameId, elderPlayerId);
   }
 
-  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhases): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhase): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordRepository.getGameHistoryPhaseRecords(gameId, turn, phase);
   }
 
@@ -157,25 +156,25 @@ export class GameHistoryRecordService {
     newGame: Game,
     nominatedPlayers: Player[],
     gameHistoryRecordToInsert: GameHistoryRecordToInsert,
-  ): GameHistoryRecordVotingResults {
+  ): GameHistoryRecordVotingResult {
     const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, PlayerAttributeNames.SHERIFF);
     const areSomePlayersDeadFromCurrentVotes = gameHistoryRecordToInsert.deadPlayers?.some(({ death }) => {
       const deathFromVoteCauses = [PlayerDeathCauses.VOTE, PlayerDeathCauses.VOTE_SCAPEGOATED];
       return deathFromVoteCauses.includes(death.cause);
     }) === true;
     if (baseGame.currentPlay.action === GamePlayActions.ELECT_SHERIFF) {
-      return sheriffPlayer ? GameHistoryRecordVotingResults.SHERIFF_ELECTION : GameHistoryRecordVotingResults.TIE;
+      return sheriffPlayer ? "sheriff-election" : "tie";
     }
     if (!gameHistoryRecordToInsert.play.votes || gameHistoryRecordToInsert.play.votes.length === 0) {
-      return GameHistoryRecordVotingResults.SKIPPED;
+      return "skipped";
     }
     if (areSomePlayersDeadFromCurrentVotes) {
-      return GameHistoryRecordVotingResults.DEATH;
+      return "death";
     }
     if (baseGame.currentPlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES || nominatedPlayers.length === 1) {
-      return GameHistoryRecordVotingResults.INCONSEQUENTIAL;
+      return "inconsequential";
     }
-    return GameHistoryRecordVotingResults.TIE;
+    return "tie";
   }
 
   private generateCurrentGameHistoryRecordPlayVotingToInsert(

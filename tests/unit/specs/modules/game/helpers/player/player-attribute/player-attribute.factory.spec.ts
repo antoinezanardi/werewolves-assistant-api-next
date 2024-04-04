@@ -1,4 +1,3 @@
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createCantVoteBySurvivorsPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByElderPlayerAttribute, createPowerlessByFoxPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createSheriffBySheriffPlayerAttribute, createWorshipedByWildChildPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByWerewolvesPlayerAttribute, createPowerlessByActorPlayerAttribute, createStolenRoleByDevotedServantPlayerAttribute, createActingByActorPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
@@ -38,7 +37,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.RUSTY_SWORD_KNIGHT,
         remainingPhases: 2,
       });
-      
+
       expect(createContaminatedByRustySwordKnightPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -49,7 +48,7 @@ describe("Player Attribute Factory", () => {
         name: PlayerAttributeNames.CHARMED,
         source: RoleNames.PIED_PIPER,
       });
-      
+
       expect(createCharmedByPiedPiperPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -60,36 +59,36 @@ describe("Player Attribute Factory", () => {
         name: PlayerAttributeNames.CANT_VOTE,
         source: PlayerGroups.SURVIVORS,
       });
-      
+
       expect(createCantVoteBySurvivorsPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
 
   describe("createCantVoteByScapegoatPlayerAttribute", () => {
     it("should create can't vote attribute by scapegoat active in next turn when game phase is day.", () => {
-      const game = createFakeGame({ turn: 2, phase: GamePhases.DAY });
+      const game = createFakeGame({ turn: 2, phase: "day" });
       const expectedAttribute = createFakePlayerAttribute({
         name: PlayerAttributeNames.CANT_VOTE,
         source: RoleNames.SCAPEGOAT,
         remainingPhases: 1,
         activeAt: {
           turn: 3,
-          phase: GamePhases.DAY,
+          phase: "day",
         },
       });
-      
+
       expect(createCantVoteByScapegoatPlayerAttribute(game)).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
 
     it("should create can't vote attribute by scapegoat active in current turn when game phase is night.", () => {
-      const game = createFakeGame({ turn: 2, phase: GamePhases.NIGHT });
+      const game = createFakeGame({ turn: 2, phase: "night" });
       const expectedAttribute = createFakePlayerAttribute({
         name: PlayerAttributeNames.CANT_VOTE,
         source: RoleNames.SCAPEGOAT,
         remainingPhases: 1,
         activeAt: {
           turn: 2,
-          phase: GamePhases.DAY,
+          phase: "day",
         },
       });
 
@@ -140,7 +139,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.FOX,
         doesRemainAfterDeath: true,
       });
-      
+
       expect(createPowerlessByFoxPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -152,7 +151,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.ELDER,
         doesRemainAfterDeath: true,
       });
-      
+
       expect(createPowerlessByElderPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -163,7 +162,7 @@ describe("Player Attribute Factory", () => {
         name: PlayerAttributeNames.WORSHIPED,
         source: RoleNames.WILD_CHILD,
       });
-      
+
       expect(createWorshipedByWildChildPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -174,7 +173,7 @@ describe("Player Attribute Factory", () => {
         name: PlayerAttributeNames.IN_LOVE,
         source: RoleNames.CUPID,
       });
-      
+
       expect(createInLoveByCupidPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -186,7 +185,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.SCANDALMONGER,
         remainingPhases: 2,
       });
-      
+
       expect(createScandalmongerMarkByScandalmongerPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -198,7 +197,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.DEFENDER,
         remainingPhases: 1,
       });
-      
+
       expect(createProtectedByDefenderPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -210,7 +209,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.WITCH,
         remainingPhases: 1,
       });
-      
+
       expect(createDrankDeathPotionByWitchPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -222,7 +221,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.WITCH,
         remainingPhases: 1,
       });
-      
+
       expect(createDrankLifePotionByWitchPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -234,7 +233,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.BIG_BAD_WOLF,
         remainingPhases: 1,
       });
-      
+
       expect(createEatenByBigBadWolfPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -246,7 +245,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.WHITE_WEREWOLF,
         remainingPhases: 1,
       });
-      
+
       expect(createEatenByWhiteWerewolfPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -258,7 +257,7 @@ describe("Player Attribute Factory", () => {
         source: PlayerGroups.WEREWOLVES,
         remainingPhases: 1,
       });
-      
+
       expect(createEatenByWerewolvesPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -270,7 +269,7 @@ describe("Player Attribute Factory", () => {
         source: RoleNames.SEER,
         remainingPhases: 1,
       });
-      
+
       expect(createSeenBySeerPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -282,7 +281,7 @@ describe("Player Attribute Factory", () => {
         source: PlayerAttributeNames.SHERIFF,
         doesRemainAfterDeath: true,
       });
-      
+
       expect(createSheriffBySheriffPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -294,7 +293,7 @@ describe("Player Attribute Factory", () => {
         source: PlayerGroups.SURVIVORS,
         doesRemainAfterDeath: true,
       });
-      
+
       expect(createSheriffBySurvivorsPlayerAttribute()).toStrictEqual<PlayerAttribute>(expectedAttribute);
     });
   });
@@ -305,7 +304,7 @@ describe("Player Attribute Factory", () => {
         name: PlayerAttributeNames.EATEN,
         source: PlayerGroups.WEREWOLVES,
       };
-      
+
       expect(createPlayerAttribute(playerAttribute)).toStrictEqual<PlayerAttribute>(createFakePlayerAttribute({
         name: PlayerAttributeNames.EATEN,
         source: PlayerGroups.WEREWOLVES,

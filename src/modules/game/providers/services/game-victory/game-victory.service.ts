@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 
 import { createAngelGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createPrejudicedManipulatorGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { areAllPlayersDead, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getEligiblePiedPiperTargets, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
@@ -84,7 +83,7 @@ export class GameVictoryService {
       return false;
     }
     const { cause: deathCause } = angelPlayer.death;
-    return deathCause === PlayerDeathCauses.EATEN || deathCause === PlayerDeathCauses.VOTE && phase === GamePhases.NIGHT;
+    return deathCause === PlayerDeathCauses.EATEN || deathCause === PlayerDeathCauses.VOTE && phase === "night";
   }
 
   private doesPrejudicedManipulatorWin(game: Game): boolean {

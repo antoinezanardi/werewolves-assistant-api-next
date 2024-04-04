@@ -1,7 +1,7 @@
 import { BadRequestException } from "@nestjs/common";
 import { upperFirst } from "lodash";
 
-import type { ApiResources } from "@/shared/api/enums/api.enum";
+import type { ApiResources } from "@/shared/api/enums/api.enums";
 import type { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
 import { getResourceSingularForm } from "@/shared/api/helpers/api.helpers";
 

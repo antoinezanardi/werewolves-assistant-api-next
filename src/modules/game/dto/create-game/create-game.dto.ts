@@ -3,6 +3,7 @@ import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import { ArrayMaxSize, Equals, IsArray, IsOptional, ValidateNested } from "class-validator";
 
+import { GamePhase } from "@/modules/game/types/game.types";
 import { CompositionGroupsSize } from "@/modules/game/dto/base/decorators/composition/composition-groups-size.decorator";
 import { AdditionalCardsForActorRoles } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-actor-roles.decorator";
 import { AdditionalCardsForActorSize } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-actor-size.decorator";
@@ -23,7 +24,6 @@ import { gamePlayersPositionTransformer } from "@/modules/game/dto/base/transfor
 import { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import { CreateGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-game-options.dto";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { GAME_API_PROPERTIES, GAME_FIELDS_SPECS } from "@/modules/game/schemas/game.schema.constants";
 
@@ -36,7 +36,7 @@ class CreateGameDto {
   @ApiHideProperty()
   @IsOptional()
   @Equals(GAME_FIELDS_SPECS.phase.default)
-  public phase: GamePhases = GAME_FIELDS_SPECS.phase.default;
+  public phase: GamePhase = GAME_FIELDS_SPECS.phase.default;
 
   @ApiProperty(GAME_API_PROPERTIES.players as ApiPropertyOptions)
   @Transform(gamePlayersPositionTransformer)

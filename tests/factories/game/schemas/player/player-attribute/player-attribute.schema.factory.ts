@@ -1,8 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
-import { GamePhases } from "@/modules/game/enums/game.enum";
+import { GAME_PHASES, GAME_SOURCES } from "@/modules/game/constants/game.constants";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema";
@@ -193,8 +192,8 @@ function createFakeCantVoteByScapegoatPlayerAttribute(game: Game, attribute: Par
     source: RoleNames.SCAPEGOAT,
     remainingPhases: 1,
     activeAt: {
-      turn: game.phase === GamePhases.DAY ? game.turn + 1 : game.turn,
-      phase: GamePhases.DAY,
+      turn: game.phase === "day" ? game.turn + 1 : game.turn,
+      phase: "day",
     },
     ...attribute,
   }, override);
@@ -220,7 +219,7 @@ function createFakeContaminatedByRustySwordKnightPlayerAttribute(attribute: Part
 function createFakePlayerAttributeActivation(attributeActivation: Partial<PlayerAttributeActivation> = {}, override: object = {}): PlayerAttributeActivation {
   return plainToInstance(PlayerAttributeActivation, {
     turn: attributeActivation.turn ?? faker.number.int({ min: 1 }),
-    phase: attributeActivation.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
+    phase: attributeActivation.phase ?? faker.helpers.arrayElement(GAME_PHASES),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

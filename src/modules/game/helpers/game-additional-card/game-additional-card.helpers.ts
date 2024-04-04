@@ -1,6 +1,6 @@
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card.types";
+import type { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card/game-additional-card.types";
 import type { RoleNames } from "@/modules/role/enums/role.enum";
 
 function getGameAdditionalCardWithRoleNameAndRecipient(roleName: RoleNames, recipient: GameAdditionalCardRecipientRoleName, game: Game): GameAdditionalCard | undefined {

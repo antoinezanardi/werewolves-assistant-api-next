@@ -2,7 +2,6 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
@@ -110,10 +109,10 @@ describe("Game Phase Service", () => {
     });
 
     it("should switch to night and append upcoming night plays when game's current phase is DAY.", async() => {
-      const game = createFakeGame({ phase: GamePhases.DAY, upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const game = createFakeGame({ phase: "day", upcomingPlays: [createFakeGamePlayHunterShoots()] });
       const expectedGame = createFakeGame({
         ...game,
-        phase: GamePhases.NIGHT,
+        phase: "night",
         turn: game.turn + 1,
         upcomingPlays: [...game.upcomingPlays, ...upcomingPlays],
       });
@@ -122,10 +121,10 @@ describe("Game Phase Service", () => {
     });
 
     it("should switch to day and append upcoming day plays when game's current phase is NIGHT.", async() => {
-      const game = createFakeGame({ phase: GamePhases.NIGHT, upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const game = createFakeGame({ phase: "night", upcomingPlays: [createFakeGamePlayHunterShoots()] });
       const expectedGame = createFakeGame({
         ...game,
-        phase: GamePhases.DAY,
+        phase: "day",
         upcomingPlays: [...game.upcomingPlays, ...upcomingPlays],
       });
 
@@ -139,14 +138,14 @@ describe("Game Phase Service", () => {
     });
 
     it("should call applyStartingNightPlayerAttributesOutcomes when game's current phase is NIGHT.", () => {
-      const game = createFakeGame({ phase: GamePhases.NIGHT });
+      const game = createFakeGame({ phase: "night" });
       services.gamePhase.applyStartingGamePhaseOutcomes(game);
 
       expect(mocks.gamePhaseService.applyStartingNightPlayerAttributesOutcomes).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should return game as is when game's current phase is DAY.", () => {
-      const game = createFakeGame({ phase: GamePhases.DAY });
+      const game = createFakeGame({ phase: "day" });
       services.gamePhase.applyStartingGamePhaseOutcomes(game);
 
       expect(mocks.gamePhaseService.applyStartingNightPlayerAttributesOutcomes).not.toHaveBeenCalled();
@@ -165,7 +164,7 @@ describe("Game Phase Service", () => {
         createFakePlayer(),
         createFakePlayer(),
       ];
-      const game = createFakeGame({ phase: GamePhases.NIGHT, players });
+      const game = createFakeGame({ phase: "night", players });
       mocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer.mockResolvedValue(game);
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayers"](game);
 
@@ -238,7 +237,7 @@ describe("Game Phase Service", () => {
 
     it("should call ending night method when game phase is night.", async() => {
       const player = createFakePlayer();
-      const game = createFakeGame({ phase: GamePhases.NIGHT });
+      const game = createFakeGame({ phase: "night" });
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayer"](player, game);
 
       expect(mocks.gamePhaseService.applyEndingNightPlayerAttributesOutcomesToPlayer).toHaveBeenCalledExactlyOnceWith(player, game);
@@ -247,7 +246,7 @@ describe("Game Phase Service", () => {
 
     it("should call ending day method when game phase is day.", async() => {
       const player = createFakePlayer();
-      const game = createFakeGame({ phase: GamePhases.DAY });
+      const game = createFakeGame({ phase: "day" });
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayer"](player, game);
 
       expect(mocks.gamePhaseService.applyEndingDayPlayerAttributesOutcomesToPlayer).toHaveBeenCalledExactlyOnceWith(player, game);

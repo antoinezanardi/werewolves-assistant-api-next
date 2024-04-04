@@ -5,6 +5,17 @@ import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 
+const GAME_PHASES = [
+  "night",
+  "day",
+] as const;
+
+const GAME_STATUSES = [
+  "playing",
+  "over",
+  "canceled",
+] as const;
+
 const GAME_SOURCES = [
   ...Object.values(PlayerGroups),
   ...Object.values(RoleNames),
@@ -215,6 +226,8 @@ const NIGHT_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIO
 const DAY_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => occurrence === GamePlayOccurrences.ON_DAYS);
 
 export {
+  GAME_PHASES,
+  GAME_STATUSES,
   GAME_SOURCES,
   GAME_PLAYS_PRIORITY_LIST,
   NIGHT_GAME_PLAYS_PRIORITY_LIST,

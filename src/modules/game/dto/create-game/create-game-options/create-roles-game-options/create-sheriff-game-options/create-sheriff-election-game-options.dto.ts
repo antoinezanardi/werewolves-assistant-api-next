@@ -2,8 +2,9 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
 
+import { GamePhase } from "@/modules/game/types/game.types";
+import { GAME_PHASES } from "@/modules/game/constants/game.constants";
 import { SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES, SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options/sheriff-election-game-options.schema.constants";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 
 class CreateSheriffElectionGameOptionsDto {
   @ApiProperty({
@@ -20,8 +21,8 @@ class CreateSheriffElectionGameOptionsDto {
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @IsEnum(GamePhases)
-  public phase: GamePhases = SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.phase.default;
+  @IsEnum(GAME_PHASES)
+  public phase: GamePhase = SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.phase.default;
 }
 
 export { CreateSheriffElectionGameOptionsDto };

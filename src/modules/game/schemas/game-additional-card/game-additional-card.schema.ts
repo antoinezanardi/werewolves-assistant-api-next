@@ -4,7 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform } from "class-transformer";
 import { Types } from "mongoose";
 
-import { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card.types";
+import { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card/game-additional-card.types";
 import { GAME_ADDITIONAL_CARDS_API_PROPERTIES, GAME_ADDITIONAL_CARDS_FIELDS_SPECS } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema.constants";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 

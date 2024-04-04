@@ -3,8 +3,8 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
+import { GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
 import { GAME_HISTORY_RECORD_PLAY_VOTING_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema.constants";
-import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import { Player } from "@/modules/game/schemas/player/player.schema";
 
 @Schema({
@@ -16,7 +16,7 @@ class GameHistoryRecordPlayVoting {
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_VOTING_API_PROPERTIES.result as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS.result)
   @Expose()
-  public result: GameHistoryRecordVotingResults;
+  public result: GameHistoryRecordVotingResult;
 
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_VOTING_API_PROPERTIES.nominatedPlayers as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS.nominatedPlayers)

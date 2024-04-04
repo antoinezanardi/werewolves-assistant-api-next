@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 
 import type { GameSource } from "@/modules/game/types/game.types";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helpers";
@@ -33,8 +32,8 @@ export class GamePhaseService {
 
   public async switchPhaseAndAppendGamePhaseUpcomingPlays(game: Game): Promise<Game> {
     const clonedGame = createGame(game);
-    clonedGame.phase = clonedGame.phase === GamePhases.NIGHT ? GamePhases.DAY : GamePhases.NIGHT;
-    if (clonedGame.phase === GamePhases.NIGHT) {
+    clonedGame.phase = clonedGame.phase === "night" ? "day" : "night";
+    if (clonedGame.phase === "night") {
       clonedGame.turn++;
     }
     const phaseUpcomingPlays = await this.gamePlayService.getPhaseUpcomingPlays(clonedGame);
@@ -44,7 +43,7 @@ export class GamePhaseService {
 
   public applyStartingGamePhaseOutcomes(game: Game): Game {
     const clonedGame = createGame(game);
-    if (clonedGame.phase === GamePhases.NIGHT) {
+    if (clonedGame.phase === "night") {
       return this.applyStartingNightPlayerAttributesOutcomes(clonedGame);
     }
     return clonedGame;
@@ -86,7 +85,7 @@ export class GamePhaseService {
   private async applyEndingGamePhasePlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     const clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);
-    if (clonedGame.phase === GamePhases.NIGHT) {
+    if (clonedGame.phase === "night") {
       return this.applyEndingNightPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);
     }
     return this.applyEndingDayPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);

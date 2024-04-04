@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { isDefined } from "class-validator";
 
+import { GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
 import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { createGamePlaySourceInteraction } from "@/modules/game/helpers/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.factory";
@@ -14,7 +15,6 @@ import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import type { GamePlaySourceName } from "@/modules/game/types/game-play.types";
 import { WEREWOLF_ROLES } from "@/modules/role/constants/role.constants";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 

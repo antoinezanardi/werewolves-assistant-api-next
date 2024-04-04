@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { PlayerVoteCount } from "@/modules/game/types/game-play/game-play.types";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
@@ -8,7 +9,6 @@ import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/mo
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import type { PlayerVoteCount } from "@/modules/game/types/game-play.types";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 import { RoleNames } from "@/modules/role/enums/role.enum";
 

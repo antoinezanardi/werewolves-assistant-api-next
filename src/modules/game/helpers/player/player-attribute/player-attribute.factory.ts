@@ -1,6 +1,5 @@
 import { plainToInstance } from "class-transformer";
 
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
@@ -57,8 +56,8 @@ function createCantVoteByScapegoatPlayerAttribute(game: Game, playerAttribute: P
     source: RoleNames.SCAPEGOAT,
     remainingPhases: 1,
     activeAt: {
-      turn: game.phase === GamePhases.DAY ? game.turn + 1 : game.turn,
-      phase: GamePhases.DAY,
+      turn: game.phase === "day" ? game.turn + 1 : game.turn,
+      phase: "day",
     },
     ...playerAttribute,
   });

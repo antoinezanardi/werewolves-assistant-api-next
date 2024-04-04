@@ -1,4 +1,3 @@
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -9,7 +8,7 @@ import { RoleNames } from "@/modules/role/enums/role.enum";
 
 function isPlayerAttributeActive({ activeAt }: PlayerAttribute, game: Game): boolean {
   return activeAt === undefined || activeAt.turn < game.turn ||
-    activeAt.turn === game.turn && (activeAt.phase === game.phase || game.phase === GamePhases.DAY);
+    activeAt.turn === game.turn && (activeAt.phase === game.phase || game.phase === "day");
 }
 
 function getPlayerAttributeWithName({ attributes }: Player, attributeName: PlayerAttributeNames): PlayerAttribute | undefined {

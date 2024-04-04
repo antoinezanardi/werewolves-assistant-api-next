@@ -4,7 +4,6 @@ import type { Types } from "mongoose";
 
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
-import { GameStatuses } from "@/modules/game/enums/game.enum";
 import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.helpers";
 import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-play/game-play.helpers";
 import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
@@ -19,7 +18,7 @@ import { PlayerAttributeService } from "@/modules/game/providers/services/player
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
 import { createCantGenerateGamePlaysUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
@@ -61,7 +60,7 @@ export class GameService {
 
   public async cancelGame(game: Game): Promise<Game> {
     this.validateGameIsPlaying(game);
-    return this.updateGame(game._id, { status: GameStatuses.CANCELED });
+    return this.updateGame(game._id, { status: "canceled" });
   }
 
   public async makeGamePlay(game: Game, makeGamePlayDto: MakeGamePlayDto): Promise<Game> {
@@ -86,7 +85,7 @@ export class GameService {
   }
 
   private validateGameIsPlaying(game: Game): void {
-    if (game.status !== GameStatuses.PLAYING) {
+    if (game.status !== "playing") {
       throw new BadResourceMutationException(ApiResources.GAMES, game._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
     }
   }
@@ -116,7 +115,7 @@ export class GameService {
 
   private setGameAsOver(game: Game): Game {
     const clonedGame = createGameFromFactory(game);
-    clonedGame.status = GameStatuses.OVER;
+    clonedGame.status = "over";
     clonedGame.victory = this.gameVictoryService.generateGameVictoryData(clonedGame);
     return clonedGame;
   }
