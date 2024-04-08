@@ -98,7 +98,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.2.1",
     "@commitlint/config-conventional": "^19.1.0",
-    "@cucumber/cucumber": "^10.3.2",
+    "@cucumber/cucumber": "^10.4.0",
     "@faker-js/faker": "^8.4.1",
     "@nestjs/cli": "^10.3.2",
     "@nestjs/schematics": "^10.1.1",
