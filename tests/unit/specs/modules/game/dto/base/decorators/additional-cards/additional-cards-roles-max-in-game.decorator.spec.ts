@@ -1,8 +1,7 @@
 import type { ValidationArguments } from "class-validator";
 
-import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import { areAdditionalCardsRolesMaxInGameRespected, getAdditionalCardsRolesMaxInGameDefaultMessage } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-roles-max-in-game.decorator";
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
@@ -23,10 +22,10 @@ describe("Additional Cards Roles Max in Game Decorator", () => {
           value: undefined,
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.SEER } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.VILLAGER } }),
-              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: RoleNames.THIEF } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "seer" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "villager" } }),
+              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: "thief" } }),
             ],
           }),
           constraints: [],
@@ -38,13 +37,13 @@ describe("Additional Cards Roles Max in Game Decorator", () => {
       {
         test: "should return false when game player cards are not defined.",
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
         ],
         validationArguments: {
           value: [
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
           ],
           object: createFakeCreateGameDto({}, { players: undefined }),
           constraints: [],
@@ -56,20 +55,20 @@ describe("Additional Cards Roles Max in Game Decorator", () => {
       {
         test: "should return false when one of the roles is not found in game additional cards.",
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.HUNTER }, { roleName: "unknown" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "hunter" }, { roleName: "unknown" }),
         ],
         validationArguments: {
           value: [
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.HUNTER }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "hunter" }),
           ],
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.SEER } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.WITCH } }),
-              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: RoleNames.THIEF } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "seer" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "witch" } }),
+              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: "thief" } }),
             ],
           }),
           constraints: [],
@@ -81,20 +80,20 @@ describe("Additional Cards Roles Max in Game Decorator", () => {
       {
         test: "should return false when at least one role max in game is not respected due to additional cards only.",
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WITCH }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WITCH }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "witch" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "witch" }),
         ],
         validationArguments: {
           value: [
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WITCH }),
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WITCH }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "witch" }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "witch" }),
           ],
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.SEER } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.VILLAGER } }),
-              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: RoleNames.THIEF } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "seer" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "villager" } }),
+              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: "thief" } }),
             ],
           }),
           constraints: [],
@@ -106,20 +105,20 @@ describe("Additional Cards Roles Max in Game Decorator", () => {
       {
         test: "should return false when at least one role max in game is not respected due to additional cards and player roles together.",
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WITCH }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "witch" }),
         ],
         validationArguments: {
           value: [
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WITCH }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "witch" }),
           ],
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.SEER } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.WITCH } }),
-              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: RoleNames.THIEF } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "seer" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "witch" } }),
+              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: "thief" } }),
             ],
           }),
           constraints: [],
@@ -131,20 +130,20 @@ describe("Additional Cards Roles Max in Game Decorator", () => {
       {
         test: "should return true when every role max in game are respected among additional cards and player roles together.",
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.HUNTER }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "hunter" }),
         ],
         validationArguments: {
           value: [
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF }),
-            createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.HUNTER }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "werewolf" }),
+            createFakeCreateGameAdditionalCardDto({ roleName: "hunter" }),
           ],
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.SEER } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.WITCH } }),
-              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: RoleNames.THIEF } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "seer" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "witch" } }),
+              createFakeCreateGamePlayerDto({ name: "Thomas", role: { name: "thief" } }),
             ],
           }),
           constraints: [],

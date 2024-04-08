@@ -1,6 +1,6 @@
-import { ROLES, VILLAGER_ROLES, WEREWOLF_ROLES } from "@/modules/role/constants/role.constants";
+import { ROLES, VILLAGER_ROLES, WEREWOLF_ROLES } from "@/modules/role/constants/role-set.constants";
 import { RoleSides } from "@/modules/role/enums/role.enum";
-import type { Role } from "@/modules/role/types/role.types";
+import type { Role } from "@/modules/role/types/role.class";
 
 describe("Role Constant", () => {
   describe("werewolvesRoles", () => {

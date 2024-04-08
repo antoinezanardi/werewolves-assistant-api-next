@@ -2,14 +2,12 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 
-import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helpers";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
@@ -222,8 +220,8 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when chosen card is not defined.", () => {
       const chosenCard = undefined;
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "actor", isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: "white-werewolf", recipient: "actor", isUsed: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards });
 
@@ -231,10 +229,10 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when chosen card is for actor.", () => {
-      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false });
+      const chosenCard = createFakeGameAdditionalCard({ roleName: "white-werewolf", recipient: "actor", isUsed: false });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "actor", isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: "white-werewolf", recipient: "actor", isUsed: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards });
 
@@ -242,10 +240,10 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw an error when chosen card is not for the actor.", async() => {
-      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF, isUsed: false });
+      const chosenCard = createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "thief", isUsed: false });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "actor", isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: "white-werewolf", recipient: "actor", isUsed: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards });
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_ACTOR);
@@ -256,10 +254,10 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw an error when chosen card is already used.", async() => {
-      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: true });
+      const chosenCard = createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "actor", isUsed: true });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.ACTOR, isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "actor", isUsed: false }),
+        createFakeGameAdditionalCard({ roleName: "white-werewolf", recipient: "actor", isUsed: false }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards });
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.CHOSEN_CARD_NOT_FOR_ACTOR);
@@ -272,7 +270,7 @@ describe("Game Play Validator Service", () => {
 
   describe("validateGamePlayThiefChosenCard", () => {
     it("should do nothing when game additional cards are not set.", () => {
-      const chosenCard = createFakeGameAdditionalCard({ recipient: RoleNames.ACTOR });
+      const chosenCard = createFakeGameAdditionalCard({ recipient: "actor" });
       const currentPlay = createFakeGamePlayThiefChoosesCard({ canBeSkipped: false });
       const game = createFakeGameWithCurrentPlay({ currentPlay });
 
@@ -283,8 +281,8 @@ describe("Game Play Validator Service", () => {
       const chosenCard = undefined;
       const currentPlay = createFakeGamePlayThiefChoosesCard({ canBeSkipped: true });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.SEER, recipient: RoleNames.THIEF }),
+        createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "thief" }),
+        createFakeGameAdditionalCard({ roleName: "seer", recipient: "thief" }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards, currentPlay });
 
@@ -292,11 +290,11 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should do nothing when thief chose a card for him.", () => {
-      const chosenCard = createFakeGameAdditionalCard({ recipient: RoleNames.THIEF });
+      const chosenCard = createFakeGameAdditionalCard({ recipient: "thief" });
       const currentPlay = createFakeGamePlayThiefChoosesCard({ canBeSkipped: false });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.THIEF }),
+        createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "thief" }),
+        createFakeGameAdditionalCard({ roleName: "white-werewolf", recipient: "thief" }),
       ];
       const game = createFakeGameWithCurrentPlay({ additionalCards, currentPlay });
 
@@ -306,8 +304,8 @@ describe("Game Play Validator Service", () => {
     it("should throw error when thief can't skip and he didn't choose a card.", async() => {
       const chosenCard = undefined;
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.THIEF }),
+        createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "thief" }),
+        createFakeGameAdditionalCard({ roleName: "white-werewolf", recipient: "thief" }),
       ];
       const currentPlay = createFakeGamePlayThiefChoosesCard({ canBeSkipped: false });
       const game = createFakeGameWithCurrentPlay({ additionalCards, currentPlay });
@@ -319,10 +317,10 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw error when chosen card is not for thief.", async() => {
-      const chosenCard = createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR });
+      const chosenCard = createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "actor" });
       const additionalCards = [
-        createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
-        createFakeGameAdditionalCard({ roleName: RoleNames.WHITE_WEREWOLF, recipient: RoleNames.THIEF }),
+        createFakeGameAdditionalCard({ roleName: "werewolf", recipient: "thief" }),
+        createFakeGameAdditionalCard({ roleName: "white-werewolf", recipient: "thief" }),
       ];
       const currentPlay = createFakeGamePlayThiefChoosesCard({ canBeSkipped: true });
       const game = createFakeGameWithCurrentPlay({ additionalCards, currentPlay });
@@ -376,7 +374,7 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should not call neither thief or actor validation methods when game source is any of them.", () => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide({ action: GamePlayActions.CHOOSE_CARD }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWolfHoundChoosesSide({ action: "choose-card" }) });
       const makeGamePlayWithRelationsDto = createFakeMakeGamePlayWithRelationsDto();
       services.gamePlayValidator["validateGamePlayWithRelationsDtoChosenCard"](makeGamePlayWithRelationsDto, game);
 
@@ -409,7 +407,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlaySurvivorsTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.STEAL_ROLE, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "steal-role", game);
     });
 
     it("should do nothing when there is no target.", () => {
@@ -517,8 +515,8 @@ describe("Game Play Validator Service", () => {
     it("should throw error when there are too much targets for life potion.", async() => {
       const game = createFakeGameWithCurrentPlay();
       const drankLifePotionTargets = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
       ];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.TOO_MUCH_DRANK_LIFE_POTION_TARGETS);
@@ -531,7 +529,7 @@ describe("Game Play Validator Service", () => {
     it("should throw error when life potion target can't drink it.", async() => {
       const game = createFakeGameWithCurrentPlay();
       const targetedPlayer = createFakePlayer({ isAlive: true, attributes: [] });
-      const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WitchPotions.LIFE })];
+      const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: "life" })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(false);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_LIFE_POTION_TARGET);
       const error = await getError(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game));
@@ -550,7 +548,7 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when life potion target is applied on valid target.", () => {
       const game = createFakeGameWithCurrentPlay();
       const targetedPlayer = createFakePlayer({ attributes: [createFakeEatenByWerewolvesPlayerAttribute()], isAlive: true });
-      const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WitchPotions.LIFE })];
+      const drankLifePotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: "life" })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
 
       expect(() => services.gamePlayValidator["validateDrankLifePotionTargets"](drankLifePotionTargets, game)).not.toThrow();
@@ -561,8 +559,8 @@ describe("Game Play Validator Service", () => {
     it("should throw error when there are too much targets for death potion.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions() });
       const drankDeathPotionTargets = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
       ];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.TOO_MUCH_DRANK_DEATH_POTION_TARGETS);
@@ -575,7 +573,7 @@ describe("Game Play Validator Service", () => {
     it("should throw error when death potion target can't drink it.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions() });
       const targetedPlayer = createFakePlayer({ isAlive: false });
-      const drankDeathPotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WitchPotions.DEATH })];
+      const drankDeathPotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: "death" })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(false);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_DEATH_POTION_TARGET);
       const error = await getError(() => services.gamePlayValidator["validateDrankDeathPotionTargets"](drankDeathPotionTargets, game));
@@ -594,7 +592,7 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when death potion target is applied on valid target.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions() });
       const targetedPlayer = createFakePlayer({ isAlive: true });
-      const drankDeathPotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: WitchPotions.DEATH })];
+      const drankDeathPotionTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: targetedPlayer, drankPotion: "death" })];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
 
       expect(() => services.gamePlayValidator["validateDrankDeathPotionTargets"](drankDeathPotionTargets, game)).not.toThrow();
@@ -616,14 +614,14 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayTargetsWithRelationsDto = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
       ];
-      const mockedError = new UnexpectedException("validateGamePlayWitchTargets", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: RoleNames.WITCH });
+      const mockedError = new UnexpectedException("validateGamePlayWitchTargets", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: "witch" });
       mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException.mockReturnValue(mockedError);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("validateGamePlayWitchTargets", { gameId: game._id, roleName: RoleNames.WITCH });
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("validateGamePlayWitchTargets", { gameId: game._id, roleName: "witch" });
     });
 
     it("should throw error when witch targeted someone with life potion but already used it with death potion before.", async() => {
@@ -635,19 +633,19 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayTargetsWithRelationsDto = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
       const gameHistoryRecordTargets = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
       ];
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) }),
       ];
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockResolvedValue(gameHistoryRecords);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "life").mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "death").mockResolvedValue(gameHistoryRecords);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
       const error = await getError(async() => services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game));
 
@@ -664,16 +662,16 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayTargetsWithRelationsDto = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
         createFakeMakeGamePlayTargetWithRelationsDto({}),
       ];
-      const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE })];
+      const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" })];
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) }),
       ];
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockResolvedValue(gameHistoryRecords);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "life").mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "death").mockResolvedValue([]);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
       const error = await getError(async() => services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game));
 
@@ -690,19 +688,19 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayTargetsWithRelationsDto = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
       const gameHistoryRecordTargets = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
       ];
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) }),
       ];
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockResolvedValue(gameHistoryRecords);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "life").mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "death").mockResolvedValue(gameHistoryRecords);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
       const error = await getError(async() => services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game));
 
@@ -719,16 +717,16 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayTargetsWithRelationsDto = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1], drankPotion: WitchPotions.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1], drankPotion: "death" }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2] }),
       ];
-      const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH })];
+      const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" })];
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
         createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) }),
       ];
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockResolvedValue([]);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "life").mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "death").mockResolvedValue(gameHistoryRecords);
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
       const error = await getError(async() => services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game));
 
@@ -745,8 +743,8 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ player: createFakeSeerAlivePlayer() })];
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockResolvedValue([]);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "life").mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "death").mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
       expect(mocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
@@ -762,11 +760,11 @@ describe("Game Play Validator Service", () => {
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayTargetsWithRelationsDto = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
       ];
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockResolvedValue([]);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "life").mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "death").mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
       expect(mocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
@@ -781,11 +779,11 @@ describe("Game Play Validator Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWitchUsesPotions() });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE })];
-      const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH })];
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" })];
+      const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" })];
       const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) })];
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockReturnValue([]);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "life").mockReturnValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "death").mockResolvedValue(gameHistoryRecords);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
       expect(mocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([makeGamePlayTargetsWithRelationsDto[0]], game);
@@ -800,11 +798,11 @@ describe("Game Play Validator Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlayWitchUsesPotions() });
-      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH })];
-      const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE })];
+      const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" })];
+      const gameHistoryRecordTargets = [createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" })];
       const gameHistoryRecords = [createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordWitchUsePotionsPlay({ targets: gameHistoryRecordTargets }) })];
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.LIFE).mockResolvedValue(gameHistoryRecords);
-      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, WitchPotions.DEATH).mockResolvedValue([]);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "life").mockResolvedValue(gameHistoryRecords);
+      when(mocks.gameHistoryRecordService.getGameHistoryWitchUsesSpecificPotionRecords).calledWith(game._id, players[0]._id, "death").mockResolvedValue([]);
 
       await expect(services.gamePlayValidator["validateGamePlayWitchTargets"](makeGamePlayTargetsWithRelationsDto, game)).toResolve();
       expect(mocks.gamePlayValidatorService.validateDrankLifePotionTargets).toHaveBeenCalledExactlyOnceWith([], game);
@@ -829,7 +827,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayAccursedWolfFatherTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.INFECT, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "infect", game);
     });
 
     it("should do nothing when there is no target.", () => {
@@ -882,7 +880,7 @@ describe("Game Play Validator Service", () => {
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
       services.gamePlayValidator["validateGamePlayWerewolvesTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.EAT, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "eat", game);
     });
 
     it("should do nothing when there is no target.", () => {
@@ -1003,7 +1001,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayHunterTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.SHOOT, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "shoot", game);
     });
 
     it("should throw error when targeted player can't be shot.", async() => {
@@ -1041,7 +1039,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayScapegoatTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.BAN_VOTING, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "ban-voting", game);
     });
 
     it("should throw error when one of the targeted player can't be banned from voting.", async() => {
@@ -1087,7 +1085,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayCupidTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.CHARM, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "charm", game);
     });
 
     it("should throw error when one of the targeted player can't be charmed.", async() => {
@@ -1128,7 +1126,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayFoxTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.SNIFF, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "sniff", game);
     });
 
     it("should do nothing when there are no targets.", () => {
@@ -1170,7 +1168,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlaySeerTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.LOOK, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "look", game);
     });
 
     it("should throw error when targeted player can't be seen.", async() => {
@@ -1204,7 +1202,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayScandalmongerTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.MARK, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "mark", game);
     });
 
     it("should throw error when targeted player can't be marked.", async() => {
@@ -1246,7 +1244,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayWildChildTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.CHOOSE_AS_MODEL, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "choose-as-model", game);
     });
 
     it("should throw error when targeted player can't be chosen as model.", async() => {
@@ -1289,7 +1287,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayPiedPiperTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.CHARM, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "charm", game);
     });
 
     it("should throw error when one of the targeted player is not in the last to charm.", async() => {
@@ -1355,7 +1353,7 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayDefenderTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.PROTECT, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenCalledExactlyOnceWith(makeGamePlayTargetsWithRelationsDto, "protect", game);
     });
 
     it("should throw error when targeted player can't be targeted.", async() => {
@@ -1399,12 +1397,12 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValueOnce(false);
       services.gamePlayValidator["validateGamePlaySheriffTargets"](makeGamePlayTargetsWithRelationsDto, game);
 
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenNthCalledWith(1, makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE, game);
-      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenNthCalledWith(2, makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.SENTENCE_TO_DEATH, game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenNthCalledWith(1, makeGamePlayTargetsWithRelationsDto, "transfer-sheriff-role", game);
+      expect(mocks.gamePlayValidatorService.validateGamePlayTargetsBoundaries).toHaveBeenNthCalledWith(2, makeGamePlayTargetsWithRelationsDto, "sentence-to-death", game);
     });
 
     it("should do nothing when game play action is not DELEGATE nor SETTLE_VOTES.", () => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySheriffDelegates({ action: GamePlayActions.USE_POTIONS }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySheriffDelegates({ action: "use-potions" }) });
       const makeGamePlayTargetsWithRelationsDto = [createFakeMakeGamePlayTargetWithRelationsDto()];
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
 
@@ -1480,7 +1478,7 @@ describe("Game Play Validator Service", () => {
           source: createFakeGamePlaySource({
             interactions: [
               createFakeGamePlaySourceInteraction({
-                type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE,
+                type: "transfer-sheriff-role",
                 boundaries: createFakeGamePlaySourceInteractionBoundaries({ min: 4, max: 4 }),
               }),
             ],
@@ -1488,7 +1486,7 @@ describe("Game Play Validator Service", () => {
         }),
       });
 
-      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.CHARM, game)).not.toThrow();
+      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, "charm", game)).not.toThrow();
     });
 
     it("should throw error when min boundary is not respected.", async() => {
@@ -1502,7 +1500,7 @@ describe("Game Play Validator Service", () => {
           source: createFakeGamePlaySource({
             interactions: [
               createFakeGamePlaySourceInteraction({
-                type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE,
+                type: "transfer-sheriff-role",
                 boundaries: createFakeGamePlaySourceInteractionBoundaries({ min: 4, max: 4 }),
               }),
             ],
@@ -1510,7 +1508,7 @@ describe("Game Play Validator Service", () => {
         }),
       });
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.TOO_LESS_TARGETS);
-      const error = await getError(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE, game));
+      const error = await getError(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, "transfer-sheriff-role", game));
 
       expect(error).toStrictEqual<BadGamePlayPayloadException>(expectedError);
       expect(error).toHaveProperty("options", { description: "There are too less targets for this current game's state" });
@@ -1527,7 +1525,7 @@ describe("Game Play Validator Service", () => {
           source: createFakeGamePlaySource({
             interactions: [
               createFakeGamePlaySourceInteraction({
-                type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE,
+                type: "transfer-sheriff-role",
                 boundaries: createFakeGamePlaySourceInteractionBoundaries({ min: 1, max: 2 }),
               }),
             ],
@@ -1535,7 +1533,7 @@ describe("Game Play Validator Service", () => {
         }),
       });
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.TOO_MUCH_TARGETS);
-      const error = await getError(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE, game));
+      const error = await getError(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, "transfer-sheriff-role", game));
 
       expect(error).toStrictEqual<BadGamePlayPayloadException>(expectedError);
       expect(error).toHaveProperty("options", { description: "There are too much targets for this current game's state" });
@@ -1552,7 +1550,7 @@ describe("Game Play Validator Service", () => {
           source: createFakeGamePlaySource({
             interactions: [
               createFakeGamePlaySourceInteraction({
-                type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE,
+                type: "transfer-sheriff-role",
                 boundaries: createFakeGamePlaySourceInteractionBoundaries({ min: 3, max: 3 }),
               }),
             ],
@@ -1560,7 +1558,7 @@ describe("Game Play Validator Service", () => {
         }),
       });
 
-      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE, game)).not.toThrow();
+      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, "transfer-sheriff-role", game)).not.toThrow();
     });
 
     it("should do nothing when boundaries are respected, even equal to min.", () => {
@@ -1574,7 +1572,7 @@ describe("Game Play Validator Service", () => {
           source: createFakeGamePlaySource({
             interactions: [
               createFakeGamePlaySourceInteraction({
-                type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE,
+                type: "transfer-sheriff-role",
                 boundaries: createFakeGamePlaySourceInteractionBoundaries({ min: 3, max: 4 }),
               }),
             ],
@@ -1582,7 +1580,7 @@ describe("Game Play Validator Service", () => {
         }),
       });
 
-      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE, game)).not.toThrow();
+      expect(() => services.gamePlayValidator["validateGamePlayTargetsBoundaries"](makeGamePlayTargetsWithRelationsDto, "transfer-sheriff-role", game)).not.toThrow();
     });
   });
 
@@ -1925,10 +1923,10 @@ describe("Game Play Validator Service", () => {
 
   describe("validateTargetsPotionUsage", () => {
     it("should throw error when expected action is not use potions but targets drank potions.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions({ action: GamePlayActions.CHOOSE_CARD }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions({ action: "choose-card" }) });
       const makeGamePlayTargetsWithRelationsDto = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
@@ -1939,10 +1937,10 @@ describe("Game Play Validator Service", () => {
     });
 
     it("should throw error when expected source is not witch but targets drank potions.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions({ source: createFakeGamePlaySource({ name: RoleNames.THIEF }) }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions({ source: createFakeGamePlaySource({ name: "thief" }) }) });
       const makeGamePlayTargetsWithRelationsDto = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
       const expectedError = new BadGamePlayPayloadException(BadGamePlayPayloadReasons.UNEXPECTED_DRANK_POTION_TARGET);
@@ -1955,8 +1953,8 @@ describe("Game Play Validator Service", () => {
     it("should do nothing when expected some players drank potions and game play is valid.", () => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlayWitchUsesPotions() });
       const makeGamePlayTargetsWithRelationsDto = [
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.LIFE }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: WitchPotions.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "life" }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ drankPotion: "death" }),
         createFakeMakeGamePlayTargetWithRelationsDto(),
       ];
 
@@ -2031,8 +2029,8 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const source = createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players: [players[2]] });
-      const currentPlay = createFakeGamePlaySurvivorsVote({ source, cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const source = createFakeGamePlaySource({ name: "survivors", players: [players[2]] });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ source, cause: "previous-votes-were-in-ties" });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2055,8 +2053,8 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const source = createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players: [players[2]] });
-      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ source, cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const source = createFakeGamePlaySource({ name: "survivors", players: [players[2]] });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ source, cause: "previous-votes-were-in-ties" });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2079,7 +2077,7 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2088,8 +2086,8 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game);
 
-      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(1, players[0]._id, PlayerInteractionTypes.VOTE, game);
-      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(2, players[1]._id, PlayerInteractionTypes.VOTE, game);
+      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(1, players[0]._id, "vote", game);
+      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(2, players[1]._id, "vote", game);
     });
 
     it("should call isPlayerInteractableWithInteractionTypeInCurrentGamePlay with choose as sheriff interaction type when action is elect sheriff.", () => {
@@ -2099,7 +2097,7 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: "previous-votes-were-in-ties" });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2108,8 +2106,8 @@ describe("Game Play Validator Service", () => {
       mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay.mockReturnValue(true);
       services.gamePlayValidator["validateGamePlayVotesTieBreakerWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game);
 
-      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(1, players[0]._id, PlayerInteractionTypes.CHOOSE_AS_SHERIFF, game);
-      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(2, players[1]._id, PlayerInteractionTypes.CHOOSE_AS_SHERIFF, game);
+      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(1, players[0]._id, "choose-as-sheriff", game);
+      expect(mocks.gamePlayHelper.isPlayerInteractableWithInteractionTypeInCurrentGamePlay).toHaveBeenNthCalledWith(2, players[1]._id, "choose-as-sheriff", game);
     });
 
     it("should do nothing when cause is previous votes were in tie and all voted players were in previous tie.", () => {
@@ -2119,7 +2117,7 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2137,8 +2135,8 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const source = createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players: [players[2]] });
-      const currentPlay = createFakeGamePlaySurvivorsVote({ source, cause: GamePlayCauses.ANGEL_PRESENCE });
+      const source = createFakeGamePlaySource({ name: "survivors", players: [players[2]] });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ source, cause: "angel-presence" });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2158,7 +2156,7 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const source = createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players: [players[2]] });
+      const source = createFakeGamePlaySource({ name: "survivors", players: [players[2]] });
       const currentPlay = createFakeGamePlaySurvivorsVote({ source });
       const game = createFakeGameWithCurrentPlay({ players, currentPlay });
       const makeGamePlayVotesWithRelationsDto = [
@@ -2180,12 +2178,12 @@ describe("Game Play Validator Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const source = createFakeGamePlaySource({
-        name: PlayerGroups.SURVIVORS,
+        name: "survivors",
         players,
         interactions: [
           createFakeGamePlaySourceInteraction({
-            type: PlayerInteractionTypes.VOTE,
-            source: PlayerGroups.SURVIVORS,
+            type: "vote",
+            source: "survivors",
             eligibleTargets: [players[1], players[2], players[3]],
             boundaries: { min: 1, max: 1 },
           }),
@@ -2215,7 +2213,7 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const source = createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS, players });
+      const source = createFakeGamePlaySource({ name: "survivors", players });
       const currentPlay = createFakeGamePlaySurvivorsVote({ source });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
@@ -2312,7 +2310,7 @@ describe("Game Play Validator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }) });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] })];
 
       expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).not.toThrow();
@@ -2326,7 +2324,7 @@ describe("Game Play Validator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }) });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] })];
 
       expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).not.toThrow();

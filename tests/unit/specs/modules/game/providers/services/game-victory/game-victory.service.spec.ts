@@ -1,11 +1,10 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import type { Game } from "@/modules/game/schemas/game.schema";
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
 import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import type { Game } from "@/modules/game/schemas/game.schema";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
@@ -52,7 +51,7 @@ describe("Game Victory Service", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.HUNTER }) }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: "hunter" }) }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const currentPlay = createFakeGamePlaySurvivorsVote();
@@ -99,7 +98,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ action: GamePlayActions.LOOK }),
+        createFakeGamePlayHunterShoots({ action: "look" }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const currentPlay = createFakeGamePlaySurvivorsVote();
@@ -116,7 +115,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.THIEF }) }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: "thief" }) }),
         createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
@@ -203,7 +202,7 @@ describe("Game Victory Service", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.HUNTER }) }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: "hunter" }) }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const game = createFakeGame({ players, upcomingPlays });

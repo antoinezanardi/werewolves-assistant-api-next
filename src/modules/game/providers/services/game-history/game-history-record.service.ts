@@ -2,15 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
-import { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
-import { GamePhase } from "@/modules/game/types/game.types";
-import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
-import type { WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
-import { PlayerAttributeNames, PlayerDeathCauses } from "@/modules/game/enums/player.enum";
 import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "@/modules/game/helpers/game.helpers";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
@@ -19,15 +12,20 @@ import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history
 import { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
 import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
+import { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
+import { GamePlayAction, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
+import { GamePhase } from "@/modules/game/types/game.types";
 
-import { toJSON } from "@/shared/misc/helpers/object.helpers";
 import { ApiResources } from "@/shared/api/enums/api.enums";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
+import { toJSON } from "@/shared/misc/helpers/object.helpers";
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 @Injectable()
@@ -51,7 +49,7 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getLastGameHistorySurvivorsVoteRecord(gameId);
   }
 
-  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayActions): Promise<GameHistoryRecord | null> {
+  public async getLastGameHistoryTieInVotesRecord(gameId: Types.ObjectId, action: GamePlayAction): Promise<GameHistoryRecord | null> {
     return this.gameHistoryRecordRepository.getLastGameHistoryTieInVotesRecord(gameId, action);
   }
 
@@ -59,7 +57,7 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getLastGameHistoryAccursedWolfFatherInfectsRecord(gameId, accursedWolfFatherPlayerId);
   }
 
-  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, witchPlayerId: Types.ObjectId, potion: WitchPotions): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryWitchUsesSpecificPotionRecords(gameId: Types.ObjectId, witchPlayerId: Types.ObjectId, potion: WitchPotion): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordRepository.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, potion);
   }
 
@@ -157,12 +155,12 @@ export class GameHistoryRecordService {
     nominatedPlayers: Player[],
     gameHistoryRecordToInsert: GameHistoryRecordToInsert,
   ): GameHistoryRecordVotingResult {
-    const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, PlayerAttributeNames.SHERIFF);
+    const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, "sheriff");
     const areSomePlayersDeadFromCurrentVotes = gameHistoryRecordToInsert.deadPlayers?.some(({ death }) => {
-      const deathFromVoteCauses = [PlayerDeathCauses.VOTE, PlayerDeathCauses.VOTE_SCAPEGOATED];
+      const deathFromVoteCauses = ["vote", "vote-scapegoated"];
       return deathFromVoteCauses.includes(death.cause);
     }) === true;
-    if (baseGame.currentPlay.action === GamePlayActions.ELECT_SHERIFF) {
+    if (baseGame.currentPlay.action === "elect-sheriff") {
       return sheriffPlayer ? "sheriff-election" : "tie";
     }
     if (!gameHistoryRecordToInsert.play.votes || gameHistoryRecordToInsert.play.votes.length === 0) {
@@ -171,7 +169,7 @@ export class GameHistoryRecordService {
     if (areSomePlayersDeadFromCurrentVotes) {
       return "death";
     }
-    if (baseGame.currentPlay.cause === GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES || nominatedPlayers.length === 1) {
+    if (baseGame.currentPlay.cause === "previous-votes-were-in-ties" || nominatedPlayers.length === 1) {
       return "inconsequential";
     }
     return "tie";

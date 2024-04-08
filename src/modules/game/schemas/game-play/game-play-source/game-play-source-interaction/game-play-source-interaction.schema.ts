@@ -4,10 +4,10 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
 import { GamePlaySourceInteractionBoundaries } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction-boundaries/game-play-source-interaction-boundaries.schema";
-import { GameSource } from "@/modules/game/types/game.types";
 import { GAME_PLAY_SOURCE_INTERACTION_API_PROPERTIES, GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema.constants";
-import { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { Player } from "@/modules/game/schemas/player/player.schema";
+import { GameSource } from "@/modules/game/types/game.types";
+import { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 
 @Schema({
   versionKey: false,
@@ -23,7 +23,7 @@ class GamePlaySourceInteraction {
   @ApiProperty(GAME_PLAY_SOURCE_INTERACTION_API_PROPERTIES.type as ApiPropertyOptions)
   @Prop(GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS.type)
   @Expose()
-  public type: PlayerInteractionTypes;
+  public type: PlayerInteractionType;
 
   @ApiProperty(GAME_PLAY_SOURCE_INTERACTION_API_PROPERTIES.eligibleTargets as ApiPropertyOptions)
   @Prop(GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS.eligibleTargets)

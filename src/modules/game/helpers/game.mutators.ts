@@ -1,9 +1,9 @@
 import type { Types } from "mongoose";
 
+import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
 import type { GameSource } from "@/modules/game/types/game.types";
 import { createGameAdditionalCard } from "@/modules/game/helpers/game-additional-card/game-additional-card.factory";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
-import type { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getPlayerWithId } from "@/modules/game/helpers/game.helpers";
 import { createPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
@@ -44,7 +44,7 @@ function addPlayersAttributeInGame(playerIds: Types.ObjectId[], game: Game, attr
   return clonedGame;
 }
 
-function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game, attributeName: PlayerAttributeNames): Game {
+function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game, attributeName: PlayerAttributeName): Game {
   const clonedGame = createGame(game);
   const player = getPlayerWithId(clonedGame, playerId);
   if (!player) {
@@ -54,7 +54,7 @@ function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game,
   return updatePlayerInGame(playerId, player, clonedGame);
 }
 
-function removePlayerAttributeByNameAndSourceInGame(playerId: Types.ObjectId, game: Game, attributeName: PlayerAttributeNames, attributeSource: GameSource): Game {
+function removePlayerAttributeByNameAndSourceInGame(playerId: Types.ObjectId, game: Game, attributeName: PlayerAttributeName, attributeSource: GameSource): Game {
   const clonedGame = createGame(game);
   const player = getPlayerWithId(clonedGame, playerId);
   if (!player) {

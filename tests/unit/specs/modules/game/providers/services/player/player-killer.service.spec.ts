@@ -1,16 +1,15 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import { WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { PlayerDeathCauses } from "@/modules/game/enums/player.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import type { PlayerDeathCause } from "@/modules/game/types/player/player-death/player-death.types";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
@@ -445,7 +444,7 @@ describe("Player Killer Service", () => {
       const elderPlayer = createFakeElderAlivePlayer();
       const game = createFakeGame({ turn: 4, currentPlay: createFakeGamePlayHunterShoots(), options });
       const gameHistoryRecordPlayElderTarget = createFakeGameHistoryRecordPlayTarget({ player: createFakeElderAlivePlayer() });
-      const gameHistoryRecordPlayElderDrankLifePotionTarget = createFakeGameHistoryRecordPlayTarget({ ...gameHistoryRecordPlayElderTarget, drankPotion: WitchPotions.LIFE });
+      const gameHistoryRecordPlayElderDrankLifePotionTarget = createFakeGameHistoryRecordPlayTarget({ ...gameHistoryRecordPlayElderTarget, drankPotion: "life" });
       const werewolvesEatElderRecords = [
         createFakeGameHistoryRecord({
           play: createFakeGameHistoryRecordWerewolvesEatPlay({ targets: [gameHistoryRecordPlayElderTarget] }),
@@ -541,28 +540,28 @@ describe("Player Killer Service", () => {
     it.each<{
       test: string;
       elderPlayer: Player;
-      cause: PlayerDeathCauses;
+      cause: PlayerDeathCause;
       getElderLivesCountAgainstWerewolvesMockReturnValue: number;
       expected: boolean;
     }>([
       {
         test: "should return true when cause is not EATEN.",
         elderPlayer: createFakeElderAlivePlayer(),
-        cause: PlayerDeathCauses.VOTE,
+        cause: "vote",
         getElderLivesCountAgainstWerewolvesMockReturnValue: 2,
         expected: true,
       },
       {
         test: "should return false when cause is EATEN but elder still have at least one life left.",
         elderPlayer: createFakeElderAlivePlayer(),
-        cause: PlayerDeathCauses.EATEN,
+        cause: "eaten",
         getElderLivesCountAgainstWerewolvesMockReturnValue: 2,
         expected: false,
       },
       {
         test: "should return true when cause is EATEN but elder has 0 life left.",
         elderPlayer: createFakeElderAlivePlayer(),
-        cause: PlayerDeathCauses.EATEN,
+        cause: "eaten",
         getElderLivesCountAgainstWerewolvesMockReturnValue: 0,
         expected: true,
       },
@@ -669,35 +668,35 @@ describe("Player Killer Service", () => {
     it.each<{
       test: string;
       player: Player;
-      cause: PlayerDeathCauses;
+      cause: PlayerDeathCause;
       game: Game;
       expected: boolean;
     }>([
       {
         test: "should return true when idiot is already revealed.",
         player: createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true }) }),
-        cause: PlayerDeathCauses.VOTE,
+        cause: "vote",
         game: createFakeGame(),
         expected: true,
       },
       {
         test: "should return true when idiot is killed by other cause than a vote.",
         player: createFakeIdiotAlivePlayer(),
-        cause: PlayerDeathCauses.DEATH_POTION,
+        cause: "death-potion",
         game: createFakeGame(),
         expected: true,
       },
       {
         test: "should return true when idiot is killed by vote but powerless.",
         player: createFakeIdiotAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
-        cause: PlayerDeathCauses.VOTE,
+        cause: "vote",
         game: createFakeGame(),
         expected: true,
       },
       {
         test: "should return false when idiot is not revealed, dies from votes and is not powerless.",
         player: createFakeIdiotAlivePlayer(),
-        cause: PlayerDeathCauses.VOTE,
+        cause: "vote",
         game: createFakeGame(),
         expected: false,
       },
@@ -774,14 +773,14 @@ describe("Player Killer Service", () => {
       const game = createFakeGame();
       mocks.playerKillerService.canPlayerBeEaten.mockReturnValue(false);
 
-      await expect(services.playerKiller["isPlayerKillable"](player, game, PlayerDeathCauses.EATEN)).resolves.toBe(false);
+      await expect(services.playerKiller["isPlayerKillable"](player, game, "eaten")).resolves.toBe(false);
     });
 
     it("should not call can player be eaten validator when cause is not EATEN.", async() => {
       const player = createFakePlayer();
       const game = createFakeGame();
       mocks.playerKillerService.canPlayerBeEaten.mockReturnValue(false);
-      await services.playerKiller["isPlayerKillable"](player, game, PlayerDeathCauses.VOTE);
+      await services.playerKiller["isPlayerKillable"](player, game, "vote");
 
       expect(mocks.playerKillerService.canPlayerBeEaten).not.toHaveBeenCalled();
     });
@@ -790,16 +789,16 @@ describe("Player Killer Service", () => {
       const player = createFakeIdiotAlivePlayer();
       const game = createFakeGame();
       mocks.playerKillerService.isIdiotKillable.mockReturnValue(false);
-      await services.playerKiller["isPlayerKillable"](player, game, PlayerDeathCauses.VOTE);
+      await services.playerKiller["isPlayerKillable"](player, game, "vote");
 
-      expect(mocks.playerKillerService.isIdiotKillable).toHaveBeenCalledExactlyOnceWith(player, PlayerDeathCauses.VOTE, game);
+      expect(mocks.playerKillerService.isIdiotKillable).toHaveBeenCalledExactlyOnceWith(player, "vote", game);
     });
 
     it("should not call is idiot killable when player is not an idiot.", async() => {
       const player = createFakeSeerAlivePlayer();
       const game = createFakeGame();
       mocks.playerKillerService.isIdiotKillable.mockReturnValue(false);
-      await services.playerKiller["isPlayerKillable"](player, game, PlayerDeathCauses.VOTE);
+      await services.playerKiller["isPlayerKillable"](player, game, "vote");
 
       expect(mocks.playerKillerService.isIdiotKillable).not.toHaveBeenCalled();
     });
@@ -808,16 +807,16 @@ describe("Player Killer Service", () => {
       const player = createFakeElderAlivePlayer();
       const game = createFakeGame();
       mocks.playerKillerService.isElderKillable.mockReturnValue(false);
-      await services.playerKiller["isPlayerKillable"](player, game, PlayerDeathCauses.VOTE);
+      await services.playerKiller["isPlayerKillable"](player, game, "vote");
 
-      expect(mocks.playerKillerService.isElderKillable).toHaveBeenCalledExactlyOnceWith(game, player, PlayerDeathCauses.VOTE);
+      expect(mocks.playerKillerService.isElderKillable).toHaveBeenCalledExactlyOnceWith(game, player, "vote");
     });
 
     it("should not call is elder killable when player is not an elder.", async() => {
       const player = createFakeSeerAlivePlayer();
       const game = createFakeGame();
       mocks.playerKillerService.isElderKillable.mockReturnValue(false);
-      await services.playerKiller["isPlayerKillable"](player, game, PlayerDeathCauses.VOTE);
+      await services.playerKiller["isPlayerKillable"](player, game, "vote");
 
       expect(mocks.playerKillerService.isElderKillable).not.toHaveBeenCalled();
     });
@@ -826,7 +825,7 @@ describe("Player Killer Service", () => {
       const player = createFakeSeerAlivePlayer();
       const game = createFakeGame();
 
-      await expect(services.playerKiller["isPlayerKillable"](player, game, PlayerDeathCauses.VOTE)).resolves.toBe(true);
+      await expect(services.playerKiller["isPlayerKillable"](player, game, "vote")).resolves.toBe(true);
     });
   });
 
@@ -909,7 +908,7 @@ describe("Player Killer Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWildChildAlivePlayer({
-          role: createFakePlayerRole({ original: RoleNames.ACTOR, current: RoleNames.WILD_CHILD }),
+          role: createFakePlayerRole({ original: "actor", current: "wild-child" }),
           attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()],
         }),
       ];
@@ -938,7 +937,7 @@ describe("Player Killer Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeWildChildAlivePlayer({
-          role: createFakePlayerRole({ original: RoleNames.ACTOR, current: RoleNames.WILD_CHILD }),
+          role: createFakePlayerRole({ original: "actor", current: "wild-child" }),
           attributes: [createFakeCantVoteBySurvivorsPlayerAttribute()],
         }),
       ];
@@ -1365,7 +1364,7 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerVoteScapegoatedBySurvivorsDeath();
       const players = [
         createFakeWerewolfAlivePlayer({ isAlive: false, death }),
-        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: RoleNames.IDIOT, original: RoleNames.IDIOT }) }),
+        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: "idiot", original: "idiot" }) }),
         createFakeWerewolfAlivePlayer(),
         createFakeDefenderAlivePlayer(),
       ];
@@ -1381,7 +1380,7 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerVoteBySurvivorsDeath();
       const players = [
         createFakeElderAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()], isAlive: false, death }),
-        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: RoleNames.IDIOT, original: RoleNames.IDIOT }) }),
+        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: "idiot", original: "idiot" }) }),
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
         createFakeDefenderAlivePlayer(),
@@ -1450,7 +1449,7 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerDeathPotionByWitchDeath();
       const players = [
         createFakeElderAlivePlayer({ isAlive: false, death }),
-        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: RoleNames.IDIOT, original: RoleNames.IDIOT }) }),
+        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: "idiot", original: "idiot" }) }),
         createFakeWerewolfAlivePlayer(),
         createFakeDefenderAlivePlayer(),
         createFakeSeerAlivePlayer({ isAlive: false }),
@@ -1468,7 +1467,7 @@ describe("Player Killer Service", () => {
       const death = createFakePlayerDeathPotionByWitchDeath();
       const players = [
         createFakeElderAlivePlayer({ isAlive: false, death }),
-        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: RoleNames.IDIOT, original: RoleNames.IDIOT }) }),
+        createFakeIdiotAlivePlayer({ role: createFakePlayerRole({ isRevealed: true, current: "idiot", original: "idiot" }) }),
         createFakeWerewolfAlivePlayer(),
         createFakeDefenderAlivePlayer(),
         createFakeSeerAlivePlayer({ isAlive: false }),

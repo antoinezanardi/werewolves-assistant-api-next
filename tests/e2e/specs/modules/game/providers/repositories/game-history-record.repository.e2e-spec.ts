@@ -3,16 +3,13 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 
-import type { GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
-import type { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
-import type { GamePhase } from "@/modules/game/types/game.types";
-import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
+import type { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
+import type { GamePlaySourceName, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
+import type { GamePhase } from "@/modules/game/types/game.types";
 import type { RoleSides } from "@/modules/role/enums/role.enum";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
@@ -131,7 +128,7 @@ describe("Game History Record Repository", () => {
       },
       {
         test: "should not create history record when players in play's source is empty.",
-        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ source: { name: PlayerAttributeNames.SHERIFF, players: [] } }) }),
+        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ source: { name: "sheriff", players: [] } }) }),
         errorMessage: "GameHistoryRecord validation failed: play.source.players: Path `play.source.players` length is less than minimum allowed value (1).",
       },
       {
@@ -141,7 +138,7 @@ describe("Game History Record Repository", () => {
       },
       {
         test: "should not create history record when potion in play's target is not in enum.",
-        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ targets: [{ player: createFakePlayer(), drankPotion: "Love Potion" as WitchPotions }] }) }),
+        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ targets: [{ player: createFakePlayer(), drankPotion: "Love Potion" as WitchPotion }] }) }),
         errorMessage: "GameHistoryRecord validation failed: play.targets.0.drankPotion: `Love Potion` is not a valid enum value for path `drankPotion`.",
       },
       {
@@ -161,7 +158,7 @@ describe("Game History Record Repository", () => {
     });
 
     it("should create history record when called.", async() => {
-      const gameHistoryRecordPlayToInsert = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.SEER, players: [createFakePlayer()] }) });
+      const gameHistoryRecordPlayToInsert = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: "seer", players: [createFakePlayer()] }) });
       const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlayToInsert });
       const gameHistoryRecord = await repositories.gameHistoryRecord.create(gameHistoryRecordToInsert);
 
@@ -198,7 +195,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId, play: createFakeGameHistoryRecordDefenderProtectPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.DEFENDER,
+              name: "defender",
               players,
             }),
           }),
@@ -222,7 +219,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordDefenderProtectPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.DEFENDER,
+              name: "defender",
               players,
             }),
           }),
@@ -232,7 +229,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -242,7 +239,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordDefenderProtectPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.DEFENDER,
+              name: "defender",
               players,
             }),
           }),
@@ -257,7 +254,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordDefenderProtectPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.DEFENDER,
+              name: "defender",
               players: [createFakePlayer()],
             }),
           }),
@@ -341,7 +338,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordWitchUsePotionsPlay() }),
       ]);
 
-      await expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId, GamePlayActions.VOTE)).resolves.toBeNull();
+      await expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId, "vote")).resolves.toBeNull();
     });
 
     it("should return no record when there is no tie in vote play in the history.", async() => {
@@ -352,7 +349,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ]);
 
-      await expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId, GamePlayActions.VOTE)).resolves.toBeNull();
+      await expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId, "vote")).resolves.toBeNull();
     });
 
     it("should return no record when there gameId is not the good one.", async() => {
@@ -364,7 +361,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
       ]);
 
-      await expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(otherGameId, GamePlayActions.VOTE)).resolves.toBeNull();
+      await expect(repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(otherGameId, "vote")).resolves.toBeNull();
     });
 
     it("should return the last tie in vote game history play record when called.", async() => {
@@ -378,7 +375,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsElectSheriffPlay({ voting: gameHistoryRecordPlayTieVoting }), createdAt: new Date("2025-01-01") }),
       ];
       await populate(gameHistoryRecords);
-      const record = await repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId, GamePlayActions.VOTE);
+      const record = await repositories.gameHistoryRecord.getLastGameHistoryTieInVotesRecord(gameId, "vote");
 
       expect(toJSON(record)).toStrictEqual<GameHistoryRecord>(toJSON(gameHistoryRecords[3]) as GameHistoryRecord);
     });
@@ -399,7 +396,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: PlayerGroups.WEREWOLVES,
+              name: "werewolves",
               players,
             }),
           }),
@@ -408,7 +405,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, WitchPotions.LIFE);
+      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, "life");
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
@@ -426,9 +423,9 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
-            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.DEATH })],
+            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: "death" })],
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -437,9 +434,9 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
-            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.LIFE })],
+            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: "life" })],
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players: [
                 createFakePlayer(),
                 createFakePlayer(),
@@ -451,7 +448,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, WitchPotions.LIFE);
+      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, "life");
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
@@ -470,9 +467,9 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
-            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.LIFE })],
+            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: "life" })],
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -481,11 +478,11 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
             targets: [
-              createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.LIFE }),
-              createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.DEATH }),
+              createFakeGameHistoryRecordPlayTarget({ drankPotion: "life" }),
+              createFakeGameHistoryRecordPlayTarget({ drankPotion: "death" }),
             ],
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -494,9 +491,9 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId: otherGameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
-            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.LIFE })],
+            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: "life" })],
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -504,7 +501,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, WitchPotions.LIFE);
+      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, "life");
       const expectedRecords = [gameHistoryRecords[1], gameHistoryRecords[2]];
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
@@ -523,9 +520,9 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
-            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.LIFE })],
+            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: "life" })],
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -534,7 +531,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, WitchPotions.DEATH);
+      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, "death");
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>([]);
     });
@@ -553,9 +550,9 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
-            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.DEATH })],
+            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: "death" })],
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -564,11 +561,11 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
             targets: [
-              createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.LIFE }),
-              createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.DEATH }),
+              createFakeGameHistoryRecordPlayTarget({ drankPotion: "life" }),
+              createFakeGameHistoryRecordPlayTarget({ drankPotion: "death" }),
             ],
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -577,9 +574,9 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({
           gameId: otherGameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
-            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: WitchPotions.DEATH })],
+            targets: [createFakeGameHistoryRecordPlayTarget({ drankPotion: "death" })],
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -587,7 +584,7 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay() }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, WitchPotions.DEATH);
+      const records = await repositories.gameHistoryRecord.getGameHistoryWitchUsesSpecificPotionRecords(gameId, witchPlayerId, "death");
       const expectedRecords = [gameHistoryRecords[1], gameHistoryRecords[2]];
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
@@ -627,7 +624,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players: [players[1]],
             }),
             targets: [createFakeGameHistoryRecordPlayTarget({ player: players[2] })],
@@ -653,7 +650,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players: [players[1]],
             }),
             targets: [createFakeGameHistoryRecordPlayTarget({ player: players[2] })],
@@ -663,7 +660,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players: [players[1]],
             }),
             targets: [createFakeGameHistoryRecordPlayTarget({ player: players[2] })],
@@ -673,7 +670,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players: [players[1]],
             }),
             targets: [createFakeGameHistoryRecordPlayTarget({ player: players[2] })],
@@ -687,7 +684,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players: [createFakePlayer()],
             }),
             targets: [createFakeGameHistoryRecordPlayTarget({ player: createFakePlayer() })],
@@ -697,7 +694,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players: [players[1]],
             }),
           }),
@@ -706,7 +703,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players: [players[1]],
             }),
             targets: [],
@@ -747,7 +744,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players,
             }),
           }),
@@ -771,7 +768,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players,
             }),
           }),
@@ -781,7 +778,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.WITCH,
+              name: "witch",
               players,
             }),
           }),
@@ -791,7 +788,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players,
             }),
           }),
@@ -806,7 +803,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordAccursedWolfFatherInfectsPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.ACCURSED_WOLF_FATHER,
+              name: "accursed-wolf-father",
               players: [createFakePlayer()],
             }),
           }),
@@ -836,7 +833,7 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordDefenderProtectPlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: PlayerGroups.SURVIVORS,
+              name: "survivors",
               players: [
                 players[1],
                 players[2],
@@ -871,7 +868,7 @@ describe("Game History Record Repository", () => {
           play: createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay({
             didJudgeRequestAnotherVote: true,
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.STUTTERING_JUDGE,
+              name: "stuttering-judge",
               players,
             }),
           }),
@@ -881,7 +878,7 @@ describe("Game History Record Repository", () => {
           play: createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay({
             didJudgeRequestAnotherVote: false,
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.STUTTERING_JUDGE,
+              name: "stuttering-judge",
               players,
             }),
           }),
@@ -891,7 +888,7 @@ describe("Game History Record Repository", () => {
           gameId: otherGameId,
           play: createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay({
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.STUTTERING_JUDGE,
+              name: "stuttering-judge",
               players,
             }),
             didJudgeRequestAnotherVote: true,
@@ -903,7 +900,7 @@ describe("Game History Record Repository", () => {
           play: createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay({
             didJudgeRequestAnotherVote: true,
             source: createFakeGameHistoryRecordPlaySource({
-              name: RoleNames.STUTTERING_JUDGE,
+              name: "stuttering-judge",
               players: [
                 createFakePlayer(),
                 createFakePlayer(),
@@ -1021,8 +1018,8 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
             targets: [
-              createFakeGameHistoryRecordPlayTarget({ player: players[0], drankPotion: WitchPotions.LIFE }),
-              createFakeGameHistoryRecordPlayTarget({ player: players[1], drankPotion: WitchPotions.DEATH }),
+              createFakeGameHistoryRecordPlayTarget({ player: players[0], drankPotion: "life" }),
+              createFakeGameHistoryRecordPlayTarget({ player: players[1], drankPotion: "death" }),
             ],
           }),
         }),
@@ -1030,8 +1027,8 @@ describe("Game History Record Repository", () => {
           gameId,
           play: createFakeGameHistoryRecordWitchUsePotionsPlay({
             targets: [
-              createFakeGameHistoryRecordPlayTarget({ player: players[0], drankPotion: WitchPotions.DEATH }),
-              createFakeGameHistoryRecordPlayTarget({ player: players[1], drankPotion: WitchPotions.LIFE }),
+              createFakeGameHistoryRecordPlayTarget({ player: players[0], drankPotion: "death" }),
+              createFakeGameHistoryRecordPlayTarget({ player: players[1], drankPotion: "life" }),
             ],
           }),
         }),
@@ -1088,7 +1085,7 @@ describe("Game History Record Repository", () => {
     it("should get 3 records when called with gameId, turn and phase.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
-      const play = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: PlayerGroups.WEREWOLVES }) });
+      const play = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: "werewolves" }) });
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, turn: 1, phase: "day", play }),
         createFakeGameHistoryRecord({ gameId, turn: 1, phase: "night", play }),
@@ -1112,23 +1109,23 @@ describe("Game History Record Repository", () => {
       createFakeGameHistoryRecord({
         gameId,
         play: createFakeGameHistoryRecordPlay({
-          action: GamePlayActions.CHARM,
-          source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.CUPID }),
+          action: "charm",
+          source: createFakeGameHistoryRecordPlaySource({ name: "cupid" }),
         }),
       }),
       createFakeGameHistoryRecord({
         gameId: otherGameId,
         play: createFakeGameHistoryRecordPlay({
-          action: GamePlayActions.CHARM,
-          source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.PIED_PIPER }),
+          action: "charm",
+          source: createFakeGameHistoryRecordPlaySource({ name: "pied-piper" }),
         }),
       }),
       createFakeGameHistoryRecord({
         gameId,
         play: createFakeGameHistoryRecordPlay({
-          action: GamePlayActions.CHARM,
-          source: createFakeGameHistoryRecordPlaySource({ name: RoleNames.CUPID }),
-          cause: GamePlayCauses.ANGEL_PRESENCE,
+          action: "charm",
+          source: createFakeGameHistoryRecordPlaySource({ name: "cupid" }),
+          cause: "angel-presence",
         }),
       }),
     ];
@@ -1158,7 +1155,7 @@ describe("Game History Record Repository", () => {
       {
         test: "should get one record when cupid charming because of angel presence.",
         gameId,
-        gamePlay: createFakeGamePlayCupidCharms({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        gamePlay: createFakeGamePlayCupidCharms({ cause: "angel-presence" }),
         expectedRecords: [gameHistoryRecords[2]],
       },
     ])(`$test`, async({ gameId: id, gamePlay, expectedRecords }) => {
@@ -1177,9 +1174,9 @@ describe("Game History Record Repository", () => {
       createFakeGameHistoryRecord({
         gameId,
         play: createFakeGameHistoryRecordPlay({
-          action: GamePlayActions.CHARM,
+          action: "charm",
           source: createFakeGameHistoryRecordPlaySource({
-            name: RoleNames.CUPID,
+            name: "cupid",
             players: [
               createFakePlayer(),
               player,
@@ -1191,9 +1188,9 @@ describe("Game History Record Repository", () => {
       createFakeGameHistoryRecord({
         gameId,
         play: createFakeGameHistoryRecordPlay({
-          action: GamePlayActions.EAT,
+          action: "eat",
           source: createFakeGameHistoryRecordPlaySource({
-            name: PlayerGroups.WEREWOLVES,
+            name: "werewolves",
             players: [
               createFakePlayer(),
               createFakePlayer(),
@@ -1204,9 +1201,9 @@ describe("Game History Record Repository", () => {
       createFakeGameHistoryRecord({
         gameId: otherGameId,
         play: createFakeGameHistoryRecordPlay({
-          action: GamePlayActions.CHARM,
+          action: "charm",
           source: createFakeGameHistoryRecordPlaySource({
-            name: RoleNames.PIED_PIPER,
+            name: "pied-piper",
             players: [
               createFakePlayer(),
               player,
@@ -1218,16 +1215,16 @@ describe("Game History Record Repository", () => {
       createFakeGameHistoryRecord({
         gameId,
         play: createFakeGameHistoryRecordPlay({
-          action: GamePlayActions.CHARM,
+          action: "charm",
           source: createFakeGameHistoryRecordPlaySource({
-            name: RoleNames.CUPID,
+            name: "cupid",
             players: [
               createFakePlayer(),
               player,
               createFakePlayer(),
             ],
           }),
-          cause: GamePlayCauses.ANGEL_PRESENCE,
+          cause: "angel-presence",
         }),
       }),
     ];
@@ -1263,7 +1260,7 @@ describe("Game History Record Repository", () => {
       {
         test: "should get one record when cupid charming because of angel presence.",
         gameId,
-        gamePlay: createFakeGamePlayCupidCharms({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        gamePlay: createFakeGamePlayCupidCharms({ cause: "angel-presence" }),
         expectedRecords: [gameHistoryRecords[3]],
       },
     ])(`$test`, async({ gameId: id, gamePlay, expectedRecords }) => {

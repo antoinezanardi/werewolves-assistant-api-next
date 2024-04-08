@@ -1,9 +1,9 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { GAME_PLAY_SOURCE_INTERACTION_BOUNDARIES_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction-boundaries/game-play-source-interaction-boundaries.schema";
 import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
-import { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
+import { PLAYER_INTERACTION_TYPES } from "@/modules/game/constants/player/player-interaction/player-interaction.constants";
+import { GAME_PLAY_SOURCE_INTERACTION_BOUNDARIES_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction-boundaries/game-play-source-interaction-boundaries.schema";
 import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 
@@ -12,11 +12,11 @@ import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types
 const GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS = {
   source: {
     required: true,
-    enum: Object.values(GAME_SOURCES),
+    enum: GAME_SOURCES,
   },
   type: {
     required: true,
-    enum: Object.values(PlayerInteractionTypes),
+    enum: PLAYER_INTERACTION_TYPES,
   },
   eligibleTargets: {
     required: true,

@@ -1,14 +1,12 @@
-import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { canPlayerDelegateSheriffAttribute, doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource, doesPlayerHaveAttributeWithName, doesPlayerHaveAttributeWithNameAndSource, getActivePlayerAttributeWithName, getPlayerAttributeWithName, getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeIdiotAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePlayerAttributeActivation, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Player Attribute Helper", () => {
   describe("isPlayerAttrimakeDevotedServantDelegatesIfSheriffbuteActive", () => {
@@ -67,7 +65,7 @@ describe("Player Attribute Helper", () => {
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getPlayerAttributeWithName(player, PlayerAttributeNames.POWERLESS)).toStrictEqual<PlayerAttribute>(attributes[1]);
+      expect(getPlayerAttributeWithName(player, "powerless")).toStrictEqual<PlayerAttribute>(attributes[1]);
     });
 
     it("should return undefined when player doesn't have the attribute.", () => {
@@ -77,7 +75,7 @@ describe("Player Attribute Helper", () => {
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getPlayerAttributeWithName(player, PlayerAttributeNames.IN_LOVE)).toBeUndefined();
+      expect(getPlayerAttributeWithName(player, "in-love")).toBeUndefined();
     });
   });
 
@@ -105,7 +103,7 @@ describe("Player Attribute Helper", () => {
     ])("$test", ({ attributes, expected }) => {
       const player = createFakePlayer({ attributes });
 
-      expect(doesPlayerHaveAttributeWithName(player, PlayerAttributeNames.SEEN)).toBe(expected);
+      expect(doesPlayerHaveAttributeWithName(player, "seen")).toBe(expected);
     });
   });
 
@@ -118,7 +116,7 @@ describe("Player Attribute Helper", () => {
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getActivePlayerAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game)).toBeUndefined();
+      expect(getActivePlayerAttributeWithName(player, "in-love", game)).toBeUndefined();
     });
 
     it("should return undefined when player has the attribute but not active yet.", () => {
@@ -129,7 +127,7 @@ describe("Player Attribute Helper", () => {
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getActivePlayerAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game)).toBeUndefined();
+      expect(getActivePlayerAttributeWithName(player, "in-love", game)).toBeUndefined();
     });
 
     it("should return the attribute when player has the attribute and is active yet.", () => {
@@ -140,7 +138,7 @@ describe("Player Attribute Helper", () => {
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getActivePlayerAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game)).toStrictEqual<PlayerAttribute>(attributes[1]);
+      expect(getActivePlayerAttributeWithName(player, "in-love", game)).toStrictEqual<PlayerAttribute>(attributes[1]);
     });
   });
 
@@ -174,7 +172,7 @@ describe("Player Attribute Helper", () => {
       const game = createFakeGame({ turn: 1, phase: "day" });
       const player = createFakePlayer({ attributes });
 
-      expect(doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game)).toBe(expected);
+      expect(doesPlayerHaveActiveAttributeWithName(player, "in-love", game)).toBe(expected);
     });
   });
 
@@ -186,7 +184,7 @@ describe("Player Attribute Helper", () => {
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getPlayerAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ELDER)).toStrictEqual<PlayerAttribute>(attributes[1]);
+      expect(getPlayerAttributeWithNameAndSource(player, "powerless", "elder")).toStrictEqual<PlayerAttribute>(attributes[1]);
     });
 
     it("should return undefined when player doesn't have the attribute with correct name.", () => {
@@ -196,7 +194,7 @@ describe("Player Attribute Helper", () => {
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getPlayerAttributeWithNameAndSource(player, PlayerAttributeNames.IN_LOVE, RoleNames.ELDER)).toBeUndefined();
+      expect(getPlayerAttributeWithNameAndSource(player, "in-love", "elder")).toBeUndefined();
     });
 
     it("should return undefined when player doesn't have the attribute with correct source.", () => {
@@ -206,7 +204,7 @@ describe("Player Attribute Helper", () => {
       ];
       const player = createFakePlayer({ attributes });
 
-      expect(getPlayerAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.CUPID)).toBeUndefined();
+      expect(getPlayerAttributeWithNameAndSource(player, "powerless", "cupid")).toBeUndefined();
     });
   });
 
@@ -228,7 +226,7 @@ describe("Player Attribute Helper", () => {
       },
       {
         test: "should return false when player doesn't have the attribute with correct source.",
-        attributes: [createFakePowerlessByElderPlayerAttribute({ source: RoleNames.FOX })],
+        attributes: [createFakePowerlessByElderPlayerAttribute({ source: "fox" })],
         expected: false,
       },
       {
@@ -239,7 +237,7 @@ describe("Player Attribute Helper", () => {
     ])("$test", ({ attributes, expected }) => {
       const player = createFakePlayer({ attributes });
 
-      expect(doesPlayerHaveAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ELDER)).toBe(expected);
+      expect(doesPlayerHaveAttributeWithNameAndSource(player, "powerless", "elder")).toBe(expected);
     });
   });
 
@@ -261,7 +259,7 @@ describe("Player Attribute Helper", () => {
       },
       {
         test: "should return false when player doesn't have the attribute with correct source.",
-        attributes: [createFakePowerlessByElderPlayerAttribute({ source: RoleNames.FOX })],
+        attributes: [createFakePowerlessByElderPlayerAttribute({ source: "fox" })],
         expected: false,
       },
       {
@@ -278,7 +276,7 @@ describe("Player Attribute Helper", () => {
       const game = createFakeGame({ turn: 1, phase: "day" });
       const player = createFakePlayer({ attributes });
 
-      expect(doesPlayerHaveActiveAttributeWithNameAndSource(player, PlayerAttributeNames.POWERLESS, RoleNames.ELDER, game)).toBe(expected);
+      expect(doesPlayerHaveActiveAttributeWithNameAndSource(player, "powerless", "elder", game)).toBe(expected);
     });
   });
 

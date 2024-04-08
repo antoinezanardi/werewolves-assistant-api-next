@@ -3,10 +3,9 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GamePlayType } from "@/modules/game/types/game-play/game-play.types";
-import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
-import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
+import { GamePlayAction, GamePlayCause, GamePlayOccurrence, GamePlayType } from "@/modules/game/types/game-play/game-play.types";
 import { GAME_PLAY_API_PROPERTIES, GAME_PLAY_SPECS_FIELDS } from "@/modules/game/schemas/game-play/game-play.schema.constants";
+import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 
 @Schema({
   versionKey: false,
@@ -28,12 +27,12 @@ class GamePlay {
   @ApiProperty(GAME_PLAY_API_PROPERTIES.action as ApiPropertyOptions)
   @Prop(GAME_PLAY_SPECS_FIELDS.action)
   @Expose()
-  public action: GamePlayActions;
+  public action: GamePlayAction;
 
   @ApiProperty(GAME_PLAY_API_PROPERTIES.cause as ApiPropertyOptions)
   @Prop(GAME_PLAY_SPECS_FIELDS.cause)
   @Expose()
-  public cause?: GamePlayCauses;
+  public cause?: GamePlayCause;
 
   @ApiProperty(GAME_PLAY_API_PROPERTIES.canBeSkipped as ApiPropertyOptions)
   @Prop(GAME_PLAY_SPECS_FIELDS.canBeSkipped)
@@ -43,7 +42,7 @@ class GamePlay {
   @ApiProperty(GAME_PLAY_API_PROPERTIES.occurrence as ApiPropertyOptions)
   @Prop(GAME_PLAY_SPECS_FIELDS.occurrence)
   @Expose()
-  public occurrence: GamePlayOccurrences;
+  public occurrence: GamePlayOccurrence;
 }
 
 const GAME_PLAY_SCHEMA = SchemaFactory.createForClass(GamePlay);

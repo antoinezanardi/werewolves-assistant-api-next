@@ -1,13 +1,12 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
 import { GAME_ADDITIONAL_CARD_SCHEMA } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GAME_HISTORY_RECORD_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
 import { GAME_HISTORY_RECORD_PLAY_TARGET_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
 import { GAME_HISTORY_RECORD_PLAY_VOTE_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
 import { GAME_HISTORY_RECORD_PLAY_VOTING_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
-import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
 import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import { RoleSides } from "@/modules/role/enums/role.enum";
 
@@ -21,7 +20,7 @@ const GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS = {
   },
   action: {
     required: true,
-    enum: Object.values(GamePlayActions),
+    enum: GAME_PLAY_ACTIONS,
   },
   source: {
     required: true,
@@ -29,7 +28,7 @@ const GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS = {
   },
   cause: {
     required: false,
-    enum: Object.values(GamePlayCauses),
+    enum: GAME_PLAY_CAUSES,
   },
   targets: {
     required: false,

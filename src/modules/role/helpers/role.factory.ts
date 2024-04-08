@@ -1,6 +1,6 @@
 import { plainToInstance } from "class-transformer";
 
-import { Role } from "@/modules/role/types/role.types";
+import { Role } from "@/modules/role/types/role.class";
 
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";

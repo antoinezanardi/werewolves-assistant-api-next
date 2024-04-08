@@ -1,8 +1,4 @@
-import {
-  getCompositionRolesMinInGameDefaultMessage,
-  areCompositionRolesMinInGameRespected,
-} from "@/modules/game/dto/base/decorators/composition/composition-roles-min-in-game.decorator";
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import { areCompositionRolesMinInGameRespected, getCompositionRolesMinInGameDefaultMessage } from "@/modules/game/dto/base/decorators/composition/composition-roles-min-in-game.decorator";
 
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
@@ -18,10 +14,10 @@ describe("Composition Roles Min In Game Decorator", () => {
 
     it("should return false when one of the players is not an object.", () => {
       const players = [
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+        createFakeCreateGamePlayerDto({ role: { name: "two-sisters" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "two-sisters" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "werewolf" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "villager" } }),
       ];
 
       expect(areCompositionRolesMinInGameRespected([...players, "toto"])).toBe(false);
@@ -29,10 +25,10 @@ describe("Composition Roles Min In Game Decorator", () => {
 
     it("should return false when one of the players doesn't have the good structure.", () => {
       const players = [
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+        createFakeCreateGamePlayerDto({ role: { name: "two-sisters" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "two-sisters" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "werewolf" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "villager" } }),
       ];
 
       expect(areCompositionRolesMinInGameRespected([...players, { name: "bad", role: { toto: "tata" } }])).toBe(false);
@@ -40,10 +36,10 @@ describe("Composition Roles Min In Game Decorator", () => {
 
     it("should return false when there is only 1 player with a role which min in game is 2.", () => {
       const players = [
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.VILLAGER } }),
+        createFakeCreateGamePlayerDto({ role: { name: "two-sisters" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "witch" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "werewolf" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "villager" } }),
       ];
 
       expect(areCompositionRolesMinInGameRespected(players)).toBe(false);
@@ -55,15 +51,15 @@ describe("Composition Roles Min In Game Decorator", () => {
 
     it("should return true when the limit for each role is respected.", () => {
       const players = [
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.THREE_BROTHERS } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.THREE_BROTHERS } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.THREE_BROTHERS } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-        createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
+        createFakeCreateGamePlayerDto({ role: { name: "witch" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "seer" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "werewolf" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "werewolf" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "three-brothers" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "three-brothers" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "three-brothers" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "two-sisters" } }),
+        createFakeCreateGamePlayerDto({ role: { name: "two-sisters" } }),
       ];
 
       expect(areCompositionRolesMinInGameRespected(players)).toBe(true);

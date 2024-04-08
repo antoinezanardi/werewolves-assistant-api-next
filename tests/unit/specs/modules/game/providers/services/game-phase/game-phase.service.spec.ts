@@ -1,13 +1,12 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -303,8 +302,8 @@ describe("Game Phase Service", () => {
   describe("applyStartingNightActingPlayerOutcomes", () => {
     it("should set player current role to actor and remove obsolete powerless and acting attributes when called.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.WEREWOLF,
+        original: "actor",
+        current: "werewolf",
         isRevealed: true,
       });
       const attributes = [
@@ -323,7 +322,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],
@@ -340,8 +339,8 @@ describe("Game Phase Service", () => {
 
     it("should add powerless attribute from accursed wolf-father when actor is powerless on werewolves side and doesn't have it yet.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.WEREWOLF,
+        original: "actor",
+        current: "werewolf",
         isRevealed: true,
       });
       const attributes = [
@@ -358,7 +357,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],
@@ -375,8 +374,8 @@ describe("Game Phase Service", () => {
 
     it("should not add powerless attribute from accursed wolf-father when actor is powerless on werewolves side and already has it.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.WEREWOLF,
+        original: "actor",
+        current: "werewolf",
         isRevealed: true,
       });
       const attributes = [
@@ -394,7 +393,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],
@@ -411,8 +410,8 @@ describe("Game Phase Service", () => {
 
     it("should not add powerless attribute from accursed wolf-father when actor is not powerless on werewolves side.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.WEREWOLF,
+        original: "actor",
+        current: "werewolf",
         isRevealed: true,
       });
       const attributes = [
@@ -429,7 +428,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],
@@ -445,8 +444,8 @@ describe("Game Phase Service", () => {
 
     it("should not add powerless attribute from accursed wolf-father when actor is powerless on werewolves side but on villagers side.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.VILLAGER,
+        original: "actor",
+        current: "villager",
         isRevealed: true,
       });
       const attributes = [
@@ -463,7 +462,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],

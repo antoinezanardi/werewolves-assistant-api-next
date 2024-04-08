@@ -1,8 +1,6 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
-import { PlayerAttributeNames, PlayerGroups, PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
@@ -10,7 +8,6 @@ import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
@@ -328,8 +325,8 @@ describe("Game Play Augmenter Service", () => {
       });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(gameHistoryRecord);
       const expectedInteraction = createFakeGamePlaySourceInteraction({
-        source: PlayerAttributeNames.SHERIFF,
-        type: PlayerInteractionTypes.SENTENCE_TO_DEATH,
+        source: "sheriff",
+        type: "sentence-to-death",
         eligibleTargets: [players[0], players[1]],
         boundaries: {
           min: 1,
@@ -351,8 +348,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: PlayerAttributeNames.SHERIFF,
-        type: PlayerInteractionTypes.TRANSFER_SHERIFF_ROLE,
+        source: "sheriff",
+        type: "transfer-sheriff-role",
         eligibleTargets: [players[0], players[3]],
         boundaries: {
           min: 1,
@@ -408,7 +405,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWitchAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE });
+      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: "angel-presence" });
       const expectedPlayers = [
         createFakePlayer(players[0]),
         createFakePlayer(players[1]),
@@ -426,7 +423,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWitchAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
       const gameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [players[0], players[1]] });
       const gameHistoryRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: gameHistoryRecordPlayVoting }) });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(gameHistoryRecord);
@@ -446,7 +443,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWitchAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
       const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: game._id.toString() });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(null);
       mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException.mockReturnValue(mockedError);
@@ -463,7 +460,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWitchAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES });
+      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
       const gameRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [] });
       const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: game._id.toString() });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: gameRecordPlayVoting }) }));
@@ -491,8 +488,8 @@ describe("Game Play Augmenter Service", () => {
       const gamePlay = createFakeGamePlaySurvivorsVote({ canBeSkipped: false });
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: PlayerGroups.SURVIVORS,
-        type: PlayerInteractionTypes.VOTE,
+        source: "survivors",
+        type: "vote",
         eligibleTargets: [],
         boundaries: {
           min: 1,
@@ -516,8 +513,8 @@ describe("Game Play Augmenter Service", () => {
       const gamePlay = createFakeGamePlaySurvivorsVote({ canBeSkipped: true });
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: PlayerGroups.SURVIVORS,
-        type: PlayerInteractionTypes.VOTE,
+        source: "survivors",
+        type: "vote",
         eligibleTargets: [],
         boundaries: {
           min: 0,
@@ -543,8 +540,8 @@ describe("Game Play Augmenter Service", () => {
       const gamePlay = createFakeGamePlaySurvivorsElectSheriff();
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: PlayerGroups.SURVIVORS,
-        type: PlayerInteractionTypes.CHOOSE_AS_SHERIFF,
+        source: "survivors",
+        type: "choose-as-sheriff",
         eligibleTargets: [players[0], players[1], players[3]],
         boundaries: {
           min: 1,
@@ -670,8 +667,8 @@ describe("Game Play Augmenter Service", () => {
       const gameHistoryRecord = createFakeGameHistoryRecord({ deadPlayers });
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValueOnce(gameHistoryRecord);
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.DEVOTED_SERVANT,
-        type: PlayerInteractionTypes.STEAL_ROLE,
+        source: "devoted-servant",
+        type: "steal-role",
         eligibleTargets: [deadPlayers[0], deadPlayers[1]],
         boundaries: {
           min: 0,
@@ -737,8 +734,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: PlayerGroups.WEREWOLVES,
-        type: PlayerInteractionTypes.EAT,
+        source: "werewolves",
+        type: "eat",
         eligibleTargets: [players[0], players[3]],
         boundaries: {
           min: 1,
@@ -764,8 +761,8 @@ describe("Game Play Augmenter Service", () => {
         players[1],
       ]);
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.BIG_BAD_WOLF,
-        type: PlayerInteractionTypes.EAT,
+        source: "big-bad-wolf",
+        type: "eat",
         eligibleTargets: [players[0], players[1]],
         boundaries: {
           min: 1,
@@ -801,8 +798,8 @@ describe("Game Play Augmenter Service", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: false }) }) });
       const game = createFakeGame({ players, options });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.CUPID,
-        type: PlayerInteractionTypes.CHARM,
+        source: "cupid",
+        type: "charm",
         eligibleTargets: [players[0], players[3]],
         boundaries: {
           min: 2,
@@ -823,8 +820,8 @@ describe("Game Play Augmenter Service", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }) }) });
       const game = createFakeGame({ players, options });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.CUPID,
-        type: PlayerInteractionTypes.CHARM,
+        source: "cupid",
+        type: "charm",
         eligibleTargets: [players[0], players[1]],
         boundaries: {
           min: 2,
@@ -859,8 +856,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.FOX,
-        type: PlayerInteractionTypes.SNIFF,
+        source: "fox",
+        type: "sniff",
         eligibleTargets: [players[0], players[3]],
         boundaries: {
           min: 0,
@@ -881,11 +878,11 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: RoleNames.DEFENDER });
+      const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: "defender" });
       mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException.mockReturnValue(mockedError);
 
       await expect(services.gamePlayAugmenter["getDefenderGamePlaySourceInteractions"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getDefenderGamePlaySourceInteractions", { gameId: game._id, roleName: RoleNames.DEFENDER });
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getDefenderGamePlaySourceInteractions", { gameId: game._id, roleName: "defender" });
     });
 
     it("should return all alive players as eligible targets with boundaries from 1 to 1 when there is no last protected players.", async() => {
@@ -898,8 +895,8 @@ describe("Game Play Augmenter Service", () => {
       const game = createFakeGame({ players });
       mocks.gameHistoryRecordService.getLastGameHistoryDefenderProtectsRecord.mockResolvedValueOnce(null);
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.DEFENDER,
-        type: PlayerInteractionTypes.PROTECT,
+        source: "defender",
+        type: "protect",
         eligibleTargets: [players[0], players[1], players[2], players[3]],
         boundaries: { min: 1, max: 1 },
       });
@@ -919,8 +916,8 @@ describe("Game Play Augmenter Service", () => {
       const gameHistoryRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ targets: [{ player: players[2] }] }) });
       mocks.gameHistoryRecordService.getLastGameHistoryDefenderProtectsRecord.mockResolvedValueOnce(gameHistoryRecord);
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.DEFENDER,
-        type: PlayerInteractionTypes.PROTECT,
+        source: "defender",
+        type: "protect",
         eligibleTargets: [players[0], players[2], players[3]],
         boundaries: { min: 1, max: 1 },
       });
@@ -940,8 +937,8 @@ describe("Game Play Augmenter Service", () => {
       const gameHistoryRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ targets: [{ player: players[2] }] }) });
       mocks.gameHistoryRecordService.getLastGameHistoryDefenderProtectsRecord.mockResolvedValueOnce(gameHistoryRecord);
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.DEFENDER,
-        type: PlayerInteractionTypes.PROTECT,
+        source: "defender",
+        type: "protect",
         eligibleTargets: [players[0], players[3]],
         boundaries: { min: 1, max: 1 },
       });
@@ -960,8 +957,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.HUNTER,
-        type: PlayerInteractionTypes.SHOOT,
+        source: "hunter",
+        type: "shoot",
         eligibleTargets: [players[0], players[1], players[3]],
         boundaries: { min: 1, max: 1 },
       });
@@ -988,8 +985,8 @@ describe("Game Play Augmenter Service", () => {
         players[1],
       ]);
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.PIED_PIPER,
-        type: PlayerInteractionTypes.CHARM,
+        source: "pied-piper",
+        type: "charm",
         eligibleTargets: [players[0], players[1]],
         boundaries: {
           min: 2,
@@ -1017,8 +1014,8 @@ describe("Game Play Augmenter Service", () => {
         players[1],
       ]);
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.PIED_PIPER,
-        type: PlayerInteractionTypes.CHARM,
+        source: "pied-piper",
+        type: "charm",
         eligibleTargets: [players[0], players[1]],
         boundaries: {
           min: 1,
@@ -1040,8 +1037,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.SCANDALMONGER,
-        type: PlayerInteractionTypes.MARK,
+        source: "scandalmonger",
+        type: "mark",
         eligibleTargets: [players[0], players[3]],
         boundaries: {
           min: 0,
@@ -1063,8 +1060,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.SCAPEGOAT,
-        type: PlayerInteractionTypes.BAN_VOTING,
+        source: "scapegoat",
+        type: "ban-voting",
         eligibleTargets: [players[0], players[3]],
         boundaries: {
           min: 0,
@@ -1086,8 +1083,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.SEER,
-        type: PlayerInteractionTypes.LOOK,
+        source: "seer",
+        type: "look",
         eligibleTargets: [players[0], players[3]],
         boundaries: { min: 1, max: 1 },
       });
@@ -1110,8 +1107,8 @@ describe("Game Play Augmenter Service", () => {
         players[1],
       ]);
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.WHITE_WEREWOLF,
-        type: PlayerInteractionTypes.EAT,
+        source: "white-werewolf",
+        type: "eat",
         eligibleTargets: [players[0], players[1]],
         boundaries: {
           min: 0,
@@ -1146,8 +1143,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.WILD_CHILD,
-        type: PlayerInteractionTypes.CHOOSE_AS_MODEL,
+        source: "wild-child",
+        type: "choose-as-model",
         eligibleTargets: [players[0], players[3]],
         boundaries: { min: 1, max: 1 },
       });
@@ -1178,8 +1175,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedDeathPotionInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.WITCH,
-        type: PlayerInteractionTypes.GIVE_DEATH_POTION,
+        source: "witch",
+        type: "give-death-potion",
         eligibleTargets: [players[0], players[2]],
         boundaries: { min: 0, max: 1 },
       });
@@ -1210,8 +1207,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedLifePotionInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.WITCH,
-        type: PlayerInteractionTypes.GIVE_LIFE_POTION,
+        source: "witch",
+        type: "give-life-potion",
         eligibleTargets: [players[1]],
         boundaries: { min: 0, max: 1 },
       });
@@ -1233,11 +1230,11 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const mockedError = new UnexpectedException("getWitchGamePlaySourceInteractions", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: RoleNames.WITCH });
+      const mockedError = new UnexpectedException("getWitchGamePlaySourceInteractions", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: "witch" });
       mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException.mockReturnValue(mockedError);
 
       await expect(services.gamePlayAugmenter["getWitchGamePlaySourceInteractions"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getWitchGamePlaySourceInteractions", { gameId: game._id, roleName: RoleNames.WITCH });
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getWitchGamePlaySourceInteractions", { gameId: game._id, roleName: "witch" });
     });
 
     it("should get eligible targets from game when called and there is no history for life potion and death potion.", async() => {
@@ -1293,8 +1290,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedLifePotionInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.WITCH,
-        type: PlayerInteractionTypes.GIVE_LIFE_POTION,
+        source: "witch",
+        type: "give-life-potion",
         eligibleTargets: [players[1]],
         boundaries: { min: 0, max: 1 },
       });
@@ -1318,11 +1315,11 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const mockedError = new UnexpectedException("getAccursedWolfFatherGamePlaySourceInteractions", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: RoleNames.ACCURSED_WOLF_FATHER });
+      const mockedError = new UnexpectedException("getAccursedWolfFatherGamePlaySourceInteractions", UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: game._id.toString(), roleName: "accursed-wolf-father" });
       mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException.mockReturnValue(mockedError);
 
       await expect(services.gamePlayAugmenter["getAccursedWolfFatherGamePlaySourceInteractions"](game)).rejects.toStrictEqual<UnexpectedException>(mockedError);
-      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getAccursedWolfFatherGamePlaySourceInteractions", { gameId: game._id, roleName: RoleNames.ACCURSED_WOLF_FATHER });
+      expect(mocks.unexpectedExceptionFactory.createCantFindPlayerWithCurrentRoleUnexpectedException).toHaveBeenCalledExactlyOnceWith("getAccursedWolfFatherGamePlaySourceInteractions", { gameId: game._id, roleName: "accursed-wolf-father" });
     });
 
     it("should return empty array when there is a record for accursed wolf father infects with target.", async() => {
@@ -1348,8 +1345,8 @@ describe("Game Play Augmenter Service", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
-        source: RoleNames.ACCURSED_WOLF_FATHER,
-        type: PlayerInteractionTypes.INFECT,
+        source: "accursed-wolf-father",
+        type: "infect",
         eligibleTargets: [players[3]],
         boundaries: { min: 0, max: 1 },
       });
@@ -1575,37 +1572,37 @@ describe("Game Play Augmenter Service", () => {
     }>([
       {
         test: "should return false when game play action is elect sheriff.",
-        gamePlay: createFakeGamePlay({ action: GamePlayActions.ELECT_SHERIFF }),
+        gamePlay: createFakeGamePlay({ action: "elect-sheriff" }),
         game: createFakeGame(),
         expected: false,
       },
       {
         test: "should return false when game play action is vote and game play cause is angel presence.",
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
         game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
         expected: false,
       },
       {
         test: "should return true when game play action is bury dead bodies.",
-        gamePlay: createFakeGamePlay({ action: GamePlayActions.BURY_DEAD_BODIES }),
+        gamePlay: createFakeGamePlay({ action: "bury-dead-bodies" }),
         game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) }) }),
         expected: true,
       },
       {
         test: "should return true when game play action is not elect sheriff and game options say that votes can be skipped.",
-        gamePlay: createFakeGamePlay({ action: GamePlayActions.VOTE }),
+        gamePlay: createFakeGamePlay({ action: "vote" }),
         game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
         expected: true,
       },
       {
         test: "should return true when game play action is not vote but because angel presence.",
-        gamePlay: createFakeGamePlayScandalmongerMarks({ cause: GamePlayCauses.ANGEL_PRESENCE }),
+        gamePlay: createFakeGamePlayScandalmongerMarks({ cause: "angel-presence" }),
         game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
         expected: true,
       },
       {
         test: "should return false when game play action is not elect sheriff and game options say that votes can't be skipped.",
-        gamePlay: createFakeGamePlay({ action: GamePlayActions.VOTE }),
+        gamePlay: createFakeGamePlay({ action: "vote" }),
         game: createFakeGame({
           options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: false }) }),
           players: [
@@ -1688,8 +1685,8 @@ describe("Game Play Augmenter Service", () => {
         test: "should return true when thief doesn't have to choose between werewolves cards.",
         game: createFakeGame({
           additionalCards: [
-            createFakeGameAdditionalCard({ roleName: RoleNames.SEER }),
-            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+            createFakeGameAdditionalCard({ roleName: "seer" }),
+            createFakeGameAdditionalCard({ roleName: "werewolf" }),
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) }),
         }),
@@ -1699,8 +1696,8 @@ describe("Game Play Augmenter Service", () => {
         test: "should return true when thief has to choose between werewolves cards but game options allow to skip.",
         game: createFakeGame({
           additionalCards: [
-            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+            createFakeGameAdditionalCard({ roleName: "werewolf" }),
+            createFakeGameAdditionalCard({ roleName: "werewolf" }),
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: false }) }) }),
         }),
@@ -1710,8 +1707,8 @@ describe("Game Play Augmenter Service", () => {
         test: "should return false when thief has to choose between werewolves cards and game options don't allow to skip.",
         game: createFakeGame({
           additionalCards: [
-            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
-            createFakeGameAdditionalCard({ roleName: RoleNames.WEREWOLF }),
+            createFakeGameAdditionalCard({ roleName: "werewolf" }),
+            createFakeGameAdditionalCard({ roleName: "werewolf" }),
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeThiefGameOptions({ mustChooseBetweenWerewolves: true }) }) }),
         }),

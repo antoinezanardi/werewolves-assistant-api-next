@@ -1,7 +1,6 @@
 import { areAdditionalCardsForActorRolesRespected, getAdditionalCardsForActorRolesDefaultMessage } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-actor-roles.decorator";
 import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
-import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role.constants";
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role-set.constants";
 
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 
@@ -20,25 +19,25 @@ describe("Additional Cards For Actor Roles Decorator", () => {
       {
         test: "should return true when there is no additional cards for actor.",
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.THIEF }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.THIEF, recipient: RoleNames.THIEF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "thief" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "thief", recipient: "thief" }),
         ],
         expected: true,
       },
       {
         test: "should return false when at least one additional card role is not for actor.",
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.WEREWOLF, recipient: RoleNames.ACTOR }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.SEER, recipient: RoleNames.ACTOR }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "actor" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "seer", recipient: "actor" }),
         ],
         expected: false,
       },
       {
         test: "should return true when all additional cards roles are for actor.",
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.SEER, recipient: RoleNames.ACTOR }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.LITTLE_GIRL, recipient: RoleNames.ACTOR }),
-          createFakeCreateGameAdditionalCardDto({ roleName: RoleNames.THIEF, recipient: RoleNames.THIEF }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "seer", recipient: "actor" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "little-girl", recipient: "actor" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "thief", recipient: "thief" }),
         ],
         expected: true,
       },

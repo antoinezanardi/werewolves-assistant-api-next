@@ -2,12 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { sample, shuffle } from "lodash";
 
+import { DEFAULT_VILLAGER_ROLE, DEFAULT_WEREWOLF_ROLE, ROLES } from "@/modules/role/constants/role-set.constants";
 import { GetGameRandomCompositionPlayerResponseDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
-import { DEFAULT_VILLAGER_ROLE, DEFAULT_WEREWOLF_ROLE, ROLES } from "@/modules/role/constants/role.constants";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 import { getRolesWithSide } from "@/modules/role/helpers/role.helpers";
-import { Role } from "@/modules/role/types/role.types";
+import { Role } from "@/modules/role/types/role.class";
 
 @Injectable()
 export class GameRandomCompositionService {
@@ -64,9 +64,9 @@ export class GameRandomCompositionService {
       arePowerfulWerewolfRolesPrioritized,
     } = getGameRandomCompositionDto;
     return ROLES.filter(role => {
-      if (role.name === RoleNames.VILLAGER) {
+      if (role.name === "villager") {
         return !arePowerfulVillagerRolesPrioritized;
-      } else if (role.name === RoleNames.WEREWOLF) {
+      } else if (role.name === "werewolf") {
         return !arePowerfulWerewolfRolesPrioritized;
       }
       const isRolePermitted = !excludedRoles.includes(role.name);

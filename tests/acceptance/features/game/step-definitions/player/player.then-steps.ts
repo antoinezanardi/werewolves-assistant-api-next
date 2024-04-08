@@ -3,11 +3,13 @@ import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { parseInt } from "lodash";
 
-import type { PlayerAttributeNames, PlayerDeathCauses } from "@/modules/game/enums/player.enum";
+import type { RoleName } from "@/modules/role/types/role.types";
 import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helpers";
 import { getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import type { GameSource } from "@/modules/game/types/game.types";
-import type { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
+import type { PlayerDeathCause } from "@/modules/game/types/player/player-death/player-death.types";
+import type { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -19,7 +21,7 @@ Then(
     playerName: string,
     shouldMiss: string | null,
     isActive: "active" | "inactive",
-    attributeName: PlayerAttributeNames,
+    attributeName: PlayerAttributeName,
     attributeSource: GameSource,
   ): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
@@ -38,7 +40,7 @@ Then(
     this: CustomWorld,
     shouldMiss: string | null,
     isActive: "active" | "inactive",
-    attributeName: PlayerAttributeNames,
+    attributeName: PlayerAttributeName,
     attributeSource: GameSource,
     expectedPlayersDatatable: DataTable,
   ): void {
@@ -59,7 +61,7 @@ Then(
     this: CustomWorld,
     playerCount: string,
     isActive: "active" | "inactive",
-    attributeName: PlayerAttributeNames,
+    attributeName: PlayerAttributeName,
     attributeSource: GameSource,
     expectedPlayersDatatable: DataTable,
   ): void {
@@ -76,7 +78,7 @@ Then(
 
 Then(
   /^nobody should have the (?<isActive>active|inactive) (?<attributeName>\S+) from (?<attributeSource>\S+) attribute$/u,
-  function(this: CustomWorld, isActive: "active" | "inactive", attributeName: PlayerAttributeNames, attributeSource: GameSource): void {
+  function(this: CustomWorld, isActive: "active" | "inactive", attributeName: PlayerAttributeName, attributeSource: GameSource): void {
     const doSomePlayerHaveAttribute = this.game.players.some(player => {
       const attribute = getPlayerAttributeWithNameAndSource(player, attributeName, attributeSource);
       const isAttributeActive = !!attribute && isPlayerAttributeActive(attribute, this.game);
@@ -95,7 +97,7 @@ Then(/^the player named (?<name>.+?) should be alive$/u, function(this: CustomWo
 
 Then(
   /^the player named (?<name>.+?) should be murdered by (?<deathSource>.+?) from (?<deathCause>.+?)$/u,
-  function(this: CustomWorld, playerName: string, deathSource: GameSource, deathCause: PlayerDeathCauses): void {
+  function(this: CustomWorld, playerName: string, deathSource: GameSource, deathCause: PlayerDeathCause): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
 
     expect(player.isAlive).toBe(false);
@@ -118,7 +120,7 @@ Then(
 
 Then(
   /^the player named (?<name>.+?) should be currently a (?<currentRole>.+) and originally a (?<originalRole>.+)$/u,
-  function(this: CustomWorld, playerName: string, currentRole: RoleNames, originalRole: RoleNames): void {
+  function(this: CustomWorld, playerName: string, currentRole: RoleName, originalRole: RoleName): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
 
     expect(player.role.current).toBe(currentRole);

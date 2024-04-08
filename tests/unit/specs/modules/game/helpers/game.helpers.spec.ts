@@ -1,24 +1,25 @@
 import type { Types } from "mongoose";
 
-import type { Game } from "@/modules/game/schemas/game.schema";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
-import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, doesGameHaveUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getFoxSniffedPlayers, getGroupOfPlayers, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole, getEligibleCupidTargets } from "@/modules/game/helpers/game.helpers";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, doesGameHaveUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getFoxSniffedPlayers, getGroupOfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
+import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { GamePlayAction } from "@/modules/game/types/game-play/game-play.types";
 import type { GetNearestPlayerOptions } from "@/modules/game/types/game.types";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import type { PlayerGroup } from "@/modules/game/types/player/player.types";
+import { RoleSides } from "@/modules/role/enums/role.enum";
+import type { RoleName } from "@/modules/role/types/role.types";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import type { ExceptionInterpolations } from "@/shared/exception/types/exception.types";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
-import { createFakeCupidGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
-import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
+import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeCupidGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCantVoteBySurvivorsPlayerAttribute, createFakeCharmedByPiedPiperPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakeInLoveByCupidPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -29,61 +30,61 @@ import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.fa
 describe("Game Helper", () => {
   describe("getPlayerDtoWithRole", () => {
     const players = [
-      createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
-      createFakeCreateGamePlayerDto({ role: { name: RoleNames.SEER } }),
-      createFakeCreateGamePlayerDto({ role: { name: RoleNames.WEREWOLF } }),
-      createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-      createFakeCreateGamePlayerDto({ role: { name: RoleNames.TWO_SISTERS } }),
-      createFakeCreateGamePlayerDto({ role: { name: RoleNames.IDIOT } }),
+      createFakeCreateGamePlayerDto({ role: { name: "witch" } }),
+      createFakeCreateGamePlayerDto({ role: { name: "seer" } }),
+      createFakeCreateGamePlayerDto({ role: { name: "werewolf" } }),
+      createFakeCreateGamePlayerDto({ role: { name: "two-sisters" } }),
+      createFakeCreateGamePlayerDto({ role: { name: "two-sisters" } }),
+      createFakeCreateGamePlayerDto({ role: { name: "idiot" } }),
     ];
     const game = createFakeCreateGameDto({ players });
 
     it("should return player with role when a player has this role.", () => {
-      expect(getPlayerDtoWithRole(game, RoleNames.WEREWOLF)).toStrictEqual<CreateGamePlayerDto>(game.players[2]);
+      expect(getPlayerDtoWithRole(game, "werewolf")).toStrictEqual<CreateGamePlayerDto>(game.players[2]);
     });
 
     it("should return undefined when player with role is not found.", () => {
-      expect(getPlayerDtoWithRole(game, RoleNames.THREE_BROTHERS)).toBeUndefined();
+      expect(getPlayerDtoWithRole(game, "three-brothers")).toBeUndefined();
     });
   });
 
   describe("getPlayerWithCurrentRole", () => {
     const players = [
-      createFakePlayer({ role: { current: RoleNames.WITCH, original: RoleNames.WITCH, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.SEER, original: RoleNames.SEER, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.WEREWOLF, original: RoleNames.WEREWOLF, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.TWO_SISTERS, original: RoleNames.TWO_SISTERS, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.TWO_SISTERS, original: RoleNames.TWO_SISTERS, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.IDIOT, original: RoleNames.IDIOT, isRevealed: false } }),
+      createFakePlayer({ role: { current: "witch", original: "witch", isRevealed: false } }),
+      createFakePlayer({ role: { current: "seer", original: "seer", isRevealed: false } }),
+      createFakePlayer({ role: { current: "werewolf", original: "werewolf", isRevealed: false } }),
+      createFakePlayer({ role: { current: "two-sisters", original: "two-sisters", isRevealed: false } }),
+      createFakePlayer({ role: { current: "two-sisters", original: "two-sisters", isRevealed: false } }),
+      createFakePlayer({ role: { current: "idiot", original: "idiot", isRevealed: false } }),
     ];
     const game = createFakeGame({ players });
 
     it("should return player with role when a player has this role.", () => {
-      expect(getPlayerWithCurrentRole(game, RoleNames.SEER)).toStrictEqual<Player>(players[1]);
+      expect(getPlayerWithCurrentRole(game, "seer")).toStrictEqual<Player>(players[1]);
     });
 
     it("should return undefined when player with role is not found.", () => {
-      expect(getPlayerWithCurrentRole(game, RoleNames.BIG_BAD_WOLF)).toBeUndefined();
+      expect(getPlayerWithCurrentRole(game, "big-bad-wolf")).toBeUndefined();
     });
   });
 
   describe("getPlayersWithCurrentRole", () => {
     const players = [
-      createFakePlayer({ role: { current: RoleNames.THREE_BROTHERS, original: RoleNames.WITCH, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.THREE_BROTHERS, original: RoleNames.SEER, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.THREE_BROTHERS, original: RoleNames.WEREWOLF, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.TWO_SISTERS, original: RoleNames.TWO_SISTERS, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.TWO_SISTERS, original: RoleNames.TWO_SISTERS, isRevealed: false } }),
-      createFakePlayer({ role: { current: RoleNames.IDIOT, original: RoleNames.IDIOT, isRevealed: false } }),
+      createFakePlayer({ role: { current: "three-brothers", original: "witch", isRevealed: false } }),
+      createFakePlayer({ role: { current: "three-brothers", original: "seer", isRevealed: false } }),
+      createFakePlayer({ role: { current: "three-brothers", original: "werewolf", isRevealed: false } }),
+      createFakePlayer({ role: { current: "two-sisters", original: "two-sisters", isRevealed: false } }),
+      createFakePlayer({ role: { current: "two-sisters", original: "two-sisters", isRevealed: false } }),
+      createFakePlayer({ role: { current: "idiot", original: "idiot", isRevealed: false } }),
     ];
     const game = createFakeGame({ players });
 
     it("should return players when they have this role.", () => {
-      expect(getPlayersWithCurrentRole(game, RoleNames.THREE_BROTHERS)).toStrictEqual<Player[]>([players[0], players[1], players[2]]);
+      expect(getPlayersWithCurrentRole(game, "three-brothers")).toStrictEqual<Player[]>([players[0], players[1], players[2]]);
     });
 
     it("should return empty array when no one has the role.", () => {
-      expect(getPlayersWithCurrentRole(game, RoleNames.WEREWOLF)).toStrictEqual<Player[]>([]);
+      expect(getPlayersWithCurrentRole(game, "werewolf")).toStrictEqual<Player[]>([]);
     });
   });
 
@@ -371,7 +372,7 @@ describe("Game Helper", () => {
       ];
       const game = createFakeGame({ players });
 
-      expect(getPlayerWithActiveAttributeName(game, PlayerAttributeNames.CHARMED)).toStrictEqual<Player>(players[2]);
+      expect(getPlayerWithActiveAttributeName(game, "charmed")).toStrictEqual<Player>(players[2]);
     });
 
     it("should return undefined when player with attribute is not found.", () => {
@@ -383,7 +384,7 @@ describe("Game Helper", () => {
       ];
       const game = createFakeGame({ players });
 
-      expect(getPlayerWithActiveAttributeName(game, PlayerAttributeNames.SEEN)).toBeUndefined();
+      expect(getPlayerWithActiveAttributeName(game, "seen")).toBeUndefined();
     });
   });
 
@@ -397,11 +398,11 @@ describe("Game Helper", () => {
     const game = createFakeGame({ players });
 
     it("should return players when they have the attribute.", () => {
-      expect(getPlayersWithActiveAttributeName(game, PlayerAttributeNames.CHARMED)).toStrictEqual<Player[]>([players[0], players[2]]);
+      expect(getPlayersWithActiveAttributeName(game, "charmed")).toStrictEqual<Player[]>([players[0], players[2]]);
     });
 
     it("should return empty array when none has the attribute.", () => {
-      expect(getPlayersWithActiveAttributeName(game, PlayerAttributeNames.SEEN)).toStrictEqual<Player[]>([]);
+      expect(getPlayersWithActiveAttributeName(game, "seen")).toStrictEqual<Player[]>([]);
     });
   });
 
@@ -545,12 +546,12 @@ describe("Game Helper", () => {
 
     it.each<{
       test: string;
-      group: PlayerGroups;
+      group: PlayerGroup;
       expected: Player[];
     }>([
       {
         test: "should return all alive players when group is survivors.",
-        group: PlayerGroups.SURVIVORS,
+        group: "survivors",
         expected: [
           players[0],
           players[1],
@@ -562,22 +563,22 @@ describe("Game Helper", () => {
       },
       {
         test: "should return players in love when group is lovers.",
-        group: PlayerGroups.LOVERS,
+        group: "lovers",
         expected: [players[2], players[5]],
       },
       {
         test: "should return charmed players when group is charmed.",
-        group: PlayerGroups.CHARMED,
+        group: "charmed",
         expected: [players[0], players[3]],
       },
       {
         test: "should return villagers when group is villagers.",
-        group: PlayerGroups.VILLAGERS,
+        group: "villagers",
         expected: [players[0], players[2], players[4], players[6]],
       },
       {
         test: "should return werewolves when group is werewolves.",
-        group: PlayerGroups.WEREWOLVES,
+        group: "werewolves",
         expected: [players[1], players[3], players[5]],
       },
     ])("$test", ({ group, expected }) => {
@@ -587,21 +588,21 @@ describe("Game Helper", () => {
 
   describe("isGameSourceRole", () => {
     it("should return true when source is role.", () => {
-      expect(isGameSourceRole(RoleNames.WITCH)).toBe(true);
+      expect(isGameSourceRole("witch")).toBe(true);
     });
 
     it("should return false when source is group.", () => {
-      expect(isGameSourceRole(PlayerGroups.SURVIVORS)).toBe(false);
+      expect(isGameSourceRole("survivors")).toBe(false);
     });
   });
 
   describe("isGameSourceGroup", () => {
     it("should return true when source is group.", () => {
-      expect(isGameSourceGroup(PlayerGroups.WEREWOLVES)).toBe(true);
+      expect(isGameSourceGroup("werewolves")).toBe(true);
     });
 
     it("should return false when source is role.", () => {
-      expect(isGameSourceGroup(RoleNames.SEER)).toBe(false);
+      expect(isGameSourceGroup("seer")).toBe(false);
     });
   });
 
@@ -912,15 +913,15 @@ describe("Game Helper", () => {
     it.each<{
       test: string;
       game: Game;
-      role: RoleNames;
-      action: GamePlayActions;
+      role: RoleName;
+      action: GamePlayAction;
       expected: boolean;
     }>([
       {
         test: "should return true when game has upcoming play source and action.",
         game: createFakeGame({ upcomingPlays: [createFakeGamePlayHunterShoots()] }),
-        role: RoleNames.HUNTER,
-        action: GamePlayActions.SHOOT,
+        role: "hunter",
+        action: "shoot",
         expected: true,
       },
       {
@@ -931,8 +932,8 @@ describe("Game Helper", () => {
             createFakeGamePlayWerewolvesEat(),
           ],
         }),
-        role: RoleNames.HUNTER,
-        action: GamePlayActions.EAT,
+        role: "hunter",
+        action: "eat",
         expected: false,
       },
     ])(`$test`, ({ game, role, action, expected }) => {
@@ -944,29 +945,29 @@ describe("Game Helper", () => {
     it.each<{
       test: string;
       game: Game;
-      role: RoleNames;
-      action: GamePlayActions;
+      role: RoleName;
+      action: GamePlayAction;
       expected: boolean;
     }>([
       {
         test: "should return true when game has current play source and action.",
         game: createFakeGame({ currentPlay: createFakeGamePlayHunterShoots() }),
-        role: RoleNames.HUNTER,
-        action: GamePlayActions.SHOOT,
+        role: "hunter",
+        action: "shoot",
         expected: true,
       },
       {
         test: "should return true when game has upcoming play source and action.",
         game: createFakeGame({ upcomingPlays: [createFakeGamePlayHunterShoots()] }),
-        role: RoleNames.HUNTER,
-        action: GamePlayActions.SHOOT,
+        role: "hunter",
+        action: "shoot",
         expected: true,
       },
       {
         test: "should return false when game has no current or upcoming play source and action.",
         game: createFakeGame({ currentPlay: createFakeGamePlayHunterShoots(), upcomingPlays: [createFakeGamePlayHunterShoots()] }),
-        role: RoleNames.HUNTER,
-        action: GamePlayActions.EAT,
+        role: "hunter",
+        action: "eat",
         expected: false,
       },
     ])(`$test`, ({ game, role, action, expected }) => {

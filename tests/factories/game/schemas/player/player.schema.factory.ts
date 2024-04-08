@@ -1,11 +1,12 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { ROLE_NAMES } from "@/modules/role/constants/role.constants";
 import { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
 import { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
@@ -22,8 +23,8 @@ function createFakePlayerSide(playerSide: Partial<PlayerSide> = {}, override: ob
 
 function createFakePlayerRole(playerRole: Partial<PlayerRole> = {}, override: object = {}): PlayerRole {
   return plainToInstance(PlayerRole, {
-    current: playerRole.current ?? faker.helpers.arrayElement(Object.values(RoleNames)),
-    original: playerRole.original ?? faker.helpers.arrayElement(Object.values(RoleNames)),
+    current: playerRole.current ?? faker.helpers.arrayElement(ROLE_NAMES),
+    original: playerRole.original ?? faker.helpers.arrayElement(ROLE_NAMES),
     isRevealed: playerRole.isRevealed ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
