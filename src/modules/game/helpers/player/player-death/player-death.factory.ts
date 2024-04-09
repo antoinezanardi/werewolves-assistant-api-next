@@ -1,95 +1,93 @@
 import { plainToInstance } from "class-transformer";
 
-import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createPlayerDiseaseByRustySwordKnightDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.DISEASE,
-    source: RoleNames.RUSTY_SWORD_KNIGHT,
+    cause: "disease",
+    source: "rusty-sword-knight",
     ...playerDeath,
   });
 }
 
 function createPlayerBrokenHeartByCupidDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.BROKEN_HEART,
-    source: RoleNames.CUPID,
+    cause: "broken-heart",
+    source: "cupid",
     ...playerDeath,
   });
 }
 
 function createPlayerReconsiderPardonBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.RECONSIDER_PARDON,
-    source: PlayerGroups.SURVIVORS,
+    cause: "reconsider-pardon",
+    source: "survivors",
     ...playerDeath,
   });
 }
 
 function createPlayerVoteScapegoatedBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.VOTE_SCAPEGOATED,
-    source: PlayerGroups.SURVIVORS,
+    cause: "vote-scapegoated",
+    source: "survivors",
     ...playerDeath,
   });
 }
 
 function createPlayerVoteBySheriffDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.VOTE,
-    source: PlayerAttributeNames.SHERIFF,
+    cause: "vote",
+    source: "sheriff",
     ...playerDeath,
   });
 }
 
 function createPlayerVoteBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.VOTE,
-    source: PlayerGroups.SURVIVORS,
+    cause: "vote",
+    source: "survivors",
     ...playerDeath,
   });
 }
 
 function createPlayerShotByHunterDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.SHOT,
-    source: RoleNames.HUNTER,
+    cause: "shot",
+    source: "hunter",
     ...playerDeath,
   });
 }
 
 function createPlayerEatenByWhiteWerewolfDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.EATEN,
-    source: RoleNames.WHITE_WEREWOLF,
+    cause: "eaten",
+    source: "white-werewolf",
     ...playerDeath,
   });
 }
 
 function createPlayerEatenByBigBadWolfDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.EATEN,
-    source: RoleNames.BIG_BAD_WOLF,
+    cause: "eaten",
+    source: "big-bad-wolf",
     ...playerDeath,
   });
 }
 
 function createPlayerEatenByWerewolvesDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.EATEN,
-    source: PlayerGroups.WEREWOLVES,
+    cause: "eaten",
+    source: "werewolves",
     ...playerDeath,
   });
 }
 
 function createPlayerDeathPotionByWitchDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
-    cause: PlayerDeathCauses.DEATH_POTION,
-    source: RoleNames.WITCH,
+    cause: "death-potion",
+    source: "witch",
     ...playerDeath,
   });
 }

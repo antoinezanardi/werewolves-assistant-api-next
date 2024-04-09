@@ -1,14 +1,12 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGamePlaySheriffDelegates } from "@/modules/game/helpers/game-play/game-play.factory";
+import * as GameMutator from "@/modules/game/helpers/game.mutators";
+import * as GamePlayHelper from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import { DevotedServantGamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/devoted-servant-game-play-maker.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
-import * as GamePlayHelper from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
-import * as GameMutator from "@/modules/game/helpers/game.mutators";
 
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -106,7 +104,7 @@ describe("Devoted Servant Game Play Maker Service", () => {
       mocks.devotedServantGamePlayMakerService.makeDevotedServantDelegatesIfSheriff.mockReturnValueOnce(game);
       services.devotedServantGamePlayMaker.devotedServantStealsRole(players[0] as DeadPlayer, game);
 
-      expect(mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame).toHaveBeenCalledExactlyOnceWith(players[3]._id, game, PlayerAttributeNames.CHARMED, RoleNames.PIED_PIPER);
+      expect(mocks.gameMutator.removePlayerAttributeByNameAndSourceInGame).toHaveBeenCalledExactlyOnceWith(players[3]._id, game, "charmed", "pied-piper");
     });
 
     it("should swap target and devoted servant current role and side when called.", () => {
@@ -269,10 +267,10 @@ describe("Devoted Servant Game Play Maker Service", () => {
       players[0].role.isRevealed = false;
       const game = createFakeGame({ players });
       const expectedGame = createFakeGame(game);
-      expectedGame.players[0].role.current = RoleNames.DEVOTED_SERVANT;
-      expectedGame.players[0].side.current = RoleSides.VILLAGERS;
-      expectedGame.players[3].role.current = RoleNames.WEREWOLF;
-      expectedGame.players[3].side.current = RoleSides.WEREWOLVES;
+      expectedGame.players[0].role.current = "devoted-servant";
+      expectedGame.players[0].side.current = "villagers";
+      expectedGame.players[3].role.current = "werewolf";
+      expectedGame.players[3].side.current = "werewolves";
       expectedGame.players[3].role.isRevealed = false;
 
       expect(services.devotedServantGamePlayMaker["swapTargetAndDevotedServantCurrentRoleAndSide"](players[0] as DeadPlayer, players[3], game)).toStrictEqual<Game>(expectedGame);
@@ -286,13 +284,13 @@ describe("Devoted Servant Game Play Maker Service", () => {
         createFakeDevotedServantAlivePlayer(),
       ];
       players[0].role.isRevealed = false;
-      players[3].side.current = RoleSides.WEREWOLVES;
+      players[3].side.current = "werewolves";
       const game = createFakeGame({ players });
       const expectedGame = createFakeGame(game);
-      expectedGame.players[0].role.current = RoleNames.DEVOTED_SERVANT;
-      expectedGame.players[0].side.current = RoleSides.VILLAGERS;
-      expectedGame.players[3].role.current = RoleNames.SEER;
-      expectedGame.players[3].side.current = RoleSides.WEREWOLVES;
+      expectedGame.players[0].role.current = "devoted-servant";
+      expectedGame.players[0].side.current = "villagers";
+      expectedGame.players[3].role.current = "seer";
+      expectedGame.players[3].side.current = "werewolves";
       expectedGame.players[3].role.isRevealed = false;
 
       expect(services.devotedServantGamePlayMaker["swapTargetAndDevotedServantCurrentRoleAndSide"](players[0] as DeadPlayer, players[3], game)).toStrictEqual<Game>(expectedGame);
@@ -308,10 +306,10 @@ describe("Devoted Servant Game Play Maker Service", () => {
       players[0].role.isRevealed = true;
       const game = createFakeGame({ players });
       const expectedGame = createFakeGame(game);
-      expectedGame.players[0].role.current = RoleNames.DEVOTED_SERVANT;
-      expectedGame.players[0].side.current = RoleSides.VILLAGERS;
-      expectedGame.players[3].role.current = RoleNames.WEREWOLF;
-      expectedGame.players[3].side.current = RoleSides.WEREWOLVES;
+      expectedGame.players[0].role.current = "devoted-servant";
+      expectedGame.players[0].side.current = "villagers";
+      expectedGame.players[3].role.current = "werewolf";
+      expectedGame.players[3].side.current = "werewolves";
       expectedGame.players[3].role.isRevealed = true;
 
       expect(services.devotedServantGamePlayMaker["swapTargetAndDevotedServantCurrentRoleAndSide"](players[0] as DeadPlayer, players[3], game)).toStrictEqual<Game>(expectedGame);

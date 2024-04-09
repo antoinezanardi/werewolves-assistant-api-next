@@ -1,5 +1,4 @@
 import { getCompositionGroupsSizeDefaultMessage, isCompositionGroupsSizeRespected } from "@/modules/game/dto/base/decorators/composition/composition-groups-size.decorator";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
@@ -15,10 +14,10 @@ describe("Composition Groups Size Decorator", () => {
 
     it("should return false when one of the players is not an object.", () => {
       const players = [
-        { role: { name: RoleNames.FOX } },
-        { role: { name: RoleNames.VILLAGER } },
-        { role: { name: RoleNames.WEREWOLF } },
-        { role: { name: RoleNames.WITCH } },
+        { role: { name: "fox" } },
+        { role: { name: "villager" } },
+        { role: { name: "werewolf" } },
+        { role: { name: "witch" } },
       ];
 
       expect(isCompositionGroupsSizeRespected([...players, "toto"])).toBe(false);

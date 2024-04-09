@@ -1,9 +1,9 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
-import { WitchPotions } from "@/modules/game/enums/game-play.enum";
+import { WITCH_POTIONS } from "@/modules/game/constants/game-play/game-play.constants";
 import type { GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
+import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
@@ -15,7 +15,7 @@ const GAME_HISTORY_RECORD_PLAY_TARGET_FIELDS_SPECS = {
   },
   drankPotion: {
     required: false,
-    enum: Object.values(WitchPotions),
+    enum: WITCH_POTIONS,
   },
 } as const satisfies Record<keyof GameHistoryRecordPlayTarget, MongoosePropOptions>;
 

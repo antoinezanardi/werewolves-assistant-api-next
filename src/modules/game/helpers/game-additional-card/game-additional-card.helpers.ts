@@ -1,14 +1,14 @@
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import type { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card.types";
-import type { RoleNames } from "@/modules/role/enums/role.enum";
+import type { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card/game-additional-card.types";
+import type { RoleName } from "@/modules/role/types/role.types";
 
-function getGameAdditionalCardWithRoleNameAndRecipient(roleName: RoleNames, recipient: GameAdditionalCardRecipientRoleName, game: Game): GameAdditionalCard | undefined {
+function getGameAdditionalCardWithRoleNameAndRecipient(roleName: RoleName, recipient: GameAdditionalCardRecipientRoleName, game: Game): GameAdditionalCard | undefined {
   return game.additionalCards?.find(card => card.roleName === roleName && card.recipient === recipient);
 }
 
 function getGameAdditionalCardWithRoleNameAndRecipientOrThrow(
-  roleName: RoleNames,
+  roleName: RoleName,
   recipient: GameAdditionalCardRecipientRoleName,
   game: Game,
   exception: Error,

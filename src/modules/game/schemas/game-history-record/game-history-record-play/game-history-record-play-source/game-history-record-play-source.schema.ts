@@ -4,7 +4,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GamePlaySourceName } from "@/modules/game/types/game-play.types";
+import { GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
 import { GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema.constants";
 import { Player } from "@/modules/game/schemas/player/player.schema";
 

@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 
-import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGamePlaySheriffDelegates } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helpers";
@@ -10,7 +9,7 @@ import { canPlayerDelegateSheriffAttribute } from "@/modules/game/helpers/player
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import { RoleName } from "@/modules/role/types/role.types";
 
 import { createCantFindPlayerWithIdUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -18,12 +17,12 @@ import { createCantFindPlayerWithIdUnexpectedException } from "@/shared/exceptio
 export class DevotedServantGamePlayMakerService {
   public devotedServantStealsRole(targetedPlayer: DeadPlayer, game: Game): Game {
     let clonedGame = createGame(game);
-    let devotedServantPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.DEVOTED_SERVANT);
+    let devotedServantPlayer = getPlayerWithCurrentRole(clonedGame, "devoted-servant");
     if (!devotedServantPlayer) {
       return clonedGame;
     }
     const cantFindDevotedServantException = createCantFindPlayerWithIdUnexpectedException("devotedServantStealsRole", { gameId: game._id, playerId: devotedServantPlayer._id });
-    clonedGame = removePlayerAttributeByNameAndSourceInGame(devotedServantPlayer._id, clonedGame, PlayerAttributeNames.CHARMED, RoleNames.PIED_PIPER);
+    clonedGame = removePlayerAttributeByNameAndSourceInGame(devotedServantPlayer._id, clonedGame, "charmed", "pied-piper");
     devotedServantPlayer = getPlayerWithIdOrThrow(devotedServantPlayer._id, clonedGame, cantFindDevotedServantException);
     clonedGame = this.swapTargetAndDevotedServantCurrentRoleAndSide(targetedPlayer, devotedServantPlayer, clonedGame);
     devotedServantPlayer = getPlayerWithIdOrThrow(devotedServantPlayer._id, clonedGame, cantFindDevotedServantException);
@@ -34,15 +33,15 @@ export class DevotedServantGamePlayMakerService {
 
   private applyWildChildStolenRoleOutcome(game: Game): Game {
     const clonedGame = createGame(game);
-    const worshipedPlayer = getPlayerWithActiveAttributeName(clonedGame, PlayerAttributeNames.WORSHIPED);
+    const worshipedPlayer = getPlayerWithActiveAttributeName(clonedGame, "worshiped");
     if (!worshipedPlayer) {
       return clonedGame;
     }
-    return removePlayerAttributeByNameInGame(worshipedPlayer._id, clonedGame, PlayerAttributeNames.WORSHIPED);
+    return removePlayerAttributeByNameInGame(worshipedPlayer._id, clonedGame, "worshiped");
   }
 
   private applyTargetStolenRoleOutcomes(targetedPlayer: DeadPlayer, game: Game): Game {
-    const roleOutcomesMethods: Partial<Record<RoleNames, (game: Game) => Game>> = { [RoleNames.WILD_CHILD]: () => this.applyWildChildStolenRoleOutcome(game) };
+    const roleOutcomesMethods: Partial<Record<RoleName, (game: Game) => Game>> = { "wild-child": () => this.applyWildChildStolenRoleOutcome(game) };
     const roleOutcomeMethod = roleOutcomesMethods[targetedPlayer.role.current];
     if (!roleOutcomeMethod) {
       return game;
@@ -59,7 +58,7 @@ export class DevotedServantGamePlayMakerService {
         isRevealed: targetedPlayer.role.isRevealed,
       },
     };
-    if (devotedServantPlayer.side.current !== RoleSides.WEREWOLVES) {
+    if (devotedServantPlayer.side.current !== "werewolves") {
       devotedServantPlayerDataToUpdate.side = {
         ...devotedServantPlayer.side,
         current: targetedPlayer.side.original,
@@ -72,7 +71,7 @@ export class DevotedServantGamePlayMakerService {
       },
       side: {
         ...targetedPlayer.side,
-        current: RoleSides.VILLAGERS,
+        current: "villagers",
       },
     };
     clonedGame = updatePlayerInGame(devotedServantPlayer._id, devotedServantPlayerDataToUpdate, clonedGame);

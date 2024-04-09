@@ -1,6 +1,6 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
 function getResourceSingularForm(resource: ApiResources): string {

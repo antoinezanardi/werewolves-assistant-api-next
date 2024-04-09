@@ -1,7 +1,6 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import { GameStatuses } from "@/modules/game/enums/game.enum";
 import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helpers";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helpers";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
@@ -17,7 +16,7 @@ import { GameService } from "@/modules/game/providers/services/game.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
 
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
@@ -222,14 +221,14 @@ describe("Game Service", () => {
   });
 
   describe("cancelGame", () => {
-    const existingPlayingGame = createFakeGame({ status: GameStatuses.PLAYING });
+    const existingPlayingGame = createFakeGame({ status: "playing" });
 
     beforeEach(() => {
       mocks.gameService.updateGame = jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockResolvedValue(existingPlayingGame);
     });
 
     it("should throw error when game is not playing.", async() => {
-      const canceledGame = createFakeGame({ status: GameStatuses.CANCELED });
+      const canceledGame = createFakeGame({ status: "canceled" });
       const expectedException = new BadResourceMutationException(ApiResources.GAMES, canceledGame._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
       const error = await getError<BadResourceMutationException>(async() => services.game.cancelGame(canceledGame));
 
@@ -240,7 +239,7 @@ describe("Game Service", () => {
     it("should call update method when game can be canceled.", async() => {
       await services.game.cancelGame(existingPlayingGame);
 
-      expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(existingPlayingGame._id, { status: GameStatuses.CANCELED });
+      expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(existingPlayingGame._id, { status: "canceled" });
     });
   });
 
@@ -251,7 +250,7 @@ describe("Game Service", () => {
       createFakeVillagerAlivePlayer(),
       createFakeVillagerAlivePlayer(),
     ];
-    const game = createFakeGame({ status: GameStatuses.PLAYING, players, currentPlay: createFakeGamePlaySurvivorsVote() });
+    const game = createFakeGame({ status: "playing", players, currentPlay: createFakeGamePlaySurvivorsVote() });
     const play = createFakeMakeGamePlayWithRelationsDto();
 
     beforeEach(() => {
@@ -268,7 +267,7 @@ describe("Game Service", () => {
 
     it("should throw an error when game is not playing.", async() => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
-      const canceledGame = createFakeGame({ status: GameStatuses.CANCELED });
+      const canceledGame = createFakeGame({ status: "canceled" });
       const expectedException = new BadResourceMutationException(ApiResources.GAMES, canceledGame._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
       const error = await getError<BadResourceMutationException>(async() => services.game.makeGamePlay(canceledGame, makeGamePlayDto));
 
@@ -373,7 +372,7 @@ describe("Game Service", () => {
 
   describe("validateGameIsPlaying", () => {
     it("should throw error when game is not playing.", async() => {
-      const game = createFakeGame({ status: GameStatuses.CANCELED });
+      const game = createFakeGame({ status: "canceled" });
       const expectedError = new BadResourceMutationException(ApiResources.GAMES, game._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
       const error = await getError<BadResourceMutationException>(() => services.game["validateGameIsPlaying"](game));
 
@@ -382,7 +381,7 @@ describe("Game Service", () => {
     });
 
     it("should not throw error when game is playing.", () => {
-      const game = createFakeGame({ status: GameStatuses.PLAYING });
+      const game = createFakeGame({ status: "playing" });
 
       expect(() => services.game["validateGameIsPlaying"](game)).not.toThrow();
     });
@@ -455,7 +454,7 @@ describe("Game Service", () => {
       const unknownObjectId = createFakeObjectId();
       mocks.gameRepository.updateOne.mockResolvedValue(null);
       const expectedError = new ResourceNotFoundException(ApiResources.GAMES, unknownObjectId.toString());
-      const error = await getError<ResourceNotFoundException>(async() => services.game["updateGame"](unknownObjectId, { status: GameStatuses.OVER }));
+      const error = await getError<ResourceNotFoundException>(async() => services.game["updateGame"](unknownObjectId, { status: "over" }));
 
       expect(error).toStrictEqual<ResourceNotFoundException>(expectedError);
       expect(error).toHaveProperty("options", { description: undefined });
@@ -463,7 +462,7 @@ describe("Game Service", () => {
 
     it("should return updated game when called.", async() => {
       const game = createFakeGame();
-      const gameDataToUpdate: Partial<Game> = { status: GameStatuses.OVER };
+      const gameDataToUpdate: Partial<Game> = { status: "over" };
       mocks.gameRepository.updateOne.mockResolvedValue(game);
 
       await expect(services.game["updateGame"](game._id, gameDataToUpdate)).resolves.toStrictEqual<Game>(game);
@@ -473,12 +472,12 @@ describe("Game Service", () => {
 
   describe("setGameAsOver", () => {
     it("should set game as over when called.", () => {
-      const game = createFakeGame({ status: GameStatuses.PLAYING });
+      const game = createFakeGame({ status: "playing" });
       const gameVictoryData = createFakeGameVictory();
       mocks.gameVictoryService.generateGameVictoryData.mockReturnValue(gameVictoryData);
       const expectedGame = createFakeGame({
         ...game,
-        status: GameStatuses.OVER,
+        status: "over",
         victory: gameVictoryData,
       });
 

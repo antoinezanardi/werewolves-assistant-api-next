@@ -1,7 +1,6 @@
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 
 import { playerRoleTransformer } from "@/modules/game/dto/base/game-player/transformers/player-role.transformer";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 describe("Player Role Transformer", () => {
   describe("playerRoleTransformer", () => {
@@ -32,31 +31,31 @@ describe("Player Role Transformer", () => {
       },
       {
         test: "should fill player role (seer) fields when called.",
-        value: { name: RoleNames.SEER },
+        value: { name: "seer" },
         expected: {
-          name: RoleNames.SEER,
-          original: RoleNames.SEER,
-          current: RoleNames.SEER,
+          name: "seer",
+          original: "seer",
+          current: "seer",
           isRevealed: false,
         },
       },
       {
         test: "should fill player role (white-werewolf) fields when called.",
-        value: { name: RoleNames.WHITE_WEREWOLF },
+        value: { name: "white-werewolf" },
         expected: {
-          name: RoleNames.WHITE_WEREWOLF,
-          original: RoleNames.WHITE_WEREWOLF,
-          current: RoleNames.WHITE_WEREWOLF,
+          name: "white-werewolf",
+          original: "white-werewolf",
+          current: "white-werewolf",
           isRevealed: false,
         },
       },
       {
         test: "should fill player role fields with isRevealed true when role is villager villager.",
-        value: { name: RoleNames.VILLAGER_VILLAGER },
+        value: { name: "villager-villager" },
         expected: {
-          name: RoleNames.VILLAGER_VILLAGER,
-          original: RoleNames.VILLAGER_VILLAGER,
-          current: RoleNames.VILLAGER_VILLAGER,
+          name: "villager-villager",
+          original: "villager-villager",
+          current: "villager-villager",
           isRevealed: true,
         },
       },

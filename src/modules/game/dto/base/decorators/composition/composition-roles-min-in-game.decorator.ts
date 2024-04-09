@@ -2,15 +2,15 @@ import { registerDecorator } from "class-validator";
 import { has } from "lodash";
 import type { ValidationOptions } from "class-validator";
 
-import { ROLES } from "@/modules/role/constants/role.constants";
-import type { RoleNames } from "@/modules/role/enums/role.enum";
-import type { Role } from "@/modules/role/types/role.types";
+import type { Role } from "@/modules/role/types/role.class";
+import { ROLES } from "@/modules/role/constants/role-set.constants";
+import type { RoleName } from "@/modules/role/types/role.types";
 
 function areCompositionRolesMinInGameRespected(value?: unknown): boolean {
   if (!Array.isArray(value) || value.some(player => !has(player, ["role", "name"]))) {
     return false;
   }
-  const players = value as { role: { name: RoleNames } }[];
+  const players = value as { role: { name: RoleName } }[];
   return ROLES
     .filter((role): role is Role & { minInGame: number } => role.minInGame !== undefined)
     .every(role => {

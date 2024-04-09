@@ -2,14 +2,14 @@ import { registerDecorator } from "class-validator";
 import { has } from "lodash";
 import type { ValidationOptions } from "class-validator";
 
-import { ROLES } from "@/modules/role/constants/role.constants";
-import type { RoleNames } from "@/modules/role/enums/role.enum";
+import type { RoleName } from "@/modules/role/types/role.types";
+import { ROLES } from "@/modules/role/constants/role-set.constants";
 
 function areCompositionRolesMaxInGameRespected(value?: unknown): boolean {
   if (!Array.isArray(value) || value.some(player => !has(player, ["role", "name"]))) {
     return false;
   }
-  const players = value as { role: { name: RoleNames } }[];
+  const players = value as { role: { name: RoleName } }[];
   return ROLES.every(role => {
     const roleCount = players.filter(player => player.role.name === role.name).length;
     return roleCount <= role.maxInGame;

@@ -1,10 +1,10 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES } from "@/modules/role/constants/role.constants";
+import { ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES } from "@/modules/role/constants/role-set.constants";
+import { ROLE_NAMES } from "@/modules/role/constants/role.constants";
 import { GAME_ADDITIONAL_CARDS_RECIPIENTS } from "@/modules/game/constants/game-additional-card/game-additional-card.constants";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
@@ -13,7 +13,7 @@ const GAME_ADDITIONAL_CARDS_FIELDS_SPECS = {
   _id: { required: true },
   roleName: {
     required: true,
-    enum: Object.values(RoleNames),
+    enum: ROLE_NAMES,
   },
   recipient: {
     required: true,
@@ -31,7 +31,7 @@ const GAME_ADDITIONAL_CARDS_API_PROPERTIES: ReadonlyDeep<Record<keyof GameAdditi
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_ADDITIONAL_CARDS_FIELDS_SPECS._id),
   },
   roleName: {
-    description: `Game additional card role name. If \`recipient\` is \`${RoleNames.THIEF}\`, possible values are : ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.toString()}`,
+    description: `Game additional card role name. If \`recipient\` is \`${"thief"}\`, possible values are : ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.toString()}`,
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName),
   },
   recipient: {

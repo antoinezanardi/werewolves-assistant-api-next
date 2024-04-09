@@ -1,21 +1,20 @@
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
-import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
+import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 import { GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constants";
 import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
-import type { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { getAdditionalCardWithId, getGroupOfPlayers, getPlayerWithId } from "@/modules/game/helpers/game.helpers";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
@@ -91,8 +90,8 @@ function areGamePlaysEqual(playA: GamePlay, playB: GamePlay): boolean {
 }
 
 function canSurvivorsVote(game: Game): boolean {
-  const survivors = getGroupOfPlayers(game, PlayerGroups.SURVIVORS);
-  return survivors.some(player => !doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.CANT_VOTE, game));
+  const survivors = getGroupOfPlayers(game, "survivors");
+  return survivors.some(player => !doesPlayerHaveActiveAttributeWithName(player, "cant-vote", game));
 }
 
 function isPlayerInteractableInCurrentGamePlay(playerId: Types.ObjectId, game: GameWithCurrentPlay): boolean {
@@ -100,7 +99,7 @@ function isPlayerInteractableInCurrentGamePlay(playerId: Types.ObjectId, game: G
   return !!interactions?.find(({ eligibleTargets }) => eligibleTargets.find(({ _id }) => _id.equals(playerId)));
 }
 
-function isPlayerInteractableWithInteractionTypeInCurrentGamePlay(playerId: Types.ObjectId, interactionType: PlayerInteractionTypes, game: GameWithCurrentPlay): boolean {
+function isPlayerInteractableWithInteractionTypeInCurrentGamePlay(playerId: Types.ObjectId, interactionType: PlayerInteractionType, game: GameWithCurrentPlay): boolean {
   const { interactions } = game.currentPlay.source;
   const interaction = interactions?.find(({ type }) => type === interactionType);
   return !!interaction?.eligibleTargets.find(({ _id }) => _id.equals(playerId));

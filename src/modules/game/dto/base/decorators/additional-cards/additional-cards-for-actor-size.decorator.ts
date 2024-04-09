@@ -1,21 +1,20 @@
+import type { ValidationArguments, ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
-import type { ValidationOptions, ValidationArguments } from "class-validator";
 import { has } from "lodash";
 
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 function isAdditionalCardsForActorSizeRespected(value: unknown, validationArguments: ValidationArguments): boolean {
   const { players, options } = validationArguments.object as CreateGameDto;
   const { additionalCardsCount } = options.roles.actor;
-  if (value === undefined || !players.some(player => player.role.name === RoleNames.ACTOR)) {
+  if (value === undefined || !players.some(player => player.role.name === "actor")) {
     return true;
   }
   if (!Array.isArray(value) || value.some(card => !has(card, "recipient"))) {
     return false;
   }
   const cards = value as { recipient: string }[];
-  const actorAdditionalCards = cards.filter(card => card.recipient === RoleNames.ACTOR);
+  const actorAdditionalCards = cards.filter(card => card.recipient === "actor");
   return actorAdditionalCards.length === additionalCardsCount;
 }
 

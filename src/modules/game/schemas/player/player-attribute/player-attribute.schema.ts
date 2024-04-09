@@ -3,8 +3,8 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
+import { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
 import { PLAYER_ATTRIBUTE_API_PROPERTIES, PLAYER_ATTRIBUTE_FIELDS_SPECS } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema.constants";
-import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema";
 import { GameSource } from "@/modules/game/types/game.types";
 
@@ -17,7 +17,7 @@ class PlayerAttribute {
   @ApiProperty(PLAYER_ATTRIBUTE_API_PROPERTIES.name as ApiPropertyOptions)
   @Prop(PLAYER_ATTRIBUTE_FIELDS_SPECS.name)
   @Expose()
-  public name: PlayerAttributeNames;
+  public name: PlayerAttributeName;
 
   @ApiProperty(PLAYER_ATTRIBUTE_API_PROPERTIES.source as ApiPropertyOptions)
   @Prop(PLAYER_ATTRIBUTE_FIELDS_SPECS.source)

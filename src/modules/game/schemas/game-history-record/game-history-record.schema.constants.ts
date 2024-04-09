@@ -2,10 +2,10 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { SchemaTypes } from "mongoose";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_PHASES } from "@/modules/game/constants/game.constants";
 import { DEAD_PLAYER_SCHEMA } from "@/modules/game/schemas/player/dead-player.schema";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 import { GAME_HISTORY_RECORD_PLAY_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
@@ -23,7 +23,7 @@ const GAME_HISTORY_RECORD_FIELDS_SPECS = {
   },
   phase: {
     required: true,
-    enum: Object.values(GamePhases),
+    enum: GAME_PHASES,
   },
   tick: {
     required: true,

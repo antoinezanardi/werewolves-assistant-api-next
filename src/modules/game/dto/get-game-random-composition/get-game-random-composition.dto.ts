@@ -2,10 +2,11 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform, Type } from "class-transformer";
 import { ArrayNotContains, ArrayUnique, IsArray, IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
+import { RoleName } from "@/modules/role/types/role.types";
+import { ROLE_NAMES } from "@/modules/role/constants/role.constants";
 import { CompositionBounds } from "@/modules/game/dto/base/decorators/composition/composition-bounds.decorator";
 import { CompositionUniqueNames } from "@/modules/game/dto/base/decorators/composition/composition-unique-names.decorator";
 import { GetGameRandomCompositionPlayerDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition-player/get-game-random-composition-player.dto";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { toBoolean } from "@/shared/validation/transformers/validation.transformer";
 
@@ -21,15 +22,15 @@ class GetGameRandomCompositionDto {
   @ApiProperty({
     name: "excluded-roles",
     description: "Roles that won't be given by game random composition. All roles can be excluded except `villager` and `werewolf`",
-    enum: RoleNames,
+    enum: ROLE_NAMES,
     required: false,
   })
   @Expose({ name: "excluded-roles" })
   @IsOptional()
   @IsArray()
-  @ArrayNotContains([RoleNames.VILLAGER, RoleNames.WEREWOLF])
-  @ArrayUnique((role: RoleNames) => role, { message: "excluded roles must be unique" })
-  public excludedRoles: RoleNames[] = [];
+  @ArrayNotContains(["villager", "werewolf"])
+  @ArrayUnique((role: RoleName) => role, { message: "excluded roles must be unique" })
+  public excludedRoles: RoleName[] = [];
 
   @ApiProperty({
     name: "are-recommended-min-players-respected",

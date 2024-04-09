@@ -3,16 +3,14 @@ import type { Types } from "mongoose";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
-import { GamePlayActions, GamePlayCauses, WitchPotions } from "@/modules/game/enums/game-play.enum";
-import { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
 import { areGamePlaysEqual, canSurvivorsVote, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto, isPlayerInteractableInCurrentGamePlay, isPlayerInteractableWithInteractionTypeInCurrentGamePlay } from "@/modules/game/helpers/game-play/game-play.helpers";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
+import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 
@@ -151,13 +149,13 @@ describe("Game Play Helper", () => {
         targets: [
           { playerId: game.players[0]._id },
           { playerId: game.players[1]._id },
-          { playerId: game.players[2]._id, drankPotion: WitchPotions.DEATH },
+          { playerId: game.players[2]._id, drankPotion: "death" },
         ],
       });
       const expectedTargets = [
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[0] }),
         createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[1] }),
-        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2], drankPotion: WitchPotions.DEATH }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: game.players[2], drankPotion: "death" }),
       ];
 
       expect(getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayTargetWithRelationsDto[]>(expectedTargets);
@@ -226,11 +224,11 @@ describe("Game Play Helper", () => {
         targets: [
           { playerId: game.players[0]._id },
           { playerId: game.players[1]._id },
-          { playerId: game.players[2]._id, drankPotion: WitchPotions.DEATH },
+          { playerId: game.players[2]._id, drankPotion: "death" },
         ],
         chosenCardId: game.additionalCards?.[3]._id,
         doesJudgeRequestAnotherVote: true,
-        chosenSide: RoleSides.WEREWOLVES,
+        chosenSide: "werewolves",
       });
       const expectedMakeGamePlayDtoWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({
         votes: [
@@ -240,11 +238,11 @@ describe("Game Play Helper", () => {
         targets: [
           { player: game.players[0] },
           { player: game.players[1] },
-          { player: game.players[2], drankPotion: WitchPotions.DEATH },
+          { player: game.players[2], drankPotion: "death" },
         ],
         chosenCard: game.additionalCards?.[3],
         doesJudgeRequestAnotherVote: true,
-        chosenSide: RoleSides.WEREWOLVES,
+        chosenSide: "werewolves",
       });
 
       expect(createMakeGamePlayDtoWithRelations(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayWithRelationsDto>(expectedMakeGamePlayDtoWithRelationsDto);
@@ -253,7 +251,7 @@ describe("Game Play Helper", () => {
 
   describe("findPlayPriorityIndex", () => {
     it("should return -1 when play is not found in priority list.", () => {
-      const gamePlay = createFakeGamePlaySeerLooks({ action: GamePlayActions.EAT });
+      const gamePlay = createFakeGamePlaySeerLooks({ action: "eat" });
 
       expect(findPlayPriorityIndex(gamePlay)).toBe(-1);
     });
@@ -293,7 +291,7 @@ describe("Game Play Helper", () => {
       {
         test: "should return false when both causes are not equal.",
         playA: createFakeGamePlaySurvivorsVote(),
-        playB: createFakeGamePlaySurvivorsVote({ cause: GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES }),
+        playB: createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }),
         expected: false,
       },
     ])("$test", ({ playA, playB, expected }) => {
@@ -401,24 +399,24 @@ describe("Game Play Helper", () => {
 
     it.each<{
       playerId: Types.ObjectId;
-      interactionType: PlayerInteractionTypes;
+      interactionType: PlayerInteractionType;
       game: GameWithCurrentPlay;
       expected: boolean;
       test: string;
     }>([
       {
         playerId: players[0]._id,
-        interactionType: PlayerInteractionTypes.VOTE,
+        interactionType: "vote",
         game: createFakeGameWithCurrentPlay({
           players, currentPlay: createFakeGamePlay({
             source: createFakeGamePlaySource({
               interactions: [
                 createFakeGamePlaySourceInteraction({
-                  type: PlayerInteractionTypes.SHOOT,
+                  type: "shoot",
                   eligibleTargets: [players[0]],
                 }),
                 createFakeGamePlaySourceInteraction({
-                  type: PlayerInteractionTypes.VOTE,
+                  type: "vote",
                   eligibleTargets: [players[0], players[1]],
                 }),
               ],
@@ -430,17 +428,17 @@ describe("Game Play Helper", () => {
       },
       {
         playerId: players[2]._id,
-        interactionType: PlayerInteractionTypes.VOTE,
+        interactionType: "vote",
         game: createFakeGameWithCurrentPlay({
           players, currentPlay: createFakeGamePlay({
             source: createFakeGamePlaySource({
               interactions: [
                 createFakeGamePlaySourceInteraction({
-                  type: PlayerInteractionTypes.VOTE,
+                  type: "vote",
                   eligibleTargets: [players[0]],
                 }),
                 createFakeGamePlaySourceInteraction({
-                  type: PlayerInteractionTypes.VOTE,
+                  type: "vote",
                   eligibleTargets: [players[0], players[1]],
                 }),
               ],
@@ -452,22 +450,22 @@ describe("Game Play Helper", () => {
       },
       {
         playerId: players[1]._id,
-        interactionType: PlayerInteractionTypes.VOTE,
+        interactionType: "vote",
         game: createFakeGameWithCurrentPlay({
           players,
           currentPlay: createFakeGamePlay({
             source: createFakeGamePlaySource({
               interactions: [
                 createFakeGamePlaySourceInteraction({
-                  type: PlayerInteractionTypes.LOOK,
+                  type: "look",
                   eligibleTargets: [players[0], players[1]],
                 }),
                 createFakeGamePlaySourceInteraction({
-                  type: PlayerInteractionTypes.VOTE,
+                  type: "vote",
                   eligibleTargets: [players[0]],
                 }),
                 createFakeGamePlaySourceInteraction({
-                  type: PlayerInteractionTypes.SHOOT,
+                  type: "shoot",
                   eligibleTargets: [players[0], players[1]],
                 }),
               ],

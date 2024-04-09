@@ -2,12 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { sample, shuffle } from "lodash";
 
+import { RoleSide } from "@/modules/role/types/role.types";
+import { DEFAULT_VILLAGER_ROLE, DEFAULT_WEREWOLF_ROLE, ROLES } from "@/modules/role/constants/role-set.constants";
 import { GetGameRandomCompositionPlayerResponseDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
-import { DEFAULT_VILLAGER_ROLE, DEFAULT_WEREWOLF_ROLE, ROLES } from "@/modules/role/constants/role.constants";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 import { getRolesWithSide } from "@/modules/role/helpers/role.helpers";
-import { Role } from "@/modules/role/types/role.types";
+import { Role } from "@/modules/role/types/role.class";
 
 @Injectable()
 export class GameRandomCompositionService {
@@ -16,8 +16,8 @@ export class GameRandomCompositionService {
     const werewolfRolesCount = this.getWerewolfCountForComposition(getGameRandomCompositionDto.players.length);
     const villagerRolesCount = getGameRandomCompositionDto.players.length - werewolfRolesCount;
     const randomRoles = [
-      ...this.getRandomRolesForSide(availableRoles, werewolfRolesCount, RoleSides.WEREWOLVES),
-      ...this.getRandomRolesForSide(availableRoles, villagerRolesCount, RoleSides.VILLAGERS),
+      ...this.getRandomRolesForSide(availableRoles, werewolfRolesCount, "werewolves"),
+      ...this.getRandomRolesForSide(availableRoles, villagerRolesCount, "villagers"),
     ];
     const shuffledRandomRoles = shuffle(randomRoles);
     return getGameRandomCompositionDto.players.map<GetGameRandomCompositionPlayerResponseDto>((player, index) => plainToInstance(GetGameRandomCompositionPlayerResponseDto, {
@@ -27,10 +27,10 @@ export class GameRandomCompositionService {
     }));
   }
 
-  private getRandomRolesForSide(availableRoles: Role[], rolesToPickCount: number, side: RoleSides): Role[] {
+  private getRandomRolesForSide(availableRoles: Role[], rolesToPickCount: number, side: RoleSide): Role[] {
     const randomRoles: Role[] = [];
     const availableSidedRoles = getRolesWithSide(availableRoles, side);
-    const defaultSidedRole = side === RoleSides.VILLAGERS ? DEFAULT_VILLAGER_ROLE : DEFAULT_WEREWOLF_ROLE;
+    const defaultSidedRole = side === "villagers" ? DEFAULT_VILLAGER_ROLE : DEFAULT_WEREWOLF_ROLE;
     let randomRolesToPickCount = 1;
     for (let i = 0; i < rolesToPickCount; i += randomRolesToPickCount) {
       const leftRolesToPickCount = rolesToPickCount - i;
@@ -64,9 +64,9 @@ export class GameRandomCompositionService {
       arePowerfulWerewolfRolesPrioritized,
     } = getGameRandomCompositionDto;
     return ROLES.filter(role => {
-      if (role.name === RoleNames.VILLAGER) {
+      if (role.name === "villager") {
         return !arePowerfulVillagerRolesPrioritized;
-      } else if (role.name === RoleNames.WEREWOLF) {
+      } else if (role.name === "werewolf") {
         return !arePowerfulWerewolfRolesPrioritized;
       }
       const isRolePermitted = !excludedRoles.includes(role.name);

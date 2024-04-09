@@ -1,8 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
-import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_CAUSES, GAME_PLAY_OCCURRENCES, GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
 import { GAME_PLAY_SOURCE_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 
@@ -20,16 +19,16 @@ const GAME_PLAY_SPECS_FIELDS = {
   },
   action: {
     required: true,
-    enum: Object.values(GamePlayActions),
+    enum: GAME_PLAY_ACTIONS,
   },
   cause: {
     required: false,
-    enum: Object.values(GamePlayCauses),
+    enum: GAME_PLAY_CAUSES,
   },
   canBeSkipped: { required: false },
   occurrence: {
     required: true,
-    enum: Object.values(GamePlayOccurrences),
+    enum: GAME_PLAY_OCCURRENCES,
   },
 } as const satisfies Record<keyof GamePlay, MongoosePropOptions>;
 
@@ -44,7 +43,7 @@ const GAME_PLAY_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePlay, ApiPropertyO
   },
   action: {
     description: "What action need to be performed for this play",
-    example: GamePlayActions.VOTE,
+    example: "vote",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SPECS_FIELDS.action),
   },
   cause: {

@@ -1,13 +1,13 @@
-import { registerDecorator } from "class-validator";
 import type { ValidationArguments, ValidationOptions } from "class-validator";
+import { registerDecorator } from "class-validator";
 
 import { GAME_ADDITIONAL_CARDS_RECIPIENTS } from "@/modules/game/constants/game-additional-card/game-additional-card.constants";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import type { RoleNames } from "@/modules/role/enums/role.enum";
+import type { RoleName } from "@/modules/role/types/role.types";
 
 function isAdditionalCardsPresenceRespected(value: unknown, validationArguments: ValidationArguments): boolean {
   const { players } = validationArguments.object as Partial<CreateGameDto>;
-  const gameAdditionalCardsRecipients = GAME_ADDITIONAL_CARDS_RECIPIENTS as Readonly<(RoleNames)[]>;
+  const gameAdditionalCardsRecipients = GAME_ADDITIONAL_CARDS_RECIPIENTS as Readonly<(RoleName)[]>;
   const doSomePlayersNeedAdditionalCards = players?.some(player => gameAdditionalCardsRecipients.includes(player.role.name)) === true;
   return doSomePlayersNeedAdditionalCards ? Array.isArray(value) : value === undefined;
 }

@@ -1,6 +1,6 @@
 import type { Types } from "mongoose";
 
-import type { RoleNames } from "@/modules/role/enums/role.enum";
+import type { RoleName } from "@/modules/role/types/role.types";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
@@ -11,7 +11,7 @@ function createCantFindPlayerWithIdUnexpectedException(scope: string, interpolat
   return new UnexpectedException(scope, UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_ID_IN_GAME, { gameId: gameId.toString(), playerId: playerId.toString() });
 }
 
-function createCantFindPlayerWithCurrentRoleUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId; roleName: RoleNames }): UnexpectedException {
+function createCantFindPlayerWithCurrentRoleUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId; roleName: RoleName }): UnexpectedException {
   const { gameId, roleName } = interpolations;
   return new UnexpectedException(scope, UnexpectedExceptionReasons.CANT_FIND_PLAYER_WITH_CURRENT_ROLE_IN_GAME, { gameId: gameId.toString(), roleName });
 }

@@ -1,4 +1,4 @@
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import type { RoleName } from "@/modules/role/types/role.types";
 
 import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNominatedPlayersUnexpectedException, createCantFindPlayerWithCurrentRoleUnexpectedException, createCantFindPlayerWithIdUnexpectedException, createCantGenerateGamePlaysUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException, createNoGamePlayPriorityUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -22,7 +22,7 @@ describe("Unexpected Exception Factory", () => {
 
   describe("createCantFindPlayerWithCurrentRoleUnexpectedException", () => {
     it("should create can't find player with current role unexpected exception when called.", () => {
-      const interpolations = { gameId: createFakeObjectId(), roleName: RoleNames.WEREWOLF };
+      const interpolations = { gameId: createFakeObjectId(), roleName: "werewolf" as RoleName };
       const exception = createCantFindPlayerWithCurrentRoleUnexpectedException("werewolvesEat", interpolations);
 
       expect(exception.getResponse()).toStrictEqual<ExceptionResponse>({
@@ -57,7 +57,7 @@ describe("Unexpected Exception Factory", () => {
       });
     });
   });
-  
+
   describe("createNoCurrentGamePlayUnexpectedException", () => {
     it("should create no current game play unexpected exception when called.", () => {
       const interpolations = { gameId: createFakeObjectId() };

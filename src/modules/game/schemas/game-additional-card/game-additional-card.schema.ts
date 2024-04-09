@@ -4,9 +4,9 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform } from "class-transformer";
 import { Types } from "mongoose";
 
-import { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card.types";
+import { RoleName } from "@/modules/role/types/role.types";
+import { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card/game-additional-card.types";
 import { GAME_ADDITIONAL_CARDS_API_PROPERTIES, GAME_ADDITIONAL_CARDS_FIELDS_SPECS } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema.constants";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { toObjectId } from "@/shared/validation/transformers/validation.transformer";
 
@@ -20,7 +20,7 @@ class GameAdditionalCard {
   @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.roleName as ApiPropertyOptions)
   @Prop(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName)
   @Expose()
-  public roleName: RoleNames;
+  public roleName: RoleName;
 
   @ApiProperty(GAME_ADDITIONAL_CARDS_API_PROPERTIES.recipient as ApiPropertyOptions)
   @Prop(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.recipient)

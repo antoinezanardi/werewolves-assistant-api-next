@@ -1,4 +1,3 @@
-import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import type { Game } from "@/modules/game/schemas/game.schema";
 
@@ -16,15 +15,15 @@ describe("Game Factory", () => {
         currentPlay: createFakeGamePlaySurvivorsVote(),
         tick: 1,
         turn: 2,
-        phase: GamePhases.DAY,
+        phase: "day",
         players: [createFakePlayer()],
         options: createFakeGameOptions(),
         upcomingPlays: [createFakeGamePlaySurvivorsElectSheriff()],
-        status: GameStatuses.PLAYING,
+        status: "playing",
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      
+
       expect(createGame(game)).toStrictEqual<Game>(createFakeGame(game));
     });
   });

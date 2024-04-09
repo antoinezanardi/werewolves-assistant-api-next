@@ -1,8 +1,8 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/constants/game-history-record/game-history-record.constants";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
-import { GameHistoryRecordVotingResults } from "@/modules/game/enums/game-history-record.enum";
 import type { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
 
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
@@ -11,7 +11,7 @@ import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/hel
 const GAME_HISTORY_RECORD_PLAY_VOTING_FIELDS_SPECS = {
   result: {
     required: true,
-    enum: Object.values(GameHistoryRecordVotingResults),
+    enum: GAME_HISTORY_RECORD_VOTING_RESULTS,
   },
   nominatedPlayers: {
     required: false,

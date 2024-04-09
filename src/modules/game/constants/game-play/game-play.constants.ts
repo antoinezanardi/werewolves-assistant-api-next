@@ -1,5 +1,6 @@
-import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
+import type { PlayerGroup } from "@/modules/game/types/player/player.types";
+import type { RoleName } from "@/modules/role/types/role.types";
 
 const GAME_PLAY_TYPES = [
   "no-action",
@@ -11,35 +12,82 @@ const GAME_PLAY_TYPES = [
   "bury-dead-bodies",
 ] as const;
 
+const GAME_PLAY_ACTIONS = [
+  "eat",
+  "look",
+  "charm",
+  "use-potions",
+  "shoot",
+  "protect",
+  "mark",
+  "meet-each-other",
+  "sniff",
+  "choose-model",
+  "choose-side",
+  "ban-voting",
+  "choose-card",
+  "elect-sheriff",
+  "vote",
+  "delegate",
+  "settle-votes",
+  "bury-dead-bodies",
+  "growl",
+  "infect",
+  "request-another-vote",
+] as const;
+
 const GAME_PLAY_SOURCE_NAMES = [
-  PlayerAttributeNames.SHERIFF,
-  PlayerGroups.CHARMED,
-  PlayerGroups.LOVERS,
-  PlayerGroups.SURVIVORS,
-  PlayerGroups.WEREWOLVES,
-  RoleNames.BIG_BAD_WOLF,
-  RoleNames.CUPID,
-  RoleNames.WOLF_HOUND,
-  RoleNames.FOX,
-  RoleNames.DEFENDER,
-  RoleNames.HUNTER,
-  RoleNames.PIED_PIPER,
-  RoleNames.SCANDALMONGER,
-  RoleNames.SCAPEGOAT,
-  RoleNames.SEER,
-  RoleNames.STUTTERING_JUDGE,
-  RoleNames.THIEF,
-  RoleNames.THREE_BROTHERS,
-  RoleNames.TWO_SISTERS,
-  RoleNames.WHITE_WEREWOLF,
-  RoleNames.WILD_CHILD,
-  RoleNames.WITCH,
-  RoleNames.ACTOR,
-  RoleNames.BEAR_TAMER,
-  RoleNames.ACCURSED_WOLF_FATHER,
-] as const satisfies Readonly<(PlayerAttributeNames | PlayerGroups | RoleNames)[]>;
+  "sheriff",
+  "charmed",
+  "lovers",
+  "survivors",
+  "werewolves",
+  "big-bad-wolf",
+  "cupid",
+  "wolf-hound",
+  "fox",
+  "defender",
+  "hunter",
+  "pied-piper",
+  "scandalmonger",
+  "scapegoat",
+  "seer",
+  "stuttering-judge",
+  "thief",
+  "three-brothers",
+  "two-sisters",
+  "white-werewolf",
+  "wild-child",
+  "witch",
+  "actor",
+  "bear-tamer",
+  "accursed-wolf-father",
+] as const satisfies Readonly<(PlayerAttributeName | PlayerGroup | RoleName)[]>;
+
+const GAME_PLAY_CAUSES = [
+  "stuttering-judge-request",
+  "previous-votes-were-in-ties",
+  "angel-presence",
+] as const;
+
+const GAME_PLAY_OCCURRENCES = [
+  "one-night-only",
+  "on-nights",
+  "on-days",
+  "anytime",
+  "consequential",
+] as const;
+
+const WITCH_POTIONS = [
+  "life",
+  "death",
+] as const;
 
 export {
   GAME_PLAY_TYPES,
+  GAME_PLAY_ACTIONS,
   GAME_PLAY_SOURCE_NAMES,
+  GAME_PLAY_CAUSES,
+  GAME_PLAY_OCCURRENCES,
+  WITCH_POTIONS,
 };

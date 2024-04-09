@@ -2,104 +2,103 @@ import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
 import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
-import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { PLAYER_DEATH_CAUSES } from "@/modules/game/constants/player/player-death/player-death.constants";
 import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakePlayerDiseaseByRustySwordKnightDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.DISEASE,
-    source: RoleNames.RUSTY_SWORD_KNIGHT,
+    cause: "disease",
+    source: "rusty-sword-knight",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerBrokenHeartByCupidDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.BROKEN_HEART,
-    source: RoleNames.CUPID,
+    cause: "broken-heart",
+    source: "cupid",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerReconsiderPardonBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.RECONSIDER_PARDON,
-    source: PlayerGroups.SURVIVORS,
+    cause: "reconsider-pardon",
+    source: "survivors",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerVoteScapegoatedBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.VOTE_SCAPEGOATED,
-    source: PlayerGroups.SURVIVORS,
+    cause: "vote-scapegoated",
+    source: "survivors",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerVoteBySheriffDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.VOTE,
-    source: PlayerAttributeNames.SHERIFF,
+    cause: "vote",
+    source: "sheriff",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerVoteBySurvivorsDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.VOTE,
-    source: PlayerGroups.SURVIVORS,
+    cause: "vote",
+    source: "survivors",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerShotByHunterDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.SHOT,
-    source: RoleNames.HUNTER,
+    cause: "shot",
+    source: "hunter",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerEatenByWhiteWerewolfDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.EATEN,
-    source: RoleNames.WHITE_WEREWOLF,
+    cause: "eaten",
+    source: "white-werewolf",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerEatenByBigBadWolfDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.EATEN,
-    source: RoleNames.BIG_BAD_WOLF,
+    cause: "eaten",
+    source: "big-bad-wolf",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerEatenByWerewolvesDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.EATEN,
-    source: PlayerGroups.WEREWOLVES,
+    cause: "eaten",
+    source: "werewolves",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerDeathPotionByWitchDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
-    cause: PlayerDeathCauses.DEATH_POTION,
-    source: RoleNames.WITCH,
+    cause: "death-potion",
+    source: "witch",
     ...playerDeath,
   }, override);
 }
 
 function createFakePlayerDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return plainToInstance(PlayerDeath, {
-    source: playerDeath.source ?? faker.helpers.arrayElement(Object.values(GAME_SOURCES)),
-    cause: playerDeath.cause ?? faker.helpers.arrayElement(Object.values(PlayerDeathCauses)),
+    source: playerDeath.source ?? faker.helpers.arrayElement(GAME_SOURCES),
+    cause: playerDeath.cause ?? faker.helpers.arrayElement(PLAYER_DEATH_CAUSES),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

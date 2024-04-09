@@ -1,7 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { RoleSides } from "@/modules/role/enums/role.enum";
+import { ROLE_SIDES } from "@/modules/role/constants/role.constants";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
@@ -10,11 +10,11 @@ import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types
 const PLAYER_SIDE_FIELDS_SPECS = {
   original: {
     required: true,
-    enum: Object.values(RoleSides),
+    enum: ROLE_SIDES,
   },
   current: {
     required: true,
-    enum: Object.values(RoleSides),
+    enum: ROLE_SIDES,
   },
 } as const satisfies Record<keyof PlayerSide, MongoosePropOptions>;
 

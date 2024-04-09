@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
 import { Type } from "class-transformer";
+import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
 
-import { ApiSortOrder } from "@/shared/api/enums/api.enum";
+import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 
 class GetGameHistoryDto {
   @ApiProperty({

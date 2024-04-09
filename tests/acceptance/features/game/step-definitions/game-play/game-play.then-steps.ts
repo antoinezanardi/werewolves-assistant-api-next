@@ -2,9 +2,8 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-import type { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import type { GamePlayOccurrences, GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
-import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.types";
+import type { GamePlayAction, GamePlayCause, GamePlayOccurrence, GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play/game-play.types";
+import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 
 import { convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -15,7 +14,7 @@ Then(/^the game's current play type should be (?<type>.+?)$/u, function(this: Cu
 
 Then(
   /^the game's current play should be (?<source>.+?) to (?<action>.+?)(?: because (?<cause>.+?))?$/u,
-  function(this: CustomWorld, source: GamePlaySourceName, action: GamePlayActions, cause: GamePlayCauses | null): void {
+  function(this: CustomWorld, source: GamePlaySourceName, action: GamePlayAction, cause: GamePlayCause | null): void {
     expect(this.game.currentPlay?.source.name).toBe(source);
     expect(this.game.currentPlay?.action).toBe(action);
     if (cause !== null) {
@@ -33,7 +32,7 @@ Then(
   },
 );
 
-Then(/^the game's current play occurrence should be (?<occurrence>one-night-only|on-nights|on-days|anytime|consequential)$/u, function(this: CustomWorld, occurrence: GamePlayOccurrences): void {
+Then(/^the game's current play occurrence should be (?<occurrence>one-night-only|on-nights|on-days|anytime|consequential)$/u, function(this: CustomWorld, occurrence: GamePlayOccurrence): void {
   expect(this.game.currentPlay?.occurrence).toBe(occurrence);
 });
 
@@ -54,7 +53,7 @@ Then(/^the game's current play source should have the following interactions$/u,
   });
 });
 
-Then(/^the game's current play source interaction with type (?<type>.+?) should have the following eligible targets$/u, function(this: CustomWorld, interactionType: PlayerInteractionTypes, expectedEligibleTargetsDatatable: DataTable): void {
+Then(/^the game's current play source interaction with type (?<type>.+?) should have the following eligible targets$/u, function(this: CustomWorld, interactionType: PlayerInteractionType, expectedEligibleTargetsDatatable: DataTable): void {
   const expectedEligibleTargets = convertDatatableToPlayers(expectedEligibleTargetsDatatable.rows(), this.game);
   const interaction = this.game.currentPlay?.source.interactions?.find(({ type }) => type === interactionType);
 

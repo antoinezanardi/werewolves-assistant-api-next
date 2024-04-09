@@ -1,7 +1,7 @@
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 
-import { ROLES } from "@/modules/role/constants/role.constants";
-import type { Role } from "@/modules/role/types/role.types";
+import { ROLES } from "@/modules/role/constants/role-set.constants";
+import type { Role } from "@/modules/role/types/role.class";
 
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
 

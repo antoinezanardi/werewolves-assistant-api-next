@@ -1,16 +1,15 @@
-import { registerDecorator } from "class-validator";
 import type { ValidationOptions } from "class-validator";
+import { registerDecorator } from "class-validator";
 
-import { RoleNames } from "@/modules/role/enums/role.enum";
-import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLES } from "@/modules/role/constants/role.constants";
 import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
+import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLES } from "@/modules/role/constants/role-set.constants";
 
 function areAdditionalCardsForActorRolesRespected(value: unknown): boolean {
   if (value === undefined) {
     return true;
   }
   const additionalCards = value as CreateGameAdditionalCardDto[];
-  const actorAdditionalCards = additionalCards.filter(({ recipient }) => recipient === RoleNames.ACTOR);
+  const actorAdditionalCards = additionalCards.filter(({ recipient }) => recipient === "actor");
   const eligibleActorAdditionalCardsRoleNames = ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLES.map(({ name }) => name);
   return actorAdditionalCards.every(({ roleName }) => eligibleActorAdditionalCardsRoleNames.includes(roleName));
 }

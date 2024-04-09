@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
+import { GAME_PHASES, GAME_STATUSES } from "@/modules/game/constants/game.constants";
 import { Game } from "@/modules/game/schemas/game.schema";
 import { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 
@@ -25,8 +25,8 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
     players: game.players ?? [],
     currentPlay: game.currentPlay ?? null,
     upcomingPlays: game.upcomingPlays ?? [],
-    phase: game.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
-    status: game.status ?? faker.helpers.arrayElement(Object.values(GameStatuses)),
+    phase: game.phase ?? faker.helpers.arrayElement(GAME_PHASES),
+    status: game.status ?? faker.helpers.arrayElement(GAME_STATUSES),
     tick: game.tick ?? faker.number.int({ min: 1 }),
     turn: game.turn ?? faker.number.int({ min: 1 }),
     additionalCards: game.additionalCards ?? undefined,

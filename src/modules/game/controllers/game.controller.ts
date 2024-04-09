@@ -9,14 +9,13 @@ import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { GetGameRandomCompositionPlayerResponseDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition-player-response/get-game-random-composition-player-response.dto";
 import { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
-import { GameStatuses } from "@/modules/game/enums/game.enum";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GameRandomCompositionService } from "@/modules/game/providers/services/game-random-composition.service";
 import { GameService } from "@/modules/game/providers/services/game.service";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import { Game } from "@/modules/game/schemas/game.schema";
 
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 
 @ApiTags("🎲 Games")
 @Controller(ApiResources.GAMES)
@@ -57,9 +56,9 @@ export class GameController {
   }
 
   @Delete(":id")
-  @ApiOperation({ summary: "Cancel a playing game", description: `This endpoint won't delete the game, but set its status to ${GameStatuses.CANCELED}. In this status, the game can't be mutated anymore.` })
+  @ApiOperation({ summary: "Cancel a playing game", description: `This endpoint won't delete the game, but set its status to ${"canceled"}. In this status, the game can't be mutated anymore.` })
   @ApiGameIdParam()
-  @ApiResponse({ status: HttpStatus.OK, type: Game, description: `Game's status will be set to ${GameStatuses.CANCELED}` })
+  @ApiResponse({ status: HttpStatus.OK, type: Game, description: `Game's status will be set to ${"canceled"}` })
   @ApiGameNotFoundResponse()
   private async cancelGame(@Param("id", GetGameByIdPipe) game: Game): Promise<Game> {
     return this.gameService.cancelGame(game);
@@ -67,7 +66,7 @@ export class GameController {
 
   @Post(":id/play")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the \`${GameStatuses.PLAYING}\` status. Body parameters fields are required or optional based on the upcoming game play.` })
+  @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the "playing" status. Body parameters fields are required or optional based on the upcoming game play.` })
   private async makeGamePlay(
     @Param("id", GetGameByIdPipe) game: Game,
       @Body() makeGamePlayDto: MakeGamePlayDto,

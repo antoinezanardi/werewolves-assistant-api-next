@@ -3,8 +3,8 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
+import { GamePhase } from "@/modules/game/types/game.types";
 import { PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES, PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema.constants";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 
 @Schema({
   versionKey: false,
@@ -20,7 +20,7 @@ class PlayerAttributeActivation {
   @ApiProperty(PLAYER_ATTRIBUTE_ACTIVATION_API_PROPERTIES.phase as ApiPropertyOptions)
   @Prop(PLAYER_ATTRIBUTE_ACTIVATION_FIELDS_SPECS.phase)
   @Expose()
-  public phase: GamePhases;
+  public phase: GamePhase;
 }
 
 const PLAYER_ATTRIBUTE_ACTIVATION_SCHEMA = SchemaFactory.createForClass(PlayerAttributeActivation);
