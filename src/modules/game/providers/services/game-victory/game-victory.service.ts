@@ -6,7 +6,6 @@ import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/pl
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -41,13 +40,13 @@ export class GameVictoryService {
   }
 
   private doWerewolvesWin(game: Game): boolean {
-    const werewolvesSidedPlayers = getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES);
-    return werewolvesSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === RoleSides.VILLAGERS && isAlive);
+    const werewolvesSidedPlayers = getPlayersWithCurrentSide(game, "werewolves");
+    return werewolvesSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === "villagers" && isAlive);
   }
 
   private doVillagersWin(game: Game): boolean {
-    const villagersSidedPlayers = getPlayersWithCurrentSide(game, RoleSides.VILLAGERS);
-    return villagersSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === RoleSides.WEREWOLVES && isAlive);
+    const villagersSidedPlayers = getPlayersWithCurrentSide(game, "villagers");
+    return villagersSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === "werewolves" && isAlive);
   }
 
   private doLoversWin(game: Game): boolean {
@@ -71,7 +70,7 @@ export class GameVictoryService {
     const piedPiperPlayer = getPlayerWithCurrentRole(game, "pied-piper");
     const leftToCharmPlayers = getEligiblePiedPiperTargets(game);
     return !!piedPiperPlayer && isPlayerAliveAndPowerful(piedPiperPlayer, game) && !leftToCharmPlayers.length &&
-      (!isPowerlessOnWerewolvesSide || piedPiperPlayer.side.current === RoleSides.VILLAGERS);
+      (!isPowerlessOnWerewolvesSide || piedPiperPlayer.side.current === "villagers");
   }
 
   private doesAngelWin(game: Game): boolean {

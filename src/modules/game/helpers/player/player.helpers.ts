@@ -1,7 +1,6 @@
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 function isPlayerPowerful(player: Player, game: Game): boolean {
   return !doesPlayerHaveActiveAttributeWithName(player, "powerless", game);
@@ -12,11 +11,11 @@ function isPlayerAliveAndPowerful(player: Player, game: Game): boolean {
 }
 
 function isPlayerOnWerewolvesSide(player: Player): boolean {
-  return player.side.current === RoleSides.WEREWOLVES;
+  return player.side.current === "werewolves";
 }
 
 function isPlayerOnVillagersSide(player: Player): boolean {
-  return player.side.current === RoleSides.VILLAGERS;
+  return player.side.current === "villagers";
 }
 
 function isPlayerPowerlessOnWerewolvesSide(player: Player, game: Game): boolean {

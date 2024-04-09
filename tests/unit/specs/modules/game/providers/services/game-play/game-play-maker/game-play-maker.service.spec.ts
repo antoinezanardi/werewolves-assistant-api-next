@@ -12,7 +12,6 @@ import { GamePlayVoteService } from "@/modules/game/providers/services/game-play
 import { PlayerKillerService } from "@/modules/game/providers/services/player/player-killer.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
@@ -1255,7 +1254,7 @@ describe("Game Play Maker Service", () => {
       const expectedThiefPlayer = createFakePlayer({
         ...players[0],
         role: { ...players[0].role, current: "werewolf" },
-        side: { ...players[0].side, current: RoleSides.WEREWOLVES },
+        side: { ...players[0].side, current: "werewolves" },
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -1328,7 +1327,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
-      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: "werewolves" });
       const expectedGame = createFakeGame(game);
 
       expect(services.gamePlayMaker["wolfHoundChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
@@ -1345,7 +1344,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
-        side: { ...players[1].side, current: RoleSides.VILLAGERS },
+        side: { ...players[1].side, current: "villagers" },
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -1356,7 +1355,7 @@ describe("Game Play Maker Service", () => {
           players[3],
         ],
       });
-      mocks.lodash.sample.mockReturnValue(RoleSides.VILLAGERS);
+      mocks.lodash.sample.mockReturnValue("villagers");
 
       expect(services.gamePlayMaker["wolfHoundChoosesSide"](play, game)).toStrictEqual<Game>(expectedGame);
     });
@@ -1372,7 +1371,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto();
       services.gamePlayMaker["wolfHoundChoosesSide"](play, game);
 
-      expect(mocks.lodash.sample).toHaveBeenCalledExactlyOnceWith([RoleSides.VILLAGERS, RoleSides.WEREWOLVES]);
+      expect(mocks.lodash.sample).toHaveBeenCalledExactlyOnceWith(["villagers", "werewolves"]);
     });
 
     it("should return wolf-hound on the werewolves side when chosen side is werewolves.", () => {
@@ -1384,10 +1383,10 @@ describe("Game Play Maker Service", () => {
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
-      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: "werewolves" });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
+        side: { ...players[1].side, current: "werewolves" },
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -1411,10 +1410,10 @@ describe("Game Play Maker Service", () => {
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
-      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: "werewolves" });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
+        side: { ...players[1].side, current: "werewolves" },
         attributes: [createFakePowerlessByActorPlayerAttribute()],
       });
       const expectedGame = createFakeGame({
@@ -1439,10 +1438,10 @@ describe("Game Play Maker Service", () => {
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
-      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.WEREWOLVES });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: "werewolves" });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
+        side: { ...players[1].side, current: "werewolves" },
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -1465,10 +1464,10 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGameWithCurrentPlay({ players });
-      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.VILLAGERS });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: "villagers" });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
-        side: { ...players[1].side, current: RoleSides.VILLAGERS },
+        side: { ...players[1].side, current: "villagers" },
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -1492,10 +1491,10 @@ describe("Game Play Maker Service", () => {
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ actor: createFakeActorGameOptions({ isPowerlessOnWerewolvesSide: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
-      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: RoleSides.VILLAGERS });
+      const play = createFakeMakeGamePlayWithRelationsDto({ chosenSide: "villagers" });
       const expectedWolfHoundPlayer = createFakePlayer({
         ...players[1],
-        side: { ...players[1].side, current: RoleSides.VILLAGERS },
+        side: { ...players[1].side, current: "villagers" },
       });
       const expectedGame = createFakeGame({
         ...game,
@@ -2136,7 +2135,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
+        side: { ...players[1].side, current: "werewolves" },
         attributes: [
           createFakeEatenByWerewolvesPlayerAttribute({ source: "seer" }),
           createFakeEatenByWhiteWerewolfPlayerAttribute(),
@@ -2176,7 +2175,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
+        side: { ...players[1].side, current: "werewolves" },
         attributes: [
           createFakeSeenBySeerPlayerAttribute(),
           createFakeWorshipedByWildChildPlayerAttribute({ source: "werewolves" }),
@@ -2210,7 +2209,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ targets });
       const expectedTargetedPlayer = createFakePlayer({
         ...players[1],
-        side: { ...players[1].side, current: RoleSides.WEREWOLVES },
+        side: { ...players[1].side, current: "werewolves" },
         attributes: [createFakePowerlessByAccursedWolfFatherPlayerAttribute()],
       });
       const expectedGame = createFakeGame({

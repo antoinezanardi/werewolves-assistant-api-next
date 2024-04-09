@@ -19,7 +19,6 @@ import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema
 import { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLE_NAMES } from "@/modules/role/constants/role-set.constants";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
@@ -842,8 +841,8 @@ describe("Game Controller", () => {
           isRevealed: player.role.name === "villager-villager",
         },
         side: {
-          current: ["villager", "villager-villager", "cupid", "seer"].includes(player.role.name) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
-          original: ["villager", "villager-villager", "cupid", "seer"].includes(player.role.name) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
+          current: ["villager", "villager-villager", "cupid", "seer"].includes(player.role.name) ? "villagers" : "werewolves",
+          original: ["villager", "villager-villager", "cupid", "seer"].includes(player.role.name) ? "villagers" : "werewolves",
         },
         attributes: [],
         position: index,
@@ -914,8 +913,8 @@ describe("Game Controller", () => {
           isRevealed: player.role.name === "villager-villager",
         },
         side: {
-          current: ["villager", "villager-villager", "cupid", "seer", "thief"].includes(player.role.name) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
-          original: ["villager", "villager-villager", "cupid", "seer", "thief"].includes(player.role.name) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
+          current: ["villager", "villager-villager", "cupid", "seer", "thief"].includes(player.role.name) ? "villagers" : "werewolves",
+          original: ["villager", "villager-villager", "cupid", "seer", "thief"].includes(player.role.name) ? "villagers" : "werewolves",
         },
         attributes: [],
         position: index,

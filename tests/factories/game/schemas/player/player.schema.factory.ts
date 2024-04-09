@@ -1,12 +1,11 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { ROLE_NAMES } from "@/modules/role/constants/role.constants";
+import { ROLE_NAMES, ROLE_SIDES } from "@/modules/role/constants/role.constants";
 import { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
 import { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
@@ -15,8 +14,8 @@ import { createFakePlayerDeath } from "@tests/factories/game/schemas/player/play
 
 function createFakePlayerSide(playerSide: Partial<PlayerSide> = {}, override: object = {}): PlayerSide {
   return plainToInstance(PlayerSide, {
-    current: playerSide.current ?? faker.helpers.arrayElement(Object.values(RoleSides)),
-    original: playerSide.original ?? faker.helpers.arrayElement(Object.values(RoleSides)),
+    current: playerSide.current ?? faker.helpers.arrayElement(ROLE_SIDES),
+    original: playerSide.original ?? faker.helpers.arrayElement(ROLE_SIDES),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

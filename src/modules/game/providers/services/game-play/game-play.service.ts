@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 
-import { RoleName } from "@/modules/role/types/role.types";
 import { DAY_GAME_PLAYS_PRIORITY_LIST, NIGHT_GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constants";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
@@ -18,7 +17,7 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 import { GamePhase } from "@/modules/game/types/game.types";
 import { PlayerGroup } from "@/modules/game/types/player/player.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
+import { RoleName } from "@/modules/role/types/role.types";
 
 import { createNoGamePlayPriorityUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -177,9 +176,9 @@ export class GamePlayService {
     }
     const leftAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, game, { direction: "left" });
     const rightAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, game, { direction: "right" });
-    const doesBearTamerHaveWerewolfSidedNeighbor = leftAliveNeighbor?.side.current === RoleSides.WEREWOLVES || rightAliveNeighbor?.side.current === RoleSides.WEREWOLVES;
+    const doesBearTamerHaveWerewolfSidedNeighbor = leftAliveNeighbor?.side.current === "werewolves" || rightAliveNeighbor?.side.current === "werewolves";
     const { doesGrowlOnWerewolvesSide } = game.options.roles.bearTamer;
-    const isBearTamerInfected = bearTamerPlayer.side.current === RoleSides.WEREWOLVES;
+    const isBearTamerInfected = bearTamerPlayer.side.current === "werewolves";
     const lastVoteGamePlay = await this.gameHistoryRecordService.getLastGameHistorySurvivorsVoteRecord(game._id);
     const didGamePhaseHaveSurvivorsVote = lastVoteGamePlay?.turn === game.turn && lastVoteGamePlay.phase === game.phase;
     return !didGamePhaseHaveSurvivorsVote && (doesGrowlOnWerewolvesSide && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor);

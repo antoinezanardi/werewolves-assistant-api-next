@@ -21,7 +21,6 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { GamePlayAction, GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 import { ROLES } from "@/modules/role/constants/role-set.constants";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 import { getRoleWithName } from "@/modules/role/helpers/role.helpers";
 import { Role } from "@/modules/role/types/role.class";
 
@@ -260,9 +259,9 @@ export class GamePlayMakerService {
     if (!wolfHoundPlayer) {
       return clonedGame;
     }
-    const wolfHoundSide = chosenSide ?? sample([RoleSides.VILLAGERS, RoleSides.WEREWOLVES]);
+    const wolfHoundSide = chosenSide ?? sample(["villagers", "werewolves"]);
     const playerDataToUpdate: Partial<Player> = { side: { ...wolfHoundPlayer.side, current: wolfHoundSide } };
-    if (wolfHoundPlayer.role.original === "actor" && wolfHoundSide === RoleSides.WEREWOLVES && roles.actor.isPowerlessOnWerewolvesSide) {
+    if (wolfHoundPlayer.role.original === "actor" && wolfHoundSide === "werewolves" && roles.actor.isPowerlessOnWerewolvesSide) {
       playerDataToUpdate.attributes = [...wolfHoundPlayer.attributes, createPowerlessByActorPlayerAttribute()];
     }
     return updatePlayerInGame(wolfHoundPlayer._id, playerDataToUpdate, clonedGame);
@@ -289,7 +288,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer } = targets[0];
     const foxSniffedPlayers = getFoxSniffedPlayers(targetedPlayer._id, clonedGame);
-    const areEveryFoxSniffedPlayersVillagerSided = foxSniffedPlayers.every(player => player.side.current === RoleSides.VILLAGERS);
+    const areEveryFoxSniffedPlayersVillagerSided = foxSniffedPlayers.every(player => player.side.current === "villagers");
     if (isFoxPowerlessIfMissesWerewolf && areEveryFoxSniffedPlayersVillagerSided) {
       const powerlessByFoxPlayerAttribute = createPowerlessByFoxPlayerAttribute();
       return addPlayerAttributeInGame(foxPlayer._id, clonedGame, powerlessByFoxPlayerAttribute);
@@ -407,7 +406,7 @@ export class GamePlayMakerService {
     if (targetedPlayer.role.current === "elder" && !await this.playerKillerService.isElderKillable(clonedGame, targetedPlayer, "eaten")) {
       return clonedGame;
     }
-    const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: RoleSides.WEREWOLVES }, attributes: targetedPlayer.attributes };
+    const playerDataToUpdate: Partial<Player> = { side: { ...targetedPlayer.side, current: "werewolves" }, attributes: targetedPlayer.attributes };
     if (isPlayerPowerlessOnWerewolvesSide(targetedPlayer, clonedGame)) {
       playerDataToUpdate.attributes?.push(createPowerlessByAccursedWolfFatherPlayerAttribute());
     }

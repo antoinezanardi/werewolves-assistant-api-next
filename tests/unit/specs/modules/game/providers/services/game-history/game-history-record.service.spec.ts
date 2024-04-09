@@ -13,7 +13,6 @@ import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record/game-history-record.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiResources } from "@/shared/api/enums/api.enums";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
@@ -539,7 +538,7 @@ describe("Game History Record Service", () => {
         targets: [createFakeGameHistoryRecordPlayTarget()],
         votes: [createFakeGameHistoryRecordPlayVote()],
         chosenCard: createFakeGameAdditionalCard(),
-        chosenSide: RoleSides.VILLAGERS,
+        chosenSide: "villagers",
       });
       const expectedGameHistoryRecordPlaySource = { name: undefined, players: undefined };
       mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlaySourceToInsert.mockReturnValue(expectedGameHistoryRecordPlaySource);

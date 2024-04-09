@@ -14,7 +14,6 @@ import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
 import type { GamePhase } from "@/modules/game/types/game.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -1102,7 +1101,7 @@ describe("Game Play Service", () => {
           players: [
             createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
             createFakeSeerAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3, side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+            createFakeBearTamerAlivePlayer({ position: 3, side: createFakePlayerSide({ current: "werewolves" }) }),
             createFakeVillagerAlivePlayer({ position: 4 }),
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: true }) }) }),
@@ -1116,7 +1115,7 @@ describe("Game Play Service", () => {
           players: [
             createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
             createFakeSeerAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3, side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+            createFakeBearTamerAlivePlayer({ position: 3, side: createFakePlayerSide({ current: "werewolves" }) }),
             createFakeVillagerAlivePlayer({ position: 4 }),
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
@@ -1354,7 +1353,7 @@ describe("Game Play Service", () => {
       {
         test: "should return false when game plays source group is villagers.",
         game: createFakeCreateGameDto(),
-        gamePlay: createFakeGamePlay({ source: createFakeGamePlaySource({ name: RoleSides.VILLAGERS as unknown as GamePlaySourceName }) }),
+        gamePlay: createFakeGamePlay({ source: createFakeGamePlaySource({ name: "villagers" as unknown as GamePlaySourceName }) }),
         expected: false,
       },
       {

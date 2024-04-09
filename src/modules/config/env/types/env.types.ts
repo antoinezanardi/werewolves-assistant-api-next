@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
+import { IsIn, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
 import { TupleToUnion } from "type-fest";
 
 import { DEFAULT_APP_HOST, DEFAULT_APP_PORT, ENVIRONNEMENTS, MAX_PORT_VALUE, MIN_PORT_VALUE } from "@/modules/config/env/constants/env.constants";
@@ -7,7 +7,7 @@ import { DEFAULT_APP_HOST, DEFAULT_APP_PORT, ENVIRONNEMENTS, MAX_PORT_VALUE, MIN
 type Environnement = TupleToUnion<typeof ENVIRONNEMENTS>;
 
 class EnvironmentVariables {
-  @IsEnum(ENVIRONNEMENTS)
+  @IsIn(ENVIRONNEMENTS)
   public ENVIRONMENT: Environnement;
 
   @IsOptional()

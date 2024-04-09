@@ -3,13 +3,13 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 
+import type { RoleSide } from "@/modules/role/types/role.types";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
 import type { GamePlaySourceName, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
 import type { GamePhase } from "@/modules/game/types/game.types";
-import type { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
@@ -148,7 +148,7 @@ describe("Game History Record Repository", () => {
       },
       {
         test: "should not create history record when chosen side is not in enum.",
-        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ chosenSide: "Dark side" as RoleSides }) }),
+        toInsert: createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ chosenSide: "Dark side" as RoleSide }) }),
         errorMessage: "GameHistoryRecord validation failed: play.chosenSide: `Dark side` is not a valid enum value for path `chosenSide`.",
       },
     ])("$test", async({ toInsert, errorMessage }) => {

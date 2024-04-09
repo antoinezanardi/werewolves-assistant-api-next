@@ -11,7 +11,7 @@ import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types
 const PLAYER_DEATH_FIELDS_SPECS = {
   source: {
     required: true,
-    enum: Object.values(GAME_SOURCES),
+    enum: GAME_SOURCES,
   },
   cause: {
     required: true,

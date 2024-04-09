@@ -9,7 +9,6 @@ import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { ApiResources } from "@/shared/api/enums/api.enums";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
@@ -229,7 +228,7 @@ describe("Game Play Helper", () => {
         ],
         chosenCardId: game.additionalCards?.[3]._id,
         doesJudgeRequestAnotherVote: true,
-        chosenSide: RoleSides.WEREWOLVES,
+        chosenSide: "werewolves",
       });
       const expectedMakeGamePlayDtoWithRelationsDto = createFakeMakeGamePlayWithRelationsDto({
         votes: [
@@ -243,7 +242,7 @@ describe("Game Play Helper", () => {
         ],
         chosenCard: game.additionalCards?.[3],
         doesJudgeRequestAnotherVote: true,
-        chosenSide: RoleSides.WEREWOLVES,
+        chosenSide: "werewolves",
       });
 
       expect(createMakeGamePlayDtoWithRelations(makeGamePlayDto, game)).toStrictEqual<MakeGamePlayWithRelationsDto>(expectedMakeGamePlayDtoWithRelationsDto);

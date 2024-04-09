@@ -2,7 +2,6 @@ import type { PlayerRole } from "@/modules/game/schemas/player/player-role/playe
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { VILLAGER_ROLES } from "@/modules/role/constants/role-set.constants";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 import { getRoleWithName } from "@/modules/role/helpers/role.helpers";
 import type { Role } from "@/modules/role/types/role.class";
 import type { RoleName } from "@/modules/role/types/role.types";
@@ -137,8 +136,8 @@ function createFakeAlivePlayerWithRole(role: RoleName, player: Partial<Player> =
   };
   const villagerRoles = VILLAGER_ROLES as Role[];
   const playerSide: PlayerSide = {
-    current: getRoleWithName(villagerRoles, role) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
-    original: getRoleWithName(villagerRoles, role) ? RoleSides.VILLAGERS : RoleSides.WEREWOLVES,
+    current: getRoleWithName(villagerRoles, role) ? "villagers" : "werewolves",
+    original: getRoleWithName(villagerRoles, role) ? "villagers" : "werewolves",
   };
   return createFakePlayer({
     role: playerRole,

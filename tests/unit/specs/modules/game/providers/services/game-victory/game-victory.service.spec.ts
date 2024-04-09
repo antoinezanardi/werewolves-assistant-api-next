@@ -4,7 +4,6 @@ import { Test } from "@nestjs/testing";
 import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
@@ -163,7 +162,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: "werewolves" }) }),
       ];
       const upcomingPlays = [
         createFakeGamePlaySurvivorsVote(),
@@ -243,7 +242,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: "werewolves" }) }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const game = createFakeGame({ players, options });
@@ -638,7 +637,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-            createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+            createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: "werewolves" }) }),
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) }),
         }),
@@ -651,7 +650,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-            createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+            createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: "werewolves" }) }),
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) }),
         }),

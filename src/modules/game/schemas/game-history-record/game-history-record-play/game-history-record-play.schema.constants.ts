@@ -8,7 +8,7 @@ import { GAME_HISTORY_RECORD_PLAY_TARGET_SCHEMA } from "@/modules/game/schemas/g
 import { GAME_HISTORY_RECORD_PLAY_VOTE_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
 import { GAME_HISTORY_RECORD_PLAY_VOTING_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
 import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
-import { RoleSides } from "@/modules/role/enums/role.enum";
+import { ROLE_SIDES } from "@/modules/role/constants/role.constants";
 
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
@@ -51,7 +51,7 @@ const GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS = {
   },
   chosenSide: {
     required: false,
-    enum: Object.values(RoleSides),
+    enum: ROLE_SIDES,
   },
 } as const satisfies Record<keyof GameHistoryRecordPlay, MongoosePropOptions>;
 

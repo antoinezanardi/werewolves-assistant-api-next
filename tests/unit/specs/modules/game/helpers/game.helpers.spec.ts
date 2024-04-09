@@ -8,7 +8,6 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GamePlayAction } from "@/modules/game/types/game-play/game-play.types";
 import type { GetNearestPlayerOptions } from "@/modules/game/types/game.types";
 import type { PlayerGroup } from "@/modules/game/types/player/player.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 import type { RoleName } from "@/modules/role/types/role.types";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
@@ -100,11 +99,11 @@ describe("Game Helper", () => {
     const game = createFakeGame({ players });
 
     it("should return werewolves when they have this side.", () => {
-      expect(getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES)).toStrictEqual<Player[]>([players[0], players[1], players[4], players[5]]);
+      expect(getPlayersWithCurrentSide(game, "werewolves")).toStrictEqual<Player[]>([players[0], players[1], players[4], players[5]]);
     });
 
     it("should return villagers when they have this side.", () => {
-      expect(getPlayersWithCurrentSide(game, RoleSides.VILLAGERS)).toStrictEqual<Player[]>([players[2], players[3]]);
+      expect(getPlayersWithCurrentSide(game, "villagers")).toStrictEqual<Player[]>([players[2], players[3]]);
     });
   });
 
@@ -808,7 +807,7 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer({ position: 2 }),
       ];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.VILLAGERS };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: "villagers" };
 
       expect(getNearestAliveNeighbor(players[3]._id, game, options)).toStrictEqual<Player>(players[1]);
     });
@@ -823,7 +822,7 @@ describe("Game Helper", () => {
         createFakeVillagerAlivePlayer({ position: 5, isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: "werewolves" };
 
       expect(getNearestAliveNeighbor(players[1]._id, game, options)).toStrictEqual<Player>(players[0]);
     });
@@ -850,7 +849,7 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer({ position: 2, isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: "werewolves" };
 
       expect(getNearestAliveNeighbor(players[4]._id, game, options)).toBeUndefined();
     });
@@ -865,7 +864,7 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer({ position: 2, isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: "werewolves" };
 
       expect(getNearestAliveNeighbor(players[4]._id, game, options)).toBeUndefined();
     });
@@ -880,7 +879,7 @@ describe("Game Helper", () => {
         createFakeWerewolfAlivePlayer({ position: 2, isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: "werewolves" };
 
       expect(getNearestAliveNeighbor(players[4]._id, game, options)).toBeUndefined();
     });
@@ -888,7 +887,7 @@ describe("Game Helper", () => {
     it("should return undefined when player is alone.", () => {
       const players = [createFakeVillagerAlivePlayer({ position: 1 })];
       const game = createFakeGame({ players });
-      const options: GetNearestPlayerOptions = { direction: "left", playerSide: RoleSides.WEREWOLVES };
+      const options: GetNearestPlayerOptions = { direction: "left", playerSide: "werewolves" };
 
       expect(getNearestAliveNeighbor(players[0]._id, game, options)).toBeUndefined();
     });

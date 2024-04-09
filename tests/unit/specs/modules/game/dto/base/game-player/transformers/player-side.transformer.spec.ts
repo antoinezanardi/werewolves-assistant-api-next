@@ -1,7 +1,6 @@
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 
 import { playerSideTransformer } from "@/modules/game/dto/base/game-player/transformers/player-side.transformer";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
@@ -48,8 +47,8 @@ describe("Player Side Transformer", () => {
         value: {},
         obj: createFakeCreateGamePlayerDto({ role: { name: "white-werewolf" } }),
         expected: {
-          current: RoleSides.WEREWOLVES,
-          original: RoleSides.WEREWOLVES,
+          current: "werewolves",
+          original: "werewolves",
         },
       },
       {
@@ -57,8 +56,8 @@ describe("Player Side Transformer", () => {
         value: {},
         obj: createFakeCreateGamePlayerDto({ role: { name: "witch" } }),
         expected: {
-          current: RoleSides.VILLAGERS,
-          original: RoleSides.VILLAGERS,
+          current: "villagers",
+          original: "villagers",
         },
       },
     ])("$test", ({ value, obj, expected }) => {

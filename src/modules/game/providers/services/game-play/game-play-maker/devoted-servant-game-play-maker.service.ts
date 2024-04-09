@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 
-import { RoleName } from "@/modules/role/types/role.types";
 import { createGamePlaySheriffDelegates } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helpers";
@@ -10,7 +9,7 @@ import { canPlayerDelegateSheriffAttribute } from "@/modules/game/helpers/player
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleSides } from "@/modules/role/enums/role.enum";
+import { RoleName } from "@/modules/role/types/role.types";
 
 import { createCantFindPlayerWithIdUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -59,7 +58,7 @@ export class DevotedServantGamePlayMakerService {
         isRevealed: targetedPlayer.role.isRevealed,
       },
     };
-    if (devotedServantPlayer.side.current !== RoleSides.WEREWOLVES) {
+    if (devotedServantPlayer.side.current !== "werewolves") {
       devotedServantPlayerDataToUpdate.side = {
         ...devotedServantPlayer.side,
         current: targetedPlayer.side.original,
@@ -72,7 +71,7 @@ export class DevotedServantGamePlayMakerService {
       },
       side: {
         ...targetedPlayer.side,
-        current: RoleSides.VILLAGERS,
+        current: "villagers",
       },
     };
     clonedGame = updatePlayerInGame(devotedServantPlayer._id, devotedServantPlayerDataToUpdate, clonedGame);

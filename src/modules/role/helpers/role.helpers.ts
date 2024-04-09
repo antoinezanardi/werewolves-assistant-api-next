@@ -1,8 +1,7 @@
-import type { RoleSides } from "@/modules/role/enums/role.enum";
 import type { Role } from "@/modules/role/types/role.class";
-import type { RoleName } from "@/modules/role/types/role.types";
+import type { RoleName, RoleSide } from "@/modules/role/types/role.types";
 
-function getRolesWithSide(roles: Role[], side: RoleSides): Role[] {
+function getRolesWithSide(roles: Role[], side: RoleSide): Role[] {
   return roles.filter(role => role.side === side);
 }
 

@@ -16,7 +16,6 @@ import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schem
 import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { PlayerDeathCause } from "@/modules/game/types/player/player-death/player-death.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 import { RoleName } from "@/modules/role/types/role.types";
 
 import { createCantFindPlayerWithIdUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
@@ -135,7 +134,7 @@ export class PlayerKillerService {
       wildChildPlayer === undefined || !isPlayerAliveAndPowerful(wildChildPlayer, clonedGame)) {
       return clonedGame;
     }
-    wildChildPlayer.side.current = RoleSides.WEREWOLVES;
+    wildChildPlayer.side.current = "werewolves";
     if (wildChildPlayer.role.original === "actor" && roles.actor.isPowerlessOnWerewolvesSide) {
       wildChildPlayer.attributes.push(createPowerlessByActorPlayerAttribute());
     }
@@ -183,7 +182,7 @@ export class PlayerKillerService {
     const clonedGame = createGame(game);
     const bigBadWolfPlayer = getPlayerWithCurrentRole(clonedGame, "big-bad-wolf");
     const { isPowerlessIfWerewolfDies } = game.options.roles.bigBadWolf;
-    if (killedPlayer.side.current !== RoleSides.WEREWOLVES || !bigBadWolfPlayer ||
+    if (killedPlayer.side.current !== "werewolves" || !bigBadWolfPlayer ||
       !isPowerlessIfWerewolfDies || killedPlayer.role.current === "big-bad-wolf" ||
         doesPlayerHaveActiveAttributeWithNameAndSource(bigBadWolfPlayer, "powerless", "werewolves", clonedGame)) {
       return clonedGame;
@@ -194,7 +193,7 @@ export class PlayerKillerService {
   private applyRustySwordKnightDeathOutcomes(killedPlayer: DeadPlayer, game: Game): Game {
     const clonedGame = createGame(game);
     const { death } = killedPlayer;
-    const leftAliveWerewolfNeighbor = getNearestAliveNeighbor(killedPlayer._id, clonedGame, { direction: "left", playerSide: RoleSides.WEREWOLVES });
+    const leftAliveWerewolfNeighbor = getNearestAliveNeighbor(killedPlayer._id, clonedGame, { direction: "left", playerSide: "werewolves" });
     if (killedPlayer.role.current !== "rusty-sword-knight" || !isPlayerPowerful(killedPlayer, clonedGame) ||
       death.cause !== "eaten" || !leftAliveWerewolfNeighbor) {
       return clonedGame;

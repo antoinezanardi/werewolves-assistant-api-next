@@ -9,7 +9,6 @@ import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schem
 import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { PlayerDeathCause } from "@/modules/game/types/player/player-death/player-death.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
@@ -894,7 +893,7 @@ describe("Player Killer Service", () => {
           game.players[2],
           createFakePlayer({
             ...game.players[3],
-            side: createFakePlayerSide({ ...game.players[3].side, current: RoleSides.WEREWOLVES }),
+            side: createFakePlayerSide({ ...game.players[3].side, current: "werewolves" }),
           }),
         ],
       });
@@ -922,7 +921,7 @@ describe("Player Killer Service", () => {
           game.players[2],
           createFakePlayer({
             ...game.players[3],
-            side: createFakePlayerSide({ ...game.players[3].side, current: RoleSides.WEREWOLVES }),
+            side: createFakePlayerSide({ ...game.players[3].side, current: "werewolves" }),
             attributes: [...game.players[3].attributes, createFakePowerlessByActorPlayerAttribute()],
           }),
         ],
@@ -951,7 +950,7 @@ describe("Player Killer Service", () => {
           game.players[2],
           createFakePlayer({
             ...game.players[3],
-            side: createFakePlayerSide({ ...game.players[3].side, current: RoleSides.WEREWOLVES }),
+            side: createFakePlayerSide({ ...game.players[3].side, current: "werewolves" }),
             attributes: [...game.players[3].attributes],
           }),
         ],

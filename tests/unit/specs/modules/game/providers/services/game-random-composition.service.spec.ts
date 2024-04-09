@@ -1,9 +1,6 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import { ROLES } from "@/modules/role/constants/role-set.constants";
-import type { Role } from "@/modules/role/types/role.class";
-import type { RoleName } from "@/modules/role/types/role.types";
 import { doesCompositionHaveAtLeastOneVillager } from "@/modules/game/dto/base/decorators/composition/composition-has-villager.decorator";
 import { doesCompositionHaveAtLeastOneWerewolf } from "@/modules/game/dto/base/decorators/composition/composition-has-werewolf.decorator";
 import { areCompositionRolesMaxInGameRespected } from "@/modules/game/dto/base/decorators/composition/composition-roles-max-in-game.decorator";
@@ -11,7 +8,9 @@ import { areCompositionRolesMinInGameRespected } from "@/modules/game/dto/base/d
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import { GameRandomCompositionService } from "@/modules/game/providers/services/game-random-composition.service";
-import { RoleOrigins, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
+import { ROLES } from "@/modules/role/constants/role-set.constants";
+import type { Role } from "@/modules/role/types/role.class";
+import type { RoleName } from "@/modules/role/types/role.types";
 
 import { bulkCreateFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeGetGameRandomCompositionDto } from "@tests/factories/game/dto/get-game-random-composition/get-game-random-composition.dto.factory";
@@ -60,14 +59,14 @@ describe("Game Random Composition Service", () => {
 
   describe("getRandomRolesForSide", () => {
     it("should get only werewolves when side is werewolves and no roles are available.", () => {
-      const result = services.gameRandomComposition["getRandomRolesForSide"]([], 10, RoleSides.WEREWOLVES);
+      const result = services.gameRandomComposition["getRandomRolesForSide"]([], 10, "werewolves");
 
       expect(result).toHaveLength(10);
       expect(result.every(role => role.name === "werewolf")).toBe(true);
     });
 
     it("should get only villagers when side is villagers and no roles are available.", () => {
-      const result = services.gameRandomComposition["getRandomRolesForSide"]([], 24, RoleSides.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"]([], 24, "villagers");
 
       expect(result).toHaveLength(24);
       expect(result.every(role => role.name === "villager")).toBe(true);
@@ -77,110 +76,110 @@ describe("Game Random Composition Service", () => {
       const availableRoles = [
         createFakeRole({
           name: "seer",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 1,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 1,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "pied-piper",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 1,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
       ];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 10, RoleSides.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 10, "villagers");
 
       expect(result).toIncludeAllMembers<Role>([
         createFakeRole({
           name: "seer",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "pied-piper",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "villager",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 99,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "villager",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 99,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "villager",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 99,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "villager",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 99,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "villager",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 99,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "villager",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 99,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
         createFakeRole({
           name: "villager",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 99,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
           additionalCardsEligibleRecipients: ["thief"],
         }),
       ]);
@@ -190,28 +189,28 @@ describe("Game Random Composition Service", () => {
       const availableRoles = [
         createFakeRole({
           name: "seer",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 1,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         }),
         createFakeRole({
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 1,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         }),
         createFakeRole({
           name: "fox",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           minInGame: 99,
           maxInGame: 1,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CHARACTERS,
+          type: "villager",
+          origin: "characters",
         }),
       ];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 90, RoleSides.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 90, "villagers");
 
       expect(result).toHaveLength(90);
       expect(result.find(role => role.name === "fox")).toBeUndefined();
@@ -221,40 +220,40 @@ describe("Game Random Composition Service", () => {
       const availableRoles = [
         createFakeRole({
           name: "three-brothers",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           minInGame: 3,
           maxInGame: 3,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CHARACTERS,
+          type: "villager",
+          origin: "characters",
         }),
       ];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 3, RoleSides.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 3, "villagers");
 
       expect(result).toHaveLength(3);
       expect(result).toIncludeAllMembers([
         {
           name: "three-brothers",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           minInGame: 3,
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CHARACTERS,
+          type: "villager",
+          origin: "characters",
         },
         {
           name: "three-brothers",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           minInGame: 3,
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CHARACTERS,
+          type: "villager",
+          origin: "characters",
         },
         {
           name: "three-brothers",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           minInGame: 3,
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CHARACTERS,
+          type: "villager",
+          origin: "characters",
         },
       ]);
     });
@@ -263,60 +262,60 @@ describe("Game Random Composition Service", () => {
       const availableRoles = [
         createFakeRole({
           name: "two-sisters",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           minInGame: 2,
           maxInGame: 2,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         }),
         createFakeRole({
           name: "seer",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 1,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         }),
         createFakeRole({
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 1,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         }),
       ];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 4, RoleSides.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 4, "villagers");
 
       expect(result).toHaveLength(4);
       expect(result).toIncludeAllMembers([
         {
           name: "two-sisters",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           minInGame: 2,
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "two-sisters",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           minInGame: 2,
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "seer",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
       ]);
     });
@@ -325,85 +324,85 @@ describe("Game Random Composition Service", () => {
       const availableRoles = [
         createFakeRole({
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 10,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         }),
       ];
-      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 10, RoleSides.VILLAGERS);
+      const result = services.gameRandomComposition["getRandomRolesForSide"](availableRoles, 10, "villagers");
 
       expect(result).toHaveLength(10);
       expect(result).toIncludeAllMembers([
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
         {
           name: "witch",
-          side: RoleSides.VILLAGERS,
+          side: "villagers",
           maxInGame: 0,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          type: "villager",
+          origin: "classic",
         },
       ]);
     });

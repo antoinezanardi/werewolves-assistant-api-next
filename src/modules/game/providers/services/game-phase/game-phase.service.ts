@@ -13,7 +13,6 @@ import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attri
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameSource } from "@/modules/game/types/game.types";
 import { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createCantFindPlayerWithIdUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -112,7 +111,7 @@ export class GamePhaseService {
       "accursed-wolf-father",
       clonedGame,
     );
-    if (isActorPowerlessOnWerewolvesSide && !isActorAlreadyPowerlessFromAccursedWolfFather && actingPlayer.side.current === RoleSides.WEREWOLVES) {
+    if (isActorPowerlessOnWerewolvesSide && !isActorAlreadyPowerlessFromAccursedWolfFather && actingPlayer.side.current === "werewolves") {
       attributes.push(createPowerlessByAccursedWolfFatherPlayerAttribute());
     }
     const playerDataToUpdate: Partial<Player> = { role: { ...actingPlayer.role, current: "actor", isRevealed: false }, attributes };

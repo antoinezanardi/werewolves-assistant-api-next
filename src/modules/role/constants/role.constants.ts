@@ -31,4 +31,29 @@ const ROLE_NAMES = [
   "devoted-servant",
 ] as const;
 
-export { ROLE_NAMES };
+const ROLE_SIDES = [
+  "villagers",
+  "werewolves",
+] as const;
+
+const ROLE_TYPES = [
+  "villager",
+  "werewolf",
+  "lonely",
+  "ambiguous",
+] as const;
+
+const ROLE_ORIGINS = [
+  "classic",
+  "new-moon",
+  "the-village",
+  "characters",
+  "unconventional",
+] as const;
+
+export {
+  ROLE_NAMES,
+  ROLE_SIDES,
+  ROLE_TYPES,
+  ROLE_ORIGINS,
+};

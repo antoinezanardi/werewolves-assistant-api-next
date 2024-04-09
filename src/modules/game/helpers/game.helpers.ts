@@ -1,7 +1,7 @@
 import type { Types } from "mongoose";
 
 import { ROLE_NAMES } from "@/modules/role/constants/role.constants";
-import type { RoleName } from "@/modules/role/types/role.types";
+import type { RoleName, RoleSide } from "@/modules/role/types/role.types";
 import { PLAYER_GROUPS } from "@/modules/game/constants/player/player.constants";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
@@ -13,7 +13,6 @@ import type { GamePlayAction } from "@/modules/game/types/game-play/game-play.ty
 import type { GameSource, GetNearestPlayerOptions } from "@/modules/game/types/game.types";
 import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
 import type { PlayerGroup } from "@/modules/game/types/player/player.types";
-import { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createCantFindPlayerWithIdUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -29,7 +28,7 @@ function getPlayersWithCurrentRole(game: Game, role: RoleName): Player[] {
   return game.players.filter(player => player.role.current === role);
 }
 
-function getPlayersWithCurrentSide(game: Game, side: RoleSides): Player[] {
+function getPlayersWithCurrentSide(game: Game, side: RoleSide): Player[] {
   return game.players.filter(player => player.side.current === side);
 }
 
@@ -66,12 +65,12 @@ function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Ty
 }
 
 function areAllWerewolvesAlive(game: Game): boolean {
-  const werewolfPlayers = getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES);
+  const werewolfPlayers = getPlayersWithCurrentSide(game, "werewolves");
   return werewolfPlayers.length > 0 && werewolfPlayers.every(werewolf => werewolf.isAlive);
 }
 
 function areAllVillagersAlive(game: Game): boolean {
-  const villagerPlayers = getPlayersWithCurrentSide(game, RoleSides.VILLAGERS);
+  const villagerPlayers = getPlayersWithCurrentSide(game, "villagers");
   return villagerPlayers.length > 0 && villagerPlayers.every(villager => villager.isAlive);
 }
 
@@ -92,11 +91,11 @@ function getAlivePlayers(game: Game): Player[] {
 }
 
 function getAliveVillagerSidedPlayers(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && player.side.current === RoleSides.VILLAGERS);
+  return game.players.filter(player => player.isAlive && player.side.current === "villagers");
 }
 
 function getAliveWerewolfSidedPlayers(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && player.side.current === RoleSides.WEREWOLVES);
+  return game.players.filter(player => player.isAlive && player.side.current === "werewolves");
 }
 
 function getEligiblePiedPiperTargets(game: Game): Player[] {
@@ -105,12 +104,12 @@ function getEligiblePiedPiperTargets(game: Game): Player[] {
 }
 
 function getEligibleWerewolvesTargets(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && player.side.current === RoleSides.VILLAGERS &&
+  return game.players.filter(player => player.isAlive && player.side.current === "villagers" &&
     !doesPlayerHaveActiveAttributeWithName(player, "eaten", game));
 }
 
 function getEligibleWhiteWerewolfTargets(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && player.side.current === RoleSides.WEREWOLVES && player.role.current !== "white-werewolf");
+  return game.players.filter(player => player.isAlive && player.side.current === "werewolves" && player.role.current !== "white-werewolf");
 }
 
 function getEligibleCupidTargets(game: Game): Player[] {
@@ -130,9 +129,9 @@ function getGroupOfPlayers(game: Game, group: PlayerGroup): Player[] {
     return getPlayersWithActiveAttributeName(game, "charmed");
   }
   if (group === "villagers") {
-    return getPlayersWithCurrentSide(game, RoleSides.VILLAGERS);
+    return getPlayersWithCurrentSide(game, "villagers");
   }
-  return getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES);
+  return getPlayersWithCurrentSide(game, "werewolves");
 }
 
 function isGameSourceRole(source: GameSource): source is RoleName {

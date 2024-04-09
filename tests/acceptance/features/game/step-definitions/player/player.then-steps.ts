@@ -3,13 +3,12 @@ import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 import { parseInt } from "lodash";
 
-import type { RoleName } from "@/modules/role/types/role.types";
+import type { RoleName, RoleSide } from "@/modules/role/types/role.types";
 import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helpers";
 import { getPlayerAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import type { GameSource } from "@/modules/game/types/game.types";
 import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
 import type { PlayerDeathCause } from "@/modules/game/types/player/player-death/player-death.types";
-import type { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -130,7 +129,7 @@ Then(
 
 Then(
   /^the player named (?<name>.+?) should be on (?<currentSide>villagers|werewolves) current side and originally be on (?<originalSide>villagers|werewolves) side$/u,
-  function(this: CustomWorld, playerName: string, currentSide: RoleSides, originalSide: RoleSides): void {
+  function(this: CustomWorld, playerName: string, currentSide: RoleSide, originalSide: RoleSide): void {
     const player = getPlayerWithNameOrThrow(playerName, this.game, new Error("Player name not found"));
 
     expect(player.side.current).toBe(currentSide);

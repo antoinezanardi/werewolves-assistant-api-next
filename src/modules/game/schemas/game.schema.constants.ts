@@ -22,7 +22,7 @@ const GAME_FIELDS_SPECS = {
   },
   phase: {
     required: true,
-    enum: Object.values(GAME_PHASES),
+    enum: GAME_PHASES,
     default: "night",
   },
   tick: {

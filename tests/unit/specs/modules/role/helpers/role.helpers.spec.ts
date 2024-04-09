@@ -1,4 +1,3 @@
-import { RoleOrigins, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
 import { getRolesWithSide, getRoleWithName } from "@/modules/role/helpers/role.helpers";
 import type { Role } from "@/modules/role/types/role.class";
 import type { RoleName } from "@/modules/role/types/role.types";
@@ -10,30 +9,30 @@ describe("Role Helper", () => {
     const roles = [
       createFakeRole({
         name: "werewolf",
-        side: RoleSides.WEREWOLVES,
-        type: RoleTypes.WEREWOLF,
-        origin: RoleOrigins.CLASSIC,
+        side: "werewolves",
+        type: "werewolf",
+        origin: "classic",
         maxInGame: 1,
       }),
       createFakeRole({
         name: "villager",
-        side: RoleSides.VILLAGERS,
-        type: RoleTypes.VILLAGER,
-        origin: RoleOrigins.CLASSIC,
+        side: "villagers",
+        type: "villager",
+        origin: "classic",
         maxInGame: 1,
       }),
       createFakeRole({
         name: "pied-piper",
-        side: RoleSides.VILLAGERS,
-        type: RoleTypes.AMBIGUOUS,
-        origin: RoleOrigins.CLASSIC,
+        side: "villagers",
+        type: "ambiguous",
+        origin: "classic",
         maxInGame: 1,
       }),
       createFakeRole({
         name: "white-werewolf",
-        side: RoleSides.WEREWOLVES,
-        type: RoleTypes.WEREWOLF,
-        origin: RoleOrigins.CLASSIC,
+        side: "werewolves",
+        type: "werewolf",
+        origin: "classic",
         maxInGame: 1,
       }),
     ];
@@ -42,42 +41,42 @@ describe("Role Helper", () => {
       const expectedRoles = [
         createFakeRole({
           name: "werewolf",
-          side: RoleSides.WEREWOLVES,
-          type: RoleTypes.WEREWOLF,
-          origin: RoleOrigins.CLASSIC,
+          side: "werewolves",
+          type: "werewolf",
+          origin: "classic",
           maxInGame: 1,
         }),
         createFakeRole({
           name: "white-werewolf",
-          side: RoleSides.WEREWOLVES,
-          type: RoleTypes.WEREWOLF,
-          origin: RoleOrigins.CLASSIC,
+          side: "werewolves",
+          type: "werewolf",
+          origin: "classic",
           maxInGame: 1,
         }),
       ];
 
-      expect(getRolesWithSide(roles, RoleSides.WEREWOLVES)).toStrictEqual<Role[]>(expectedRoles);
+      expect(getRolesWithSide(roles, "werewolves")).toStrictEqual<Role[]>(expectedRoles);
     });
 
     it("should get all villagers roles when villager side is provided.", () => {
       const expectedRoles = [
         createFakeRole({
           name: "villager",
-          side: RoleSides.VILLAGERS,
-          type: RoleTypes.VILLAGER,
-          origin: RoleOrigins.CLASSIC,
+          side: "villagers",
+          type: "villager",
+          origin: "classic",
           maxInGame: 1,
         }),
         createFakeRole({
           name: "pied-piper",
-          side: RoleSides.VILLAGERS,
-          type: RoleTypes.AMBIGUOUS,
-          origin: RoleOrigins.CLASSIC,
+          side: "villagers",
+          type: "ambiguous",
+          origin: "classic",
           maxInGame: 1,
         }),
       ];
 
-      expect(getRolesWithSide(roles, RoleSides.VILLAGERS)).toStrictEqual<Role[]>(expectedRoles);
+      expect(getRolesWithSide(roles, "villagers")).toStrictEqual<Role[]>(expectedRoles);
     });
   });
 
@@ -85,16 +84,16 @@ describe("Role Helper", () => {
     const roles = [
       createFakeRole({
         name: "werewolf",
-        side: RoleSides.WEREWOLVES,
-        type: RoleTypes.WEREWOLF,
-        origin: RoleOrigins.CLASSIC,
+        side: "werewolves",
+        type: "werewolf",
+        origin: "classic",
         maxInGame: 1,
       }),
       createFakeRole({
         name: "villager",
-        side: RoleSides.VILLAGERS,
-        type: RoleTypes.VILLAGER,
-        origin: RoleOrigins.CLASSIC,
+        side: "villagers",
+        type: "villager",
+        origin: "classic",
         maxInGame: 1,
       }),
     ];

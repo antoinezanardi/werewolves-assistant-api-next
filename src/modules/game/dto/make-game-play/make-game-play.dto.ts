@@ -1,9 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { ArrayUnique, IsArray, IsBoolean, IsEnum, IsMongoId, IsOptional, ValidateNested } from "class-validator";
+import { ArrayUnique, IsArray, IsBoolean, IsIn, IsMongoId, IsOptional, ValidateNested } from "class-validator";
 import { Types } from "mongoose";
 
-import { RoleSides } from "@/modules/role/enums/role.enum";
+import { RoleSide } from "@/modules/role/types/role.types";
+import { ROLE_SIDES } from "@/modules/role/constants/role.constants";
 import { MakeGamePlayVoteDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote.dto";
 import { MakeGamePlayTargetDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target.dto";
 
@@ -41,9 +42,9 @@ class MakeGamePlayDto {
 
   @ApiProperty({ description: `Side chosen by \`${"wolf-hound"}\`. Required when game's upcoming action is \`${"choose-side"}\`` })
   @IsOptional()
-  @IsEnum(RoleSides)
+  @IsIn(ROLE_SIDES)
   @Expose()
-  public chosenSide?: RoleSides;
+  public chosenSide?: RoleSide;
 }
 
 export { MakeGamePlayDto };

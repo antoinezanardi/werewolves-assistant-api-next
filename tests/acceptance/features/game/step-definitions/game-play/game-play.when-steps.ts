@@ -1,11 +1,10 @@
 import type { DataTable } from "@cucumber/cucumber";
 import { When } from "@cucumber/cucumber";
 
-import type { RoleName } from "@/modules/role/types/role.types";
+import type { RoleName, RoleSide } from "@/modules/role/types/role.types";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
 import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helpers";
 import type { WitchPotion } from "@/modules/game/types/game-play/game-play.types";
-import type { RoleSides } from "@/modules/role/enums/role.enum";
 
 import { convertDatatableToMakeGamePlayTargets, convertDatatableToMakeGameplayVotes } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import { makeGamePlayRequest } from "@tests/acceptance/features/game/helpers/game-request.helpers";
@@ -195,7 +194,7 @@ When(/^the wild child chooses the player named (?<name>.+) as a model$/u, async 
   setGameInContext(this.response, this);
 });
 
-When(/^the wolf-hound chooses the (?<chosenSide>villagers|werewolves|unknown) side$/u, async function(this: CustomWorld, chosenSide: RoleSides): Promise<void> {
+When(/^the wolf-hound chooses the (?<chosenSide>villagers|werewolves|unknown) side$/u, async function(this: CustomWorld, chosenSide: RoleSide): Promise<void> {
   const makeGamePlayDto: MakeGamePlayDto = { chosenSide };
 
   this.response = await makeGamePlayRequest(makeGamePlayDto, this.game, this.app);

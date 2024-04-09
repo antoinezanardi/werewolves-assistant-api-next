@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
-import { IsEnum, IsMongoId, IsOptional } from "class-validator";
+import { IsIn, IsMongoId, IsOptional } from "class-validator";
 import { Types } from "mongoose";
 
 import { WitchPotion } from "@/modules/game/types/game-play/game-play.types";
@@ -14,7 +14,7 @@ class MakeGamePlayTargetDto {
 
   @ApiProperty({ description: `Can be set only if game's current action is \`${"use-potions"}\`. If set to \`${"life"}\`, the \`witch\` saves target's life from \`werewolves\` meal. If set to \`${"death"}\`, the \`witch\` kills the target` })
   @IsOptional()
-  @IsEnum(WITCH_POTIONS)
+  @IsIn(WITCH_POTIONS)
   @Expose()
   public drankPotion?: WitchPotion;
 }

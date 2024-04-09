@@ -1,6 +1,6 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsInt, IsOptional, Min } from "class-validator";
+import { IsIn, IsInt, IsOptional, Min } from "class-validator";
 
 import { GamePhase } from "@/modules/game/types/game.types";
 import { GAME_PHASES } from "@/modules/game/constants/game.constants";
@@ -21,7 +21,7 @@ class CreateSheriffElectionGameOptionsDto {
     required: false,
   } as ApiPropertyOptions)
   @IsOptional()
-  @IsEnum(GAME_PHASES)
+  @IsIn(GAME_PHASES)
   public phase: GamePhase = SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.phase.default;
 }
 
