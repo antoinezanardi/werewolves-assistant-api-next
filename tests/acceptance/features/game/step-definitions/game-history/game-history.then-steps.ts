@@ -79,6 +79,10 @@ Then(/^the play's voting result from the previous history record should be (?<vo
   expect(this.lastGameHistoryRecord.play.voting?.result).toBe(votingResult);
 });
 
+Then(/^the play's voting result from the previous history record should be undefined$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.play.voting?.result).toBeUndefined();
+});
+
 Then(/^the play's from the previous history record should (?<isNotRequested>not )?have the stuttering judge request$/u, function(this: CustomWorld, notRequested: string | null): void {
   expect(this.lastGameHistoryRecord.play.didJudgeRequestAnotherVote).toBe(notRequested === null ? true : undefined);
 });

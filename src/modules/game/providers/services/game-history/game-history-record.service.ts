@@ -98,7 +98,9 @@ export class GameHistoryRecordService {
       revealedPlayers: this.generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame, newGame),
       deadPlayers: this.generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame, newGame),
     };
-    gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
+    if (gameHistoryRecordToInsert.play.type === "vote") {
+      gameHistoryRecordToInsert.play.voting = this.generateCurrentGameHistoryRecordPlayVotingToInsert(baseGame as GameWithCurrentPlay, newGame, gameHistoryRecordToInsert);
+    }
     return plainToInstance(GameHistoryRecordToInsert, gameHistoryRecordToInsert, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }
 
