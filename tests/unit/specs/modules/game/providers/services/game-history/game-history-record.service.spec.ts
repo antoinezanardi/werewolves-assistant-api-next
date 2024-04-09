@@ -328,11 +328,14 @@ describe("Game History Record Service", () => {
       expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordDeadPlayersToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame);
     });
 
-    it("should call generateCurrentGameHistoryRecordPlayVotingToInsert method when called with votes.", () => {
+    it("should call generateCurrentGameHistoryRecordPlayVotingToInsert method when called with votes and play type is vote.", () => {
       const baseGame = createFakeGameWithCurrentPlay();
       const newGame = createFakeGameWithCurrentPlay();
       const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay({ votes: [] });
+      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay({
+        type: "vote",
+        votes: [],
+      });
       mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
       const gameHistoryRecordToInsert = {
         gameId: baseGame._id,
@@ -346,6 +349,20 @@ describe("Game History Record Service", () => {
       services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
 
       expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame, gameHistoryRecordToInsert);
+    });
+
+    it("should not call generateCurrentGameHistoryRecordPlayVotingToInsert method when called with votes and play type is not vote.", () => {
+      const baseGame = createFakeGameWithCurrentPlay();
+      const newGame = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay({
+        type: "target",
+        votes: [],
+      });
+      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
+      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
+
+      expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).not.toHaveBeenCalled();
     });
   });
 

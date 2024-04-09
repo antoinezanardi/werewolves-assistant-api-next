@@ -251,6 +251,7 @@ Feature: 📜 Game History
       | name |
       | JB   |
     And the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -345,11 +346,13 @@ Feature: 📜 Game History
     When the werewolves eat the player named Thomas
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -373,16 +376,19 @@ Feature: 📜 Game History
     When the sheriff breaks the tie in votes by choosing the player named Doudou
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be stuttering-judge to request-another-vote
 
     When the stuttering judge requests another vote
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the play's targets from the previous history record should be undefined
     And the play's from the previous history record should have the stuttering judge request
     And the game's current play should be survivors to vote because stuttering-judge-request
