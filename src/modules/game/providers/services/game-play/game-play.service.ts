@@ -326,7 +326,8 @@ export class GamePlayService {
     if (!player) {
       return false;
     }
-    if (["hunter", "scapegoat"].includes(source)) {
+    const canStillPlayAfterDeathRoles: RoleName[] = ["hunter", "scapegoat"];
+    if (canStillPlayAfterDeathRoles.includes(source)) {
       return player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game);
     }
     if (this.specificRoleGamePlaySuitabilityMethods[source] !== undefined) {

@@ -2830,7 +2830,7 @@ describe("Game Play Service", () => {
         test: "should return true when game plays source role is scapegoat and player is powerful.",
         game: createFakeGame({
           players: [
-            createFakeScapegoatAlivePlayer(),
+            createFakeScapegoatAlivePlayer({ isAlive: false }),
             createFakeSeerAlivePlayer(),
             createFakeTwoSistersAlivePlayer(),
             createFakeWildChildAlivePlayer(),
