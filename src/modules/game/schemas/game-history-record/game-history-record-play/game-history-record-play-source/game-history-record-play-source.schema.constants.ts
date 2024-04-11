@@ -1,6 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_PLAY_SOURCE_INTERACTION_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 import { GAME_PLAY_SOURCE_NAMES } from "@/modules/game/constants/game-play/game-play.constants";
@@ -20,6 +21,11 @@ const GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS = {
     type: [PLAYER_SCHEMA],
     validate: [(players: Player[]): boolean => doesArrayRespectBounds(players, { minItems: 1 }), "Path `play.source.players` length is less than minimum allowed value (1)."],
   },
+  interactions: {
+    required: false,
+    type: [GAME_PLAY_SOURCE_INTERACTION_SCHEMA],
+    default: undefined,
+  },
 } as const satisfies Record<keyof GameHistoryRecordPlaySource, MongoosePropOptions>;
 
 const GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryRecordPlaySource, ApiPropertyOptions>> = {
@@ -30,6 +36,10 @@ const GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES: ReadonlyDeep<Record<keyof 
   players: {
     description: "Players that made the play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.players),
+  },
+  interactions: {
+    description: "Interactions that the source had during the play",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.interactions),
   },
 };
 
