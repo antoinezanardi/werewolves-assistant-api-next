@@ -36,6 +36,7 @@ Feature: 🐺👹 Big Bad Wolf role
     And the game's current play source interaction with type eat should have the following eligible targets
       | name   |
       | Thomas |
+    And the game's current play source interaction with type eat should have consequences
 
     When the big bad wolf eats the player named Thomas
     Then the request should have succeeded with status code 200

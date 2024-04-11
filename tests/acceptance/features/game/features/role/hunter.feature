@@ -33,6 +33,7 @@ Feature: 🔫 Hunter role
       | Olivia |
       | JB     |
       | Maxime |
+    And the game's current play source interaction with type shoot should have consequences
 
     When the hunter shoots at the player named Olivia
     Then the request should have succeeded with status code 200

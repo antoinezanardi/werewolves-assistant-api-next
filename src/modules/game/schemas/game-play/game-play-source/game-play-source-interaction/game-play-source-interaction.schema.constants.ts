@@ -27,6 +27,10 @@ const GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS = {
     required: true,
     type: GAME_PLAY_SOURCE_INTERACTION_BOUNDARIES_SCHEMA,
   },
+  isInconsequential: {
+    required: false,
+    type: Boolean,
+  },
 } as const satisfies Record<keyof GamePlaySourceInteraction, MongoosePropOptions>;
 
 const GAME_PLAY_SOURCE_INTERACTION_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePlaySourceInteraction, ApiPropertyOptions>> = {
@@ -45,6 +49,10 @@ const GAME_PLAY_SOURCE_INTERACTION_API_PROPERTIES: ReadonlyDeep<Record<keyof Gam
   boundaries: {
     description: "Boundaries of the interaction",
     ...GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS.boundaries,
+  },
+  isInconsequential: {
+    description: "Whether the interaction is inconsequential (i.e. it doesn't affect the game play nor will be validated, it's just for information purposes). It must not be set in game play targets.",
+    ...GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS.isInconsequential,
   },
 };
 

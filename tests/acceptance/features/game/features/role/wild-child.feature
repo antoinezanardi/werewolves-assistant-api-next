@@ -27,6 +27,7 @@ Feature: 🐒 Wild Child role
       | Olivia |
       | JB     |
       | Maxime |
+    And the game's current play source interaction with type choose-as-model should have consequences
 
     When the wild child chooses the player named Olivia as a model
     Then the request should have succeeded with status code 200

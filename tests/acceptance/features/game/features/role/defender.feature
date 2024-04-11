@@ -28,6 +28,7 @@ Feature: 🛡️ Defender role
       | Nana    |
       | Juju    |
       | Cari    |
+    And the game's current play source interaction with type protect should have consequences
 
     When the defender protects the player named Antoine
     Then the request should have succeeded with status code 200

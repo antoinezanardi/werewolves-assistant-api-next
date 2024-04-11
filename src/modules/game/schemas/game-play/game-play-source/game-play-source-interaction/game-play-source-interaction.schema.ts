@@ -36,6 +36,11 @@ class GamePlaySourceInteraction {
   @Type(() => GamePlaySourceInteractionBoundaries)
   @Expose()
   public boundaries: GamePlaySourceInteractionBoundaries;
+
+  @ApiProperty(GAME_PLAY_SOURCE_INTERACTION_API_PROPERTIES.isInconsequential as ApiPropertyOptions)
+  @Prop(GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS.isInconsequential)
+  @Expose()
+  public isInconsequential?: true;
 }
 
 const GAME_PLAY_SOURCE_INTERACTION_SCHEMA = SchemaFactory.createForClass(GamePlaySourceInteraction);

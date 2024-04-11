@@ -33,6 +33,7 @@ Feature: 🦊 Fox role
       | Olivia  |
       | Thomas  |
       | Coco    |
+    And the game's current play source interaction with type sniff should have consequences
 
     When the fox sniffs the player named Doudou
     Then the request should have succeeded with status code 200

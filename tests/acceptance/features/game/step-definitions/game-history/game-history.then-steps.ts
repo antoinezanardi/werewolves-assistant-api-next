@@ -2,13 +2,14 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
+import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 import type { RoleName } from "@/modules/role/types/role.types";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
 import type { GamePlayAction, GamePlayCause, GamePlaySourceName, GamePlayType, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
 import type { GamePhase } from "@/modules/game/types/game.types";
 
-import { convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
+import { convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 
 Then(/^the game's tick from the previous history record should be (?<tick>\d)$/u, function(this: CustomWorld, tick: string): void {
@@ -39,6 +40,42 @@ Then(/^the play's source players from the previous history record should be the 
   const players = convertDatatableToPlayers(expectedSourcePlayersDatatable.rows(), this.gameOnPreviousGamePlay);
 
   expect(this.lastGameHistoryRecord.play.source.players).toStrictEqual(players);
+});
+
+Then(/^the play's source players from the previous history record should not have interactions$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.play.source.interactions).toBeUndefined();
+});
+
+Then(/^the play's source players from the previous history record should have the following interactions$/u, function(this: CustomWorld, expectedInteractionsDatatable: DataTable): void {
+  const expectedInteractions = convertDatatableToGamePlaySourceInteractions(expectedInteractionsDatatable.rows());
+  const interactions = this.lastGameHistoryRecord.play.source.interactions;
+
+  expect(interactions?.length).toBe(expectedInteractions.length);
+  expectedInteractions.forEach(expectedInteraction => {
+    const existingInteraction = interactions?.find(interaction => interaction.type === expectedInteraction.type);
+    expect(existingInteraction).toBeDefined();
+    expect(existingInteraction?.source).toBe(expectedInteraction.source);
+    expect(existingInteraction?.boundaries).toStrictEqual(expectedInteraction.boundaries);
+  });
+});
+
+Then(/^the play's source interaction from the previous history with type (?<type>.+?) should have the following eligible targets$/u, function(this: CustomWorld, interactionType: PlayerInteractionType, expectedEligibleTargetsDatatable: DataTable): void {
+  const expectedEligibleTargets = convertDatatableToPlayers(expectedEligibleTargetsDatatable.rows(), this.gameOnPreviousGamePlay);
+  const interaction = this.lastGameHistoryRecord.play.source.interactions?.find(({ type }) => type === interactionType);
+
+  expect(interaction?.eligibleTargets).toStrictEqual(expectedEligibleTargets);
+});
+
+Then(/^the play's source interaction from the previous history with type (?<type>.+?) should be inconsequential$/u, function(this: CustomWorld, interactionType: PlayerInteractionType): void {
+  const interaction = this.lastGameHistoryRecord.play.source.interactions?.find(({ type }) => type === interactionType);
+
+  expect(interaction?.isInconsequential).toBe(true);
+});
+
+Then(/^the play's source interaction from the previous history with type (?<type>.+?) should have consequences$/u, function(this: CustomWorld, interactionType: PlayerInteractionType): void {
+  const interaction = this.lastGameHistoryRecord.play.source.interactions?.find(({ type }) => type === interactionType);
+
+  expect(interaction?.isInconsequential).toBeUndefined();
 });
 
 Then(/^the play's cause from the previous history record should be (?<cause>(?!undefined).+)$/u, function(this: CustomWorld, cause: GamePlayCause): void {
