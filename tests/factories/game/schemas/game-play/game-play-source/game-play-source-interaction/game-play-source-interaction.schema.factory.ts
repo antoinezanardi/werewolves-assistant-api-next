@@ -15,6 +15,7 @@ function createFakeGamePlaySourceInteraction(gamePlaySourceInteraction: Partial<
     type: gamePlaySourceInteraction.type ?? faker.helpers.arrayElement(PLAYER_INTERACTION_TYPES),
     eligibleTargets: gamePlaySourceInteraction.eligibleTargets ?? [],
     boundaries: createFakeGamePlaySourceInteractionBoundaries(gamePlaySourceInteraction.boundaries),
+    isInconsequential: gamePlaySourceInteraction.isInconsequential,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

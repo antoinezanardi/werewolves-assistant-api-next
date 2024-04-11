@@ -251,7 +251,13 @@ Feature: 🎭 Actor role
     Then the game's current play should be survivors to bury-dead-bodies
     And the player named Louise should be murdered by werewolves from eaten
     And the player named Thomas should be alive
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name   |
+      | Louise |
+    And the game's current play source interaction with type bury should be inconsequential
     And the game's current play can be skipped
 
     When the survivors bury dead bodies

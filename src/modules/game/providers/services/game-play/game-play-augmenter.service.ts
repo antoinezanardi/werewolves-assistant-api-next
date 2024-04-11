@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { isDefined } from "class-validator";
 
-import { RoleName } from "@/modules/role/types/role.types";
+import { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { createGamePlaySourceInteraction } from "@/modules/game/helpers/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
 import { getAlivePlayers, getAllowedToVotePlayers, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
@@ -15,6 +15,7 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { GamePlayAction, GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
 import { WEREWOLF_ROLES } from "@/modules/role/constants/role-set.constants";
+import { RoleName } from "@/modules/role/types/role.types";
 
 import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNominatedPlayersUnexpectedException, createCantFindPlayerWithCurrentRoleUnexpectedException, createMalformedCurrentGamePlayUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -154,24 +155,39 @@ export class GamePlayAugmenterService {
     return [interaction];
   }
 
-  private async getSurvivorsBuryDeadBodiesGamePlaySourceInteractions(game: Game): Promise<GamePlaySourceInteraction[]> {
+  private getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction(game: Game, previousDeadPlayers: DeadPlayer[]): GamePlaySourceInteraction | undefined {
     const devotedServantPlayer = getPlayerWithCurrentRole(game, "devoted-servant");
     if (!devotedServantPlayer || !isPlayerAliveAndPowerful(devotedServantPlayer, game) ||
       doesPlayerHaveActiveAttributeWithName(devotedServantPlayer, "in-love", game)) {
-      return [];
+      return undefined;
     }
+    return createGamePlaySourceInteraction({
+      source: "devoted-servant",
+      type: "steal-role",
+      eligibleTargets: previousDeadPlayers,
+      boundaries: { min: 0, max: 1 },
+    });
+  }
+
+  private async getSurvivorsBuryDeadBodiesGamePlaySourceInteractions(game: Game): Promise<GamePlaySourceInteraction[]> {
     const previousGameHistoryRecord = await this.gameHistoryRecordService.getPreviousGameHistoryRecord(game._id);
     if (previousGameHistoryRecord?.deadPlayers === undefined || previousGameHistoryRecord.deadPlayers.length === 0) {
       throw createCantFindLastDeadPlayersUnexpectedException("getSurvivorsBuryDeadBodiesGamePlaySourceInteractions", { gameId: game._id });
     }
-    const eligibleTargets = previousGameHistoryRecord.deadPlayers;
-    const interaction = createGamePlaySourceInteraction({
-      source: "devoted-servant",
-      type: "steal-role",
-      eligibleTargets,
-      boundaries: { min: 0, max: 1 },
-    });
-    return [interaction];
+    const interactions = [
+      createGamePlaySourceInteraction({
+        source: "survivors",
+        type: "bury",
+        eligibleTargets: previousGameHistoryRecord.deadPlayers,
+        boundaries: { min: 0, max: previousGameHistoryRecord.deadPlayers.length },
+        isInconsequential: true,
+      }),
+    ];
+    const devotedServantInteraction = this.getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction(game, previousGameHistoryRecord.deadPlayers);
+    if (devotedServantInteraction) {
+      interactions.push(devotedServantInteraction);
+    }
+    return interactions;
   }
 
   private async getSurvivorsGamePlaySourceInteractions(game: Game, gamePlay: GamePlay): Promise<GamePlaySourceInteraction[]> {

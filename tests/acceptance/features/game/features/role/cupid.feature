@@ -27,6 +27,7 @@ Feature: 💘 Cupid role
       | Olivia  |
       | JB      |
       | Thomas  |
+    And the game's current play source interaction with type charm should have consequences
 
     When the cupid shoots an arrow at the player named JB and the player named Thomas
     Then the request should have succeeded with status code 200

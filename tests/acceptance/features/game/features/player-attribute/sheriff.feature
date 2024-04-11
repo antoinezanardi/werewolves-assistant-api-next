@@ -33,6 +33,7 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  |
       | JB      |
       | Babou   |
+    And the game's current play source interaction with type choose-as-sheriff should have consequences
 
     When the survivors elect sheriff with the following votes
       | voter   | target |
@@ -70,6 +71,7 @@ Feature: 🎖️ Sheriff player attribute
       | name   |
       | Thomas |
       | JB     |
+    And the game's current play source interaction with type sentence-to-death should have consequences
 
     When the sheriff breaks the tie in votes by choosing the player named Thomas
     Then the request should have succeeded with status code 200
@@ -405,6 +407,7 @@ Feature: 🎖️ Sheriff player attribute
       | Olivia  |
       | Thomas  |
       | JB      |
+    And the game's current play source interaction with type choose-as-sheriff should have consequences
 
   Scenario: 🎖️ Sheriff can be elected on second night instead of first night with right option
 
@@ -467,6 +470,7 @@ Feature: 🎖️ Sheriff player attribute
       | Olivia  |
       | JB      |
       | Babou   |
+    And the game's current play source interaction with type transfer-sheriff-role should have consequences
 
     When the sheriff delegates his role to the player named Olivia
     Then the request should have succeeded with status code 200

@@ -34,6 +34,7 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play source interaction with type eat should have the following eligible targets
       | name |
       | JB   |
+    And the game's current play source interaction with type eat should have consequences
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200

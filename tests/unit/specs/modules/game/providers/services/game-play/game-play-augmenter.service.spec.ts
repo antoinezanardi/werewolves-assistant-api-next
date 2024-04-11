@@ -76,6 +76,7 @@ describe("Game Play Augmenter Service", () => {
       getCharmedMeetEachOtherGamePlaySourceInteractions: jest.SpyInstance;
       getCharmedGamePlaySourceInteractions: jest.SpyInstance;
       canSurvivorsSkipGamePlay: jest.SpyInstance;
+      getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction: jest.SpyInstance;
       getSurvivorsBuryDeadBodiesGamePlaySourceInteractions: jest.SpyInstance;
       getWitchGamePlaySourceGiveLifePotionInteraction: jest.SpyInstance;
       getWitchGamePlaySourceGiveDeathPotionInteraction: jest.SpyInstance;
@@ -118,6 +119,7 @@ describe("Game Play Augmenter Service", () => {
         getSheriffDelegatesGamePlaySourceInteractions: jest.fn(),
         getSheriffGamePlaySourceInteractions: jest.fn(),
         getSurvivorsVoteGamePlaySourceInteractionEligibleTargets: jest.fn(),
+        getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction: jest.fn(),
         getSurvivorsVoteGamePlaySourceInteractions: jest.fn(),
         getSurvivorsElectSheriffGamePlaySourceInteractions: jest.fn(),
         getSurvivorsGamePlaySourceInteractions: jest.fn(),
@@ -553,8 +555,8 @@ describe("Game Play Augmenter Service", () => {
     });
   });
 
-  describe("getSurvivorsBuryDeadBodiesGamePlaySourceInteractions", () => {
-    it("should return empty array when there is no devoted servant in the game.", async() => {
+  describe("getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction", () => {
+    it("should return undefined when there is no devoted servant in the game.", () => {
       const players = [
         createFakeAngelAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -562,11 +564,15 @@ describe("Game Play Augmenter Service", () => {
         createFakeWitchAlivePlayer(),
       ];
       const game = createFakeGame({ players });
+      const deadPlayers = [
+        createFakeDeadPlayer({ ...players[0], isAlive: false, death: createFakePlayerDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeath() }),
+      ];
 
-      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceInteractions"](game)).resolves.toStrictEqual<GamePlaySourceInteraction[]>([]);
+      expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction"](game, deadPlayers)).toBeUndefined();
     });
 
-    it("should return empty array when devoted servant is dead.", async() => {
+    it("should return undefined when devoted servant is dead.", () => {
       const players = [
         createFakeAngelAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -574,11 +580,15 @@ describe("Game Play Augmenter Service", () => {
         createFakeDevotedServantAlivePlayer({ isAlive: false }),
       ];
       const game = createFakeGame({ players });
+      const deadPlayers = [
+        createFakeDeadPlayer({ ...players[0], isAlive: false, death: createFakePlayerDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeath() }),
+      ];
 
-      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceInteractions"](game)).resolves.toStrictEqual<GamePlaySourceInteraction[]>([]);
+      expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction"](game, deadPlayers)).toBeUndefined();
     });
 
-    it("should return empty array when devoted servant is powerless.", async() => {
+    it("should return undefined when devoted servant is powerless.", () => {
       const players = [
         createFakeAngelAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -586,11 +596,15 @@ describe("Game Play Augmenter Service", () => {
         createFakeDevotedServantAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
+      const deadPlayers = [
+        createFakeDeadPlayer({ ...players[0], isAlive: false, death: createFakePlayerDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeath() }),
+      ];
 
-      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceInteractions"](game)).resolves.toStrictEqual<GamePlaySourceInteraction[]>([]);
+      expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction"](game, deadPlayers)).toBeUndefined();
     });
 
-    it("should return empty array when devoted servant is in love.", async() => {
+    it("should return undefined when devoted servant is in love.", () => {
       const players = [
         createFakeAngelAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -598,8 +612,43 @@ describe("Game Play Augmenter Service", () => {
         createFakeDevotedServantAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
+      const deadPlayers = [
+        createFakeDeadPlayer({ ...players[0], isAlive: false, death: createFakePlayerDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeath() }),
+      ];
 
-      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceInteractions"](game)).resolves.toStrictEqual<GamePlaySourceInteraction[]>([]);
+      expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction"](game, deadPlayers)).toBeUndefined();
+    });
+
+    it("should return interaction for devoted servant with dead players as eligible targets with boundaries from 0 to 1 when called.", () => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const deadPlayers = [
+        createFakeDeadPlayer({ ...players[0], isAlive: false, death: createFakePlayerDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeath() }),
+      ];
+      const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
+        source: "devoted-servant",
+        type: "steal-role",
+        eligibleTargets: [deadPlayers[0], deadPlayers[1]],
+        boundaries: {
+          min: 0,
+          max: 1,
+        },
+      });
+
+      expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction"](game, deadPlayers)).toStrictEqual<GamePlaySourceInteraction>(expectedGamePlaySourceInteraction);
+    });
+  });
+
+  describe("getSurvivorsBuryDeadBodiesGamePlaySourceInteractions", () => {
+    beforeEach(() => {
+      mocks.gamePlayAugmenterService.getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction = jest.spyOn(services.gamePlayAugmenter as unknown as { getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction }, "getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction").mockImplementation();
     });
 
     it("should throw error when there is no previous game history record.", async() => {
@@ -652,7 +701,7 @@ describe("Game Play Augmenter Service", () => {
       expect(mocks.unexpectedExceptionFactory.createCantFindLastDeadPlayersUnexpectedException).toHaveBeenCalledExactlyOnceWith("getSurvivorsBuryDeadBodiesGamePlaySourceInteractions", { gameId: game._id });
     });
 
-    it("should return dead players as eligible targets with boundaries from 0 to 1 when called.", async() => {
+    it("should return inconsequential survivors bury dead bodies game play source interaction when called.", async() => {
       const players = [
         createFakeAngelAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -667,16 +716,56 @@ describe("Game Play Augmenter Service", () => {
       const gameHistoryRecord = createFakeGameHistoryRecord({ deadPlayers });
       mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValueOnce(gameHistoryRecord);
       const expectedGamePlaySourceInteraction = createFakeGamePlaySourceInteraction({
+        source: "survivors",
+        type: "bury",
+        eligibleTargets: deadPlayers,
+        boundaries: {
+          min: 0,
+          max: 2,
+        },
+        isInconsequential: true,
+      });
+
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceInteractions"](game)).resolves.toStrictEqual<GamePlaySourceInteraction[]>([expectedGamePlaySourceInteraction]);
+    });
+
+    it("should return devoted servant steals role game play source interaction plus bury interactions when there is devoted servant interaction.", async() => {
+      const players = [
+        createFakeAngelAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeDevotedServantAlivePlayer(),
+      ];
+      const game = createFakeGame({ players });
+      const deadPlayers = [
+        createFakeDeadPlayer({ ...players[0], isAlive: false, death: createFakePlayerDeath() }),
+        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeath() }),
+      ];
+      const gameHistoryRecord = createFakeGameHistoryRecord({ deadPlayers });
+      mocks.gameHistoryRecordService.getPreviousGameHistoryRecord.mockResolvedValueOnce(gameHistoryRecord);
+      const expectedGamePlaySourceInteractionStealRole = createFakeGamePlaySourceInteraction({
         source: "devoted-servant",
         type: "steal-role",
-        eligibleTargets: [deadPlayers[0], deadPlayers[1]],
+        eligibleTargets: deadPlayers,
         boundaries: {
           min: 0,
           max: 1,
         },
       });
+      mocks.gamePlayAugmenterService.getSurvivorsBuryDeadBodiesGamePlaySourceDevotedServantInteraction.mockReturnValueOnce(expectedGamePlaySourceInteractionStealRole);
+      const expectedGamePlaySourceInteractionBury = createFakeGamePlaySourceInteraction({
+        source: "survivors",
+        type: "bury",
+        eligibleTargets: deadPlayers,
+        boundaries: {
+          min: 0,
+          max: 2,
+        },
+        isInconsequential: true,
+      });
+      const expectedInteractions = [expectedGamePlaySourceInteractionBury, expectedGamePlaySourceInteractionStealRole];
 
-      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceInteractions"](game)).resolves.toStrictEqual<GamePlaySourceInteraction[]>([expectedGamePlaySourceInteraction]);
+      await expect(services.gamePlayAugmenter["getSurvivorsBuryDeadBodiesGamePlaySourceInteractions"](game)).resolves.toStrictEqual<GamePlaySourceInteraction[]>(expectedInteractions);
     });
   });
 

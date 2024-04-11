@@ -60,6 +60,18 @@ Then(/^the game's current play source interaction with type (?<type>.+?) should 
   expect(interaction?.eligibleTargets).toStrictEqual(expectedEligibleTargets);
 });
 
+Then(/^the game's current play source interaction with type (?<type>.+?) should be inconsequential$/u, function(this: CustomWorld, interactionType: PlayerInteractionType): void {
+  const interaction = this.game.currentPlay?.source.interactions?.find(({ type }) => type === interactionType);
+
+  expect(interaction?.isInconsequential).toBe(true);
+});
+
+Then(/^the game's current play source interaction with type (?<type>.+?) should have consequences$/u, function(this: CustomWorld, interactionType: PlayerInteractionType): void {
+  const interaction = this.game.currentPlay?.source.interactions?.find(({ type }) => type === interactionType);
+
+  expect(interaction?.isInconsequential).toBeUndefined();
+});
+
 Then(/^the game's current play can(?<cantBeSkipped> not)? be skipped$/u, function(this: CustomWorld, canBeSkipped: string | null): void {
   expect(this.game.currentPlay?.canBeSkipped).toBe(canBeSkipped === null);
 });

@@ -35,6 +35,7 @@ Feature: 🗳️ Vote Game Play
       | Antoine |
       | JB      |
       | Thomas  |
+    And the game's current play source interaction with type vot should have consequences
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -82,8 +83,13 @@ Feature: 🗳️ Vote Game Play
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play source should not have interactions
-    And the game's current play can be skipped
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name   |
+      | Olivia |
+    And the game's current play source interaction with type bury should be inconsequential
 
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
