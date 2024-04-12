@@ -7,11 +7,6 @@ import type { PlayerGroup } from "@/modules/game/types/player/player.types";
 import { ROLE_NAMES } from "@/modules/role/constants/role.constants";
 import type { RoleName } from "@/modules/role/types/role.types";
 
-const GAME_PHASES = [
-  "night",
-  "day",
-] as const;
-
 const GAME_STATUSES = [
   "playing",
   "over",
@@ -228,7 +223,6 @@ const NIGHT_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIO
 const DAY_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => occurrence === "on-days");
 
 export {
-  GAME_PHASES,
   GAME_STATUSES,
   GAME_SOURCES,
   GAME_PLAYS_PRIORITY_LIST,

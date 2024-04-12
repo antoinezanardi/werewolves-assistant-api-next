@@ -243,9 +243,9 @@ describe("Game History Record Service", () => {
   describe("getGameHistoryPhaseRecords", () => {
     it("should call getGameHistoryPhaseRecords method when called.", async() => {
       const game = createFakeGame();
-      await services.gameHistoryRecord.getGameHistoryPhaseRecords(game._id, game.turn, game.phase);
+      await services.gameHistoryRecord.getGameHistoryPhaseRecords(game._id, game.turn, game.phase.name);
 
-      expect(mocks.gameHistoryRecordRepository.getGameHistoryPhaseRecords).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, game.phase);
+      expect(mocks.gameHistoryRecordRepository.getGameHistoryPhaseRecords).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, game.phase.name);
     });
   });
 

@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
+import { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
+import { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { getAdditionalCardWithId, getNonexistentPlayer, getPlayerWithActiveAttributeName, getPlayerWithId } from "@/modules/game/helpers/game.helpers";
@@ -19,7 +21,6 @@ import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
 import { GamePlayAction, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
-import { GamePhase } from "@/modules/game/types/game.types";
 
 import { ApiResources } from "@/shared/api/enums/api.enums";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
@@ -77,7 +78,7 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryElderProtectedFromWerewolvesRecords(gameId, elderPlayerId);
   }
 
-  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhase): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhaseName): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordRepository.getGameHistoryPhaseRecords(gameId, turn, phase);
   }
 
@@ -92,7 +93,7 @@ export class GameHistoryRecordService {
     const gameHistoryRecordToInsert: GameHistoryRecordToInsert = {
       gameId: baseGame._id,
       turn: baseGame.turn,
-      phase: baseGame.phase,
+      phase: toJSON(baseGame.phase) as GamePhase,
       tick: baseGame.tick,
       play: this.generateCurrentGameHistoryRecordPlayToInsert(baseGame as GameWithCurrentPlay, play),
       revealedPlayers: this.generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame, newGame),

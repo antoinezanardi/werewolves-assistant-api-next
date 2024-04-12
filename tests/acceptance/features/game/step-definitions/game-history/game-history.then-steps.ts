@@ -2,12 +2,12 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
+import type { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 import type { RoleName } from "@/modules/role/types/role.types";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
 import type { GamePlayAction, GamePlayCause, GamePlaySourceName, GamePlayType, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
-import type { GamePhase } from "@/modules/game/types/game.types";
 
 import { convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -20,8 +20,12 @@ Then(/^the game's turn from the previous history record should be (?<turn>\d)$/u
   expect(this.lastGameHistoryRecord.turn).toBe(parseInt(turn));
 });
 
-Then(/^the game's phase from the previous history record should be (?<phase>night|day)$/u, function(this: CustomWorld, phase: GamePhase): void {
-  expect(this.lastGameHistoryRecord.phase).toBe(phase);
+Then(/^the game's phase name from the previous history record should be (?<phase>night|day)$/u, function(this: CustomWorld, phaseName: GamePhaseName): void {
+  expect(this.lastGameHistoryRecord.phase.name).toBe(phaseName);
+});
+
+Then(/^the game's phase tick from the previous history record should be (?<tick>\d)$/u, function(this: CustomWorld, tick: string): void {
+  expect(this.lastGameHistoryRecord.phase.tick).toBe(parseInt(tick));
 });
 
 Then(/^the play's type from the previous history record should be (?<type>.+)$/u, function(this: CustomWorld, type: GamePlayType): void {

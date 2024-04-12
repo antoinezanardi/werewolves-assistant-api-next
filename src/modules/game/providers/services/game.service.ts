@@ -72,6 +72,7 @@ export class GameService {
     clonedGame = await this.gamePlayService.refreshUpcomingPlays(clonedGame);
     clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
     clonedGame.tick++;
+    clonedGame.phase.tick++;
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }

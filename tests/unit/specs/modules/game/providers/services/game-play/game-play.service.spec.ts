@@ -2,6 +2,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 
+import type { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import * as GameHelper from "@/modules/game/helpers/game.helpers";
@@ -13,10 +14,10 @@ import type { SheriffGameOptions } from "@/modules/game/schemas/game-options/rol
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
-import type { GamePhase } from "@/modules/game/types/game.types";
 
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
@@ -278,7 +279,7 @@ describe("Game Play Service", () => {
         test: "should get upcoming night plays when it's the first night with official rules and some roles.",
         game: createFakeGame({
           turn: 1,
-          phase: "night",
+          phase: createFakeGamePhase({ name: "night" }),
           players: [
             createFakeVillagerAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
@@ -297,7 +298,7 @@ describe("Game Play Service", () => {
         test: "should get upcoming night plays when it's the first night with official rules and all roles who act during the night.",
         game: createFakeGame({
           turn: 1,
-          phase: "night",
+          phase: createFakeGamePhase({ name: "night" }),
           players: [
             createFakeVillagerAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
@@ -349,7 +350,7 @@ describe("Game Play Service", () => {
         test: "should get upcoming night plays when it's the second night with official rules and some roles.",
         game: createFakeGame({
           turn: 2,
-          phase: "night",
+          phase: createFakeGamePhase({ name: "night" }),
           players: [
             createFakeCupidAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
@@ -369,7 +370,7 @@ describe("Game Play Service", () => {
         test: "should get only vote play when it's phase day and it's not sheriff election time.",
         game: createFakeGame({
           turn: 1,
-          phase: "day",
+          phase: createFakeGamePhase({ name: "day" }),
           players: [
             createFakeVillagerAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
@@ -384,14 +385,14 @@ describe("Game Play Service", () => {
         test: "should get sheriff election and vote plays when it's phase day and it's sheriff election time.",
         game: createFakeGame({
           turn: 1,
-          phase: "day",
+          phase: createFakeGamePhase({ name: "day" }),
           players: [
             createFakeVillagerAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
             createFakeWerewolfAlivePlayer(),
             createFakeSeerAlivePlayer(),
           ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ isEnabled: true, electedAt: createFakeSheriffElectionGameOptions({ phase: "day", turn: 1 }) }) }) }),
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ isEnabled: true, electedAt: createFakeSheriffElectionGameOptions({ phaseName: "day", turn: 1 }) }) }) }),
         }),
         output: [
           createFakeGamePlaySurvivorsElectSheriff(),
@@ -517,7 +518,7 @@ describe("Game Play Service", () => {
     });
 
     it("should call getPhaseUpcomingPlays method when called.", async() => {
-      const game = createFakeGame({ phase: "night" });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }) });
       await services.gamePlay["getNewUpcomingPlaysForCurrentPhase"](game);
 
       expect(mocks.gamePlayService.getPhaseUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
@@ -525,7 +526,7 @@ describe("Game Play Service", () => {
     });
 
     it("should call isUpcomingPlayNewForCurrentPhase method for as much times as there are upcoming phase plays when filtering them.", async() => {
-      const game = createFakeGame({ phase: "night" });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }) });
       const upcomingPlays = [
         createFakeGamePlaySurvivorsElectSheriff(),
         createFakeGamePlaySeerLooks(),
@@ -606,34 +607,41 @@ describe("Game Play Service", () => {
     }>([
       {
         test: "should return false when sheriff is not enabled even if it's the time.",
-        sheriffGameOptions: createFakeSheriffGameOptions({ electedAt: { turn: 1, phase: "night" }, isEnabled: false, hasDoubledVote: false }),
+        sheriffGameOptions: createFakeSheriffGameOptions({ electedAt: { turn: 1, phaseName: "night" }, isEnabled: false, hasDoubledVote: false }),
         turn: 1,
-        phase: "night",
+        phase: createFakeGamePhase({ name: "night" }),
         expected: false,
       },
       {
         test: "should return false when it's not the right turn.",
-        sheriffGameOptions: createFakeSheriffGameOptions({ electedAt: { turn: 1, phase: "night" }, isEnabled: true, hasDoubledVote: false }),
+        sheriffGameOptions: createFakeSheriffGameOptions({ electedAt: { turn: 1, phaseName: "night" }, isEnabled: true, hasDoubledVote: false }),
         turn: 2,
-        phase: "night",
+        phase: createFakeGamePhase({ name: "night" }),
         expected: false,
       },
       {
         test: "should return false when it's not the right phase.",
-        sheriffGameOptions: createFakeSheriffGameOptions({ electedAt: { turn: 1, phase: "day" }, isEnabled: true, hasDoubledVote: false }),
+        sheriffGameOptions: createFakeSheriffGameOptions({
+          electedAt: {
+            turn: 1,
+            phaseName: "day",
+          },
+          isEnabled: true,
+          hasDoubledVote: false,
+        }),
         turn: 1,
-        phase: "night",
+        phase: createFakeGamePhase({ name: "night" }),
         expected: false,
       },
       {
         test: "should return true when it's the right phase and turn.",
-        sheriffGameOptions: createFakeSheriffGameOptions({ electedAt: { turn: 1, phase: "night" }, isEnabled: true, hasDoubledVote: false }),
+        sheriffGameOptions: createFakeSheriffGameOptions({ electedAt: { turn: 1, phaseName: "night" }, isEnabled: true, hasDoubledVote: false }),
         turn: 1,
-        phase: "night",
+        phase: createFakeGamePhase({ name: "night" }),
         expected: true,
       },
     ])("$test", ({ sheriffGameOptions, turn, phase, expected }) => {
-      expect(services.gamePlay["isSheriffElectionTime"](sheriffGameOptions, turn, phase)).toBe(expected);
+      expect(services.gamePlay["isSheriffElectionTime"](sheriffGameOptions, turn, phase.name)).toBe(expected);
     });
   });
 
@@ -1051,7 +1059,7 @@ describe("Game Play Service", () => {
         test: "should return false when both bear tamer's neighbors are werewolves but there was already a vote game play on current turn and phase.",
         game: createFakeGame({
           turn: 1,
-          phase: "day",
+          phase: createFakeGamePhase({ name: "day" }),
           players: [
             createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
             createFakeWerewolfAlivePlayer({ position: 2 }),
@@ -1060,14 +1068,17 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
         }),
-        lastVoteGamePlay: createFakeGameHistoryRecord({ turn: 1, phase: "day" }),
+        lastVoteGamePlay: createFakeGameHistoryRecord({
+          turn: 1,
+          phase: createFakeGamePhase({ name: "day" }),
+        }),
         expected: false,
       },
       {
         test: "should return true when both bear tamer's neighbors are werewolves and there was already a vote game play but not on current turn.",
         game: createFakeGame({
           turn: 1,
-          phase: "day",
+          phase: createFakeGamePhase({ name: "day" }),
           players: [
             createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
             createFakeWerewolfAlivePlayer({ position: 2 }),
@@ -1076,14 +1087,17 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
         }),
-        lastVoteGamePlay: createFakeGameHistoryRecord({ turn: 2, phase: "day" }),
+        lastVoteGamePlay: createFakeGameHistoryRecord({
+          turn: 2,
+          phase: createFakeGamePhase({ name: "day" }),
+        }),
         expected: true,
       },
       {
         test: "should return true when both bear tamer's neighbors are werewolves and there was already a vote game play but not on current phase.",
         game: createFakeGame({
           turn: 1,
-          phase: "day",
+          phase: createFakeGamePhase({ name: "day" }),
           players: [
             createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
             createFakeWerewolfAlivePlayer({ position: 2 }),
@@ -1092,7 +1106,10 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
         }),
-        lastVoteGamePlay: createFakeGameHistoryRecord({ turn: 1, phase: "night" }),
+        lastVoteGamePlay: createFakeGameHistoryRecord({
+          turn: 1,
+          phase: createFakeGamePhase({ name: "night" }),
+        }),
         expected: true,
       },
       {

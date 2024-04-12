@@ -2,7 +2,7 @@
   "roles": {
     "sheriff": {
       "electedAt": {
-        "phase": "night",
+        "phaseName": "night",
         "turn": 2
       }
     }

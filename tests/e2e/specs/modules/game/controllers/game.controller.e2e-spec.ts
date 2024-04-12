@@ -7,6 +7,7 @@ import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 
+import type { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
@@ -23,6 +24,7 @@ import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_C
 import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
 
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helpers";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helpers";
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
@@ -868,7 +870,7 @@ describe("Game Controller", () => {
       };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
-        phase: "night",
+        phase: toJSON(createFakeGamePhase({ name: "night", tick: 1 })) as GamePhase,
         status: "playing",
         turn: 1,
         tick: 1,
@@ -946,7 +948,7 @@ describe("Game Controller", () => {
       };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
-        phase: "night",
+        phase: toJSON(createFakeGamePhase({ name: "night", tick: 1 })) as GamePhase,
         status: "playing",
         turn: 1,
         tick: 1,
@@ -983,7 +985,7 @@ describe("Game Controller", () => {
             isEnabled: false,
             electedAt: {
               turn: 5,
-              phase: "day",
+              phaseName: "day",
             },
             hasDoubledVote: false,
             mustSettleTieInVotes: false,
@@ -1246,6 +1248,7 @@ describe("Game Controller", () => {
       });
       const game = createFakeGame({
         status: "playing",
+        phase: createFakeGamePhase({ name: "day" }),
         currentPlay,
         upcomingPlays: [
           createFakeGamePlaySeerLooks(),
@@ -1261,6 +1264,7 @@ describe("Game Controller", () => {
           { sourceId: players[1]._id, targetId: players[0]._id },
         ],
       });
+      const expectedPhase = createFakeGamePhase({ ...game.phase, tick: game.phase.tick + 1 });
       const expectedCurrentPlay = createFakeGamePlaySurvivorsVote({
         cause: "previous-votes-were-in-ties",
         source: createFakeGamePlaySource({
@@ -1279,6 +1283,7 @@ describe("Game Controller", () => {
       });
       const expectedGame = createFakeGame({
         ...game,
+        phase: expectedPhase,
         tick: game.tick + 1,
         currentPlay: expectedCurrentPlay,
       });
@@ -1318,7 +1323,7 @@ describe("Game Controller", () => {
         }),
       });
       const game = createFakeGame({
-        phase: "night",
+        phase: createFakeGamePhase({ name: "night" }),
         status: "playing",
         currentPlay,
         upcomingPlays: [createFakeGamePlayWerewolvesEat()],
@@ -1344,6 +1349,7 @@ describe("Game Controller", () => {
       const expectedGame = createFakeGame({
         ...game,
         tick: game.tick + 1,
+        phase: createFakeGamePhase({ ...game.phase, tick: game.phase.tick + 1 }),
         currentPlay: expectedCurrentPlay,
         upcomingPlays: [],
         players: [

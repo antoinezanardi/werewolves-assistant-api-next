@@ -11,6 +11,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeCupidGameOptions, createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
@@ -188,7 +189,14 @@ describe("Game Victory Service", () => {
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const currentPlay = createFakeGamePlaySurvivorsVote();
-      const game = createFakeGame({ players, upcomingPlays, currentPlay, options, turn: 1, phase: "night" });
+      const game = createFakeGame({
+        players,
+        upcomingPlays,
+        currentPlay,
+        options,
+        turn: 1,
+        phase: createFakeGamePhase({ name: "night" }),
+      });
 
       expect(services.gameVictory.isGameOver(game)).toBe(true);
     });
@@ -218,7 +226,12 @@ describe("Game Victory Service", () => {
         createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
-      const game = createFakeGame({ players, options, phase: "night", turn: 1 });
+      const game = createFakeGame({
+        players,
+        options,
+        phase: createFakeGamePhase({ name: "night" }),
+        turn: 1,
+      });
       const expectedGameVictory = createFakeGameVictory({ type: "angel", winners: [players[3]] });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
@@ -768,7 +781,7 @@ describe("Game Victory Service", () => {
             createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerShotByHunterDeath() }),
           ],
           turn: 1,
-          phase: "night",
+          phase: createFakeGamePhase({ name: "night" }),
         }),
         expected: false,
       },
@@ -782,7 +795,7 @@ describe("Game Victory Service", () => {
             createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
           ],
           turn: 1,
-          phase: "day",
+          phase: createFakeGamePhase({ name: "day" }),
         }),
         expected: false,
       },
@@ -809,7 +822,7 @@ describe("Game Victory Service", () => {
             createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
           ],
           turn: 1,
-          phase: "night",
+          phase: createFakeGamePhase({ name: "night" }),
         }),
         expected: true,
       },

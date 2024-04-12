@@ -1,6 +1,7 @@
 import { createActingByActorPlayerAttribute, createCantVoteByScapegoatPlayerAttribute, createCantVoteBySurvivorsPlayerAttribute, createCharmedByPiedPiperPlayerAttribute, createContaminatedByRustySwordKnightPlayerAttribute, createDrankDeathPotionByWitchPlayerAttribute, createDrankLifePotionByWitchPlayerAttribute, createEatenByBigBadWolfPlayerAttribute, createEatenByWerewolvesPlayerAttribute, createEatenByWhiteWerewolfPlayerAttribute, createInLoveByCupidPlayerAttribute, createPlayerAttribute, createPowerlessByAccursedWolfFatherPlayerAttribute, createPowerlessByActorPlayerAttribute, createPowerlessByElderPlayerAttribute, createPowerlessByFoxPlayerAttribute, createPowerlessByWerewolvesPlayerAttribute, createProtectedByDefenderPlayerAttribute, createScandalmongerMarkByScandalmongerPlayerAttribute, createSeenBySeerPlayerAttribute, createSheriffBySheriffPlayerAttribute, createSheriffBySurvivorsPlayerAttribute, createStolenRoleByDevotedServantPlayerAttribute, createWorshipedByWildChildPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakePlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 
@@ -64,14 +65,17 @@ describe("Player Attribute Factory", () => {
 
   describe("createCantVoteByScapegoatPlayerAttribute", () => {
     it("should create can't vote attribute by scapegoat active in next turn when game phase is day.", () => {
-      const game = createFakeGame({ turn: 2, phase: "day" });
+      const game = createFakeGame({
+        turn: 2,
+        phase: createFakeGamePhase({ name: "day" }),
+      });
       const expectedAttribute = createFakePlayerAttribute({
         name: "cant-vote",
         source: "scapegoat",
         remainingPhases: 1,
         activeAt: {
           turn: 3,
-          phase: "day",
+          phaseName: "day",
         },
       });
 
@@ -79,14 +83,17 @@ describe("Player Attribute Factory", () => {
     });
 
     it("should create can't vote attribute by scapegoat active in current turn when game phase is night.", () => {
-      const game = createFakeGame({ turn: 2, phase: "night" });
+      const game = createFakeGame({
+        turn: 2,
+        phase: createFakeGamePhase({ name: "night" }),
+      });
       const expectedAttribute = createFakePlayerAttribute({
         name: "cant-vote",
         source: "scapegoat",
         remainingPhases: 1,
         activeAt: {
           turn: 2,
-          phase: "day",
+          phaseName: "day",
         },
       });
 

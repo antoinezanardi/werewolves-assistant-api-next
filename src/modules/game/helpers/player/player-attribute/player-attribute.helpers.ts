@@ -7,7 +7,7 @@ import type { PlayerAttributeName } from "@/modules/game/types/player/player-att
 
 function isPlayerAttributeActive({ activeAt }: PlayerAttribute, game: Game): boolean {
   return activeAt === undefined || activeAt.turn < game.turn ||
-    activeAt.turn === game.turn && (activeAt.phase === game.phase || game.phase === "day");
+    activeAt.turn === game.turn && (activeAt.phaseName === game.phase.name || game.phase.name === "day");
 }
 
 function getPlayerAttributeWithName({ attributes }: Player, attributeName: PlayerAttributeName): PlayerAttribute | undefined {
