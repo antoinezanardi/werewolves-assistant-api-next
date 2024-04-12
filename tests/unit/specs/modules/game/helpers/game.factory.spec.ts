@@ -2,6 +2,7 @@ import { createGame } from "@/modules/game/helpers/game.factory";
 import type { Game } from "@/modules/game/schemas/game.schema";
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
@@ -15,7 +16,7 @@ describe("Game Factory", () => {
         currentPlay: createFakeGamePlaySurvivorsVote(),
         tick: 1,
         turn: 2,
-        phase: "day",
+        phase: createFakeGamePhase({ name: "day" }),
         players: [createFakePlayer()],
         options: createFakeGameOptions(),
         upcomingPlays: [createFakeGamePlaySurvivorsElectSheriff()],

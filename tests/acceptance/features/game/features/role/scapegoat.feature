@@ -92,7 +92,7 @@ Feature: 🐐 Scapegoat role
       | Olivia |
 
     When the player or group skips his turn
-    Then the game's phase should be night
+    Then the game's phase name should be night
     And nobody should have the active cant-vote from scapegoat attribute
 
   Scenario: 🐐 Scapegoat doesn't ban if he's powerless
@@ -167,7 +167,7 @@ Feature: 🐐 Scapegoat role
 
     When the werewolves eat the player named Mom
     Then the player named Mom should be murdered by werewolves from eaten
-    And the game's phase should be day
+    And the game's phase name should be day
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
@@ -177,7 +177,7 @@ Feature: 🐐 Scapegoat role
       | Olivia |
 
     When the player or group skips his turn
-    Then the game's phase should be night
+    Then the game's phase name should be night
     And nobody should have the active cant-vote from scapegoat attribute
 
   Scenario: 🐐 Scapegoat can't ban from votes an unknown player

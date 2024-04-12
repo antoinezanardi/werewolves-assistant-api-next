@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_PHASES } from "@/modules/game/constants/game.constants";
+import { GAME_PHASE_NAMES } from "@/modules/game/constants/game-phase/game-phase.constants";
 import { ActorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/actor-game-options/actor-game-options.schema";
 import { PrejudicedManipulatorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";
 import { CupidGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";
@@ -198,7 +198,7 @@ function createFakeBigBadWolfGameOptions(bigBadWolfOptions: Partial<BigBadWolfGa
 function createFakeSheriffElectionGameOptions(sheriffElectionGameOptions: Partial<SheriffElectionGameOptions> = {}, override: object = {}): SheriffElectionGameOptions {
   return plainToInstance(SheriffElectionGameOptions, {
     turn: sheriffElectionGameOptions.turn ?? faker.number.int({ min: 1 }),
-    phase: sheriffElectionGameOptions.phase ?? faker.helpers.arrayElement(GAME_PHASES),
+    phaseName: sheriffElectionGameOptions.phaseName ?? faker.helpers.arrayElement(GAME_PHASE_NAMES),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

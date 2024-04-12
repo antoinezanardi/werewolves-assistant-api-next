@@ -3,7 +3,6 @@ import { plainToInstance } from "class-transformer";
 
 import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/constants/game-history-record/game-history-record.constants";
 import { GAME_PLAY_ACTIONS, GAME_PLAY_SOURCE_NAMES, GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
-import { GAME_PHASES } from "@/modules/game/constants/game.constants";
 import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
 import { GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
 import { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
@@ -13,6 +12,7 @@ import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/ga
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeAccursedWolfFatherAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeFoxAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
@@ -367,7 +367,7 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
     gameId: gameHistoryRecord.gameId ?? createFakeObjectId(),
     tick: gameHistoryRecord.tick ?? faker.number.int({ min: 1 }),
     turn: gameHistoryRecord.turn ?? faker.number.int({ min: 1 }),
-    phase: gameHistoryRecord.phase ?? faker.helpers.arrayElement(GAME_PHASES),
+    phase: createFakeGamePhase(gameHistoryRecord.phase),
     play: createFakeGameHistoryRecordPlay(gameHistoryRecord.play),
     revealedPlayers: gameHistoryRecord.revealedPlayers ?? undefined,
     deadPlayers: gameHistoryRecord.deadPlayers ?? undefined,

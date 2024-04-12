@@ -2,7 +2,7 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { SchemaTypes } from "mongoose";
 import type { ReadonlyDeep } from "type-fest";
 
-import { GAME_PHASES } from "@/modules/game/constants/game.constants";
+import { GAME_PHASE_SCHEMA } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { DEAD_PLAYER_SCHEMA } from "@/modules/game/schemas/player/dead-player.schema";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 import { GAME_HISTORY_RECORD_PLAY_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
@@ -23,7 +23,7 @@ const GAME_HISTORY_RECORD_FIELDS_SPECS = {
   },
   phase: {
     required: true,
-    enum: GAME_PHASES,
+    type: GAME_PHASE_SCHEMA,
   },
   tick: {
     required: true,

@@ -1,12 +1,13 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_PHASES, GAME_STATUSES } from "@/modules/game/constants/game.constants";
+import { GAME_STATUSES } from "@/modules/game/constants/game.constants";
 import { Game } from "@/modules/game/schemas/game.schema";
 import { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
@@ -25,13 +26,13 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
     players: game.players ?? [],
     currentPlay: game.currentPlay ?? null,
     upcomingPlays: game.upcomingPlays ?? [],
-    phase: game.phase ?? faker.helpers.arrayElement(GAME_PHASES),
+    phase: createFakeGamePhase(game.phase),
     status: game.status ?? faker.helpers.arrayElement(GAME_STATUSES),
     tick: game.tick ?? faker.number.int({ min: 1 }),
     turn: game.turn ?? faker.number.int({ min: 1 }),
-    additionalCards: game.additionalCards ?? undefined,
-    options: game.options ?? createFakeGameOptions(),
-    victory: game.victory ?? undefined,
+    additionalCards: game.additionalCards,
+    options: createFakeGameOptions(game.options),
+    victory: game.victory,
     createdAt: game.createdAt ?? faker.date.recent(),
     updatedAt: game.updatedAt ?? faker.date.recent(),
     ...override,

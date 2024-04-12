@@ -12,7 +12,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       isEnabled: true,
       electedAt: {
         turn: 1,
-        phase: "night",
+        phaseName: "night",
       },
       hasDoubledVote: true,
       mustSettleTieInVotes: true,

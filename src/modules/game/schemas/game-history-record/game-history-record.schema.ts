@@ -4,7 +4,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform, Type } from "class-transformer";
 import { Types } from "mongoose";
 
-import { GamePhase } from "@/modules/game/types/game.types";
+import { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { GAME_HISTORY_RECORD_API_PROPERTIES, GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record.schema.constants";
 import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
@@ -38,6 +38,7 @@ class GameHistoryRecord {
 
   @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.phase as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.phase)
+  @Type(() => GamePhase)
   @Expose()
   public phase: GamePhase;
 

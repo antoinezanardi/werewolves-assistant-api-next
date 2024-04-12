@@ -4,13 +4,14 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform, Type } from "class-transformer";
 import { Types } from "mongoose";
 
+import { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 import { GAME_API_PROPERTIES, GAME_FIELDS_SPECS } from "@/modules/game/schemas/game.schema.constants";
 import { Player } from "@/modules/game/schemas/player/player.schema";
-import { GamePhase, GameStatus } from "@/modules/game/types/game.types";
+import { GameStatus } from "@/modules/game/types/game.types";
 
 import { toObjectId } from "@/shared/validation/transformers/validation.transformer";
 
@@ -31,6 +32,7 @@ class Game {
 
   @ApiProperty(GAME_API_PROPERTIES.phase as ApiPropertyOptions)
   @Prop(GAME_FIELDS_SPECS.phase)
+  @Type(() => GamePhase)
   @Expose()
   public phase: GamePhase;
 

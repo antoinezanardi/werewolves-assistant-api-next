@@ -1,7 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { GAME_PHASES } from "@/modules/game/constants/game.constants";
+import { GAME_PHASE_NAMES } from "@/modules/game/constants/game-phase/game-phase.constants";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { SheriffElectionGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-election-game-options/sheriff-election-game-options.schema";
 
@@ -14,10 +14,10 @@ const SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS = {
     default: DEFAULT_GAME_OPTIONS.roles.sheriff.electedAt.turn,
     min: 1,
   },
-  phase: {
+  phaseName: {
     required: true,
-    enum: GAME_PHASES,
-    default: DEFAULT_GAME_OPTIONS.roles.sheriff.electedAt.phase,
+    enum: GAME_PHASE_NAMES,
+    default: DEFAULT_GAME_OPTIONS.roles.sheriff.electedAt.phaseName,
   },
 } as const satisfies Record<keyof SheriffElectionGameOptions, MongoosePropOptions>;
 
@@ -26,9 +26,9 @@ const SHERIFF_ELECTION_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof Sh
     description: "Game's turn when the `sheriff` is elected",
     ...convertMongoosePropOptionsToApiPropertyOptions(SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.turn),
   },
-  phase: {
+  phaseName: {
     description: "Game's phase when the `sheriff` is elected",
-    ...convertMongoosePropOptionsToApiPropertyOptions(SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.phase),
+    ...convertMongoosePropOptionsToApiPropertyOptions(SHERIFF_ELECTION_GAME_OPTIONS_FIELDS_SPECS.phaseName),
   },
 };
 

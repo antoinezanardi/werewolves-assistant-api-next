@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_PHASES } from "@/modules/game/constants/game.constants";
+import { GAME_PHASE_NAMES } from "@/modules/game/constants/game-phase/game-phase.constants";
 import { CreateActorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-actor-game-options.dto";
 import { CreatePrejudicedManipulatorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-prejudiced-manipulator-game-options.dto";
 import { CreateCupidGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-game-options.dto";
@@ -213,7 +213,7 @@ function createFakeCreateSheriffElectionGameOptionsDto(
 ): CreateSheriffElectionGameOptionsDto {
   return plainToInstance(CreateSheriffElectionGameOptionsDto, {
     turn: sheriffElectionGameOptions.turn ?? faker.number.int({ min: 1 }),
-    phase: sheriffElectionGameOptions.phase ?? faker.helpers.arrayElement(GAME_PHASES),
+    phaseName: sheriffElectionGameOptions.phaseName ?? faker.helpers.arrayElement(GAME_PHASE_NAMES),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

@@ -80,7 +80,7 @@ export class GameVictoryService {
       return false;
     }
     const { cause: deathCause } = angelPlayer.death;
-    return deathCause === "eaten" || deathCause === "vote" && phase === "night";
+    return deathCause === "eaten" || deathCause === "vote" && phase.name === "night";
   }
 
   private doesPrejudicedManipulatorWin(game: Game): boolean {

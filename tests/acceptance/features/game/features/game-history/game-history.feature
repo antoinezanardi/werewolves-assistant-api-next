@@ -16,14 +16,16 @@ Feature: 📜 Game History
     When the werewolves eat the player named Antoine
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 1
-    And the game's phase from the previous history record should be night
+    And the game's phase name from the previous history record should be night
+    And the game's phase tick from the previous history record should be 1
     And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 2
-    And the game's phase from the previous history record should be day
+    And the game's phase name from the previous history record should be day
+    And the game's phase tick from the previous history record should be 1
     And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to vote
 
@@ -34,21 +36,24 @@ Feature: 📜 Game History
       | Doudou | Juju   |
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 3
-    And the game's phase from the previous history record should be day
+    And the game's phase name from the previous history record should be day
+    And the game's phase tick from the previous history record should be 2
     And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 4
-    And the game's phase from the previous history record should be day
+    And the game's phase name from the previous history record should be day
+    And the game's phase tick from the previous history record should be 3
     And the game's turn from the previous history record should be 1
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 5
-    And the game's phase from the previous history record should be night
+    And the game's phase name from the previous history record should be night
+    And the game's phase tick from the previous history record should be 1
     And the game's turn from the previous history record should be 2
 
   Scenario: 📜 Game play's type, action, sources and cause are recorded in the game history

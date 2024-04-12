@@ -504,7 +504,7 @@ Feature: 🗳️ Vote Game Play
     Then the player named Thomas should be alive
     And the game's current play should be werewolves to eat
     And the game's turn should be 3
-    And the game's phase should be night
+    And the game's phase name should be night
 
   Scenario: 🗳 Player can't vote if scapegoat banned him
 

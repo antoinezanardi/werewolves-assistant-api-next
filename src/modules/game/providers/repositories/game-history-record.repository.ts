@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import type { FilterQuery, QueryOptions, Types } from "mongoose";
 import { Model } from "mongoose";
 
+import { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mappers";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -10,7 +11,6 @@ import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { GameHistoryRecordDocument, GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record/game-history-record.types";
 import { GamePlayAction, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
-import { GamePhase } from "@/modules/game/types/game.types";
 
 @Injectable()
 export class GameHistoryRecordRepository {
@@ -144,8 +144,13 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
-  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhase): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordModel.find({ gameId, turn, phase });
+  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phaseName: GamePhaseName): Promise<GameHistoryRecord[]> {
+    const filter: FilterQuery<GameHistoryRecord> = {
+      gameId,
+      turn,
+      "phase.name": phaseName,
+    };
+    return this.gameHistoryRecordModel.find(filter);
   }
 
   public async getGameHistoryGamePlayRecords(gameId: Types.ObjectId, gamePlay: GamePlay, options: QueryOptions<GameHistoryRecord> = {}): Promise<GameHistoryRecord[]> {

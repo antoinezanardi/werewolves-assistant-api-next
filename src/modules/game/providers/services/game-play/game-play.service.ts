@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import { DAY_GAME_PLAYS_PRIORITY_LIST, NIGHT_GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constants";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
@@ -15,7 +16,6 @@ import type { SheriffGameOptions } from "@/modules/game/schemas/game-options/rol
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
-import { GamePhase } from "@/modules/game/types/game.types";
 import { PlayerGroup } from "@/modules/game/types/player/player.types";
 import { RoleName } from "@/modules/role/types/role.types";
 
@@ -71,8 +71,8 @@ export class GamePlayService {
   }
 
   public async getPhaseUpcomingPlays(game: CreateGameDto | Game): Promise<GamePlay[]> {
-    const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase);
-    const phaseGamePlaysPriorityList = game.phase === "night" ? NIGHT_GAME_PLAYS_PRIORITY_LIST : DAY_GAME_PLAYS_PRIORITY_LIST;
+    const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase.name);
+    const phaseGamePlaysPriorityList = game.phase.name === "night" ? NIGHT_GAME_PLAYS_PRIORITY_LIST : DAY_GAME_PLAYS_PRIORITY_LIST;
     const suitabilityPromises = phaseGamePlaysPriorityList.map(async eligiblePlay => this.isGamePlaySuitableForCurrentPhase(game, eligiblePlay as GamePlay));
     const suitabilityResults = await Promise.all(suitabilityPromises);
     const upcomingNightPlays = phaseGamePlaysPriorityList
@@ -104,7 +104,7 @@ export class GamePlayService {
   private async getNewUpcomingPlaysForCurrentPhase(game: Game): Promise<GamePlay[]> {
     const { _id, turn, phase } = game;
     const currentPhaseUpcomingPlays = await this.getPhaseUpcomingPlays(game);
-    const gameHistoryPhaseRecords = await this.gameHistoryRecordService.getGameHistoryPhaseRecords(_id, turn, phase);
+    const gameHistoryPhaseRecords = await this.gameHistoryRecordService.getGameHistoryPhaseRecords(_id, turn, phase.name);
     return currentPhaseUpcomingPlays.filter(gamePlay => this.isUpcomingPlayNewForCurrentPhase(gamePlay, game, gameHistoryPhaseRecords));
   }
 
@@ -127,9 +127,9 @@ export class GamePlayService {
     });
   }
 
-  private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GamePhase): boolean {
+  private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GamePhaseName): boolean {
     const { electedAt, isEnabled } = sheriffGameOptions;
-    return isEnabled && electedAt.turn === currentTurn && electedAt.phase === currentPhase;
+    return isEnabled && electedAt.turn === currentTurn && electedAt.phaseName === currentPhase;
   }
 
   private async isLoversGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
@@ -180,7 +180,7 @@ export class GamePlayService {
     const { doesGrowlOnWerewolvesSide } = game.options.roles.bearTamer;
     const isBearTamerInfected = bearTamerPlayer.side.current === "werewolves";
     const lastVoteGamePlay = await this.gameHistoryRecordService.getLastGameHistorySurvivorsVoteRecord(game._id);
-    const didGamePhaseHaveSurvivorsVote = lastVoteGamePlay?.turn === game.turn && lastVoteGamePlay.phase === game.phase;
+    const didGamePhaseHaveSurvivorsVote = lastVoteGamePlay?.turn === game.turn && lastVoteGamePlay.phase.name === game.phase.name;
     return !didGamePhaseHaveSurvivorsVote && (doesGrowlOnWerewolvesSide && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor);
   }
 

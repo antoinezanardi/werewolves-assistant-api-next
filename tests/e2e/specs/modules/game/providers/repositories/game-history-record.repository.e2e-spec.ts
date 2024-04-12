@@ -3,17 +3,18 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 
+import type { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import type { RoleSide } from "@/modules/role/types/role.types";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
 import type { GamePlaySourceName, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
-import type { GamePhase } from "@/modules/game/types/game.types";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
 
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helpers";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helpers";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
@@ -122,9 +123,14 @@ describe("Game History Record Repository", () => {
         errorMessage: "GameHistoryRecord validation failed: tick: Path `tick` (-1) is less than minimum allowed value (1).",
       },
       {
-        test: "should not create history record when phase is not in enum.",
-        toInsert: createFakeGameHistoryRecord({ phase: "Noon" as GamePhase }),
-        errorMessage: "GameHistoryRecord validation failed: phase: `Noon` is not a valid enum value for path `phase`.",
+        test: "should not create history record when phase name is not in enum.",
+        toInsert: createFakeGameHistoryRecord({ phase: createFakeGamePhase({ name: "Noon" as GamePhaseName }) }),
+        errorMessage: "GameHistoryRecord validation failed: phase.name: `Noon` is not a valid enum value for path `name`.",
+      },
+      {
+        test: "should not create history record when phase tick is not greater than 0.",
+        toInsert: createFakeGameHistoryRecord({ phase: createFakeGamePhase({ tick: 0 }) }),
+        errorMessage: "GameHistoryRecord validation failed: phase.tick: Path `tick` (0) is less than minimum allowed value (1).",
       },
       {
         test: "should not create history record when players in play's source is empty.",
@@ -1087,12 +1093,12 @@ describe("Game History Record Repository", () => {
       const otherGameId = createFakeObjectId();
       const play = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: "werewolves" }) });
       const gameHistoryRecords = [
-        createFakeGameHistoryRecord({ gameId, turn: 1, phase: "day", play }),
-        createFakeGameHistoryRecord({ gameId, turn: 1, phase: "night", play }),
-        createFakeGameHistoryRecord({ gameId, turn: 1, phase: "day", play }),
-        createFakeGameHistoryRecord({ gameId, turn: 2, phase: "day", play }),
-        createFakeGameHistoryRecord({ gameId, turn: 1, phase: "day", play }),
-        createFakeGameHistoryRecord({ gameId: otherGameId, phase: "day", turn: 1, play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "day" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "night" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "day" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 2, phase: createFakeGamePhase({ name: "day" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "day" }), play }),
+        createFakeGameHistoryRecord({ gameId: otherGameId, phase: createFakeGamePhase({ name: "day" }), turn: 1, play }),
       ];
       await populate(gameHistoryRecords);
       const records = await repositories.gameHistoryRecord.getGameHistoryPhaseRecords(gameId, 1, "day");

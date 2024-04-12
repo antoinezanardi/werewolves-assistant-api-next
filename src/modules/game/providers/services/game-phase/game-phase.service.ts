@@ -31,8 +31,10 @@ export class GamePhaseService {
 
   public async switchPhaseAndAppendGamePhaseUpcomingPlays(game: Game): Promise<Game> {
     const clonedGame = createGame(game);
-    clonedGame.phase = clonedGame.phase === "night" ? "day" : "night";
-    if (clonedGame.phase === "night") {
+    const { name: phaseName } = clonedGame.phase;
+    clonedGame.phase.name = phaseName === "night" ? "day" : "night";
+    clonedGame.phase.tick = 1;
+    if (clonedGame.phase.name === "night") {
       clonedGame.turn++;
     }
     const phaseUpcomingPlays = await this.gamePlayService.getPhaseUpcomingPlays(clonedGame);
@@ -42,7 +44,7 @@ export class GamePhaseService {
 
   public applyStartingGamePhaseOutcomes(game: Game): Game {
     const clonedGame = createGame(game);
-    if (clonedGame.phase === "night") {
+    if (clonedGame.phase.name === "night") {
       return this.applyStartingNightPlayerAttributesOutcomes(clonedGame);
     }
     return clonedGame;
@@ -84,7 +86,7 @@ export class GamePhaseService {
   private async applyEndingGamePhasePlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     const clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);
-    if (clonedGame.phase === "night") {
+    if (clonedGame.phase.name === "night") {
       return this.applyEndingNightPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);
     }
     return this.applyEndingDayPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);

@@ -12,6 +12,7 @@ import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpect
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeActorGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeActingByActorPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -108,10 +109,11 @@ describe("Game Phase Service", () => {
     });
 
     it("should switch to night and append upcoming night plays when game's current phase is DAY.", async() => {
-      const game = createFakeGame({ phase: "day", upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "day" }), upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const expectedPhase = createFakeGamePhase({ name: "night", tick: 1 });
       const expectedGame = createFakeGame({
         ...game,
-        phase: "night",
+        phase: expectedPhase,
         turn: game.turn + 1,
         upcomingPlays: [...game.upcomingPlays, ...upcomingPlays],
       });
@@ -120,10 +122,11 @@ describe("Game Phase Service", () => {
     });
 
     it("should switch to day and append upcoming day plays when game's current phase is NIGHT.", async() => {
-      const game = createFakeGame({ phase: "night", upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }), upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const expectedPhase = createFakeGamePhase({ name: "day", tick: 1 });
       const expectedGame = createFakeGame({
         ...game,
-        phase: "day",
+        phase: expectedPhase,
         upcomingPlays: [...game.upcomingPlays, ...upcomingPlays],
       });
 
@@ -137,14 +140,15 @@ describe("Game Phase Service", () => {
     });
 
     it("should call applyStartingNightPlayerAttributesOutcomes when game's current phase is NIGHT.", () => {
-      const game = createFakeGame({ phase: "night" });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }) });
       services.gamePhase.applyStartingGamePhaseOutcomes(game);
 
       expect(mocks.gamePhaseService.applyStartingNightPlayerAttributesOutcomes).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should return game as is when game's current phase is DAY.", () => {
-      const game = createFakeGame({ phase: "day" });
+      const phase = createFakeGamePhase({ name: "day" });
+      const game = createFakeGame({ phase });
       services.gamePhase.applyStartingGamePhaseOutcomes(game);
 
       expect(mocks.gamePhaseService.applyStartingNightPlayerAttributesOutcomes).not.toHaveBeenCalled();
@@ -163,7 +167,7 @@ describe("Game Phase Service", () => {
         createFakePlayer(),
         createFakePlayer(),
       ];
-      const game = createFakeGame({ phase: "night", players });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }), players });
       mocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer.mockResolvedValue(game);
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayers"](game);
 
@@ -236,7 +240,7 @@ describe("Game Phase Service", () => {
 
     it("should call ending night method when game phase is night.", async() => {
       const player = createFakePlayer();
-      const game = createFakeGame({ phase: "night" });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }) });
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayer"](player, game);
 
       expect(mocks.gamePhaseService.applyEndingNightPlayerAttributesOutcomesToPlayer).toHaveBeenCalledExactlyOnceWith(player, game);
@@ -245,7 +249,8 @@ describe("Game Phase Service", () => {
 
     it("should call ending day method when game phase is day.", async() => {
       const player = createFakePlayer();
-      const game = createFakeGame({ phase: "day" });
+      const phase = createFakeGamePhase({ name: "day" });
+      const game = createFakeGame({ phase });
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayer"](player, game);
 
       expect(mocks.gamePhaseService.applyEndingDayPlayerAttributesOutcomesToPlayer).toHaveBeenCalledExactlyOnceWith(player, game);
