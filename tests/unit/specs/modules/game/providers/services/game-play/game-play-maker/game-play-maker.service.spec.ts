@@ -830,7 +830,7 @@ describe("Game Play Maker Service", () => {
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ mustSettleTieInVotes: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
-      const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
+      const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] });
       mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
       await services.gamePlayMaker["handleTieInVotes"](game);
 
@@ -847,7 +847,7 @@ describe("Game Play Maker Service", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ sheriff: createFakeSheriffGameOptions({ mustSettleTieInVotes: true }) }) });
       const game = createFakeGameWithCurrentPlay({ players, options });
       mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
-      const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties", occurrence: "consequential" });
+      const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"], occurrence: "consequential" });
       await services.gamePlayMaker["handleTieInVotes"](game);
 
       expect(mocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlaySurvivorsVote, game);
@@ -860,8 +860,8 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
-      const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties", occurrence: "consequential" });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] });
+      const gamePlaySurvivorsVote = createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"], occurrence: "consequential" });
       const game = createFakeGameWithCurrentPlay({ players, currentPlay });
       mocks.gameMutator.prependUpcomingPlayInGame.mockReturnValue(game);
       await services.gamePlayMaker["handleTieInVotes"](game);
@@ -882,7 +882,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: "stuttering-judge-request" }), players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }), players });
       const play = createFakeMakeGamePlayWithRelationsDto();
       const expectedGame = createFakeGame(game);
       mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue([]);
@@ -897,7 +897,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: "stuttering-judge-request" }), players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }), players });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
@@ -917,7 +917,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: "stuttering-judge-request" }), players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }), players });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
@@ -947,7 +947,7 @@ describe("Game Play Maker Service", () => {
     });
 
     it("should prepend stuttering judge request another vote game play when current play cause is angel presence.", async() => {
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }) });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }) });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
         createFakeMakeGamePlayVoteWithRelationsDto(),
         createFakeMakeGamePlayVoteWithRelationsDto(),
@@ -969,7 +969,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ cause: "stuttering-judge-request" }), players });
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }), players });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
         createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
@@ -992,11 +992,11 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: "stuttering-judge-request" });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ causes: ["stuttering-judge-request"] });
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGameWithCurrentPlay({ currentPlay, players, upcomingPlays });
       const nominatedPlayers = [players[0], players[1]];
-      const prependedGamePlay = createFakeGamePlaySurvivorsElectSheriff({ cause: "previous-votes-were-in-ties" });
+      const prependedGamePlay = createFakeGamePlaySurvivorsElectSheriff({ causes: ["previous-votes-were-in-ties"] });
       services.gamePlayMaker["handleTieInSheriffElection"](nominatedPlayers, game);
 
       expect(mocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(prependedGamePlay, game);
@@ -1010,7 +1010,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       mocks.lodash.sample.mockReturnValue(players[0]);
-      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: "previous-votes-were-in-ties" });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ causes: ["previous-votes-were-in-ties"] });
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGameWithCurrentPlay({ currentPlay, players, upcomingPlays });
       const nominatedPlayers = [players[0], players[1]];
@@ -1038,7 +1038,7 @@ describe("Game Play Maker Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       mocks.lodash.sample.mockReturnValue(undefined);
-      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: "previous-votes-were-in-ties" });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ causes: ["previous-votes-were-in-ties"] });
       const upcomingPlays = [createFakeGamePlayHunterShoots()];
       const game = createFakeGameWithCurrentPlay({ currentPlay, players, upcomingPlays });
       const nominatedPlayers = [players[0], players[1]];
@@ -2300,7 +2300,7 @@ describe("Game Play Maker Service", () => {
       const play = createFakeMakeGamePlayWithRelationsDto({ doesJudgeRequestAnotherVote: true });
       services.gamePlayMaker["stutteringJudgeRequestsAnotherVote"](play, game);
 
-      expect(mocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(createFakeGamePlaySurvivorsVote({ cause: "stuttering-judge-request" }), game);
+      expect(mocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }), game);
     });
   });
 });

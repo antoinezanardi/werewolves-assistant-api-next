@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
-import { isPlayerInteractableInCurrentGamePlay, isPlayerInteractableWithInteractionTypeInCurrentGamePlay } from "@/modules/game/helpers/game-play/game-play.helpers";
+import { doesGamePlayHaveCause, isPlayerInteractableInCurrentGamePlay, isPlayerInteractableWithInteractionTypeInCurrentGamePlay } from "@/modules/game/helpers/game-play/game-play.helpers";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
@@ -326,11 +326,11 @@ export class GamePlayValidatorService {
   }
 
   private validateGamePlayVotesTieBreakerWithRelationsDto(playVotes: MakeGamePlayVoteWithRelationsDto[], game: GameWithCurrentPlay): void {
-    const { action, cause } = game.currentPlay;
+    const { action } = game.currentPlay;
     const interactionType = action === "vote" ? "vote" : "choose-as-sheriff";
     const areEveryTargetsInNominatedPlayers = playVotes.every(({ target }) =>
       isPlayerInteractableWithInteractionTypeInCurrentGamePlay(target._id, interactionType, game));
-    if (cause === "previous-votes-were-in-ties" && !areEveryTargetsInNominatedPlayers) {
+    if (doesGamePlayHaveCause(game.currentPlay, "previous-votes-were-in-ties") && !areEveryTargetsInNominatedPlayers) {
       throw new BadGamePlayPayloadException(BadGamePlayPayloadReasons.BAD_VOTE_TARGET_FOR_TIE_BREAKER);
     }
   }
@@ -362,7 +362,7 @@ export class GamePlayValidatorService {
       }
       return;
     }
-    if (game.currentPlay.cause === "previous-votes-were-in-ties") {
+    if (doesGamePlayHaveCause(currentPlay, "previous-votes-were-in-ties")) {
       this.validateGamePlayVotesTieBreakerWithRelationsDto(playVotes, game);
     }
     this.validateGamePlayVotesWithRelationsDtoSourceAndTarget(playVotes, game);

@@ -407,7 +407,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWitchAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: "angel-presence" });
+      const gamePlay = createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] });
       const expectedPlayers = [
         createFakePlayer(players[0]),
         createFakePlayer(players[1]),
@@ -425,7 +425,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWitchAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
+      const gamePlay = createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] });
       const gameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [players[0], players[1]] });
       const gameHistoryRecord = createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: gameHistoryRecordPlayVoting }) });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(gameHistoryRecord);
@@ -445,7 +445,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWitchAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
+      const gamePlay = createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] });
       const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: game._id.toString() });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(null);
       mocks.unexpectedExceptionFactory.createCantFindLastNominatedPlayersUnexpectedException.mockReturnValue(mockedError);
@@ -462,7 +462,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWitchAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      const gamePlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
+      const gamePlay = createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] });
       const gameRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ nominatedPlayers: [] });
       const mockedError = new UnexpectedException("error", UnexpectedExceptionReasons.CANT_FIND_LAST_NOMINATED_PLAYERS, { gameId: game._id.toString() });
       mocks.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord.mockResolvedValueOnce(createFakeGameHistoryRecord({ play: createFakeGameHistoryRecordPlay({ voting: gameRecordPlayVoting }) }));
@@ -1667,7 +1667,7 @@ describe("Game Play Augmenter Service", () => {
       },
       {
         test: "should return false when game play action is vote and game play cause is angel presence.",
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
         game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
         expected: false,
       },
@@ -1685,7 +1685,7 @@ describe("Game Play Augmenter Service", () => {
       },
       {
         test: "should return true when game play action is not vote but because angel presence.",
-        gamePlay: createFakeGamePlayScandalmongerMarks({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlayScandalmongerMarks({ causes: ["angel-presence"] }),
         game: createFakeGame({ options: createFakeGameOptions({ votes: createFakeVotesGameOptions({ canBeSkipped: true }) }) }),
         expected: true,
       },

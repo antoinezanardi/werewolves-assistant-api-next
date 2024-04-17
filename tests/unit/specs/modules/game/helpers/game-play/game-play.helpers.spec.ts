@@ -1,9 +1,10 @@
 import type { Types } from "mongoose";
 
+import type { GamePlayCause } from "@/modules/game/types/game-play/game-play.types";
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayVoteWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
-import { areGamePlaysEqual, canSurvivorsVote, createMakeGamePlayDtoWithRelations, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto, isPlayerInteractableInCurrentGamePlay, isPlayerInteractableWithInteractionTypeInCurrentGamePlay } from "@/modules/game/helpers/game-play/game-play.helpers";
+import { areGamePlaysEqual, canSurvivorsVote, createMakeGamePlayDtoWithRelations, doesGamePlayHaveAnyCause, doesGamePlayHaveCause, findPlayPriorityIndex, getChosenCardFromMakeGamePlayDto, getTargetsWithRelationsFromMakeGamePlayDto, getVotesWithRelationsFromMakeGamePlayDto, isPlayerInteractableInCurrentGamePlay, isPlayerInteractableWithInteractionTypeInCurrentGamePlay } from "@/modules/game/helpers/game-play/game-play.helpers";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -291,7 +292,7 @@ describe("Game Play Helper", () => {
       {
         test: "should return false when both causes are not equal.",
         playA: createFakeGamePlaySurvivorsVote(),
-        playB: createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }),
+        playB: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
         expected: false,
       },
     ])("$test", ({ playA, playB, expected }) => {
@@ -477,6 +478,66 @@ describe("Game Play Helper", () => {
       },
     ])(`$test`, ({ playerId, interactionType, game, expected }) => {
       expect(isPlayerInteractableWithInteractionTypeInCurrentGamePlay(playerId, interactionType, game)).toBe(expected);
+    });
+  });
+
+  describe("doesGamePlayHaveCause", () => {
+    it.each<{
+      gamePlay: GamePlay;
+      cause: GamePlayCause;
+      expected: boolean;
+      test: string;
+    }>([
+      {
+        gamePlay: createFakeGamePlaySurvivorsVote(),
+        cause: "previous-votes-were-in-ties",
+        expected: false,
+        test: "should return false when game play doesn't have any cause at all.",
+      },
+      {
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
+        cause: "previous-votes-were-in-ties",
+        expected: true,
+        test: "should return true when game play has the cause.",
+      },
+      {
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
+        cause: "angel-presence",
+        expected: false,
+        test: "should return false when game play doesn't have the cause.",
+      },
+    ])(`$test`, ({ gamePlay, cause, expected }) => {
+      expect(doesGamePlayHaveCause(gamePlay, cause)).toBe(expected);
+    });
+  });
+
+  describe("doesGamePlayHaveAnyCause", () => {
+    it.each<{
+      gamePlay: GamePlay;
+      causes: GamePlayCause[];
+      expected: boolean;
+      test: string;
+    }>([
+      {
+        gamePlay: createFakeGamePlaySurvivorsVote(),
+        causes: ["previous-votes-were-in-ties"],
+        expected: false,
+        test: "should return false when game play doesn't have any of the causes.",
+      },
+      {
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
+        causes: ["previous-votes-were-in-ties"],
+        expected: true,
+        test: "should return true when game play has all of the causes.",
+      },
+      {
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
+        causes: ["previous-votes-were-in-ties", "angel-presence"],
+        expected: true,
+        test: "should return true when game play has any of the causes.",
+      },
+    ])(`$test`, ({ gamePlay, causes, expected }) => {
+      expect(doesGamePlayHaveAnyCause(gamePlay, causes)).toBe(expected);
     });
   });
 });

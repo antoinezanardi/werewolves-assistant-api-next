@@ -34,10 +34,10 @@ class GameHistoryRecordPlay {
   @Expose()
   public source: GameHistoryRecordPlaySource;
 
-  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.cause as ApiPropertyOptions)
-  @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.cause)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.causes as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.causes)
   @Expose()
-  public cause?: GamePlayCause;
+  public causes?: GamePlayCause[];
 
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.targets as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.targets)

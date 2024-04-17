@@ -350,7 +350,7 @@ function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHist
     type: gameHistoryRecordPlay.type ?? faker.helpers.arrayElement(GAME_PLAY_TYPES),
     source: createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlay.source),
     action: gameHistoryRecordPlay.action ?? faker.helpers.arrayElement(GAME_PLAY_ACTIONS),
-    cause: gameHistoryRecordPlay.cause ?? undefined,
+    causes: gameHistoryRecordPlay.causes ?? undefined,
     targets: gameHistoryRecordPlay.targets ?? undefined,
     votes: gameHistoryRecordPlay.votes ?? undefined,
     voting: gameHistoryRecordPlay.voting ? createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlay.voting, override) : undefined,

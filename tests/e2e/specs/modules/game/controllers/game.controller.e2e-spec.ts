@@ -1266,7 +1266,7 @@ describe("Game Controller", () => {
       });
       const expectedPhase = createFakeGamePhase({ ...game.phase, tick: game.phase.tick + 1 });
       const expectedCurrentPlay = createFakeGamePlaySurvivorsVote({
-        cause: "previous-votes-were-in-ties",
+        causes: ["previous-votes-were-in-ties"],
         source: createFakeGamePlaySource({
           name: "survivors",
           players,

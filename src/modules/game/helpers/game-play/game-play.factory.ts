@@ -49,9 +49,9 @@ function createGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}): GameP
 function createGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
   let occurrence: GamePlayOccurrence = "on-days";
   const consequentialCauses: GamePlayCause[] = ["previous-votes-were-in-ties", "stuttering-judge-request"];
-  if (gamePlay.cause === "angel-presence") {
+  if (gamePlay.causes?.includes("angel-presence") === true) {
     occurrence = "one-night-only";
-  } else if (consequentialCauses.includes(gamePlay.cause as GamePlayCause)) {
+  } else if (consequentialCauses.some(cause => gamePlay.causes?.includes(cause) === true)) {
     occurrence = "consequential";
   }
   return createGamePlay({

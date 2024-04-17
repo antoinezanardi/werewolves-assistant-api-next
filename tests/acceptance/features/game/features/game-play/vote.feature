@@ -100,6 +100,25 @@ Feature: 🗳️ Vote Game Play
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "`votes` is required on this current game's state"
 
+  Scenario: 🗳 Players can't skip votes when vote is because angel presence, even after a tie
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | werewolf |
+      | Olivia  | angel    |
+      | JB      | villager |
+      | Thomas  | villager |
+    Then the request should have succeeded with status code 201
+    And the game's current play should be survivors to vote because angel-presence
+    And the game's current play can not be skipped
+
+    When the survivors vote with the following votes
+      | voter  | target |
+      | JB     | Thomas |
+      | Thomas | JB     |
+    Then the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play can not be skipped
+
   Scenario: 🗳 Unknown player can't vote
 
     Given a created game with options described in files no-sheriff-option.json and with the following players

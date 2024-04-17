@@ -21,9 +21,10 @@ const GAME_PLAY_SPECS_FIELDS = {
     required: true,
     enum: GAME_PLAY_ACTIONS,
   },
-  cause: {
+  causes: {
     required: false,
-    enum: GAME_PLAY_CAUSES,
+    type: GAME_PLAY_CAUSES,
+    default: undefined,
   },
   canBeSkipped: { required: false },
   occurrence: {
@@ -46,9 +47,9 @@ const GAME_PLAY_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePlay, ApiPropertyO
     example: "vote",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SPECS_FIELDS.action),
   },
-  cause: {
+  causes: {
     description: "Why this play needs to be performed",
-    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SPECS_FIELDS.cause),
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PLAY_SPECS_FIELDS.causes),
   },
   canBeSkipped: {
     description: "Whether this play can be skipped or not. Only set for the current game play (first in the upcoming game plays)",

@@ -642,6 +642,7 @@ Feature: 🎖️ Sheriff player attribute
       | JB      | Antoine |
       | Olivia  | Antoine |
     Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
+    And the game's current play can not be skipped
     But nobody should have the active sheriff from survivors attribute
     And the game's current play source should have the following interactions
       | type              | source    | minBoundary | maxBoundary |

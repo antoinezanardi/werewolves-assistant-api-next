@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
 
+import { doesGamePlayHaveCause } from "@/modules/game/helpers/game-play/game-play.helpers";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { createGamePlaySheriffSettlesVotes, createGamePlayStutteringJudgeRequestsAnotherVote, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
@@ -159,8 +160,8 @@ export class GamePlayMakerService {
       const gamePlaySheriffSettlesVotes = createGamePlaySheriffSettlesVotes();
       return prependUpcomingPlayInGame(gamePlaySheriffSettlesVotes, clonedGame);
     }
-    if (clonedGame.currentPlay.cause !== "previous-votes-were-in-ties") {
-      const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
+    if (!doesGamePlayHaveCause(clonedGame.currentPlay, "previous-votes-were-in-ties")) {
+      const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] });
       return prependUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame);
     }
     return clonedGame;
@@ -170,7 +171,7 @@ export class GamePlayMakerService {
     let clonedGame = createGame(game) as GameWithCurrentPlay;
     const { currentPlay } = clonedGame;
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
-    if (currentPlay.cause === undefined || currentPlay.cause === "angel-presence") {
+    if (currentPlay.causes === undefined || doesGamePlayHaveCause(currentPlay, "angel-presence")) {
       const gamePlayStutteringJudgeRequestsAnotherVote = createGamePlayStutteringJudgeRequestsAnotherVote();
       clonedGame = prependUpcomingPlayInGame(gamePlayStutteringJudgeRequestsAnotherVote, clonedGame) as GameWithCurrentPlay;
     }
@@ -186,8 +187,8 @@ export class GamePlayMakerService {
 
   private handleTieInSheriffElection(nominatedPlayers: Player[], game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
-    if (clonedGame.currentPlay.cause !== "previous-votes-were-in-ties") {
-      const gamePlaySurvivorsElectSheriff = createGamePlaySurvivorsElectSheriff({ cause: "previous-votes-were-in-ties" });
+    if (!doesGamePlayHaveCause(clonedGame.currentPlay, "previous-votes-were-in-ties")) {
+      const gamePlaySurvivorsElectSheriff = createGamePlaySurvivorsElectSheriff({ causes: ["previous-votes-were-in-ties"] });
       return prependUpcomingPlayInGame(gamePlaySurvivorsElectSheriff, clonedGame);
     }
     const randomNominatedPlayer = sample(nominatedPlayers);
@@ -430,7 +431,7 @@ export class GamePlayMakerService {
     if (doesJudgeRequestAnotherVote !== true) {
       return clonedGame;
     }
-    const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ cause: "stuttering-judge-request" });
+    const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] });
     return prependUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame);
   }
 }

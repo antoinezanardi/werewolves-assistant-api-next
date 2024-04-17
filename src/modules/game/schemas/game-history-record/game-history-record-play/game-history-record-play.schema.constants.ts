@@ -26,9 +26,10 @@ const GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS = {
     required: true,
     type: GAME_HISTORY_RECORD_PLAY_SOURCE_SCHEMA,
   },
-  cause: {
+  causes: {
     required: false,
-    enum: GAME_PLAY_CAUSES,
+    type: GAME_PLAY_CAUSES,
+    default: undefined,
   },
   targets: {
     required: false,
@@ -68,9 +69,9 @@ const GAME_HISTORY_RECORD_PLAY_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHis
     description: "Play's source",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.source),
   },
-  cause: {
-    description: "Play's cause",
-    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.cause),
+  causes: {
+    description: "Play's causes",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.causes),
   },
   targets: {
     description: "Players affected by the play.",

@@ -7,7 +7,7 @@ import type { PlayerInteractionType } from "@/modules/game/types/player/player-i
 import type { RoleName } from "@/modules/role/types/role.types";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
-import type { GamePlayAction, GamePlayCause, GamePlaySourceName, GamePlayType, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
+import type { GamePlayAction, GamePlaySourceName, GamePlayType, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
 
 import { convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -82,12 +82,14 @@ Then(/^the play's source interaction from the previous history with type (?<type
   expect(interaction?.isInconsequential).toBeUndefined();
 });
 
-Then(/^the play's cause from the previous history record should be (?<cause>(?!undefined).+)$/u, function(this: CustomWorld, cause: GamePlayCause): void {
-  expect(this.lastGameHistoryRecord.play.cause).toBe(cause);
+Then(/^the play's causes from the previous history record should be the following causes$/u, function(this: CustomWorld, expectedCausesDatatable: DataTable): void {
+  const expectedCauses = expectedCausesDatatable.rows().flatMap(row => row);
+
+  expect(this.lastGameHistoryRecord.play.causes).toStrictEqual(expectedCauses);
 });
 
-Then(/^the play's cause from the previous history record should be undefined$/u, function(this: CustomWorld): void {
-  expect(this.lastGameHistoryRecord.play.cause).toBeUndefined();
+Then(/^the play's causes from the previous history record should not have causes$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.play.causes).toBeUndefined();
 });
 
 Then(/^the play's targets from the previous history record should be the following players$/u, function(this: CustomWorld, expectedTargetsDatatable: DataTable): void {

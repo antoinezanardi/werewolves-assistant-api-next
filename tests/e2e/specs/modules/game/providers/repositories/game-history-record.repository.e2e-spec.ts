@@ -1131,7 +1131,7 @@ describe("Game History Record Repository", () => {
         play: createFakeGameHistoryRecordPlay({
           action: "charm",
           source: createFakeGameHistoryRecordPlaySource({ name: "cupid" }),
-          cause: "angel-presence",
+          causes: ["angel-presence"],
         }),
       }),
     ];
@@ -1161,7 +1161,7 @@ describe("Game History Record Repository", () => {
       {
         test: "should get one record when cupid charming because of angel presence.",
         gameId,
-        gamePlay: createFakeGamePlayCupidCharms({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlayCupidCharms({ causes: ["angel-presence"] }),
         expectedRecords: [gameHistoryRecords[2]],
       },
     ])(`$test`, async({ gameId: id, gamePlay, expectedRecords }) => {
@@ -1230,7 +1230,7 @@ describe("Game History Record Repository", () => {
               createFakePlayer(),
             ],
           }),
-          cause: "angel-presence",
+          causes: ["angel-presence"],
         }),
       }),
     ];
@@ -1266,7 +1266,7 @@ describe("Game History Record Repository", () => {
       {
         test: "should get one record when cupid charming because of angel presence.",
         gameId,
-        gamePlay: createFakeGamePlayCupidCharms({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlayCupidCharms({ causes: ["angel-presence"] }),
         expectedRecords: [gameHistoryRecords[3]],
       },
     ])(`$test`, async({ gameId: id, gamePlay, expectedRecords }) => {
