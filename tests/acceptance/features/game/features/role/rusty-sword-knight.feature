@@ -74,7 +74,10 @@ Feature: 🤺 Rusty Sword Knight role
       | Olivia  | elder              |
       | Thomas  | angel              |
       | Babou   | werewolf           |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter  | target |

@@ -114,17 +114,6 @@ describe("Game Play Factory", () => {
     ])("$test", ({ expectedGamePlay, causes }) => {
       expect(createGamePlaySurvivorsVote({ causes })).toStrictEqual<GamePlay>(expectedGamePlay);
     });
-
-    it("should create default game play survivors vote when called with overridden cause.", () => {
-      const expectedGamePlay = createFakeGamePlay({
-        type: "vote",
-        source: createFakeGamePlaySource({ name: "survivors" }),
-        action: "vote",
-        occurrence: "on-days",
-      });
-
-      expect(createGamePlaySurvivorsVote()).toStrictEqual<GamePlay>(expectedGamePlay);
-    });
   });
 
   describe("createGamePlaySurvivorsElectSheriff", () => {

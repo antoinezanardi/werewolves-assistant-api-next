@@ -39,6 +39,7 @@ Feature: 🐐 Scapegoat role
 
     When the survivors bury dead bodies
     Then the game's current play should be scapegoat to ban-voting
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -65,11 +66,17 @@ Feature: 🐐 Scapegoat role
       | Olivia |
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
     And the game's current play source should have the following interactions
       | type | source    | minBoundary | maxBoundary |
       | vote | survivors | 0           | 4           |
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -132,7 +139,10 @@ Feature: 🐐 Scapegoat role
       | voter   | target  |
       | Antoine | Thomas  |
       | Thomas  | Antoine |
-    Then the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
     And the player named Antoine should be alive
 
   Scenario: 🐐 Scapegoat ban occurs only on next day even if he bans during the night

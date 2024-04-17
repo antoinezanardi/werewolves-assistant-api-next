@@ -107,6 +107,17 @@ Then(
   },
 );
 
+Then(/^one of the following players should be murdered by (?<deathSource>.+?) from (?<deathCause>.+?)$/u, function(this: CustomWorld, deathSource: GameSource, deathCause: PlayerDeathCause, expectedPlayersDatatable: DataTable): void {
+  const players = convertDatatableToPlayers(expectedPlayersDatatable.rows(), this.game);
+  const murderedPlayers = players.filter(player => !player.isAlive);
+
+  expect(murderedPlayers.length).toBe(1);
+  expect(murderedPlayers[0]?.death).toStrictEqual({
+    source: deathSource,
+    cause: deathCause,
+  });
+});
+
 Then(
   /^the player named (?<name>.+?) should (?<isHidden>not )?have his role revealed$/u,
   function(this: CustomWorld, playerName: string, isHidden: string | null): void {

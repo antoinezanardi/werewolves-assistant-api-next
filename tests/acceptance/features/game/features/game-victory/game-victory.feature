@@ -84,7 +84,10 @@ Feature: 🏆 Game Victory
       | Thomas  | Olivia  |
       | JB      | Antoine |
       | Olivia  | Antoine |
-    Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
+    And the game's current play should be survivors to elect-sheriff
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
     But nobody should have the active sheriff from survivors attribute
 
     When the survivors elect sheriff with the following votes
@@ -139,7 +142,10 @@ Feature: 🏆 Game Victory
       | Thomas  | JB      |
       | JB      | Antoine |
       | Olivia  | Antoine |
-    Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
+    And the game's current play should be survivors to elect-sheriff
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
     But nobody should have the active sheriff from survivors attribute
 
     When the survivors elect sheriff with the following votes
@@ -269,7 +275,10 @@ Feature: 🏆 Game Victory
       | JB      | werewolf |
       | Olivia  | cupid    |
       | Thomas  | angel    |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | source  | target |
@@ -293,7 +302,10 @@ Feature: 🏆 Game Victory
       | JB      | werewolf |
       | Olivia  | cupid    |
       | Thomas  | angel    |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | source  | target |
@@ -435,7 +447,10 @@ Feature: 🏆 Game Victory
       | JB      | werewolf |
       | Olivia  | cupid    |
       | Thomas  | angel    |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | source  | target |

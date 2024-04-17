@@ -14,6 +14,7 @@ Feature: 👯‍ Two sisters role
       | Julien  | villager    |
     Then the request should have succeeded with status code 201
     And the game's current play should be two-sisters to meet-each-other
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |

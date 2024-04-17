@@ -12,6 +12,7 @@ Feature: 💘 Cupid role
       | Thomas  | idiot    |
     Then the request should have succeeded with status code 201
     And the game's current play should be cupid to charm
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -307,7 +308,10 @@ Feature: 💘 Cupid role
       | Olivia  | werewolf |
       | JB      | hunter   |
       | Thomas  | angel    |
-    And the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | source | target |
@@ -347,7 +351,10 @@ Feature: 💘 Cupid role
       | Olivia  | werewolf |
       | JB      | hunter   |
       | Thomas  | angel    |
-    And the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | source | target |

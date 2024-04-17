@@ -11,7 +11,10 @@ Feature: 👼 Angel role
       | JB      | villager |
       | Thomas  | werewolf |
     Then the request should have succeeded with status code 201
-    And the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -57,7 +60,10 @@ Feature: 👼 Angel role
       | Olivia  | villager |
       | JB      | villager |
       | Thomas  | werewolf |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -103,7 +109,10 @@ Feature: 👼 Angel role
       | JB      | villager         |
       | Thomas  | werewolf         |
       | Max     | stuttering-judge |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -123,7 +132,10 @@ Feature: 👼 Angel role
     Then the game's current play should be stuttering-judge to request-another-vote
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the survivors vote with the following votes
       | source | vote    |

@@ -60,7 +60,10 @@ Feature: 🎀 Devoted Servant role
       | Olivia  | angel           |
       | JB      | devoted-servant |
       | Thomas  | villager        |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -91,7 +94,10 @@ Feature: 🎀 Devoted Servant role
       | JB      | devoted-servant |
       | Thomas  | elder           |
       | Juju    | villager        |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -720,7 +726,10 @@ Feature: 🎀 Devoted Servant role
       | Olivia |
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -749,7 +758,10 @@ Feature: 🎀 Devoted Servant role
       | JB   |
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -943,7 +955,10 @@ Feature: 🎀 Devoted Servant role
       | Olivia  | angel           |
       | JB      | devoted-servant |
       | Juju    | hunter          |
-    And the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter   | target |
