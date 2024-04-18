@@ -66,7 +66,7 @@ describe("Game Play Factory", () => {
     it.each<{
       test: string;
       expectedGamePlay: GamePlay;
-      cause: GamePlayCause | undefined;
+      causes: GamePlayCause[] | undefined;
     }>([
       {
         test: "should create game play survivors vote when called with cause of angel presence.",
@@ -74,10 +74,10 @@ describe("Game Play Factory", () => {
           type: "vote",
           source: createFakeGamePlaySource({ name: "survivors" }),
           action: "vote",
-          cause: "angel-presence",
+          causes: ["angel-presence"],
           occurrence: "one-night-only",
         }),
-        cause: "angel-presence",
+        causes: ["angel-presence"],
       },
       {
         test: "should create game play survivors vote when called with cause of previous votes were in ties.",
@@ -85,10 +85,10 @@ describe("Game Play Factory", () => {
           type: "vote",
           source: createFakeGamePlaySource({ name: "survivors" }),
           action: "vote",
-          cause: "previous-votes-were-in-ties",
+          causes: ["previous-votes-were-in-ties"],
           occurrence: "consequential",
         }),
-        cause: "previous-votes-were-in-ties",
+        causes: ["previous-votes-were-in-ties"],
       },
       {
         test: "should create game play survivors vote when called with cause of stuttering judge request.",
@@ -96,10 +96,10 @@ describe("Game Play Factory", () => {
           type: "vote",
           source: createFakeGamePlaySource({ name: "survivors" }),
           action: "vote",
-          cause: "stuttering-judge-request",
+          causes: ["stuttering-judge-request"],
           occurrence: "consequential",
         }),
-        cause: "stuttering-judge-request",
+        causes: ["stuttering-judge-request"],
       },
       {
         test: "should create game play survivors vote when called with undefined cause.",
@@ -109,10 +109,10 @@ describe("Game Play Factory", () => {
           action: "vote",
           occurrence: "on-days",
         }),
-        cause: undefined,
+        causes: undefined,
       },
-    ])("$test", ({ expectedGamePlay, cause }) => {
-      expect(createGamePlaySurvivorsVote({ cause })).toStrictEqual<GamePlay>(expectedGamePlay);
+    ])("$test", ({ expectedGamePlay, causes }) => {
+      expect(createGamePlaySurvivorsVote({ causes })).toStrictEqual<GamePlay>(expectedGamePlay);
     });
 
     it("should create default game play survivors vote when called with overridden cause.", () => {

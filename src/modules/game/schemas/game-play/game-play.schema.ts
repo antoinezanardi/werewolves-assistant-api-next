@@ -29,10 +29,10 @@ class GamePlay {
   @Expose()
   public action: GamePlayAction;
 
-  @ApiProperty(GAME_PLAY_API_PROPERTIES.cause as ApiPropertyOptions)
-  @Prop(GAME_PLAY_SPECS_FIELDS.cause)
+  @ApiProperty(GAME_PLAY_API_PROPERTIES.causes as ApiPropertyOptions)
+  @Prop(GAME_PLAY_SPECS_FIELDS.causes)
   @Expose()
-  public cause?: GamePlayCause;
+  public causes?: GamePlayCause[];
 
   @ApiProperty(GAME_PLAY_API_PROPERTIES.canBeSkipped as ApiPropertyOptions)
   @Prop(GAME_PLAY_SPECS_FIELDS.canBeSkipped)

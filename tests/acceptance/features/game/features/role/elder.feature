@@ -27,7 +27,10 @@ Feature: 👴🏻 Elder role
       | Pedro     | pied-piper           |
       | Pierre    | scandalmonger        |
     Then the request should have succeeded with status code 201
-    And the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter  | target  |
@@ -185,7 +188,10 @@ Feature: 👴🏻 Elder role
       | Juju    | werewolf |
       | Doudou  | angel    |
       | JB      | defender |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter  | target  |

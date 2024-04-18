@@ -2,7 +2,7 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-import type { GamePlayAction, GamePlayCause, GamePlayOccurrence, GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play/game-play.types";
+import type { GamePlayAction, GamePlayOccurrence, GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play/game-play.types";
 import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 
 import { convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
@@ -13,15 +13,22 @@ Then(/^the game's current play type should be (?<type>.+?)$/u, function(this: Cu
 });
 
 Then(
-  /^the game's current play should be (?<source>.+?) to (?<action>.+?)(?: because (?<cause>.+?))?$/u,
-  function(this: CustomWorld, source: GamePlaySourceName, action: GamePlayAction, cause: GamePlayCause | null): void {
+  /^the game's current play should be (?<source>.+?) to (?<action>.+?)$/u,
+  function(this: CustomWorld, source: GamePlaySourceName, action: GamePlayAction): void {
     expect(this.game.currentPlay?.source.name).toBe(source);
     expect(this.game.currentPlay?.action).toBe(action);
-    if (cause !== null) {
-      expect(this.game.currentPlay?.cause).toBe(cause);
-    }
   },
 );
+
+Then(/^the game's current play should have the following causes$/u, function(this: CustomWorld, expectedCausesDatatable: DataTable): void {
+  const expectedCauses = expectedCausesDatatable.rows().flatMap(row => row);
+
+  expect(this.game.currentPlay?.causes).toStrictEqual(expectedCauses);
+});
+
+Then(/^the game's current play should not have causes$/u, function(this: CustomWorld): void {
+  expect(this.game.currentPlay?.causes).toBeUndefined();
+});
 
 Then(
   /^the game's current play should be played by the following players$/u,

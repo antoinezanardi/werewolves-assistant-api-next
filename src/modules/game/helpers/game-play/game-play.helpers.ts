@@ -1,6 +1,8 @@
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
+import { isEqual } from "radash";
 
+import type { GamePlayCause } from "@/modules/game/types/game-play/game-play.types";
 import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 import { GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constants";
 import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
@@ -80,13 +82,14 @@ function createMakeGamePlayDtoWithRelations(makeGamePlayDto: MakeGamePlayDto, ga
 
 function findPlayPriorityIndex(play: GamePlay): number {
   return GAME_PLAYS_PRIORITY_LIST.findIndex(playInPriorityList => {
-    const { source, action, cause } = playInPriorityList;
-    return source.name === play.source.name && action === play.action && cause === play.cause;
+    const { source, action, causes } = playInPriorityList;
+    const areBothCausesUndefined = causes === undefined && play.causes === undefined;
+    return source.name === play.source.name && action === play.action && (areBothCausesUndefined || causes && doesGamePlayHaveAnyCause(play, [...causes]));
   });
 }
 
 function areGamePlaysEqual(playA: GamePlay, playB: GamePlay): boolean {
-  return playA.action === playB.action && playA.cause === playB.cause && playA.source.name === playB.source.name;
+  return playA.action === playB.action && isEqual(playA.causes, playB.causes) && playA.source.name === playB.source.name;
 }
 
 function canSurvivorsVote(game: Game): boolean {
@@ -105,6 +108,14 @@ function isPlayerInteractableWithInteractionTypeInCurrentGamePlay(playerId: Type
   return !!interaction?.eligibleTargets.find(({ _id }) => _id.equals(playerId));
 }
 
+function doesGamePlayHaveCause(gamePlay: GamePlay, cause: GamePlayCause): boolean {
+  return gamePlay.causes?.includes(cause) ?? false;
+}
+
+function doesGamePlayHaveAnyCause(gamePlay: GamePlay, causes: GamePlayCause[]): boolean {
+  return causes.some(cause => doesGamePlayHaveCause(gamePlay, cause));
+}
+
 export {
   getVotesWithRelationsFromMakeGamePlayDto,
   getTargetsWithRelationsFromMakeGamePlayDto,
@@ -115,4 +126,6 @@ export {
   canSurvivorsVote,
   isPlayerInteractableInCurrentGamePlay,
   isPlayerInteractableWithInteractionTypeInCurrentGamePlay,
+  doesGamePlayHaveCause,
+  doesGamePlayHaveAnyCause,
 };

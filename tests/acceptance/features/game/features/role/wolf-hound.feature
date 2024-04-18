@@ -84,6 +84,7 @@ Feature: 🐶 Wolf-Hound role
       | Cecile  | villager   |
       | David   | werewolf   |
     Then the game's current play should be wolf-hound to choose-side
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |

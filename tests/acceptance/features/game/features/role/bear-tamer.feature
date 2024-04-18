@@ -56,6 +56,7 @@ Feature: 🐻 Bear Tamer role
     Then the player named Antoine should be alive
     And the player named Antoine should be on werewolves current side and originally be on villagers side
     And the game's current play should be bear-tamer to growl
+    And the game's current play should not have causes
 
   Scenario: 🐻 Bear Tamer's bear doesn't growl even if he is infected and any of his neighbor is a werewolf with the right option
 

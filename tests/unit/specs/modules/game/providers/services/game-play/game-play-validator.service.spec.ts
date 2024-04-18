@@ -2029,7 +2029,7 @@ describe("Game Play Validator Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const source = createFakeGamePlaySource({ name: "survivors", players: [players[2]] });
-      const currentPlay = createFakeGamePlaySurvivorsVote({ source, cause: "previous-votes-were-in-ties" });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ source, causes: ["previous-votes-were-in-ties"] });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2053,7 +2053,7 @@ describe("Game Play Validator Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const source = createFakeGamePlaySource({ name: "survivors", players: [players[2]] });
-      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ source, cause: "previous-votes-were-in-ties" });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ source, causes: ["previous-votes-were-in-ties"] });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2076,7 +2076,7 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2096,7 +2096,7 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ cause: "previous-votes-were-in-ties" });
+      const currentPlay = createFakeGamePlaySurvivorsElectSheriff({ causes: ["previous-votes-were-in-ties"] });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2116,7 +2116,7 @@ describe("Game Play Validator Service", () => {
         createFakeIdiotAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const currentPlay = createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2135,7 +2135,7 @@ describe("Game Play Validator Service", () => {
         createFakeVillagerAlivePlayer(),
       ];
       const source = createFakeGamePlaySource({ name: "survivors", players: [players[2]] });
-      const currentPlay = createFakeGamePlaySurvivorsVote({ source, cause: "angel-presence" });
+      const currentPlay = createFakeGamePlaySurvivorsVote({ source, causes: ["angel-presence"] });
       const game = createFakeGameWithCurrentPlay({ currentPlay, players });
       const makeGamePlayVotesWithRelationsDto = [
         createFakeMakeGamePlayVoteWithRelationsDto({ target: players[0] }),
@@ -2309,7 +2309,7 @@ describe("Game Play Validator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }) });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] })];
 
       expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).not.toThrow();
@@ -2323,7 +2323,7 @@ describe("Game Play Validator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }) });
       const makeGamePlayVotesWithRelationsDto = [createFakeMakeGamePlayVoteWithRelationsDto({ source: game.players[0], target: game.players[1] })];
 
       expect(() => services.gamePlayValidator["validateGamePlayVotesWithRelationsDto"](makeGamePlayVotesWithRelationsDto, game)).not.toThrow();

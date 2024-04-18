@@ -36,7 +36,7 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     type: "vote",
     source: { name: "survivors" },
     action: "elect-sheriff",
-    cause: "previous-votes-were-in-ties",
+    causes: ["previous-votes-were-in-ties"],
     occurrence: "consequential",
   },
   {
@@ -67,21 +67,21 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     type: "vote",
     source: { name: "survivors" },
     action: "vote",
-    cause: "previous-votes-were-in-ties",
+    causes: ["previous-votes-were-in-ties"],
     occurrence: "consequential",
   },
   {
     type: "vote",
     source: { name: "survivors" },
     action: "vote",
-    cause: "angel-presence",
+    causes: ["angel-presence"],
     occurrence: "one-night-only",
   },
   {
     type: "vote",
     source: { name: "survivors" },
     action: "vote",
-    cause: "stuttering-judge-request",
+    causes: ["stuttering-judge-request"],
     occurrence: "consequential",
   },
   {

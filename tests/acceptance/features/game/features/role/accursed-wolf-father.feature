@@ -21,6 +21,7 @@ Feature: 🐺 Accursed Wolf-Father role
     When the werewolves eat the player named Olivia
     Then the player named Olivia should have the active eaten from werewolves attribute
     And the game's current play should be accursed-wolf-father to infect
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |

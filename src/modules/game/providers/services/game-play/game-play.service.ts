@@ -5,7 +5,7 @@ import { DAY_GAME_PLAYS_PRIORITY_LIST, NIGHT_GAME_PLAYS_PRIORITY_LIST } from "@/
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { createGamePlay, createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
-import { areGamePlaysEqual, canSurvivorsVote, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helpers";
+import { areGamePlaysEqual, canSurvivorsVote, doesGamePlayHaveCause, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helpers";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
 import { getEligibleCupidTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getNearestAliveNeighbor, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
@@ -93,8 +93,8 @@ export class GamePlayService {
     const { currentPlay } = game;
     const isAlreadyPlayed = gameHistoryPhaseRecords.some(({ play }) => {
       const { occurrence } = upcomingPlay;
-      const { type, source, action, cause } = play;
-      return areGamePlaysEqual({ type, source, action, cause, occurrence }, upcomingPlay);
+      const { type, source, action, causes } = play;
+      return areGamePlaysEqual({ type, source, action, causes, occurrence }, upcomingPlay);
     });
     const isInUpcomingPlays = game.upcomingPlays.some(gamePlay => areGamePlaysEqual(gamePlay, upcomingPlay));
     const isCurrentPlay = !!currentPlay && areGamePlaysEqual(currentPlay, upcomingPlay);
@@ -188,7 +188,7 @@ export class GamePlayService {
     if (gamePlay.action !== "vote") {
       return true;
     }
-    if (gamePlay.cause !== "angel-presence") {
+    if (!doesGamePlayHaveCause(gamePlay, "angel-presence")) {
       return game instanceof CreateGameDto ? true : canSurvivorsVote(game);
     }
     if (game instanceof CreateGameDto) {

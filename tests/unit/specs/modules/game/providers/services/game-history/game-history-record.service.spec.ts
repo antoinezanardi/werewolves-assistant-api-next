@@ -728,7 +728,7 @@ describe("Game History Record Service", () => {
         createFakeSeerAlivePlayer(),
       ];
       const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }) });
       const newGame = createFakeGame({
         ...game,
         players: [
@@ -752,7 +752,7 @@ describe("Game History Record Service", () => {
         createFakeSeerAlivePlayer(),
       ];
       const nominatedPlayers = [players[2]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: "stuttering-judge-request" }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }) });
       const newGame = createFakeGame({
         ...game,
         players: [
@@ -776,7 +776,7 @@ describe("Game History Record Service", () => {
         createFakeSeerAlivePlayer(),
       ];
       const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ cause: "stuttering-judge-request" }) });
+      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }) });
       const newGame = createFakeGame({
         ...game,
         players: [

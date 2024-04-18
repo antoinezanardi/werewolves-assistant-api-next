@@ -100,6 +100,41 @@ Feature: 🗳️ Vote Game Play
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "`votes` is required on this current game's state"
 
+  Scenario: 🗳 Players can't skip votes when vote is because angel presence, even after a tie and one dies if there is a tie again
+
+    Given a created game with options described in files no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | werewolf |
+      | Olivia  | angel    |
+      | JB      | villager |
+      | Thomas  | villager |
+    Then the request should have succeeded with status code 201
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
+    And the game's current play can not be skipped
+
+    When the survivors vote with the following votes
+      | voter  | target |
+      | JB     | Thomas |
+      | Thomas | JB     |
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
+      | angel-presence              |
+    And the game's current play can not be skipped
+
+    When the survivors vote with the following votes
+      | voter  | target |
+      | JB     | Thomas |
+      | Thomas | JB     |
+    Then one of the following players should be murdered by survivors from vote
+      | name   |
+      | JB     |
+      | Thomas |
+
   Scenario: 🗳 Unknown player can't vote
 
     Given a created game with options described in files no-sheriff-option.json and with the following players
@@ -252,7 +287,10 @@ Feature: 🗳️ Vote Game Play
       | voter  | target |
       | JB     | Thomas |
       | Thomas | JB     |
-    Then the game's current play should be survivors to vote because previous-votes-were-in-ties
+    Then the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -295,7 +333,10 @@ Feature: 🗳️ Vote Game Play
       | voter  | target |
       | JB     | Thomas |
       | Thomas | JB     |
-    Then the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
     And the game's current play can be skipped
     And the game's current play source should have the following interactions
       | type | source    | minBoundary | maxBoundary |
@@ -334,7 +375,10 @@ Feature: 🗳️ Vote Game Play
       | voter  | target |
       | JB     | Thomas |
       | Thomas | JB     |
-    Then the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -408,7 +452,10 @@ Feature: 🗳️ Vote Game Play
       | Thomas | JB     |
     Then the player named JB should be alive
     And the player named Thomas should be alive
-    And the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -591,7 +638,10 @@ Feature: 🗳️ Vote Game Play
       | Thomas | JB     |
     Then the player named JB should be alive
     And the player named Thomas should be alive
-    And the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
     And the game's current play type should be vote
     And the game's current play occurrence should be consequential
 
@@ -604,7 +654,10 @@ Feature: 🗳️ Vote Game Play
     And the game's current play should be stuttering-judge to request-another-vote
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
     And the game's current play type should be vote
     And the game's current play occurrence should be consequential
 
@@ -640,7 +693,10 @@ Feature: 🗳️ Vote Game Play
       | Thomas | JB     |
     Then the player named JB should be alive
     And the player named Thomas should be alive
-    And the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -651,7 +707,10 @@ Feature: 🗳️ Vote Game Play
     And the game's current play should be stuttering-judge to request-another-vote
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -659,7 +718,11 @@ Feature: 🗳️ Vote Game Play
       | Thomas | JB     |
     Then the player named JB should be alive
     And the player named Thomas should be alive
-    And the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
+      | stuttering-judge-request    |
 
     When the survivors vote with the following votes
       | voter | target |

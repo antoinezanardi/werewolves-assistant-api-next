@@ -21,6 +21,7 @@ Feature: 🪈 Pied Piper role
 
     When the player or group skips his turn
     Then the game's current play should be pied-piper to charm
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |

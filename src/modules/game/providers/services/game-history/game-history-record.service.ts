@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
 
+import { doesGamePlayHaveCause } from "@/modules/game/helpers/game-play/game-play.helpers";
 import { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
@@ -142,7 +143,7 @@ export class GameHistoryRecordService {
       type: baseGame.currentPlay.type,
       source: this.generateCurrentGameHistoryRecordPlaySourceToInsert(baseGame),
       action: baseGame.currentPlay.action,
-      cause: baseGame.currentPlay.cause,
+      causes: baseGame.currentPlay.causes,
       didJudgeRequestAnotherVote: play.doesJudgeRequestAnotherVote,
       targets: play.targets,
       votes: play.votes,
@@ -172,7 +173,7 @@ export class GameHistoryRecordService {
     if (areSomePlayersDeadFromCurrentVotes) {
       return "death";
     }
-    if (baseGame.currentPlay.cause === "previous-votes-were-in-ties" || nominatedPlayers.length === 1) {
+    if (doesGamePlayHaveCause(baseGame.currentPlay, "previous-votes-were-in-ties") || nominatedPlayers.length === 1) {
       return "inconsequential";
     }
     return "tie";

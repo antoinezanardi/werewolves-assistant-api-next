@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { sample } from "lodash";
 
+import { doesGamePlayHaveCause } from "@/modules/game/helpers/game-play/game-play.helpers";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { createGamePlaySheriffSettlesVotes, createGamePlayStutteringJudgeRequestsAnotherVote, createGamePlaySurvivorsElectSheriff, createGamePlaySurvivorsVote } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
@@ -18,7 +19,7 @@ import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schem
 import type { PlayerRole } from "@/modules/game/schemas/player/player-role/player-role.schema";
 import type { PlayerSide } from "@/modules/game/schemas/player/player-side/player-side.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { GamePlayAction, GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
+import { GamePlayAction, GamePlayCause, GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 import { ROLES } from "@/modules/role/constants/role-set.constants";
 import { getRoleWithName } from "@/modules/role/helpers/role.helpers";
@@ -146,7 +147,17 @@ export class GamePlayMakerService {
     return clonedGame;
   }
 
-  private async handleTieInVotes(game: GameWithCurrentPlay): Promise<Game> {
+  private async killPlayerAmongNominatedPlayers(game: GameWithCurrentPlay, nominatedPlayers: Player[]): Promise<Game> {
+    const clonedGame = createGame(game);
+    const nominatedPlayer = sample(nominatedPlayers);
+    if (nominatedPlayer) {
+      const playerVoteBySurvivorsDeath = createPlayerVoteBySurvivorsDeath();
+      return this.playerKillerService.killOrRevealPlayer(nominatedPlayer._id, clonedGame, playerVoteBySurvivorsDeath);
+    }
+    return clonedGame;
+  }
+
+  private async handleTieInVotes(game: GameWithCurrentPlay, nominatedPlayers: Player[]): Promise<Game> {
     const clonedGame = createGameWithCurrentGamePlay(game);
     const { mustSettleTieInVotes: mustSheriffSettleTieInVotes } = clonedGame.options.roles.sheriff;
     const scapegoatPlayer = getPlayerWithCurrentRole(clonedGame, "scapegoat");
@@ -159,9 +170,13 @@ export class GamePlayMakerService {
       const gamePlaySheriffSettlesVotes = createGamePlaySheriffSettlesVotes();
       return prependUpcomingPlayInGame(gamePlaySheriffSettlesVotes, clonedGame);
     }
-    if (clonedGame.currentPlay.cause !== "previous-votes-were-in-ties") {
-      const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" });
+    if (!doesGamePlayHaveCause(clonedGame.currentPlay, "previous-votes-were-in-ties")) {
+      const newCauses: GamePlayCause[] = ["previous-votes-were-in-ties", ...clonedGame.currentPlay.causes ?? []];
+      const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ causes: newCauses });
       return prependUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame);
+    }
+    if (doesGamePlayHaveCause(clonedGame.currentPlay, "angel-presence")) {
+      return this.killPlayerAmongNominatedPlayers(clonedGame, nominatedPlayers);
     }
     return clonedGame;
   }
@@ -170,12 +185,12 @@ export class GamePlayMakerService {
     let clonedGame = createGame(game) as GameWithCurrentPlay;
     const { currentPlay } = clonedGame;
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
-    if (currentPlay.cause === undefined || currentPlay.cause === "angel-presence") {
+    if (currentPlay.causes === undefined || doesGamePlayHaveCause(currentPlay, "angel-presence") && !doesGamePlayHaveCause(currentPlay, "previous-votes-were-in-ties")) {
       const gamePlayStutteringJudgeRequestsAnotherVote = createGamePlayStutteringJudgeRequestsAnotherVote();
       clonedGame = prependUpcomingPlayInGame(gamePlayStutteringJudgeRequestsAnotherVote, clonedGame) as GameWithCurrentPlay;
     }
     if (nominatedPlayers.length > 1) {
-      return this.handleTieInVotes(clonedGame);
+      return this.handleTieInVotes(clonedGame, nominatedPlayers);
     }
     if (nominatedPlayers.length === 1) {
       const playerVoteBySurvivorsDeath = createPlayerVoteBySurvivorsDeath();
@@ -186,8 +201,8 @@ export class GamePlayMakerService {
 
   private handleTieInSheriffElection(nominatedPlayers: Player[], game: GameWithCurrentPlay): Game {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
-    if (clonedGame.currentPlay.cause !== "previous-votes-were-in-ties") {
-      const gamePlaySurvivorsElectSheriff = createGamePlaySurvivorsElectSheriff({ cause: "previous-votes-were-in-ties" });
+    if (!doesGamePlayHaveCause(clonedGame.currentPlay, "previous-votes-were-in-ties")) {
+      const gamePlaySurvivorsElectSheriff = createGamePlaySurvivorsElectSheriff({ causes: ["previous-votes-were-in-ties"] });
       return prependUpcomingPlayInGame(gamePlaySurvivorsElectSheriff, clonedGame);
     }
     const randomNominatedPlayer = sample(nominatedPlayers);
@@ -430,7 +445,7 @@ export class GamePlayMakerService {
     if (doesJudgeRequestAnotherVote !== true) {
       return clonedGame;
     }
-    const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ cause: "stuttering-judge-request" });
+    const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] });
     return prependUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame);
   }
 }

@@ -22,6 +22,7 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Antoine
     Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name   |
       | Olivia |

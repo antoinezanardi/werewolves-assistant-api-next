@@ -158,7 +158,7 @@ export class GameHistoryRecordRepository {
       gameId,
       "play.action": gamePlay.action,
       "play.source.name": gamePlay.source.name,
-      "play.cause": gamePlay.cause,
+      "play.causes": gamePlay.causes,
     };
     return this.gameHistoryRecordModel.find(filter, undefined, options);
   }
@@ -174,7 +174,7 @@ export class GameHistoryRecordRepository {
       "play.action": gamePlay.action,
       "play.source.name": gamePlay.source.name,
       "play.source.players": { $elemMatch: { _id: player._id } },
-      "play.cause": gamePlay.cause,
+      "play.causes": gamePlay.causes,
     };
     return this.gameHistoryRecordModel.find(filter, undefined, options);
   }

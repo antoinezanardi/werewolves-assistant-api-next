@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { isDefined } from "class-validator";
 
+import { doesGamePlayHaveCause } from "@/modules/game/helpers/game-play/game-play.helpers";
 import { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { createGamePlaySourceInteraction } from "@/modules/game/helpers/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
@@ -120,7 +121,7 @@ export class GamePlayAugmenterService {
 
   private async getSurvivorsVoteGamePlaySourceInteractionEligibleTargets(game: Game, gamePlay: GamePlay): Promise<Player[]> {
     const alivePlayers = getAlivePlayers(game);
-    if (gamePlay.cause === "previous-votes-were-in-ties") {
+    if (doesGamePlayHaveCause(gamePlay, "previous-votes-were-in-ties")) {
       const lastTieInVotesRecord = await this.gameHistoryRecordService.getLastGameHistoryTieInVotesRecord(game._id, gamePlay.action);
       if (lastTieInVotesRecord?.play.voting?.nominatedPlayers === undefined || lastTieInVotesRecord.play.voting.nominatedPlayers.length === 0) {
         throw createCantFindLastNominatedPlayersUnexpectedException("getSurvivorsVoteGamePlaySourceInteractionEligibleTargets", { gameId: game._id });
@@ -436,7 +437,7 @@ export class GamePlayAugmenterService {
 
   private canSurvivorsSkipGamePlay(game: Game, gamePlay: GamePlay): boolean {
     const { canBeSkipped } = game.options.votes;
-    const isGamePlayVoteCauseAngelPresence = gamePlay.action === "vote" && gamePlay.cause === "angel-presence";
+    const isGamePlayVoteCauseAngelPresence = gamePlay.action === "vote" && doesGamePlayHaveCause(gamePlay, "angel-presence");
     if (gamePlay.action === "elect-sheriff" || isGamePlayVoteCauseAngelPresence) {
       return false;
     }

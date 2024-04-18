@@ -13,6 +13,7 @@ Feature: 🐦‍⬛ Scandalmonger role
       | Thomas  | villager      |
     Then the request should have succeeded with status code 201
     And the game's current play should be scandalmonger to mark
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |

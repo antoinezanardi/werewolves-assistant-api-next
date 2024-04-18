@@ -327,7 +327,7 @@ describe("Game Play Service", () => {
         }),
         output: [
           createFakeGamePlaySurvivorsElectSheriff(),
-          createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+          createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
           createFakeGamePlayThiefChoosesCard(),
           createFakeGamePlayWolfHoundChoosesSide(),
           createFakeGamePlayCupidCharms(),
@@ -361,7 +361,7 @@ describe("Game Play Service", () => {
           options: DEFAULT_GAME_OPTIONS,
         }),
         output: [
-          createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+          createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
           createFakeGamePlayCupidCharms(),
           createFakeGamePlayWerewolvesEat(),
         ],
@@ -478,14 +478,14 @@ describe("Game Play Service", () => {
           play: createFakeGameHistoryRecordPlay({
             action: allVoteGamePlay.action,
             source: createFakeGameHistoryRecordPlaySource({ name: allVoteGamePlay.source.name }),
-            cause: allVoteGamePlay.cause,
+            causes: allVoteGamePlay.causes,
           }),
         }),
         createFakeGameHistoryRecord({
           play: createFakeGameHistoryRecordPlay({
             action: upcomingPlay.action,
             source: createFakeGameHistoryRecordPlaySource({ name: upcomingPlay.source.name }),
-            cause: upcomingPlay.cause,
+            causes: upcomingPlay.causes,
           }),
         }),
       ];
@@ -496,13 +496,13 @@ describe("Game Play Service", () => {
     it("should return true when upcoming play is nor the current game play, nor already played nor in game's upcoming plays.", () => {
       const game = createFakeGame();
       const upcomingPlay = createFakeGamePlaySurvivorsElectSheriff();
-      const allVoteGamePlay = createFakeGamePlaySurvivorsVote();
+      const survivorsVoteGamePlay = createFakeGamePlaySurvivorsVote();
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({
           play: createFakeGameHistoryRecordPlay({
-            action: allVoteGamePlay.action,
-            source: createFakeGameHistoryRecordPlaySource({ name: allVoteGamePlay.source.name }),
-            cause: allVoteGamePlay.cause,
+            action: survivorsVoteGamePlay.action,
+            source: createFakeGameHistoryRecordPlaySource({ name: survivorsVoteGamePlay.source.name }),
+            causes: survivorsVoteGamePlay.causes,
           }),
         }),
       ];
@@ -546,7 +546,7 @@ describe("Game Play Service", () => {
       const upcomingPlays = [
         createFakeGamePlaySurvivorsElectSheriff(),
         createFakeGamePlayHunterShoots(),
-        createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }),
+        createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
       ];
 
       expect(() => services.gamePlay["validateUpcomingPlaysPriority"](upcomingPlays)).not.toThrow();
@@ -554,9 +554,9 @@ describe("Game Play Service", () => {
 
     it("should throw an error when the first upcoming play doesn't have a priority.", () => {
       const upcomingPlays = [
-        createFakeGamePlayWitchUsesPotions({ cause: "previous-votes-were-in-ties" }),
+        createFakeGamePlayWitchUsesPotions({ causes: ["previous-votes-were-in-ties"] }),
         createFakeGamePlayHunterShoots(),
-        createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }),
+        createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
       ];
 
       expect(() => services.gamePlay["validateUpcomingPlaysPriority"](upcomingPlays)).toThrow(undefined);
@@ -576,16 +576,16 @@ describe("Game Play Service", () => {
         createFakeGamePlayBigBadWolfEats(),
         createFakeGamePlayWerewolvesEat(),
         createFakeGamePlaySeerLooks(),
-        createFakeGamePlaySurvivorsVote({ cause: "stuttering-judge-request" }),
+        createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }),
         createFakeGamePlayWitchUsesPotions(),
         createFakeGamePlayHunterShoots(),
-        createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }),
+        createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
       ];
       const expectedUpcomingPlays = [
         createFakeGamePlayHunterShoots(),
         createFakeGamePlaySurvivorsElectSheriff(),
-        createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }),
-        createFakeGamePlaySurvivorsVote({ cause: "stuttering-judge-request" }),
+        createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
+        createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }),
         createFakeGamePlaySurvivorsVote(),
         createFakeGamePlaySeerLooks(),
         createFakeGamePlayWerewolvesEat(),
@@ -1193,7 +1193,7 @@ describe("Game Play Service", () => {
             createFakeCreateGamePlayerDto({ role: { name: "white-werewolf" } }),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
         hasGamePlayBeenMade: false,
         expected: true,
       },
@@ -1207,7 +1207,7 @@ describe("Game Play Service", () => {
             createFakeWerewolfAlivePlayer({ isAlive: true }),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
         hasGamePlayBeenMade: false,
         expected: true,
       },
@@ -1221,7 +1221,7 @@ describe("Game Play Service", () => {
             createFakeWerewolfAlivePlayer({ isAlive: false }),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "previous-votes-were-in-ties" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }),
         hasGamePlayBeenMade: false,
         expected: false,
       },
@@ -1235,7 +1235,7 @@ describe("Game Play Service", () => {
             createFakeCreateGamePlayerDto({ role: { name: "white-werewolf" } }),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
         hasGamePlayBeenMade: false,
         expected: false,
       },
@@ -1249,7 +1249,7 @@ describe("Game Play Service", () => {
             createFakeCreateGamePlayerDto({ role: { name: "angel" } }),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
         hasGamePlayBeenMade: false,
         expected: true,
       },
@@ -1263,7 +1263,7 @@ describe("Game Play Service", () => {
             createFakeVillagerAlivePlayer(),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
         hasGamePlayBeenMade: false,
         expected: false,
       },
@@ -1277,7 +1277,7 @@ describe("Game Play Service", () => {
             createFakeAngelAlivePlayer({ isAlive: false }),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
         hasGamePlayBeenMade: true,
         expected: false,
       },
@@ -1291,7 +1291,7 @@ describe("Game Play Service", () => {
             createFakeAngelAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()] }),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
         hasGamePlayBeenMade: true,
         expected: false,
       },
@@ -1305,7 +1305,7 @@ describe("Game Play Service", () => {
             createFakeAngelAlivePlayer(),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
         hasGamePlayBeenMade: true,
         expected: false,
       },
@@ -1319,7 +1319,7 @@ describe("Game Play Service", () => {
             createFakeAngelAlivePlayer(),
           ],
         }),
-        gamePlay: createFakeGamePlaySurvivorsVote({ cause: "angel-presence" }),
+        gamePlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }),
         hasGamePlayBeenMade: false,
         expected: true,
       },
