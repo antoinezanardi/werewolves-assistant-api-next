@@ -1,7 +1,6 @@
 import type { TransformFnParams } from "class-transformer/types/interfaces";
 
 import { playerSideTransformer } from "@/modules/game/dto/base/game-player/transformers/player-side.transformer";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
@@ -16,13 +15,13 @@ describe("Player Side Transformer", () => {
       {
         test: "should return null when value is null.",
         value: null,
-        obj: createFakeCreateGamePlayerDto({ role: { name: RoleNames.WHITE_WEREWOLF } }),
+        obj: createFakeCreateGamePlayerDto({ role: { name: "white-werewolf" } }),
         expected: null,
       },
       {
         test: "should return same value when value is not an object.",
         value: "toto",
-        obj: createFakeCreateGamePlayerDto({ role: { name: RoleNames.WHITE_WEREWOLF } }),
+        obj: createFakeCreateGamePlayerDto({ role: { name: "white-werewolf" } }),
         expected: "toto",
       },
       {
@@ -34,7 +33,7 @@ describe("Player Side Transformer", () => {
       {
         test: "should return same value when obj doesn't have the role.name field.",
         value: {},
-        obj: { role: { toto: RoleNames.WITCH } },
+        obj: { role: { toto: "witch" } },
         expected: {},
       },
       {
@@ -46,19 +45,19 @@ describe("Player Side Transformer", () => {
       {
         test: "should fill player side with werewolf data when role is white werewolf.",
         value: {},
-        obj: createFakeCreateGamePlayerDto({ role: { name: RoleNames.WHITE_WEREWOLF } }),
+        obj: createFakeCreateGamePlayerDto({ role: { name: "white-werewolf" } }),
         expected: {
-          current: RoleSides.WEREWOLVES,
-          original: RoleSides.WEREWOLVES,
+          current: "werewolves",
+          original: "werewolves",
         },
       },
       {
         test: "should fill player side with villager data when role is witch.",
         value: {},
-        obj: createFakeCreateGamePlayerDto({ role: { name: RoleNames.WITCH } }),
+        obj: createFakeCreateGamePlayerDto({ role: { name: "witch" } }),
         expected: {
-          current: RoleSides.VILLAGERS,
-          original: RoleSides.VILLAGERS,
+          current: "villagers",
+          original: "villagers",
         },
       },
     ])("$test", ({ value, obj, expected }) => {

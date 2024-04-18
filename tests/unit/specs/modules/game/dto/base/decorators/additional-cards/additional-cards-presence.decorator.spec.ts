@@ -1,7 +1,6 @@
 import type { ValidationArguments } from "class-validator";
 
 import { getAdditionalCardsPresenceDefaultMessage, isAdditionalCardsPresenceRespected } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-presence.decorator";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
@@ -28,9 +27,9 @@ describe("Additional Cards Presence Decorator", () => {
           ],
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.SEER } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "villager" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "seer" } }),
             ],
           }),
           constraints: [],
@@ -46,9 +45,9 @@ describe("Additional Cards Presence Decorator", () => {
           value: undefined,
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "villager" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "thief" } }),
             ],
           }),
           constraints: [],
@@ -64,9 +63,9 @@ describe("Additional Cards Presence Decorator", () => {
           value: "coucou",
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "villager" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "thief" } }),
             ],
           }),
           constraints: [],
@@ -88,9 +87,9 @@ describe("Additional Cards Presence Decorator", () => {
           ],
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "villager" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "thief" } }),
             ],
           }),
           constraints: [],
@@ -112,9 +111,9 @@ describe("Additional Cards Presence Decorator", () => {
           ],
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.ACTOR } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "villager" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "actor" } }),
             ],
           }),
           constraints: [],
@@ -130,9 +129,9 @@ describe("Additional Cards Presence Decorator", () => {
           value: undefined,
           object: createFakeCreateGameDto({
             players: [
-              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-              createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.SEER } }),
+              createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "werewolf" } }),
+              createFakeCreateGamePlayerDto({ name: "JB", role: { name: "villager" } }),
+              createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "seer" } }),
             ],
           }),
           constraints: [],
@@ -150,9 +149,9 @@ describe("Additional Cards Presence Decorator", () => {
     it("should return additional cards required presence message when they are not set.", () => {
       const createGameDto = createFakeCreateGameDto({
         players: [
-          createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-          createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-          createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.THIEF } }),
+          createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "werewolf" } }),
+          createFakeCreateGamePlayerDto({ name: "JB", role: { name: "villager" } }),
+          createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "thief" } }),
         ],
       });
       const validationArguments: ValidationArguments = {
@@ -173,9 +172,9 @@ describe("Additional Cards Presence Decorator", () => {
       ];
       const createGameDto = createFakeCreateGameDto({
         players: [
-          createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: RoleNames.WEREWOLF } }),
-          createFakeCreateGamePlayerDto({ name: "JB", role: { name: RoleNames.VILLAGER } }),
-          createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: RoleNames.SEER } }),
+          createFakeCreateGamePlayerDto({ name: "Antoine", role: { name: "werewolf" } }),
+          createFakeCreateGamePlayerDto({ name: "JB", role: { name: "villager" } }),
+          createFakeCreateGamePlayerDto({ name: "Olivia", role: { name: "seer" } }),
         ],
         additionalCards,
       });

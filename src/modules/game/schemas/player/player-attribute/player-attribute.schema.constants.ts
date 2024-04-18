@@ -1,7 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/constants/player/player-attribute/player-attribute.constants";
 import { PLAYER_ATTRIBUTE_ACTIVATION_SCHEMA } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema";
 import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
 import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
@@ -12,11 +12,11 @@ import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types
 const PLAYER_ATTRIBUTE_FIELDS_SPECS = {
   name: {
     required: true,
-    enum: Object.values(PlayerAttributeNames),
+    enum: PLAYER_ATTRIBUTE_NAMES,
   },
   source: {
     required: true,
-    enum: Object.values(GAME_SOURCES),
+    enum: GAME_SOURCES,
   },
   remainingPhases: {
     required: false,

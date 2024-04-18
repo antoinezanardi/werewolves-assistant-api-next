@@ -15,6 +15,7 @@ Feature: 🦊 Fox role
       | Coco    | idiot                |
     Then the request should have succeeded with status code 201
     And the game's current play should be fox to sniff
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -33,6 +34,7 @@ Feature: 🦊 Fox role
       | Olivia  |
       | Thomas  |
       | Coco    |
+    And the game's current play source interaction with type sniff should have consequences
 
     When the fox sniffs the player named Doudou
     Then the request should have succeeded with status code 200

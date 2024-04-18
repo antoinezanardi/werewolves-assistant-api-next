@@ -1,9 +1,9 @@
 import { registerDecorator } from "class-validator";
 import type { ValidationArguments, ValidationOptions } from "class-validator";
 
+import { ROLES } from "@/modules/role/constants/role-set.constants";
 import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { ROLES } from "@/modules/role/constants/role.constants";
 
 function areAdditionalCardsRolesMaxInGameRespected(value: unknown, validationArguments: ValidationArguments): boolean {
   if (value === undefined) {

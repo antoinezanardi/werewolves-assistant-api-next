@@ -31,7 +31,10 @@ Feature: ⚖️ Stuttering Judge Role
     And the game's current play source should not have interactions
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
     And the game's current play type should be vote
     And the game's current play occurrence should be consequential
 
@@ -67,13 +70,19 @@ Feature: ⚖️ Stuttering Judge Role
       | voter   | target  |
       | Olivia  | Antoine |
       | Camille | Olivia  |
-    Then the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
 
     When the player or group skips his turn
     Then the game's current play should be stuttering-judge to request-another-vote
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -89,7 +98,10 @@ Feature: ⚖️ Stuttering Judge Role
     Then the game's current play should be stuttering-judge to request-another-vote
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat

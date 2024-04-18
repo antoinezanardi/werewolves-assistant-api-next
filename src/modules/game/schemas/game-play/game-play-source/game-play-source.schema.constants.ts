@@ -12,7 +12,7 @@ import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types
 const GAME_PLAY_SOURCE_FIELDS_SPECS = {
   name: {
     required: true,
-    enum: Object.values(GAME_PLAY_SOURCE_NAMES),
+    enum: GAME_PLAY_SOURCE_NAMES,
   },
   players: {
     required: false,

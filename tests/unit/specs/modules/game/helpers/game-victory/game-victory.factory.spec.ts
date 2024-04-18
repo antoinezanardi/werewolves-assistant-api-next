@@ -1,4 +1,3 @@
-import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
 import { createAngelGameVictory, createGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createPrejudicedManipulatorGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 
@@ -13,12 +12,12 @@ import { createFakePlayer } from "@tests/factories/game/schemas/player/player.sc
 describe("Game Victory Factory", () => {
   describe("createNoneGameVictory", () => {
     it("should create a none game victory when called.", () => {
-      const expectedGameVictory: GameVictory = { type: GameVictoryTypes.NONE };
+      const expectedGameVictory: GameVictory = { type: "none" };
 
       expect(createNoneGameVictory()).toStrictEqual<GameVictory>(createFakeGameVictory(expectedGameVictory));
     });
   });
-  
+
   describe("createAngelGameVictory", () => {
     it("should create angel game victory with winners when called with angel in game.", () => {
       const players = [
@@ -31,7 +30,7 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.ANGEL,
+        type: "angel",
         winners: [players[5]],
       };
 
@@ -48,7 +47,7 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.ANGEL,
+        type: "angel",
         winners: undefined,
       };
 
@@ -68,7 +67,7 @@ describe("Game Victory Factory", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }) }) });
       const game = createFakeGame({ players, options });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.LOVERS,
+        type: "lovers",
         winners: [
           players[1],
           players[3],
@@ -89,7 +88,7 @@ describe("Game Victory Factory", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }) }) });
       const game = createFakeGame({ players, options });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.LOVERS,
+        type: "lovers",
         winners: [
           players[2],
           players[3],
@@ -110,7 +109,7 @@ describe("Game Victory Factory", () => {
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }) }) });
       const game = createFakeGame({ players, options });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.LOVERS,
+        type: "lovers",
         winners: [
           players[2],
           players[3],
@@ -131,7 +130,7 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.PIED_PIPER,
+        type: "pied-piper",
         winners: [players[3]],
       };
 
@@ -146,7 +145,7 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.PIED_PIPER,
+        type: "pied-piper",
         winners: undefined,
       };
 
@@ -167,7 +166,7 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.PREJUDICED_MANIPULATOR,
+        type: "prejudiced-manipulator",
         winners: [players[6]],
       };
 
@@ -185,7 +184,7 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.PREJUDICED_MANIPULATOR,
+        type: "prejudiced-manipulator",
         winners: undefined,
       };
 
@@ -204,7 +203,7 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.WHITE_WEREWOLF,
+        type: "white-werewolf",
         winners: [players[4]],
       };
 
@@ -220,14 +219,14 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.WHITE_WEREWOLF,
+        type: "white-werewolf",
         winners: undefined,
       };
 
       expect(createWhiteWerewolfGameVictory(game)).toStrictEqual<GameVictory>(createFakeGameVictory(expectedGameVictory));
     });
   });
-  
+
   describe("createWerewolvesGameVictory", () => {
     it("should create werewolves game victory when called.", () => {
       const players = [
@@ -239,7 +238,7 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.WEREWOLVES,
+        type: "werewolves",
         winners: [
           players[0],
           players[2],
@@ -262,7 +261,7 @@ describe("Game Victory Factory", () => {
       ];
       const game = createFakeGame({ players });
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.VILLAGERS,
+        type: "villagers",
         winners: [
           players[1],
           players[3],
@@ -277,7 +276,7 @@ describe("Game Victory Factory", () => {
     it("should create game victory when called.", () => {
       const player = createFakePlayer();
       const expectedGameVictory: GameVictory = {
-        type: GameVictoryTypes.ANGEL,
+        type: "angel",
         winners: [player],
       };
 

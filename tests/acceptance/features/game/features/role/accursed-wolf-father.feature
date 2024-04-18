@@ -21,6 +21,7 @@ Feature: 🐺 Accursed Wolf-Father role
     When the werewolves eat the player named Olivia
     Then the player named Olivia should have the active eaten from werewolves attribute
     And the game's current play should be accursed-wolf-father to infect
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -33,6 +34,7 @@ Feature: 🐺 Accursed Wolf-Father role
     And the game's current play source interaction with type infect should have the following eligible targets
       | name   |
       | Olivia |
+    And the game's current play source interaction with type infect should have consequences
 
     When the accursed wolf-father infects the player named Olivia
     Then the request should have succeeded with status code 200
@@ -94,7 +96,13 @@ Feature: 🐺 Accursed Wolf-Father role
       | voter  | against |
       | Olivia | Antoine |
     Then the game's current play should be survivors to bury-dead-bodies
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name    |
+      | Antoine |
+    And the game's current play source interaction with type bury should be inconsequential
     And the game's current play can be skipped
 
     When the survivors bury dead bodies

@@ -10,6 +10,10 @@ Feature: 🏆 Game Victory
       | JB      | werewolf |
       | Olivia  | hunter   |
       | Thomas  | seer     |
+    Then the game's tick should be 1
+    And the game's turn should be 1
+    And the game's phase name should be night
+    And the game's phase tick should be 1
 
     When the survivors elect sheriff with the following votes
       | source  | target  |
@@ -20,7 +24,8 @@ Feature: 🏆 Game Victory
     Then the player named Olivia should have the active sheriff from survivors attribute
     And the game's tick should be 2
     And the game's turn should be 1
-    And the game's phase should be night
+    And the game's phase name should be night
+    And the game's phase tick should be 2
     And the game's current play should be seer to look
 
     When the seer looks at the player named Antoine
@@ -35,7 +40,8 @@ Feature: 🏆 Game Victory
 
     When the witch uses life potion on the player named Thomas
     Then the game's turn should be 1
-    And the game's phase should be day
+    And the game's phase name should be day
+    And the game's phase tick should be 1
     And the player named Thomas should be alive
     And the game's current play should be survivors to vote
 
@@ -45,7 +51,7 @@ Feature: 🏆 Game Victory
       | Thomas  | Olivia  |
       | JB      | Antoine |
     Then the player named Olivia should be murdered by survivors from vote
-    And the game's phase should be day
+    And the game's phase name should be day
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
@@ -78,7 +84,10 @@ Feature: 🏆 Game Victory
       | Thomas  | Olivia  |
       | JB      | Antoine |
       | Olivia  | Antoine |
-    Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
+    And the game's current play should be survivors to elect-sheriff
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
     But nobody should have the active sheriff from survivors attribute
 
     When the survivors elect sheriff with the following votes
@@ -100,7 +109,7 @@ Feature: 🏆 Game Victory
     And the game's current play should be witch to use-potions
 
     When the witch uses death potion on the player named Olivia
-    Then the game's phase should be day
+    Then the game's phase name should be day
     And the player named Olivia should be murdered by witch from death-potion
     And the player named Thomas should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
@@ -133,7 +142,10 @@ Feature: 🏆 Game Victory
       | Thomas  | JB      |
       | JB      | Antoine |
       | Olivia  | Antoine |
-    Then the game's current play should be survivors to elect-sheriff because previous-votes-were-in-ties
+    And the game's current play should be survivors to elect-sheriff
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
     But nobody should have the active sheriff from survivors attribute
 
     When the survivors elect sheriff with the following votes
@@ -164,7 +176,7 @@ Feature: 🏆 Game Victory
     Then the player named Olivia should be alive
     And nobody should have the active eaten from werewolves attribute
     And nobody should have the active drank-life-potion from witch attribute
-    And the game's phase should be day
+    And the game's phase name should be day
     And the game's current play should be survivors to vote
     And the game's current play should be played by the following players
       | name    |
@@ -190,8 +202,9 @@ Feature: 🏆 Game Victory
 
     When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
-    And the game's phase should be night
+    And the game's phase name should be night
     And the game's turn should be 2
+    And the game's phase tick should be 1
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should have the active eaten from werewolves attribute
@@ -262,7 +275,10 @@ Feature: 🏆 Game Victory
       | JB      | werewolf |
       | Olivia  | cupid    |
       | Thomas  | angel    |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | source  | target |
@@ -286,7 +302,10 @@ Feature: 🏆 Game Victory
       | JB      | werewolf |
       | Olivia  | cupid    |
       | Thomas  | angel    |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | source  | target |
@@ -428,7 +447,10 @@ Feature: 🏆 Game Victory
       | JB      | werewolf |
       | Olivia  | cupid    |
       | Thomas  | angel    |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | source  | target |

@@ -39,6 +39,7 @@ Feature: 🐐 Scapegoat role
 
     When the survivors bury dead bodies
     Then the game's current play should be scapegoat to ban-voting
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -54,6 +55,7 @@ Feature: 🐐 Scapegoat role
       | Thomas |
       | Mom    |
       | Dad    |
+    And the game's current play source interaction with type ban-voting should have consequences
 
     When the scapegoat bans from vote the following players
       | name   |
@@ -64,11 +66,17 @@ Feature: 🐐 Scapegoat role
       | Olivia |
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
     And the game's current play source should have the following interactions
       | type | source    | minBoundary | maxBoundary |
       | vote | survivors | 0           | 4           |
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -91,7 +99,7 @@ Feature: 🐐 Scapegoat role
       | Olivia |
 
     When the player or group skips his turn
-    Then the game's phase should be night
+    Then the game's phase name should be night
     And nobody should have the active cant-vote from scapegoat attribute
 
   Scenario: 🐐 Scapegoat doesn't ban if he's powerless
@@ -131,7 +139,10 @@ Feature: 🐐 Scapegoat role
       | voter   | target  |
       | Antoine | Thomas  |
       | Thomas  | Antoine |
-    Then the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
     And the player named Antoine should be alive
 
   Scenario: 🐐 Scapegoat ban occurs only on next day even if he bans during the night
@@ -166,7 +177,7 @@ Feature: 🐐 Scapegoat role
 
     When the werewolves eat the player named Mom
     Then the player named Mom should be murdered by werewolves from eaten
-    And the game's phase should be day
+    And the game's phase name should be day
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
@@ -176,7 +187,7 @@ Feature: 🐐 Scapegoat role
       | Olivia |
 
     When the player or group skips his turn
-    Then the game's phase should be night
+    Then the game's phase name should be night
     And nobody should have the active cant-vote from scapegoat attribute
 
   Scenario: 🐐 Scapegoat can't ban from votes an unknown player
@@ -225,7 +236,13 @@ Feature: 🐐 Scapegoat role
     When the werewolves eat the player named Olivia
     Then the player named Olivia should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name   |
+      | Olivia |
+    And the game's current play source interaction with type bury should be inconsequential
     And the game's current play can be skipped
 
     When the survivors bury dead bodies

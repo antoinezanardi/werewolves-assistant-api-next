@@ -1,7 +1,7 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { PlayerDeathCauses } from "@/modules/game/enums/player.enum";
+import { PLAYER_DEATH_CAUSES } from "@/modules/game/constants/player/player-death/player-death.constants";
 import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
 import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 
@@ -11,11 +11,11 @@ import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types
 const PLAYER_DEATH_FIELDS_SPECS = {
   source: {
     required: true,
-    enum: Object.values(GAME_SOURCES),
+    enum: GAME_SOURCES,
   },
   cause: {
     required: true,
-    enum: Object.values(PlayerDeathCauses),
+    enum: PLAYER_DEATH_CAUSES,
   },
 } as const satisfies Record<keyof PlayerDeath, MongoosePropOptions>;
 

@@ -2,7 +2,7 @@ import type { QueryOptions } from "mongoose";
 
 import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mappers";
 
-import { ApiSortOrder } from "@/shared/api/enums/api.enum";
+import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 

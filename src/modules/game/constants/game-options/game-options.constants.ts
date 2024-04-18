@@ -1,6 +1,5 @@
 import type { ReadonlyDeep } from "type-fest";
 
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
 
 const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
@@ -13,7 +12,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       isEnabled: true,
       electedAt: {
         turn: 1,
-        phase: GamePhases.NIGHT,
+        phaseName: "night",
       },
       hasDoubledVote: true,
       mustSettleTieInVotes: true,

@@ -19,7 +19,13 @@ Feature: 🤺 Rusty Sword Knight role
     And the player named Babou should not have the active contaminated from rusty-sword-knight attribute
     And the player named Babou should be alive
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name    |
+      | Antoine |
+    And the game's current play source interaction with type bury should be inconsequential
     And the game's current play can be skipped
 
     When the survivors bury dead bodies
@@ -68,7 +74,10 @@ Feature: 🤺 Rusty Sword Knight role
       | Olivia  | elder              |
       | Thomas  | angel              |
       | Babou   | werewolf           |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter  | target |

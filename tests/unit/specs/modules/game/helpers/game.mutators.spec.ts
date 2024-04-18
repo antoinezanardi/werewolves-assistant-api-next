@@ -1,4 +1,3 @@
-import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { addPlayerAttributeInGame, addPlayersAttributeInGame, appendUpcomingPlayInGame, prependUpcomingPlayInGame, removePlayerAttributeByNameAndSourceInGame, removePlayerAttributeByNameInGame, updateAdditionalCardInGame, updatePlayerInGame } from "@/modules/game/helpers/game.mutators";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
@@ -193,7 +192,7 @@ describe("Game Mutator", () => {
     it("should return game as is when player is not found in game.", () => {
       const game = createFakeGame();
 
-      expect(removePlayerAttributeByNameInGame(createFakeObjectId(), game, PlayerAttributeNames.SHERIFF)).toStrictEqual<Game>(game);
+      expect(removePlayerAttributeByNameInGame(createFakeObjectId(), game, "sheriff")).toStrictEqual<Game>(game);
     });
 
     it("should return game with player without his sheriff attribute when called.", () => {
@@ -214,7 +213,7 @@ describe("Game Mutator", () => {
         ],
       });
 
-      expect(removePlayerAttributeByNameInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF)).toStrictEqual<Game>(expectedGame);
+      expect(removePlayerAttributeByNameInGame(game.players[1]._id, game, "sheriff")).toStrictEqual<Game>(expectedGame);
     });
 
     it("should not mutate the original game when called.", () => {
@@ -226,7 +225,7 @@ describe("Game Mutator", () => {
       ];
       const game = createFakeGame({ players });
       const clonedGame = createFakeGame(game);
-      removePlayerAttributeByNameInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF);
+      removePlayerAttributeByNameInGame(game.players[1]._id, game, "sheriff");
 
       expect(game).toStrictEqual<Game>(clonedGame);
     });
@@ -236,7 +235,7 @@ describe("Game Mutator", () => {
     it("should return game as is when player is not found in game.", () => {
       const game = createFakeGame();
 
-      expect(removePlayerAttributeByNameAndSourceInGame(createFakeObjectId(), game, PlayerAttributeNames.SHERIFF, PlayerGroups.SURVIVORS)).toStrictEqual<Game>(game);
+      expect(removePlayerAttributeByNameAndSourceInGame(createFakeObjectId(), game, "sheriff", "survivors")).toStrictEqual<Game>(game);
     });
 
     it("should return game with player without his sheriff from sheriff attribute when called.", () => {
@@ -246,7 +245,7 @@ describe("Game Mutator", () => {
           attributes: [
             createFakeSheriffBySurvivorsPlayerAttribute(),
             createFakeSheriffBySheriffPlayerAttribute(),
-            createFakeCharmedByPiedPiperPlayerAttribute({ source: PlayerAttributeNames.SHERIFF }),
+            createFakeCharmedByPiedPiperPlayerAttribute({ source: "sheriff" }),
           ],
         }),
         createFakePlayer(),
@@ -255,7 +254,7 @@ describe("Game Mutator", () => {
       const game = createFakeGame({ players });
       const expectedAttributes = [
         createFakeSheriffBySurvivorsPlayerAttribute(),
-        createFakeCharmedByPiedPiperPlayerAttribute({ source: PlayerAttributeNames.SHERIFF }),
+        createFakeCharmedByPiedPiperPlayerAttribute({ source: "sheriff" }),
       ];
       const expectedGame = createFakeGame({
         ...game,
@@ -267,7 +266,7 @@ describe("Game Mutator", () => {
         ],
       });
 
-      expect(removePlayerAttributeByNameAndSourceInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF, PlayerAttributeNames.SHERIFF)).toStrictEqual<Game>(expectedGame);
+      expect(removePlayerAttributeByNameAndSourceInGame(game.players[1]._id, game, "sheriff", "sheriff")).toStrictEqual<Game>(expectedGame);
     });
 
     it("should not mutate the original game when called.", () => {
@@ -279,7 +278,7 @@ describe("Game Mutator", () => {
       ];
       const game = createFakeGame({ players });
       const clonedGame = createFakeGame(game);
-      removePlayerAttributeByNameAndSourceInGame(game.players[1]._id, game, PlayerAttributeNames.SHERIFF, PlayerGroups.SURVIVORS);
+      removePlayerAttributeByNameAndSourceInGame(game.players[1]._id, game, "sheriff", "survivors");
 
       expect(game).toStrictEqual<Game>(clonedGame);
     });

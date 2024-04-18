@@ -1,9 +1,5 @@
 import { Injectable } from "@nestjs/common";
 
-import type { GameSource } from "@/modules/game/types/game.types";
-import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import { GamePhases } from "@/modules/game/enums/game.enum";
-import { PlayerAttributeNames } from "@/modules/game/enums/player.enum";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helpers";
 import { updatePlayerInGame } from "@/modules/game/helpers/game.mutators";
@@ -13,8 +9,10 @@ import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import type { GameSource } from "@/modules/game/types/game.types";
+import { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
 
 import { createCantFindPlayerWithIdUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -33,8 +31,10 @@ export class GamePhaseService {
 
   public async switchPhaseAndAppendGamePhaseUpcomingPlays(game: Game): Promise<Game> {
     const clonedGame = createGame(game);
-    clonedGame.phase = clonedGame.phase === GamePhases.NIGHT ? GamePhases.DAY : GamePhases.NIGHT;
-    if (clonedGame.phase === GamePhases.NIGHT) {
+    const { name: phaseName } = clonedGame.phase;
+    clonedGame.phase.name = phaseName === "night" ? "day" : "night";
+    clonedGame.phase.tick = 1;
+    if (clonedGame.phase.name === "night") {
       clonedGame.turn++;
     }
     const phaseUpcomingPlays = await this.gamePlayService.getPhaseUpcomingPlays(clonedGame);
@@ -44,7 +44,7 @@ export class GamePhaseService {
 
   public applyStartingGamePhaseOutcomes(game: Game): Game {
     const clonedGame = createGame(game);
-    if (clonedGame.phase === GamePhases.NIGHT) {
+    if (clonedGame.phase.name === "night") {
       return this.applyStartingNightPlayerAttributesOutcomes(clonedGame);
     }
     return clonedGame;
@@ -61,7 +61,7 @@ export class GamePhaseService {
   private async applyEndingDayPlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);
-    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, PlayerAttributeNames.CONTAMINATED, clonedGame)) {
+    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, "contaminated", clonedGame)) {
       clonedGame = await this.playerAttributeService.applyContaminatedAttributeOutcomes(clonedPlayer, clonedGame);
     }
     return clonedGame;
@@ -70,14 +70,14 @@ export class GamePhaseService {
   private async applyEndingNightPlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     let clonedPlayer = createPlayer(player);
-    const eatenAttribute = getActivePlayerAttributeWithName(clonedPlayer, PlayerAttributeNames.EATEN, clonedGame);
+    const eatenAttribute = getActivePlayerAttributeWithName(clonedPlayer, "eaten", clonedGame);
     const notFoundPlayerExceptionInterpolations = { gameId: clonedGame._id, playerId: clonedPlayer._id };
     const notFoundPlayerException = createCantFindPlayerWithIdUnexpectedException("applyEndingNightPlayerAttributesOutcomesToPlayer", notFoundPlayerExceptionInterpolations);
     if (eatenAttribute) {
       clonedGame = await this.playerAttributeService.applyEatenAttributeOutcomes(clonedPlayer, clonedGame, eatenAttribute);
     }
     clonedPlayer = getPlayerWithIdOrThrow(clonedPlayer._id, clonedGame, notFoundPlayerException);
-    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, PlayerAttributeNames.DRANK_DEATH_POTION, clonedGame)) {
+    if (doesPlayerHaveActiveAttributeWithName(clonedPlayer, "drank-death-potion", clonedGame)) {
       clonedGame = await this.playerAttributeService.applyDrankDeathPotionAttributeOutcomes(clonedPlayer, clonedGame);
     }
     return clonedGame;
@@ -86,7 +86,7 @@ export class GamePhaseService {
   private async applyEndingGamePhasePlayerAttributesOutcomesToPlayer(player: Player, game: Game): Promise<Game> {
     const clonedGame = createGame(game);
     const clonedPlayer = createPlayer(player);
-    if (clonedGame.phase === GamePhases.NIGHT) {
+    if (clonedGame.phase.name === "night") {
       return this.applyEndingNightPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);
     }
     return this.applyEndingDayPlayerAttributesOutcomesToPlayer(clonedPlayer, clonedGame);
@@ -95,10 +95,10 @@ export class GamePhaseService {
   private isActingPlayerAttributeRelevantOnStartingNight(attribute: PlayerAttribute, game: Game): boolean {
     const { isPowerlessOnWerewolvesSide: isActorPowerlessOnWerewolvesSide } = game.options.roles.actor;
     const { source, name } = attribute;
-    const irrelevantAttributeNames = [PlayerAttributeNames.ACTING, PlayerAttributeNames.POWERLESS];
-    const stickyPowerlessSourceNames: GameSource[] = [RoleNames.ACTOR, RoleNames.ELDER];
-    const isStickyPowerlessAttributeFromAccursedWolfFather = source === RoleNames.ACCURSED_WOLF_FATHER && isActorPowerlessOnWerewolvesSide;
-    const isStickyPowerlessAttribute = name === PlayerAttributeNames.POWERLESS &&
+    const irrelevantAttributeNames: PlayerAttributeName[] = ["acting", "powerless"];
+    const stickyPowerlessSourceNames: GameSource[] = ["actor", "elder"];
+    const isStickyPowerlessAttributeFromAccursedWolfFather = source === "accursed-wolf-father" && isActorPowerlessOnWerewolvesSide;
+    const isStickyPowerlessAttribute = name === "powerless" &&
       (stickyPowerlessSourceNames.includes(source) || isStickyPowerlessAttributeFromAccursedWolfFather);
     return !irrelevantAttributeNames.includes(name) || isStickyPowerlessAttribute;
   }
@@ -109,21 +109,21 @@ export class GamePhaseService {
     const attributes = actingPlayer.attributes.filter(attribute => this.isActingPlayerAttributeRelevantOnStartingNight(attribute, clonedGame));
     const isActorAlreadyPowerlessFromAccursedWolfFather = doesPlayerHaveActiveAttributeWithNameAndSource(
       actingPlayer,
-      PlayerAttributeNames.POWERLESS,
-      RoleNames.ACCURSED_WOLF_FATHER,
+      "powerless",
+      "accursed-wolf-father",
       clonedGame,
     );
-    if (isActorPowerlessOnWerewolvesSide && !isActorAlreadyPowerlessFromAccursedWolfFather && actingPlayer.side.current === RoleSides.WEREWOLVES) {
+    if (isActorPowerlessOnWerewolvesSide && !isActorAlreadyPowerlessFromAccursedWolfFather && actingPlayer.side.current === "werewolves") {
       attributes.push(createPowerlessByAccursedWolfFatherPlayerAttribute());
     }
-    const playerDataToUpdate: Partial<Player> = { role: { ...actingPlayer.role, current: RoleNames.ACTOR, isRevealed: false }, attributes };
+    const playerDataToUpdate: Partial<Player> = { role: { ...actingPlayer.role, current: "actor", isRevealed: false }, attributes };
     return updatePlayerInGame(actingPlayer._id, playerDataToUpdate, clonedGame);
   }
 
   private applyStartingNightPlayerAttributesOutcomes(game: Game): Game {
     let clonedGame = createGame(game);
     for (const player of clonedGame.players) {
-      if (doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.ACTING, clonedGame)) {
+      if (doesPlayerHaveActiveAttributeWithName(player, "acting", clonedGame)) {
         clonedGame = this.applyStartingNightActingPlayerOutcomes(player, clonedGame);
       }
     }

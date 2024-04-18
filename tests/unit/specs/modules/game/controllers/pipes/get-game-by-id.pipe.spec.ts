@@ -6,7 +6,7 @@ import type { TestingModule } from "@nestjs/testing";
 import { GetGameByIdPipe } from "@/modules/game/controllers/pipes/get-game-by-id.pipe";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 
 import { getError } from "@tests/helpers/exception/exception.helpers";

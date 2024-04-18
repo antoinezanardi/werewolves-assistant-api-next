@@ -1,19 +1,18 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import type { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
 
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeActorGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeActingByActorPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
@@ -110,10 +109,11 @@ describe("Game Phase Service", () => {
     });
 
     it("should switch to night and append upcoming night plays when game's current phase is DAY.", async() => {
-      const game = createFakeGame({ phase: GamePhases.DAY, upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "day" }), upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const expectedPhase = createFakeGamePhase({ name: "night", tick: 1 });
       const expectedGame = createFakeGame({
         ...game,
-        phase: GamePhases.NIGHT,
+        phase: expectedPhase,
         turn: game.turn + 1,
         upcomingPlays: [...game.upcomingPlays, ...upcomingPlays],
       });
@@ -122,10 +122,11 @@ describe("Game Phase Service", () => {
     });
 
     it("should switch to day and append upcoming day plays when game's current phase is NIGHT.", async() => {
-      const game = createFakeGame({ phase: GamePhases.NIGHT, upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }), upcomingPlays: [createFakeGamePlayHunterShoots()] });
+      const expectedPhase = createFakeGamePhase({ name: "day", tick: 1 });
       const expectedGame = createFakeGame({
         ...game,
-        phase: GamePhases.DAY,
+        phase: expectedPhase,
         upcomingPlays: [...game.upcomingPlays, ...upcomingPlays],
       });
 
@@ -139,14 +140,15 @@ describe("Game Phase Service", () => {
     });
 
     it("should call applyStartingNightPlayerAttributesOutcomes when game's current phase is NIGHT.", () => {
-      const game = createFakeGame({ phase: GamePhases.NIGHT });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }) });
       services.gamePhase.applyStartingGamePhaseOutcomes(game);
 
       expect(mocks.gamePhaseService.applyStartingNightPlayerAttributesOutcomes).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should return game as is when game's current phase is DAY.", () => {
-      const game = createFakeGame({ phase: GamePhases.DAY });
+      const phase = createFakeGamePhase({ name: "day" });
+      const game = createFakeGame({ phase });
       services.gamePhase.applyStartingGamePhaseOutcomes(game);
 
       expect(mocks.gamePhaseService.applyStartingNightPlayerAttributesOutcomes).not.toHaveBeenCalled();
@@ -165,7 +167,7 @@ describe("Game Phase Service", () => {
         createFakePlayer(),
         createFakePlayer(),
       ];
-      const game = createFakeGame({ phase: GamePhases.NIGHT, players });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }), players });
       mocks.gamePhaseService.applyEndingGamePhasePlayerAttributesOutcomesToPlayer.mockResolvedValue(game);
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayers"](game);
 
@@ -238,7 +240,7 @@ describe("Game Phase Service", () => {
 
     it("should call ending night method when game phase is night.", async() => {
       const player = createFakePlayer();
-      const game = createFakeGame({ phase: GamePhases.NIGHT });
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }) });
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayer"](player, game);
 
       expect(mocks.gamePhaseService.applyEndingNightPlayerAttributesOutcomesToPlayer).toHaveBeenCalledExactlyOnceWith(player, game);
@@ -247,7 +249,8 @@ describe("Game Phase Service", () => {
 
     it("should call ending day method when game phase is day.", async() => {
       const player = createFakePlayer();
-      const game = createFakeGame({ phase: GamePhases.DAY });
+      const phase = createFakeGamePhase({ name: "day" });
+      const game = createFakeGame({ phase });
       await services.gamePhase["applyEndingGamePhasePlayerAttributesOutcomesToPlayer"](player, game);
 
       expect(mocks.gamePhaseService.applyEndingDayPlayerAttributesOutcomesToPlayer).toHaveBeenCalledExactlyOnceWith(player, game);
@@ -304,8 +307,8 @@ describe("Game Phase Service", () => {
   describe("applyStartingNightActingPlayerOutcomes", () => {
     it("should set player current role to actor and remove obsolete powerless and acting attributes when called.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.WEREWOLF,
+        original: "actor",
+        current: "werewolf",
         isRevealed: true,
       });
       const attributes = [
@@ -324,7 +327,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],
@@ -341,8 +344,8 @@ describe("Game Phase Service", () => {
 
     it("should add powerless attribute from accursed wolf-father when actor is powerless on werewolves side and doesn't have it yet.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.WEREWOLF,
+        original: "actor",
+        current: "werewolf",
         isRevealed: true,
       });
       const attributes = [
@@ -359,7 +362,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],
@@ -376,8 +379,8 @@ describe("Game Phase Service", () => {
 
     it("should not add powerless attribute from accursed wolf-father when actor is powerless on werewolves side and already has it.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.WEREWOLF,
+        original: "actor",
+        current: "werewolf",
         isRevealed: true,
       });
       const attributes = [
@@ -395,7 +398,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],
@@ -412,8 +415,8 @@ describe("Game Phase Service", () => {
 
     it("should not add powerless attribute from accursed wolf-father when actor is not powerless on werewolves side.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.WEREWOLF,
+        original: "actor",
+        current: "werewolf",
         isRevealed: true,
       });
       const attributes = [
@@ -430,7 +433,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],
@@ -446,8 +449,8 @@ describe("Game Phase Service", () => {
 
     it("should not add powerless attribute from accursed wolf-father when actor is powerless on werewolves side but on villagers side.", () => {
       const actorRole = createFakePlayerRole({
-        original: RoleNames.ACTOR,
-        current: RoleNames.VILLAGER,
+        original: "actor",
+        current: "villager",
         isRevealed: true,
       });
       const attributes = [
@@ -464,7 +467,7 @@ describe("Game Phase Service", () => {
         players: [
           createFakeActorAlivePlayer({
             ...actorPlayer,
-            role: createFakePlayerRole({ ...actorPlayer.role, current: RoleNames.ACTOR, isRevealed: false }),
+            role: createFakePlayerRole({ ...actorPlayer.role, current: "actor", isRevealed: false }),
             attributes: [
               attributes[0],
               attributes[1],

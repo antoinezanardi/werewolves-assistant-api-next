@@ -1,8 +1,8 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_VICTORY_TYPES } from "@/modules/game/constants/game-victory/game-victory.constants";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
-import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
@@ -11,7 +11,7 @@ import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/hel
 const GAME_VICTORY_FIELDS_SPECS = {
   type: {
     required: true,
-    enum: Object.values(GameVictoryTypes),
+    enum: GAME_VICTORY_TYPES,
   },
   winners: {
     required: false,

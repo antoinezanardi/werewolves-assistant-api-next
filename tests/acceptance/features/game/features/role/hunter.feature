@@ -19,6 +19,7 @@ Feature: 🔫 Hunter role
 
     When the survivors bury dead bodies
     Then the game's current play should be hunter to shoot
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -33,6 +34,7 @@ Feature: 🔫 Hunter role
       | Olivia |
       | JB     |
       | Maxime |
+    And the game's current play source interaction with type shoot should have consequences
 
     When the hunter shoots at the player named Olivia
     Then the request should have succeeded with status code 200
@@ -46,7 +48,10 @@ Feature: 🔫 Hunter role
       | Olivia  | werewolf |
       | JB      | angel    |
       | Maxime  | elder    |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter   | target |

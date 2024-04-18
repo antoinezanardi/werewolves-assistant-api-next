@@ -2,9 +2,8 @@ import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
 import { expect } from "expect";
 
-import type { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
-import type { GamePlayOccurrences, GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
-import type { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play.types";
+import type { GamePlayAction, GamePlayOccurrence, GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play/game-play.types";
+import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 
 import { convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
@@ -14,15 +13,22 @@ Then(/^the game's current play type should be (?<type>.+?)$/u, function(this: Cu
 });
 
 Then(
-  /^the game's current play should be (?<source>.+?) to (?<action>.+?)(?: because (?<cause>.+?))?$/u,
-  function(this: CustomWorld, source: GamePlaySourceName, action: GamePlayActions, cause: GamePlayCauses | null): void {
+  /^the game's current play should be (?<source>.+?) to (?<action>.+?)$/u,
+  function(this: CustomWorld, source: GamePlaySourceName, action: GamePlayAction): void {
     expect(this.game.currentPlay?.source.name).toBe(source);
     expect(this.game.currentPlay?.action).toBe(action);
-    if (cause !== null) {
-      expect(this.game.currentPlay?.cause).toBe(cause);
-    }
   },
 );
+
+Then(/^the game's current play should have the following causes$/u, function(this: CustomWorld, expectedCausesDatatable: DataTable): void {
+  const expectedCauses = expectedCausesDatatable.rows().flatMap(row => row);
+
+  expect(this.game.currentPlay?.causes).toStrictEqual(expectedCauses);
+});
+
+Then(/^the game's current play should not have causes$/u, function(this: CustomWorld): void {
+  expect(this.game.currentPlay?.causes).toBeUndefined();
+});
 
 Then(
   /^the game's current play should be played by the following players$/u,
@@ -33,7 +39,7 @@ Then(
   },
 );
 
-Then(/^the game's current play occurrence should be (?<occurrence>one-night-only|on-nights|on-days|anytime|consequential)$/u, function(this: CustomWorld, occurrence: GamePlayOccurrences): void {
+Then(/^the game's current play occurrence should be (?<occurrence>one-night-only|on-nights|on-days|anytime|consequential)$/u, function(this: CustomWorld, occurrence: GamePlayOccurrence): void {
   expect(this.game.currentPlay?.occurrence).toBe(occurrence);
 });
 
@@ -54,11 +60,23 @@ Then(/^the game's current play source should have the following interactions$/u,
   });
 });
 
-Then(/^the game's current play source interaction with type (?<type>.+?) should have the following eligible targets$/u, function(this: CustomWorld, interactionType: PlayerInteractionTypes, expectedEligibleTargetsDatatable: DataTable): void {
+Then(/^the game's current play source interaction with type (?<type>.+?) should have the following eligible targets$/u, function(this: CustomWorld, interactionType: PlayerInteractionType, expectedEligibleTargetsDatatable: DataTable): void {
   const expectedEligibleTargets = convertDatatableToPlayers(expectedEligibleTargetsDatatable.rows(), this.game);
   const interaction = this.game.currentPlay?.source.interactions?.find(({ type }) => type === interactionType);
 
   expect(interaction?.eligibleTargets).toStrictEqual(expectedEligibleTargets);
+});
+
+Then(/^the game's current play source interaction with type (?<type>.+?) should be inconsequential$/u, function(this: CustomWorld, interactionType: PlayerInteractionType): void {
+  const interaction = this.game.currentPlay?.source.interactions?.find(({ type }) => type === interactionType);
+
+  expect(interaction?.isInconsequential).toBe(true);
+});
+
+Then(/^the game's current play source interaction with type (?<type>.+?) should have consequences$/u, function(this: CustomWorld, interactionType: PlayerInteractionType): void {
+  const interaction = this.game.currentPlay?.source.interactions?.find(({ type }) => type === interactionType);
+
+  expect(interaction?.isInconsequential).toBeUndefined();
 });
 
 Then(/^the game's current play can(?<cantBeSkipped> not)? be skipped$/u, function(this: CustomWorld, canBeSkipped: string | null): void {

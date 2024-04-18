@@ -27,10 +27,16 @@ Feature: 🎀 Devoted Servant role
     And the game's current play occurrence should be consequential
     And the game's current play source should have the following interactions
       | type       | source          | minBoundary | maxBoundary |
+      | bury       | survivors       | 0           | 1           |
       | steal-role | devoted-servant | 0           | 1           |
     And the game's current play source interaction with type steal-role should have the following eligible targets
       | name   |
       | Olivia |
+    And the game's current play source interaction with type steal-role should have consequences
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name   |
+      | Olivia |
+    And the game's current play source interaction with type bury should be inconsequential
 
     When the devoted servant steals the role of the player named Olivia
     Then the player named Olivia should have the active stolen-role from devoted-servant attribute
@@ -54,7 +60,10 @@ Feature: 🎀 Devoted Servant role
       | Olivia  | angel           |
       | JB      | devoted-servant |
       | Thomas  | villager        |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -62,7 +71,13 @@ Feature: 🎀 Devoted Servant role
     Then the player named JB should be murdered by survivors from vote
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name |
+      | JB   |
+    And the game's current play source interaction with type bury should be inconsequential
 
     When the devoted servant steals the role of the player named JB
     Then the request should have failed with status code 400
@@ -79,7 +94,10 @@ Feature: 🎀 Devoted Servant role
       | JB      | devoted-servant |
       | Thomas  | elder           |
       | Juju    | villager        |
-    Then the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter  | target |
@@ -94,7 +112,13 @@ Feature: 🎀 Devoted Servant role
     Then the player named Juju should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name |
+      | Juju |
+    And the game's current play source interaction with type bury should be inconsequential
 
     When the devoted servant steals the role of the player named Juju
     Then the request should have failed with status code 400
@@ -122,7 +146,13 @@ Feature: 🎀 Devoted Servant role
     Then the player named Thomas should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
     And the game's current play can be skipped
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name   |
+      | Thomas |
+    And the game's current play source interaction with type bury should be inconsequential
 
     When the devoted servant steals the role of the player named Thomas
     Then the request should have failed with status code 400
@@ -221,10 +251,17 @@ Feature: 🎀 Devoted Servant role
     And the game's current play source should have the following interactions
       | type       | source          | minBoundary | maxBoundary |
       | steal-role | devoted-servant | 0           | 1           |
+      | bury       | survivors       | 0           | 2           |
     And the game's current play source interaction with type steal-role should have the following eligible targets
       | name   |
       | Thomas |
       | Juju   |
+    And the game's current play source interaction with type steal-role should have consequences
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name   |
+      | Thomas |
+      | Juju   |
+    And the game's current play source interaction with type bury should be inconsequential
 
     When the player or group targets the following players
       | target |
@@ -689,7 +726,10 @@ Feature: 🎀 Devoted Servant role
       | Olivia |
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the survivors vote with the following votes
       | voter   | target |
@@ -718,7 +758,10 @@ Feature: 🎀 Devoted Servant role
       | JB   |
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
@@ -912,7 +955,10 @@ Feature: 🎀 Devoted Servant role
       | Olivia  | angel           |
       | JB      | devoted-servant |
       | Juju    | hunter          |
-    And the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter   | target |

@@ -14,6 +14,7 @@ Feature: 👯‍ Two sisters role
       | Julien  | villager    |
     Then the request should have succeeded with status code 201
     And the game's current play should be two-sisters to meet-each-other
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -57,7 +58,13 @@ Feature: 👯‍ Two sisters role
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name    |
+      | Antoine |
+    And the game's current play source interaction with type bury should be inconsequential
     And the game's current play can be skipped
 
     When the survivors bury dead bodies

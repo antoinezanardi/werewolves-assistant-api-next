@@ -1,28 +1,27 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { GAME_PHASE_NAMES } from "@/modules/game/constants/game-phase/game-phase.constants";
 import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
-import { GamePhases } from "@/modules/game/enums/game.enum";
-import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/constants/player/player-attribute/player-attribute.constants";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import { PlayerAttributeActivation } from "@/modules/game/schemas/player/player-attribute/player-attribute-activation/player-attribute-activation.schema";
 import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/player-attribute.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeActingByActorPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.ACTING,
-    source: RoleNames.ACTOR,
+    name: "acting",
+    source: "actor",
     ...attribute,
   }, override);
 }
 
 function createFakeStolenRoleByDevotedServantPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.STOLEN_ROLE,
-    source: RoleNames.DEVOTED_SERVANT,
+    name: "stolen-role",
+    source: "devoted-servant",
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -30,8 +29,8 @@ function createFakeStolenRoleByDevotedServantPlayerAttribute(attribute: Partial<
 
 function createFakeSheriffBySheriffPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.SHERIFF,
-    source: PlayerAttributeNames.SHERIFF,
+    name: "sheriff",
+    source: "sheriff",
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -39,8 +38,8 @@ function createFakeSheriffBySheriffPlayerAttribute(attribute: Partial<PlayerAttr
 
 function createFakeSheriffBySurvivorsPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.SHERIFF,
-    source: PlayerGroups.SURVIVORS,
+    name: "sheriff",
+    source: "survivors",
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -48,8 +47,8 @@ function createFakeSheriffBySurvivorsPlayerAttribute(attribute: Partial<PlayerAt
 
 function createFakeSeenBySeerPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.SEEN,
-    source: RoleNames.SEER,
+    name: "seen",
+    source: "seer",
     remainingPhases: 1,
     ...attribute,
   }, override);
@@ -57,8 +56,8 @@ function createFakeSeenBySeerPlayerAttribute(attribute: Partial<PlayerAttribute>
 
 function createFakeEatenByWerewolvesPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.EATEN,
-    source: PlayerGroups.WEREWOLVES,
+    name: "eaten",
+    source: "werewolves",
     remainingPhases: 1,
     ...attribute,
   }, override);
@@ -66,8 +65,8 @@ function createFakeEatenByWerewolvesPlayerAttribute(attribute: Partial<PlayerAtt
 
 function createFakeEatenByWhiteWerewolfPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.EATEN,
-    source: RoleNames.WHITE_WEREWOLF,
+    name: "eaten",
+    source: "white-werewolf",
     remainingPhases: 1,
     ...attribute,
   }, override);
@@ -75,8 +74,8 @@ function createFakeEatenByWhiteWerewolfPlayerAttribute(attribute: Partial<Player
 
 function createFakeEatenByBigBadWolfPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.EATEN,
-    source: RoleNames.BIG_BAD_WOLF,
+    name: "eaten",
+    source: "big-bad-wolf",
     remainingPhases: 1,
     ...attribute,
   }, override);
@@ -84,8 +83,8 @@ function createFakeEatenByBigBadWolfPlayerAttribute(attribute: Partial<PlayerAtt
 
 function createFakeDrankLifePotionByWitchPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.DRANK_LIFE_POTION,
-    source: RoleNames.WITCH,
+    name: "drank-life-potion",
+    source: "witch",
     remainingPhases: 1,
     ...attribute,
   }, override);
@@ -93,8 +92,8 @@ function createFakeDrankLifePotionByWitchPlayerAttribute(attribute: Partial<Play
 
 function createFakeDrankDeathPotionByWitchPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.DRANK_DEATH_POTION,
-    source: RoleNames.WITCH,
+    name: "drank-death-potion",
+    source: "witch",
     remainingPhases: 1,
     ...attribute,
   }, override);
@@ -102,8 +101,8 @@ function createFakeDrankDeathPotionByWitchPlayerAttribute(attribute: Partial<Pla
 
 function createFakeProtectedByDefenderPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.PROTECTED,
-    source: RoleNames.DEFENDER,
+    name: "protected",
+    source: "defender",
     remainingPhases: 1,
     ...attribute,
   }, override);
@@ -111,8 +110,8 @@ function createFakeProtectedByDefenderPlayerAttribute(attribute: Partial<PlayerA
 
 function createFakeScandalmongerMarkedByScandalmongerPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.SCANDALMONGER_MARKED,
-    source: RoleNames.SCANDALMONGER,
+    name: "scandalmonger-marked",
+    source: "scandalmonger",
     remainingPhases: 2,
     ...attribute,
   }, override);
@@ -120,24 +119,24 @@ function createFakeScandalmongerMarkedByScandalmongerPlayerAttribute(attribute: 
 
 function createFakeInLoveByCupidPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.IN_LOVE,
-    source: RoleNames.CUPID,
+    name: "in-love",
+    source: "cupid",
     ...attribute,
   }, override);
 }
 
 function createFakeWorshipedByWildChildPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.WORSHIPED,
-    source: RoleNames.WILD_CHILD,
+    name: "worshiped",
+    source: "wild-child",
     ...attribute,
   }, override);
 }
 
 function createFakePowerlessByActorPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.POWERLESS,
-    source: RoleNames.ACTOR,
+    name: "powerless",
+    source: "actor",
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -145,8 +144,8 @@ function createFakePowerlessByActorPlayerAttribute(attribute: Partial<PlayerAttr
 
 function createFakePowerlessByWerewolvesPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.POWERLESS,
-    source: PlayerGroups.WEREWOLVES,
+    name: "powerless",
+    source: "werewolves",
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -154,8 +153,8 @@ function createFakePowerlessByWerewolvesPlayerAttribute(attribute: Partial<Playe
 
 function createFakePowerlessByAccursedWolfFatherPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.POWERLESS,
-    source: RoleNames.ACCURSED_WOLF_FATHER,
+    name: "powerless",
+    source: "accursed-wolf-father",
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -163,8 +162,8 @@ function createFakePowerlessByAccursedWolfFatherPlayerAttribute(attribute: Parti
 
 function createFakePowerlessByFoxPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.POWERLESS,
-    source: RoleNames.FOX,
+    name: "powerless",
+    source: "fox",
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -172,8 +171,8 @@ function createFakePowerlessByFoxPlayerAttribute(attribute: Partial<PlayerAttrib
 
 function createFakePowerlessByElderPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.POWERLESS,
-    source: RoleNames.ELDER,
+    name: "powerless",
+    source: "elder",
     doesRemainAfterDeath: true,
     ...attribute,
   }, override);
@@ -181,20 +180,20 @@ function createFakePowerlessByElderPlayerAttribute(attribute: Partial<PlayerAttr
 
 function createFakeCantVoteBySurvivorsPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.CANT_VOTE,
-    source: PlayerGroups.SURVIVORS,
+    name: "cant-vote",
+    source: "survivors",
     ...attribute,
   }, override);
 }
 
 function createFakeCantVoteByScapegoatPlayerAttribute(game: Game, attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.CANT_VOTE,
-    source: RoleNames.SCAPEGOAT,
+    name: "cant-vote",
+    source: "scapegoat",
     remainingPhases: 1,
     activeAt: {
-      turn: game.phase === GamePhases.DAY ? game.turn + 1 : game.turn,
-      phase: GamePhases.DAY,
+      turn: game.phase.name === "day" ? game.turn + 1 : game.turn,
+      phaseName: "day",
     },
     ...attribute,
   }, override);
@@ -202,16 +201,16 @@ function createFakeCantVoteByScapegoatPlayerAttribute(game: Game, attribute: Par
 
 function createFakeCharmedByPiedPiperPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.CHARMED,
-    source: RoleNames.PIED_PIPER,
+    name: "charmed",
+    source: "pied-piper",
     ...attribute,
   }, override);
 }
 
 function createFakeContaminatedByRustySwordKnightPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
-    name: PlayerAttributeNames.CONTAMINATED,
-    source: RoleNames.RUSTY_SWORD_KNIGHT,
+    name: "contaminated",
+    source: "rusty-sword-knight",
     remainingPhases: 2,
     ...attribute,
   }, override);
@@ -220,14 +219,14 @@ function createFakeContaminatedByRustySwordKnightPlayerAttribute(attribute: Part
 function createFakePlayerAttributeActivation(attributeActivation: Partial<PlayerAttributeActivation> = {}, override: object = {}): PlayerAttributeActivation {
   return plainToInstance(PlayerAttributeActivation, {
     turn: attributeActivation.turn ?? faker.number.int({ min: 1 }),
-    phase: attributeActivation.phase ?? faker.helpers.arrayElement(Object.values(GamePhases)),
+    phaseName: attributeActivation.phaseName ?? faker.helpers.arrayElement(GAME_PHASE_NAMES),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 function createFakePlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return plainToInstance(PlayerAttribute, {
-    name: attribute.name ?? faker.helpers.arrayElement(Object.values(PlayerAttributeNames)),
+    name: attribute.name ?? faker.helpers.arrayElement(PLAYER_ATTRIBUTE_NAMES),
     source: attribute.source ?? faker.helpers.arrayElement(GAME_SOURCES),
     remainingPhases: attribute.remainingPhases ?? undefined,
     activeAt: attribute.activeAt ?? undefined,

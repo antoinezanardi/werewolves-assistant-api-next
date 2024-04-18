@@ -16,14 +16,16 @@ Feature: 📜 Game History
     When the werewolves eat the player named Antoine
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 1
-    And the game's phase from the previous history record should be night
+    And the game's phase name from the previous history record should be night
+    And the game's phase tick from the previous history record should be 1
     And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 2
-    And the game's phase from the previous history record should be day
+    And the game's phase name from the previous history record should be day
+    And the game's phase tick from the previous history record should be 1
     And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to vote
 
@@ -34,21 +36,24 @@ Feature: 📜 Game History
       | Doudou | Juju   |
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 3
-    And the game's phase from the previous history record should be day
+    And the game's phase name from the previous history record should be day
+    And the game's phase tick from the previous history record should be 2
     And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 4
-    And the game's phase from the previous history record should be day
+    And the game's phase name from the previous history record should be day
+    And the game's phase tick from the previous history record should be 3
     And the game's turn from the previous history record should be 1
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named JB
     And the most recent history record is retrieved
     Then the game's tick from the previous history record should be 5
-    And the game's phase from the previous history record should be night
+    And the game's phase name from the previous history record should be night
+    And the game's phase tick from the previous history record should be 1
     And the game's turn from the previous history record should be 2
 
   Scenario: 📜 Game play's type, action, sources and cause are recorded in the game history
@@ -61,7 +66,10 @@ Feature: 📜 Game History
       | Babou   | werewolf         |
       | JB      | seer             |
       | Thomas  | scandalmonger    |
-    Then the game's current play should be survivors to vote because angel-presence
+    Then the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | name    | vote   |
@@ -79,10 +87,28 @@ Feature: 📜 Game History
       | Babou   |
       | JB      |
       | Thomas  |
-    And the play's type from the previous history record should be vote
     And the play's source name from the previous history record should be survivors
-    And the play's cause from the previous history record should be angel-presence
-    And the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the play's source players from the previous history record should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 1           | 6           |
+    And the play's source interaction from the previous history with type vote should have the following eligible targets
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Doudou  |
+      | Babou   |
+      | JB      |
+      | Thomas  |
+    And the play's source interaction from the previous history with type vote should have consequences
+    And the play's type from the previous history record should be vote
+    And the play's causes from the previous history record should be the following causes
+      | cause          |
+      | angel-presence |
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
+      | angel-presence              |
 
     When the survivors vote with the following votes
       | name    | vote   |
@@ -101,7 +127,18 @@ Feature: 📜 Game History
       | Thomas  |
     And the play's type from the previous history record should be vote
     And the play's source name from the previous history record should be survivors
-    And the play's cause from the previous history record should be previous-votes-were-in-ties
+    And the play's source players from the previous history record should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 1           | 6           |
+    And the play's source interaction from the previous history with type vote should have the following eligible targets
+      | name   |
+      | Juju   |
+      | Doudou |
+    And the play's source interaction from the previous history with type vote should have consequences
+    And the play's causes from the previous history record should be the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
+      | angel-presence              |
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
@@ -109,6 +146,13 @@ Feature: 📜 Game History
     Then the play's action from the previous history record should be bury-dead-bodies
     And the play's type from the previous history record should be bury-dead-bodies
     And the play's source name from the previous history record should be survivors
+    And the play's source players from the previous history record should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the play's source interaction from the previous history with type bury should have the following eligible targets
+      | name   |
+      | Doudou |
+    And the play's source interaction from the previous history with type bury should be inconsequential
     And the play's source players from the previous history record should be the following players
       | name    |
       | Antoine |
@@ -116,7 +160,7 @@ Feature: 📜 Game History
       | Babou   |
       | JB      |
       | Thomas  |
-    And the play's cause from the previous history record should be undefined
+    And the play's causes from the previous history record should not have causes
     And the game's current play should be stuttering-judge to request-another-vote
 
     When the player or group skips his turn
@@ -125,8 +169,9 @@ Feature: 📜 Game History
     And the play's source players from the previous history record should be the following players
       | name    |
       | Antoine |
+    And the play's source players from the previous history record should not have interactions
     And the play's source name from the previous history record should be stuttering-judge
-    And the play's cause from the previous history record should be undefined
+    And the play's causes from the previous history record should not have causes
     And the game's current play should be seer to look
 
     When the seer looks at the player named Thomas
@@ -135,9 +180,19 @@ Feature: 📜 Game History
     And the play's source players from the previous history record should be the following players
       | name |
       | JB   |
+    And the play's source players from the previous history record should have the following interactions
+      | type | source | minBoundary | maxBoundary |
+      | look | seer   | 1           | 1           |
+    And the play's source interaction from the previous history with type look should have the following eligible targets
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Babou   |
+      | Thomas  |
+    And the play's source interaction from the previous history with type look should have consequences
     And the play's type from the previous history record should be target
     And the play's source name from the previous history record should be seer
-    And the play's cause from the previous history record should be undefined
+    And the play's causes from the previous history record should not have causes
     And the game's current play should be scandalmonger to mark
 
     When the player or group skips his turn
@@ -147,7 +202,18 @@ Feature: 📜 Game History
       | name   |
       | Thomas |
     And the play's source name from the previous history record should be scandalmonger
-    And the play's cause from the previous history record should be undefined
+    And the play's source players from the previous history record should have the following interactions
+      | type | source        | minBoundary | maxBoundary |
+      | mark | scandalmonger | 0           | 1           |
+    And the play's source interaction from the previous history with type mark should have the following eligible targets
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Babou   |
+      | JB      |
+      | Thomas  |
+    And the play's source interaction from the previous history with type mark should have consequences
+    And the play's causes from the previous history record should not have causes
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -157,7 +223,7 @@ Feature: 📜 Game History
       | name  |
       | Babou |
     And the play's source name from the previous history record should be werewolves
-    And the play's cause from the previous history record should be undefined
+    And the play's causes from the previous history record should not have causes
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
@@ -170,6 +236,13 @@ Feature: 📜 Game History
       | Babou   |
       | JB      |
     And the play's source name from the previous history record should be survivors
+    And the play's source players from the previous history record should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the play's source interaction from the previous history with type bury should have the following eligible targets
+      | name   |
+      | Thomas |
+    And the play's source interaction from the previous history with type bury should be inconsequential
     And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -184,7 +257,17 @@ Feature: 📜 Game History
       | Babou   |
       | JB      |
     And the play's source name from the previous history record should be survivors
-    And the play's cause from the previous history record should be undefined
+    And the play's source players from the previous history record should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 0           | 4           |
+    And the play's source interaction from the previous history with type vote should have the following eligible targets
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Babou   |
+      | JB      |
+    And the play's source interaction from the previous history with type vote should have consequences
+    And the play's causes from the previous history record should not have causes
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
@@ -195,6 +278,13 @@ Feature: 📜 Game History
       | Antoine |
       | Babou   |
       | JB      |
+    And the play's source players from the previous history record should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the play's source interaction from the previous history with type bury should have the following eligible targets
+      | name |
+      | Juju |
+    And the play's source interaction from the previous history with type bury should be inconsequential
     And the play's source name from the previous history record should be survivors
     And the game's current play should be stuttering-judge to request-another-vote
 
@@ -205,9 +295,13 @@ Feature: 📜 Game History
     And the play's source players from the previous history record should be the following players
       | name    |
       | Antoine |
+    And the play's source players from the previous history record should not have interactions
     And the play's source name from the previous history record should be stuttering-judge
-    And the play's cause from the previous history record should be undefined
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the play's causes from the previous history record should not have causes
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the survivors vote with the following votes
       | name    | vote |
@@ -219,8 +313,19 @@ Feature: 📜 Game History
       | Antoine |
       | Babou   |
       | JB      |
+    And the play's source players from the previous history record should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | vote | survivors | 0           | 3           |
+    And the play's source interaction from the previous history with type vote should have the following eligible targets
+      | name    |
+      | Antoine |
+      | Babou   |
+      | JB      |
+    And the play's source interaction from the previous history with type vote should have consequences
     And the play's source name from the previous history record should be survivors
-    And the play's cause from the previous history record should be stuttering-judge-request
+    And the play's causes from the previous history record should be the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
   Scenario: 📜 Targets of various roles actions are recorded in the game history
 
@@ -251,6 +356,7 @@ Feature: 📜 Game History
       | name |
       | JB   |
     And the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -345,11 +451,13 @@ Feature: 📜 Game History
     When the werewolves eat the player named Thomas
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be survivors to vote
 
     When the survivors vote with the following votes
@@ -373,19 +481,25 @@ Feature: 📜 Game History
     When the sheriff breaks the tie in votes by choosing the player named Doudou
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the game's current play should be stuttering-judge to request-another-vote
 
     When the stuttering judge requests another vote
     And the most recent history record is retrieved
     Then the play's votes from the previous history record should be undefined
+    And the play's voting result from the previous history record should be undefined
     And the play's targets from the previous history record should be undefined
     And the play's from the previous history record should have the stuttering judge request
-    And the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the survivors vote with the following votes
       | name | vote |
@@ -421,7 +535,10 @@ Feature: 📜 Game History
       | name    |
       | Antoine |
       | JB      |
-    And the game's current play should be survivors to vote because previous-votes-were-in-ties
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                       |
+      | previous-votes-were-in-ties |
 
     When the survivors vote with the following votes
       | name    | vote    |

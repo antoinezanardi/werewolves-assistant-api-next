@@ -24,6 +24,7 @@ Feature: 🐺👹 Big Bad Wolf role
     When the werewolves eat the player named Antoine
     Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be big-bad-wolf to eat
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name   |
       | Olivia |
@@ -36,6 +37,7 @@ Feature: 🐺👹 Big Bad Wolf role
     And the game's current play source interaction with type eat should have the following eligible targets
       | name   |
       | Thomas |
+    And the game's current play source interaction with type eat should have consequences
 
     When the big bad wolf eats the player named Thomas
     Then the request should have succeeded with status code 200

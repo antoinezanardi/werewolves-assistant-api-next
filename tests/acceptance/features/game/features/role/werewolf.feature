@@ -12,6 +12,7 @@ Feature: 🐺 Werewolf role
       | Thom    | werewolf |
     Then the request should have succeeded with status code 201
     And the game's current play should be werewolves to eat
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name   |
       | Doudou |

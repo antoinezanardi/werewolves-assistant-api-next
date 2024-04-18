@@ -1,4 +1,4 @@
-import { ApiResources } from "@/shared/api/enums/api.enum";
+import { ApiResources } from "@/shared/api/enums/api.enums";
 import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
 import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
 

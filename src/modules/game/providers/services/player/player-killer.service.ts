@@ -1,9 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import type { Types } from "mongoose";
 
-import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
-import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { createGamePlayHunterShoots, createGamePlayScapegoatBansVoting, createGamePlaySheriffDelegates, createGamePlaySurvivorsBuryDeadBodies } from "@/modules/game/helpers/game-play/game-play.factory";
 import { createGame } from "@/modules/game/helpers/game.factory";
 import { doesGameHaveUpcomingPlaySourceAndAction, getAliveVillagerSidedPlayers, getNearestAliveNeighbor, getPlayerWithCurrentRole, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helpers";
@@ -15,9 +12,11 @@ import { createDeadPlayer, createPlayer } from "@/modules/game/helpers/player/pl
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
+import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-death.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import { PlayerDeathCause } from "@/modules/game/types/player/player-death/player-death.types";
+import { RoleName } from "@/modules/role/types/role.types";
 
 import { createCantFindPlayerWithIdUnexpectedException, createPlayerIsDeadUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -37,8 +36,8 @@ export class PlayerKillerService {
     return clonedGame;
   }
 
-  public async isElderKillable(game: Game, elderPlayer: Player, cause: PlayerDeathCauses): Promise<boolean> {
-    if (cause !== PlayerDeathCauses.EATEN) {
+  public async isElderKillable(game: Game, elderPlayer: Player, cause: PlayerDeathCause): Promise<boolean> {
+    if (cause !== "eaten") {
       return true;
     }
     const elderLivesCountAgainstWerewolves = await this.getElderLivesCountAgainstWerewolves(game, elderPlayer);
@@ -72,7 +71,7 @@ export class PlayerKillerService {
     const werewolvesEatElderRecords = await this.gameHistoryRecordService.getGameHistoryWerewolvesEatElderRecords(game._id, elderPlayer._id);
     const werewolvesEatElderOnPreviousTurnsRecords = werewolvesEatElderRecords.filter(({ turn }) => turn < game.turn);
     const elderProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords(game._id, elderPlayer._id);
-    const doesElderLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(elderPlayer, PlayerAttributeNames.EATEN, game) && this.canPlayerBeEaten(elderPlayer, game);
+    const doesElderLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(elderPlayer, "eaten", game) && this.canPlayerBeEaten(elderPlayer, game);
     return werewolvesEatElderOnPreviousTurnsRecords.reduce((acc, werewolvesEatElderRecord) => {
       const wasElderProtectedFromWerewolves = !!elderProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatElderRecord.turn);
       if (!wasElderProtectedFromWerewolves) {
@@ -84,16 +83,16 @@ export class PlayerKillerService {
 
   private applyPlayerRoleRevelationOutcomes(revealedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    if (revealedPlayer.role.current === RoleNames.IDIOT) {
+    if (revealedPlayer.role.current === "idiot") {
       return addPlayerAttributeInGame(revealedPlayer._id, clonedGame, createCantVoteBySurvivorsPlayerAttribute());
     }
     return clonedGame;
   }
 
   private doesPlayerRoleMustBeRevealed(playerToReveal: Player, death: PlayerDeath, game: Game): boolean {
-    const doesIdiotRoleMustBeRevealed = isPlayerPowerful(playerToReveal, game) && death.cause === PlayerDeathCauses.VOTE;
+    const doesIdiotRoleMustBeRevealed = isPlayerPowerful(playerToReveal, game) && death.cause === "vote";
     return !playerToReveal.role.isRevealed && (!playerToReveal.isAlive && game.options.roles.areRevealedOnDeath ||
-      playerToReveal.role.current === RoleNames.IDIOT && doesIdiotRoleMustBeRevealed);
+      playerToReveal.role.current === "idiot" && doesIdiotRoleMustBeRevealed);
   }
 
   private removePlayerAttributesAfterDeath(player: Player): Player {
@@ -102,26 +101,26 @@ export class PlayerKillerService {
     return clonedPlayer;
   }
 
-  private isIdiotKillable(idiotPlayer: Player, cause: PlayerDeathCauses, game: Game): boolean {
+  private isIdiotKillable(idiotPlayer: Player, deathCause: PlayerDeathCause, game: Game): boolean {
     const isIdiotPowerless = !isPlayerPowerful(idiotPlayer, game);
-    return idiotPlayer.role.isRevealed || cause !== PlayerDeathCauses.VOTE || isIdiotPowerless;
+    return idiotPlayer.role.isRevealed || deathCause !== "vote" || isIdiotPowerless;
   }
 
   private canPlayerBeEaten(eatenPlayer: Player, game: Game): boolean {
     const { isProtectedByDefender: isLittleGirlProtectedByDefender } = game.options.roles.littleGirl;
-    const isPlayerSavedByWitch = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PlayerAttributeNames.DRANK_LIFE_POTION, game);
-    const isPlayerProtectedByDefender = doesPlayerHaveActiveAttributeWithName(eatenPlayer, PlayerAttributeNames.PROTECTED, game);
-    return !isPlayerSavedByWitch && (!isPlayerProtectedByDefender || eatenPlayer.role.current === RoleNames.LITTLE_GIRL && !isLittleGirlProtectedByDefender);
+    const isPlayerSavedByWitch = doesPlayerHaveActiveAttributeWithName(eatenPlayer, "drank-life-potion", game);
+    const isPlayerProtectedByDefender = doesPlayerHaveActiveAttributeWithName(eatenPlayer, "protected", game);
+    return !isPlayerSavedByWitch && (!isPlayerProtectedByDefender || eatenPlayer.role.current === "little-girl" && !isLittleGirlProtectedByDefender);
   }
 
-  private async isPlayerKillable(player: Player, game: Game, cause: PlayerDeathCauses): Promise<boolean> {
-    if (cause === PlayerDeathCauses.EATEN && !this.canPlayerBeEaten(player, game)) {
+  private async isPlayerKillable(player: Player, game: Game, cause: PlayerDeathCause): Promise<boolean> {
+    if (cause === "eaten" && !this.canPlayerBeEaten(player, game)) {
       return false;
     }
-    if (player.role.current === RoleNames.IDIOT) {
+    if (player.role.current === "idiot") {
       return this.isIdiotKillable(player, cause, game);
     }
-    if (player.role.current === RoleNames.ELDER) {
+    if (player.role.current === "elder") {
       return this.isElderKillable(game, player, cause);
     }
     return true;
@@ -130,13 +129,13 @@ export class PlayerKillerService {
   private applyWorshipedPlayerDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
     const { roles } = clonedGame.options;
-    const wildChildPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.WILD_CHILD);
-    if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, PlayerAttributeNames.WORSHIPED, clonedGame) ||
+    const wildChildPlayer = getPlayerWithCurrentRole(clonedGame, "wild-child");
+    if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, "worshiped", clonedGame) ||
       wildChildPlayer === undefined || !isPlayerAliveAndPowerful(wildChildPlayer, clonedGame)) {
       return clonedGame;
     }
-    wildChildPlayer.side.current = RoleSides.WEREWOLVES;
-    if (wildChildPlayer.role.original === RoleNames.ACTOR && roles.actor.isPowerlessOnWerewolvesSide) {
+    wildChildPlayer.side.current = "werewolves";
+    if (wildChildPlayer.role.original === "actor" && roles.actor.isPowerlessOnWerewolvesSide) {
       wildChildPlayer.attributes.push(createPowerlessByActorPlayerAttribute());
     }
     return updatePlayerInGame(wildChildPlayer._id, wildChildPlayer, clonedGame);
@@ -144,10 +143,10 @@ export class PlayerKillerService {
 
   private applyInLovePlayerDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    const otherLoverFinder = (player: Player): boolean => doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game) &&
+    const otherLoverFinder = (player: Player): boolean => doesPlayerHaveActiveAttributeWithName(player, "in-love", game) &&
       player.isAlive && !player._id.equals(killedPlayer._id);
     const otherPlayerInLove = clonedGame.players.find(otherLoverFinder);
-    if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, PlayerAttributeNames.IN_LOVE, clonedGame) || !otherPlayerInLove) {
+    if (!doesPlayerHaveActiveAttributeWithName(killedPlayer, "in-love", clonedGame) || !otherPlayerInLove) {
       return clonedGame;
     }
     return this.killPlayer(otherPlayerInLove, clonedGame, createPlayerBrokenHeartByCupidDeath());
@@ -165,15 +164,15 @@ export class PlayerKillerService {
     let clonedGame = createGame(game);
     let clonedKilledPlayer = createPlayer(killedPlayer);
     const cantFindPlayerException = createCantFindPlayerWithIdUnexpectedException("applyPlayerAttributesDeathOutcomes", { gameId: game._id, playerId: killedPlayer._id });
-    if (doesPlayerHaveActiveAttributeWithName(killedPlayer, PlayerAttributeNames.SHERIFF, clonedGame)) {
+    if (doesPlayerHaveActiveAttributeWithName(killedPlayer, "sheriff", clonedGame)) {
       clonedGame = this.applySheriffPlayerDeathOutcomes(clonedKilledPlayer, clonedGame);
       clonedKilledPlayer = getPlayerWithIdOrThrow(clonedKilledPlayer._id, clonedGame, cantFindPlayerException);
     }
-    if (doesPlayerHaveActiveAttributeWithName(killedPlayer, PlayerAttributeNames.IN_LOVE, clonedGame)) {
+    if (doesPlayerHaveActiveAttributeWithName(killedPlayer, "in-love", clonedGame)) {
       clonedGame = this.applyInLovePlayerDeathOutcomes(clonedKilledPlayer, clonedGame);
       clonedKilledPlayer = getPlayerWithIdOrThrow(clonedKilledPlayer._id, clonedGame, cantFindPlayerException);
     }
-    if (doesPlayerHaveActiveAttributeWithName(clonedKilledPlayer, PlayerAttributeNames.WORSHIPED, clonedGame)) {
+    if (doesPlayerHaveActiveAttributeWithName(clonedKilledPlayer, "worshiped", clonedGame)) {
       clonedGame = this.applyWorshipedPlayerDeathOutcomes(clonedKilledPlayer, clonedGame);
     }
     return clonedGame;
@@ -181,11 +180,11 @@ export class PlayerKillerService {
 
   private applyPlayerSideDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    const bigBadWolfPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.BIG_BAD_WOLF);
+    const bigBadWolfPlayer = getPlayerWithCurrentRole(clonedGame, "big-bad-wolf");
     const { isPowerlessIfWerewolfDies } = game.options.roles.bigBadWolf;
-    if (killedPlayer.side.current !== RoleSides.WEREWOLVES || !bigBadWolfPlayer ||
-      !isPowerlessIfWerewolfDies || killedPlayer.role.current === RoleNames.BIG_BAD_WOLF ||
-        doesPlayerHaveActiveAttributeWithNameAndSource(bigBadWolfPlayer, PlayerAttributeNames.POWERLESS, PlayerGroups.WEREWOLVES, clonedGame)) {
+    if (killedPlayer.side.current !== "werewolves" || !bigBadWolfPlayer ||
+      !isPowerlessIfWerewolfDies || killedPlayer.role.current === "big-bad-wolf" ||
+        doesPlayerHaveActiveAttributeWithNameAndSource(bigBadWolfPlayer, "powerless", "werewolves", clonedGame)) {
       return clonedGame;
     }
     return addPlayerAttributeInGame(bigBadWolfPlayer._id, clonedGame, createPowerlessByWerewolvesPlayerAttribute());
@@ -194,9 +193,9 @@ export class PlayerKillerService {
   private applyRustySwordKnightDeathOutcomes(killedPlayer: DeadPlayer, game: Game): Game {
     const clonedGame = createGame(game);
     const { death } = killedPlayer;
-    const leftAliveWerewolfNeighbor = getNearestAliveNeighbor(killedPlayer._id, clonedGame, { direction: "left", playerSide: RoleSides.WEREWOLVES });
-    if (killedPlayer.role.current !== RoleNames.RUSTY_SWORD_KNIGHT || !isPlayerPowerful(killedPlayer, clonedGame) ||
-      death.cause !== PlayerDeathCauses.EATEN || !leftAliveWerewolfNeighbor) {
+    const leftAliveWerewolfNeighbor = getNearestAliveNeighbor(killedPlayer._id, clonedGame, { direction: "left", playerSide: "werewolves" });
+    if (killedPlayer.role.current !== "rusty-sword-knight" || !isPlayerPowerful(killedPlayer, clonedGame) ||
+      death.cause !== "eaten" || !leftAliveWerewolfNeighbor) {
       return clonedGame;
     }
     return addPlayerAttributeInGame(leftAliveWerewolfNeighbor._id, clonedGame, createContaminatedByRustySwordKnightPlayerAttribute());
@@ -205,7 +204,7 @@ export class PlayerKillerService {
   private applyScapegoatDeathOutcomes(killedPlayer: DeadPlayer, game: Game): Game {
     const clonedGame = createGame(game);
     const { death } = killedPlayer;
-    if (killedPlayer.role.current !== RoleNames.SCAPEGOAT || !isPlayerPowerful(killedPlayer, clonedGame) || death.cause !== PlayerDeathCauses.VOTE_SCAPEGOATED) {
+    if (killedPlayer.role.current !== "scapegoat" || !isPlayerPowerful(killedPlayer, clonedGame) || death.cause !== "vote-scapegoated") {
       return clonedGame;
     }
     return prependUpcomingPlayInGame(createGamePlayScapegoatBansVoting(), clonedGame);
@@ -214,16 +213,16 @@ export class PlayerKillerService {
   private applyElderDeathOutcomes(killedPlayer: DeadPlayer, game: Game): Game {
     let clonedGame = createGame(game);
     const { death } = killedPlayer;
-    const elderRevengeDeathCauses: PlayerDeathCauses[] = [PlayerDeathCauses.VOTE, PlayerDeathCauses.SHOT, PlayerDeathCauses.DEATH_POTION];
+    const elderRevengeDeathCauses: PlayerDeathCause[] = ["vote", "shot", "death-potion"];
     const { idiot: idiotOptions, elder: elderOptions } = clonedGame.options.roles;
-    if (killedPlayer.role.current !== RoleNames.ELDER || !isPlayerPowerful(killedPlayer, game)) {
+    if (killedPlayer.role.current !== "elder" || !isPlayerPowerful(killedPlayer, game)) {
       return clonedGame;
     }
     if (elderRevengeDeathCauses.includes(death.cause) && elderOptions.doesTakeHisRevenge) {
       const aliveVillagerSidedPlayersIds = getAliveVillagerSidedPlayers(clonedGame).map(({ _id }) => _id);
       clonedGame = addPlayersAttributeInGame(aliveVillagerSidedPlayersIds, clonedGame, createPowerlessByElderPlayerAttribute());
     }
-    const idiotPlayer = getPlayerWithCurrentRole(clonedGame, RoleNames.IDIOT);
+    const idiotPlayer = getPlayerWithCurrentRole(clonedGame, "idiot");
     if (idiotPlayer?.isAlive === true && idiotPlayer.role.isRevealed && idiotOptions.doesDieOnElderDeath) {
       return this.killPlayer(idiotPlayer, clonedGame, createPlayerReconsiderPardonBySurvivorsDeath());
     }
@@ -232,7 +231,7 @@ export class PlayerKillerService {
 
   private applyHunterDeathOutcomes(killedPlayer: Player, game: Game): Game {
     const clonedGame = createGame(game);
-    if (killedPlayer.role.current !== RoleNames.HUNTER || !isPlayerPowerful(killedPlayer, game)) {
+    if (killedPlayer.role.current !== "hunter" || !isPlayerPowerful(killedPlayer, game)) {
       return clonedGame;
     }
     return prependUpcomingPlayInGame(createGamePlayHunterShoots(), clonedGame);
@@ -240,11 +239,11 @@ export class PlayerKillerService {
 
   private applyPlayerRoleDeathOutcomes(killedPlayer: DeadPlayer, game: Game): Game {
     const clonedGame = createGame(game);
-    const roleDeathOutcomesMethods: Partial<Record<RoleNames, (killedPlayer: DeadPlayer, game: Game) => Game>> = {
-      [RoleNames.HUNTER]: () => this.applyHunterDeathOutcomes(killedPlayer, clonedGame),
-      [RoleNames.ELDER]: () => this.applyElderDeathOutcomes(killedPlayer, clonedGame),
-      [RoleNames.SCAPEGOAT]: () => this.applyScapegoatDeathOutcomes(killedPlayer, clonedGame),
-      [RoleNames.RUSTY_SWORD_KNIGHT]: () => this.applyRustySwordKnightDeathOutcomes(killedPlayer, clonedGame),
+    const roleDeathOutcomesMethods: Partial<Record<RoleName, (killedPlayer: DeadPlayer, game: Game) => Game>> = {
+      "hunter": () => this.applyHunterDeathOutcomes(killedPlayer, clonedGame),
+      "elder": () => this.applyElderDeathOutcomes(killedPlayer, clonedGame),
+      "scapegoat": () => this.applyScapegoatDeathOutcomes(killedPlayer, clonedGame),
+      "rusty-sword-knight": () => this.applyRustySwordKnightDeathOutcomes(killedPlayer, clonedGame),
     };
     const roleDeathOutcomesMethod = roleDeathOutcomesMethods[killedPlayer.role.current];
     if (roleDeathOutcomesMethod) {
@@ -259,7 +258,7 @@ export class PlayerKillerService {
     clonedPlayerToKill.isAlive = false;
     clonedPlayerToKill.death = createPlayerDeath(death);
     clonedGame = updatePlayerInGame(clonedPlayerToKill._id, clonedPlayerToKill, clonedGame);
-    if (!doesGameHaveUpcomingPlaySourceAndAction(clonedGame, PlayerGroups.SURVIVORS, GamePlayActions.BURY_DEAD_BODIES)) {
+    if (!doesGameHaveUpcomingPlaySourceAndAction(clonedGame, "survivors", "bury-dead-bodies")) {
       clonedGame = prependUpcomingPlayInGame(createGamePlaySurvivorsBuryDeadBodies(), clonedGame);
     }
     return clonedGame;

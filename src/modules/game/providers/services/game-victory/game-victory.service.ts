@@ -1,15 +1,11 @@
 import { Injectable } from "@nestjs/common";
 
 import { createAngelGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createPrejudicedManipulatorGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
-import { GamePhases } from "@/modules/game/enums/game.enum";
-import { PlayerAttributeNames, PlayerDeathCauses, PlayerGroups } from "@/modules/game/enums/player.enum";
 import { areAllPlayersDead, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getEligiblePiedPiperTargets, getPlayersWithActiveAttributeName, getPlayersWithCurrentSide, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
 import { doesPlayerHaveActiveAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
 
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 
@@ -20,8 +16,8 @@ export class GameVictoryService {
     if (!currentPlay) {
       throw createNoCurrentGamePlayUnexpectedException("isGameOver", { gameId: game._id });
     }
-    const isHunterShootPlayIncoming = doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, RoleNames.HUNTER, GamePlayActions.SHOOT);
-    const isSurvivorsBuryDeadBodiesPlayIncoming = doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, PlayerGroups.SURVIVORS, GamePlayActions.BURY_DEAD_BODIES);
+    const isHunterShootPlayIncoming = doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, "hunter", "shoot");
+    const isSurvivorsBuryDeadBodiesPlayIncoming = doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, "survivors", "bury-dead-bodies");
     const gameVictoryData = this.generateGameVictoryData(game);
     return areAllPlayersDead(game) || !isHunterShootPlayIncoming && !isSurvivorsBuryDeadBodiesPlayIncoming && !!gameVictoryData;
   }
@@ -44,51 +40,51 @@ export class GameVictoryService {
   }
 
   private doWerewolvesWin(game: Game): boolean {
-    const werewolvesSidedPlayers = getPlayersWithCurrentSide(game, RoleSides.WEREWOLVES);
-    return werewolvesSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === RoleSides.VILLAGERS && isAlive);
+    const werewolvesSidedPlayers = getPlayersWithCurrentSide(game, "werewolves");
+    return werewolvesSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === "villagers" && isAlive);
   }
 
   private doVillagersWin(game: Game): boolean {
-    const villagersSidedPlayers = getPlayersWithCurrentSide(game, RoleSides.VILLAGERS);
-    return villagersSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === RoleSides.WEREWOLVES && isAlive);
+    const villagersSidedPlayers = getPlayersWithCurrentSide(game, "villagers");
+    return villagersSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === "werewolves" && isAlive);
   }
 
   private doLoversWin(game: Game): boolean {
     const { mustWinWithLovers: mustCupidWinWithLovers } = game.options.roles.cupid;
-    const lovers = getPlayersWithActiveAttributeName(game, PlayerAttributeNames.IN_LOVE);
+    const lovers = getPlayersWithActiveAttributeName(game, "in-love");
     return lovers.length > 0 && game.players.every(player => {
-      const isPlayerCupid = player.role.current === RoleNames.CUPID;
-      const isPlayerInLove = doesPlayerHaveActiveAttributeWithName(player, PlayerAttributeNames.IN_LOVE, game);
+      const isPlayerCupid = player.role.current === "cupid";
+      const isPlayerInLove = doesPlayerHaveActiveAttributeWithName(player, "in-love", game);
       return isPlayerInLove && player.isAlive || !isPlayerInLove && !player.isAlive || isPlayerCupid && mustCupidWinWithLovers;
     });
   }
 
   private doesWhiteWerewolfWin(game: Game): boolean {
-    const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, RoleNames.WHITE_WEREWOLF);
+    const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, "white-werewolf");
     return !!whiteWerewolfPlayer && game.players.every(({ role, isAlive }) =>
-      role.current === RoleNames.WHITE_WEREWOLF && isAlive || role.current !== RoleNames.WHITE_WEREWOLF && !isAlive);
+      role.current === "white-werewolf" && isAlive || role.current !== "white-werewolf" && !isAlive);
   }
 
   private doesPiedPiperWin(game: Game): boolean {
     const { isPowerlessOnWerewolvesSide } = game.options.roles.piedPiper;
-    const piedPiperPlayer = getPlayerWithCurrentRole(game, RoleNames.PIED_PIPER);
+    const piedPiperPlayer = getPlayerWithCurrentRole(game, "pied-piper");
     const leftToCharmPlayers = getEligiblePiedPiperTargets(game);
     return !!piedPiperPlayer && isPlayerAliveAndPowerful(piedPiperPlayer, game) && !leftToCharmPlayers.length &&
-      (!isPowerlessOnWerewolvesSide || piedPiperPlayer.side.current === RoleSides.VILLAGERS);
+      (!isPowerlessOnWerewolvesSide || piedPiperPlayer.side.current === "villagers");
   }
 
   private doesAngelWin(game: Game): boolean {
-    const angelPlayer = getPlayerWithCurrentRole(game, RoleNames.ANGEL);
+    const angelPlayer = getPlayerWithCurrentRole(game, "angel");
     const { turn, phase } = game;
     if (!angelPlayer?.death || angelPlayer.isAlive || !isPlayerPowerful(angelPlayer, game) || turn > 1) {
       return false;
     }
     const { cause: deathCause } = angelPlayer.death;
-    return deathCause === PlayerDeathCauses.EATEN || deathCause === PlayerDeathCauses.VOTE && phase === GamePhases.NIGHT;
+    return deathCause === "eaten" || deathCause === "vote" && phase.name === "night";
   }
 
   private doesPrejudicedManipulatorWin(game: Game): boolean {
-    const prejudicedManipulatorPlayer = getPlayerWithCurrentRole(game, RoleNames.PREJUDICED_MANIPULATOR);
+    const prejudicedManipulatorPlayer = getPlayerWithCurrentRole(game, "prejudiced-manipulator");
     if (!prejudicedManipulatorPlayer || !isPlayerAliveAndPowerful(prejudicedManipulatorPlayer, game)) {
       return false;
     }

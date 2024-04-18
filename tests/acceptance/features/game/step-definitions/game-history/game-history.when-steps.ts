@@ -3,7 +3,7 @@ import { When } from "@cucumber/cucumber";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 
-import { ApiSortOrder } from "@/shared/api/enums/api.enum";
+import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 
 import { getGameHistory } from "@tests/acceptance/features/game/helpers/game-request.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";

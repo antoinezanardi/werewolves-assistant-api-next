@@ -1,5 +1,5 @@
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import type { RoleName } from "@/modules/role/types/role.types";
 
-const GAME_ADDITIONAL_CARDS_RECIPIENTS = [RoleNames.THIEF, RoleNames.ACTOR] as const satisfies Readonly<(RoleNames)[]>;
+const GAME_ADDITIONAL_CARDS_RECIPIENTS = ["thief", "actor"] as const satisfies Readonly<(RoleName)[]>;
 
 export { GAME_ADDITIONAL_CARDS_RECIPIENTS };

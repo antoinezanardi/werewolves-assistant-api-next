@@ -1,9 +1,9 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
-import { GAME_PLAY_SOURCE_INTERACTION_BOUNDARIES_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction-boundaries/game-play-source-interaction-boundaries.schema";
 import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
-import { PlayerInteractionTypes } from "@/modules/game/enums/player.enum";
+import { PLAYER_INTERACTION_TYPES } from "@/modules/game/constants/player/player-interaction/player-interaction.constants";
+import { GAME_PLAY_SOURCE_INTERACTION_BOUNDARIES_SCHEMA } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction-boundaries/game-play-source-interaction-boundaries.schema";
 import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
 
@@ -12,11 +12,11 @@ import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types
 const GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS = {
   source: {
     required: true,
-    enum: Object.values(GAME_SOURCES),
+    enum: GAME_SOURCES,
   },
   type: {
     required: true,
-    enum: Object.values(PlayerInteractionTypes),
+    enum: PLAYER_INTERACTION_TYPES,
   },
   eligibleTargets: {
     required: true,
@@ -26,6 +26,10 @@ const GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS = {
   boundaries: {
     required: true,
     type: GAME_PLAY_SOURCE_INTERACTION_BOUNDARIES_SCHEMA,
+  },
+  isInconsequential: {
+    required: false,
+    type: Boolean,
   },
 } as const satisfies Record<keyof GamePlaySourceInteraction, MongoosePropOptions>;
 
@@ -45,6 +49,10 @@ const GAME_PLAY_SOURCE_INTERACTION_API_PROPERTIES: ReadonlyDeep<Record<keyof Gam
   boundaries: {
     description: "Boundaries of the interaction",
     ...GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS.boundaries,
+  },
+  isInconsequential: {
+    description: "Whether the interaction is inconsequential (i.e. it doesn't affect the game play nor will be validated, it's just for information purposes). It must not be set in game play targets.",
+    ...GAME_PLAY_SOURCE_INTERACTION_FIELDS_SPECS.isInconsequential,
   },
 };
 

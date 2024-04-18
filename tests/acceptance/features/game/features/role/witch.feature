@@ -15,6 +15,7 @@ Feature: 🪄 Witch role
 
     When the werewolves eat the player named Juju
     Then the game's current play should be witch to use-potions
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -28,6 +29,7 @@ Feature: 🪄 Witch role
     And the game's current play source interaction with type give-life-potion should have the following eligible targets
       | name |
       | Juju |
+    And the game's current play source interaction with type give-life-potion should have consequences
     And the game's current play source interaction with type give-death-potion should have the following eligible targets
       | name    |
       | Antoine |
@@ -51,6 +53,7 @@ Feature: 🪄 Witch role
       | Antoine |
       | Doudou  |
       | Thom    |
+    And the game's current play source interaction with type give-death-potion should have consequences
 
   Scenario: 🪄 Witch uses death potion to kill someone
 

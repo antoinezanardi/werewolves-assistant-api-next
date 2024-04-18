@@ -1,13 +1,9 @@
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
-import type { Game } from "@/modules/game/schemas/game.schema";
-import { GamePlayActions } from "@/modules/game/enums/game-play.enum";
-import { GameVictoryTypes } from "@/modules/game/enums/game-victory.enum";
-import { GamePhases } from "@/modules/game/enums/game.enum";
 import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
-import { RoleNames, RoleSides } from "@/modules/role/enums/role.enum";
+import type { Game } from "@/modules/game/schemas/game.schema";
 
 import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
@@ -15,6 +11,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeCupidGameOptions, createFakePiedPiperGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { createFakeGamePlayHunterShoots, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
@@ -54,7 +51,7 @@ describe("Game Victory Service", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.HUNTER }) }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: "hunter" }) }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const currentPlay = createFakeGamePlaySurvivorsVote();
@@ -101,7 +98,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ action: GamePlayActions.LOOK }),
+        createFakeGamePlayHunterShoots({ action: "look" }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const currentPlay = createFakeGamePlaySurvivorsVote();
@@ -118,7 +115,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.THIEF }) }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: "thief" }) }),
         createFakeGamePlaySurvivorsVote(),
         createFakeGamePlayWerewolvesEat(),
       ];
@@ -166,7 +163,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: "werewolves" }) }),
       ];
       const upcomingPlays = [
         createFakeGamePlaySurvivorsVote(),
@@ -192,7 +189,14 @@ describe("Game Victory Service", () => {
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const currentPlay = createFakeGamePlaySurvivorsVote();
-      const game = createFakeGame({ players, upcomingPlays, currentPlay, options, turn: 1, phase: GamePhases.NIGHT });
+      const game = createFakeGame({
+        players,
+        upcomingPlays,
+        currentPlay,
+        options,
+        turn: 1,
+        phase: createFakeGamePhase({ name: "night" }),
+      });
 
       expect(services.gameVictory.isGameOver(game)).toBe(true);
     });
@@ -205,11 +209,11 @@ describe("Game Victory Service", () => {
         createFakeSeerAlivePlayer({ isAlive: false }),
       ];
       const upcomingPlays = [
-        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: RoleNames.HUNTER }) }),
+        createFakeGamePlayHunterShoots({ source: createFakeGamePlaySource({ name: "hunter" }) }),
         createFakeGamePlayWerewolvesEat(),
       ];
       const game = createFakeGame({ players, upcomingPlays });
-      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.NONE });
+      const expectedGameVictory = createFakeGameVictory({ type: "none" });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -222,8 +226,13 @@ describe("Game Victory Service", () => {
         createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
-      const game = createFakeGame({ players, options, phase: GamePhases.NIGHT, turn: 1 });
-      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.ANGEL, winners: [players[3]] });
+      const game = createFakeGame({
+        players,
+        options,
+        phase: createFakeGamePhase({ name: "night" }),
+        turn: 1,
+      });
+      const expectedGameVictory = createFakeGameVictory({ type: "angel", winners: [players[3]] });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -236,7 +245,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
       ];
       const game = createFakeGame({ players });
-      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.LOVERS, winners: [players[2], players[3]] });
+      const expectedGameVictory = createFakeGameVictory({ type: "lovers", winners: [players[2], players[3]] });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -246,11 +255,11 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
         createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+        createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: "werewolves" }) }),
       ];
       const options = createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) });
       const game = createFakeGame({ players, options });
-      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.PIED_PIPER, winners: [players[3]] });
+      const expectedGameVictory = createFakeGameVictory({ type: "pied-piper", winners: [players[3]] });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -262,7 +271,7 @@ describe("Game Victory Service", () => {
         createFakeWhiteWerewolfAlivePlayer({ isAlive: true }),
       ];
       const game = createFakeGame({ players });
-      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.WHITE_WEREWOLF, winners: [players[2]] });
+      const expectedGameVictory = createFakeGameVictory({ type: "white-werewolf", winners: [players[2]] });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -275,7 +284,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ group: "boy" }),
       ];
       const game = createFakeGame({ players });
-      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.PREJUDICED_MANIPULATOR, winners: [players[2]] });
+      const expectedGameVictory = createFakeGameVictory({ type: "prejudiced-manipulator", winners: [players[2]] });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -288,7 +297,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.WEREWOLVES, winners: [players[2], players[3]] });
+      const expectedGameVictory = createFakeGameVictory({ type: "werewolves", winners: [players[2], players[3]] });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -301,7 +310,7 @@ describe("Game Victory Service", () => {
         createFakeWerewolfAlivePlayer({ isAlive: false }),
       ];
       const game = createFakeGame({ players });
-      const expectedGameVictory = createFakeGameVictory({ type: GameVictoryTypes.VILLAGERS, winners: [players[0], players[1]] });
+      const expectedGameVictory = createFakeGameVictory({ type: "villagers", winners: [players[0], players[1]] });
 
       expect(services.gameVictory.generateGameVictoryData(game)).toStrictEqual<GameVictory>(expectedGameVictory);
     });
@@ -641,7 +650,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-            createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+            createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: "werewolves" }) }),
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: true }) }) }),
         }),
@@ -654,7 +663,7 @@ describe("Game Victory Service", () => {
             createFakeWerewolfAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeSeerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
             createFakeVillagerAlivePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
-            createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: RoleSides.WEREWOLVES }) }),
+            createFakePiedPiperAlivePlayer({ side: createFakePlayerSide({ current: "werewolves" }) }),
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ piedPiper: createFakePiedPiperGameOptions({ isPowerlessOnWerewolvesSide: false }) }) }),
         }),
@@ -772,7 +781,7 @@ describe("Game Victory Service", () => {
             createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerShotByHunterDeath() }),
           ],
           turn: 1,
-          phase: GamePhases.NIGHT,
+          phase: createFakeGamePhase({ name: "night" }),
         }),
         expected: false,
       },
@@ -786,7 +795,7 @@ describe("Game Victory Service", () => {
             createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
           ],
           turn: 1,
-          phase: GamePhases.DAY,
+          phase: createFakeGamePhase({ name: "day" }),
         }),
         expected: false,
       },
@@ -813,7 +822,7 @@ describe("Game Victory Service", () => {
             createFakeAngelAlivePlayer({ isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
           ],
           turn: 1,
-          phase: GamePhases.NIGHT,
+          phase: createFakeGamePhase({ name: "night" }),
         }),
         expected: true,
       },

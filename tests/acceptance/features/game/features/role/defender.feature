@@ -16,6 +16,7 @@ Feature: 🛡️ Defender role
     Then the request should have succeeded with status code 201
     And the game's current play should be defender to protect
     And the game's current play can not be skipped
+    And the game's current play should not have causes
     And the game's current play source should have the following interactions
       | type    | source   | minBoundary | maxBoundary |
       | protect | defender | 1           | 1           |
@@ -28,6 +29,7 @@ Feature: 🛡️ Defender role
       | Nana    |
       | Juju    |
       | Cari    |
+    And the game's current play source interaction with type protect should have consequences
 
     When the defender protects the player named Antoine
     Then the request should have succeeded with status code 200
@@ -58,7 +60,7 @@ Feature: 🛡️ Defender role
       | type    | source   | minBoundary | maxBoundary |
       | protect | defender | 1           | 1           |
     And the game's current play source interaction with type protect should have the following eligible targets
-      | name    |
+      | name   |
       | Olivia |
       | JB     |
       | Thomas |

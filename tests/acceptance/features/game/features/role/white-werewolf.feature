@@ -22,6 +22,7 @@ Feature: 🐺🦴White Werewolf role
     When the werewolves eat the player named Antoine
     Then the player named Antoine should have the active eaten from werewolves attribute
     And the game's current play should be white-werewolf to eat
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name   |
       | Olivia |
@@ -34,6 +35,7 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play source interaction with type eat should have the following eligible targets
       | name |
       | JB   |
+    And the game's current play source interaction with type eat should have consequences
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200

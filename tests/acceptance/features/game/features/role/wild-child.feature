@@ -12,6 +12,7 @@ Feature: 🐒 Wild Child role
       | Maxime  | villager   |
     Then the request should have succeeded with status code 201
     And the game's current play should be wild-child to choose-model
+    And the game's current play should not have causes
     And the player named Antoine should be on villagers current side and originally be on villagers side
     And the game's current play should be played by the following players
       | name    |
@@ -27,6 +28,7 @@ Feature: 🐒 Wild Child role
       | Olivia |
       | JB     |
       | Maxime |
+    And the game's current play source interaction with type choose-as-model should have consequences
 
     When the wild child chooses the player named Olivia as a model
     Then the request should have succeeded with status code 200

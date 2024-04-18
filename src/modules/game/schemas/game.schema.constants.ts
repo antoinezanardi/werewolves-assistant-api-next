@@ -1,13 +1,14 @@
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_PHASE_SCHEMA } from "@/modules/game/schemas/game-phase/game-phase.schema";
+import { GAME_STATUSES } from "@/modules/game/constants/game.constants";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import { GAME_ADDITIONAL_CARD_SCHEMA } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/game-options.schema";
 import { GAME_PLAY_SCHEMA } from "@/modules/game/schemas/game-play/game-play.schema";
 import { GAME_VICTORY_SCHEMA } from "@/modules/game/schemas/game-victory/game-victory.schema";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";
-import { GamePhases, GameStatuses } from "@/modules/game/enums/game.enum";
 import type { Game } from "@/modules/game/schemas/game.schema";
 
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
@@ -22,8 +23,7 @@ const GAME_FIELDS_SPECS = {
   },
   phase: {
     required: true,
-    enum: Object.values(GamePhases),
-    default: GamePhases.NIGHT,
+    type: GAME_PHASE_SCHEMA,
   },
   tick: {
     required: true,
@@ -32,8 +32,8 @@ const GAME_FIELDS_SPECS = {
   },
   status: {
     required: true,
-    enum: Object.values(GameStatuses),
-    default: GameStatuses.PLAYING,
+    enum: GAME_STATUSES,
+    default: "playing",
   },
   players: {
     required: true,
@@ -78,7 +78,7 @@ const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> 
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.turn),
   },
   phase: {
-    description: "Each turn has two phases, `day` and `night`. Starting at `night`",
+    description: "Game's current phase",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.phase),
   },
   tick: {

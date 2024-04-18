@@ -13,6 +13,7 @@ Feature: 🎭 Actor role
       | Louise  | villager |
     Then the request should have succeeded with status code 201
     And the game's current play should be actor to choose-card
+    And the game's current play should not have causes
     And the game's additional card with role seer for actor should not be used
     And the game's additional card with role witch for actor should not be used
     And the game's additional card with role little-girl for actor should not be used
@@ -251,7 +252,13 @@ Feature: 🎭 Actor role
     Then the game's current play should be survivors to bury-dead-bodies
     And the player named Louise should be murdered by werewolves from eaten
     And the player named Thomas should be alive
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name   |
+      | Louise |
+    And the game's current play source interaction with type bury should be inconsequential
     And the game's current play can be skipped
 
     When the survivors bury dead bodies
@@ -409,7 +416,10 @@ Feature: 🎭 Actor role
       | Antoine |
 
     When the stuttering judge requests another vote
-    Then the game's current play should be survivors to vote because stuttering-judge-request
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause                    |
+      | stuttering-judge-request |
 
     When the player or group skips his turn
     Then the game's current play should be actor to choose-card
@@ -447,7 +457,10 @@ Feature: 🎭 Actor role
     When the actor chooses card with role angel
     Then the player named Antoine should be currently a angel and originally a actor
     And the game's additional card with role angel for actor should be used
-    And the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter | target  |
@@ -571,7 +584,10 @@ Feature: 🎭 Actor role
     When the actor chooses card with role angel
     Then the player named Antoine should be currently a angel and originally a actor
     And the game's additional card with role angel for actor should be used
-    And the game's current play should be survivors to vote because angel-presence
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
 
     When the survivors vote with the following votes
       | voter | target |

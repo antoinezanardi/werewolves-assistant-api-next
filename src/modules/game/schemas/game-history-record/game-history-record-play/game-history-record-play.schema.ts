@@ -3,15 +3,14 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
-import { GamePlayType } from "@/modules/game/types/game-play.types";
-import { GAME_HISTORY_RECORD_PLAY_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema.constants";
-import { GamePlayActions, GamePlayCauses } from "@/modules/game/enums/game-play.enum";
+import { RoleSide } from "@/modules/role/types/role.types";
 import { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
 import { GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
 import { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
 import { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
-import { RoleSides } from "@/modules/role/enums/role.enum";
+import { GAME_HISTORY_RECORD_PLAY_API_PROPERTIES, GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema.constants";
+import { GamePlayAction, GamePlayCause, GamePlayType } from "@/modules/game/types/game-play/game-play.types";
 
 @Schema({
   versionKey: false,
@@ -27,7 +26,7 @@ class GameHistoryRecordPlay {
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.action as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.action)
   @Expose()
-  public action: GamePlayActions;
+  public action: GamePlayAction;
 
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.source as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.source)
@@ -35,10 +34,10 @@ class GameHistoryRecordPlay {
   @Expose()
   public source: GameHistoryRecordPlaySource;
 
-  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.cause as ApiPropertyOptions)
-  @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.cause)
+  @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.causes as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.causes)
   @Expose()
-  public cause?: GamePlayCauses;
+  public causes?: GamePlayCause[];
 
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.targets as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.targets)
@@ -72,7 +71,7 @@ class GameHistoryRecordPlay {
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_API_PROPERTIES.chosenSide as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_FIELDS_SPECS.chosenSide)
   @Expose()
-  public chosenSide?: RoleSides;
+  public chosenSide?: RoleSide;
 }
 
 const GAME_HISTORY_RECORD_PLAY_SCHEMA = SchemaFactory.createForClass(GameHistoryRecordPlay);

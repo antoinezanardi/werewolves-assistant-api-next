@@ -13,6 +13,7 @@ Feature: 🐦‍⬛ Scandalmonger role
       | Thomas  | villager      |
     Then the request should have succeeded with status code 201
     And the game's current play should be scandalmonger to mark
+    And the game's current play should not have causes
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
@@ -29,6 +30,7 @@ Feature: 🐦‍⬛ Scandalmonger role
       | JB      |
       | Camille |
       | Thomas  |
+    And the game's current play source interaction with type mark should have consequences
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
@@ -57,7 +59,13 @@ Feature: 🐦‍⬛ Scandalmonger role
     Then the player named JB should be murdered by werewolves from eaten
     And the player named JB should have the active scandalmonger-marked from scandalmonger attribute
     And the game's current play should be survivors to bury-dead-bodies
-    And the game's current play source should not have interactions
+    And the game's current play source should have the following interactions
+      | type | source    | minBoundary | maxBoundary |
+      | bury | survivors | 0           | 1           |
+    And the game's current play source interaction with type bury should have the following eligible targets
+      | name |
+      | JB   |
+    And the game's current play source interaction with type bury should be inconsequential
     And the game's current play can be skipped
 
     When the survivors bury dead bodies

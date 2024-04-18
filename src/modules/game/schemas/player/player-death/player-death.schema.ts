@@ -3,9 +3,9 @@ import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { PLAYER_DEATH_API_PROPERTIES, PLAYER_DEATH_FIELDS_SPECS } from "@/modules/game/schemas/player/player-death/player-death.schema.constants";
-import { PlayerDeathCauses } from "@/modules/game/enums/player.enum";
+import { PlayerDeathCause } from "@/modules/game/types/player/player-death/player-death.types";
 import { GameSource } from "@/modules/game/types/game.types";
+import { PLAYER_DEATH_API_PROPERTIES, PLAYER_DEATH_FIELDS_SPECS } from "@/modules/game/schemas/player/player-death/player-death.schema.constants";
 
 @Schema({
   versionKey: false,
@@ -21,7 +21,7 @@ class PlayerDeath {
   @ApiProperty(PLAYER_DEATH_API_PROPERTIES.cause as ApiPropertyOptions)
   @Prop(PLAYER_DEATH_FIELDS_SPECS.cause)
   @Expose()
-  public cause: PlayerDeathCauses;
+  public cause: PlayerDeathCause;
 }
 
 const PLAYER_DEATH_SCHEMA = SchemaFactory.createForClass(PlayerDeath);

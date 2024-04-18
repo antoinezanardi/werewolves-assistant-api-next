@@ -1,4 +1,4 @@
-import { ApiSortOrder } from "@/shared/api/enums/api.enum";
+import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 import { getMongooseSortValueFromApiSortOrder } from "@/shared/mongoose/helpers/mongoose.helpers";
 
 describe("Mongoose Helper", () => {

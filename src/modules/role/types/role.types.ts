@@ -1,74 +1,18 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
-import { IsArray, IsEnum, IsInt, IsOptional, Min } from "class-validator";
+import type { TupleToUnion } from "type-fest";
 
-import { GAME_ADDITIONAL_CARDS_RECIPIENTS } from "@/modules/game/constants/game-additional-card/game-additional-card.constants";
-import type { GameAdditionalCardRecipientRoleName } from "@/modules/game/types/game-additional-card.types";
-import { RoleNames, RoleOrigins, RoleSides, RoleTypes } from "@/modules/role/enums/role.enum";
+import type { ROLE_NAMES, ROLE_ORIGINS, ROLE_SIDES, ROLE_TYPES } from "@/modules/role/constants/role.constants";
 
-class Role {
-  @ApiProperty({
-    description: "Role's name",
-    enum: RoleNames,
-  })
-  @IsEnum(RoleNames)
-  @Expose()
-  public name: RoleNames;
+type RoleName = TupleToUnion<typeof ROLE_NAMES>;
 
-  @ApiProperty({
-    description: "Role's side",
-    enum: RoleSides,
-  })
-  @IsEnum(RoleSides)
-  @Expose()
-  public side: RoleSides;
+type RoleSide = TupleToUnion<typeof ROLE_SIDES>;
 
-  @ApiProperty({
-    description: "Role's type",
-    enum: RoleTypes,
-  })
-  @IsEnum(RoleTypes)
-  @Expose()
-  public type: RoleTypes;
+type RoleType = TupleToUnion<typeof ROLE_TYPES>;
 
-  @ApiProperty({
-    description: "Role's origin",
-    enum: RoleOrigins,
-  })
-  @IsEnum(RoleOrigins)
-  @Expose()
-  public origin: RoleOrigins;
+type RoleOrigin = TupleToUnion<typeof ROLE_ORIGINS>;
 
-  @ApiProperty({
-    description: "If set, this role can be used as an additional card for the recipients set. Otherwise, it can't be used as an additional card by anyone",
-    required: false,
-    isArray: true,
-  })
-  @IsOptional()
-  @IsArray()
-  @IsEnum(GAME_ADDITIONAL_CARDS_RECIPIENTS, { each: true })
-  @Expose()
-  public additionalCardsEligibleRecipients?: GameAdditionalCardRecipientRoleName[];
-
-  @ApiProperty({ description: "If the role is chosen by at least one player, then `minInGame` players must choose it to start the game" })
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  @Expose()
-  public minInGame?: number;
-
-  @ApiProperty({ description: "Maximum possible of this role in a game" })
-  @IsInt()
-  @Min(1)
-  @Expose()
-  public maxInGame: number;
-
-  @ApiProperty({ description: "It is recommended to have at least `recommendedMinPlayers` players in game for choosing this role" })
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  @Expose()
-  public recommendedMinPlayers?: number;
-}
-
-export { Role };
+export type {
+  RoleName,
+  RoleSide,
+  RoleType,
+  RoleOrigin,
+};

@@ -1,11 +1,9 @@
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
-import { GamePlayActions, GamePlayCauses, GamePlayOccurrences } from "@/modules/game/enums/game-play.enum";
-import { PlayerAttributeNames, PlayerGroups } from "@/modules/game/enums/player.enum";
+import { GAME_PLAY_ACTIONS, GAME_PLAY_OCCURRENCES, GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
-import { RoleNames } from "@/modules/role/enums/role.enum";
+import type { GamePlayCause, GamePlayOccurrence } from "@/modules/game/types/game-play/game-play.types";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
@@ -14,9 +12,9 @@ import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-pla
 function createFakeGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "request-another-vote",
-    source: createFakeGamePlaySource({ name: RoleNames.STUTTERING_JUDGE }),
-    action: GamePlayActions.REQUEST_ANOTHER_VOTE,
-    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+    source: createFakeGamePlaySource({ name: "stuttering-judge" }),
+    action: "request-another-vote",
+    occurrence: "consequential",
     ...gamePlay,
   }, override);
 }
@@ -24,9 +22,9 @@ function createFakeGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<
 function createFakeGamePlayAccursedWolfFatherInfects(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    action: GamePlayActions.INFECT,
-    source: createFakeGamePlaySource({ name: RoleNames.ACCURSED_WOLF_FATHER }),
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    action: "infect",
+    source: createFakeGamePlaySource({ name: "accursed-wolf-father" }),
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -34,9 +32,9 @@ function createFakeGamePlayAccursedWolfFatherInfects(gamePlay: Partial<GamePlay>
 function createFakeGamePlayBearTamerGrowls(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "no-action",
-    action: GamePlayActions.GROWL,
-    source: createFakeGamePlaySource({ name: RoleNames.BEAR_TAMER }),
-    occurrence: GamePlayOccurrences.ON_DAYS,
+    action: "growl",
+    source: createFakeGamePlaySource({ name: "bear-tamer" }),
+    occurrence: "on-days",
     ...gamePlay,
   }, override);
 }
@@ -44,9 +42,9 @@ function createFakeGamePlayBearTamerGrowls(gamePlay: Partial<GamePlay> = {}, ove
 function createFakeGamePlayActorChoosesCard(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "choose-card",
-    source: createFakeGamePlaySource({ name: RoleNames.ACTOR }),
-    action: GamePlayActions.CHOOSE_CARD,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "actor" }),
+    action: "choose-card",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -54,18 +52,18 @@ function createFakeGamePlayActorChoosesCard(gamePlay: Partial<GamePlay> = {}, ov
 function createFakeGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "bury-dead-bodies",
-    source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
-    action: GamePlayActions.BURY_DEAD_BODIES,
-    occurrence: GamePlayOccurrences.CONSEQUENTIAL, ...gamePlay,
+    source: createFakeGamePlaySource({ name: "survivors" }),
+    action: "bury-dead-bodies",
+    occurrence: "consequential", ...gamePlay,
   }, override);
 }
 
 function createFakeGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: PlayerAttributeNames.SHERIFF }),
-    action: GamePlayActions.SETTLE_VOTES,
-    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+    source: createFakeGamePlaySource({ name: "sheriff" }),
+    action: "settle-votes",
+    occurrence: "consequential",
     ...gamePlay,
   }, override);
 }
@@ -73,24 +71,25 @@ function createFakeGamePlaySheriffSettlesVotes(gamePlay: Partial<GamePlay> = {},
 function createFakeGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: PlayerAttributeNames.SHERIFF }),
-    action: GamePlayActions.DELEGATE,
-    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+    source: createFakeGamePlaySource({ name: "sheriff" }),
+    action: "delegate",
+    occurrence: "consequential",
     ...gamePlay,
   }, override);
 }
 
 function createFakeGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
-  let occurrence = GamePlayOccurrences.ON_DAYS;
-  if (gamePlay.cause === GamePlayCauses.ANGEL_PRESENCE) {
-    occurrence = GamePlayOccurrences.ONE_NIGHT_ONLY;
-  } else if ([GamePlayCauses.PREVIOUS_VOTES_WERE_IN_TIES, GamePlayCauses.STUTTERING_JUDGE_REQUEST].includes(gamePlay.cause as GamePlayCauses)) {
-    occurrence = GamePlayOccurrences.CONSEQUENTIAL;
+  let occurrence: GamePlayOccurrence = "on-days";
+  const consequentialGamePlayCauses: GamePlayCause[] = ["previous-votes-were-in-ties", "stuttering-judge-request"];
+  if (gamePlay.causes?.includes("angel-presence") === true) {
+    occurrence = "one-night-only";
+  } else if (consequentialGamePlayCauses.some(cause => gamePlay.causes?.includes(cause) === true)) {
+    occurrence = "consequential";
   }
   return createFakeGamePlay({
     type: "vote",
-    source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
-    action: GamePlayActions.VOTE,
+    source: createFakeGamePlaySource({ name: "survivors" }),
+    action: "vote",
     occurrence,
     ...gamePlay,
   }, override);
@@ -99,9 +98,9 @@ function createFakeGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}, overr
 function createFakeGamePlaySurvivorsElectSheriff(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "vote",
-    source: createFakeGamePlaySource({ name: PlayerGroups.SURVIVORS }),
-    action: GamePlayActions.ELECT_SHERIFF,
-    occurrence: GamePlayOccurrences.ANYTIME,
+    source: createFakeGamePlaySource({ name: "survivors" }),
+    action: "elect-sheriff",
+    occurrence: "anytime",
     ...gamePlay,
   }, override);
 }
@@ -109,9 +108,9 @@ function createFakeGamePlaySurvivorsElectSheriff(gamePlay: Partial<GamePlay> = {
 function createFakeGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "choose-card",
-    source: createFakeGamePlaySource({ name: RoleNames.THIEF }),
-    action: GamePlayActions.CHOOSE_CARD,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
+    source: createFakeGamePlaySource({ name: "thief" }),
+    action: "choose-card",
+    occurrence: "one-night-only",
     ...gamePlay,
   }, override);
 }
@@ -119,9 +118,9 @@ function createFakeGamePlayThiefChoosesCard(gamePlay: Partial<GamePlay> = {}, ov
 function createFakeGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.SCAPEGOAT }),
-    action: GamePlayActions.BAN_VOTING,
-    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+    source: createFakeGamePlaySource({ name: "scapegoat" }),
+    action: "ban-voting",
+    occurrence: "consequential",
     ...gamePlay,
   }, override);
 }
@@ -129,9 +128,9 @@ function createFakeGamePlayScapegoatBansVoting(gamePlay: Partial<GamePlay> = {},
 function createFakeGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "choose-side",
-    source: createFakeGamePlaySource({ name: RoleNames.WOLF_HOUND }),
-    action: GamePlayActions.CHOOSE_SIDE,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
+    source: createFakeGamePlaySource({ name: "wolf-hound" }),
+    action: "choose-side",
+    occurrence: "one-night-only",
     ...gamePlay,
   }, override);
 }
@@ -139,9 +138,9 @@ function createFakeGamePlayWolfHoundChoosesSide(gamePlay: Partial<GamePlay> = {}
 function createFakeGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.WILD_CHILD }),
-    action: GamePlayActions.CHOOSE_MODEL,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
+    source: createFakeGamePlaySource({ name: "wild-child" }),
+    action: "choose-model",
+    occurrence: "one-night-only",
     ...gamePlay,
   }, override);
 }
@@ -149,9 +148,9 @@ function createFakeGamePlayWildChildChoosesModel(gamePlay: Partial<GamePlay> = {
 function createFakeGamePlayFoxSniffs(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.FOX }),
-    action: GamePlayActions.SNIFF,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "fox" }),
+    action: "sniff",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -159,9 +158,9 @@ function createFakeGamePlayFoxSniffs(gamePlay: Partial<GamePlay> = {}, override:
 function createFakeGamePlayCharmedMeetEachOther(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "no-action",
-    source: createFakeGamePlaySource({ name: PlayerGroups.CHARMED }),
-    action: GamePlayActions.MEET_EACH_OTHER,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "charmed" }),
+    action: "meet-each-other",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -169,9 +168,9 @@ function createFakeGamePlayCharmedMeetEachOther(gamePlay: Partial<GamePlay> = {}
 function createFakeGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "no-action",
-    source: createFakeGamePlaySource({ name: PlayerGroups.LOVERS }),
-    action: GamePlayActions.MEET_EACH_OTHER,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
+    source: createFakeGamePlaySource({ name: "lovers" }),
+    action: "meet-each-other",
+    occurrence: "one-night-only",
     ...gamePlay,
   }, override);
 }
@@ -179,9 +178,9 @@ function createFakeGamePlayLoversMeetEachOther(gamePlay: Partial<GamePlay> = {},
 function createFakeGamePlayThreeBrothersMeetEachOther(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "no-action",
-    source: createFakeGamePlaySource({ name: RoleNames.THREE_BROTHERS }),
-    action: GamePlayActions.MEET_EACH_OTHER,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "three-brothers" }),
+    action: "meet-each-other",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -189,9 +188,9 @@ function createFakeGamePlayThreeBrothersMeetEachOther(gamePlay: Partial<GamePlay
 function createFakeGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "no-action",
-    source: createFakeGamePlaySource({ name: RoleNames.TWO_SISTERS }),
-    action: GamePlayActions.MEET_EACH_OTHER,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "two-sisters" }),
+    action: "meet-each-other",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -199,9 +198,9 @@ function createFakeGamePlayTwoSistersMeetEachOther(gamePlay: Partial<GamePlay> =
 function createFakeGamePlayScandalmongerMarks(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.SCANDALMONGER }),
-    action: GamePlayActions.MARK,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "scandalmonger" }),
+    action: "mark",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -209,9 +208,9 @@ function createFakeGamePlayScandalmongerMarks(gamePlay: Partial<GamePlay> = {}, 
 function createFakeGamePlayDefenderProtects(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.DEFENDER }),
-    action: GamePlayActions.PROTECT,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "defender" }),
+    action: "protect",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -219,9 +218,9 @@ function createFakeGamePlayDefenderProtects(gamePlay: Partial<GamePlay> = {}, ov
 function createFakeGamePlayHunterShoots(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.HUNTER }),
-    action: GamePlayActions.SHOOT,
-    occurrence: GamePlayOccurrences.CONSEQUENTIAL,
+    source: createFakeGamePlaySource({ name: "hunter" }),
+    action: "shoot",
+    occurrence: "consequential",
     ...gamePlay,
   }, override);
 }
@@ -229,9 +228,9 @@ function createFakeGamePlayHunterShoots(gamePlay: Partial<GamePlay> = {}, overri
 function createFakeGamePlayWitchUsesPotions(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.WITCH }),
-    action: GamePlayActions.USE_POTIONS,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "witch" }),
+    action: "use-potions",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -239,9 +238,9 @@ function createFakeGamePlayWitchUsesPotions(gamePlay: Partial<GamePlay> = {}, ov
 function createFakeGamePlayPiedPiperCharms(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.PIED_PIPER }),
-    action: GamePlayActions.CHARM,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "pied-piper" }),
+    action: "charm",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -249,9 +248,9 @@ function createFakeGamePlayPiedPiperCharms(gamePlay: Partial<GamePlay> = {}, ove
 function createFakeGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.CUPID }),
-    action: GamePlayActions.CHARM,
-    occurrence: GamePlayOccurrences.ONE_NIGHT_ONLY,
+    source: createFakeGamePlaySource({ name: "cupid" }),
+    action: "charm",
+    occurrence: "one-night-only",
     ...gamePlay,
   }, override);
 }
@@ -259,9 +258,9 @@ function createFakeGamePlayCupidCharms(gamePlay: Partial<GamePlay> = {}, overrid
 function createFakeGamePlaySeerLooks(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.SEER }),
-    action: GamePlayActions.LOOK,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "seer" }),
+    action: "look",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -269,9 +268,9 @@ function createFakeGamePlaySeerLooks(gamePlay: Partial<GamePlay> = {}, override:
 function createFakeGamePlayWhiteWerewolfEats(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.WHITE_WEREWOLF }),
-    action: GamePlayActions.EAT,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "white-werewolf" }),
+    action: "eat",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -279,9 +278,9 @@ function createFakeGamePlayWhiteWerewolfEats(gamePlay: Partial<GamePlay> = {}, o
 function createFakeGamePlayBigBadWolfEats(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: RoleNames.BIG_BAD_WOLF }),
-    action: GamePlayActions.EAT,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "big-bad-wolf" }),
+    action: "eat",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
@@ -289,20 +288,20 @@ function createFakeGamePlayBigBadWolfEats(gamePlay: Partial<GamePlay> = {}, over
 function createFakeGamePlayWerewolvesEat(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "target",
-    source: createFakeGamePlaySource({ name: PlayerGroups.WEREWOLVES }),
-    action: GamePlayActions.EAT,
-    occurrence: GamePlayOccurrences.ON_NIGHTS,
+    source: createFakeGamePlaySource({ name: "werewolves" }),
+    action: "eat",
+    occurrence: "on-nights",
     ...gamePlay,
   }, override);
 }
 
 function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return plainToInstance(GamePlay, {
-    type: gamePlay.type ?? faker.helpers.arrayElement(Object.values(GAME_PLAY_TYPES)),
-    action: gamePlay.action ?? faker.helpers.arrayElement(Object.values(GamePlayActions)),
+    type: gamePlay.type ?? faker.helpers.arrayElement(GAME_PLAY_TYPES),
+    action: gamePlay.action ?? faker.helpers.arrayElement(GAME_PLAY_ACTIONS),
     source: createFakeGamePlaySource(gamePlay.source),
-    cause: gamePlay.cause ?? undefined,
-    occurrence: gamePlay.occurrence ?? faker.helpers.arrayElement(Object.values(GamePlayOccurrences)),
+    causes: gamePlay.causes ?? undefined,
+    occurrence: gamePlay.occurrence ?? faker.helpers.arrayElement(GAME_PLAY_OCCURRENCES),
     canBeSkipped: gamePlay.canBeSkipped ?? undefined,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
