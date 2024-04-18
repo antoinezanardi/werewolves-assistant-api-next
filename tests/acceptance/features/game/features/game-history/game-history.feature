@@ -108,6 +108,7 @@ Feature: 📜 Game History
     And the game's current play should have the following causes
       | cause                       |
       | previous-votes-were-in-ties |
+      | angel-presence              |
 
     When the survivors vote with the following votes
       | name    | vote   |
@@ -128,7 +129,7 @@ Feature: 📜 Game History
     And the play's source name from the previous history record should be survivors
     And the play's source players from the previous history record should have the following interactions
       | type | source    | minBoundary | maxBoundary |
-      | vote | survivors | 0           | 6           |
+      | vote | survivors | 1           | 6           |
     And the play's source interaction from the previous history with type vote should have the following eligible targets
       | name   |
       | Juju   |
@@ -137,6 +138,7 @@ Feature: 📜 Game History
     And the play's causes from the previous history record should be the following causes
       | cause                       |
       | previous-votes-were-in-ties |
+      | angel-presence              |
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies

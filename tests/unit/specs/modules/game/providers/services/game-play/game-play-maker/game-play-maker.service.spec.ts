@@ -1008,7 +1008,7 @@ describe("Game Play Maker Service", () => {
       expect(mocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayStutteringJudgeRequestsAnotherVote, game);
     });
 
-    it("should prepend stuttering judge request another vote game play when current play cause is angel presence.", async() => {
+    it("should prepend stuttering judge request another vote game play when current play cause is angel presence and there is no tie in votes.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence"] }) });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [
         createFakeMakeGamePlayVoteWithRelationsDto(),
@@ -1022,6 +1022,20 @@ describe("Game Play Maker Service", () => {
       await services.gamePlayMaker["survivorsVote"](play, game);
 
       expect(mocks.gameMutator.prependUpcomingPlayInGame).toHaveBeenCalledExactlyOnceWith(gamePlayStutteringJudgeRequestsAnotherVote, game);
+    });
+
+    it("should not prepend stuttering judge request another vote game play when current play cause is angel presence and there is a tie in votes.", async() => {
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["angel-presence", "previous-votes-were-in-ties"] }) });
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto(),
+        createFakeMakeGamePlayVoteWithRelationsDto(),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
+      const nominatedPlayers = [createFakePlayer()];
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      await services.gamePlayMaker["survivorsVote"](play, game);
+
+      expect(mocks.gameMutator.prependUpcomingPlayInGame).not.toHaveBeenCalled();
     });
 
     it("should call killOrRevealPlayer method when there is one nominated player.", async() => {

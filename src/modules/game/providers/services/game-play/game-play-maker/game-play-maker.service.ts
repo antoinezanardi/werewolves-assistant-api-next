@@ -185,7 +185,7 @@ export class GamePlayMakerService {
     let clonedGame = createGame(game) as GameWithCurrentPlay;
     const { currentPlay } = clonedGame;
     const nominatedPlayers = this.gamePlayVoteService.getNominatedPlayers(votes, clonedGame);
-    if (currentPlay.causes === undefined || doesGamePlayHaveCause(currentPlay, "angel-presence")) {
+    if (currentPlay.causes === undefined || doesGamePlayHaveCause(currentPlay, "angel-presence") && !doesGamePlayHaveCause(currentPlay, "previous-votes-were-in-ties")) {
       const gamePlayStutteringJudgeRequestsAnotherVote = createGamePlayStutteringJudgeRequestsAnotherVote();
       clonedGame = prependUpcomingPlayInGame(gamePlayStutteringJudgeRequestsAnotherVote, clonedGame) as GameWithCurrentPlay;
     }
