@@ -1,7 +1,7 @@
-const { OFF } = require("../../constants");
+const { OFF } = require("../constants");
 
-const configFilesOverride = Object.freeze({
-  files: ["./config/**/*.ts", "./config/**/*.js"],
+const ESLINT_CONFIGS_CONFIG = Object.freeze({
+  files: ["config/**/*.ts", "config/**/*.js"],
   rules: {
     "@typescript-eslint/no-require-imports": OFF,
     "@typescript-eslint/no-restricted-imports": OFF,
@@ -11,4 +11,4 @@ const configFilesOverride = Object.freeze({
   },
 });
 
-module.exports = { configFilesOverride };
+module.exports = ESLINT_CONFIGS_CONFIG;

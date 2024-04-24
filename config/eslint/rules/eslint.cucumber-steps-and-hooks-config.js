@@ -1,6 +1,6 @@
-const { OFF, ERROR } = require("../../constants");
+const { OFF, ERROR } = require("../constants");
 
-const cucumberStepsAndHooksFilesOverride = Object.freeze({
+const ESLINT_CUCUMBER_STEPS_AND_HOOKS_CONFIG = Object.freeze({
   files: ["tests/acceptance/features/**/*.ts"],
   rules: {
     "func-style": [ERROR, "declaration", { allowArrowFunctions: false }],
@@ -9,4 +9,4 @@ const cucumberStepsAndHooksFilesOverride = Object.freeze({
   },
 });
 
-module.exports = { cucumberStepsAndHooksFilesOverride };
+module.exports = ESLINT_CUCUMBER_STEPS_AND_HOOKS_CONFIG;

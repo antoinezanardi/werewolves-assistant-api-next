@@ -5,6 +5,7 @@ const INDENT_SPACE_COUNT = 2;
 const ERROR = "error";
 const WARNING = "warn";
 const OFF = "off";
+const READONLY = "readonly";
 const MAX_LENGTH_DEFAULT_CONFIG = {
   code: MAX_LENGTH,
   ignoreTemplateLiterals: true,
@@ -54,4 +55,5 @@ module.exports = {
   OFF,
   MAX_LENGTH_DEFAULT_CONFIG,
   NAMING_CONVENTION_DEFAULT_CONFIG,
+  READONLY,
 };
