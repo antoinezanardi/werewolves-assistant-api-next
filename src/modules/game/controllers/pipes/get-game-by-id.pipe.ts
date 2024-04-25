@@ -11,6 +11,7 @@ import { ResourceNotFoundException } from "@/shared/exception/types/resource-not
 @Injectable()
 export class GetGameByIdPipe implements PipeTransform {
   public constructor(private readonly gameRepository: GameRepository) {}
+
   public async transform(value: unknown): Promise<Game> {
     const validateMongoIdPipe = new ValidateMongoId();
     const objectId = validateMongoIdPipe.transform(value);

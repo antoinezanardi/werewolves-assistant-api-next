@@ -476,16 +476,14 @@ export class GamePlayAugmenterService {
   private getExpectedPlayersToPlay(game: Game): Player[] {
     const { currentPlay } = game;
     const mustIncludeDeadPlayersGamePlayActions: GamePlayAction[] = ["shoot", "ban-voting", "delegate"];
-    let expectedPlayersToPlay: Player[] = [];
     if (currentPlay === null) {
       throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
     }
+    let expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, "sheriff");
     if (isGameSourceGroup(currentPlay.source.name)) {
       expectedPlayersToPlay = getGroupOfPlayers(game, currentPlay.source.name);
     } else if (isGameSourceRole(currentPlay.source.name)) {
       expectedPlayersToPlay = getPlayersWithCurrentRole(game, currentPlay.source.name);
-    } else {
-      expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, "sheriff");
     }
     if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
       expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);

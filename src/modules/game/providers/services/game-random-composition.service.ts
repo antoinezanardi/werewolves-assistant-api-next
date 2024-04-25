@@ -31,20 +31,19 @@ export class GameRandomCompositionService {
     const randomRoles: Role[] = [];
     const availableSidedRoles = getRolesWithSide(availableRoles, side);
     const defaultSidedRole = side === "villagers" ? DEFAULT_VILLAGER_ROLE : DEFAULT_WEREWOLF_ROLE;
-    let randomRolesToPickCount = 1;
-    for (let i = 0; i < rolesToPickCount; i += randomRolesToPickCount) {
+    for (let i = 0; i < rolesToPickCount; i++) {
       const leftRolesToPickCount = rolesToPickCount - i;
       const leftRolesToPick = availableSidedRoles.filter(role => role.maxInGame && (role.minInGame === undefined || role.minInGame <= leftRolesToPickCount));
       const randomRole = sample(leftRolesToPick);
       if (randomRole === undefined) {
-        randomRolesToPickCount = 1;
         randomRoles.push(defaultSidedRole as Role);
       } else {
-        randomRolesToPickCount = randomRole.minInGame ?? 1;
+        const randomRolesToPickCount = randomRole.minInGame ?? 1;
         for (let j = 0; j < randomRolesToPickCount; j++) {
           randomRole.maxInGame--;
           randomRoles.push(randomRole);
         }
+        i += randomRolesToPickCount - 1;
       }
     }
     return randomRoles;
