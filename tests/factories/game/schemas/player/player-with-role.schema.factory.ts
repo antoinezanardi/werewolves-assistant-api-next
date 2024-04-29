@@ -8,6 +8,27 @@ import type { RoleName } from "@/modules/role/types/role.types";
 
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
+function createFakeAlivePlayerWithRole(role: RoleName, player: Partial<Player> = {}, override: object = {}): Player {
+  const playerRole: PlayerRole = {
+    current: role,
+    original: role,
+    isRevealed: role === "villager-villager",
+  };
+  const villagerRoles = VILLAGER_ROLES as Role[];
+  const playerSide: PlayerSide = {
+    current: getRoleWithName(villagerRoles, role) ? "villagers" : "werewolves",
+    original: getRoleWithName(villagerRoles, role) ? "villagers" : "werewolves",
+  };
+
+  return createFakePlayer({
+    role: playerRole,
+    side: playerSide,
+    attributes: [],
+    isAlive: true,
+    ...player,
+  }, override);
+}
+
 function createFakeWerewolfAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
   return createFakeAlivePlayerWithRole("werewolf", player, override);
 }
@@ -126,26 +147,6 @@ function createFakeActorAlivePlayer(player: Partial<Player> = {}, override: obje
 
 function createFakeDevotedServantAlivePlayer(player: Partial<Player> = {}, override: object = {}): Player {
   return createFakeAlivePlayerWithRole("devoted-servant", player, override);
-}
-
-function createFakeAlivePlayerWithRole(role: RoleName, player: Partial<Player> = {}, override: object = {}): Player {
-  const playerRole: PlayerRole = {
-    current: role,
-    original: role,
-    isRevealed: role === "villager-villager",
-  };
-  const villagerRoles = VILLAGER_ROLES as Role[];
-  const playerSide: PlayerSide = {
-    current: getRoleWithName(villagerRoles, role) ? "villagers" : "werewolves",
-    original: getRoleWithName(villagerRoles, role) ? "villagers" : "werewolves",
-  };
-  return createFakePlayer({
-    role: playerRole,
-    side: playerSide,
-    attributes: [],
-    isAlive: true,
-    ...player,
-  }, override);
 }
 
 export {

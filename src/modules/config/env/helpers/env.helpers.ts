@@ -15,11 +15,13 @@ function validate(config: Record<string, unknown>): EnvironmentVariables {
 function getEnvPath(): string {
   const basePath = "env/.env.";
   const envSuffix = process.env.NODE_ENV ?? "development";
+
   return `${basePath}${envSuffix}`;
 }
 
 function getEnvPaths(): string[] {
   const envPath = getEnvPath();
+
   return [envPath, `${envPath}.local`];
 }
 

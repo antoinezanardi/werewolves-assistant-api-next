@@ -15,6 +15,7 @@ function isAdditionalCardsForActorSizeRespected(value: unknown, validationArgume
   }
   const cards = value as { recipient: string }[];
   const actorAdditionalCards = cards.filter(card => card.recipient === "actor");
+
   return actorAdditionalCards.length === additionalCardsCount;
 }
 

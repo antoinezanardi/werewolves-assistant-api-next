@@ -359,7 +359,8 @@ describe("Game Play Helper", () => {
       {
         playerId: players[0]._id,
         game: createFakeGameWithCurrentPlay({
-          players, currentPlay: createFakeGamePlay({
+          players,
+          currentPlay: createFakeGamePlay({
             source: createFakeGamePlaySource({
               interactions: [
                 createFakeGamePlaySourceInteraction({ eligibleTargets: [players[0]] }),
@@ -374,7 +375,8 @@ describe("Game Play Helper", () => {
       {
         playerId: players[2]._id,
         game: createFakeGameWithCurrentPlay({
-          players, currentPlay: createFakeGamePlay({
+          players,
+          currentPlay: createFakeGamePlay({
             source: createFakeGamePlaySource({
               interactions: [
                 createFakeGamePlaySourceInteraction({ eligibleTargets: [players[0]] }),
@@ -409,7 +411,8 @@ describe("Game Play Helper", () => {
         playerId: players[0]._id,
         interactionType: "vote",
         game: createFakeGameWithCurrentPlay({
-          players, currentPlay: createFakeGamePlay({
+          players,
+          currentPlay: createFakeGamePlay({
             source: createFakeGamePlaySource({
               interactions: [
                 createFakeGamePlaySourceInteraction({
@@ -431,7 +434,8 @@ describe("Game Play Helper", () => {
         playerId: players[2]._id,
         interactionType: "vote",
         game: createFakeGameWithCurrentPlay({
-          players, currentPlay: createFakeGamePlay({
+          players,
+          currentPlay: createFakeGamePlay({
             source: createFakeGamePlaySource({
               interactions: [
                 createFakeGamePlaySourceInteraction({

@@ -10,6 +10,7 @@ import { Game } from "@/modules/game/schemas/game.schema";
 @Injectable()
 export class GameRepository {
   public constructor(@InjectModel(Game.name) private readonly gameModel: Model<GameDocument>) {}
+
   public async find(filter: FilterQuery<GameDocument> = {}): Promise<Game[]> {
     return this.gameModel.find(filter);
   }

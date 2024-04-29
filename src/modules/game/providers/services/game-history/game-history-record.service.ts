@@ -40,6 +40,7 @@ export class GameHistoryRecordService {
 
   public async createGameHistoryRecord(gameHistoryRecordToInsert: GameHistoryRecordToInsert): Promise<GameHistoryRecord> {
     await this.validateGameHistoryRecordToInsertData(gameHistoryRecordToInsert);
+
     return this.gameHistoryRecordRepository.create(gameHistoryRecordToInsert);
   }
 
@@ -112,11 +113,13 @@ export class GameHistoryRecordService {
 
   public async hasGamePlayBeenMade(gameId: Types.ObjectId, gamePlay: GamePlay): Promise<boolean> {
     const records = await this.gameHistoryRecordRepository.getGameHistoryGamePlayRecords(gameId, gamePlay, { limit: 1 });
+
     return records.length > 0;
   }
 
   public async hasGamePlayBeenMadeByPlayer(gameId: Types.ObjectId, gamePlay: GamePlay, player: Player): Promise<boolean> {
     const records = await this.gameHistoryRecordRepository.getGameHistoryGamePlayMadeByPlayerRecords(gameId, gamePlay, player, { limit: 1 });
+
     return records.length > 0;
   }
 
@@ -124,8 +127,10 @@ export class GameHistoryRecordService {
     const { players: newPlayers } = newGame;
     const currentDeadPlayers = newPlayers.filter(player => {
       const matchingBasePlayer = getPlayerWithId(baseGame, player._id);
+
       return matchingBasePlayer?.isAlive === true && !player.isAlive;
     }) as DeadPlayer[];
+
     return currentDeadPlayers.length ? currentDeadPlayers : undefined;
   }
 
@@ -133,8 +138,10 @@ export class GameHistoryRecordService {
     const { players: newPlayers } = newGame;
     const currentRevealedPlayers = newPlayers.filter(player => {
       const matchingBasePlayer = getPlayerWithId(baseGame, player._id);
+
       return matchingBasePlayer?.role.isRevealed === false && player.role.isRevealed && player.isAlive;
     });
+
     return currentRevealedPlayers.length ? currentRevealedPlayers : undefined;
   }
 
@@ -150,6 +157,7 @@ export class GameHistoryRecordService {
       chosenCard: play.chosenCard,
       chosenSide: play.chosenSide,
     };
+
     return plainToInstance(GameHistoryRecordPlay, toJSON(gameHistoryRecordPlayToInsert), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }
 
@@ -162,6 +170,7 @@ export class GameHistoryRecordService {
     const sheriffPlayer = getPlayerWithActiveAttributeName(newGame, "sheriff");
     const areSomePlayersDeadFromCurrentVotes = gameHistoryRecordToInsert.deadPlayers?.some(({ death }) => {
       const deathFromVoteCauses = ["vote", "vote-scapegoated"];
+
       return deathFromVoteCauses.includes(death.cause);
     }) === true;
     if (baseGame.currentPlay.action === "elect-sheriff") {
@@ -189,6 +198,7 @@ export class GameHistoryRecordService {
       result: this.generateCurrentGameHistoryRecordPlayVotingResultToInsert(baseGame, newGame, nominatedPlayers, gameHistoryRecordToInsert),
       nominatedPlayers: nominatedPlayers.length ? nominatedPlayers : undefined,
     };
+
     return plainToInstance(GameHistoryRecordPlayVoting, gameHistoryRecordPlayVoting, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
   }
 

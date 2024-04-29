@@ -21,9 +21,10 @@ function isPlayerOnVillagersSide(player: Player): boolean {
 function isPlayerPowerlessOnWerewolvesSide(player: Player, game: Game): boolean {
   const { prejudicedManipulator, piedPiper, actor } = game.options.roles;
   const { current: roleName } = player.role;
+
   return roleName === "prejudiced-manipulator" && prejudicedManipulator.isPowerlessOnWerewolvesSide ||
-      roleName === "pied-piper" && piedPiper.isPowerlessOnWerewolvesSide ||
-      roleName === "actor" && actor.isPowerlessOnWerewolvesSide;
+    roleName === "pied-piper" && piedPiper.isPowerlessOnWerewolvesSide ||
+    roleName === "actor" && actor.isPowerlessOnWerewolvesSide;
 }
 
 export {

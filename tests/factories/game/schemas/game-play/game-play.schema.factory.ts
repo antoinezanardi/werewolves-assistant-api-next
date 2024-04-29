@@ -9,6 +9,18 @@ import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants
 
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 
+function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
+  return plainToInstance(GamePlay, {
+    type: gamePlay.type ?? faker.helpers.arrayElement(GAME_PLAY_TYPES),
+    action: gamePlay.action ?? faker.helpers.arrayElement(GAME_PLAY_ACTIONS),
+    source: createFakeGamePlaySource(gamePlay.source),
+    causes: gamePlay.causes ?? undefined,
+    occurrence: gamePlay.occurrence ?? faker.helpers.arrayElement(GAME_PLAY_OCCURRENCES),
+    canBeSkipped: gamePlay.canBeSkipped ?? undefined,
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakeGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "request-another-vote",
@@ -54,7 +66,8 @@ function createFakeGamePlaySurvivorsBuryDeadBodies(gamePlay: Partial<GamePlay> =
     type: "bury-dead-bodies",
     source: createFakeGamePlaySource({ name: "survivors" }),
     action: "bury-dead-bodies",
-    occurrence: "consequential", ...gamePlay,
+    occurrence: "consequential",
+    ...gamePlay,
   }, override);
 }
 
@@ -295,19 +308,8 @@ function createFakeGamePlayWerewolvesEat(gamePlay: Partial<GamePlay> = {}, overr
   }, override);
 }
 
-function createFakeGamePlay(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
-  return plainToInstance(GamePlay, {
-    type: gamePlay.type ?? faker.helpers.arrayElement(GAME_PLAY_TYPES),
-    action: gamePlay.action ?? faker.helpers.arrayElement(GAME_PLAY_ACTIONS),
-    source: createFakeGamePlaySource(gamePlay.source),
-    causes: gamePlay.causes ?? undefined,
-    occurrence: gamePlay.occurrence ?? faker.helpers.arrayElement(GAME_PLAY_OCCURRENCES),
-    canBeSkipped: gamePlay.canBeSkipped ?? undefined,
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
-}
-
 export {
+  createFakeGamePlay,
   createFakeGamePlayStutteringJudgeRequestsAnotherVote,
   createFakeGamePlayAccursedWolfFatherInfects,
   createFakeGamePlayBearTamerGrowls,
@@ -336,5 +338,4 @@ export {
   createFakeGamePlayWhiteWerewolfEats,
   createFakeGamePlayBigBadWolfEats,
   createFakeGamePlayWerewolvesEat,
-  createFakeGamePlay,
 };

@@ -12,11 +12,12 @@ function doesCompositionHasTwoGroupsWithPrejudicedManipulator(value: unknown): b
   const doesCompositionHasPrejudicedManipulator = players.some(({ role }) => role.name === "prejudiced-manipulator");
   const distinctGroups = [...new Set(players.map(({ group }) => group))];
   const expectedDistinctGroupsCount = 2;
+
   return !doesCompositionHasPrejudicedManipulator || distinctGroups.length === expectedDistinctGroupsCount;
 }
 
 function getCompositionHasTwoGroupsWithPrejudicedManipulatorDefaultMessage(): string {
-  return `there must be exactly two groups among players when \`${"prejudiced-manipulator"}\` in the game`;
+  return `there must be exactly two groups among players when \`prejudiced-manipulator\` in the game`;
 }
 
 function CompositionHasTwoGroupsWithPrejudicedManipulator(validationOptions?: ValidationOptions) {

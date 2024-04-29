@@ -29,15 +29,6 @@ function createFakePlayerRole(playerRole: Partial<PlayerRole> = {}, override: ob
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
-function createFakeDeadPlayer(deadPlayer: Partial<DeadPlayer> = {}, override: object = {}): DeadPlayer {
-  return plainToInstance(DeadPlayer, {
-    ...createFakePlayer(deadPlayer),
-    death: createFakePlayerDeath(deadPlayer.death),
-    isAlive: false,
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
-}
-
 function createFakePlayer(player: Partial<Player> = {}, override: object = {}): Player {
   return plainToInstance(Player, {
     _id: player._id ?? createFakeObjectId(),
@@ -49,6 +40,15 @@ function createFakePlayer(player: Partial<Player> = {}, override: object = {}): 
     group: player.group ?? undefined,
     position: player.position ?? faker.number.int({ min: 0 }),
     death: player.death ? createFakePlayerDeath(player.death) : undefined,
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeDeadPlayer(deadPlayer: Partial<DeadPlayer> = {}, override: object = {}): DeadPlayer {
+  return plainToInstance(DeadPlayer, {
+    ...createFakePlayer(deadPlayer),
+    death: createFakePlayerDeath(deadPlayer.death),
+    isAlive: false,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

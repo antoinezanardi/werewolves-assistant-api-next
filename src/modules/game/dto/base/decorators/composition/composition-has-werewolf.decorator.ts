@@ -11,6 +11,7 @@ function doesCompositionHaveAtLeastOneWerewolf(value?: unknown): boolean {
   }
   const players = value as { role: { name: RoleName } }[];
   const werewolfRoles = ROLES.filter(role => role.side === "werewolves");
+
   return players.some(({ role }) => werewolfRoles.find(werewolfRole => role.name === werewolfRole.name));
 }
 

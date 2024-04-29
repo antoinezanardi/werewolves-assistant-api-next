@@ -27,20 +27,20 @@ class MakeGamePlayDto {
   @Expose()
   public votes?: MakeGamePlayVoteDto[];
 
-  @ApiProperty({ description: `Can be set to \`true\` only if current action is \`${"request-another-vote"}\` . If set to \`true\`, there is another vote immediately` })
+  @ApiProperty({ description: `Can be set to \`true\` only if current action is \`request-another-vote\` . If set to \`true\`, there is another vote immediately` })
   @IsOptional()
   @IsBoolean()
   @Expose()
   public doesJudgeRequestAnotherVote?: boolean;
 
-  @ApiProperty({ description: `Can be set when game's current action is \`${"choose-card"}\`` })
+  @ApiProperty({ description: `Can be set when game's current action is \`choose-card\`` })
   @IsOptional()
   @Type(() => String)
   @IsMongoId()
   @Expose()
   public chosenCardId?: Types.ObjectId;
 
-  @ApiProperty({ description: `Side chosen by \`${"wolf-hound"}\`. Required when game's upcoming action is \`${"choose-side"}\`` })
+  @ApiProperty({ description: `Side chosen by \`wolf-hound\`. Required when game's upcoming action is \`choose-side\`` })
   @IsOptional()
   @IsIn(ROLE_SIDES)
   @Expose()

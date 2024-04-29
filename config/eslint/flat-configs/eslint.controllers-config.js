@@ -8,6 +8,7 @@ const ESLINT_CONTROLLERS_CONFIG = Object.freeze({
     "no-empty-function": OFF,
     "no-useless-constructor": OFF,
     "@typescript-eslint/no-empty-function": OFF,
+    "@typescript-eslint/class-methods-use-this": OFF,
   },
 });
 

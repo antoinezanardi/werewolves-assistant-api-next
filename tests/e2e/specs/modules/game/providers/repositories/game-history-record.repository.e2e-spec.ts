@@ -199,7 +199,8 @@ describe("Game History Record Repository", () => {
       const otherGameId = createFakeObjectId();
       await populate([
         createFakeGameHistoryRecord({
-          gameId, play: createFakeGameHistoryRecordDefenderProtectPlay({
+          gameId,
+          play: createFakeGameHistoryRecordDefenderProtectPlay({
             source: createFakeGameHistoryRecordPlaySource({
               name: "defender",
               players,
@@ -400,7 +401,8 @@ describe("Game History Record Repository", () => {
       const gameHistoryRecords = [
         createFakeGameHistoryRecord({ gameId, play: createFakeGameHistoryRecordSurvivorsVotePlay({ voting: gameHistoryRecordPlayTieVoting }) }),
         createFakeGameHistoryRecord({
-          gameId, play: createFakeGameHistoryRecordWerewolvesEatPlay({
+          gameId,
+          play: createFakeGameHistoryRecordWerewolvesEatPlay({
             source: createFakeGameHistoryRecordPlaySource({
               name: "werewolves",
               players,

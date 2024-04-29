@@ -65,6 +65,7 @@ export class GamePlayMakerService {
     }
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     const gameSourcePlayMethod = this.gameSourcePlayMethods[clonedGame.currentPlay.source.name];
+
     return gameSourcePlayMethod ? gameSourcePlayMethod(play, clonedGame) : clonedGame;
   }
 
@@ -83,6 +84,7 @@ export class GamePlayMakerService {
       attributes: [...actorPlayer.attributes, createActingByActorPlayerAttribute()],
     };
     clonedGame = updatePlayerInGame(actorPlayer._id, actorDataToUpdate, clonedGame);
+
     return updateAdditionalCardInGame(chosenCard._id, { isUsed: true }, clonedGame);
   }
 
@@ -94,6 +96,7 @@ export class GamePlayMakerService {
     }
     const targetedPlayer = targets[0].player;
     const voteBySheriffDeath = createPlayerVoteBySheriffDeath();
+
     return this.playerKillerService.killOrRevealPlayer(targetedPlayer._id, clonedGame, voteBySheriffDeath);
   }
 
@@ -109,6 +112,7 @@ export class GamePlayMakerService {
       clonedGame = removePlayerAttributeByNameInGame(sheriffPlayer._id, clonedGame, "sheriff") as GameWithCurrentPlay;
     }
     const sheriffBySheriffPlayerAttribute = createSheriffBySheriffPlayerAttribute();
+
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, sheriffBySheriffPlayerAttribute);
   }
 
@@ -152,6 +156,7 @@ export class GamePlayMakerService {
     const nominatedPlayer = sample(nominatedPlayers);
     if (nominatedPlayer) {
       const playerVoteBySurvivorsDeath = createPlayerVoteBySurvivorsDeath();
+
       return this.playerKillerService.killOrRevealPlayer(nominatedPlayer._id, clonedGame, playerVoteBySurvivorsDeath);
     }
     return clonedGame;
@@ -163,16 +168,19 @@ export class GamePlayMakerService {
     const scapegoatPlayer = getPlayerWithCurrentRole(clonedGame, "scapegoat");
     if (scapegoatPlayer && isPlayerAliveAndPowerful(scapegoatPlayer, game)) {
       const playerVoteScapegoatedBySurvivorsDeath = createPlayerVoteScapegoatedBySurvivorsDeath();
+
       return this.playerKillerService.killOrRevealPlayer(scapegoatPlayer._id, clonedGame, playerVoteScapegoatedBySurvivorsDeath);
     }
     const sheriffPlayer = getPlayerWithActiveAttributeName(clonedGame, "sheriff");
     if (sheriffPlayer?.isAlive === true && mustSheriffSettleTieInVotes) {
       const gamePlaySheriffSettlesVotes = createGamePlaySheriffSettlesVotes();
+
       return prependUpcomingPlayInGame(gamePlaySheriffSettlesVotes, clonedGame);
     }
     if (!doesGamePlayHaveCause(clonedGame.currentPlay, "previous-votes-were-in-ties")) {
       const newCauses: GamePlayCause[] = ["previous-votes-were-in-ties", ...clonedGame.currentPlay.causes ?? []];
       const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ causes: newCauses });
+
       return prependUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame);
     }
     if (doesGamePlayHaveCause(clonedGame.currentPlay, "angel-presence")) {
@@ -194,6 +202,7 @@ export class GamePlayMakerService {
     }
     if (nominatedPlayers.length === 1) {
       const playerVoteBySurvivorsDeath = createPlayerVoteBySurvivorsDeath();
+
       return this.playerKillerService.killOrRevealPlayer(nominatedPlayers[0]._id, clonedGame, playerVoteBySurvivorsDeath);
     }
     return clonedGame;
@@ -203,11 +212,13 @@ export class GamePlayMakerService {
     const clonedGame = createGame(game) as GameWithCurrentPlay;
     if (!doesGamePlayHaveCause(clonedGame.currentPlay, "previous-votes-were-in-ties")) {
       const gamePlaySurvivorsElectSheriff = createGamePlaySurvivorsElectSheriff({ causes: ["previous-votes-were-in-ties"] });
+
       return prependUpcomingPlayInGame(gamePlaySurvivorsElectSheriff, clonedGame);
     }
     const randomNominatedPlayer = sample(nominatedPlayers);
     if (randomNominatedPlayer) {
       const sheriffBySurvivorsPlayerAttribute = createSheriffBySurvivorsPlayerAttribute();
+
       return addPlayerAttributeInGame(randomNominatedPlayer._id, clonedGame, sheriffBySurvivorsPlayerAttribute);
     }
     return clonedGame;
@@ -224,6 +235,7 @@ export class GamePlayMakerService {
       return this.handleTieInSheriffElection(nominatedPlayers, clonedGame);
     }
     const sheriffBySurvivorsPlayerAttribute = createSheriffBySurvivorsPlayerAttribute();
+
     return addPlayerAttributeInGame(nominatedPlayers[0]._id, clonedGame, sheriffBySurvivorsPlayerAttribute);
   }
 
@@ -255,6 +267,7 @@ export class GamePlayMakerService {
     const newThiefRole: PlayerRole = { ...thiefPlayer.role, current: chosenRole.name };
     const playerDataToUpdate: Partial<Player> = { side: newThiefSide, role: newThiefRole };
     clonedGame = updatePlayerInGame(thiefPlayer._id, playerDataToUpdate, clonedGame);
+
     return updateAdditionalCardInGame(chosenCard._id, { isUsed: true }, clonedGame);
   }
 
@@ -264,6 +277,7 @@ export class GamePlayMakerService {
       return clonedGame;
     }
     const cantVoteByScapegoatPlayerAttribute = createCantVoteByScapegoatPlayerAttribute(clonedGame);
+
     return addPlayersAttributeInGame(targets.map(({ player }) => player._id), clonedGame, cantVoteByScapegoatPlayerAttribute);
   }
 
@@ -290,6 +304,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer } = targets[0];
     const worshipedByWildChildPlayerAttribute = createWorshipedByWildChildPlayerAttribute();
+
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, worshipedByWildChildPlayerAttribute);
   }
 
@@ -306,6 +321,7 @@ export class GamePlayMakerService {
     const areEveryFoxSniffedPlayersVillagerSided = foxSniffedPlayers.every(player => player.side.current === "villagers");
     if (isFoxPowerlessIfMissesWerewolf && areEveryFoxSniffedPlayersVillagerSided) {
       const powerlessByFoxPlayerAttribute = createPowerlessByFoxPlayerAttribute();
+
       return addPlayerAttributeInGame(foxPlayer._id, clonedGame, powerlessByFoxPlayerAttribute);
     }
     return clonedGame;
@@ -319,6 +335,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer } = targets[0];
     const scandalmongerMarkByScandalmongerPlayerAttribute = createScandalmongerMarkByScandalmongerPlayerAttribute();
+
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, scandalmongerMarkByScandalmongerPlayerAttribute);
   }
 
@@ -330,6 +347,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer } = targets[0];
     const protectedByDefenderPlayerAttribute = createProtectedByDefenderPlayerAttribute();
+
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, protectedByDefenderPlayerAttribute);
   }
 
@@ -341,6 +359,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer } = targets[0];
     const shotByHunterDeath = createPlayerShotByHunterDeath();
+
     return this.playerKillerService.killOrRevealPlayer(targetedPlayer._id, clonedGame, shotByHunterDeath);
   }
 
@@ -365,6 +384,7 @@ export class GamePlayMakerService {
       return clonedGame;
     }
     const charmedByPiedPiperPlayerAttribute = createCharmedByPiedPiperPlayerAttribute();
+
     return addPlayersAttributeInGame(targets.map(({ player }) => player._id), clonedGame, charmedByPiedPiperPlayerAttribute);
   }
 
@@ -375,6 +395,7 @@ export class GamePlayMakerService {
       return clonedGame;
     }
     const inLoveByCupidPlayerAttribute = createInLoveByCupidPlayerAttribute();
+
     return addPlayersAttributeInGame(targets.map(({ player }) => player._id), clonedGame, inLoveByCupidPlayerAttribute);
   }
 
@@ -386,6 +407,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer } = targets[0];
     const seenBySeerPlayerAttribute = createSeenBySeerPlayerAttribute();
+
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, seenBySeerPlayerAttribute);
   }
 
@@ -397,6 +419,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer } = targets[0];
     const eatenByWhiteWerewolfPlayerAttribute = createEatenByWhiteWerewolfPlayerAttribute();
+
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, eatenByWhiteWerewolfPlayerAttribute);
   }
 
@@ -408,6 +431,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer } = targets[0];
     const eatenByBigBadWolfPlayerAttribute = createEatenByBigBadWolfPlayerAttribute();
+
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, eatenByBigBadWolfPlayerAttribute);
   }
 
@@ -426,6 +450,7 @@ export class GamePlayMakerService {
       playerDataToUpdate.attributes?.push(createPowerlessByAccursedWolfFatherPlayerAttribute());
     }
     playerDataToUpdate.attributes = playerDataToUpdate.attributes?.filter(({ name, source }) => name !== "eaten" || source !== "werewolves");
+
     return updatePlayerInGame(targetedPlayer._id, playerDataToUpdate, clonedGame);
   }
 
@@ -437,6 +462,7 @@ export class GamePlayMakerService {
     }
     const { player: targetedPlayer } = targets[0];
     const eatenByWerewolvesPlayerAttribute = createEatenByWerewolvesPlayerAttribute();
+
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, eatenByWerewolvesPlayerAttribute);
   }
 
@@ -446,6 +472,7 @@ export class GamePlayMakerService {
       return clonedGame;
     }
     const gamePlaySurvivorsVote = createGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] });
+
     return prependUpcomingPlayInGame(gamePlaySurvivorsVote, clonedGame);
   }
 }

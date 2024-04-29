@@ -28,6 +28,7 @@ async function bootstrap(): Promise<NestFastifyApplication> {
   const appUrl = await app.getUrl();
   Logger.log(`🐺 App is available at ${appUrl}`, "NestApplication");
   Logger.log(`📖 API Documentation is available at ${appUrl}/${documentationPath}`, "NestApplication");
+
   return app;
 }
 

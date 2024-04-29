@@ -20,6 +20,7 @@ export class GameRandomCompositionService {
       ...this.getRandomRolesForSide(availableRoles, villagerRolesCount, "villagers"),
     ];
     const shuffledRandomRoles = shuffle(randomRoles);
+
     return getGameRandomCompositionDto.players.map<GetGameRandomCompositionPlayerResponseDto>((player, index) => plainToInstance(GetGameRandomCompositionPlayerResponseDto, {
       name: player.name,
       role: { name: shuffledRandomRoles[index].name },
@@ -51,6 +52,7 @@ export class GameRandomCompositionService {
 
   private getWerewolfCountForComposition(playerCount: number): number {
     const werewolvesRatio = 6;
+
     return Math.ceil(playerCount / werewolvesRatio);
   }
 
@@ -62,6 +64,7 @@ export class GameRandomCompositionService {
       arePowerfulVillagerRolesPrioritized,
       arePowerfulWerewolfRolesPrioritized,
     } = getGameRandomCompositionDto;
+
     return ROLES.filter(role => {
       if (role.name === "villager") {
         return !arePowerfulVillagerRolesPrioritized;
@@ -70,6 +73,7 @@ export class GameRandomCompositionService {
       }
       const isRolePermitted = !excludedRoles.includes(role.name);
       const isRoleMinInGameRespected = !areRecommendedMinPlayersRespected || role.recommendedMinPlayers === undefined || role.recommendedMinPlayers <= players.length;
+
       return isRolePermitted && isRoleMinInGameRespected;
     }) as Role[];
   }

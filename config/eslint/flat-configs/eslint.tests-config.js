@@ -6,10 +6,11 @@ const ESLINT_TESTS_CONFIG = Object.freeze({
   files: ["**/*.e2e-spec.ts", "**/*.spec.ts"],
   plugins: { jest: JestPlugin },
   rules: {
-    "max-len": OFF,
     "max-lines-per-function": OFF,
     "@typescript-eslint/init-declarations": OFF,
     "@typescript-eslint/no-magic-numbers": OFF,
+    "@typescript-eslint/unbound-method": OFF,
+    "@stylistic/max-len": OFF,
     // ---- Test Rules -----
     // - Supported Rules (https://github.com/jest-community/eslint-plugin-jest#rules)
     "jest/consistent-test-it": ERROR,

@@ -55,11 +55,13 @@ export class GameService {
     });
     let createdGame = await this.gameRepository.create(gameToCreate) as GameWithCurrentPlay;
     createdGame = await this.gamePlayService.augmentCurrentGamePlay(createdGame);
+
     return this.updateGame(createdGame._id, createdGame);
   }
 
   public async cancelGame(game: Game): Promise<Game> {
     this.validateGameIsPlaying(game);
+
     return this.updateGame(game._id, { status: "canceled" });
   }
 
@@ -82,6 +84,7 @@ export class GameService {
       return this.updateGameAsOver(clonedGame);
     }
     clonedGame = await this.gamePlayService.augmentCurrentGamePlay(clonedGame as GameWithCurrentPlay);
+
     return this.updateGame(clonedGame._id, clonedGame);
   }
 
@@ -118,11 +121,13 @@ export class GameService {
     const clonedGame = createGameFromFactory(game);
     clonedGame.status = "over";
     clonedGame.victory = this.gameVictoryService.generateGameVictoryData(clonedGame);
+
     return clonedGame;
   }
 
   private async updateGameAsOver(game: Game): Promise<Game> {
     const clonedGame = this.setGameAsOver(game);
+
     return this.updateGame(clonedGame._id, clonedGame);
   }
 }

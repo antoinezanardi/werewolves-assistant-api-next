@@ -11,17 +11,19 @@ const ESLINT_FACTORIES_CONFIG = require("./config/eslint/flat-configs/eslint.fac
 const ESLINT_SERVICES_CONFIG = require("./config/eslint/flat-configs/eslint.services-config");
 const ESLINT_CONTROLLERS_CONFIG = require("./config/eslint/flat-configs/eslint.controllers-config");
 const ESLINT_CUCUMBER_STEPS_AND_HOOKS_CONFIG = require("./config/eslint/flat-configs/eslint.cucumber-steps-and-hooks-config");
-const {ESLINT_CUCUMBER_CONTEXT_HELPERS_CONFIG} = require("./config/eslint/flat-configs/eslint.cucumber-context-helper-config");
-const {OFF} = require("./config/eslint/eslint.constants");
+const { ESLINT_CUCUMBER_CONTEXT_HELPERS_CONFIG } = require("./config/eslint/flat-configs/eslint.cucumber-context-helper-config");
+const { OFF } = require("./config/eslint/eslint.constants");
 const ESLINT_REPOSITORIES_CONFIG = require("./config/eslint/flat-configs/eslint.repositories-config");
+const ESLINT_STYLISTIC_CONFIG = require("./config/eslint/flat-configs/eslint.stylistic-config");
 // const ESLINT_IMPORT_CONFIG = require("./rules/eslint.import-config");
 
 module.exports = [
   {
     name: "global-linter-options",
-    linterOptions: {reportUnusedDisableDirectives: OFF}
+    linterOptions: { reportUnusedDisableDirectives: OFF },
   },
   ESLINT_GLOBAL_CONFIG,
+  ESLINT_STYLISTIC_CONFIG,
   ESLINT_TYPESCRIPT_CONFIG,
   // TODO: Uncomment the following line when import plugin supports eslint v9
   // - ESLINT_IMPORT_CONFIG,

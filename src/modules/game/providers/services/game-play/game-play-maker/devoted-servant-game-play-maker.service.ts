@@ -28,6 +28,7 @@ export class DevotedServantGamePlayMakerService {
     devotedServantPlayer = getPlayerWithIdOrThrow(devotedServantPlayer._id, clonedGame, cantFindDevotedServantException);
     clonedGame = this.makeDevotedServantDelegatesIfSheriff(devotedServantPlayer, clonedGame);
     clonedGame = this.applyTargetStolenRoleOutcomes(targetedPlayer, clonedGame);
+
     return addPlayerAttributeInGame(targetedPlayer._id, clonedGame, createStolenRoleByDevotedServantPlayerAttribute());
   }
 
@@ -75,6 +76,7 @@ export class DevotedServantGamePlayMakerService {
       },
     };
     clonedGame = updatePlayerInGame(devotedServantPlayer._id, devotedServantPlayerDataToUpdate, clonedGame);
+
     return updatePlayerInGame(targetedPlayer._id, targetPlayerDataToUpdate, clonedGame);
   }
 

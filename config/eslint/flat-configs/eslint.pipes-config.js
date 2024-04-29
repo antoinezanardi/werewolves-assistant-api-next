@@ -6,6 +6,7 @@ const ESLINT_PIPES_CONFIG = Object.freeze({
   rules: {
     "class-methods-use-this": OFF,
     "no-useless-constructor": OFF,
+    "@typescript-eslint/class-methods-use-this": OFF,
   },
 });
 

@@ -9,6 +9,7 @@ import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 function setGameInContext(response: Response, context: CustomWorld): void {
   if (!SUCCESS_HTTP_STATUSES.includes(response.statusCode)) {
     context.responseException = response.json<HttpExceptionBody>();
+
     return;
   }
   context.gameOnPreviousGamePlay = context.game;

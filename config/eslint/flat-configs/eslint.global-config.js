@@ -1,8 +1,8 @@
-const {ERROR, WARNING, OFF, MAX_NESTED_CALLBACK, MAX_PARAMS} = require("../eslint.constants");
+const { ERROR, WARNING, OFF, MAX_NESTED_CALLBACK, MAX_PARAMS, ESLINT_IGNORES } = require("../eslint.constants");
 
 const ESLINT_GLOBAL_CONFIG = Object.freeze({
   name: "global",
-  linterOptions: {reportUnusedDisableDirectives: OFF},
+  linterOptions: { reportUnusedDisableDirectives: OFF },
   languageOptions: {
     globals: {
       module: "readonly",
@@ -18,14 +18,7 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
       afterEach: "readonly",
     },
   },
-  ignores: [
-    "node_modules/",
-    "dist/",
-    "!.releaserc.js",
-    "tests/coverage/*",
-    "tests/e2e/coverage/*",
-    "tests/unit/coverage/*",
-  ],
+  ignores: ESLINT_IGNORES,
   rules: {
     // ---- ESLint Rules -----
     // - Possible Problems (https://eslint.org/docs/rules/#possible-problems)
@@ -92,8 +85,8 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
     "accessor-pairs": ERROR,
     "arrow-body-style": [ERROR, "as-needed"],
     "block-scoped-var": ERROR,
-    "camelcase": [ERROR, {allow: ["npm_package_version"]}],
-    "capitalized-comments": [ERROR, "never", {ignorePattern: "TODO"}],
+    "camelcase": [ERROR, { allow: ["npm_package_version"] }],
+    "capitalized-comments": [ERROR, "never", { ignorePattern: "TODO" }],
     "class-methods-use-this": ERROR,
     "complexity": ERROR,
     "consistent-return": OFF,
@@ -106,7 +99,7 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
     "eqeqeq": ERROR,
     "func-name-matching": OFF,
     "func-names": ERROR,
-    "func-style": [ERROR, "declaration", {allowArrowFunctions: true}],
+    "func-style": [ERROR, "declaration", { allowArrowFunctions: true }],
     "grouped-accessor-pairs": ERROR,
     "guard-for-in": ERROR,
     "id-denylist": OFF,
@@ -148,7 +141,7 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
     "no-extra-boolean-cast": ERROR,
     "no-extra-label": ERROR,
     "no-global-assign": ERROR,
-    "no-implicit-coercion": [ERROR, {allow: ["!!"]}],
+    "no-implicit-coercion": [ERROR, { allow: ["!!"] }],
     "no-implicit-globals": ERROR,
     "no-implied-eval": ERROR,
     "no-inline-comments": ERROR,
@@ -171,7 +164,7 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
     "no-object-constructor": ERROR,
     "no-octal": ERROR,
     "no-octal-escape": ERROR,
-    "no-param-reassign": [ERROR, {props: true}],
+    "no-param-reassign": [ERROR, { props: true }],
     "no-plusplus": OFF,
     "no-proto": ERROR,
     "no-redeclare": ERROR,
@@ -203,7 +196,7 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
     "no-useless-rename": ERROR,
     "no-useless-return": ERROR,
     "no-var": ERROR,
-    "no-void": [ERROR, {allowAsStatement: true}],
+    "no-void": [ERROR, { allowAsStatement: true }],
     "no-warning-comments": OFF,
     "no-with": ERROR,
     "object-shorthand": ERROR,

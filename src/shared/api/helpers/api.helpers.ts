@@ -11,6 +11,7 @@ function getResourceSingularForm(resource: ApiResources): string {
     [ApiResources.ROLES]: "role",
     [ApiResources.HEALTH]: "health",
   };
+
   return resourceSingularForms[resource];
 }
 

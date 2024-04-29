@@ -10,6 +10,7 @@ import { bootstrap } from "@/server/server";
 
 jest.mock<typeof NestCommon>("@nestjs/common", () => {
   const original = jest.requireActual<typeof NestCommon>("@nestjs/common");
+
   return {
     ...original,
     ValidationPipe: jest.fn(),

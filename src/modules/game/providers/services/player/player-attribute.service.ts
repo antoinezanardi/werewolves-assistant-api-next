@@ -16,22 +16,26 @@ export class PlayerAttributeService {
 
   public async applyEatenAttributeOutcomes(player: Player, game: Game, attribute: PlayerAttribute): Promise<Game> {
     const death = createPlayerEatenByWerewolvesDeath({ source: attribute.source });
+
     return this.playerKillerService.killOrRevealPlayer(player._id, game, death);
   }
 
   public async applyDrankDeathPotionAttributeOutcomes(player: Player, game: Game): Promise<Game> {
     const death = createPlayerDeathPotionByWitchDeath();
+
     return this.playerKillerService.killOrRevealPlayer(player._id, game, death);
   }
 
   public async applyContaminatedAttributeOutcomes(player: Player, game: Game): Promise<Game> {
     const death = createPlayerDiseaseByRustySwordKnightDeath();
+
     return this.playerKillerService.killOrRevealPlayer(player._id, game, death);
   }
 
   public decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes(game: Game): Game {
     const clonedGame = createGame(game);
     clonedGame.players = clonedGame.players.map(player => this.decreaseRemainingPhasesAndRemoveObsoleteAttributes(player, clonedGame));
+
     return clonedGame;
   }
 
@@ -55,6 +59,7 @@ export class PlayerAttributeService {
       }
       return acc;
     }, []);
+
     return clonedPlayer;
   }
 }

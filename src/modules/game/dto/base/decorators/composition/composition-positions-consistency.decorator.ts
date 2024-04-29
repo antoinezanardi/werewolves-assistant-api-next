@@ -13,6 +13,7 @@ function doesCompositionHaveConsistentPositions(value?: unknown): boolean {
     }
     return acc;
   }, []);
+
   return uniquePositions.length === 0 || uniquePositions.length === players.length;
 }
 
