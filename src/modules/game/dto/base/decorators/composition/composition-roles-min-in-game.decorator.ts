@@ -11,10 +11,12 @@ function areCompositionRolesMinInGameRespected(value?: unknown): boolean {
     return false;
   }
   const players = value as { role: { name: RoleName } }[];
+
   return ROLES
     .filter((role): role is Role & { minInGame: number } => role.minInGame !== undefined)
     .every(role => {
       const roleCount = players.filter(player => player.role.name === role.name).length;
+
       return roleCount === 0 || roleCount >= role.minInGame;
     });
 }

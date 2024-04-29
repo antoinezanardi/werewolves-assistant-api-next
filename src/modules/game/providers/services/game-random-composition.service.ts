@@ -20,6 +20,7 @@ export class GameRandomCompositionService {
       ...this.getRandomRolesForSide(availableRoles, villagerRolesCount, "villagers"),
     ];
     const shuffledRandomRoles = shuffle(randomRoles);
+
     return getGameRandomCompositionDto.players.map<GetGameRandomCompositionPlayerResponseDto>((player, index) => plainToInstance(GetGameRandomCompositionPlayerResponseDto, {
       name: player.name,
       role: { name: shuffledRandomRoles[index].name },
@@ -31,20 +32,19 @@ export class GameRandomCompositionService {
     const randomRoles: Role[] = [];
     const availableSidedRoles = getRolesWithSide(availableRoles, side);
     const defaultSidedRole = side === "villagers" ? DEFAULT_VILLAGER_ROLE : DEFAULT_WEREWOLF_ROLE;
-    let randomRolesToPickCount = 1;
-    for (let i = 0; i < rolesToPickCount; i += randomRolesToPickCount) {
+    for (let i = 0; i < rolesToPickCount; i++) {
       const leftRolesToPickCount = rolesToPickCount - i;
       const leftRolesToPick = availableSidedRoles.filter(role => role.maxInGame && (role.minInGame === undefined || role.minInGame <= leftRolesToPickCount));
       const randomRole = sample(leftRolesToPick);
       if (randomRole === undefined) {
-        randomRolesToPickCount = 1;
         randomRoles.push(defaultSidedRole as Role);
       } else {
-        randomRolesToPickCount = randomRole.minInGame ?? 1;
+        const randomRolesToPickCount = randomRole.minInGame ?? 1;
         for (let j = 0; j < randomRolesToPickCount; j++) {
           randomRole.maxInGame--;
           randomRoles.push(randomRole);
         }
+        i += randomRolesToPickCount - 1;
       }
     }
     return randomRoles;
@@ -52,6 +52,7 @@ export class GameRandomCompositionService {
 
   private getWerewolfCountForComposition(playerCount: number): number {
     const werewolvesRatio = 6;
+
     return Math.ceil(playerCount / werewolvesRatio);
   }
 
@@ -63,6 +64,7 @@ export class GameRandomCompositionService {
       arePowerfulVillagerRolesPrioritized,
       arePowerfulWerewolfRolesPrioritized,
     } = getGameRandomCompositionDto;
+
     return ROLES.filter(role => {
       if (role.name === "villager") {
         return !arePowerfulVillagerRolesPrioritized;
@@ -71,6 +73,7 @@ export class GameRandomCompositionService {
       }
       const isRolePermitted = !excludedRoles.includes(role.name);
       const isRoleMinInGameRespected = !areRecommendedMinPlayersRespected || role.recommendedMinPlayers === undefined || role.recommendedMinPlayers <= players.length;
+
       return isRolePermitted && isRoleMinInGameRespected;
     }) as Role[];
   }

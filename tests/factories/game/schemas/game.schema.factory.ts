@@ -12,14 +12,6 @@ import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.fa
 import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 
-function createFakeGameWithCurrentPlay(game: Partial<GameWithCurrentPlay> = {}, override: object = {}): GameWithCurrentPlay {
-  return plainToInstance(GameWithCurrentPlay, {
-    ...createFakeGame(game, override),
-    currentPlay: game.currentPlay ?? createFakeGamePlay(),
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
-}
-
 function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
   return plainToInstance(Game, {
     _id: game._id ?? createFakeObjectId(),
@@ -35,6 +27,14 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
     victory: game.victory,
     createdAt: game.createdAt ?? faker.date.recent(),
     updatedAt: game.updatedAt ?? faker.date.recent(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeGameWithCurrentPlay(game: Partial<GameWithCurrentPlay> = {}, override: object = {}): GameWithCurrentPlay {
+  return plainToInstance(GameWithCurrentPlay, {
+    ...createFakeGame(game, override),
+    currentPlay: game.currentPlay ?? createFakeGamePlay(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

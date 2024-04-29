@@ -10,6 +10,17 @@ import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
+function createFakePlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
+  return plainToInstance(PlayerAttribute, {
+    name: attribute.name ?? faker.helpers.arrayElement(PLAYER_ATTRIBUTE_NAMES),
+    source: attribute.source ?? faker.helpers.arrayElement(GAME_SOURCES),
+    remainingPhases: attribute.remainingPhases ?? undefined,
+    activeAt: attribute.activeAt ?? undefined,
+    doesRemainAfterDeath: attribute.doesRemainAfterDeath ?? undefined,
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakeActingByActorPlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
   return createFakePlayerAttribute({
     name: "acting",
@@ -220,17 +231,6 @@ function createFakePlayerAttributeActivation(attributeActivation: Partial<Player
   return plainToInstance(PlayerAttributeActivation, {
     turn: attributeActivation.turn ?? faker.number.int({ min: 1 }),
     phaseName: attributeActivation.phaseName ?? faker.helpers.arrayElement(GAME_PHASE_NAMES),
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
-}
-
-function createFakePlayerAttribute(attribute: Partial<PlayerAttribute> = {}, override: object = {}): PlayerAttribute {
-  return plainToInstance(PlayerAttribute, {
-    name: attribute.name ?? faker.helpers.arrayElement(PLAYER_ATTRIBUTE_NAMES),
-    source: attribute.source ?? faker.helpers.arrayElement(GAME_SOURCES),
-    remainingPhases: attribute.remainingPhases ?? undefined,
-    activeAt: attribute.activeAt ?? undefined,
-    doesRemainAfterDeath: attribute.doesRemainAfterDeath ?? undefined,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

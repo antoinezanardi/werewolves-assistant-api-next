@@ -38,6 +38,7 @@ function getVotesWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePlayD
     const voteWithRelations = plainToInstance(MakeGamePlayVoteWithRelationsDto, vote, plainToInstanceOptions);
     voteWithRelations.source = source;
     voteWithRelations.target = target;
+
     return [...acc, voteWithRelations];
   }, []);
 }
@@ -54,6 +55,7 @@ function getTargetsWithRelationsFromMakeGamePlayDto(makeGamePlayDto: MakeGamePla
     const plainToInstanceOptions = { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true };
     const targetWithRelations = plainToInstance(MakeGamePlayTargetWithRelationsDto, target, plainToInstanceOptions);
     targetWithRelations.player = player;
+
     return [...acc, targetWithRelations];
   }, []);
 }
@@ -77,13 +79,23 @@ function createMakeGamePlayDtoWithRelations(makeGamePlayDto: MakeGamePlayDto, ga
   makeGamePlayWithRelationsDto.chosenCard = chosenCard;
   makeGamePlayWithRelationsDto.targets = targets;
   makeGamePlayWithRelationsDto.votes = votes;
+
   return makeGamePlayWithRelationsDto;
+}
+
+function doesGamePlayHaveCause(gamePlay: GamePlay, cause: GamePlayCause): boolean {
+  return gamePlay.causes?.includes(cause) ?? false;
+}
+
+function doesGamePlayHaveAnyCause(gamePlay: GamePlay, causes: GamePlayCause[]): boolean {
+  return causes.some(cause => doesGamePlayHaveCause(gamePlay, cause));
 }
 
 function findPlayPriorityIndex(play: GamePlay): number {
   return GAME_PLAYS_PRIORITY_LIST.findIndex(playInPriorityList => {
     const { source, action, causes } = playInPriorityList;
     const areBothCausesUndefined = causes === undefined && play.causes === undefined;
+
     return source.name === play.source.name && action === play.action && (areBothCausesUndefined || causes && doesGamePlayHaveAnyCause(play, [...causes]));
   });
 }
@@ -94,26 +106,21 @@ function areGamePlaysEqual(playA: GamePlay, playB: GamePlay): boolean {
 
 function canSurvivorsVote(game: Game): boolean {
   const survivors = getGroupOfPlayers(game, "survivors");
+
   return survivors.some(player => !doesPlayerHaveActiveAttributeWithName(player, "cant-vote", game));
 }
 
 function isPlayerInteractableInCurrentGamePlay(playerId: Types.ObjectId, game: GameWithCurrentPlay): boolean {
   const { interactions } = game.currentPlay.source;
+
   return !!interactions?.find(({ eligibleTargets }) => eligibleTargets.find(({ _id }) => _id.equals(playerId)));
 }
 
 function isPlayerInteractableWithInteractionTypeInCurrentGamePlay(playerId: Types.ObjectId, interactionType: PlayerInteractionType, game: GameWithCurrentPlay): boolean {
   const { interactions } = game.currentPlay.source;
   const interaction = interactions?.find(({ type }) => type === interactionType);
+
   return !!interaction?.eligibleTargets.find(({ _id }) => _id.equals(playerId));
-}
-
-function doesGamePlayHaveCause(gamePlay: GamePlay, cause: GamePlayCause): boolean {
-  return gamePlay.causes?.includes(cause) ?? false;
-}
-
-function doesGamePlayHaveAnyCause(gamePlay: GamePlay, causes: GamePlayCause[]): boolean {
-  return causes.some(cause => doesGamePlayHaveCause(gamePlay, cause));
 }
 
 export {

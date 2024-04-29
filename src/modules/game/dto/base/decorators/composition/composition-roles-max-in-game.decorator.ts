@@ -10,8 +10,10 @@ function areCompositionRolesMaxInGameRespected(value?: unknown): boolean {
     return false;
   }
   const players = value as { role: { name: RoleName } }[];
+
   return ROLES.every(role => {
     const roleCount = players.filter(player => player.role.name === role.name).length;
+
     return roleCount <= role.maxInGame;
   });
 }

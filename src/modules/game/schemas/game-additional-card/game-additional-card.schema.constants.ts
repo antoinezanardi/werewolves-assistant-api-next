@@ -31,7 +31,7 @@ const GAME_ADDITIONAL_CARDS_API_PROPERTIES: ReadonlyDeep<Record<keyof GameAdditi
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_ADDITIONAL_CARDS_FIELDS_SPECS._id),
   },
   roleName: {
-    description: `Game additional card role name. If \`recipient\` is \`${"thief"}\`, possible values are : ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.toString()}`,
+    description: `Game additional card role name. If \`recipient\` is \`thief\`, possible values are : ${ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.toString()}`,
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_ADDITIONAL_CARDS_FIELDS_SPECS.roleName),
   },
   recipient: {

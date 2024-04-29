@@ -8,6 +8,10 @@ import type { Game } from "@/modules/game/schemas/game.schema";
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
+function createGameVictory(gameVictory: GameVictory): GameVictory {
+  return plainToInstance(GameVictory, toJSON(gameVictory), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createNoneGameVictory(gameVictory: Partial<GameVictory> = {}): GameVictory {
   return createGameVictory({
     type: "none",
@@ -17,6 +21,7 @@ function createNoneGameVictory(gameVictory: Partial<GameVictory> = {}): GameVict
 
 function createAngelGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
   const angelPlayer = getPlayerWithCurrentRole(game, "angel");
+
   return createGameVictory({
     type: "angel",
     winners: angelPlayer ? [angelPlayer] : undefined,
@@ -26,9 +31,9 @@ function createAngelGameVictory(game: Game, gameVictory: Partial<GameVictory> = 
 
 function createLoversGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
   const { mustWinWithLovers: mustCupidWinWithLovers } = game.options.roles.cupid;
-  const winners = game.players.filter(player =>
-    doesPlayerHaveActiveAttributeWithName(player, "in-love", game) ||
+  const winners = game.players.filter(player => doesPlayerHaveActiveAttributeWithName(player, "in-love", game) ||
     player.role.current === "cupid" && mustCupidWinWithLovers);
+
   return createGameVictory({
     type: "lovers",
     winners,
@@ -38,6 +43,7 @@ function createLoversGameVictory(game: Game, gameVictory: Partial<GameVictory> =
 
 function createPiedPiperGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
   const piedPiperPlayer = getPlayerWithCurrentRole(game, "pied-piper");
+
   return createGameVictory({
     type: "pied-piper",
     winners: piedPiperPlayer ? [piedPiperPlayer] : undefined,
@@ -47,6 +53,7 @@ function createPiedPiperGameVictory(game: Game, gameVictory: Partial<GameVictory
 
 function createPrejudicedManipulatorGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
   const prejudicedManipulatorPlayer = getPlayerWithCurrentRole(game, "prejudiced-manipulator");
+
   return createGameVictory({
     type: "prejudiced-manipulator",
     winners: prejudicedManipulatorPlayer ? [prejudicedManipulatorPlayer] : undefined,
@@ -56,6 +63,7 @@ function createPrejudicedManipulatorGameVictory(game: Game, gameVictory: Partial
 
 function createWhiteWerewolfGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
   const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, "white-werewolf");
+
   return createGameVictory({
     type: "white-werewolf",
     winners: whiteWerewolfPlayer ? [whiteWerewolfPlayer] : undefined,
@@ -65,6 +73,7 @@ function createWhiteWerewolfGameVictory(game: Game, gameVictory: Partial<GameVic
 
 function createWerewolvesGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
   const werewolvesSidePlayers = getPlayersWithCurrentSide(game, "werewolves");
+
   return createGameVictory({
     type: "werewolves",
     winners: werewolvesSidePlayers,
@@ -74,15 +83,12 @@ function createWerewolvesGameVictory(game: Game, gameVictory: Partial<GameVictor
 
 function createVillagersGameVictory(game: Game, gameVictory: Partial<GameVictory> = {}): GameVictory {
   const villagersSidePlayers = getPlayersWithCurrentSide(game, "villagers");
+
   return createGameVictory({
     type: "villagers",
     winners: villagersSidePlayers,
     ...gameVictory,
   });
-}
-
-function createGameVictory(gameVictory: GameVictory): GameVictory {
-  return plainToInstance(GameVictory, toJSON(gameVictory), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

@@ -41,6 +41,7 @@ export class PlayerKillerService {
       return true;
     }
     const elderLivesCountAgainstWerewolves = await this.getElderLivesCountAgainstWerewolves(game, elderPlayer);
+
     return elderLivesCountAgainstWerewolves <= 0;
   }
 
@@ -53,6 +54,7 @@ export class PlayerKillerService {
     clonedGame = this.applyPlayerSideDeathOutcomes(clonedDeadPlayer, clonedGame);
     clonedDeadPlayer = getPlayerWithIdOrThrow(clonedDeadPlayer._id, clonedGame, cantFindPlayerException) as DeadPlayer;
     clonedGame = this.applyPlayerAttributesDeathOutcomes(clonedDeadPlayer, clonedGame);
+
     return updatePlayerInGame(clonedDeadPlayer._id, this.removePlayerAttributesAfterDeath(clonedDeadPlayer), clonedGame);
   }
 
@@ -63,6 +65,7 @@ export class PlayerKillerService {
     clonedPlayerToReveal.role.isRevealed = true;
     clonedGame = updatePlayerInGame(playerToReveal._id, clonedPlayerToReveal, clonedGame);
     clonedPlayerToReveal = getPlayerWithIdOrThrow(playerToReveal._id, clonedGame, cantFindPlayerException);
+
     return this.applyPlayerRoleRevelationOutcomes(clonedPlayerToReveal, clonedGame);
   }
 
@@ -72,6 +75,7 @@ export class PlayerKillerService {
     const werewolvesEatElderOnPreviousTurnsRecords = werewolvesEatElderRecords.filter(({ turn }) => turn < game.turn);
     const elderProtectedFromWerewolvesRecords = await this.gameHistoryRecordService.getGameHistoryElderProtectedFromWerewolvesRecords(game._id, elderPlayer._id);
     const doesElderLooseALifeOnCurrentTurn = doesPlayerHaveActiveAttributeWithName(elderPlayer, "eaten", game) && this.canPlayerBeEaten(elderPlayer, game);
+
     return werewolvesEatElderOnPreviousTurnsRecords.reduce((acc, werewolvesEatElderRecord) => {
       const wasElderProtectedFromWerewolves = !!elderProtectedFromWerewolvesRecords.find(({ turn }) => turn === werewolvesEatElderRecord.turn);
       if (!wasElderProtectedFromWerewolves) {
@@ -91,6 +95,7 @@ export class PlayerKillerService {
 
   private doesPlayerRoleMustBeRevealed(playerToReveal: Player, death: PlayerDeath, game: Game): boolean {
     const doesIdiotRoleMustBeRevealed = isPlayerPowerful(playerToReveal, game) && death.cause === "vote";
+
     return !playerToReveal.role.isRevealed && (!playerToReveal.isAlive && game.options.roles.areRevealedOnDeath ||
       playerToReveal.role.current === "idiot" && doesIdiotRoleMustBeRevealed);
   }
@@ -98,11 +103,13 @@ export class PlayerKillerService {
   private removePlayerAttributesAfterDeath(player: Player): Player {
     const clonedPlayer = createPlayer(player);
     clonedPlayer.attributes = clonedPlayer.attributes.filter(({ doesRemainAfterDeath }) => doesRemainAfterDeath === true);
+
     return clonedPlayer;
   }
 
   private isIdiotKillable(idiotPlayer: Player, deathCause: PlayerDeathCause, game: Game): boolean {
     const isIdiotPowerless = !isPlayerPowerful(idiotPlayer, game);
+
     return idiotPlayer.role.isRevealed || deathCause !== "vote" || isIdiotPowerless;
   }
 
@@ -110,6 +117,7 @@ export class PlayerKillerService {
     const { isProtectedByDefender: isLittleGirlProtectedByDefender } = game.options.roles.littleGirl;
     const isPlayerSavedByWitch = doesPlayerHaveActiveAttributeWithName(eatenPlayer, "drank-life-potion", game);
     const isPlayerProtectedByDefender = doesPlayerHaveActiveAttributeWithName(eatenPlayer, "protected", game);
+
     return !isPlayerSavedByWitch && (!isPlayerProtectedByDefender || eatenPlayer.role.current === "little-girl" && !isLittleGirlProtectedByDefender);
   }
 
@@ -184,7 +192,7 @@ export class PlayerKillerService {
     const { isPowerlessIfWerewolfDies } = game.options.roles.bigBadWolf;
     if (killedPlayer.side.current !== "werewolves" || !bigBadWolfPlayer ||
       !isPowerlessIfWerewolfDies || killedPlayer.role.current === "big-bad-wolf" ||
-        doesPlayerHaveActiveAttributeWithNameAndSource(bigBadWolfPlayer, "powerless", "werewolves", clonedGame)) {
+      doesPlayerHaveActiveAttributeWithNameAndSource(bigBadWolfPlayer, "powerless", "werewolves", clonedGame)) {
       return clonedGame;
     }
     return addPlayerAttributeInGame(bigBadWolfPlayer._id, clonedGame, createPowerlessByWerewolvesPlayerAttribute());

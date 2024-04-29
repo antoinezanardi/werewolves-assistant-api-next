@@ -7,6 +7,14 @@ import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-d
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
+function createFakePlayerDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
+  return plainToInstance(PlayerDeath, {
+    source: playerDeath.source ?? faker.helpers.arrayElement(GAME_SOURCES),
+    cause: playerDeath.cause ?? faker.helpers.arrayElement(PLAYER_DEATH_CAUSES),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakePlayerDiseaseByRustySwordKnightDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
   return createFakePlayerDeath({
     cause: "disease",
@@ -93,14 +101,6 @@ function createFakePlayerDeathPotionByWitchDeath(playerDeath: Partial<PlayerDeat
     source: "witch",
     ...playerDeath,
   }, override);
-}
-
-function createFakePlayerDeath(playerDeath: Partial<PlayerDeath> = {}, override: object = {}): PlayerDeath {
-  return plainToInstance(PlayerDeath, {
-    source: playerDeath.source ?? faker.helpers.arrayElement(GAME_SOURCES),
-    cause: playerDeath.cause ?? faker.helpers.arrayElement(PLAYER_DEATH_CAUSES),
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

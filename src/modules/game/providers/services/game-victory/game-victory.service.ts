@@ -19,6 +19,7 @@ export class GameVictoryService {
     const isHunterShootPlayIncoming = doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, "hunter", "shoot");
     const isSurvivorsBuryDeadBodiesPlayIncoming = doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, "survivors", "bury-dead-bodies");
     const gameVictoryData = this.generateGameVictoryData(game);
+
     return areAllPlayersDead(game) || !isHunterShootPlayIncoming && !isSurvivorsBuryDeadBodiesPlayIncoming && !!gameVictoryData;
   }
 
@@ -26,49 +27,55 @@ export class GameVictoryService {
     if (areAllPlayersDead(game)) {
       return createNoneGameVictory();
     }
-    const victoryWinConditions: { winCondition: (game: Game) => boolean; victoryFactoryMethod: (game: Game) => GameVictory }[] = [
-      { winCondition: this.doesAngelWin, victoryFactoryMethod: createAngelGameVictory },
-      { winCondition: this.doLoversWin, victoryFactoryMethod: createLoversGameVictory },
-      { winCondition: this.doesPiedPiperWin, victoryFactoryMethod: createPiedPiperGameVictory },
-      { winCondition: this.doesWhiteWerewolfWin, victoryFactoryMethod: createWhiteWerewolfGameVictory },
-      { winCondition: this.doesPrejudicedManipulatorWin, victoryFactoryMethod: createPrejudicedManipulatorGameVictory },
-      { winCondition: this.doWerewolvesWin, victoryFactoryMethod: createWerewolvesGameVictory },
-      { winCondition: this.doVillagersWin, victoryFactoryMethod: createVillagersGameVictory },
+    const victoryWinConditions: { doesWin: boolean; victoryFactoryMethod: (game: Game) => GameVictory }[] = [
+      { doesWin: this.doesAngelWin(game), victoryFactoryMethod: createAngelGameVictory },
+      { doesWin: this.doLoversWin(game), victoryFactoryMethod: createLoversGameVictory },
+      { doesWin: this.doesPiedPiperWin(game), victoryFactoryMethod: createPiedPiperGameVictory },
+      { doesWin: this.doesWhiteWerewolfWin(game), victoryFactoryMethod: createWhiteWerewolfGameVictory },
+      { doesWin: this.doesPrejudicedManipulatorWin(game), victoryFactoryMethod: createPrejudicedManipulatorGameVictory },
+      { doesWin: this.doWerewolvesWin(game), victoryFactoryMethod: createWerewolvesGameVictory },
+      { doesWin: this.doVillagersWin(game), victoryFactoryMethod: createVillagersGameVictory },
     ];
-    const victoryCondition = victoryWinConditions.find(({ winCondition }) => winCondition(game));
+    const victoryCondition = victoryWinConditions.find(({ doesWin }) => doesWin);
+
     return victoryCondition?.victoryFactoryMethod(game);
   }
 
   private doWerewolvesWin(game: Game): boolean {
     const werewolvesSidedPlayers = getPlayersWithCurrentSide(game, "werewolves");
+
     return werewolvesSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === "villagers" && isAlive);
   }
 
   private doVillagersWin(game: Game): boolean {
     const villagersSidedPlayers = getPlayersWithCurrentSide(game, "villagers");
+
     return villagersSidedPlayers.length > 0 && !game.players.some(({ side, isAlive }) => side.current === "werewolves" && isAlive);
   }
 
   private doLoversWin(game: Game): boolean {
     const { mustWinWithLovers: mustCupidWinWithLovers } = game.options.roles.cupid;
     const lovers = getPlayersWithActiveAttributeName(game, "in-love");
+
     return lovers.length > 0 && game.players.every(player => {
       const isPlayerCupid = player.role.current === "cupid";
       const isPlayerInLove = doesPlayerHaveActiveAttributeWithName(player, "in-love", game);
+
       return isPlayerInLove && player.isAlive || !isPlayerInLove && !player.isAlive || isPlayerCupid && mustCupidWinWithLovers;
     });
   }
 
   private doesWhiteWerewolfWin(game: Game): boolean {
     const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, "white-werewolf");
-    return !!whiteWerewolfPlayer && game.players.every(({ role, isAlive }) =>
-      role.current === "white-werewolf" && isAlive || role.current !== "white-werewolf" && !isAlive);
+
+    return !!whiteWerewolfPlayer && game.players.every(({ role, isAlive }) => role.current === "white-werewolf" && isAlive || role.current !== "white-werewolf" && !isAlive);
   }
 
   private doesPiedPiperWin(game: Game): boolean {
     const { isPowerlessOnWerewolvesSide } = game.options.roles.piedPiper;
     const piedPiperPlayer = getPlayerWithCurrentRole(game, "pied-piper");
     const leftToCharmPlayers = getEligiblePiedPiperTargets(game);
+
     return !!piedPiperPlayer && isPlayerAliveAndPowerful(piedPiperPlayer, game) && !leftToCharmPlayers.length &&
       (!isPowerlessOnWerewolvesSide || piedPiperPlayer.side.current === "villagers");
   }
@@ -80,6 +87,7 @@ export class GameVictoryService {
       return false;
     }
     const { cause: deathCause } = angelPlayer.death;
+
     return deathCause === "eaten" || deathCause === "vote" && phase.name === "night";
   }
 
@@ -89,6 +97,7 @@ export class GameVictoryService {
       return false;
     }
     const playersNotInPrejudicedManipulatorGroup = game.players.filter(({ group }) => group !== prejudicedManipulatorPlayer.group);
+
     return playersNotInPrejudicedManipulatorGroup.every(({ isAlive }) => !isAlive);
   }
 }

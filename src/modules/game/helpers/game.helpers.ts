@@ -66,11 +66,13 @@ function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Ty
 
 function areAllWerewolvesAlive(game: Game): boolean {
   const werewolfPlayers = getPlayersWithCurrentSide(game, "werewolves");
+
   return werewolfPlayers.length > 0 && werewolfPlayers.every(werewolf => werewolf.isAlive);
 }
 
 function areAllVillagersAlive(game: Game): boolean {
   const villagerPlayers = getPlayersWithCurrentSide(game, "villagers");
+
   return villagerPlayers.length > 0 && villagerPlayers.every(villager => villager.isAlive);
 }
 
@@ -115,6 +117,7 @@ function getEligibleWhiteWerewolfTargets(game: Game): Player[] {
 function getEligibleCupidTargets(game: Game): Player[] {
   const { mustWinWithLovers: mustCupidWinWithLovers } = game.options.roles.cupid;
   const alivePlayers = getAlivePlayers(game);
+
   return mustCupidWinWithLovers ? alivePlayers.filter(player => player.role.current !== "cupid") : alivePlayers;
 }
 
@@ -150,20 +153,6 @@ function getNonexistentPlayer(game: Game, candidatePlayers?: Player[]): Player |
   return candidatePlayers?.find(candidatePlayer => !getPlayerWithId(game, candidatePlayer._id));
 }
 
-function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Player[] {
-  const cantFindPlayerException = createCantFindPlayerWithIdUnexpectedException("getFoxSniffedTargets", { gameId: game._id, playerId: sniffedTargetId });
-  const sniffedTarget = getPlayerWithIdOrThrow(sniffedTargetId, game, cantFindPlayerException);
-  const leftAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "left" });
-  const rightAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "right" });
-  const sniffedTargets = [leftAliveNeighbor, sniffedTarget, rightAliveNeighbor].filter((player): player is Player => !!player);
-  return sniffedTargets.reduce<Player[]>((acc, target) => {
-    if (!acc.some(uniqueTarget => uniqueTarget._id.equals(target._id))) {
-      return [...acc, target];
-    }
-    return acc;
-  }, []);
-}
-
 function getNearestAliveNeighborInSortedPlayers(seekingNeighborPlayer: Player, sortedPlayers: Player[], options: GetNearestPlayerOptions): Player | undefined {
   const indexHeading = options.direction === "left" ? -1 : 1;
   const seekingNeighborPlayerIndex = sortedPlayers.findIndex(({ _id }) => _id.equals(seekingNeighborPlayer._id));
@@ -188,7 +177,23 @@ function getNearestAliveNeighbor(playerId: Types.ObjectId, game: Game, options: 
   const cantFindPlayerException = createCantFindPlayerWithIdUnexpectedException("getNearestAliveNeighbor", { gameId: game._id, playerId });
   const player = getPlayerWithIdOrThrow(playerId, game, cantFindPlayerException);
   const sortedPlayers = game.players.toSorted((a, b) => a.position - b.position);
+
   return getNearestAliveNeighborInSortedPlayers(player, sortedPlayers, options);
+}
+
+function getFoxSniffedPlayers(sniffedTargetId: Types.ObjectId, game: Game): Player[] {
+  const cantFindPlayerException = createCantFindPlayerWithIdUnexpectedException("getFoxSniffedTargets", { gameId: game._id, playerId: sniffedTargetId });
+  const sniffedTarget = getPlayerWithIdOrThrow(sniffedTargetId, game, cantFindPlayerException);
+  const leftAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "left" });
+  const rightAliveNeighbor = getNearestAliveNeighbor(sniffedTarget._id, game, { direction: "right" });
+  const sniffedTargets = [leftAliveNeighbor, sniffedTarget, rightAliveNeighbor].filter((player): player is Player => !!player);
+
+  return sniffedTargets.reduce<Player[]>((acc, target) => {
+    if (!acc.some(uniqueTarget => uniqueTarget._id.equals(target._id))) {
+      return [...acc, target];
+    }
+    return acc;
+  }, []);
 }
 
 function getAllowedToVotePlayers(game: Game): Player[] {
@@ -197,12 +202,14 @@ function getAllowedToVotePlayers(game: Game): Player[] {
 
 function doesGameHaveUpcomingPlaySourceAndAction(game: Game, source: GameSource, action: GamePlayAction): boolean {
   const { upcomingPlays } = game;
+
   return upcomingPlays.some(play => play.source.name === source && play.action === action);
 }
 
 function doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game: Game, source: GameSource, action: GamePlayAction): boolean {
   const { currentPlay, upcomingPlays } = game;
   const gamePlays = currentPlay ? [currentPlay, ...upcomingPlays] : upcomingPlays;
+
   return gamePlays.some(play => play.source.name === source && play.action === action);
 }
 

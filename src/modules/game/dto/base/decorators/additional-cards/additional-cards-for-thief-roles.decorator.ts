@@ -11,6 +11,7 @@ function areAdditionalCardsForThiefRolesRespected(value: unknown): boolean {
   const additionalCards = value as CreateGameAdditionalCardDto[];
   const thiefAdditionalCards = additionalCards.filter(({ recipient }) => recipient === "thief");
   const eligibleThiefAdditionalCardsRoleNames = ELIGIBLE_THIEF_ADDITIONAL_CARDS_ROLES.map(({ name }) => name);
+
   return thiefAdditionalCards.every(({ roleName }) => eligibleThiefAdditionalCardsRoleNames.includes(roleName));
 }
 

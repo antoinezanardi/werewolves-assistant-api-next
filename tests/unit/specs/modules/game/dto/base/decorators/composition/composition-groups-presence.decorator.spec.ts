@@ -98,7 +98,7 @@ describe("Composition Groups Presence Decorator", () => {
           property: "players",
         };
 
-        expect(getCompositionGroupsPresenceDefaultMessage(validationArguments)).toBe(`each player must have a group if there is a player with role \`${"prejudiced-manipulator"}\``);
+        expect(getCompositionGroupsPresenceDefaultMessage(validationArguments)).toBe("each player must have a group if there is a player with role `prejudiced-manipulator`");
       });
 
       it("should return not expected players group when there is no player with role prejudiced manipulator.", () => {
@@ -117,7 +117,7 @@ describe("Composition Groups Presence Decorator", () => {
           property: "players",
         };
 
-        expect(getCompositionGroupsPresenceDefaultMessage(validationArguments)).toBe(`any player can't have a group if there is no player with role \`${"prejudiced-manipulator"}\``);
+        expect(getCompositionGroupsPresenceDefaultMessage(validationArguments)).toBe("any player can't have a group if there is no player with role `prejudiced-manipulator`");
       });
     });
   });

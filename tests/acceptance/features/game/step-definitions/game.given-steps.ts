@@ -33,6 +33,7 @@ Given(
     if (optionFilenames !== null) {
       const flatOptions = optionFilenames.split(",").reduce((acc, fileName) => {
         const flatOption = crush(readJsonFile<GameOptions>("game", `game-options/${fileName.trim()}`));
+
         return { ...acc, ...flatOption };
       }, {});
       options = construct<Record<string, unknown>>(flatOptions);

@@ -46,6 +46,7 @@ function convertDatatableToGameHistoryRecordPlayVotes(datatable: string[][], gam
   return datatable.map(([voterName, targetName]) => {
     const source = getPlayerWithNameOrThrow(voterName, game, new Error(`Player with name ${voterName} not found`));
     const target = getPlayerWithNameOrThrow(targetName, game, new Error(`Player with name ${targetName} not found`));
+
     return { source, target } as GameHistoryRecordPlayVote;
   });
 }

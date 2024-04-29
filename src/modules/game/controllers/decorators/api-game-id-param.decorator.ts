@@ -7,6 +7,7 @@ function ApiGameIdParam(options: Partial<ApiParamOptions> = {}): MethodDecorator
     description: "Game's Id. Must be a valid Mongo ObjectId",
     example: "507f1f77bcf86cd799439011",
   };
+
   return ApiParam({ ...defaultOptions, ...options });
 }
 

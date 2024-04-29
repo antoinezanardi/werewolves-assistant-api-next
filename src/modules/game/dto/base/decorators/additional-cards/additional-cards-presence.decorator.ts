@@ -9,6 +9,7 @@ function isAdditionalCardsPresenceRespected(value: unknown, validationArguments:
   const { players } = validationArguments.object as Partial<CreateGameDto>;
   const gameAdditionalCardsRecipients = GAME_ADDITIONAL_CARDS_RECIPIENTS as Readonly<(RoleName)[]>;
   const doSomePlayersNeedAdditionalCards = players?.some(player => gameAdditionalCardsRecipients.includes(player.role.name)) === true;
+
   return doSomePlayersNeedAdditionalCards ? Array.isArray(value) : value === undefined;
 }
 

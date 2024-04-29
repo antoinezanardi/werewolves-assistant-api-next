@@ -30,6 +30,7 @@ function addPlayerAttributeInGame(playerId: Types.ObjectId, game: Game, attribut
     return clonedGame;
   }
   player.attributes.push(createPlayerAttribute(attribute));
+
   return updatePlayerInGame(playerId, player, clonedGame);
 }
 
@@ -41,6 +42,7 @@ function addPlayersAttributeInGame(playerIds: Types.ObjectId[], game: Game, attr
     }
     return player;
   });
+
   return clonedGame;
 }
 
@@ -51,6 +53,7 @@ function removePlayerAttributeByNameInGame(playerId: Types.ObjectId, game: Game,
     return clonedGame;
   }
   player.attributes = player.attributes.filter(({ name }) => name !== attributeName);
+
   return updatePlayerInGame(playerId, player, clonedGame);
 }
 
@@ -61,18 +64,21 @@ function removePlayerAttributeByNameAndSourceInGame(playerId: Types.ObjectId, ga
     return clonedGame;
   }
   player.attributes = player.attributes.filter(({ name, source }) => name !== attributeName || source !== attributeSource);
+
   return updatePlayerInGame(playerId, player, clonedGame);
 }
 
 function prependUpcomingPlayInGame(gamePlay: GamePlay, game: Game): Game {
   const clonedGame = createGame(game);
   clonedGame.upcomingPlays.unshift(gamePlay);
+
   return clonedGame;
 }
 
 function appendUpcomingPlayInGame(gamePlay: GamePlay, game: Game): Game {
   const clonedGame = createGame(game);
   clonedGame.upcomingPlays.push(gamePlay);
+
   return clonedGame;
 }
 

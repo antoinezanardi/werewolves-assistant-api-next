@@ -11,11 +11,13 @@ function getDatabasePort(configService: ConfigService<EnvironmentVariables, true
   if (process.env.JEST_WORKER_ID !== undefined) {
     const portMultiplier = 2;
     const portAdjuster = (parseInt(process.env.JEST_WORKER_ID) - 1) * portMultiplier;
+
     return parseInt(port) + portAdjuster;
   }
   if (process.env.CUCUMBER_WORKER_ID !== undefined) {
     const portMultiplier = 2;
     const portAdjuster = parseInt(process.env.CUCUMBER_WORKER_ID) * portMultiplier;
+
     return parseInt(port) + portAdjuster;
   }
   return parseInt(port);
@@ -29,6 +31,7 @@ function mongooseModuleFactory(configService: ConfigService<EnvironmentVariables
   const username = configService.getOrThrow<string>("DATABASE_USERNAME");
   const password = configService.getOrThrow<string>("DATABASE_PASSWORD");
   const uri = port !== undefined ? `mongodb://${host}:${port}` : `mongodb+srv://${host}`;
+
   return {
     uri,
     dbName: databaseName,

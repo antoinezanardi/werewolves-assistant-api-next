@@ -17,6 +17,7 @@ function isCompositionGroupsSizeRespected(value: unknown): boolean {
     }
   });
   const minPlayersInGroupCount = 2;
+
   return Object.values(groupPlayers).every(groupPlayersCount => groupPlayersCount >= minPlayersInGroupCount);
 }
 

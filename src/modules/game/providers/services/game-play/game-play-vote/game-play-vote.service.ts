@@ -16,6 +16,7 @@ export class GamePlayVoteService {
     let playerVoteCounts = this.getPlayerVoteCounts(votes, clonedGame);
     playerVoteCounts = this.addScandalmongerMarkVoteToPlayerVoteCounts(playerVoteCounts, clonedGame);
     const maxVotes = Math.max(...playerVoteCounts.map(playerVoteCount => playerVoteCount[1]));
+
     return playerVoteCounts.filter(playerVoteCount => playerVoteCount[1] === maxVotes).map(playerVoteCount => createPlayer(playerVoteCount[0]));
   }
 
@@ -25,6 +26,7 @@ export class GamePlayVoteService {
     }
     const { hasDoubledVote: doesSheriffHaveDoubledVote } = game.options.roles.sheriff;
     const sheriffPlayer = getPlayerWithActiveAttributeName(game, "sheriff");
+
     return votes.reduce<PlayerVoteCount[]>((acc, vote) => {
       const doubledVoteValue = 2;
       const isVoteSourceSheriff = sheriffPlayer?._id.equals(vote.source._id) === true;
@@ -32,6 +34,7 @@ export class GamePlayVoteService {
       const existingPlayerVoteCount = acc.find(value => value[0]._id.equals(vote.target._id));
       if (existingPlayerVoteCount) {
         existingPlayerVoteCount[1] += voteValue;
+
         return acc;
       }
       return [...acc, [vote.target, voteValue]];
@@ -50,6 +53,7 @@ export class GamePlayVoteService {
     const { markPenalty } = clonedGame.options.roles.scandalmonger;
     if (scandalmongerMarkedPlayerVoteCount) {
       scandalmongerMarkedPlayerVoteCount[1] += markPenalty;
+
       return playerVoteCounts;
     }
     return [...playerVoteCounts, [scandalmongerMarkedPlayer, markPenalty]];

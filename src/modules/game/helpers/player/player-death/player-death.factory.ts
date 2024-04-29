@@ -4,6 +4,10 @@ import { PlayerDeath } from "@/modules/game/schemas/player/player-death/player-d
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
+function createPlayerDeath(playerDeath: PlayerDeath): PlayerDeath {
+  return plainToInstance(PlayerDeath, playerDeath, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createPlayerDiseaseByRustySwordKnightDeath(playerDeath: Partial<PlayerDeath> = {}): PlayerDeath {
   return createPlayerDeath({
     cause: "disease",
@@ -90,10 +94,6 @@ function createPlayerDeathPotionByWitchDeath(playerDeath: Partial<PlayerDeath> =
     source: "witch",
     ...playerDeath,
   });
-}
-
-function createPlayerDeath(playerDeath: PlayerDeath): PlayerDeath {
-  return plainToInstance(PlayerDeath, playerDeath, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

@@ -23,7 +23,7 @@ import { createCantFindLastDeadPlayersUnexpectedException, createCantFindLastNom
 @Injectable()
 export class GamePlayAugmenterService {
   private readonly getPlaySourceInteractionsMethods: Partial<
-  Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlaySourceInteraction[] | Promise<GamePlaySourceInteraction[]>>
+    Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlaySourceInteraction[] | Promise<GamePlaySourceInteraction[]>>
   > = {
       "sheriff": async(game, gamePlay) => this.getSheriffGamePlaySourceInteractions(game, gamePlay),
       "survivors": async(game, gamePlay) => this.getSurvivorsGamePlaySourceInteractions(game, gamePlay),
@@ -68,18 +68,21 @@ export class GamePlayAugmenterService {
   public setGamePlayCanBeSkipped(gamePlay: GamePlay, game: Game): GamePlay {
     const clonedGamePlay = createGamePlay(gamePlay);
     clonedGamePlay.canBeSkipped = this.canGamePlayBeSkipped(game, gamePlay);
+
     return clonedGamePlay;
   }
 
   public async setGamePlaySourceInteractions(gamePlay: GamePlay, game: Game): Promise<GamePlay> {
     const clonedGamePlay = createGamePlay(gamePlay);
     clonedGamePlay.source.interactions = await this.getGamePlaySourceInteractions(gamePlay, game);
+
     return clonedGamePlay;
   }
 
   public setGamePlaySourcePlayers(gamePlay: GamePlay, game: Game): GamePlay {
     const clonedGamePlay = createGamePlay(gamePlay);
     clonedGamePlay.source.players = this.getExpectedPlayersToPlay(game);
+
     return clonedGamePlay;
   }
 
@@ -95,6 +98,7 @@ export class GamePlayAugmenterService {
       eligibleTargets,
       boundaries: { min: 1, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -106,6 +110,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: alivePlayersWithoutCurrentSheriff,
       boundaries: { min: 1, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -141,6 +146,7 @@ export class GamePlayAugmenterService {
       eligibleTargets,
       boundaries: { min: minBoundaries, max: maxBoundaries },
     });
+
     return [interaction];
   }
 
@@ -153,6 +159,7 @@ export class GamePlayAugmenterService {
       eligibleTargets,
       boundaries: { min: 1, max: maxBoundaries },
     });
+
     return [interaction];
   }
 
@@ -193,7 +200,7 @@ export class GamePlayAugmenterService {
 
   private async getSurvivorsGamePlaySourceInteractions(game: Game, gamePlay: GamePlay): Promise<GamePlaySourceInteraction[]> {
     const survivorsGamePlaySourceInteractionMethods: Partial<Record<
-    GamePlayAction, (game: Game, gamePlay: GamePlay) => GamePlaySourceInteraction[] | Promise<GamePlaySourceInteraction[]>
+      GamePlayAction, (game: Game, gamePlay: GamePlay) => GamePlaySourceInteraction[] | Promise<GamePlaySourceInteraction[]>
     >> = {
       "bury-dead-bodies": async() => this.getSurvivorsBuryDeadBodiesGamePlaySourceInteractions(game),
       "vote": async() => this.getSurvivorsVoteGamePlaySourceInteractions(game, gamePlay),
@@ -214,6 +221,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: aliveVillagerSidedPlayers,
       boundaries: { min: 1, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -228,6 +236,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: eligibleWerewolvesTargets,
       boundaries: { min: 1, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -243,6 +252,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: eligibleCupidTargets,
       boundaries: { min: expectedPlayersToCharmCount, max: expectedPlayersToCharmCount },
     });
+
     return [interaction];
   }
 
@@ -254,6 +264,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: alivePlayers,
       boundaries: { min: 0, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -273,6 +284,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: eligibleDefenderTargets,
       boundaries: { min: 1, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -284,6 +296,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: alivePlayers,
       boundaries: { min: 1, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -298,6 +311,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: eligiblePiedPiperTargets,
       boundaries: { min: countToCharm, max: countToCharm },
     });
+
     return [interaction];
   }
 
@@ -309,6 +323,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: alivePlayers,
       boundaries: { min: 0, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -320,6 +335,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: alivePlayers,
       boundaries: { min: 0, max: alivePlayers.length },
     });
+
     return [interaction];
   }
 
@@ -332,6 +348,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: alivePlayersWithoutSeer,
       boundaries: { min: 1, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -346,6 +363,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: leftToEatByWhiteWerewolfPlayers,
       boundaries: { min: 0, max: 1 },
     });
+
     return [interactions];
   }
 
@@ -358,6 +376,7 @@ export class GamePlayAugmenterService {
       eligibleTargets: alivePlayersWithoutWildChild,
       boundaries: { min: 1, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -367,6 +386,7 @@ export class GamePlayAugmenterService {
     }
     const alivePlayers = getAlivePlayers(game);
     const eligibleTargets = alivePlayers.filter(player => !doesPlayerHaveActiveAttributeWithName(player, "eaten", game));
+
     return createGamePlaySourceInteraction({
       source: "witch",
       type: "give-death-potion",
@@ -381,6 +401,7 @@ export class GamePlayAugmenterService {
     }
     const alivePlayers = getAlivePlayers(game);
     const eligibleTargets = alivePlayers.filter(player => doesPlayerHaveActiveAttributeWithName(player, "eaten", game));
+
     return createGamePlaySourceInteraction({
       source: "witch",
       type: "give-life-potion",
@@ -402,6 +423,7 @@ export class GamePlayAugmenterService {
     const hasWitchUsedDeathPotion = deathRecords.length > 0;
     const giveLifePotionInteraction = this.getWitchGamePlaySourceGiveLifePotionInteraction(game, hasWitchUsedLifePotion);
     const giveDeathPotionInteraction = this.getWitchGamePlaySourceGiveDeathPotionInteraction(game, hasWitchUsedDeathPotion);
+
     return [giveLifePotionInteraction, giveDeathPotionInteraction].filter(isDefined);
   }
 
@@ -415,14 +437,14 @@ export class GamePlayAugmenterService {
     if (infectedTargetRecords.length) {
       return [];
     }
-    const eatenByWerewolvesPlayers = game.players.filter(player =>
-      doesPlayerHaveActiveAttributeWithNameAndSource(player, "eaten", "werewolves", game));
+    const eatenByWerewolvesPlayers = game.players.filter(player => doesPlayerHaveActiveAttributeWithNameAndSource(player, "eaten", "werewolves", game));
     const interaction = createGamePlaySourceInteraction({
       source: "accursed-wolf-father",
       type: "infect",
       eligibleTargets: eatenByWerewolvesPlayers,
       boundaries: { min: 0, max: 1 },
     });
+
     return [interaction];
   }
 
@@ -432,6 +454,7 @@ export class GamePlayAugmenterService {
       return undefined;
     }
     const gamePlaySourceInteractions = await playSourceInteractionsMethod(game, gamePlay);
+
     return gamePlaySourceInteractions.length ? gamePlaySourceInteractions : undefined;
   }
 
@@ -447,11 +470,13 @@ export class GamePlayAugmenterService {
   private canCupidSkipGamePlay(game: Game): boolean {
     const expectedPlayersToCharmCount = 2;
     const eligibleCupidTargets = getEligibleCupidTargets(game);
+
     return eligibleCupidTargets.length < expectedPlayersToCharmCount;
   }
 
   private canBigBadWolfSkipGamePlay(game: Game): boolean {
     const leftToEatByWerewolvesPlayers = getEligibleWerewolvesTargets(game);
+
     return leftToEatByWerewolvesPlayers.length === 0;
   }
 
@@ -462,6 +487,7 @@ export class GamePlayAugmenterService {
     }
     const werewolfRoleNames = WEREWOLF_ROLES.map(role => role.name);
     const areAllAdditionalCardsWerewolves = game.additionalCards.every(({ roleName }) => werewolfRoleNames.includes(roleName));
+
     return !areAllAdditionalCardsWerewolves || !mustChooseBetweenWerewolves;
   }
 
@@ -476,16 +502,14 @@ export class GamePlayAugmenterService {
   private getExpectedPlayersToPlay(game: Game): Player[] {
     const { currentPlay } = game;
     const mustIncludeDeadPlayersGamePlayActions: GamePlayAction[] = ["shoot", "ban-voting", "delegate"];
-    let expectedPlayersToPlay: Player[] = [];
     if (currentPlay === null) {
       throw createNoCurrentGamePlayUnexpectedException("getExpectedPlayersToPlay", { gameId: game._id });
     }
+    let expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, "sheriff");
     if (isGameSourceGroup(currentPlay.source.name)) {
       expectedPlayersToPlay = getGroupOfPlayers(game, currentPlay.source.name);
     } else if (isGameSourceRole(currentPlay.source.name)) {
       expectedPlayersToPlay = getPlayersWithCurrentRole(game, currentPlay.source.name);
-    } else {
-      expectedPlayersToPlay = getPlayersWithActiveAttributeName(game, "sheriff");
     }
     if (!mustIncludeDeadPlayersGamePlayActions.includes(currentPlay.action)) {
       expectedPlayersToPlay = expectedPlayersToPlay.filter(player => player.isAlive);

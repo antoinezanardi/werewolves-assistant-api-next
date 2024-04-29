@@ -18,6 +18,7 @@ export class GameHistoryRecordRepository {
 
   public async getGameHistory(gameId: Types.ObjectId, getGameHistoryDto: GetGameHistoryDto): Promise<GameHistoryRecord[]> {
     const queryOptions = convertGetGameHistoryDtoToMongooseQueryOptions(getGameHistoryDto);
+
     return this.gameHistoryRecordModel.find({ gameId }, undefined, queryOptions);
   }
 
@@ -32,6 +33,7 @@ export class GameHistoryRecordRepository {
       "play.source.name": "defender",
       "play.source.players": { $elemMatch: { _id: defenderPlayerId } },
     };
+
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
@@ -41,6 +43,7 @@ export class GameHistoryRecordRepository {
       "play.action": "vote",
       "play.source.name": "survivors",
     };
+
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
@@ -50,6 +53,7 @@ export class GameHistoryRecordRepository {
       "play.action": action,
       "play.voting.result": "tie",
     };
+
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
@@ -60,6 +64,7 @@ export class GameHistoryRecordRepository {
       "play.source.name": "accursed-wolf-father",
       "play.source.players": { $elemMatch: { _id: accursedWolfFatherPlayerId } },
     };
+
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
@@ -71,6 +76,7 @@ export class GameHistoryRecordRepository {
       "play.source.players": { $elemMatch: { _id: witchPlayerId } },
       "play.targets.drankPotion": potion,
     };
+
     return this.gameHistoryRecordModel.find(filter);
   }
 
@@ -82,6 +88,7 @@ export class GameHistoryRecordRepository {
       "play.source.players": { $elemMatch: { _id: accursedWolfFatherPlayerId } },
       "play.targets": { $exists: true, $ne: [] },
     };
+
     return this.gameHistoryRecordModel.find(filter);
   }
 
@@ -92,6 +99,7 @@ export class GameHistoryRecordRepository {
       "play.source.players": { $elemMatch: { _id: stutteringJudgePlayerId } },
       "play.didJudgeRequestAnotherVote": true,
     };
+
     return this.gameHistoryRecordModel.find(filter);
   }
 
@@ -106,6 +114,7 @@ export class GameHistoryRecordRepository {
         },
       },
     };
+
     return this.gameHistoryRecordModel.find(filter);
   }
 
@@ -136,11 +145,13 @@ export class GameHistoryRecordRepository {
         },
       ],
     };
+
     return this.gameHistoryRecordModel.find(filter);
   }
 
   public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {
     const filter: FilterQuery<GameHistoryRecord> = { gameId };
+
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
@@ -150,6 +161,7 @@ export class GameHistoryRecordRepository {
       turn,
       "phase.name": phaseName,
     };
+
     return this.gameHistoryRecordModel.find(filter);
   }
 
@@ -160,6 +172,7 @@ export class GameHistoryRecordRepository {
       "play.source.name": gamePlay.source.name,
       "play.causes": gamePlay.causes,
     };
+
     return this.gameHistoryRecordModel.find(filter, undefined, options);
   }
 
@@ -176,6 +189,7 @@ export class GameHistoryRecordRepository {
       "play.source.players": { $elemMatch: { _id: player._id } },
       "play.causes": gamePlay.causes,
     };
+
     return this.gameHistoryRecordModel.find(filter, undefined, options);
   }
 }
