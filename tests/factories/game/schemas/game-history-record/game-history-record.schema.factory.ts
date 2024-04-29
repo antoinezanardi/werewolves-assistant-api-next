@@ -18,6 +18,69 @@ import { createFakeAccursedWolfFatherAlivePlayer, createFakeBigBadWolfAlivePlaye
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
+function createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlaySource: Partial<GameHistoryRecordPlaySource> = {}, override: object = {}): GameHistoryRecordPlaySource {
+  return plainToInstance(GameHistoryRecordPlaySource, {
+    name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(GAME_PLAY_SOURCE_NAMES),
+    players: gameHistoryRecordPlaySource.players ?? [createFakePlayer()],
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeGameHistoryRecordPlayVote(gameHistoryRecordPlayVote: Partial<GameHistoryRecordPlayVote> = {}, override: object = {}): GameHistoryRecordPlayVote {
+  return plainToInstance(GameHistoryRecordPlayVote, {
+    source: gameHistoryRecordPlayVote.source ?? createFakePlayer(),
+    target: gameHistoryRecordPlayVote.target ?? createFakePlayer(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Partial<GameHistoryRecordPlayTarget> = {}, override: object = {}): GameHistoryRecordPlayTarget {
+  return plainToInstance(GameHistoryRecordPlayTarget, {
+    player: gameHistoryRecordPlayTarget.player ?? createFakePlayer(),
+    drankPotion: gameHistoryRecordPlayTarget.drankPotion ?? undefined,
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlayVoting: Partial<GameHistoryRecordPlayVoting> = {}, override: object = {}): GameHistoryRecordPlayVoting {
+  return plainToInstance(GameHistoryRecordPlayVoting, {
+    result: gameHistoryRecordPlayVoting.result ?? faker.helpers.arrayElement(GAME_HISTORY_RECORD_VOTING_RESULTS),
+    nominatedPlayers: gameHistoryRecordPlayVoting.nominatedPlayers ?? undefined,
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
+  return plainToInstance(GameHistoryRecordPlay, {
+    type: gameHistoryRecordPlay.type ?? faker.helpers.arrayElement(GAME_PLAY_TYPES),
+    source: createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlay.source),
+    action: gameHistoryRecordPlay.action ?? faker.helpers.arrayElement(GAME_PLAY_ACTIONS),
+    causes: gameHistoryRecordPlay.causes ?? undefined,
+    targets: gameHistoryRecordPlay.targets ?? undefined,
+    votes: gameHistoryRecordPlay.votes ?? undefined,
+    voting: gameHistoryRecordPlay.voting ? createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlay.voting, override) : undefined,
+    didJudgeRequestAnotherVote: gameHistoryRecordPlay.didJudgeRequestAnotherVote ?? undefined,
+    chosenSide: gameHistoryRecordPlay.chosenSide ?? undefined,
+    chosenCard: gameHistoryRecordPlay.chosenCard ?? undefined,
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecord> = {}, override: object = {}): GameHistoryRecord {
+  return plainToInstance(GameHistoryRecord, {
+    _id: gameHistoryRecord._id ?? createFakeObjectId(),
+    gameId: gameHistoryRecord.gameId ?? createFakeObjectId(),
+    tick: gameHistoryRecord.tick ?? faker.number.int({ min: 1 }),
+    turn: gameHistoryRecord.turn ?? faker.number.int({ min: 1 }),
+    phase: createFakeGamePhase(gameHistoryRecord.phase),
+    play: createFakeGameHistoryRecordPlay(gameHistoryRecord.play),
+    revealedPlayers: gameHistoryRecord.revealedPlayers ?? undefined,
+    deadPlayers: gameHistoryRecord.deadPlayers ?? undefined,
+    createdAt: gameHistoryRecord.createdAt ?? faker.date.recent(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakeGameHistoryRecordStutteringJudgeRequestsAnotherVotePlay(
   gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {},
   override: object = {},
@@ -194,6 +257,7 @@ function createFakeGameHistoryRecordCharmedMeetEachOtherPlay(gameHistoryRecordPl
     createFakePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
     createFakePlayer({ attributes: [createFakeCharmedByPiedPiperPlayerAttribute()] }),
   ];
+
   return createFakeGameHistoryRecordPlay({
     type: "no-action",
     action: "meet-each-other",
@@ -311,69 +375,6 @@ function createFakeGameHistoryRecordSheriffSettleVotesPlay(gameHistoryRecordPlay
     },
     ...gameHistoryRecordPlay,
   }, override);
-}
-
-function createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlaySource: Partial<GameHistoryRecordPlaySource> = {}, override: object = {}): GameHistoryRecordPlaySource {
-  return plainToInstance(GameHistoryRecordPlaySource, {
-    name: gameHistoryRecordPlaySource.name ?? faker.helpers.arrayElement(GAME_PLAY_SOURCE_NAMES),
-    players: gameHistoryRecordPlaySource.players ?? [createFakePlayer()],
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
-}
-
-function createFakeGameHistoryRecordPlayVote(gameHistoryRecordPlayVote: Partial<GameHistoryRecordPlayVote> = {}, override: object = {}): GameHistoryRecordPlayVote {
-  return plainToInstance(GameHistoryRecordPlayVote, {
-    source: gameHistoryRecordPlayVote.source ?? createFakePlayer(),
-    target: gameHistoryRecordPlayVote.target ?? createFakePlayer(),
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
-}
-
-function createFakeGameHistoryRecordPlayTarget(gameHistoryRecordPlayTarget: Partial<GameHistoryRecordPlayTarget> = {}, override: object = {}): GameHistoryRecordPlayTarget {
-  return plainToInstance(GameHistoryRecordPlayTarget, {
-    player: gameHistoryRecordPlayTarget.player ?? createFakePlayer(),
-    drankPotion: gameHistoryRecordPlayTarget.drankPotion ?? undefined,
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
-}
-
-function createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlayVoting: Partial<GameHistoryRecordPlayVoting> = {}, override: object = {}): GameHistoryRecordPlayVoting {
-  return plainToInstance(GameHistoryRecordPlayVoting, {
-    result: gameHistoryRecordPlayVoting.result ?? faker.helpers.arrayElement(GAME_HISTORY_RECORD_VOTING_RESULTS),
-    nominatedPlayers: gameHistoryRecordPlayVoting.nominatedPlayers ?? undefined,
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
-}
-
-function createFakeGameHistoryRecordPlay(gameHistoryRecordPlay: Partial<GameHistoryRecordPlay> = {}, override: object = {}): GameHistoryRecordPlay {
-  return plainToInstance(GameHistoryRecordPlay, {
-    type: gameHistoryRecordPlay.type ?? faker.helpers.arrayElement(GAME_PLAY_TYPES),
-    source: createFakeGameHistoryRecordPlaySource(gameHistoryRecordPlay.source),
-    action: gameHistoryRecordPlay.action ?? faker.helpers.arrayElement(GAME_PLAY_ACTIONS),
-    causes: gameHistoryRecordPlay.causes ?? undefined,
-    targets: gameHistoryRecordPlay.targets ?? undefined,
-    votes: gameHistoryRecordPlay.votes ?? undefined,
-    voting: gameHistoryRecordPlay.voting ? createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlay.voting, override) : undefined,
-    didJudgeRequestAnotherVote: gameHistoryRecordPlay.didJudgeRequestAnotherVote ?? undefined,
-    chosenSide: gameHistoryRecordPlay.chosenSide ?? undefined,
-    chosenCard: gameHistoryRecordPlay.chosenCard ?? undefined,
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
-}
-
-function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecord> = {}, override: object = {}): GameHistoryRecord {
-  return plainToInstance(GameHistoryRecord, {
-    _id: gameHistoryRecord._id ?? createFakeObjectId(),
-    gameId: gameHistoryRecord.gameId ?? createFakeObjectId(),
-    tick: gameHistoryRecord.tick ?? faker.number.int({ min: 1 }),
-    turn: gameHistoryRecord.turn ?? faker.number.int({ min: 1 }),
-    phase: createFakeGamePhase(gameHistoryRecord.phase),
-    play: createFakeGameHistoryRecordPlay(gameHistoryRecord.play),
-    revealedPlayers: gameHistoryRecord.revealedPlayers ?? undefined,
-    deadPlayers: gameHistoryRecord.deadPlayers ?? undefined,
-    createdAt: gameHistoryRecord.createdAt ?? faker.date.recent(),
-    ...override,
-  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

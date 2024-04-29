@@ -244,7 +244,8 @@ describe("Game Controller", () => {
           createFakeCreateGamePlayerDto({ name: "38" }),
           createFakeCreateGamePlayerDto({ name: "39" }),
           createFakeCreateGamePlayerDto({ name: "40" }),
-        ], arePowerfulVillagerRolesPrioritized: false,
+        ],
+        arePowerfulVillagerRolesPrioritized: false,
       };
       const response = await app.inject({
         method: "GET",
@@ -254,9 +255,8 @@ describe("Game Controller", () => {
       const players = response.json<CreateGamePlayerDto[]>();
 
       expect(response.statusCode).toBe(HttpStatus.OK);
-      expect(players).toSatisfyAll<CreateGamePlayerDto>(({ role, side }) =>
-        role.current !== undefined && role.current === role.original &&
-        side.current !== undefined && side.current === side.original);
+      expect(players).toSatisfyAll<CreateGamePlayerDto>(({ role, side }) => role.current !== undefined && role.current === role.original &&
+      side.current !== undefined && side.current === side.original);
     });
   });
 

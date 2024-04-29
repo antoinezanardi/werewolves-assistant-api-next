@@ -26,6 +26,7 @@ export class GamePhaseService {
   public async applyEndingGamePhaseOutcomes(game: Game): Promise<Game> {
     let clonedGame = createGame(game);
     clonedGame = await this.applyEndingGamePhasePlayerAttributesOutcomesToPlayers(clonedGame);
+
     return clonedGame;
   }
 
@@ -39,6 +40,7 @@ export class GamePhaseService {
     }
     const phaseUpcomingPlays = await this.gamePlayService.getPhaseUpcomingPlays(clonedGame);
     clonedGame.upcomingPlays = [...clonedGame.upcomingPlays, ...phaseUpcomingPlays];
+
     return clonedGame;
   }
 
@@ -100,6 +102,7 @@ export class GamePhaseService {
     const isStickyPowerlessAttributeFromAccursedWolfFather = source === "accursed-wolf-father" && isActorPowerlessOnWerewolvesSide;
     const isStickyPowerlessAttribute = name === "powerless" &&
       (stickyPowerlessSourceNames.includes(source) || isStickyPowerlessAttributeFromAccursedWolfFather);
+
     return !irrelevantAttributeNames.includes(name) || isStickyPowerlessAttribute;
   }
 
@@ -117,6 +120,7 @@ export class GamePhaseService {
       attributes.push(createPowerlessByAccursedWolfFatherPlayerAttribute());
     }
     const playerDataToUpdate: Partial<Player> = { role: { ...actingPlayer.role, current: "actor", isRevealed: false }, attributes };
+
     return updatePlayerInGame(actingPlayer._id, playerDataToUpdate, clonedGame);
   }
 

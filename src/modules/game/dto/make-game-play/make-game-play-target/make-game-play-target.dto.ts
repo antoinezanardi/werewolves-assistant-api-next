@@ -12,7 +12,7 @@ class MakeGamePlayTargetDto {
   @IsMongoId()
   public playerId: Types.ObjectId;
 
-  @ApiProperty({ description: `Can be set only if game's current action is \`${"use-potions"}\`. If set to \`${"life"}\`, the \`witch\` saves target's life from \`werewolves\` meal. If set to \`${"death"}\`, the \`witch\` kills the target` })
+  @ApiProperty({ description: `Can be set only if game's current action is \`use-potions\`. If set to \`life\`, the \`witch\` saves target's life from \`werewolves\` meal. If set to \`death\`, the \`witch\` kills the target` })
   @IsOptional()
   @IsIn(WITCH_POTIONS)
   @Expose()

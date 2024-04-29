@@ -23,6 +23,7 @@ function playerRoleTransformer(params: TransformFnParams): unknown {
   value.current = role.name;
   value.original = role.name;
   value.isRevealed = role.name === "villager-villager";
+
   return value;
 }
 

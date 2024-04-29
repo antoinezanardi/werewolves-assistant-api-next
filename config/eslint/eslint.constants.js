@@ -5,6 +5,9 @@ const INDENT_SPACE_COUNT = 2;
 const ERROR = "error";
 const WARNING = "warn";
 const OFF = "off";
+const READONLY = "readonly";
+const ALWAYS = "always";
+const NEVER = "never";
 const MAX_LENGTH_DEFAULT_CONFIG = {
   code: MAX_LENGTH,
   ignoreTemplateLiterals: true,
@@ -44,6 +47,15 @@ const NAMING_CONVENTION_DEFAULT_CONFIG = [
   },
 ];
 
+const ESLINT_IGNORES = [
+  "node_modules/",
+  "dist/",
+  "!.releaserc.js",
+  "tests/coverage/*",
+  "tests/e2e/coverage/*",
+  "tests/unit/coverage/*",
+];
+
 module.exports = {
   MAX_LENGTH,
   MAX_NESTED_CALLBACK,
@@ -52,6 +64,10 @@ module.exports = {
   ERROR,
   WARNING,
   OFF,
+  ALWAYS,
+  NEVER,
   MAX_LENGTH_DEFAULT_CONFIG,
   NAMING_CONVENTION_DEFAULT_CONFIG,
+  READONLY,
+  ESLINT_IGNORES,
 };

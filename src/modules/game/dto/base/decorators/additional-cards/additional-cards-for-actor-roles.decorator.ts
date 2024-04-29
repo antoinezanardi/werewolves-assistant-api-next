@@ -11,6 +11,7 @@ function areAdditionalCardsForActorRolesRespected(value: unknown): boolean {
   const additionalCards = value as CreateGameAdditionalCardDto[];
   const actorAdditionalCards = additionalCards.filter(({ recipient }) => recipient === "actor");
   const eligibleActorAdditionalCardsRoleNames = ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLES.map(({ name }) => name);
+
   return actorAdditionalCards.every(({ roleName }) => eligibleActorAdditionalCardsRoleNames.includes(roleName));
 }
 

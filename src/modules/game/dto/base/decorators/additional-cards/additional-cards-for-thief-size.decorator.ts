@@ -14,6 +14,7 @@ function isAdditionalCardsForThiefSizeRespected(value: unknown, validationArgume
   }
   const cards = value as { recipient: string }[];
   const thiefAdditionalCards = cards.filter(card => card.recipient === "thief");
+
   return thiefAdditionalCards.length === options.roles.thief.additionalCardsCount;
 }
 

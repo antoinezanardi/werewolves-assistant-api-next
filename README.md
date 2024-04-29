@@ -282,6 +282,9 @@ pnpm run lint:fix
 
 # Lint and fix only on staged files (runs on pre-commit)
 pnpm run lint:staged:fix
+
+# Display all configs and rules used in browser using @eslint/config-inspector
+pnpm run lint:inspect-config
 ```
 
 ### 🥇 Project quality scanner

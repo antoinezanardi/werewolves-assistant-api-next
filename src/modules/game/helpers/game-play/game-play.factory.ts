@@ -6,6 +6,14 @@ import type { GamePlayCause, GamePlayOccurrence } from "@/modules/game/types/gam
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
+function createGamePlaySource(gamePlaySource: GamePlaySource): GamePlaySource {
+  return plainToInstance(GamePlaySource, gamePlaySource, { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true });
+}
+
+function createGamePlay(gamePlay: GamePlay): GamePlay {
+  return plainToInstance(GamePlay, gamePlay, { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true });
+}
+
 function createGamePlayStutteringJudgeRequestsAnotherVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
   return createGamePlay({
     type: "request-another-vote",
@@ -261,14 +269,6 @@ function createGamePlayWerewolvesEat(gamePlay: Partial<GamePlay> = {}): GamePlay
     occurrence: "on-nights",
     ...gamePlay,
   });
-}
-
-function createGamePlaySource(gamePlaySource: GamePlaySource): GamePlaySource {
-  return plainToInstance(GamePlaySource, gamePlaySource, { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true });
-}
-
-function createGamePlay(gamePlay: GamePlay): GamePlay {
-  return plainToInstance(GamePlay, gamePlay, { ...DEFAULT_PLAIN_TO_INSTANCE_OPTIONS, excludeExtraneousValues: true });
 }
 
 export {

@@ -97,7 +97,8 @@ describe("Player Attribute Service", () => {
   describe("decreaseRemainingPhasesAndRemoveObsoleteAttributes", () => {
     it("should return player as is when he is dead.", () => {
       const player = createFakeSeerAlivePlayer({
-        isAlive: false, attributes: [
+        isAlive: false,
+        attributes: [
           createFakeCantVoteBySurvivorsPlayerAttribute({ remainingPhases: 1 }),
           createFakeSheriffBySurvivorsPlayerAttribute({ remainingPhases: 2 }),
         ],

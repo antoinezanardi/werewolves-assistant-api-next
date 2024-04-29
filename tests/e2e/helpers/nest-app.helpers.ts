@@ -16,6 +16,7 @@ async function initNestApp(): Promise<{ app: NestFastifyApplication; module: Tes
   app.useGlobalPipes(new ValidationPipe(DEFAULT_VALIDATION_PIPE_OPTIONS));
   await app.init();
   await app.getHttpAdapter().getInstance().ready();
+
   return { app, module };
 }
 

@@ -48,6 +48,7 @@ export class GamePlayService {
     const currentPhaseNewUpcomingPlays = await this.getNewUpcomingPlaysForCurrentPhase(clonedGame);
     const upcomingPlaysToSort = [...clonedGame.upcomingPlays, ...currentPhaseNewUpcomingPlays];
     clonedGame.upcomingPlays = this.sortUpcomingPlaysByPriority(upcomingPlaysToSort);
+
     return clonedGame;
   }
 
@@ -55,10 +56,12 @@ export class GamePlayService {
     const clonedGame = createGame(game);
     if (!clonedGame.upcomingPlays.length) {
       clonedGame.currentPlay = null;
+
       return clonedGame;
     }
     clonedGame.currentPlay = clonedGame.upcomingPlays[0];
     clonedGame.upcomingPlays.shift();
+
     return clonedGame;
   }
 
@@ -67,6 +70,7 @@ export class GamePlayService {
     clonedGame.currentPlay = this.gamePlayAugmenterService.setGamePlayCanBeSkipped(clonedGame.currentPlay, clonedGame);
     clonedGame.currentPlay = await this.gamePlayAugmenterService.setGamePlaySourceInteractions(clonedGame.currentPlay, clonedGame);
     clonedGame.currentPlay = this.gamePlayAugmenterService.setGamePlaySourcePlayers(clonedGame.currentPlay, clonedGame);
+
     return clonedGame;
   }
 
@@ -78,6 +82,7 @@ export class GamePlayService {
     const upcomingNightPlays = phaseGamePlaysPriorityList
       .filter((gamePlay, index) => suitabilityResults[index])
       .map(play => createGamePlay(play as GamePlay));
+
     return isSheriffElectionTime ? [createGamePlaySurvivorsElectSheriff(), ...upcomingNightPlays] : upcomingNightPlays;
   }
 
@@ -86,6 +91,7 @@ export class GamePlayService {
     const suitabilityPromises = clonedGame.upcomingPlays.map(async eligiblePlay => this.isGamePlaySuitableForCurrentPhase(game, eligiblePlay));
     const suitabilityResults = await Promise.all(suitabilityPromises);
     clonedGame.upcomingPlays = clonedGame.upcomingPlays.filter((gamePlay, index) => suitabilityResults[index]);
+
     return clonedGame;
   }
 
@@ -94,10 +100,12 @@ export class GamePlayService {
     const isAlreadyPlayed = gameHistoryPhaseRecords.some(({ play }) => {
       const { occurrence } = upcomingPlay;
       const { type, source, action, causes } = play;
+
       return areGamePlaysEqual({ type, source, action, causes, occurrence }, upcomingPlay);
     });
     const isInUpcomingPlays = game.upcomingPlays.some(gamePlay => areGamePlaysEqual(gamePlay, upcomingPlay));
     const isCurrentPlay = !!currentPlay && areGamePlaysEqual(currentPlay, upcomingPlay);
+
     return !isInUpcomingPlays && !isAlreadyPlayed && !isCurrentPlay;
   }
 
@@ -105,6 +113,7 @@ export class GamePlayService {
     const { _id, turn, phase } = game;
     const currentPhaseUpcomingPlays = await this.getPhaseUpcomingPlays(game);
     const gameHistoryPhaseRecords = await this.gameHistoryRecordService.getGameHistoryPhaseRecords(_id, turn, phase.name);
+
     return currentPhaseUpcomingPlays.filter(gamePlay => this.isUpcomingPlayNewForCurrentPhase(gamePlay, game, gameHistoryPhaseRecords));
   }
 
@@ -120,15 +129,18 @@ export class GamePlayService {
   private sortUpcomingPlaysByPriority(upcomingPlays: GamePlay[]): GamePlay[] {
     const clonedUpcomingPlays = upcomingPlays.map(upcomingPlay => createGamePlay(upcomingPlay));
     this.validateUpcomingPlaysPriority(clonedUpcomingPlays);
+
     return clonedUpcomingPlays.sort((playA, playB) => {
       const playAPriorityIndex = findPlayPriorityIndex(playA);
       const playBPriorityIndex = findPlayPriorityIndex(playB);
+
       return playAPriorityIndex - playBPriorityIndex;
     });
   }
 
   private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GamePhaseName): boolean {
     const { electedAt, isEnabled } = sheriffGameOptions;
+
     return isEnabled && electedAt.turn === currentTurn && electedAt.phaseName === currentPhase;
   }
 
@@ -137,6 +149,7 @@ export class GamePlayService {
       return false;
     }
     const inLovePlayers = getPlayersWithActiveAttributeName(game, "in-love");
+
     return inLovePlayers.length > 0 && inLovePlayers.every(player => player.isAlive) && !await this.gameHistoryRecordService.hasGamePlayBeenMade(game._id, gamePlay);
   }
 
@@ -150,6 +163,7 @@ export class GamePlayService {
     }
     const { voteRequestsCount } = game.options.roles.stutteringJudge;
     const judgeGamePlayRecords = await this.gameHistoryRecordService.getGameHistoryStutteringJudgeRequestsAnotherVoteRecords(game._id, stutteringJudgePlayer._id);
+
     return judgeGamePlayRecords.length < voteRequestsCount;
   }
 
@@ -163,6 +177,7 @@ export class GamePlayService {
       return false;
     }
     const lastAccursedWolfFatherGamePlayRecord = await this.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord(game._id, accursedWolfFatherPlayer._id);
+
     return !doesSkipCallIfNoTarget || !lastAccursedWolfFatherGamePlayRecord;
   }
 
@@ -181,6 +196,7 @@ export class GamePlayService {
     const isBearTamerInfected = bearTamerPlayer.side.current === "werewolves";
     const lastVoteGamePlay = await this.gameHistoryRecordService.getLastGameHistorySurvivorsVoteRecord(game._id);
     const didGamePhaseHaveSurvivorsVote = lastVoteGamePlay?.turn === game.turn && lastVoteGamePlay.phase.name === game.phase.name;
+
     return !didGamePhaseHaveSurvivorsVote && (doesGrowlOnWerewolvesSide && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor);
   }
 
@@ -195,6 +211,7 @@ export class GamePlayService {
       return !!getPlayerDtoWithRole(game, "angel");
     }
     const angelPlayer = getPlayerWithCurrentRole(game, "angel");
+
     return !!angelPlayer && isPlayerAliveAndPowerful(angelPlayer, game) && !await this.gameHistoryRecordService.hasGamePlayBeenMade(game._id, gamePlay);
   }
 
@@ -207,6 +224,7 @@ export class GamePlayService {
       werewolves: () => game instanceof CreateGameDto || getGroupOfPlayers(game, source).some(werewolf => werewolf.isAlive),
       villagers: () => false,
     };
+
     return specificGroupMethods[source](game, gamePlay);
   }
 
@@ -227,6 +245,7 @@ export class GamePlayService {
     }
     const actorPlayer = getPlayerWithCurrentRole(game, "actor");
     const notUsedActorGameAdditionalCards = game.additionalCards?.filter(({ recipient, isUsed }) => recipient === "actor" && !isUsed) ?? [];
+
     return !!actorPlayer && isPlayerAliveAndPowerful(actorPlayer, game) && notUsedActorGameAdditionalCards.length > 0;
   }
 
@@ -245,6 +264,7 @@ export class GamePlayService {
     const hasWitchUsedLifePotion = lifePotionRecords.length > 0;
     const hasWitchUsedDeathPotion = deathPotionRecords.length > 0;
     const { doSkipCallIfNoTarget } = game.options.roles;
+
     return !doSkipCallIfNoTarget || !hasWitchUsedLifePotion || !hasWitchUsedDeathPotion;
   }
 
@@ -261,6 +281,7 @@ export class GamePlayService {
     const { doSkipCallIfNoTarget } = game.options.roles;
     const availableTargets = getEligibleWhiteWerewolfTargets(game);
     const whiteWerewolfPlayer = getPlayerWithCurrentRole(game, "white-werewolf");
+
     return shouldWhiteWerewolfBeCalledOnCurrentTurn && !!whiteWerewolfPlayer && isPlayerAliveAndPowerful(whiteWerewolfPlayer, game) &&
       (!doSkipCallIfNoTarget || !!availableTargets.length);
   }
@@ -270,6 +291,7 @@ export class GamePlayService {
       return !!getPlayerDtoWithRole(game, "pied-piper");
     }
     const piedPiperPlayer = getPlayerWithCurrentRole(game, "pied-piper");
+
     return !!piedPiperPlayer && isPlayerAliveAndPowerful(piedPiperPlayer, game);
   }
 
@@ -280,6 +302,7 @@ export class GamePlayService {
     const { doSkipCallIfNoTarget } = game.options.roles;
     const availableTargets = getEligibleWerewolvesTargets(game);
     const bigBadWolfPlayer = getPlayerWithCurrentRole(game, "big-bad-wolf");
+
     return !!bigBadWolfPlayer && isPlayerAliveAndPowerful(bigBadWolfPlayer, game) && (!doSkipCallIfNoTarget || !!availableTargets.length);
   }
 
@@ -291,6 +314,7 @@ export class GamePlayService {
     }
     const threeBrothersPlayers = getPlayersWithCurrentRole(game, "three-brothers");
     const minimumBrotherCountToCall = 2;
+
     return shouldThreeBrothersBeCalledOnCurrentTurn && threeBrothersPlayers.filter(brother => brother.isAlive).length >= minimumBrotherCountToCall;
   }
 
@@ -301,6 +325,7 @@ export class GamePlayService {
       return shouldTwoSistersBeCalledOnCurrentTurn && !!getPlayerDtoWithRole(game, "two-sisters");
     }
     const twoSistersPlayers = getPlayersWithCurrentRole(game, "two-sisters");
+
     return shouldTwoSistersBeCalledOnCurrentTurn && twoSistersPlayers.length > 0 && twoSistersPlayers.every(sister => sister.isAlive);
   }
 
@@ -317,6 +342,7 @@ export class GamePlayService {
       return false;
     }
     const inLovePlayers = getPlayersWithActiveAttributeName(game, "in-love");
+
     return !inLovePlayers.length;
   }
 
@@ -347,6 +373,7 @@ export class GamePlayService {
       return true;
     }
     const sheriffPlayer = getPlayerWithActiveAttributeName(game, "sheriff");
+
     return !!sheriffPlayer;
   }
 

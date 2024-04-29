@@ -1,14 +1,16 @@
-const { OFF, ERROR } = require("../../constants");
+const JestPlugin = require("eslint-plugin-jest");
+const { OFF, ERROR } = require("../eslint.constants");
 
-const testFilesOverride = Object.freeze({
-  files: ["*.e2e-spec.ts", "*.spec.ts"],
+const ESLINT_TESTS_CONFIG = Object.freeze({
+  name: "tests",
+  files: ["**/*.e2e-spec.ts", "**/*.spec.ts"],
+  plugins: { jest: JestPlugin },
   rules: {
-    "import/max-dependencies": OFF,
-    "max-len": OFF,
     "max-lines-per-function": OFF,
     "@typescript-eslint/init-declarations": OFF,
     "@typescript-eslint/no-magic-numbers": OFF,
-    "import/no-namespace": OFF,
+    "@typescript-eslint/unbound-method": OFF,
+    "@stylistic/max-len": OFF,
     // ---- Test Rules -----
     // - Supported Rules (https://github.com/jest-community/eslint-plugin-jest#rules)
     "jest/consistent-test-it": ERROR,
@@ -66,4 +68,4 @@ const testFilesOverride = Object.freeze({
   },
 });
 
-module.exports = { testFilesOverride };
+module.exports = ESLINT_TESTS_CONFIG;

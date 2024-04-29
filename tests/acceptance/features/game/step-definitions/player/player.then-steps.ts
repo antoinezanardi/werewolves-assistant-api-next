@@ -47,6 +47,7 @@ Then(
     const playersWithAttribute = players.filter(player => {
       const attribute = getPlayerAttributeWithNameAndSource(player, attributeName, attributeSource);
       const isAttributeActive = !!attribute && isPlayerAttributeActive(attribute, this.game);
+
       return isAttributeActive === (isActive === "active");
     });
 
@@ -68,6 +69,7 @@ Then(
     const playersWithAttribute = players.filter(player => {
       const attribute = getPlayerAttributeWithNameAndSource(player, attributeName, attributeSource);
       const isAttributeActive = !!attribute && isPlayerAttributeActive(attribute, this.game);
+
       return isAttributeActive === (isActive === "active");
     });
 
@@ -81,6 +83,7 @@ Then(
     const doSomePlayerHaveAttribute = this.game.players.some(player => {
       const attribute = getPlayerAttributeWithNameAndSource(player, attributeName, attributeSource);
       const isAttributeActive = !!attribute && isPlayerAttributeActive(attribute, this.game);
+
       return isAttributeActive === (isActive === "active");
     });
 

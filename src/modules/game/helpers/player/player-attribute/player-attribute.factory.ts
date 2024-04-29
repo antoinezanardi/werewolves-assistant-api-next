@@ -6,6 +6,10 @@ import { PlayerAttribute } from "@/modules/game/schemas/player/player-attribute/
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
+function createPlayerAttribute(playerAttribute: PlayerAttribute): PlayerAttribute {
+  return plainToInstance(PlayerAttribute, toJSON(playerAttribute), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createActingByActorPlayerAttribute(playerAttribute: Partial<PlayerAttribute> = {}): PlayerAttribute {
   return createPlayerAttribute({
     name: "acting",
@@ -210,10 +214,6 @@ function createSheriffBySurvivorsPlayerAttribute(playerAttribute: Partial<Player
     doesRemainAfterDeath: true,
     ...playerAttribute,
   });
-}
-
-function createPlayerAttribute(playerAttribute: PlayerAttribute): PlayerAttribute {
-  return plainToInstance(PlayerAttribute, toJSON(playerAttribute), DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
 export {

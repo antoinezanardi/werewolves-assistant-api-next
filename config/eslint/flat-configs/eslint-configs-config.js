@@ -1,8 +1,10 @@
-const { OFF } = require("../../constants");
+const { OFF } = require("../eslint.constants");
 
-const configFilesOverride = Object.freeze({
-  files: ["./config/**/*.ts", "./config/**/*.js"],
+const ESLINT_CONFIGS_CONFIG = Object.freeze({
+  name: "configs",
+  files: ["config/**/*.ts", "config/**/*.js"],
   rules: {
+    "no-magic-numbers": OFF,
     "@typescript-eslint/no-require-imports": OFF,
     "@typescript-eslint/no-restricted-imports": OFF,
     "@typescript-eslint/no-var-requires": OFF,
@@ -11,4 +13,4 @@ const configFilesOverride = Object.freeze({
   },
 });
 
-module.exports = { configFilesOverride };
+module.exports = ESLINT_CONFIGS_CONFIG;

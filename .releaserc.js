@@ -115,17 +115,20 @@ module.exports = {
           commitGroupsSort: (commitGroupA, commitGroupB) => {
             const commitGroupTitleA = commitGroupA.title.replace(/[^a-zA-Z]/gu, "").toLowerCase();
             const commitGroupTitleB = commitGroupB.title.replace(/[^a-zA-Z]/gu, "").toLowerCase();
+            const neutralOrder = 0;
+            const upperOrder = 1;
+            const lowerOrder = -1;
 
             if (commitGroupsOrder[commitGroupTitleA] === undefined || commitGroupsOrder[commitGroupTitleB] === undefined) {
-              return 0;
+              return neutralOrder;
             }
             if (commitGroupsOrder[commitGroupTitleA] < commitGroupsOrder[commitGroupTitleB]) {
-              return -1;
+              return lowerOrder;
             }
             if (commitGroupsOrder[commitGroupTitleA] > commitGroupsOrder[commitGroupTitleB]) {
-              return 1;
+              return upperOrder;
             }
-            return 0;
+            return neutralOrder;
           },
         },
       },

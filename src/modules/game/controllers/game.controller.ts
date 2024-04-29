@@ -56,9 +56,9 @@ export class GameController {
   }
 
   @Delete(":id")
-  @ApiOperation({ summary: "Cancel a playing game", description: `This endpoint won't delete the game, but set its status to ${"canceled"}. In this status, the game can't be mutated anymore.` })
+  @ApiOperation({ summary: "Cancel a playing game", description: `This endpoint won't delete the game, but set its status to canceled. In this status, the game can't be mutated anymore.` })
   @ApiGameIdParam()
-  @ApiResponse({ status: HttpStatus.OK, type: Game, description: `Game's status will be set to ${"canceled"}` })
+  @ApiResponse({ status: HttpStatus.OK, type: Game, description: `Game's status will be set to canceled` })
   @ApiGameNotFoundResponse()
   private async cancelGame(@Param("id", GetGameByIdPipe) game: Game): Promise<Game> {
     return this.gameService.cancelGame(game);

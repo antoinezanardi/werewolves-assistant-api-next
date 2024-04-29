@@ -22,6 +22,7 @@ function playerSideTransformer(params: TransformFnParams): unknown {
   }
   value.current = role.side;
   value.original = role.side;
+
   return params.value;
 }
 
