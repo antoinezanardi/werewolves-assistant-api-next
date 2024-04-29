@@ -1,5 +1,17 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.31.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.31.0...v1.31.1) (2024-04-29)
+
+
+### 🐛 Bug Fixes
+
+* **pnpm:** correct pnpm version ([#984](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/984)) ([b5b16dd](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/b5b16dd54c4cb538bdc605f85cb04756bdb7f619))
+
+
+### 🧹 Chore
+
+* **deps:** bump the eslint group with 4 updates ([#980](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/980)) ([213478b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/213478b79a8d4a77cd64e790146a3f32a76c4a5e))
+
 ## [1.31.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.30.1...v1.31.0) (2024-04-18)
 
 
