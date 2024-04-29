@@ -1,1 +1,4 @@
 runtime: nodejs20
+
+build_env_variables:
+  COREPACK_ENABLE_STRICT: '0'
