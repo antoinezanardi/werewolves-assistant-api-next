@@ -52,7 +52,6 @@ jobs:
       - name: Install pnpm 🏗️
         uses: pnpm/action-setup@v3
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
