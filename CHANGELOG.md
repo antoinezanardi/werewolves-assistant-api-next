@@ -1,5 +1,13 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.31.2](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.31.1...v1.31.2) (2024-04-29)
+
+
+### 🧹 Chore
+
+* **deps:** bump light-my-request from 5.12.0 to 5.13.0 ([#975](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/975)) ([f06cff4](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f06cff450c7e91bff1aaab7458df4afebc1d8a8b))
+* **pnpm:** skip version check ([#986](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/986)) ([08acfba](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/08acfba94c59a002bafe6a39be73695783bb43cb))
+
 ## [1.31.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.31.0...v1.31.1) (2024-04-29)
 
 
