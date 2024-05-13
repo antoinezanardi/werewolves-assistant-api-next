@@ -85,8 +85,8 @@ importers:
         specifier: ^19.2.2
         version: 19.2.2
       '@cucumber/cucumber':
-        specifier: ^10.4.0
-        version: 10.6.0
+        specifier: ^10.7.0
+        version: 10.7.0
       '@eslint/config-inspector':
         specifier: ^0.4.8
         version: 0.4.8(eslint@9.2.0)
@@ -578,8 +578,8 @@ packages:
   '@cucumber/cucumber-expressions@17.1.0':
     resolution: {integrity: sha512-PCv/ppsPynniKPWJr5v566daCVe+pbxQpHGrIu/Ev57cCH9Rv+X0F6lio4Id3Z64TaG7btCRLUGewIgLwmrwOA==}
 
-  '@cucumber/cucumber@10.6.0':
-    resolution: {integrity: sha512-1ui/PDJelSRioZGYZdxeNepnCetbjbv16FUDdWi6WdjAeMqfCsuiJHjN++b7Wjxd1xKhXdSLfMntqpuNcPTIug==}
+  '@cucumber/cucumber@10.7.0':
+    resolution: {integrity: sha512-8E5vqOIpZOJlRH/aoZc50+yahrObvkbZSxI5WUqM39V3BHNpfzNaPpuLYpSHD2j+gTlubZ8c56RE3Udq38m66g==}
     engines: {node: 18 || >=20}
     hasBin: true
 
@@ -6027,7 +6027,7 @@ snapshots:
     dependencies:
       regexp-match-indices: 1.0.2
 
-  '@cucumber/cucumber@10.6.0':
+  '@cucumber/cucumber@10.7.0':
     dependencies:
       '@cucumber/ci-environment': 10.0.1
       '@cucumber/cucumber-expressions': 17.1.0
