@@ -130,7 +130,7 @@
     "jest-extended": "^4.0.2",
     "jest-when": "^3.6.0",
     "light-my-request": "5.13.0",
-    "lint-staged": "^15.2.4",
+    "lint-staged": "^15.2.5",
     "rimraf": "^5.0.7",
     "semantic-release": "^23.1.1",
     "semantic-release-export-data": "^1.0.1",
