@@ -21,6 +21,7 @@ describe("Game Factory", () => {
         options: createFakeGameOptions(),
         upcomingPlays: [createFakeGamePlaySurvivorsElectSheriff()],
         status: "playing",
+        lastGameHistoryRecord: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };

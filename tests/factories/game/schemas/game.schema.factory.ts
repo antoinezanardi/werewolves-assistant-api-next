@@ -25,6 +25,7 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
     additionalCards: game.additionalCards,
     options: createFakeGameOptions(game.options),
     victory: game.victory,
+    lastGameHistoryRecord: game.lastGameHistoryRecord ?? null,
     createdAt: game.createdAt ?? faker.date.recent(),
     updatedAt: game.updatedAt ?? faker.date.recent(),
     ...override,
