@@ -1,3 +1,4 @@
+import { GAME_HISTORY_RECORD_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
@@ -44,6 +45,7 @@ const GAME_FIELDS_SPECS = {
   currentPlay: {
     required: true,
     type: GAME_PLAY_SCHEMA,
+    default: null,
   },
   upcomingPlays: {
     required: true,
@@ -63,6 +65,11 @@ const GAME_FIELDS_SPECS = {
     required: false,
     type: GAME_VICTORY_SCHEMA,
     default: undefined,
+  },
+  lastGameHistoryRecord: {
+    required: true,
+    type: GAME_HISTORY_RECORD_SCHEMA,
+    default: null,
   },
   createdAt: { required: true },
   updatedAt: { required: true },
@@ -112,6 +119,10 @@ const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> 
   victory: {
     description: "Victory data set when `status` is `over`",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.victory),
+  },
+  lastGameHistoryRecord: {
+    description: "Last game history record or the most recent play made in the game",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.lastGameHistoryRecord),
   },
   createdAt: {
     description: "When the game was created",

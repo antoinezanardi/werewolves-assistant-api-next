@@ -29,6 +29,15 @@ Then(/^the game's status should be (?<phase>playing|over|canceled)$/u, function(
   expect(this.game.status).toBe(status);
 });
 
+Then(/^the game's last game history record should be null$/u, function(this: CustomWorld): void {
+  expect(this.game.lastGameHistoryRecord).toBeNull();
+});
+
+Then(/^the game's last game history record should be (?<source>.+?) to (?<action>.+?)$/u, function(this: CustomWorld, source: string, action: string): void {
+  expect(this.game.lastGameHistoryRecord?.play.source.name).toBe(source);
+  expect(this.game.lastGameHistoryRecord?.play.action).toBe(action);
+});
+
 Then(
   /^the game's winners should be (?<winners>villagers|werewolves|lovers|angel|white-werewolf|pied-piper|prejudiced-manipulator|none) with the following players$/u,
   function(this: CustomWorld, victoryType: GameVictoryType, winnersDatable: DataTable): void {

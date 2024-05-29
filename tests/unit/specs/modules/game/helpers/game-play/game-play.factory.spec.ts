@@ -125,6 +125,18 @@ describe("Game Play Factory", () => {
 
       expect(createGamePlaySurvivorsVote()).toStrictEqual<GamePlay>(expectedGamePlay);
     });
+
+    it("should set occurrence to consequential when causes is previous-votes-were-in-ties.", () => {
+      const expectedGamePlay = createFakeGamePlay({
+        type: "vote",
+        source: createFakeGamePlaySource({ name: "survivors" }),
+        action: "vote",
+        causes: ["previous-votes-were-in-ties"],
+        occurrence: "consequential",
+      });
+
+      expect(createGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] })).toStrictEqual<GamePlay>(expectedGamePlay);
+    });
   });
 
   describe("createGamePlaySurvivorsElectSheriff", () => {

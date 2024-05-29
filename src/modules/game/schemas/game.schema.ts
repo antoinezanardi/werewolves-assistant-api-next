@@ -1,3 +1,4 @@
+import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
@@ -17,7 +18,10 @@ import { toObjectId } from "@/shared/validation/transformers/validation.transfor
 
 @Schema({
   timestamps: true,
+  id: false,
   versionKey: false,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
 })
 class Game {
   @ApiProperty(GAME_API_PROPERTIES._id as ApiPropertyOptions)
@@ -91,9 +95,22 @@ class Game {
   @Type(() => Date)
   @Expose()
   public updatedAt: Date;
+
+  @ApiProperty(GAME_API_PROPERTIES.lastGameHistoryRecord as ApiPropertyOptions)
+  @Type(() => GameHistoryRecord)
+  @Expose()
+  public lastGameHistoryRecord: GameHistoryRecord | null = null;
 }
 
 const GAME_SCHEMA = SchemaFactory.createForClass(Game);
+
+GAME_SCHEMA.virtual("lastGameHistoryRecord", {
+  ref: GameHistoryRecord.name,
+  localField: "_id",
+  foreignField: "gameId",
+  justOne: true,
+  options: { sort: { createdAt: -1 } },
+});
 
 export {
   Game,
