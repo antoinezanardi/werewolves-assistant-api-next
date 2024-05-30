@@ -1,3 +1,4 @@
+import { isInNightOrTwilightPhase } from "@/modules/game/helpers/game-phase/game-phase.helpers";
 import { Injectable } from "@nestjs/common";
 
 import { createAngelGameVictory, createLoversGameVictory, createNoneGameVictory, createPiedPiperGameVictory, createPrejudicedManipulatorGameVictory, createVillagersGameVictory, createWerewolvesGameVictory, createWhiteWerewolfGameVictory } from "@/modules/game/helpers/game-victory/game-victory.factory";
@@ -82,13 +83,13 @@ export class GameVictoryService {
 
   private doesAngelWin(game: Game): boolean {
     const angelPlayer = getPlayerWithCurrentRole(game, "angel");
-    const { turn, phase } = game;
+    const { turn } = game;
     if (!angelPlayer?.death || angelPlayer.isAlive || !isPlayerPowerful(angelPlayer, game) || turn > 1) {
       return false;
     }
     const { cause: deathCause } = angelPlayer.death;
 
-    return deathCause === "eaten" || deathCause === "vote" && phase.name === "night";
+    return deathCause === "eaten" || deathCause === "vote" && isInNightOrTwilightPhase(game);
   }
 
   private doesPrejudicedManipulatorWin(game: Game): boolean {

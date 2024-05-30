@@ -871,7 +871,7 @@ describe("Game Controller", () => {
       };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
-        phase: toJSON(createFakeGamePhase({ name: "night", tick: 1 })) as GamePhase,
+        phase: toJSON(createFakeGamePhase({ name: "twilight", tick: 1 })) as GamePhase,
         status: "playing",
         turn: 1,
         tick: 1,
@@ -950,7 +950,7 @@ describe("Game Controller", () => {
       };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
-        phase: toJSON(createFakeGamePhase({ name: "night", tick: 1 })) as GamePhase,
+        phase: toJSON(createFakeGamePhase({ name: "twilight", tick: 1 })) as GamePhase,
         status: "playing",
         turn: 1,
         tick: 1,

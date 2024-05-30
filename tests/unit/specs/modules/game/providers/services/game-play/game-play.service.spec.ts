@@ -71,7 +71,7 @@ describe("Game Play Service", () => {
       getLastGameHistorySurvivorsVoteRecord: jest.SpyInstance;
       getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.SpyInstance;
       getGameHistoryWitchUsesSpecificPotionRecords: jest.SpyInstance;
-      getGameHistoryPhaseRecords: jest.SpyInstance;
+      getGameHistoryRecordsForTurnAndPhases: jest.SpyInstance;
       hasGamePlayBeenMade: jest.SpyInstance;
       hasGamePlayBeenMadeByPlayer: jest.SpyInstance;
       getGameHistoryStutteringJudgeRequestsAnotherVoteRecords: jest.SpyInstance;
@@ -123,7 +123,7 @@ describe("Game Play Service", () => {
         getLastGameHistorySurvivorsVoteRecord: jest.fn().mockResolvedValue(null),
         getLastGameHistoryAccursedWolfFatherInfectsRecord: jest.fn().mockResolvedValue(null),
         getGameHistoryWitchUsesSpecificPotionRecords: jest.fn().mockResolvedValue([]),
-        getGameHistoryPhaseRecords: jest.fn().mockResolvedValue([]),
+        getGameHistoryRecordsForTurnAndPhases: jest.fn().mockResolvedValue([]),
         hasGamePlayBeenMade: jest.fn().mockResolvedValue(false),
         hasGamePlayBeenMadeByPlayer: jest.fn().mockResolvedValue(false),
         getGameHistoryStutteringJudgeRequestsAnotherVoteRecords: jest.fn().mockResolvedValue([]),
@@ -517,12 +517,28 @@ describe("Game Play Service", () => {
       mocks.gamePlayService.isUpcomingPlayNewForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isUpcomingPlayNewForCurrentPhase }, "isUpcomingPlayNewForCurrentPhase");
     });
 
-    it("should call getPhaseUpcomingPlays method when called.", async() => {
+    it("should call getPhaseUpcomingPlays method with night and twilight phases when game phase is night.", async() => {
       const game = createFakeGame({ phase: createFakeGamePhase({ name: "night" }) });
       await services.gamePlay["getNewUpcomingPlaysForCurrentPhase"](game);
 
       expect(mocks.gamePlayService.getPhaseUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
-      expect(mocks.gameHistoryRecordService.getGameHistoryPhaseRecords).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, "night");
+      expect(mocks.gameHistoryRecordService.getGameHistoryRecordsForTurnAndPhases).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, ["night", "twilight"]);
+    });
+
+    it("should call getPhaseUpcomingPlays method with night and twilight phases when game phase is twilight.", async() => {
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "twilight" }) });
+      await services.gamePlay["getNewUpcomingPlaysForCurrentPhase"](game);
+
+      expect(mocks.gamePlayService.getPhaseUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gameHistoryRecordService.getGameHistoryRecordsForTurnAndPhases).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, ["night", "twilight"]);
+    });
+
+    it("should call getPhaseUpcomingPlays method with day phase when game phase is day.", async() => {
+      const game = createFakeGame({ phase: createFakeGamePhase({ name: "day" }) });
+      await services.gamePlay["getNewUpcomingPlaysForCurrentPhase"](game);
+
+      expect(mocks.gamePlayService.getPhaseUpcomingPlays).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gameHistoryRecordService.getGameHistoryRecordsForTurnAndPhases).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, ["day"]);
     });
 
     it("should call isUpcomingPlayNewForCurrentPhase method for as much times as there are upcoming phase plays when filtering them.", async() => {

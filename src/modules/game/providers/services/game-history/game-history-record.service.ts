@@ -80,8 +80,8 @@ export class GameHistoryRecordService {
     return this.gameHistoryRecordRepository.getGameHistoryElderProtectedFromWerewolvesRecords(gameId, elderPlayerId);
   }
 
-  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phase: GamePhaseName): Promise<GameHistoryRecord[]> {
-    return this.gameHistoryRecordRepository.getGameHistoryPhaseRecords(gameId, turn, phase);
+  public async getGameHistoryRecordsForTurnAndPhases(gameId: Types.ObjectId, turn: number, phases: GamePhaseName[]): Promise<GameHistoryRecord[]> {
+    return this.gameHistoryRecordRepository.getGameHistoryRecordsForTurnAndPhases(gameId, turn, phases);
   }
 
   public async getPreviousGameHistoryRecord(gameId: Types.ObjectId): Promise<GameHistoryRecord | null> {

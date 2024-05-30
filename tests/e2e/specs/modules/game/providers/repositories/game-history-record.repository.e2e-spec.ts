@@ -1089,8 +1089,8 @@ describe("Game History Record Repository", () => {
     });
   });
 
-  describe("getGameHistoryPhaseRecords", () => {
-    it("should get 3 records when called with gameId, turn and phase.", async() => {
+  describe("getGameHistoryRecordsForTurnAndPhases", () => {
+    it("should get 3 records when called with gameId, turn and day phase.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       const play = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: "werewolves" }) });
@@ -1098,13 +1098,36 @@ describe("Game History Record Repository", () => {
         createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "day" }), play }),
         createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "night" }), play }),
         createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "day" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "twilight" }), play }),
         createFakeGameHistoryRecord({ gameId, turn: 2, phase: createFakeGamePhase({ name: "day" }), play }),
         createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "day" }), play }),
         createFakeGameHistoryRecord({ gameId: otherGameId, phase: createFakeGamePhase({ name: "day" }), turn: 1, play }),
       ];
       await populate(gameHistoryRecords);
-      const records = await repositories.gameHistoryRecord.getGameHistoryPhaseRecords(gameId, 1, "day");
-      const expectedRecords = [gameHistoryRecords[0], gameHistoryRecords[2], gameHistoryRecords[4]];
+      const records = await repositories.gameHistoryRecord.getGameHistoryRecordsForTurnAndPhases(gameId, 1, ["day"]);
+      const expectedRecords = [gameHistoryRecords[0], gameHistoryRecords[2], gameHistoryRecords[5]];
+
+      expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
+    });
+
+    it("should get 2 records when called with gameId, turn and night and twlight phases.", async() => {
+      const gameId = createFakeObjectId();
+      const otherGameId = createFakeObjectId();
+      const play = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: "werewolves" }) });
+      const gameHistoryRecords = [
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "day" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "night" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "day" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "twilight" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 3, phase: createFakeGamePhase({ name: "twilight" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 2, phase: createFakeGamePhase({ name: "day" }), play }),
+        createFakeGameHistoryRecord({ gameId, turn: 1, phase: createFakeGamePhase({ name: "day" }), play }),
+        createFakeGameHistoryRecord({ gameId: otherGameId, turn: 1, phase: createFakeGamePhase({ name: "night" }), play }),
+        createFakeGameHistoryRecord({ gameId: otherGameId, phase: createFakeGamePhase({ name: "day" }), turn: 1, play }),
+      ];
+      await populate(gameHistoryRecords);
+      const records = await repositories.gameHistoryRecord.getGameHistoryRecordsForTurnAndPhases(gameId, 1, ["night", "twilight"]);
+      const expectedRecords = [gameHistoryRecords[1], gameHistoryRecords[3]];
 
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
     });

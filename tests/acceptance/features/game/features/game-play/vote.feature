@@ -110,6 +110,7 @@ Feature: 🗳️ Vote Game Play
       | Thomas  | villager |
     Then the request should have succeeded with status code 201
     And the game's current play should be survivors to vote
+    And the game's phase name should be twilight
     And the game's current play should have the following causes
       | cause          |
       | angel-presence |
@@ -120,6 +121,7 @@ Feature: 🗳️ Vote Game Play
       | JB     | Thomas |
       | Thomas | JB     |
     And the game's current play should be survivors to vote
+    And the game's phase name should be twilight
     And the game's current play should have the following causes
       | cause                       |
       | previous-votes-were-in-ties |
@@ -134,6 +136,7 @@ Feature: 🗳️ Vote Game Play
       | name   |
       | JB     |
       | Thomas |
+    And the game's phase name should be twilight
 
   Scenario: 🗳 Unknown player can't vote
 

@@ -11,7 +11,7 @@ const GAME_PHASE_FIELDS_SPECS = {
   name: {
     required: true,
     enum: GAME_PHASE_NAMES,
-    default: "night",
+    default: "twilight",
   },
   tick: {
     required: true,
@@ -22,7 +22,7 @@ const GAME_PHASE_FIELDS_SPECS = {
 
 const GAME_PHASE_API_PROPERTIES: ReadonlyDeep<Record<keyof GamePhase, ApiPropertyOptions>> = {
   name: {
-    description: "Name of the phase. A turn is composed of a night and a day phase.",
+    description: "Name of the phase. A turn is composed of a night and a day phase. Before the first night, there is a twilight phase in which all players awake.",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_PHASE_FIELDS_SPECS.name),
   },
   tick: {
