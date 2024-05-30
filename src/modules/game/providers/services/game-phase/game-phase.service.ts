@@ -1,7 +1,8 @@
+import { GamePlayAction, GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
 import { Injectable } from "@nestjs/common";
 
 import { createGame } from "@/modules/game/helpers/game.factory";
-import { getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helpers";
+import { doesGameHaveCurrentOrUpcomingPlaySourceAndAction, getPlayerWithIdOrThrow } from "@/modules/game/helpers/game.helpers";
 import { updatePlayerInGame } from "@/modules/game/helpers/game.mutators";
 import { createPowerlessByAccursedWolfFatherPlayerAttribute } from "@/modules/game/helpers/player/player-attribute/player-attribute.factory";
 import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource, getActivePlayerAttributeWithName } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
@@ -50,6 +51,24 @@ export class GamePhaseService {
       return this.applyStartingNightPlayerAttributesOutcomes(clonedGame);
     }
     return clonedGame;
+  }
+
+  public isTwilightPhaseOver(game: Game): boolean {
+    if (game.turn !== 1 || game.phase.name !== "twilight") {
+      return true;
+    }
+    const twilightPlaySourceAndActions: [GamePlaySourceName, GamePlayAction][] = [
+      ["sheriff", "settle-votes"],
+      ["sheriff", "delegate"],
+      ["survivors", "vote"],
+      ["hunter", "shoot"],
+      ["scapegoat", "ban-voting"],
+      ["survivors", "elect-sheriff"],
+      ["survivors", "bury-dead-bodies"],
+      ["stuttering-judge", "request-another-vote"],
+    ];
+
+    return !twilightPlaySourceAndActions.some(([source, action]) => doesGameHaveCurrentOrUpcomingPlaySourceAndAction(game, source, action));
   }
 
   private async applyEndingGamePhasePlayerAttributesOutcomesToPlayers(game: Game): Promise<Game> {

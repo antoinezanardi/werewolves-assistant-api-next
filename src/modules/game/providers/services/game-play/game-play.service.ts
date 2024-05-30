@@ -1,3 +1,4 @@
+import { isInNightOrTwilightPhase } from "@/modules/game/helpers/game-phase/game-phase.helpers";
 import { Injectable } from "@nestjs/common";
 
 import { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
@@ -76,7 +77,7 @@ export class GamePlayService {
 
   public async getPhaseUpcomingPlays(game: CreateGameDto | Game): Promise<GamePlay[]> {
     const isSheriffElectionTime = this.isSheriffElectionTime(game.options.roles.sheriff, game.turn, game.phase.name);
-    const phaseGamePlaysPriorityList = game.phase.name === "night" ? NIGHT_GAME_PLAYS_PRIORITY_LIST : DAY_GAME_PLAYS_PRIORITY_LIST;
+    const phaseGamePlaysPriorityList = isInNightOrTwilightPhase(game) ? NIGHT_GAME_PLAYS_PRIORITY_LIST : DAY_GAME_PLAYS_PRIORITY_LIST;
     const suitabilityPromises = phaseGamePlaysPriorityList.map(async eligiblePlay => this.isGamePlaySuitableForCurrentPhase(game, eligiblePlay as GamePlay));
     const suitabilityResults = await Promise.all(suitabilityPromises);
     const upcomingNightPlays = phaseGamePlaysPriorityList
@@ -112,7 +113,8 @@ export class GamePlayService {
   private async getNewUpcomingPlaysForCurrentPhase(game: Game): Promise<GamePlay[]> {
     const { _id, turn, phase } = game;
     const currentPhaseUpcomingPlays = await this.getPhaseUpcomingPlays(game);
-    const gameHistoryPhaseRecords = await this.gameHistoryRecordService.getGameHistoryPhaseRecords(_id, turn, phase.name);
+    const phaseNames: GamePhaseName[] = phase.name === "day" ? ["day"] : ["night", "twilight"];
+    const gameHistoryPhaseRecords = await this.gameHistoryRecordService.getGameHistoryRecordsForTurnAndPhases(_id, turn, phaseNames);
 
     return currentPhaseUpcomingPlays.filter(gamePlay => this.isUpcomingPlayNewForCurrentPhase(gamePlay, game, gameHistoryPhaseRecords));
   }
@@ -140,8 +142,9 @@ export class GamePlayService {
 
   private isSheriffElectionTime(sheriffGameOptions: SheriffGameOptions, currentTurn: number, currentPhase: GamePhaseName): boolean {
     const { electedAt, isEnabled } = sheriffGameOptions;
+    const currentGamePhaseAsDayOrNight = currentPhase === "day" ? "day" : "night";
 
-    return isEnabled && electedAt.turn === currentTurn && electedAt.phaseName === currentPhase;
+    return isEnabled && electedAt.turn === currentTurn && electedAt.phaseName === currentGamePhaseAsDayOrNight;
   }
 
   private async isLoversGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {

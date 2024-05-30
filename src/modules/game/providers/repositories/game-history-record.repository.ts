@@ -155,11 +155,11 @@ export class GameHistoryRecordRepository {
     return this.gameHistoryRecordModel.findOne(filter, undefined, { sort: { createdAt: -1 } });
   }
 
-  public async getGameHistoryPhaseRecords(gameId: Types.ObjectId, turn: number, phaseName: GamePhaseName): Promise<GameHistoryRecord[]> {
+  public async getGameHistoryRecordsForTurnAndPhases(gameId: Types.ObjectId, turn: number, phaseNames: GamePhaseName[]): Promise<GameHistoryRecord[]> {
     const filter: FilterQuery<GameHistoryRecord> = {
       gameId,
       turn,
-      "phase.name": phaseName,
+      "phase.name": { $in: phaseNames },
     };
 
     return this.gameHistoryRecordModel.find(filter);

@@ -13,7 +13,7 @@ import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpect
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeActorGameOptions, createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
-import { createFakeGamePlayHunterShoots, createFakeGamePlaySeerLooks, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayHunterShoots, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlaySheriffSettlesVotes, createFakeGamePlayStutteringJudgeRequestsAnotherVote, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeActingByActorPlayerAttribute, createFakeContaminatedByRustySwordKnightPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakeEatenByWerewolvesPlayerAttribute, createFakePowerlessByAccursedWolfFatherPlayerAttribute, createFakePowerlessByActorPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByFoxPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakeActorAlivePlayer, createFakeSeerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
@@ -152,6 +152,125 @@ describe("Game Phase Service", () => {
       services.gamePhase.applyStartingGamePhaseOutcomes(game);
 
       expect(mocks.gamePhaseService.applyStartingNightPlayerAttributesOutcomes).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("isTwilightPhaseOver", () => {
+    it.each<{
+      test: string;
+      game: Game;
+      expected: boolean;
+    }>([
+      {
+        test: "should return true when game's turn is not 1.",
+        game: createFakeGame({
+          turn: 2,
+          currentPlay: createFakeGamePlayHunterShoots(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: true,
+      },
+      {
+        test: "should return true when game's current play is null.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: null,
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: true,
+      },
+      {
+        test: "should return true when game's phase is not twilight.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlayHunterShoots(),
+          phase: createFakeGamePhase({ name: "night" }),
+        }),
+        expected: true,
+      },
+      {
+        test: "should return false when game play is sheriff to settle votes.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlaySheriffSettlesVotes(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when game play is sheriff to delegate.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlaySheriffDelegates(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when game play is survivors to vote.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlaySurvivorsVote(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when game play is hunter to shoot.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlayHunterShoots(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when game play is scapegoat to ban voting.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlayScapegoatBansVoting(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when game play is survivors to elect sheriff.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlaySurvivorsElectSheriff(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when game play is survivors to bury dead bodies.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlaySurvivorsBuryDeadBodies(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: false,
+      },
+      {
+        test: "should return false when game play is stuttering judge to request another vote.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlayStutteringJudgeRequestsAnotherVote(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: false,
+      },
+      {
+        test: "should return true when game play is werewolves to eat.",
+        game: createFakeGame({
+          turn: 1,
+          currentPlay: createFakeGamePlayWerewolvesEat(),
+          phase: createFakeGamePhase({ name: "twilight" }),
+        }),
+        expected: true,
+      },
+    ])("$test", ({ game, expected }) => {
+      expect(services.gamePhase.isTwilightPhaseOver(game)).toBe(expected);
     });
   });
 

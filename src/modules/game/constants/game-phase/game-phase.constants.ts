@@ -3,10 +3,11 @@ import type { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.sch
 const GAME_PHASE_NAMES = [
   "night",
   "day",
+  "twilight",
 ] as const;
 
 const DEFAULT_GAME_PHASE = {
-  name: "night",
+  name: "twilight",
   tick: 1,
 } as const satisfies GamePhase;
 

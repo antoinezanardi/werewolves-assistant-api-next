@@ -17,7 +17,7 @@ Then(/^the game's turn should be (?<turn>\d)$/u, function(this: CustomWorld, tur
   expect(this.game.turn).toBe(parseInt(turn));
 });
 
-Then(/^the game's phase name should be (?<phase>night|day)$/u, function(this: CustomWorld, phaseName: GamePhaseName): void {
+Then(/^the game's phase name should be (?<phase>twilight|night|day)$/u, function(this: CustomWorld, phaseName: GamePhaseName): void {
   expect(this.game.phase.name).toBe(phaseName);
 });
 

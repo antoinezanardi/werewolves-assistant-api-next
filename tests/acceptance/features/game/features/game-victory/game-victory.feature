@@ -12,7 +12,7 @@ Feature: 🏆 Game Victory
       | Thomas  | seer     |
     Then the game's tick should be 1
     And the game's turn should be 1
-    And the game's phase name should be night
+    And the game's phase name should be twilight
     And the game's phase tick should be 1
 
     When the survivors elect sheriff with the following votes
@@ -25,7 +25,7 @@ Feature: 🏆 Game Victory
     And the game's tick should be 2
     And the game's turn should be 1
     And the game's phase name should be night
-    And the game's phase tick should be 2
+    And the game's phase tick should be 1
     And the game's current play should be seer to look
 
     When the seer looks at the player named Antoine

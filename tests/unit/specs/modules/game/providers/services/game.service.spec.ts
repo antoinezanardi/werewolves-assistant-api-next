@@ -26,6 +26,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
@@ -37,6 +38,7 @@ import { getError } from "@tests/helpers/exception/exception.helpers";
 describe("Game Service", () => {
   let mocks: {
     gameService: {
+      handleTwilightPhaseCompletion: jest.SpyInstance;
       handleGamePhaseCompletion: jest.SpyInstance;
       updateGame: jest.SpyInstance;
       setGameAsOver: jest.SpyInstance;
@@ -63,6 +65,7 @@ describe("Game Service", () => {
       applyEndingGamePhaseOutcomes: jest.SpyInstance;
       switchPhaseAndAppendGamePhaseUpcomingPlays: jest.SpyInstance;
       applyStartingGamePhaseOutcomes: jest.SpyInstance;
+      isTwilightPhaseOver: jest.SpyInstance;
     };
     gameVictoryService: {
       isGameOver: jest.SpyInstance;
@@ -80,6 +83,7 @@ describe("Game Service", () => {
   beforeEach(async() => {
     mocks = {
       gameService: {
+        handleTwilightPhaseCompletion: jest.fn(),
         handleGamePhaseCompletion: jest.fn(),
         updateGame: jest.fn(),
         setGameAsOver: jest.fn(),
@@ -106,6 +110,7 @@ describe("Game Service", () => {
         applyEndingGamePhaseOutcomes: jest.fn(),
         switchPhaseAndAppendGamePhaseUpcomingPlays: jest.fn(),
         applyStartingGamePhaseOutcomes: jest.fn(),
+        isTwilightPhaseOver: jest.fn(),
       },
       gameVictoryService: {
         isGameOver: jest.fn(),
@@ -172,7 +177,7 @@ describe("Game Service", () => {
   });
 
   describe("createGame", () => {
-    const createdGame = createFakeGameWithCurrentPlay();
+    const createdGame = createFakeGameWithCurrentPlay({ phase: createFakeGamePhase({ name: "twilight", tick: 1 }) });
 
     beforeEach(() => {
       mocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(createdGame);
@@ -209,6 +214,31 @@ describe("Game Service", () => {
       await services.game.createGame(toCreateGame);
 
       expect(mocks.gamePlayService.augmentCurrentGamePlay).toHaveBeenCalledExactlyOnceWith(createdGame);
+    });
+
+    it("should set game phase as night when twilight phase is over.", async() => {
+      const toCreateGame = createFakeCreateGameDto();
+      mocks.gamePlayService.getPhaseUpcomingPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
+      mocks.gamePhaseService.isTwilightPhaseOver.mockReturnValue(true);
+      await services.game.createGame(toCreateGame);
+      const expectedGame = createFakeGameWithCurrentPlay({
+        ...createdGame,
+        phase: createFakeGamePhase({
+          ...createdGame.phase,
+          name: "night",
+        }),
+      });
+
+      expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, expectedGame);
+    });
+
+    it("should not set game phase as night when twilight phase is not over.", async() => {
+      const toCreateGame = createFakeCreateGameDto();
+      mocks.gamePlayService.getPhaseUpcomingPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
+      mocks.gamePhaseService.isTwilightPhaseOver.mockReturnValue(false);
+      await services.game.createGame(toCreateGame);
+
+      expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, createdGame);
     });
 
     it("should call updateGame repository method when called.", async() => {
@@ -260,6 +290,7 @@ describe("Game Service", () => {
       mocks.gamePlayService.proceedToNextGamePlay.mockReturnValue(game);
       mocks.gamePlayService.augmentCurrentGamePlay.mockReturnValue(game);
       mocks.gameVictoryService.isGameOver.mockReturnValue(false);
+      mocks.gameService.handleTwilightPhaseCompletion = jest.spyOn(services.game as unknown as { handleTwilightPhaseCompletion }, "handleTwilightPhaseCompletion").mockReturnValue(game);
       mocks.gameService.handleGamePhaseCompletion = jest.spyOn(services.game as unknown as { handleGamePhaseCompletion }, "handleGamePhaseCompletion").mockResolvedValue(game);
       mocks.gameService.updateGame = jest.spyOn(services.game as unknown as { updateGame }, "updateGame").mockReturnValue(game);
       mocks.gameService.setGameAsOver = jest.spyOn(services.game as unknown as { setGameAsOver }, "setGameAsOver").mockReturnValue(game);
@@ -305,6 +336,42 @@ describe("Game Service", () => {
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
       expect(mocks.gamePlayService.proceedToNextGamePlay).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should handle twilight phase completion when phase is twilight and phase is over.", async() => {
+      const clonedGame = createFakeGame({
+        ...game,
+        phase: createFakeGamePhase({ name: "twilight", tick: 1 }),
+      });
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      mocks.gamePhaseService.isTwilightPhaseOver.mockReturnValue(true);
+      await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
+
+      expect(mocks.gameService.handleTwilightPhaseCompletion).toHaveBeenCalledExactlyOnceWith(game);
+    });
+
+    it("should not handle twilight phase completion when phase is not twilight.", async() => {
+      const clonedGame = createFakeGame({
+        ...game,
+        phase: createFakeGamePhase({ name: "night", tick: 1 }),
+      });
+      mocks.gamePhaseService.isTwilightPhaseOver.mockReturnValue(true);
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
+
+      expect(mocks.gameService.handleTwilightPhaseCompletion).not.toHaveBeenCalled();
+    });
+
+    it("should not handle twilight phase completion when phase is not over.", async() => {
+      const clonedGame = createFakeGame({
+        ...game,
+        phase: createFakeGamePhase({ name: "twilight", tick: 1 }),
+      });
+      mocks.gamePhaseService.isTwilightPhaseOver.mockReturnValue(false);
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
+
+      expect(mocks.gameService.handleTwilightPhaseCompletion).not.toHaveBeenCalled();
     });
 
     it("should call handle game phase completion method when phase is ending.", async() => {
@@ -384,6 +451,19 @@ describe("Game Service", () => {
       const game = createFakeGame({ status: "playing" });
 
       expect(() => services.game["validateGameIsPlaying"](game)).not.toThrow();
+    });
+  });
+
+  describe("handleTwilightPhaseCompletion", () => {
+    const game = createFakeGame({ phase: createFakeGamePhase({ name: "twilight", tick: 133 }) });
+
+    it("should set game phase as night and reset tick when called.", () => {
+      const expectedGame = createFakeGame({
+        ...game,
+        phase: createFakeGamePhase({ name: "night", tick: 1 }),
+      });
+
+      expect(services.game["handleTwilightPhaseCompletion"](game)).toStrictEqual<Game>(expectedGame);
     });
   });
 

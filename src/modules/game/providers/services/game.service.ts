@@ -55,7 +55,9 @@ export class GameService {
     });
     let createdGame = await this.gameRepository.create(gameToCreate) as GameWithCurrentPlay;
     createdGame = await this.gamePlayService.augmentCurrentGamePlay(createdGame);
-
+    if (this.gamePhaseService.isTwilightPhaseOver(createdGame)) {
+      createdGame.phase.name = "night";
+    }
     return this.updateGame(createdGame._id, createdGame);
   }
 
@@ -75,6 +77,9 @@ export class GameService {
     clonedGame = this.gamePlayService.proceedToNextGamePlay(clonedGame);
     clonedGame.tick++;
     clonedGame.phase.tick++;
+    if (game.phase.name === "twilight" && this.gamePhaseService.isTwilightPhaseOver(clonedGame)) {
+      clonedGame = this.handleTwilightPhaseCompletion(clonedGame);
+    }
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }
@@ -92,6 +97,14 @@ export class GameService {
     if (game.status !== "playing") {
       throw new BadResourceMutationException(ApiResources.GAMES, game._id.toString(), BadResourceMutationReasons.GAME_NOT_PLAYING);
     }
+  }
+
+  private handleTwilightPhaseCompletion(game: Game): Game {
+    const clonedGame = createGameFromFactory(game);
+    clonedGame.phase.name = "night";
+    clonedGame.phase.tick = 1;
+
+    return clonedGame;
   }
 
   private async handleGamePhaseCompletion(game: Game): Promise<Game> {
