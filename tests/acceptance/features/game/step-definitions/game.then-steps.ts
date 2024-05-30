@@ -17,7 +17,7 @@ Then(/^the game's turn should be (?<turn>\d)$/u, function(this: CustomWorld, tur
   expect(this.game.turn).toBe(parseInt(turn));
 });
 
-Then(/^the game's phase name should be (?<phase>night|day)$/u, function(this: CustomWorld, phaseName: GamePhaseName): void {
+Then(/^the game's phase name should be (?<phase>twilight|night|day)$/u, function(this: CustomWorld, phaseName: GamePhaseName): void {
   expect(this.game.phase.name).toBe(phaseName);
 });
 
@@ -27,6 +27,15 @@ Then(/^the game's phase tick should be (?<tick>\d)$/u, function(this: CustomWorl
 
 Then(/^the game's status should be (?<phase>playing|over|canceled)$/u, function(this: CustomWorld, status: GameStatus): void {
   expect(this.game.status).toBe(status);
+});
+
+Then(/^the game's last game history record should be null$/u, function(this: CustomWorld): void {
+  expect(this.game.lastGameHistoryRecord).toBeNull();
+});
+
+Then(/^the game's last game history record should be (?<source>.+?) to (?<action>.+?)$/u, function(this: CustomWorld, source: string, action: string): void {
+  expect(this.game.lastGameHistoryRecord?.play.source.name).toBe(source);
+  expect(this.game.lastGameHistoryRecord?.play.action).toBe(action);
 });
 
 Then(

@@ -11,6 +11,7 @@ Feature: 👼 Angel role
       | JB      | villager |
       | Thomas  | werewolf |
     Then the request should have succeeded with status code 201
+    And the game's phase name should be twilight
     And the game's current play should be survivors to vote
     And the game's current play should have the following causes
       | cause          |
@@ -40,6 +41,7 @@ Feature: 👼 Angel role
       | JB      | Olivia |
     Then the player named Olivia should be murdered by survivors from vote
     And the game's current play should be survivors to bury-dead-bodies
+    And the game's phase name should be twilight
 
     When the survivors bury dead bodies
     Then 2 of the following players should have the active powerless from elder attribute
@@ -50,6 +52,48 @@ Feature: 👼 Angel role
 
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
+    And the game's status should be playing
+
+  Scenario: 👼 Angel doesn't win if he dies from the hunter on twilight
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | angel    |
+      | Olivia  | hunter   |
+      | JB      | villager |
+      | Thomas  | werewolf |
+    And the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
+    And the game's current play should be played by the following players
+      | name    |
+      | Antoine |
+      | Olivia  |
+      | JB      |
+      | Thomas  |
+
+    When the survivors vote with the following votes
+      | source  | vote   |
+      | Antoine | Olivia |
+      | JB      | Olivia |
+    Then the player named Olivia should be murdered by survivors from vote
+    And the game's phase name should be twilight
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be hunter to shoot
+    And the game's phase name should be twilight
+
+    When the hunter shoots at the player named Antoine
+    Then the player named Antoine should be murdered by hunter from shot
+    And the game's phase name should be twilight
+    And the game's status should be playing
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
+    And the game's phase name should be night
     And the game's status should be playing
 
   Scenario: 👼 Angel doesn't win if he is murdered on the second vote

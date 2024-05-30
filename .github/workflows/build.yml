@@ -44,9 +44,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
@@ -76,9 +75,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
@@ -103,9 +101,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
@@ -136,9 +133,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
@@ -163,9 +159,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
@@ -194,9 +189,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
@@ -231,9 +225,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
@@ -274,9 +267,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
@@ -327,9 +319,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨
@@ -370,9 +361,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install pnpm 🏗️
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
           run_install: false
 
       - name: Setup NodeJS ✨

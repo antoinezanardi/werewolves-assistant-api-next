@@ -57,7 +57,7 @@ describe("Game History Record Service", () => {
       getGameHistoryElderProtectedFromWerewolvesRecords: jest.SpyInstance;
       getPreviousGameHistoryRecord: jest.SpyInstance;
       getGameHistory: jest.SpyInstance;
-      getGameHistoryPhaseRecords: jest.SpyInstance;
+      getGameHistoryRecordsForTurnAndPhases: jest.SpyInstance;
       getGameHistoryGamePlayRecords: jest.SpyInstance;
       getGameHistoryGamePlayMadeByPlayerRecords: jest.SpyInstance;
       getGameHistoryAccursedWolfFatherInfectsWithTargetRecords: jest.SpyInstance;
@@ -95,7 +95,7 @@ describe("Game History Record Service", () => {
         getGameHistoryElderProtectedFromWerewolvesRecords: jest.fn(),
         getPreviousGameHistoryRecord: jest.fn(),
         getGameHistory: jest.fn(),
-        getGameHistoryPhaseRecords: jest.fn(),
+        getGameHistoryRecordsForTurnAndPhases: jest.fn(),
         getGameHistoryGamePlayRecords: jest.fn(),
         getGameHistoryGamePlayMadeByPlayerRecords: jest.fn(),
         getGameHistoryAccursedWolfFatherInfectsWithTargetRecords: jest.fn(),
@@ -240,12 +240,12 @@ describe("Game History Record Service", () => {
     });
   });
 
-  describe("getGameHistoryPhaseRecords", () => {
-    it("should call getGameHistoryPhaseRecords method when called.", async() => {
+  describe("getGameHistoryRecordsForTurnAndPhases", () => {
+    it("should call getGameHistoryRecordsForTurnAndPhases method when called.", async() => {
       const game = createFakeGame();
-      await services.gameHistoryRecord.getGameHistoryPhaseRecords(game._id, game.turn, game.phase.name);
+      await services.gameHistoryRecord.getGameHistoryRecordsForTurnAndPhases(game._id, game.turn, [game.phase.name]);
 
-      expect(mocks.gameHistoryRecordRepository.getGameHistoryPhaseRecords).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, game.phase.name);
+      expect(mocks.gameHistoryRecordRepository.getGameHistoryRecordsForTurnAndPhases).toHaveBeenCalledExactlyOnceWith(game._id, game.turn, [game.phase.name]);
     });
   });
 

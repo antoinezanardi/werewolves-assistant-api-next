@@ -2,7 +2,7 @@ import { plainToInstance } from "class-transformer";
 
 import { GamePlaySource } from "@/modules/game/schemas/game-play/game-play-source/game-play-source.schema";
 import { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
-import type { GamePlayCause, GamePlayOccurrence } from "@/modules/game/types/game-play/game-play.types";
+import type { GamePlayOccurrence } from "@/modules/game/types/game-play/game-play.types";
 
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
@@ -56,10 +56,9 @@ function createGamePlaySheriffDelegates(gamePlay: Partial<GamePlay> = {}): GameP
 
 function createGamePlaySurvivorsVote(gamePlay: Partial<GamePlay> = {}): GamePlay {
   let occurrence: GamePlayOccurrence = "on-days";
-  const consequentialCauses: GamePlayCause[] = ["previous-votes-were-in-ties", "stuttering-judge-request"];
   if (gamePlay.causes?.includes("angel-presence") === true) {
     occurrence = "one-night-only";
-  } else if (consequentialCauses.some(cause => gamePlay.causes?.includes(cause) === true)) {
+  } else if (gamePlay.causes !== undefined) {
     occurrence = "consequential";
   }
   return createGamePlay({

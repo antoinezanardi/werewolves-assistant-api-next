@@ -12,6 +12,7 @@ Feature: 📜 Game History
       | JB      | villager |
       | Thomas  | villager |
     Then the game's current play should be werewolves to eat
+    And the game's last game history record should be null
 
     When the werewolves eat the player named Antoine
     And the most recent history record is retrieved
@@ -20,6 +21,7 @@ Feature: 📜 Game History
     And the game's phase tick from the previous history record should be 1
     And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to bury-dead-bodies
+    And the game's last game history record should be werewolves to eat
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
@@ -28,6 +30,7 @@ Feature: 📜 Game History
     And the game's phase tick from the previous history record should be 1
     And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to vote
+    And the game's last game history record should be survivors to bury-dead-bodies
 
     When the survivors vote with the following votes
       | name   | vote   |
@@ -40,6 +43,7 @@ Feature: 📜 Game History
     And the game's phase tick from the previous history record should be 2
     And the game's turn from the previous history record should be 1
     And the game's current play should be survivors to bury-dead-bodies
+    And the game's last game history record should be survivors to vote
 
     When the survivors bury dead bodies
     And the most recent history record is retrieved
@@ -48,6 +52,7 @@ Feature: 📜 Game History
     And the game's phase tick from the previous history record should be 3
     And the game's turn from the previous history record should be 1
     And the game's current play should be werewolves to eat
+    And the game's last game history record should be survivors to bury-dead-bodies
 
     When the werewolves eat the player named JB
     And the most recent history record is retrieved
@@ -55,6 +60,7 @@ Feature: 📜 Game History
     And the game's phase name from the previous history record should be night
     And the game's phase tick from the previous history record should be 1
     And the game's turn from the previous history record should be 2
+    And the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 📜 Game play's type, action, sources and cause are recorded in the game history
 

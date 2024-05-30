@@ -1,3 +1,4 @@
+import { GAME_POPULATED_FIELDS } from "@/modules/game/constants/game.constants";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -12,11 +13,11 @@ export class GameRepository {
   public constructor(@InjectModel(Game.name) private readonly gameModel: Model<GameDocument>) {}
 
   public async find(filter: FilterQuery<GameDocument> = {}): Promise<Game[]> {
-    return this.gameModel.find(filter);
+    return this.gameModel.find(filter, null, { populate: GAME_POPULATED_FIELDS });
   }
 
   public async findOne(filter: FilterQuery<GameDocument>): Promise<Game | null> {
-    return this.gameModel.findOne(filter);
+    return this.gameModel.findOne(filter, null, { populate: GAME_POPULATED_FIELDS });
   }
 
   public async create(game: CreateGameDto): Promise<Game> {
@@ -24,6 +25,10 @@ export class GameRepository {
   }
 
   public async updateOne(filter: FilterQuery<GameDocument>, game: Partial<Game>, options: QueryOptions = {}): Promise<Game | null> {
-    return this.gameModel.findOneAndUpdate(filter, game, { new: true, ...options });
+    return this.gameModel.findOneAndUpdate(filter, game, {
+      new: true,
+      populate: GAME_POPULATED_FIELDS,
+      ...options,
+    });
   }
 }

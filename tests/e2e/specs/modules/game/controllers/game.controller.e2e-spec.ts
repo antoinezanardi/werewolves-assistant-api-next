@@ -293,7 +293,8 @@ describe("Game Controller", () => {
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
         ...toJSON(game) as Game,
-        createdAt: expect.any(String) as Date,
+        _id: expect.any(String) as Types.ObjectId,
+        // createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
     });
@@ -870,7 +871,7 @@ describe("Game Controller", () => {
       };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
-        phase: toJSON(createFakeGamePhase({ name: "night", tick: 1 })) as GamePhase,
+        phase: toJSON(createFakeGamePhase({ name: "twilight", tick: 1 })) as GamePhase,
         status: "playing",
         turn: 1,
         tick: 1,
@@ -883,6 +884,7 @@ describe("Game Controller", () => {
           createFakeGamePlayWhiteWerewolfEats(),
         ]) as GamePlay[],
         options: DEFAULT_GAME_OPTIONS,
+        lastGameHistoryRecord: null,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       };
@@ -948,7 +950,7 @@ describe("Game Controller", () => {
       };
       const expectedGame: Game = {
         _id: expect.any(String) as Types.ObjectId,
-        phase: toJSON(createFakeGamePhase({ name: "night", tick: 1 })) as GamePhase,
+        phase: toJSON(createFakeGamePhase({ name: "twilight", tick: 1 })) as GamePhase,
         status: "playing",
         turn: 1,
         tick: 1,
@@ -963,6 +965,7 @@ describe("Game Controller", () => {
         ]) as GamePlay[],
         additionalCards: expectedGameAdditionalCards,
         options: DEFAULT_GAME_OPTIONS,
+        lastGameHistoryRecord: null,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       };
@@ -1296,6 +1299,7 @@ describe("Game Controller", () => {
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
         ...toJSON(expectedGame) as Game,
+        lastGameHistoryRecord: expect.any(Object) as GameHistoryRecord,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
@@ -1346,6 +1350,7 @@ describe("Game Controller", () => {
         }),
         canBeSkipped: false,
       });
+
       const expectedGame = createFakeGame({
         ...game,
         tick: game.tick + 1,
@@ -1368,6 +1373,7 @@ describe("Game Controller", () => {
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(response.json<Game>()).toStrictEqual<Game>({
         ...toJSON(expectedGame) as Game,
+        lastGameHistoryRecord: expect.any(Object) as GameHistoryRecord,
         createdAt: expect.any(String) as Date,
         updatedAt: expect.any(String) as Date,
       });
