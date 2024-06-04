@@ -2596,6 +2596,24 @@ describe("Game Play Service", () => {
         expected: false,
       },
       {
+        test: "should return false when there are already lovers.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+            createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+            createFakeCupidAlivePlayer(),
+          ],
+          options: createFakeGameOptions({
+            roles: createFakeRolesGameOptions({
+              doSkipCallIfNoTarget: true,
+              cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }),
+            }),
+          }),
+        }),
+        isCupidGamePlayAlreadyMade: false,
+        expected: false,
+      },
+      {
         test: "should return true when cupid is in the game and he didn't play yet.",
         game: createFakeGame({
           players: [

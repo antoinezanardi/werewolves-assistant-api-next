@@ -342,11 +342,12 @@ export class GamePlayService {
     if (!cupidPlayer) {
       return false;
     }
+    const inLovePlayers = getPlayersWithActiveAttributeName(game, "in-love");
     const availableTargets = getEligibleCupidTargets(game);
     const doesCupidHaveEnoughTargets = availableTargets.length >= expectedPlayersToCharmCount;
     const isCupidGamePlayAlreadyMade = await this.gameHistoryRecordService.hasGamePlayBeenMadeByPlayer(game._id, createGamePlayCupidCharms(), cupidPlayer);
 
-    return isPlayerAliveAndPowerful(cupidPlayer, game) && (doesCupidHaveEnoughTargets || !doSkipCallIfNoTarget) && !isCupidGamePlayAlreadyMade;
+    return isPlayerAliveAndPowerful(cupidPlayer, game) && (doesCupidHaveEnoughTargets || !doSkipCallIfNoTarget) && !isCupidGamePlayAlreadyMade && !inLovePlayers.length;
   }
 
   private async isRoleGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
