@@ -5,7 +5,7 @@ import { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types"
 import { DAY_GAME_PLAYS_PRIORITY_LIST, NIGHT_GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constants";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
-import { createGamePlay, createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
+import { createGamePlay, createGamePlayCupidCharms, createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { areGamePlaysEqual, canSurvivorsVote, doesGamePlayHaveCause, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helpers";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
 import { getEligibleCupidTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getNearestAliveNeighbor, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
@@ -25,7 +25,7 @@ import { createNoGamePlayPriorityUnexpectedException } from "@/shared/exception/
 @Injectable()
 export class GamePlayService {
   private readonly specificRoleGamePlaySuitabilityMethods: Partial<Record<RoleName, (game: CreateGameDto | Game) => Promise<boolean> | boolean>> = {
-    "cupid": (game: Game) => this.isCupidGamePlaySuitableForCurrentPhase(game),
+    "cupid": async(game: Game) => this.isCupidGamePlaySuitableForCurrentPhase(game),
     "two-sisters": (game: Game) => this.isTwoSistersGamePlaySuitableForCurrentPhase(game),
     "three-brothers": (game: Game) => this.isThreeBrothersGamePlaySuitableForCurrentPhase(game),
     "big-bad-wolf": (game: Game) => this.isBigBadWolfGamePlaySuitableForCurrentPhase(game),
@@ -332,21 +332,22 @@ export class GamePlayService {
     return shouldTwoSistersBeCalledOnCurrentTurn && twoSistersPlayers.length > 0 && twoSistersPlayers.every(sister => sister.isAlive);
   }
 
-  private isCupidGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
+  private async isCupidGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {
     if (game instanceof CreateGameDto) {
       return !!getPlayerDtoWithRole(game, "cupid");
     }
     const { doSkipCallIfNoTarget } = game.options.roles;
     const expectedPlayersToCharmCount = 2;
     const cupidPlayer = getPlayerWithCurrentRole(game, "cupid");
-    const availableTargets = getEligibleCupidTargets(game);
-    if (!cupidPlayer || !isPlayerAliveAndPowerful(cupidPlayer, game) ||
-      doSkipCallIfNoTarget && availableTargets.length < expectedPlayersToCharmCount) {
+    if (!cupidPlayer) {
       return false;
     }
     const inLovePlayers = getPlayersWithActiveAttributeName(game, "in-love");
+    const availableTargets = getEligibleCupidTargets(game);
+    const doesCupidHaveEnoughTargets = availableTargets.length >= expectedPlayersToCharmCount;
+    const isCupidGamePlayAlreadyMade = await this.gameHistoryRecordService.hasGamePlayBeenMadeByPlayer(game._id, createGamePlayCupidCharms(), cupidPlayer);
 
-    return !inLovePlayers.length;
+    return isPlayerAliveAndPowerful(cupidPlayer, game) && (doesCupidHaveEnoughTargets || !doSkipCallIfNoTarget) && !isCupidGamePlayAlreadyMade && !inLovePlayers.length;
   }
 
   private async isRoleGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {

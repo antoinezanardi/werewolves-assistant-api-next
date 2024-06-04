@@ -2480,6 +2480,7 @@ describe("Game Play Service", () => {
     it.each<{
       test: string;
       game: CreateGameDto | Game;
+      isCupidGamePlayAlreadyMade: boolean;
       expected: boolean;
     }>([
       {
@@ -2493,6 +2494,7 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false }) }),
         }),
+        isCupidGamePlayAlreadyMade: false,
         expected: false,
       },
       {
@@ -2506,6 +2508,7 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false }) }),
         }),
+        isCupidGamePlayAlreadyMade: false,
         expected: true,
       },
       {
@@ -2519,6 +2522,7 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false }) }),
         }),
+        isCupidGamePlayAlreadyMade: false,
         expected: false,
       },
       {
@@ -2532,6 +2536,7 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false }) }),
         }),
+        isCupidGamePlayAlreadyMade: false,
         expected: false,
       },
       {
@@ -2545,23 +2550,11 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) }),
         }),
+        isCupidGamePlayAlreadyMade: false,
         expected: false,
       },
       {
-        test: "should return false when cupid is in the game but there are already lovers.",
-        game: createFakeGame({
-          players: [
-            createFakeWerewolfAlivePlayer(),
-            createFakeSeerAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
-            createFakeAccursedWolfFatherAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
-            createFakeCupidAlivePlayer(),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false }) }),
-        }),
-        expected: false,
-      },
-      {
-        test: "should return false when there are no lovers yet but there are not enough targets and skip call if no targets.",
+        test: "should return false when there are not enough targets and skip call if no targets.",
         game: createFakeGame({
           players: [
             createFakeCupidAlivePlayer(),
@@ -2569,10 +2562,11 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: true }) }),
         }),
+        isCupidGamePlayAlreadyMade: false,
         expected: false,
       },
       {
-        test: "should return true when there are no lovers yet but there are not enough targets and doesn't skip call if no targets.",
+        test: "should return true when there are not enough targets and doesn't skip call if no targets.",
         game: createFakeGame({
           players: [
             createFakeCupidAlivePlayer(),
@@ -2580,10 +2574,11 @@ describe("Game Play Service", () => {
           ],
           options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ doSkipCallIfNoTarget: false }) }),
         }),
+        isCupidGamePlayAlreadyMade: false,
         expected: true,
       },
       {
-        test: "should return true when cupid is in the game and there are no lovers yet.",
+        test: "should return false when cupid is in the game but he already played.",
         game: createFakeGame({
           players: [
             createFakeWerewolfAlivePlayer(),
@@ -2597,10 +2592,50 @@ describe("Game Play Service", () => {
             }),
           }),
         }),
+        isCupidGamePlayAlreadyMade: true,
+        expected: false,
+      },
+      {
+        test: "should return false when there are already lovers.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+            createFakeWerewolfAlivePlayer({ attributes: [createFakeInLoveByCupidPlayerAttribute()] }),
+            createFakeCupidAlivePlayer(),
+          ],
+          options: createFakeGameOptions({
+            roles: createFakeRolesGameOptions({
+              doSkipCallIfNoTarget: true,
+              cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }),
+            }),
+          }),
+        }),
+        isCupidGamePlayAlreadyMade: false,
+        expected: false,
+      },
+      {
+        test: "should return true when cupid is in the game and he didn't play yet.",
+        game: createFakeGame({
+          players: [
+            createFakeWerewolfAlivePlayer(),
+            createFakeWerewolfAlivePlayer(),
+            createFakeCupidAlivePlayer(),
+          ],
+          options: createFakeGameOptions({
+            roles: createFakeRolesGameOptions({
+              doSkipCallIfNoTarget: true,
+              cupid: createFakeCupidGameOptions({ mustWinWithLovers: true }),
+            }),
+          }),
+        }),
+        isCupidGamePlayAlreadyMade: false,
         expected: true,
       },
-    ])("$test", ({ game, expected }) => {
-      expect(services.gamePlay["isCupidGamePlaySuitableForCurrentPhase"](game)).toBe(expected);
+    ])("$test", async({ game, isCupidGamePlayAlreadyMade, expected }) => {
+      mocks.gameHistoryRecordService.hasGamePlayBeenMadeByPlayer.mockResolvedValue(isCupidGamePlayAlreadyMade);
+      const isSuitable = await services.gamePlay["isCupidGamePlaySuitableForCurrentPhase"](game);
+
+      expect(isSuitable).toBe(expected);
     });
   });
 
