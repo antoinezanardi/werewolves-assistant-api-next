@@ -343,7 +343,7 @@ Feature: 💘 Cupid role
     When the werewolves eat the player named Antoine
     Then the player named Antoine should be murdered by werewolves from eaten
 
-  Scenario: 💘 Cupid turn is skipped if he has no targets and options say that roles must be skipped if no targets
+  Scenario: 💘 Cupid turn is skipped if he has not enough targets and options say that roles must be skipped if no targets
 
     Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role     |
@@ -371,4 +371,34 @@ Feature: 💘 Cupid role
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
+
+  Scenario: 💘 Cupid makes two people fall in love only the first night even if they die the first turn
+
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | cupid    |
+      | Olivia  | werewolf |
+      | JB      | villager |
+      | Thomas  | idiot    |
+    Then the game's current play should be cupid to charm
+
+    When the cupid shoots an arrow at the player named JB and the player named Thomas
+    Then the game's current play should be lovers to meet-each-other
+
+    When the lovers meet each other
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    Then the player named JB should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the player named Thomas should be murdered by cupid from broken-heart
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the game's current play should be survivors to vote
+
+    When the player or group skips his turn
     Then the game's current play should be werewolves to eat
