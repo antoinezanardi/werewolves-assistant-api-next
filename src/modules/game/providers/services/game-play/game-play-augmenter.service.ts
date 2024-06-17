@@ -25,23 +25,23 @@ export class GamePlayAugmenterService {
   private readonly getPlaySourceInteractionsMethods: Partial<
     Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => GamePlaySourceInteraction[] | Promise<GamePlaySourceInteraction[]>>
   > = {
-      "sheriff": async(game, gamePlay) => this.getSheriffGamePlaySourceInteractions(game, gamePlay),
-      "survivors": async(game, gamePlay) => this.getSurvivorsGamePlaySourceInteractions(game, gamePlay),
-      "werewolves": game => this.getWerewolvesGamePlaySourceInteractions(game),
-      "big-bad-wolf": game => this.getBigBadWolfGamePlaySourceInteractions(game),
-      "cupid": game => this.getCupidGamePlaySourceInteractions(game),
-      "fox": game => this.getFoxGamePlaySourceInteractions(game),
-      "defender": async game => this.getDefenderGamePlaySourceInteractions(game),
-      "hunter": game => this.getHunterGamePlaySourceInteractions(game),
-      "pied-piper": game => this.getPiedPiperGamePlaySourceInteractions(game),
-      "scandalmonger": game => this.getScandalmongerGamePlaySourceInteractions(game),
-      "scapegoat": game => this.getScapegoatGamePlaySourceInteractions(game),
-      "seer": game => this.getSeerGamePlaySourceInteractions(game),
-      "white-werewolf": game => this.getWhiteWerewolfGamePlaySourceInteractions(game),
-      "wild-child": game => this.getWildChildGamePlaySourceInteractions(game),
-      "witch": async game => this.getWitchGamePlaySourceInteractions(game),
-      "accursed-wolf-father": async game => this.getAccursedWolfFatherGamePlaySourceInteractions(game),
-    };
+    "sheriff": async(game, gamePlay) => this.getSheriffGamePlaySourceInteractions(game, gamePlay),
+    "survivors": async(game, gamePlay) => this.getSurvivorsGamePlaySourceInteractions(game, gamePlay),
+    "werewolves": game => this.getWerewolvesGamePlaySourceInteractions(game),
+    "big-bad-wolf": game => this.getBigBadWolfGamePlaySourceInteractions(game),
+    "cupid": game => this.getCupidGamePlaySourceInteractions(game),
+    "fox": game => this.getFoxGamePlaySourceInteractions(game),
+    "defender": async game => this.getDefenderGamePlaySourceInteractions(game),
+    "hunter": game => this.getHunterGamePlaySourceInteractions(game),
+    "pied-piper": game => this.getPiedPiperGamePlaySourceInteractions(game),
+    "scandalmonger": game => this.getScandalmongerGamePlaySourceInteractions(game),
+    "scapegoat": game => this.getScapegoatGamePlaySourceInteractions(game),
+    "seer": game => this.getSeerGamePlaySourceInteractions(game),
+    "white-werewolf": game => this.getWhiteWerewolfGamePlaySourceInteractions(game),
+    "wild-child": game => this.getWildChildGamePlaySourceInteractions(game),
+    "witch": async game => this.getWitchGamePlaySourceInteractions(game),
+    "accursed-wolf-father": async game => this.getAccursedWolfFatherGamePlaySourceInteractions(game),
+  };
 
   private readonly canBeSkippedPlayMethods: Partial<Record<GamePlaySourceName, (game: Game, gamePlay: GamePlay) => boolean>> = {
     "charmed": () => true,
