@@ -154,7 +154,7 @@ importers:
         specifier: ^7.1.1
         version: 7.1.1
       eslint:
-        specifier: ^9.4.0
+        specifier: ^9.5.0
         version: 9.5.0
       eslint-plugin-import:
         specifier: ^2.29.1
