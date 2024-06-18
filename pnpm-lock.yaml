@@ -48,7 +48,7 @@ importers:
         specifier: ^0.14.1
         version: 0.14.1
       dot-object:
-        specifier: ^2.1.4
+        specifier: ^2.1.5
         version: 2.1.5
       fastify:
         specifier: ^4.27.0
