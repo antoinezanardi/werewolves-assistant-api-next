@@ -85,7 +85,7 @@
     "@types/validator": "^13.11.10",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "dot-object": "^2.1.4",
+    "dot-object": "^2.1.5",
     "fastify": "^4.27.0",
     "is-ci": "^3.0.1",
     "isobject": "^4.0.0",
