@@ -1,4 +1,4 @@
-FROM node:21-alpine AS development
+FROM node:21.7.3-alpine AS development
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV CI="true"
@@ -20,7 +20,7 @@ COPY --chown=node:node public/ public/
 
 CMD [ "pnpm", "run", "start:dev" ]
 
-FROM node:21-alpine AS build
+FROM node:21.7.3-alpine AS build
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV CI="true"
@@ -43,7 +43,7 @@ ENV NODE_ENV production
 
 RUN pnpm install --prod
 
-FROM node:21-alpine AS production
+FROM node:21.7.3-alpine AS production
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV CI="true"
