@@ -361,7 +361,7 @@ export class GamePlayService {
       return player instanceof CreateGamePlayerDto || isPlayerPowerful(player, game as Game);
     }
     if (this.specificRoleGamePlaySuitabilityMethods[source] !== undefined) {
-      return await this.specificRoleGamePlaySuitabilityMethods[source]?.(game) === true;
+      return this.specificRoleGamePlaySuitabilityMethods[source](game);
     }
     if (gamePlay.occurrence === "one-night-only") {
       return this.isOneNightOnlyGamePlaySuitableForCurrentPhase(game, gamePlay);
