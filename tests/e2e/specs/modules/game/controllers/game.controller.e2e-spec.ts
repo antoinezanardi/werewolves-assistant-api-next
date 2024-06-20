@@ -256,7 +256,7 @@ describe("Game Controller", () => {
 
       expect(response.statusCode).toBe(HttpStatus.OK);
       expect(players).toSatisfyAll<CreateGamePlayerDto>(({ role, side }) => role.current !== undefined && role.current === role.original &&
-      side.current !== undefined && side.current === side.original);
+        side.current !== undefined && side.current === side.original);
     });
   });
 
