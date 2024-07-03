@@ -18,7 +18,7 @@ const GAME_SOURCES = [
   ...PLAYER_GROUPS,
   ...ROLE_NAMES,
   "sheriff",
-] as const satisfies Readonly<(PlayerAttributeName | PlayerGroup | RoleName)[]>;
+] as const satisfies readonly (PlayerAttributeName | PlayerGroup | RoleName)[];
 
 const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
   {

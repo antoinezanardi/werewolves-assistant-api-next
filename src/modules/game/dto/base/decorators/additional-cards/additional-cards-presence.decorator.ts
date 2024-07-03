@@ -7,7 +7,7 @@ import type { RoleName } from "@/modules/role/types/role.types";
 
 function isAdditionalCardsPresenceRespected(value: unknown, validationArguments: ValidationArguments): boolean {
   const { players } = validationArguments.object as Partial<CreateGameDto>;
-  const gameAdditionalCardsRecipients = GAME_ADDITIONAL_CARDS_RECIPIENTS as Readonly<(RoleName)[]>;
+  const gameAdditionalCardsRecipients = GAME_ADDITIONAL_CARDS_RECIPIENTS as readonly RoleName[];
   const doSomePlayersNeedAdditionalCards = players?.some(player => gameAdditionalCardsRecipients.includes(player.role.name)) === true;
 
   return doSomePlayersNeedAdditionalCards ? Array.isArray(value) : value === undefined;
