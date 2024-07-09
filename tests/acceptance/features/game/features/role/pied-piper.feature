@@ -443,3 +443,42 @@ Feature: 🪈 Pied Piper role
     When the survivors bury dead bodies
     Then the game's current play should be werewolves to eat
     And the game's status should be playing
+
+  Scenario: 🪈 Pied Piper charms only one person by night, so the charmed person is not call because he's alone
+
+    Given a created game with options described in file no-sheriff-option.json, pied-piper-charms-one-person-per-night-option.json and with the following players
+      | name    | role       |
+      | Antoine | pied-piper |
+      | Olivia  | werewolf   |
+      | JB      | villager   |
+      | Thomas  | villager   |
+      | Dad     | villager   |
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Thomas
+    Then the player named Thomas should have the active eaten from werewolves attribute
+    And the game's current play should be pied-piper to charm
+
+    When the pied piper charms the following players
+      | name |
+      | JB   |
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the player named Antoine should have the active eaten from werewolves attribute
+    And the game's current play should be pied-piper to charm
+
+    When the pied piper charms the following players
+      | name |
+      | Dad  |
+    Then the game's current play should be charmed to meet-each-other
+    And the game's current play should be played by the following players
+      | name |
+      | JB   |
+      | Dad  |
