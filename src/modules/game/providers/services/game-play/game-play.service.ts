@@ -147,6 +147,16 @@ export class GamePlayService {
     return isEnabled && electedAt.turn === currentTurn && electedAt.phaseName === currentGamePhaseAsDayOrNight;
   }
 
+  private isCharmedGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
+    if (game instanceof CreateGameDto || !this.isPiedPiperGamePlaySuitableForCurrentPhase(game)) {
+      return false;
+    }
+    const charmedPlayers = getPlayersWithActiveAttributeName(game, "charmed");
+    const aliveCharmedPlayers = charmedPlayers.filter(player => player.isAlive);
+
+    return aliveCharmedPlayers.length > 1;
+  }
+
   private async isLoversGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {
     if (game instanceof CreateGameDto) {
       return false;
@@ -223,7 +233,7 @@ export class GamePlayService {
     const specificGroupMethods: Record<PlayerGroup, (game: CreateGameDto | Game, gamePlay: GamePlay) => Promise<boolean> | boolean> = {
       survivors: async() => this.isSurvivorsGamePlaySuitableForCurrentPhase(game, gamePlay),
       lovers: async() => this.isLoversGamePlaySuitableForCurrentPhase(game, gamePlay),
-      charmed: () => this.isPiedPiperGamePlaySuitableForCurrentPhase(game),
+      charmed: () => this.isCharmedGamePlaySuitableForCurrentPhase(game),
       werewolves: () => game instanceof CreateGameDto || getGroupOfPlayers(game, source).some(werewolf => werewolf.isAlive),
       villagers: () => false,
     };
