@@ -1,9 +1,7 @@
 @vote-game-play
-
 Feature: 🗳️ Vote Game Play
 
   Scenario: 🗳 Majority of votes against a player kills him
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -46,7 +44,6 @@ Feature: 🗳️ Vote Game Play
     And the player named JB should be murdered by survivors from vote
 
   Scenario: 🗳 Targets are not expected during a vote
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -70,7 +67,6 @@ Feature: 🗳️ Vote Game Play
     And the request exception error should be "`targets` can't be set on this current game's state"
 
   Scenario: 🗳 Players can't skip votes with right game options
-
     Given a created game with options described in files no-sheriff-option.json, votes-cant-be-skipped-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -101,7 +97,6 @@ Feature: 🗳️ Vote Game Play
     And the request exception error should be "`votes` is required on this current game's state"
 
   Scenario: 🗳 Players can't skip votes when vote is because angel presence, even after a tie and one dies if there is a tie again
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -139,7 +134,6 @@ Feature: 🗳️ Vote Game Play
     And the game's phase name should be twilight
 
   Scenario: 🗳 Unknown player can't vote
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -158,7 +152,6 @@ Feature: 🗳️ Vote Game Play
     And the request exception error should be "Game Play - Player in `votes.source` is not in the game players"
 
   Scenario: 🗳 Player can't vote for an unknown player
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -177,7 +170,6 @@ Feature: 🗳️ Vote Game Play
     And the request exception error should be "Game Play - Player in `votes.target` is not in the game players"
 
   Scenario: 🗳 Player can't vote for himself
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -205,7 +197,6 @@ Feature: 🗳️ Vote Game Play
     And the request exception error should be "One vote has the same source and target"
 
   Scenario: 🗳 Dead player can't vote anymore
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -233,7 +224,6 @@ Feature: 🗳️ Vote Game Play
     And the request exception error should be "One source is not able to vote because he's dead or doesn't have the ability to do so"
 
   Scenario: 🗳 Player can't vote for a dead player
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -261,7 +251,6 @@ Feature: 🗳️ Vote Game Play
     And the request exception error should be "One target can't be voted because he's dead"
 
   Scenario: 🗳 Tie in votes are dealt with another vote when there is no sheriff in town
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -310,7 +299,6 @@ Feature: 🗳️ Vote Game Play
     And the player named JB should be alive
 
   Scenario: 🗳 Player can't vote against a player which is not in the tie
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -358,7 +346,6 @@ Feature: 🗳️ Vote Game Play
     And the request exception error should be "One vote's target is not in the previous tie in votes"
 
   Scenario: 🗳 None of the players are murdered when there is a tie in votes but survivors can't decide who to kill without sheriff
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -392,7 +379,6 @@ Feature: 🗳️ Vote Game Play
     And the game's current play should be werewolves to eat
 
   Scenario: 🗳 Sheriff has a doubled vote
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | werewolf |
@@ -424,7 +410,6 @@ Feature: 🗳️ Vote Game Play
     Then the player named JB should be murdered by survivors from vote
 
   Scenario: 🗳 Sheriff disparition in game brings back the classic tie in votes system
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -468,7 +453,6 @@ Feature: 🗳️ Vote Game Play
     Then the player named Thomas should be murdered by survivors from vote
 
   Scenario: 🗳 Scandalmonger mark adds two votes to the player who has it
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role          |
       | Antoine | werewolf      |
@@ -495,7 +479,6 @@ Feature: 🗳️ Vote Game Play
     Then the player named JB should be murdered by survivors from vote
 
   Scenario: 🗳 Scapegoat is murdered in case of tie and makes the next votes skipped by banning everyone from voting
-
     Given a created game with the following players
       | name    | role      |
       | Antoine | werewolf  |
@@ -557,7 +540,6 @@ Feature: 🗳️ Vote Game Play
     And the game's phase name should be night
 
   Scenario: 🗳 Player can't vote if scapegoat banned him
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |
       | Antoine | werewolf  |
@@ -619,7 +601,6 @@ Feature: 🗳️ Vote Game Play
     And the request exception error should be "One source is not able to vote because he's dead or doesn't have the ability to do so"
 
   Scenario: 🗳 Stuttering Judge asks for another vote after another vote
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | werewolf         |
@@ -674,7 +655,6 @@ Feature: 🗳️ Vote Game Play
     Then the game's current play should be werewolves to eat
 
   Scenario: 🗳 Multiple votes can happen during the day with stuttering judge requests and ties
-
     Given a created game with options described in files no-sheriff-option.json, stuttering-judge-two-vote-requests-option.json and with the following players
       | name    | role             |
       | Antoine | werewolf         |

@@ -1,9 +1,7 @@
 @hunter-role
-
 Feature: 🔫 Hunter role
 
   Scenario: 🔫 Hunter shoots at someone when he dies
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | hunter   |
@@ -41,7 +39,6 @@ Feature: 🔫 Hunter role
     And the player named Olivia should be murdered by hunter from shot
 
   Scenario: 🔫 Hunter doesn't shoot if he's powerless
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | hunter   |
@@ -70,7 +67,6 @@ Feature: 🔫 Hunter role
     Then the game's current play should be survivors to vote
 
   Scenario: 🔫 Hunter can't shoot at an unknown player
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | hunter   |
@@ -94,7 +90,6 @@ Feature: 🔫 Hunter role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🔫 Hunter can't shoot at a dead player
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | hunter   |
@@ -127,7 +122,6 @@ Feature: 🔫 Hunter role
     And the request exception error should be "Hunter can't shoot this target"
 
   Scenario: 🔫 Hunter can't shoot at multiple targets
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | hunter   |
@@ -154,7 +148,6 @@ Feature: 🔫 Hunter role
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🔫 Hunter can't skip his turn
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | hunter   |
@@ -178,7 +171,6 @@ Feature: 🔫 Hunter role
     And the request exception error should be "`targets` is required on this current game's state"
 
   Scenario: 🔫 Hunter is not called if there are no survivors
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | hunter   |

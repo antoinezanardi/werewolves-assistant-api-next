@@ -1,9 +1,7 @@
 @stuttering-judge-role
-
 Feature: ⚖️ Stuttering Judge Role
 
   Scenario: ⚖️ Stuttering Judge chooses his sign and can ask for another vote when all voted
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -49,7 +47,6 @@ Feature: ⚖️ Stuttering Judge Role
     Then the game's current play should be survivors to vote
 
   Scenario: ⚖️ Stuttering Judge can request more votes if options allow him
-
     Given a created game with options described in file no-sheriff-option.json, stuttering-judge-two-vote-requests-option.json and with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -107,7 +104,6 @@ Feature: ⚖️ Stuttering Judge Role
     Then the game's current play should be werewolves to eat
 
   Scenario: ⚖️ Stuttering Judge can't ask another vote if it's not his turn
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | villager         |
@@ -123,7 +119,6 @@ Feature: ⚖️ Stuttering Judge Role
     And the request exception error should be "`doesJudgeRequestAnotherVote` can't be set on this current game's state"
 
   Scenario: ⚖️ Stuttering Judge can't ask another vote if he is dead
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -153,7 +148,6 @@ Feature: ⚖️ Stuttering Judge Role
     Then the game's current play should be werewolves to eat
 
   Scenario: ⚖️ Stuttering Judge can't ask another vote if he is powerless
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | stuttering-judge |

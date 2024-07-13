@@ -1,9 +1,7 @@
 @big-bad-wolf-role
-
 Feature: 🐺👹 Big Bad Wolf role
 
   Scenario: 🐺👹Big Bad Wolf eats every night but powerless if one werewolf dies
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |
@@ -83,7 +81,6 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia |
 
   Scenario: 🐺👹Big Bad Wolf can't eat an unknown player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | villager     |
@@ -102,7 +99,6 @@ Feature: 🐺👹 Big Bad Wolf role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🐺👹Big Bad Wolf can't eat a dead player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | angel        |
@@ -132,7 +128,6 @@ Feature: 🐺👹 Big Bad Wolf role
     And the request exception error should be "Big bad wolf can't eat this target"
 
   Scenario: 🐺👹Big Bad Wolf can't skip his turn if he has available targets
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | villager     |
@@ -160,7 +155,6 @@ Feature: 🐺👹 Big Bad Wolf role
     And the request exception error should be "`targets` is required on this current game's state"
 
   Scenario: 🐺👹Big Bad Wolf can't eat another wolf
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | angel        |
@@ -190,7 +184,6 @@ Feature: 🐺👹 Big Bad Wolf role
     And the request exception error should be "Big bad wolf can't eat this target"
 
   Scenario: 🐺👹Big Bad Wolf can't eat more than one target
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | angel        |
@@ -224,7 +217,6 @@ Feature: 🐺👹 Big Bad Wolf role
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🐺👹Big Bad Wolf eats every night and not powerless if one werewolf dies with right option
-
     Given a created game with options described in file no-sheriff-option.json, big-bad-wolf-not-powerless-if-werewolf-dies-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |
@@ -294,7 +286,6 @@ Feature: 🐺👹 Big Bad Wolf role
       | Olivia |
 
   Scenario: 🐺👹Big Bad Wolf eats every night but his role is skipped if no targets with right option
-
     Given a created game with options described in file no-sheriff-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |
@@ -357,9 +348,7 @@ Feature: 🐺👹 Big Bad Wolf role
       | JB     |
       | Olivia |
 
-
   Scenario: 🐺👹Big Bad Wolf eats every night and can skip if he has no targets available
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |

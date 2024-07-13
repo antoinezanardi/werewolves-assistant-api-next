@@ -1,9 +1,7 @@
 @scandalmonger-role
-
 Feature: 🐦‍⬛ Scandalmonger role
 
   Scenario: 🐦‍⬛ Scandalmonger marks a player but can also skip
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role          |
       | Antoine | scandalmonger |
@@ -101,7 +99,6 @@ Feature: 🐦‍⬛ Scandalmonger role
     Then the player named Antoine should be murdered by survivors from vote
 
   Scenario: 🐦‍⬛ Scandalmonger marks a player with a greater mark than the default one with good option
-
     Given a created game with options described in file no-sheriff-option.json, scandalmonger-mark-penalty-is-three-option.json and with the following players
       | name    | role          |
       | Antoine | scandalmonger |
@@ -133,7 +130,6 @@ Feature: 🐦‍⬛ Scandalmonger role
     Then the player named JB should be murdered by survivors from vote
 
   Scenario: 🐦‍⬛ Scandalmonger can't mark an unknown player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role          |
       | Antoine | scandalmonger |
@@ -150,7 +146,6 @@ Feature: 🐦‍⬛ Scandalmonger role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🐦‍⬛ Scandalmonger can't mark a dead player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role          |
       | Antoine | scandalmonger |
@@ -177,7 +172,6 @@ Feature: 🐦‍⬛ Scandalmonger role
     And the request exception error should be "Scandalmonger can't mark this target"
 
   Scenario: 🐦‍⬛ Scandalmonger can't mark more than one player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role          |
       | Antoine | scandalmonger |

@@ -1,9 +1,7 @@
 @game-history
-
 Feature: 📜 Game History
 
   Scenario: 📜 Game's tick, phase and turn are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -63,7 +61,6 @@ Feature: 📜 Game History
     And the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 📜 Game play's type, action, sources and cause are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -334,7 +331,6 @@ Feature: 📜 Game History
       | stuttering-judge-request |
 
   Scenario: 📜 Targets of various roles actions are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | seer                 |
@@ -423,7 +419,6 @@ Feature: 📜 Game History
       | Thomas |
 
   Scenario: 📜 Votes of various roles actions are recorded in the game history
-
     Given a created game with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -596,7 +591,6 @@ Feature: 📜 Game History
     And the play's voting result from the previous history record should be skipped
 
   Scenario: 📜 Chosen cards are recorded in the game history
-
     Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -636,7 +630,6 @@ Feature: 📜 Game History
     Then the play's chosen side from the previous history record should be the werewolves side
 
   Scenario: 📜 Revealed players are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -669,7 +662,6 @@ Feature: 📜 Game History
     And the dead players from the previous history record should be undefined
 
   Scenario: 📜 Dead players are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -710,10 +702,8 @@ Feature: 📜 Game History
       | name   |
       | Thomas |
 
-    # TODO: complete this scenario with multiple dead players at the same time (add witch for example)
-
+  # TODO: complete this scenario with multiple dead players at the same time (add witch for example)
   Scenario: 📜 Player attribute alterations are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |
       | Antoine | seer      |

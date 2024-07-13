@@ -1,9 +1,7 @@
 @bear-tamer-role
-
 Feature: 🐻 Bear Tamer role
 
   Scenario: 🐻 Bear Tamer's bear growls when one of his neighbor is a werewolf and doesn't growl when no neighbor is a werewolf
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Olivia  | villager   |
@@ -39,7 +37,6 @@ Feature: 🐻 Bear Tamer role
     And the game's current play should be survivors to vote
 
   Scenario: 🐻 Bear Tamer's bear growls when he is infected even if any of his neighbor is a werewolf
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                 |
       | Olivia  | villager             |
@@ -59,7 +56,6 @@ Feature: 🐻 Bear Tamer role
     And the game's current play should not have causes
 
   Scenario: 🐻 Bear Tamer's bear doesn't growl even if he is infected and any of his neighbor is a werewolf with the right option
-
     Given a created game with options described in file no-sheriff-option.json, bear-tamer-bear-doesnt-growl-on-werewolves-side-option.json and with the following players
       | name    | role                 |
       | Olivia  | villager             |
@@ -78,7 +74,6 @@ Feature: 🐻 Bear Tamer role
     And the game's current play should be survivors to vote
 
   Scenario: 🐻 Bear Tamer's bear doesn't growl first because he didn't have any werewolf neighbor but growls because he has one after the multiple buries
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Olivia  | villager   |
@@ -104,7 +99,6 @@ Feature: 🐻 Bear Tamer role
     Then the request should have succeeded with status code 200
 
   Scenario: 🐻 Bear Tamer's bear doesn't growl when the votes have been made and a werewolf becomes his neighbor
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Olivia  | villager   |

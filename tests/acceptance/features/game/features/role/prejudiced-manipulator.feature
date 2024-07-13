@@ -1,9 +1,7 @@
 @prejudiced-manipulator-role
-
 Feature: 👺 Prejudiced Manipulator role
 
   Scenario: 👺 Prejudiced Manipulator manages to kill every players in the other group but doesn't win because he's dead
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
@@ -38,7 +36,6 @@ Feature: 👺 Prejudiced Manipulator role
     Then the game's status should be playing
 
   Scenario: 👺 Prejudiced Manipulator is infected and thus, can't win the game
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
@@ -75,7 +72,6 @@ Feature: 👺 Prejudiced Manipulator role
     Then the game's status should be playing
 
   Scenario: 👺 Prejudiced Manipulator is infected but can still win the game thanks to game options
-
     Given a created game with options described in file no-sheriff-option.json, prejudiced-manipulator-not-powerless-on-werewolves-side-option.json and with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |

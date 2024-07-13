@@ -1,9 +1,7 @@
 @sheriff-player-attribute
-
 Feature: 🎖️ Sheriff player attribute
 
   Scenario: 🎖️ Sheriff must break ties between votes
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -79,7 +77,6 @@ Feature: 🎖️ Sheriff player attribute
     And the player named Thomas should be murdered by sheriff from vote
 
   Scenario: 🎖️ Sheriff doesn't break tie between votes with good game options
-
     Given a created game with options described in file sheriff-does-not-settle-tie-in-votes-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -128,7 +125,6 @@ Feature: 🎖️ Sheriff player attribute
       | JB     |
 
   Scenario: 🎖️ Sheriff can't break ties with a player which is not in the previous tie
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -166,7 +162,6 @@ Feature: 🎖️ Sheriff player attribute
     And the request exception error should be "Sheriff can't break the tie in votes with this target"
 
   Scenario: 🎖️ Sheriff can't break ties with an unknown player
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -202,7 +197,6 @@ Feature: 🎖️ Sheriff player attribute
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🎖️ Sheriff can't break ties with more than one player
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -241,7 +235,6 @@ Feature: 🎖️ Sheriff player attribute
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🎖️ Sheriff can't skip the break tie in votes
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -277,7 +270,6 @@ Feature: 🎖️ Sheriff player attribute
     And the request exception error should be "`targets` is required on this current game's state"
 
   Scenario: 🎖️ Sheriff has doubled vote
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -309,7 +301,6 @@ Feature: 🎖️ Sheriff player attribute
     Then the player named JB should be murdered by survivors from vote
 
   Scenario: 🎖️ Sheriff has normal vote with the right option
-
     Given a created game with options described in file sheriff-has-normal-vote-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -342,7 +333,6 @@ Feature: 🎖️ Sheriff player attribute
     And the game's current play should be sheriff to settle-votes
 
   Scenario: 🎖️ Sheriff is elected on the first tick of the game
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -353,7 +343,6 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be survivors to elect-sheriff
 
   Scenario: 🎖️ Sheriff can be deactivated with the right option
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -364,7 +353,6 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be werewolves to eat
 
   Scenario: 🎖️ Players can't skip sheriff election
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -381,7 +369,6 @@ Feature: 🎖️ Sheriff player attribute
     And the request exception error should be "`votes` is required on this current game's state"
 
   Scenario: 🎖️ Sheriff can be elected on first day instead of first night with right option
-
     Given a created game with options described in file sheriff-election-on-first-day-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -410,7 +397,6 @@ Feature: 🎖️ Sheriff player attribute
     And the game's current play source interaction with type choose-as-sheriff should have consequences
 
   Scenario: 🎖️ Sheriff can be elected on second night instead of first night with right option
-
     Given a created game with options described in file sheriff-election-on-second-night-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -431,7 +417,6 @@ Feature: 🎖️ Sheriff player attribute
     Then the game's current play should be survivors to elect-sheriff
 
   Scenario: 🎖️ Sheriff delegates if he is not the idiot
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -477,7 +462,6 @@ Feature: 🎖️ Sheriff player attribute
     And the player named Olivia should have the active sheriff from sheriff attribute
 
   Scenario: 🎖️ Sheriff can't skip his delegation
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -507,7 +491,6 @@ Feature: 🎖️ Sheriff player attribute
     And the request exception error should be "`targets` is required on this current game's state"
 
   Scenario: 🎖️ Sheriff can't delegate his role to an unknown player
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -537,7 +520,6 @@ Feature: 🎖️ Sheriff player attribute
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🎖️ Sheriff can't delegate his role to a dead player
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -567,7 +549,6 @@ Feature: 🎖️ Sheriff player attribute
     And the request exception error should be "Sheriff can't delegate his role to this target"
 
   Scenario: 🎖️ Sheriff can't delegate his role to more than one player
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -600,7 +581,6 @@ Feature: 🎖️ Sheriff player attribute
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🎖️ Sheriff doesn't delegate if he is the idiot
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -627,7 +607,6 @@ Feature: 🎖️ Sheriff player attribute
     And the player named Thomas should have the active sheriff from survivors attribute
 
   Scenario: 🎖️ Sheriff election is randomized when there is a tie
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | witch    |

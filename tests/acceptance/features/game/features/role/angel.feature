@@ -1,9 +1,7 @@
 @angel-role
-
 Feature: 👼 Angel role
 
   Scenario: 👼 Angel doesn't win because he is powerless
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | angel    |
@@ -55,7 +53,6 @@ Feature: 👼 Angel role
     And the game's status should be playing
 
   Scenario: 👼 Angel doesn't win if he dies from the hunter on twilight
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | angel    |
@@ -97,7 +94,6 @@ Feature: 👼 Angel role
     And the game's status should be playing
 
   Scenario: 👼 Angel doesn't win if he is murdered on the second vote
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | angel    |
@@ -145,7 +141,6 @@ Feature: 👼 Angel role
       | Thomas |
 
   Scenario: 👼 Angel wins if he is murdered on the stuttering judge requested vote after the first vote
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | angel            |

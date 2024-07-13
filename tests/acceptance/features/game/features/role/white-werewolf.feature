@@ -1,9 +1,7 @@
 @white-werewolf-role
-
 Feature: 🐺🦴White Werewolf role
 
   Scenario: 🐺🦴White Werewolf can eat an ally or skip every other night
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role              |
       | Antoine | villager          |
@@ -135,7 +133,6 @@ Feature: 🐺🦴White Werewolf role
       | Olivia |
 
   Scenario: 🐺🦴White Werewolf can eat an ally or skip every night and his role is skipped if no targets
-
     Given a created game with options described in file no-sheriff-option.json, white-werewolf-waking-up-every-night-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role           |
       | Antoine | villager       |
@@ -192,7 +189,6 @@ Feature: 🐺🦴White Werewolf role
     And the game's current play should be survivors to vote
 
   Scenario: 🐺🦴White Werewolf can skip if he has no other wolves to eat
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | villager       |
@@ -213,7 +209,6 @@ Feature: 🐺🦴White Werewolf role
     Then the game's current play should be survivors to vote
 
   Scenario: 🐺🦴White Werewolf can't eat an unknown target
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | villager       |
@@ -231,7 +226,6 @@ Feature: 🐺🦴White Werewolf role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🐺🦴White Werewolf can't eat a dead target
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | angel          |
@@ -259,7 +253,6 @@ Feature: 🐺🦴White Werewolf role
     And the request exception error should be "White werewolf can't eat this target"
 
   Scenario: 🐺🦴White Werewolf can't eat a villager
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | villager       |
@@ -277,7 +270,6 @@ Feature: 🐺🦴White Werewolf role
     And the request exception error should be "White werewolf can't eat this target"
 
   Scenario: 🐺🦴White Werewolf can't eat multiple targets at once
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | villager       |
@@ -298,7 +290,6 @@ Feature: 🐺🦴White Werewolf role
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🐺🦴White Werewolf can't eat himself
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | villager       |

@@ -1,9 +1,7 @@
 @defender-role
-
 Feature: 🛡️ Defender role
 
   Scenario: 🛡️ Defender protects against every kind of werewolves but not for the little girl
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | defender     |
@@ -99,7 +97,6 @@ Feature: 🛡️ Defender role
     And the player named Antoine should be murdered by werewolves from eaten
 
   Scenario: 🛡️ Defender can't skip his turn
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | defender |
@@ -116,7 +113,6 @@ Feature: 🛡️ Defender role
     And the request exception error should be "`targets` is required on this current game's state"
 
   Scenario: 🛡️ Defender can't protect an unknown player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | defender |
@@ -132,7 +128,6 @@ Feature: 🛡️ Defender role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🛡️ Defender can't protect a dead player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | defender |
@@ -157,7 +152,6 @@ Feature: 🛡️ Defender role
     And the request exception error should be "Defender can't protect this target"
 
   Scenario: 🛡️ Defender can't protect twice in a row the same player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | defender |
@@ -187,7 +181,6 @@ Feature: 🛡️ Defender role
     And the request exception error should be "Defender can't protect this target"
 
   Scenario: 🛡️ Defender can't protect more than one player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | defender |
@@ -206,7 +199,6 @@ Feature: 🛡️ Defender role
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🛡️ Defender doesn't protect from other attack than werewolves
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | defender |
@@ -231,7 +223,6 @@ Feature: 🛡️ Defender role
     And the player named JB should be murdered by werewolves from eaten
 
   Scenario: 🛡️ Defender can protect twice the same player with correct option
-
     Given a created game with options described in file no-sheriff-option.json, defender-can-protect-twice-option.json and with the following players
       | name    | role     |
       | Antoine | defender |

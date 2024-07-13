@@ -1,9 +1,7 @@
 @werewolf-role
-
 Feature: 🐺 Werewolf role
 
   Scenario: 🐺 Werewolves eat a player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -38,7 +36,6 @@ Feature: 🐺 Werewolf role
     And the player named Juju should be murdered by werewolves from eaten
 
   Scenario: 🐺 Werewolves can't eat an unknown player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -54,7 +51,6 @@ Feature: 🐺 Werewolf role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🐺 Werewolves can't eat a dead player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -81,7 +77,6 @@ Feature: 🐺 Werewolf role
     And the request exception error should be "Werewolves can't eat this target"
 
   Scenario: 🐺 Werewolves can't eat another wolf
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -97,7 +92,6 @@ Feature: 🐺 Werewolf role
     And the request exception error should be "Werewolves can't eat this target"
 
   Scenario: 🐺 Werewolves can't skip their turn
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -113,7 +107,6 @@ Feature: 🐺 Werewolf role
     And the request exception error should be "`targets` is required on this current game's state"
 
   Scenario: 🐺 Werewolves can't eat multiple targets at once
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |

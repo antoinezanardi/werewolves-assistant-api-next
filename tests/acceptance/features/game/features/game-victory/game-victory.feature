@@ -1,9 +1,7 @@
 @game-victory
-
 Feature: 🏆 Game Victory
 
   Scenario: 🧑🏻‍🌾 Villagers win the game
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -70,7 +68,6 @@ Feature: 🏆 Game Victory
       | Thomas  |
 
   Scenario: 🐺 Werewolves win the game
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -128,7 +125,6 @@ Feature: 🏆 Game Victory
       | JB   |
 
   Scenario: ☠️ Nobody wins the game
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -222,7 +218,6 @@ Feature: 🏆 Game Victory
       | name |
 
   Scenario: 💞Lovers win the game
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -268,7 +263,6 @@ Feature: 🏆 Game Victory
       | Olivia |
 
   Scenario: 👼 Angel wins the game with the first votes
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -295,7 +289,6 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 👼 Angel wins the game with first murder of wolves
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -333,7 +326,6 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 🐺🦴 White werewolf wins the game
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | witch          |
@@ -366,7 +358,6 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 🪈Pied Piper wins the game
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | witch      |
@@ -410,7 +401,6 @@ Feature: 🏆 Game Victory
       | Thomas |
 
   Scenario: 👺 Prejudiced Manipulator wins the game
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
@@ -440,7 +430,6 @@ Feature: 🏆 Game Victory
       | Antoine |
 
   Scenario: 🏆 No more game plays can be made when game is over
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
