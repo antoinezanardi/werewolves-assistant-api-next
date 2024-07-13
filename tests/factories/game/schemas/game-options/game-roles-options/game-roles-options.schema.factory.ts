@@ -66,6 +66,7 @@ function createFakePiedPiperGameOptions(piedPiperGameOptions: Partial<PiedPiperG
   return plainToInstance(PiedPiperGameOptions, {
     charmedPeopleCountPerNight: piedPiperGameOptions.charmedPeopleCountPerNight ?? faker.number.int({ min: 1, max: 5 }),
     isPowerlessOnWerewolvesSide: piedPiperGameOptions.isPowerlessOnWerewolvesSide ?? faker.datatype.boolean(),
+    areCharmedPeopleRevealed: piedPiperGameOptions.areCharmedPeopleRevealed ?? faker.datatype.boolean(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

@@ -1028,6 +1028,7 @@ describe("Game Controller", () => {
           piedPiper: {
             charmedPeopleCountPerNight: 1,
             isPowerlessOnWerewolvesSide: false,
+            areCharmedPeopleRevealed: true,
           },
           scandalmonger: { markPenalty: 5 },
           witch: { doesKnowWerewolvesTargets: false },
