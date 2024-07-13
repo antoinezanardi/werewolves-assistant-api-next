@@ -5,7 +5,7 @@ import { Model } from "mongoose";
 
 import { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
-import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mappers";
+import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history-record/game-history-record.mappers";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";

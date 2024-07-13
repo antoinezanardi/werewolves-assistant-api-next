@@ -1,3 +1,4 @@
+import { GameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
@@ -64,6 +65,12 @@ class GameHistoryRecord {
   @Type(() => DeadPlayer)
   @Expose()
   public deadPlayers?: DeadPlayer[];
+
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.playerAttributeAlterations as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.playerAttributeAlterations)
+  @Type(() => GameHistoryRecordPlayerAttributeAlteration)
+  @Expose()
+  public playerAttributeAlterations?: GameHistoryRecordPlayerAttributeAlteration[];
 
   @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.createdAt as ApiPropertyOptions)
   @Type(() => Date)

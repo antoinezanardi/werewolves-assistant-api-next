@@ -1,48 +1,31 @@
-import type { TestingModule } from "@nestjs/testing";
-import { Test } from "@nestjs/testing";
-import { when } from "jest-when";
-
-import { createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
-import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
-import type { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
-import type { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
 import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
-import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record/game-history-record.types";
 
 import { ApiResources } from "@/shared/api/enums/api.enums";
 import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
-import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
+import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
 
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
-import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote, createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
-import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
-import { createFakeGamePlay, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
-import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
-import { createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
-import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakeDeadPlayer, createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeGameHistoryRecordPlay } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
+import { createFakeGamePlay } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
+import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeDeadPlayer, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
+import { when } from "jest-when";
 
 describe("Game History Record Service", () => {
   let mocks: {
     gameHistoryRecordService: {
       validateGameHistoryRecordToInsertData: jest.SpyInstance;
-      generateCurrentGameHistoryRecordPlayToInsert: jest.SpyInstance;
-      generateCurrentGameHistoryRecordRevealedPlayersToInsert: jest.SpyInstance;
-      generateCurrentGameHistoryRecordDeadPlayersToInsert: jest.SpyInstance;
-      generateCurrentGameHistoryRecordPlayVotingToInsert: jest.SpyInstance;
-      generateCurrentGameHistoryRecordPlayVotingResultToInsert: jest.SpyInstance;
-      generateCurrentGameHistoryRecordPlaySourceToInsert: jest.SpyInstance;
     };
     gameHistoryRecordRepository: {
       create: jest.SpyInstance;
@@ -63,10 +46,6 @@ describe("Game History Record Service", () => {
       getGameHistoryAccursedWolfFatherInfectsWithTargetRecords: jest.SpyInstance;
     };
     gameRepository: { findOne: jest.SpyInstance };
-    gamePlayVoteService: { getNominatedPlayers: jest.SpyInstance };
-    unexpectedExceptionFactory: {
-      createNoCurrentGamePlayUnexpectedException: jest.SpyInstance;
-    };
   };
   let services: { gameHistoryRecord: GameHistoryRecordService };
   let repositories: { gameHistoryRecord: GameHistoryRecordRepository };
@@ -75,12 +54,6 @@ describe("Game History Record Service", () => {
     mocks = {
       gameHistoryRecordService: {
         validateGameHistoryRecordToInsertData: jest.fn(),
-        generateCurrentGameHistoryRecordPlayToInsert: jest.fn(),
-        generateCurrentGameHistoryRecordRevealedPlayersToInsert: jest.fn(),
-        generateCurrentGameHistoryRecordDeadPlayersToInsert: jest.fn(),
-        generateCurrentGameHistoryRecordPlayVotingToInsert: jest.fn(),
-        generateCurrentGameHistoryRecordPlayVotingResultToInsert: jest.fn(),
-        generateCurrentGameHistoryRecordPlaySourceToInsert: jest.fn(),
       },
       gameHistoryRecordRepository: {
         create: jest.fn(),
@@ -101,8 +74,6 @@ describe("Game History Record Service", () => {
         getGameHistoryAccursedWolfFatherInfectsWithTargetRecords: jest.fn(),
       },
       gameRepository: { findOne: jest.fn() },
-      gamePlayVoteService: { getNominatedPlayers: jest.fn() },
-      unexpectedExceptionFactory: { createNoCurrentGamePlayUnexpectedException: jest.spyOn(UnexpectedExceptionFactory, "createNoCurrentGamePlayUnexpectedException").mockImplementation() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -114,10 +85,6 @@ describe("Game History Record Service", () => {
         {
           provide: GameRepository,
           useValue: mocks.gameRepository,
-        },
-        {
-          provide: GamePlayVoteService,
-          useValue: mocks.gamePlayVoteService,
         },
         GameHistoryRecordService,
       ],
@@ -258,114 +225,6 @@ describe("Game History Record Service", () => {
     });
   });
 
-  describe("generateCurrentGameHistoryRecordToInsert", () => {
-    beforeEach(() => {
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert = jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordPlayToInsert }, "generateCurrentGameHistoryRecordPlayToInsert").mockImplementation();
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordRevealedPlayersToInsert = jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordRevealedPlayersToInsert }, "generateCurrentGameHistoryRecordRevealedPlayersToInsert").mockImplementation();
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordDeadPlayersToInsert = jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordDeadPlayersToInsert }, "generateCurrentGameHistoryRecordDeadPlayersToInsert").mockImplementation();
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert = jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordPlayVotingToInsert }, "generateCurrentGameHistoryRecordPlayVotingToInsert").mockImplementation();
-    });
-
-    it("should throw error when there is no current play for the game.", () => {
-      const baseGame = createFakeGame();
-      const newGame = createFakeGame();
-      const play = createFakeMakeGamePlayWithRelationsDto();
-      const interpolations = { gameId: baseGame._id };
-      const mockedError = "error";
-      mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException.mockReturnValue(mockedError);
-
-      expect(() => services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play)).toThrow(mockedError);
-      expect(mocks.unexpectedExceptionFactory.createNoCurrentGamePlayUnexpectedException).toHaveBeenCalledExactlyOnceWith("generateCurrentGameHistoryRecordToInsert", interpolations);
-    });
-
-    it("should generate current game history to insert when called.", () => {
-      const baseGame = createFakeGameWithCurrentPlay();
-      const newGame = createFakeGameWithCurrentPlay();
-      const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
-      const expectedCurrentGameHistoryToInsert = createFakeGameHistoryRecordToInsert({
-        gameId: baseGame._id,
-        turn: baseGame.turn,
-        phase: baseGame.phase,
-        tick: baseGame.tick,
-        play: expectedCurrentGameHistoryPlayToInsert,
-      });
-
-      expect(services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play)).toStrictEqual<GameHistoryRecordToInsert>(expectedCurrentGameHistoryToInsert);
-    });
-
-    it("should call generateCurrentGameHistoryRecordPlayToInsert method when called.", () => {
-      const baseGame = createFakeGameWithCurrentPlay();
-      const newGame = createFakeGameWithCurrentPlay();
-      const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
-      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
-
-      expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, play);
-    });
-
-    it("should call generateCurrentGameHistoryRecordRevealedPlayersToInsert method when called.", () => {
-      const baseGame = createFakeGameWithCurrentPlay();
-      const newGame = createFakeGameWithCurrentPlay();
-      const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
-      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
-
-      expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordRevealedPlayersToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame);
-    });
-
-    it("should call generateCurrentGameHistoryRecordDeadPlayersToInsert method when called.", () => {
-      const baseGame = createFakeGameWithCurrentPlay();
-      const newGame = createFakeGameWithCurrentPlay();
-      const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
-      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
-
-      expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordDeadPlayersToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame);
-    });
-
-    it("should call generateCurrentGameHistoryRecordPlayVotingToInsert method when called with votes and play type is vote.", () => {
-      const baseGame = createFakeGameWithCurrentPlay();
-      const newGame = createFakeGameWithCurrentPlay();
-      const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay({
-        type: "vote",
-        votes: [],
-      });
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
-      const gameHistoryRecordToInsert = {
-        gameId: baseGame._id,
-        turn: baseGame.turn,
-        phase: baseGame.phase,
-        tick: baseGame.tick,
-        play: expectedCurrentGameHistoryPlayToInsert,
-        revealedPlayers: undefined,
-        deadPlayers: undefined,
-      };
-      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
-
-      expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame, gameHistoryRecordToInsert);
-    });
-
-    it("should not call generateCurrentGameHistoryRecordPlayVotingToInsert method when called with votes and play type is not vote.", () => {
-      const baseGame = createFakeGameWithCurrentPlay();
-      const newGame = createFakeGameWithCurrentPlay();
-      const play = createFakeMakeGamePlayWithRelationsDto();
-      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay({
-        type: "target",
-        votes: [],
-      });
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
-      services.gameHistoryRecord.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
-
-      expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingToInsert).not.toHaveBeenCalled();
-    });
-  });
-
   describe("getGameHistory", () => {
     it("should call getGameHistory repository method when called.", async() => {
       const game = createFakeGame();
@@ -430,479 +289,6 @@ describe("Game History Record Service", () => {
       mocks.gameHistoryRecordRepository.getGameHistoryGamePlayMadeByPlayerRecords.mockResolvedValueOnce([createFakeGameHistoryRecordPlay()]);
 
       await expect(services.gameHistoryRecord.hasGamePlayBeenMadeByPlayer(game._id, gamePlay, player)).resolves.toBe(true);
-    });
-  });
-
-  describe("generateCurrentGameHistoryRecordDeadPlayersToInsert", () => {
-    it("should generate current game history dead players when called.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer({ isAlive: false }),
-        createFakeVillagerAlivePlayer(),
-      ];
-      const baseGame = createFakeGame({ players });
-      const newPlayers = [
-        createFakePlayer({ ...players[0], isAlive: false }),
-        createFakePlayer({ ...players[1] }),
-        createFakePlayer({ ...players[2], isAlive: false }),
-        createFakePlayer({ ...players[3] }),
-        createFakePlayer({ ...players[4] }),
-        createFakeAngelAlivePlayer({ isAlive: false }),
-      ];
-      const newGame = createFakeGame({
-        ...baseGame,
-        players: newPlayers,
-      });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordDeadPlayersToInsert"](baseGame, newGame)).toStrictEqual<Player[]>([
-        newPlayers[0],
-        newPlayers[2],
-      ]);
-    });
-
-    it("should return undefined when there is no dead players.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer({ isAlive: false }),
-        createFakeVillagerAlivePlayer(),
-      ];
-      const baseGame = createFakeGame({ players });
-      const newPlayers = [
-        createFakePlayer({ ...players[0] }),
-        createFakePlayer({ ...players[1] }),
-        createFakePlayer({ ...players[2] }),
-        createFakePlayer({ ...players[3] }),
-        createFakePlayer({ ...players[4] }),
-        createFakeAngelAlivePlayer({ isAlive: false }),
-      ];
-      const newGame = createFakeGame({
-        ...baseGame,
-        players: newPlayers,
-      });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordDeadPlayersToInsert"](baseGame, newGame)).toBeUndefined();
-    });
-  });
-
-  describe("generateCurrentGameHistoryRecordRevealedPlayersToInsert", () => {
-    it("should generate current game history revealed players but alive when called.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer({ role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakeVillagerAlivePlayer({ role: createFakePlayerRole({ isRevealed: true }) }),
-        createFakeWerewolfAlivePlayer({ role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakeVillagerAlivePlayer({ isAlive: false, role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakeVillagerAlivePlayer({ role: createFakePlayerRole({ isRevealed: false }) }),
-      ];
-      const baseGame = createFakeGame({ players });
-      const newPlayers = [
-        createFakePlayer({ ...players[0], role: createFakePlayerRole({ isRevealed: true }) }),
-        createFakePlayer({ ...players[1], role: createFakePlayerRole({ isRevealed: true }) }),
-        createFakePlayer({ ...players[2], role: createFakePlayerRole({ isRevealed: true }) }),
-        createFakePlayer({ ...players[3], role: createFakePlayerRole({ isRevealed: true }) }),
-        createFakePlayer({ ...players[4], role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakeAngelAlivePlayer({ role: createFakePlayerRole({ isRevealed: false }) }),
-      ];
-      const newGame = createFakeGame({
-        ...baseGame,
-        players: newPlayers,
-      });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordRevealedPlayersToInsert"](baseGame, newGame)).toStrictEqual<Player[]>([
-        newPlayers[0],
-        newPlayers[2],
-      ]);
-    });
-
-    it("should return undefined when there is no new revealed players.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer({ role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakeVillagerAlivePlayer({ role: createFakePlayerRole({ isRevealed: true }) }),
-        createFakeWerewolfAlivePlayer({ role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakeVillagerAlivePlayer({ isAlive: false, role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakeVillagerAlivePlayer({ role: createFakePlayerRole({ isRevealed: false }) }),
-      ];
-      const baseGame = createFakeGame({ players });
-      const newPlayers = [
-        createFakePlayer({ ...players[0], role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakePlayer({ ...players[1], role: createFakePlayerRole({ isRevealed: true }) }),
-        createFakePlayer({ ...players[2], role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakePlayer({ ...players[3], role: createFakePlayerRole({ isRevealed: true }) }),
-        createFakePlayer({ ...players[4], role: createFakePlayerRole({ isRevealed: false }) }),
-        createFakeAngelAlivePlayer({ role: createFakePlayerRole({ isRevealed: false }) }),
-      ];
-      const newGame = createFakeGame({
-        ...baseGame,
-        players: newPlayers,
-      });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordRevealedPlayersToInsert"](baseGame, newGame)).toBeUndefined();
-    });
-  });
-
-  describe("generateCurrentGameHistoryRecordPlayToInsert", () => {
-    beforeEach(() => {
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlaySourceToInsert = jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordPlaySourceToInsert }, "generateCurrentGameHistoryRecordPlaySourceToInsert").mockImplementation();
-    });
-
-    it("should generate current game history record play to insert when called.", () => {
-      const game = createFakeGameWithCurrentPlay();
-      const play = createFakeMakeGamePlayWithRelationsDto({
-        doesJudgeRequestAnotherVote: true,
-        targets: [createFakeGameHistoryRecordPlayTarget()],
-        votes: [createFakeGameHistoryRecordPlayVote()],
-        chosenCard: createFakeGameAdditionalCard(),
-        chosenSide: "villagers",
-      });
-      const expectedGameHistoryRecordPlaySource = { name: undefined, players: undefined };
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlaySourceToInsert.mockReturnValue(expectedGameHistoryRecordPlaySource);
-      const expectedGameHistoryRecordPlay = createFakeGameHistoryRecordPlay({
-        type: game.currentPlay.type,
-        action: game.currentPlay.action,
-        didJudgeRequestAnotherVote: play.doesJudgeRequestAnotherVote,
-        targets: play.targets,
-        votes: play.votes,
-        chosenCard: play.chosenCard,
-        chosenSide: play.chosenSide,
-      }, { source: expectedGameHistoryRecordPlaySource });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayToInsert"](game, play)).toStrictEqual<GameHistoryRecordPlay>(expectedGameHistoryRecordPlay);
-    });
-  });
-
-  describe("generateCurrentGameHistoryRecordPlayVotingResultToInsert", () => {
-    it("should return sheriff election when there is a sheriff in the game.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsElectSheriff() });
-      const newGame = createFakeGame({
-        ...game,
-        players: [
-          createFakePlayer(players[0]),
-          createFakePlayer({ ...players[1], attributes: [createFakeSheriffBySurvivorsPlayerAttribute()] }),
-          createFakePlayer(players[2]),
-          createFakePlayer(players[3]),
-        ],
-      });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe("sheriff-election");
-    });
-
-    it("should return tie when there is no sheriff in the game after election.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsElectSheriff() });
-      const newGame = createFakeGame({
-        ...game,
-        players: [
-          createFakePlayer(players[0]),
-          createFakePlayer(players[1]),
-          createFakePlayer(players[2]),
-          createFakePlayer(players[3]),
-        ],
-      });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe("tie");
-    });
-
-    it("should return skipped when there are no vote set.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
-      const newGame = createFakeGame({
-        ...game,
-        players: [
-          createFakePlayer(players[0]),
-          createFakePlayer(players[1]),
-          createFakePlayer(players[2]),
-          createFakePlayer(players[3]),
-        ],
-      });
-      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: undefined });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe("skipped");
-    });
-
-    it("should return skipped when votes are empty.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
-      const newGame = createFakeGame({
-        ...game,
-        players: [
-          createFakePlayer(players[0]),
-          createFakePlayer(players[1]),
-          createFakePlayer(players[2]),
-          createFakePlayer(players[3]),
-        ],
-      });
-      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() })] });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe("skipped");
-    });
-
-    it("should return death when there is at least one dead player from votes.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
-      const newGame = createFakeGame({
-        ...game,
-        players: [
-          createFakePlayer(players[0]),
-          createFakePlayer(players[1]),
-          createFakePlayer(players[2]),
-          createFakePlayer(players[3]),
-        ],
-      });
-      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const deadPlayers = [
-        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteBySurvivorsDeath() }),
-        createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() }),
-      ];
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe("death");
-    });
-
-    it("should return death when there is at least one dead player from scapegoat votes.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote() });
-      const newGame = createFakeGame({
-        ...game,
-        players: [
-          createFakePlayer(players[0]),
-          createFakePlayer(players[1]),
-          createFakePlayer(players[2]),
-          createFakePlayer(players[3]),
-        ],
-      });
-      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerVoteScapegoatedBySurvivorsDeath() })] });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe("death");
-    });
-
-    it("should return inconsequential when there is no death from votes and current play was already after a tie.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["previous-votes-were-in-ties"] }) });
-      const newGame = createFakeGame({
-        ...game,
-        players: [
-          createFakePlayer(players[0]),
-          createFakePlayer(players[1]),
-          createFakePlayer(players[2]),
-          createFakePlayer(players[3]),
-        ],
-      });
-      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe("inconsequential");
-    });
-
-    it("should return inconsequential when there is no death from votes, current play was not already after a tie but only one player was nominated.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      const nominatedPlayers = [players[2]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }) });
-      const newGame = createFakeGame({
-        ...game,
-        players: [
-          createFakePlayer(players[0]),
-          createFakePlayer(players[1]),
-          createFakePlayer(players[2]),
-          createFakePlayer(players[3]),
-        ],
-      });
-      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe("inconsequential");
-    });
-
-    it("should return tie when there is no death from votes, current play was not after a tie and there are several nominated players.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeHunterAlivePlayer(),
-        createFakeSeerAlivePlayer(),
-      ];
-      const nominatedPlayers = [players[2], players[3]];
-      const game = createFakeGameWithCurrentPlay({ players, currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }) });
-      const newGame = createFakeGame({
-        ...game,
-        players: [
-          createFakePlayer(players[0]),
-          createFakePlayer(players[1]),
-          createFakePlayer(players[2]),
-          createFakePlayer(players[3]),
-        ],
-      });
-      const gameHistoryRecordPlay = createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] });
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: gameHistoryRecordPlay, deadPlayers: [createFakeDeadPlayer({ ...players[1], isAlive: false, death: createFakePlayerDeathPotionByWitchDeath() })] });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingResultToInsert"](game, newGame, nominatedPlayers, gameHistoryRecordToInsert)).toBe("tie");
-    });
-  });
-
-  describe("generateCurrentGameHistoryRecordPlayVotingToInsert", () => {
-    beforeEach(() => {
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert = jest.spyOn(services.gameHistoryRecord as unknown as { generateCurrentGameHistoryRecordPlayVotingResultToInsert }, "generateCurrentGameHistoryRecordPlayVotingResultToInsert").mockImplementation();
-    });
-
-    it("should generate current game history record play voting when called.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const newGame = createFakeGameWithCurrentPlay(game);
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
-      const nominatedPlayers = [players[2]];
-      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue("death");
-      const expectedCurrentGameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({
-        result: "death",
-        nominatedPlayers,
-      });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert)).toStrictEqual<GameHistoryRecordPlayVoting>(expectedCurrentGameHistoryRecordPlayVoting);
-    });
-
-    it("should generate current game history record play voting without nominated players when no nominated players are found.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const newGame = createFakeGameWithCurrentPlay(game);
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
-      const nominatedPlayers = [];
-      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue("death");
-      const expectedCurrentGameHistoryRecordPlayVoting = createFakeGameHistoryRecordPlayVoting({ result: "death" });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert)).toStrictEqual<GameHistoryRecordPlayVoting>(expectedCurrentGameHistoryRecordPlayVoting);
-    });
-
-    it("should call getNominatedPlayers method with undefined votes when called without votes.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const newGame = createFakeGameWithCurrentPlay(game);
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
-      const nominatedPlayers = [players[2]];
-      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue("death");
-      services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert);
-
-      expect(mocks.gamePlayVoteService.getNominatedPlayers).toHaveBeenCalledExactlyOnceWith(undefined, game);
-    });
-
-    it("should call getNominatedPlayers method with votes when called.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const newGame = createFakeGameWithCurrentPlay(game);
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] }) });
-      const nominatedPlayers = [players[2]];
-      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue("death");
-      services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert);
-
-      expect(mocks.gamePlayVoteService.getNominatedPlayers).toHaveBeenCalledExactlyOnceWith(gameHistoryRecordToInsert.play.votes, game);
-    });
-
-    it("should call generateCurrentGameHistoryRecordPlayVotingResultToInsert method when called.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-        createFakeVillagerAlivePlayer(),
-      ];
-      const game = createFakeGameWithCurrentPlay({ players });
-      const newGame = createFakeGameWithCurrentPlay(game);
-      const gameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert({ play: createFakeGameHistoryRecordPlay({ votes: [createFakeGameHistoryRecordPlayVote()] }) });
-      const nominatedPlayers = [players[2]];
-      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert.mockReturnValue("death");
-      services.gameHistoryRecord["generateCurrentGameHistoryRecordPlayVotingToInsert"](game, newGame, gameHistoryRecordToInsert);
-
-      expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordPlayVotingResultToInsert).toHaveBeenCalledExactlyOnceWith(game, newGame, nominatedPlayers, gameHistoryRecordToInsert);
-    });
-  });
-
-  describe("generateCurrentGameHistoryRecordPlaySourceToInsert", () => {
-    it("should generate current game history record play source when called.", () => {
-      const players = [
-        createFakeHunterAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerAlivePlayer({ isAlive: false }),
-        createFakeVillagerAlivePlayer(),
-      ];
-      const expectedPlayers = [players[0], players[1], players[3]];
-      const game = createFakeGameWithCurrentPlay({ currentPlay: createGamePlaySurvivorsElectSheriff({ source: createFakeGamePlaySource({ name: "survivors", players: expectedPlayers }) }), players });
-      const expectedGameHistoryRecordPlaySource = createFakeGameHistoryRecordPlaySource({
-        name: game.currentPlay.source.name,
-        players: expectedPlayers,
-      });
-
-      expect(services.gameHistoryRecord["generateCurrentGameHistoryRecordPlaySourceToInsert"](game)).toStrictEqual<GameHistoryRecordPlaySource>(expectedGameHistoryRecordPlaySource);
     });
   });
 
