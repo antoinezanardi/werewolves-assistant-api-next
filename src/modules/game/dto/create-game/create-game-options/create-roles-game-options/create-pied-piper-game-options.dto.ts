@@ -22,6 +22,14 @@ class CreatePiedPiperGameOptionsDto {
   @IsOptional()
   @IsBoolean()
   public isPowerlessOnWerewolvesSide: boolean = PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide.default;
+
+  @ApiProperty({
+    ...PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.areCharmedPeopleRevealed,
+    required: false,
+  } as ApiPropertyOptions)
+  @IsOptional()
+  @IsBoolean()
+  public areCharmedPeopleRevealed: boolean = PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.areCharmedPeopleRevealed.default;
 }
 
 export { CreatePiedPiperGameOptionsDto };

@@ -18,6 +18,10 @@ const PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS = {
     required: true,
     default: DEFAULT_GAME_OPTIONS.roles.piedPiper.isPowerlessOnWerewolvesSide,
   },
+  areCharmedPeopleRevealed: {
+    required: true,
+    default: DEFAULT_GAME_OPTIONS.roles.piedPiper.areCharmedPeopleRevealed,
+  },
 } as const satisfies Record<keyof PiedPiperGameOptions, MongoosePropOptions>;
 
 const PIED_PIPER_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof PiedPiperGameOptions, ApiPropertyOptions>> = {
@@ -28,6 +32,10 @@ const PIED_PIPER_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof PiedPipe
   isPowerlessOnWerewolvesSide: {
     description: "If set to `true`, `pied piper` will be `powerless` if he joins the werewolves side",
     ...convertMongoosePropOptionsToApiPropertyOptions(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide),
+  },
+  areCharmedPeopleRevealed: {
+    description: "If set to `true`, `charmed` people by the `pied piper` will be revealed to other players each time the `pied piper` plays",
+    ...convertMongoosePropOptionsToApiPropertyOptions(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.areCharmedPeopleRevealed),
   },
 };
 
