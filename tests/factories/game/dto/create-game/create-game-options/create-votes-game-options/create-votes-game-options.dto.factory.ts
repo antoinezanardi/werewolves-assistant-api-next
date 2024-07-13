@@ -8,6 +8,7 @@ import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants
 function createFakeVotesGameOptionsDto(createVotesGameOptionsDto: Partial<CreateVotesGameOptionsDto> = {}, override: object = {}): CreateVotesGameOptionsDto {
   return plainToInstance(CreateVotesGameOptionsDto, {
     canBeSkipped: createVotesGameOptionsDto.canBeSkipped ?? faker.datatype.boolean(),
+    duration: createVotesGameOptionsDto.duration ?? faker.number.int({ min: 10, max: 600 }),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

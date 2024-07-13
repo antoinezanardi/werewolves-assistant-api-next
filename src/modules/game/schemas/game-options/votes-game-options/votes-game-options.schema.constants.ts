@@ -12,12 +12,23 @@ const VOTES_GAME_OPTIONS_FIELDS_SPECS = {
     required: true,
     default: DEFAULT_GAME_OPTIONS.votes.canBeSkipped,
   },
+  duration: {
+    required: true,
+    default: DEFAULT_GAME_OPTIONS.votes.duration,
+    min: 10,
+    max: 600,
+  },
 } as const satisfies Record<keyof VotesGameOptions, MongoosePropOptions>;
 
 const VOTES_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof VotesGameOptions, ApiPropertyOptions>> = {
   canBeSkipped: {
     description: "If set to `true`, players are not obliged to vote. There won't be any death if votes are skipped. Sheriff election nor votes because of the angel presence can't be skipped",
     ...convertMongoosePropOptionsToApiPropertyOptions(VOTES_GAME_OPTIONS_FIELDS_SPECS.canBeSkipped),
+  },
+
+  duration: {
+    description: "Duration of the votes play in seconds. It doesn't lock in the votes, it only helps the game master to know when to stop the votes play. Vote play can be submitted before the end of the duration.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(VOTES_GAME_OPTIONS_FIELDS_SPECS.duration),
   },
 };
 
