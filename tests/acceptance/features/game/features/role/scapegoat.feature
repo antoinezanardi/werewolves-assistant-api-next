@@ -1,9 +1,7 @@
 @scapegoat-role
-
 Feature: 🐐 Scapegoat role
 
   Scenario: 🐐 Scapegoat bans from votes after a tie in votes, even if the active sheriff is here
-
     Given a created game with the following players
       | name    | role             |
       | Antoine | scapegoat        |
@@ -103,7 +101,6 @@ Feature: 🐐 Scapegoat role
     And nobody should have the active cant-vote from scapegoat attribute
 
   Scenario: 🐐 Scapegoat doesn't ban if he's powerless
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |
       | Antoine | scapegoat |
@@ -146,7 +143,6 @@ Feature: 🐐 Scapegoat role
     And the player named Antoine should be alive
 
   Scenario: 🐐 Scapegoat ban occurs only on next day even if he bans during the night
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |
       | Antoine | scapegoat |
@@ -191,7 +187,6 @@ Feature: 🐐 Scapegoat role
     And nobody should have the active cant-vote from scapegoat attribute
 
   Scenario: 🐐 Scapegoat can't ban from votes an unknown player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |
       | Antoine | scapegoat |
@@ -216,7 +211,6 @@ Feature: 🐐 Scapegoat role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🐐 Scapegoat can't ban from votes a dead player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role      |
       | Antoine | scapegoat |

@@ -1,9 +1,7 @@
 @rusty-sword-knight-role
-
 Feature: 🤺 Rusty Sword Knight role
 
   Scenario: 🤺 Rusty Sword Knight kills the first alive werewolf on his left when he died at the end of the day
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role               |
       | Antoine | rusty-sword-knight |
@@ -37,7 +35,6 @@ Feature: 🤺 Rusty Sword Knight role
     Then the player named Babou should be murdered by rusty-sword-knight from disease
 
   Scenario: 🤺 Rusty Sword Knight doesn't kill the left werewolf if he's already dead
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role               |
       | Antoine | rusty-sword-knight |
@@ -66,7 +63,6 @@ Feature: 🤺 Rusty Sword Knight role
     And the player named JB should be alive
 
   Scenario: 🤺 Rusty Sword Knight doesn't kill the left werewolf if he's powerless when he's been eaten
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role               |
       | Antoine | rusty-sword-knight |

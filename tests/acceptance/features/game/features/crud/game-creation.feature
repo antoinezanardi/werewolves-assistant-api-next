@@ -1,9 +1,7 @@
 @game-creation
-
 Feature: 🎲 Game Creation
 
   Scenario: 🎲 Game is created
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -13,7 +11,6 @@ Feature: 🎲 Game Creation
     Then the request should have succeeded with status code 201
 
   Scenario: 🎲 Game can't be created with less than 4 players
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -27,7 +24,6 @@ Feature: 🎲 Game Creation
       | players must contain at least 4 elements |
 
   Scenario: 🎲 Game can't be created with more than 40 players
-
     Given a created game with the following players
       | name     | role     |
       | Antoine  | villager |
@@ -85,7 +81,6 @@ Feature: 🎲 Game Creation
       | players must contain no more than 40 elements |
 
   Scenario: 🎲 Game can't be created without villagers
-
     Given a created game with the following players
       | name    | role                 |
       | Antoine | werewolf             |
@@ -100,7 +95,6 @@ Feature: 🎲 Game Creation
       | one of the players.role must have at least one role from `villagers` side |
 
   Scenario: 🎲 Game can't be created without werewolves
-
     Given a created game with the following players
       | name    | role       |
       | Antoine | seer       |
@@ -115,7 +109,6 @@ Feature: 🎲 Game Creation
       | one of the players.role must have at least one role from `werewolves` side |
 
   Scenario: 🎲 Game can't be created if one of the player name is too long
-
     Given a created game with the following players
       | name                                                                          | role     |
       | AntoineAntoineAntoineAntoineAntoineAntoineAntoineAntoineAntoineAntoineAntoine | seer     |
@@ -130,7 +123,6 @@ Feature: 🎲 Game Creation
       | players.0.name must be shorter than or equal to 30 characters |
 
   Scenario: 🎲 Game can't be created if two players have the same name
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | seer     |
@@ -145,7 +137,6 @@ Feature: 🎲 Game Creation
       | players.name must be unique |
 
   Scenario: 🎲 Game can't be created if one of the player role is unknown
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | seer     |
@@ -161,7 +152,6 @@ Feature: 🎲 Game Creation
       | players.4.role.name must be one of the following values: werewolf, big-bad-wolf, accursed-wolf-father, white-werewolf, villager, villager-villager, seer, cupid, witch, hunter, little-girl, defender, elder, scapegoat, idiot, two-sisters, three-brothers, fox, bear-tamer, stuttering-judge, rusty-sword-knight, thief, wild-child, wolf-hound, angel, pied-piper, scandalmonger, prejudiced-manipulator, actor, devoted-servant |
 
   Scenario: 🎲 Game can't be created if there is only one of the two sisters
-
     Given a created game with the following players
       | name    | role        |
       | Antoine | seer        |
@@ -177,7 +167,6 @@ Feature: 🎲 Game Creation
       | players.role minimum occurrences in game must be reached. Please check `minInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there is only one of the three brothers
-
     Given a created game with the following players
       | name    | role           |
       | Antoine | seer           |
@@ -193,7 +182,6 @@ Feature: 🎲 Game Creation
       | players.role minimum occurrences in game must be reached. Please check `minInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are only two of the three brothers
-
     Given a created game with the following players
       | name    | role           |
       | Antoine | seer           |
@@ -210,7 +198,6 @@ Feature: 🎲 Game Creation
       | players.role minimum occurrences in game must be reached. Please check `minInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two seers
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | seer     |
@@ -225,7 +212,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two villager-villagers
-
     Given a created game with the following players
       | name    | role              |
       | Antoine | villager-villager |
@@ -240,7 +226,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two cupids
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -255,7 +240,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two witches
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -270,7 +254,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two hunters
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | hunter   |
@@ -285,7 +268,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two little girls
-
     Given a created game with the following players
       | name    | role        |
       | Antoine | little-girl |
@@ -300,7 +282,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two defenders
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | defender |
@@ -315,7 +296,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two elders
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | elder    |
@@ -330,7 +310,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two scapegoats
-
     Given a created game with the following players
       | name    | role      |
       | Antoine | scapegoat |
@@ -345,7 +324,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two foxes
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | fox      |
@@ -360,7 +338,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two bear tamers
-
     Given a created game with the following players
       | name    | role       |
       | Antoine | bear-tamer |
@@ -375,7 +352,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two stuttering judges
-
     Given a created game with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -390,7 +366,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two rusty sword knights
-
     Given a created game with the following players
       | name    | role               |
       | Antoine | rusty-sword-knight |
@@ -405,7 +380,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two thieves
-
     Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -420,7 +394,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are no additional cards for thief
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -435,7 +408,6 @@ Feature: 🎲 Game Creation
       | additionalCards must be set if there is a player with one of the following roles : thief,actor |
 
   Scenario: 🎲 Game can't be created if there are too less additional cards for thief
-
     Given a created game with additional cards described in file one-additional-card-for-thief.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -450,7 +422,6 @@ Feature: 🎲 Game Creation
       | additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount |
 
   Scenario: 🎲 Game can't be created if there are too much additional cards for thief
-
     Given a created game with additional cards described in file five-additional-cards-for-thief.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -465,7 +436,6 @@ Feature: 🎲 Game Creation
       | additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount |
 
   Scenario: 🎲 Game can't be created if one additional card can't be given to thief
-
     Given a created game with additional cards described in file invalid-additional-cards-for-thief.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -480,7 +450,6 @@ Feature: 🎲 Game Creation
       | additionalCards.roleName for thief must be one of the following values: werewolf,big-bad-wolf,accursed-wolf-father,white-werewolf,villager,villager-villager,seer,cupid,witch,hunter,little-girl,defender,elder,scapegoat,idiot,fox,bear-tamer,stuttering-judge,rusty-sword-knight,wild-child,wolf-hound,angel,pied-piper,scandalmonger,prejudiced-manipulator,devoted-servant |
 
   Scenario: 🎲 Game can't be created if there are two wild children
-
     Given a created game with the following players
       | name    | role       |
       | Antoine | wild-child |
@@ -495,7 +464,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two wolf-hounds
-
     Given a created game with the following players
       | name    | role       |
       | Antoine | wolf-hound |
@@ -510,7 +478,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two angels
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | angel    |
@@ -525,7 +492,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two pied pipers
-
     Given a created game with the following players
       | name    | role       |
       | Antoine | pied-piper |
@@ -540,7 +506,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two scandalmongers
-
     Given a created game with the following players
       | name    | role          |
       | Antoine | scandalmonger |
@@ -555,7 +520,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two big bad wolves
-
     Given a created game with the following players
       | name    | role         |
       | Antoine | big-bad-wolf |
@@ -570,7 +534,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two accursed wolf-father
-
     Given a created game with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
@@ -585,7 +548,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are two prejudiced manipulator
-
     Given a created game with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
@@ -600,7 +562,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but one player doesn't have a group
-
     Given a created game with the following players
       | name    | role                   |
       | Antoine | prejudiced-manipulator |
@@ -616,7 +577,6 @@ Feature: 🎲 Game Creation
       | each player must have a group if there is a player with role `prejudiced-manipulator`    |
 
   Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but one player has a group with empty name
-
     Given a created game with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
@@ -632,7 +592,6 @@ Feature: 🎲 Game Creation
       | players.3.group must be longer than or equal to 1 characters |
 
   Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but one player has a group with too long name
-
     Given a created game with the following players
       | name    | role                   | group                                |
       | Antoine | prejudiced-manipulator | boy                                  |
@@ -648,7 +607,6 @@ Feature: 🎲 Game Creation
       | players.3.group must be shorter than or equal to 30 characters |
 
   Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but there is only one group among players
-
     Given a created game with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
@@ -663,7 +621,6 @@ Feature: 🎲 Game Creation
       | there must be exactly two groups among players when `prejudiced-manipulator` in the game |
 
   Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but there are more than groups among players
-
     Given a created game with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
@@ -680,7 +637,6 @@ Feature: 🎲 Game Creation
       | there must be exactly two groups among players when `prejudiced-manipulator` in the game |
 
   Scenario: 🎲 Game can't be created if there is a prejudiced manipulator but there is only one group among players
-
     Given a created game with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
@@ -695,7 +651,6 @@ Feature: 🎲 Game Creation
       | groups among players must contain at least two players when there is a prejudiced manipulator in the game |
 
   Scenario: 🎲 Game can't be created if there is no prejudiced manipulator but there are groups among players
-
     Given a created game with the following players
       | name    | role     | group |
       | Antoine | werewolf | boy   |
@@ -710,7 +665,6 @@ Feature: 🎲 Game Creation
       | any player can't have a group if there is no player with role `prejudiced-manipulator` |
 
   Scenario: 🎲 Game can't be created if there are two actors
-
     Given a created game with additional cards described in file elder-idiot-scapegoat-additional-cards-for-actor.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -725,7 +679,6 @@ Feature: 🎲 Game Creation
       | players.role can't exceed role maximum occurrences in game. Please check `maxInGame` property of roles |
 
   Scenario: 🎲 Game can't be created if there are no additional cards for actor
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | villager |
@@ -740,7 +693,6 @@ Feature: 🎲 Game Creation
       | additionalCards must be set if there is a player with one of the following roles : thief,actor |
 
   Scenario: 🎲 Game can't be created if there are too less additional cards for actor
-
     Given a created game with additional cards described in file one-additional-card-for-actor.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -755,7 +707,6 @@ Feature: 🎲 Game Creation
       | additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount |
 
   Scenario: 🎲 Game can't be created if there are too much additional cards for actor
-
     Given a created game with additional cards described in file five-additional-cards-for-actor.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -770,7 +721,6 @@ Feature: 🎲 Game Creation
       | additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount |
 
   Scenario: 🎲 Game can't be created if one additional card can't be given to actor
-
     Given a created game with additional cards described in file invalid-additional-cards-for-actor.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -785,7 +735,6 @@ Feature: 🎲 Game Creation
       | additionalCards.roleName for actor must be one of the following values: seer,cupid,witch,hunter,little-girl,defender,elder,scapegoat,idiot,fox,bear-tamer,stuttering-judge,rusty-sword-knight,wild-child,wolf-hound,angel,pied-piper,scandalmonger |
 
   Scenario: 🎲 Game can't be created if there are two devoted servants
-
     Given a created game with the following players
       | name    | role            |
       | Antoine | devoted-servant |

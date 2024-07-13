@@ -1,9 +1,7 @@
 @role
-
 Feature: 🃏 Role
 
   Scenario: 🃏 Role is revealed when the player is buried
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -21,7 +19,6 @@ Feature: 🃏 Role
     Then the player named Antoine should have his role revealed
 
   Scenario: 🃏 Role is not revealed when the player is buried with the correct option
-
     Given a created game with options described in file no-sheriff-option.json, role-not-revealed-on-death-option.json and with the following players
       | name    | role     |
       | Antoine | villager |

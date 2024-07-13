@@ -1,9 +1,7 @@
 @thief-role
-
 Feature: 👺 Thief role
 
   Scenario: 👺 Thief steals the seer role
-
     Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -32,7 +30,6 @@ Feature: 👺 Thief role
     And the game's current play should be werewolves to eat
 
   Scenario: 👺 Thief can skip his turn if he wants
-
     Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -51,7 +48,6 @@ Feature: 👺 Thief role
     And the game's current play should be werewolves to eat
 
   Scenario: 👺 Thief can't steal an unknown card
-
     Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -71,7 +67,6 @@ Feature: 👺 Thief role
     And the request exception error should be "Game Play - Chosen card is not in the game additional cards"
 
   Scenario: 👺 Thief can't skip his turn if all his cards are werewolves
-
     Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -91,7 +86,6 @@ Feature: 👺 Thief role
     And the request exception error should be "Thief must choose a card (`chosenCard`)"
 
   Scenario: 👺 Thief can't choose a card for actor
-
     Given a created game with additional cards described in file valid-additional-cards-for-thief-and-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -108,7 +102,6 @@ Feature: 👺 Thief role
     And the request exception error should be "Chosen card is not for thief"
 
   Scenario: 👺 Thief can skip his turn if he wants even if all his cards are werewolves with good option
-
     Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with options described in file no-sheriff-option.json, thief-can-skip-even-with-full-werewolves-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -125,7 +118,6 @@ Feature: 👺 Thief role
     Then the game's current play should be werewolves to eat
 
   Scenario: 👺 Thief can choose between more than two cards with good options
-
     Given a created game with additional cards described in file five-additional-cards-for-thief.json and with options described in file no-sheriff-option.json, thief-has-five-additional-cards-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |

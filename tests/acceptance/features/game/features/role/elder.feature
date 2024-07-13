@@ -1,9 +1,7 @@
 @elder-role
-
 Feature: 👴🏻 Elder role
 
   Scenario: 👴🏻 Elder makes all villagers loose powers if he dies from votes
-
     Given a created game with additional cards described in file full-werewolves-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name      | role                 |
       | Antoine   | elder                |
@@ -107,7 +105,6 @@ Feature: 👴🏻 Elder role
     And nobody should have the active contaminated from rusty-sword-night attribute
 
   Scenario: 👴🏻 Elder makes all villagers loose powers if he dies from the witch
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | elder    |
@@ -143,7 +140,6 @@ Feature: 👴🏻 Elder role
     Then the game's current play should be werewolves to eat
 
   Scenario: 👴🏻 Elder makes all villagers loose powers if he dies from the hunter
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | elder    |
@@ -179,9 +175,7 @@ Feature: 👴🏻 Elder role
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
-
   Scenario: 👴🏻 Elder doesn't makes all villagers loose powers if he dies from villagers with the right option
-
     Given a created game with options described in file no-sheriff-option.json, elder-doesnt-take-revenge-option.json and with the following players
       | name    | role     |
       | Antoine | elder    |
@@ -204,7 +198,6 @@ Feature: 👴🏻 Elder role
     Then the game's current play should be defender to protect
 
   Scenario: 👴🏻 Elder has two lives against werewolves
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | elder    |
@@ -271,7 +264,6 @@ Feature: 👴🏻 Elder role
     And the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 👴🏻 Elder has only one life against werewolves with the right option
-
     Given a created game with options described in file no-sheriff-option.json, elder-one-life-against-werewolves-option.json and with the following players
       | name    | role     |
       | Antoine | elder    |

@@ -1,9 +1,7 @@
 @wolf-hound-role
-
 Feature: 🐶 Wolf-Hound role
 
   Scenario: 🐶 Wolf-Hound chooses the villagers side
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wolf-hound |
@@ -26,7 +24,6 @@ Feature: 🐶 Wolf-Hound role
     And the player named Antoine should be on villagers current side and originally be on villagers side
 
   Scenario: 🐶 Wolf-Hound chooses the werewolves side
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wolf-hound |
@@ -43,7 +40,6 @@ Feature: 🐶 Wolf-Hound role
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
 
   Scenario: 🐶 Wolf-Hound side is randomly chosen if no choice is made with good option
-
     When a created game with options described in file no-sheriff-option.json, wolf-hound-side-randomly-chosen-option.json and with the following players
       | name    | role       |
       | Antoine | wolf-hound |
@@ -60,7 +56,6 @@ Feature: 🐶 Wolf-Hound role
     Then the request should have succeeded with status code 200
 
   Scenario: 🐶 Wolf-Hound can't skip his turn
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wolf-hound |
@@ -76,7 +71,6 @@ Feature: 🐶 Wolf-Hound role
     And the request exception error should be "`chosenSide` is required on this current game's state"
 
   Scenario: 🐶 Wolf-Hound can't choose an unknown side
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wolf-hound |
@@ -96,7 +90,6 @@ Feature: 🐶 Wolf-Hound role
     And the request exception error should be "Bad Request"
 
   Scenario: 🐶 Wolf-Hound can't choose a side if it must be randomly chosen
-
     When a created game with options described in file no-sheriff-option.json, wolf-hound-side-randomly-chosen-option.json and with the following players
       | name    | role       |
       | Antoine | wolf-hound |

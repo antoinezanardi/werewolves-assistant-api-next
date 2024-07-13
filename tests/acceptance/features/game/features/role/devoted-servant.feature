@@ -1,9 +1,7 @@
 @devoted-servant-role
-
 Feature: 🎀 Devoted Servant role
 
   Scenario: 🎀 Devoted servant steals the role of the seer and can look each night
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -53,7 +51,6 @@ Feature: 🎀 Devoted Servant role
       | JB   |
 
   Scenario: 🎀 Devoted servant can't steal the role if she is dead
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -86,7 +83,6 @@ Feature: 🎀 Devoted Servant role
     And the request exception error should be "Devoted servant can't steal the role of this target because she's not in the game or dead or powerless or in love with another player"
 
   Scenario: 🎀 Devoted servant can't steal the role if she is powerless
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -127,7 +123,6 @@ Feature: 🎀 Devoted Servant role
     And the request exception error should be "Devoted servant can't steal the role of this target because she's not in the game or dead or powerless or in love with another player"
 
   Scenario: 🎀 Devoted servant can't steal the role if she is in love
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -161,7 +156,6 @@ Feature: 🎀 Devoted Servant role
     And the request exception error should be "Devoted servant can't steal the role of this target because she's not in the game or dead or powerless or in love with another player"
 
   Scenario: 🎀 Devoted servant can't steal the role of an alive player
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -181,7 +175,6 @@ Feature: 🎀 Devoted Servant role
     And the request exception error should be "Devoted servant can't steal the role of this target because he's not about to be buried"
 
   Scenario: 🎀 Devoted servant can't steal the role of a dead player who is not about to be buried
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -211,7 +204,6 @@ Feature: 🎀 Devoted Servant role
     And the request exception error should be "Devoted servant can't steal the role of this target because he's not about to be buried"
 
   Scenario: 🎀 Devoted servant can't steal the role of an unknown player
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -231,7 +223,6 @@ Feature: 🎀 Devoted Servant role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🎀 Devoted servant can't steal the role of multiple about to be buried players
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -273,7 +264,6 @@ Feature: 🎀 Devoted Servant role
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🎀 Devoted servant must delegate if she was sheriff before stealing a role
-
     Given a created game with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -309,7 +299,6 @@ Feature: 🎀 Devoted Servant role
       | Olivia  |
 
   Scenario: 🎀 Devoted servant doesn't delegate if she was sheriff and steals the role of idiot
-
     Given a created game with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -336,7 +325,6 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be survivors to vote
 
   Scenario: 🎀 Devoted servant steals the role of the hunter before he dies so he doesn't shoot anybody
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -356,7 +344,6 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be survivors to vote
 
   Scenario: 🎀 Devoted servant is not charmed by pied piper anymore if she steals a role
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -387,7 +374,6 @@ Feature: 🎀 Devoted Servant role
     And the player named JB should not have the active charmed from pied-piper attribute
 
   Scenario: 🎀 Devoted servant remains infected if she steals a role and so, as bear tamer, growls everyday
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name     | role                 |
       | Antoine  | accursed-wolf-father |
@@ -441,7 +427,6 @@ Feature: 🎀 Devoted Servant role
     Then the game's current play should be survivors to vote
 
   Scenario: 🎀 Devoted Servant can protect whoever she wants as a defender, even the last target of the previous one
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -479,7 +464,6 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be survivors to vote
 
   Scenario: 🎀 Devoted Servant can infect again as the accursed wolf-father even if he already infected
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name     | role                 |
       | Antoine  | accursed-wolf-father |
@@ -520,7 +504,6 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be survivors to vote
 
   Scenario: 🎀 Devoted Servant can use potions again as the witch even if she already used them
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name     | role            |
       | Antoine  | werewolf        |
@@ -557,7 +540,6 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 🎀 Devoted Servant can sniff as the fox even if he was powerless by himself before
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name     | role            |
       | Antoine  | werewolf        |
@@ -586,7 +568,6 @@ Feature: 🎀 Devoted Servant role
     Then the game's current play should be fox to sniff
 
   Scenario: 🎀 Devoted Servant can choose another side as the wolf-hound
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -626,7 +607,6 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be werewolves to eat
 
   Scenario: 🎀 Devoted Servant regains the original amount of lives against werewolves the elder had when stealing his role
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -695,7 +675,6 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 🎀 Devoted Servant can ask for another judgement as the judge even if he already asked for one
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name     | role             |
       | Antoine  | werewolf         |
@@ -767,7 +746,6 @@ Feature: 🎀 Devoted Servant role
     Then the game's current play should be werewolves to eat
 
   Scenario: 🎀 Devoted Servant must choose another model as wild-child and the old one is then obsolete
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -816,7 +794,6 @@ Feature: 🎀 Devoted Servant role
     And the player named JB should be on werewolves current side and originally be on villagers side
 
   Scenario: 🎀 Devoted Servant is not powerless anymore if she steals the big bad wolf role and one wolf is dead
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -871,7 +848,6 @@ Feature: 🎀 Devoted Servant role
       | JB   |
 
   Scenario: 🎀 Devoted Servant prevents scapegoat to ban from votes by stealing his role
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -901,7 +877,6 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be werewolves to eat
 
   Scenario: 🎀 Devoted Servant steals the role of the white werewolf and wins
-
     Given a created game with options described in files no-sheriff-option.json, white-werewolf-waking-up-every-night-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -948,7 +923,6 @@ Feature: 🎀 Devoted Servant role
       | JB   |
 
   Scenario: 🎀 Devoted Servant steals the role of angel and wins
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -991,7 +965,6 @@ Feature: 🎀 Devoted Servant role
       | JB   |
 
   Scenario: 🎀 Devoted Servant steals the role of the pied piper and wins
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -1039,7 +1012,6 @@ Feature: 🎀 Devoted Servant role
       | JB   |
 
   Scenario: 🎀 Devoted Servant steals the role of the prejudiced manipulator and wins
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                   | group |
       | Antoine | prejudiced-manipulator | boy   |
@@ -1072,7 +1044,6 @@ Feature: 🎀 Devoted Servant role
       | JB   |
 
   Scenario: 🎀 Devoted Servant will have her role revealed if she steals the role of villager-villager
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role              |
       | Antoine | werewolf          |
@@ -1092,7 +1063,6 @@ Feature: 🎀 Devoted Servant role
     And the player named JB should have his role revealed
 
   Scenario: 🎀 Devoted Servant prevents rusty sword knight to contaminate by stealing his role
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role               |
       | Antoine | werewolf           |
@@ -1132,7 +1102,6 @@ Feature: 🎀 Devoted Servant role
     Then the game's status should be over
 
   Scenario: 🎀 Devoted Servant can choose between the thief cards if he didn't choose one
-
     Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -1170,7 +1139,6 @@ Feature: 🎀 Devoted Servant role
       | JB   |
 
   Scenario: 🎀 Devoted Servant doesn't charm other players if there are already some in love
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | werewolf        |
@@ -1203,7 +1171,6 @@ Feature: 🎀 Devoted Servant role
     Then the game's current play should be werewolves to eat
 
   Scenario: 🎀 Devoted Servant steals the actor role if he didn't choose a card and thus can choose unused actor cards
-
     Given a created game with additional cards described in file seer-witch-little-girl-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | actor           |
@@ -1231,6 +1198,7 @@ Feature: 🎀 Devoted Servant role
     And the game's current play should be played by the following players
       | name |
       | JB   |
+
     When the actor chooses card with role seer
     Then the player named JB should be currently a seer and originally a devoted-servant
     And the player named JB should have the active acting from actor attribute
@@ -1255,7 +1223,6 @@ Feature: 🎀 Devoted Servant role
     And the player named JB should not have the active acting from actor attribute
 
   Scenario: 🎀 Devoted Servant can't use a card the actor previously used
-
     Given a created game with additional cards described in file seer-witch-little-girl-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | actor           |
@@ -1301,7 +1268,6 @@ Feature: 🎀 Devoted Servant role
     And the request exception error should be "Chosen card is already used"
 
   Scenario: 🎀 Devoted Servant idiot role is revealed if he was revealed before
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role            |
       | Antoine | idiot           |

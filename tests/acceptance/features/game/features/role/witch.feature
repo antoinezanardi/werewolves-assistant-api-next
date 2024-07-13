@@ -1,9 +1,7 @@
 @witch-role
-
 Feature: 🪄 Witch role
 
   Scenario: 🪄 Witch uses life potion when the target is dying from werewolves
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -56,7 +54,6 @@ Feature: 🪄 Witch role
     And the game's current play source interaction with type give-death-potion should have consequences
 
   Scenario: 🪄 Witch uses death potion to kill someone
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -97,7 +94,6 @@ Feature: 🪄 Witch role
       | Antoine |
 
   Scenario: 🪄 Witch can skip her turn
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -122,7 +118,6 @@ Feature: 🪄 Witch role
     Then the game's current play should be survivors to vote
 
   Scenario: 🪄 Witch use both potions at the same time
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -154,7 +149,6 @@ Feature: 🪄 Witch role
     And the game's current play source should not have interactions
 
   Scenario: 🪄 Witch is not called anymore if she used all of her potions with the right option
-
     Given a created game with options described in file no-sheriff-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -187,7 +181,6 @@ Feature: 🪄 Witch role
     Then the game's current play should be survivors to vote
 
   Scenario: 🪄 Witch can't use her life potion on an unknown target
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -206,7 +199,6 @@ Feature: 🪄 Witch role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🪄 Witch can't use her death potion on an unknown target
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -225,7 +217,6 @@ Feature: 🪄 Witch role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🪄 Witch can't use her life potion on a target which is not dying from werewolves
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -244,7 +235,6 @@ Feature: 🪄 Witch role
     And the request exception error should be "Life potion can't be applied to this target (`targets.drankPotion`)"
 
   Scenario: 🪄 Witch can't use her death potion on a dead target
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -271,7 +261,6 @@ Feature: 🪄 Witch role
     And the request exception error should be "Death potion can't be applied to this target (`targets.drankPotion`)"
 
   Scenario: 🪄 Witch can't use her death potion on a eaten target
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -290,7 +279,6 @@ Feature: 🪄 Witch role
     And the request exception error should be "Death potion can't be applied to this target (`targets.drankPotion`)"
 
   Scenario: 🪄 Witch can't use her life potion more than once
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -319,7 +307,6 @@ Feature: 🪄 Witch role
     And the request exception error should be "`targets.drankPotion` can't be set on this current game's state"
 
   Scenario: 🪄 Witch can't use her death potion more than once
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |
@@ -353,7 +340,6 @@ Feature: 🪄 Witch role
     And the request exception error should be "`targets.drankPotion` can't be set on this current game's state"
 
   Scenario: 🪄 Witch can't use life potion on multiple targets
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role         |
       | Antoine | witch        |
@@ -380,7 +366,6 @@ Feature: 🪄 Witch role
     And the request exception error should be "There are too much targets which drank life potion (`targets.drankPotion`)"
 
   Scenario: 🪄 Witch can't use death potion on multiple targets
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | witch    |

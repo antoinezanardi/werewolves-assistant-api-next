@@ -1,9 +1,7 @@
 @idiot-role
-
 Feature: 🤪 Idiot role
 
   Scenario: 🤪 Idiot doesn't die if his death is from votes but his role is revealed
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -52,7 +50,6 @@ Feature: 🤪 Idiot role
     And the request exception error should be "One source is not able to vote because he's dead or doesn't have the ability to do so"
 
   Scenario: 🤪 Idiot doesn't die if his death is from settle votes but his role is revealed
-
     Given a created game with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -84,7 +81,6 @@ Feature: 🤪 Idiot role
     And the player named Antoine should have his role revealed
 
   Scenario: 🤪 Idiot doesn't die if his role is not revealed and elder dies
-
     Given a created game with options described in file no-sheriff-option.json, elder-one-life-against-werewolves-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -107,7 +103,6 @@ Feature: 🤪 Idiot role
     And the player named Antoine should have his role revealed
 
   Scenario: 🤪 Idiot dies if his role is revealed and elder dies
-
     Given a created game with options described in file no-sheriff-option.json, elder-one-life-against-werewolves-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -144,7 +139,6 @@ Feature: 🤪 Idiot role
     And the player named Antoine should have his role revealed
 
   Scenario: 🤪 Idiot doesn't die if his role is revealed and elder dies with the right option
-
     Given a created game with options described in file no-sheriff-option.json, elder-one-life-against-werewolves-option.json, idiot-doesnt-die-on-elder-death-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
