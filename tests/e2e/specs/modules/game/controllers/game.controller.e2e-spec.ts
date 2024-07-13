@@ -981,6 +981,10 @@ describe("Game Controller", () => {
 
     it(`should create game with different options when called with options specified and some omitted.`, async() => {
       const options: Partial<GameOptions> = {
+        votes: {
+          canBeSkipped: false,
+          duration: 10,
+        },
         roles: {
           areRevealedOnDeath: false,
           doSkipCallIfNoTarget: true,
@@ -1043,7 +1047,6 @@ describe("Game Controller", () => {
       const expectedOptions = createFakeGameOptionsDto({
         ...options,
         composition: createFakeCompositionGameOptions({ isHidden: DEFAULT_GAME_OPTIONS.composition.isHidden }),
-        votes: createFakeVotesGameOptions({ canBeSkipped: DEFAULT_GAME_OPTIONS.votes.canBeSkipped }),
       });
       const response = await app.inject({
         method: "POST",

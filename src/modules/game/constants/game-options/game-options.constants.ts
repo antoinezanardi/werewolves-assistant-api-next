@@ -4,7 +4,10 @@ import type { GameOptions } from "@/modules/game/schemas/game-options/game-optio
 
 const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
   composition: { isHidden: false },
-  votes: { canBeSkipped: true },
+  votes: {
+    canBeSkipped: true,
+    duration: 180,
+  },
   roles: {
     areRevealedOnDeath: true,
     doSkipCallIfNoTarget: false,
