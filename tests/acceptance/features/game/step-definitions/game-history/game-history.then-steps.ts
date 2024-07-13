@@ -9,7 +9,7 @@ import type { PlayerSide } from "@/modules/game/schemas/player/player-side/playe
 import type { GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
 import type { GamePlayAction, GamePlaySourceName, GamePlayType, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
 
-import { convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
+import { convertDatatableToGameHistoryRecordPlayerAttributeAlterations, convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 
 Then(/^the game's tick from the previous history record should be (?<tick>\d)$/u, function(this: CustomWorld, tick: string): void {
@@ -168,4 +168,22 @@ Then(/^the dead players from the previous history record should be the following
 
 Then(/^the dead players from the previous history record should be undefined$/u, function(this: CustomWorld): void {
   expect(this.lastGameHistoryRecord.deadPlayers).toBeUndefined();
+});
+
+Then(/^the player attribute alterations from previous history record should be the following alterations$/u, function(this: CustomWorld, expectedAlterationsDatatable: DataTable): void {
+  const expectedAlterations = convertDatatableToGameHistoryRecordPlayerAttributeAlterations(expectedAlterationsDatatable.rows());
+  const alterations = this.lastGameHistoryRecord.playerAttributeAlterations;
+
+  expect(alterations?.length).toBe(expectedAlterations.length);
+  expectedAlterations.forEach(expectedAlteration => {
+    const existingPlayerAttributeAlteration = alterations?.find(alteration => alteration.playerName === expectedAlteration.playerName &&
+      alteration.name === expectedAlteration.name &&
+      alteration.status === expectedAlteration.status &&
+      alteration.source === expectedAlteration.source);
+    expect(existingPlayerAttributeAlteration).toBeDefined();
+  });
+});
+
+Then(/^the player attribute alterations from previous history record should be undefined$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.playerAttributeAlterations).toBeUndefined();
 });

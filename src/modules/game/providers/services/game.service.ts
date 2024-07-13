@@ -1,3 +1,5 @@
+import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import type { Types } from "mongoose";
@@ -9,7 +11,6 @@ import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-
 import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { createGame as createGameFromFactory } from "@/modules/game/helpers/game.factory";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
-import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/game-play-maker.service";
 import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
@@ -35,6 +36,7 @@ export class GameService {
     private readonly gameRepository: GameRepository,
     private readonly playerAttributeService: PlayerAttributeService,
     private readonly gameHistoryRecordService: GameHistoryRecordService,
+    private readonly gameHistoryRecordToInsertGeneratorService: GameHistoryRecordToInsertGeneratorService,
   ) {}
 
   public async getGames(): Promise<Game[]> {
@@ -83,7 +85,7 @@ export class GameService {
     if (isGamePhaseOver(clonedGame)) {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }
-    const gameHistoryRecordToInsert = this.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert(game, clonedGame, play);
+    const gameHistoryRecordToInsert = this.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordToInsert(game, clonedGame, play);
     await this.gameHistoryRecordService.createGameHistoryRecord(gameHistoryRecordToInsert);
     if (this.gameVictoryService.isGameOver(clonedGame)) {
       return this.updateGameAsOver(clonedGame);

@@ -19,6 +19,7 @@ function createFakeGameHistoryRecordToInsert(gameHistoryRecordToInsert: Partial<
     play: createFakeGameHistoryRecordPlay(gameHistoryRecordToInsert.play),
     revealedPlayers: gameHistoryRecordToInsert.revealedPlayers,
     deadPlayers: gameHistoryRecordToInsert.deadPlayers,
+    playerAttributeAlterations: gameHistoryRecordToInsert.playerAttributeAlterations,
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }

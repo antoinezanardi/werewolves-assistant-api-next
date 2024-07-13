@@ -1,3 +1,4 @@
+import { GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { SchemaTypes } from "mongoose";
 import type { ReadonlyDeep } from "type-fest";
@@ -43,6 +44,11 @@ const GAME_HISTORY_RECORD_FIELDS_SPECS = {
     type: [DEAD_PLAYER_SCHEMA],
     default: undefined,
   },
+  playerAttributeAlterations: {
+    required: false,
+    type: [GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_SCHEMA],
+    default: undefined,
+  },
   createdAt: { required: true },
 } as const satisfies Record<keyof GameHistoryRecord, MongoosePropOptions>;
 
@@ -74,12 +80,16 @@ const GAME_HISTORY_RECORD_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryR
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.play),
   },
   revealedPlayers: {
-    description: "Player(s) which the role has been revealed after the play",
+    description: "Player(s) which the role has been revealed as consequence of the play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.revealedPlayers),
   },
   deadPlayers: {
-    description: "Player(s) that died after the play",
+    description: "Player(s) that died as consequence of the play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.deadPlayers),
+  },
+  playerAttributeAlterations: {
+    description: "Player attribute alteration(s) as consequence of the play",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.playerAttributeAlterations),
   },
   createdAt: {
     description: "When the game history record was created",

@@ -17,9 +17,10 @@ const GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS = {
     enum: GAME_PLAY_SOURCE_NAMES,
   },
   players: {
-    required: true,
+    required: false,
     type: [PLAYER_SCHEMA],
     validate: [(players: Player[]): boolean => doesArrayRespectBounds(players, { minItems: 1 }), "Path `play.source.players` length is less than minimum allowed value (1)."],
+    default: undefined,
   },
   interactions: {
     required: false,

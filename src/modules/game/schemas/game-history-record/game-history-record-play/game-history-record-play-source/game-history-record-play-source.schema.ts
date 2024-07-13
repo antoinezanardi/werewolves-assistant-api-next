@@ -24,7 +24,7 @@ class GameHistoryRecordPlaySource {
   @Prop(GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.players as PropOptions)
   @Type(() => Player)
   @Expose()
-  public players: Player[];
+  public players?: Player[];
 
   @ApiProperty(GAME_HISTORY_RECORD_PLAY_SOURCE_API_PROPERTIES.interactions as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_PLAY_SOURCE_FIELDS_SPECS.interactions as PropOptions)
