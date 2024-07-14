@@ -1,3 +1,4 @@
+import { CreateWerewolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-werewolf-game-options.dto";
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
@@ -208,6 +209,13 @@ function createFakeCreateBigBadWolfGameOptionsDto(bigBadWolfOptions: Partial<Cre
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
 
+function createFakeCreateWerewolfGameOptionsDto(werewolfGameOptions: Partial<CreateWerewolfGameOptionsDto> = {}, override: object = {}): CreateWerewolfGameOptionsDto {
+  return plainToInstance(CreateWerewolfGameOptionsDto, {
+    canEatEachOther: werewolfGameOptions.canEatEachOther ?? faker.datatype.boolean(),
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
 function createFakeCreateSheriffElectionGameOptionsDto(
   sheriffElectionGameOptions: Partial<CreateSheriffElectionGameOptionsDto> = {},
   override: object = {},
@@ -234,6 +242,7 @@ function createFakeRolesGameOptionsDto(rolesGameOptions: Partial<CreateRolesGame
     doSkipCallIfNoTarget: rolesGameOptions.doSkipCallIfNoTarget ?? faker.datatype.boolean(),
     areRevealedOnDeath: rolesGameOptions.areRevealedOnDeath ?? faker.datatype.boolean(),
     sheriff: createFakeCreateSheriffGameOptionsDto(rolesGameOptions.sheriff),
+    werewolf: createFakeCreateWerewolfGameOptionsDto(rolesGameOptions.werewolf),
     bigBadWolf: createFakeCreateBigBadWolfGameOptionsDto(rolesGameOptions.bigBadWolf),
     whiteWerewolf: createFakeCreateWhiteWerewolfGameOptionsDto(rolesGameOptions.whiteWerewolf),
     seer: createFakeCreateSeerGameOptionsDto(rolesGameOptions.seer),
@@ -282,6 +291,7 @@ export {
   createFakeCreateCupidGameOptionsDto,
   createFakeCreateWhiteWerewolfGameOptionsDto,
   createFakeCreateBigBadWolfGameOptionsDto,
+  createFakeCreateWerewolfGameOptionsDto,
   createFakeCreateSheriffElectionGameOptionsDto,
   createFakeCreateSheriffGameOptionsDto,
   createFakeRolesGameOptionsDto,

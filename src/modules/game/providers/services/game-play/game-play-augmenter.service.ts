@@ -5,7 +5,7 @@ import { doesGamePlayHaveCause } from "@/modules/game/helpers/game-play/game-pla
 import { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { createGamePlaySourceInteraction } from "@/modules/game/helpers/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.factory";
 import { createGamePlay } from "@/modules/game/helpers/game-play/game-play.factory";
-import { getAlivePlayers, getAllowedToVotePlayers, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
+import { getAlivePlayers, getAllowedToVotePlayers, getEligibleBigBadWolfTargets, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
 import { doesPlayerHaveActiveAttributeWithName, doesPlayerHaveActiveAttributeWithNameAndSource } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import { createPlayer } from "@/modules/game/helpers/player/player.factory";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helpers";
@@ -214,11 +214,11 @@ export class GamePlayAugmenterService {
   }
 
   private getWerewolvesGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
-    const aliveVillagerSidedPlayers = getEligibleWerewolvesTargets(game);
+    const eligibleWerewolvesTargets = getEligibleWerewolvesTargets(game);
     const interaction = createGamePlaySourceInteraction({
       source: "werewolves",
       type: "eat",
-      eligibleTargets: aliveVillagerSidedPlayers,
+      eligibleTargets: eligibleWerewolvesTargets,
       boundaries: { min: 1, max: 1 },
     });
 
@@ -226,14 +226,14 @@ export class GamePlayAugmenterService {
   }
 
   private getBigBadWolfGamePlaySourceInteractions(game: Game): GamePlaySourceInteraction[] {
-    const eligibleWerewolvesTargets = getEligibleWerewolvesTargets(game);
-    if (eligibleWerewolvesTargets.length === 0) {
+    const eligibleBigBadWolfTargets = getEligibleBigBadWolfTargets(game);
+    if (eligibleBigBadWolfTargets.length === 0) {
       return [];
     }
     const interaction = createGamePlaySourceInteraction({
       source: "big-bad-wolf",
       type: "eat",
-      eligibleTargets: eligibleWerewolvesTargets,
+      eligibleTargets: eligibleBigBadWolfTargets,
       boundaries: { min: 1, max: 1 },
     });
 
@@ -475,7 +475,7 @@ export class GamePlayAugmenterService {
   }
 
   private canBigBadWolfSkipGamePlay(game: Game): boolean {
-    const leftToEatByWerewolvesPlayers = getEligibleWerewolvesTargets(game);
+    const leftToEatByWerewolvesPlayers = getEligibleBigBadWolfTargets(game);
 
     return leftToEatByWerewolvesPlayers.length === 0;
   }

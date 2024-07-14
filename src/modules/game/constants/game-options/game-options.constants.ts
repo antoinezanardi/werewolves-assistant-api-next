@@ -20,6 +20,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       hasDoubledVote: true,
       mustSettleTieInVotes: true,
     },
+    werewolf: { canEatEachOther: false },
     bigBadWolf: { isPowerlessIfWerewolfDies: true },
     whiteWerewolf: { wakingUpInterval: 2 },
     seer: {

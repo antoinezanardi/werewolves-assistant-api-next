@@ -997,6 +997,7 @@ describe("Game Controller", () => {
             hasDoubledVote: false,
             mustSettleTieInVotes: false,
           },
+          werewolf: { canEatEachOther: true },
           bigBadWolf: { isPowerlessIfWerewolfDies: false },
           whiteWerewolf: { wakingUpInterval: 5 },
           seer: {
@@ -1336,6 +1337,7 @@ describe("Game Controller", () => {
         currentPlay,
         upcomingPlays: [createFakeGamePlayWerewolvesEat()],
         players,
+        options: DEFAULT_GAME_OPTIONS,
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
@@ -1367,6 +1369,7 @@ describe("Game Controller", () => {
           players[2],
           players[3],
         ],
+        options: DEFAULT_GAME_OPTIONS,
       });
       const response = await app.inject({
         method: "POST",
