@@ -1,3 +1,4 @@
+import { WEREWOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
@@ -42,6 +43,11 @@ const ROLES_GAME_OPTIONS_FIELDS_SPECS = {
     required: true,
     type: SHERIFF_GAME_OPTIONS_SCHEMA,
     default: DEFAULT_GAME_OPTIONS.roles.sheriff,
+  },
+  werewolf: {
+    required: true,
+    type: WEREWOLF_GAME_OPTIONS_SCHEMA,
+    default: DEFAULT_GAME_OPTIONS.roles.werewolf,
   },
   bigBadWolf: {
     required: true,
@@ -162,6 +168,10 @@ const ROLES_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof RolesGameOpti
   sheriff: {
     description: "Game `sheriff` role's options.",
     ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.sheriff),
+  },
+  werewolf: {
+    description: "Game `werewolf` role's or `werewolves` group options.",
+    ...convertMongoosePropOptionsToApiPropertyOptions(ROLES_GAME_OPTIONS_FIELDS_SPECS.werewolf),
   },
   bigBadWolf: {
     description: "Game `big bad wolf` role's options.",
