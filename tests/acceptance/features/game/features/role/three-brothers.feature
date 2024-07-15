@@ -1,9 +1,7 @@
 @three-brothers-role
-
 Feature: 👨‍👨‍👦 Three Brothers role
 
   Scenario: 👨‍👨‍👦 Three Brothers are called every other night and not called anymore if two die
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role           |
       | Antoine | three-brothers |
@@ -77,7 +75,6 @@ Feature: 👨‍👨‍👦 Three Brothers role
     Then the game's current play should be werewolves to eat
 
   Scenario: 👨‍👨‍👦 Three Brothers are never called when options say they are not called at all
-
     Given a created game with options described in file no-sheriff-option.json, three-brothers-never-waking-up-option.json and with the following players
       | name    | role           |
       | Antoine | three-brothers |
@@ -89,7 +86,6 @@ Feature: 👨‍👨‍👦 Three Brothers role
     Then the game's current play should be werewolves to eat
 
   Scenario: 👨‍👨‍👦 Three Brothers are waking up every night when options say they are called every night
-
     Given a created game with options described in file no-sheriff-option.json, three-brothers-waking-up-every-night-option.json and with the following players
       | name    | role           |
       | Antoine | three-brothers |

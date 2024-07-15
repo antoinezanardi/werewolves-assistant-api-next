@@ -106,8 +106,22 @@ function getEligiblePiedPiperTargets(game: Game): Player[] {
 }
 
 function getEligibleWerewolvesTargets(game: Game): Player[] {
-  return game.players.filter(player => player.isAlive && player.side.current === "villagers" &&
-    !doesPlayerHaveActiveAttributeWithName(player, "eaten", game));
+  const { canEatEachOther: canWerewolvesEatEachOther } = game.options.roles.werewolf;
+  const aliveWerewolfSidePlayers = getAliveWerewolfSidedPlayers(game);
+  const isWerewolfAlone = aliveWerewolfSidePlayers.length === 1;
+
+  return game.players.filter(player => {
+    const isPlayerNotAlreadyEaten = !doesPlayerHaveActiveAttributeWithName(player, "eaten", game);
+    const isPlayerVillagerSide = player.side.current === "villagers";
+
+    return player.isAlive && (canWerewolvesEatEachOther && !isWerewolfAlone || isPlayerVillagerSide) && isPlayerNotAlreadyEaten;
+  });
+}
+
+function getEligibleBigBadWolfTargets(game: Game): Player[] {
+  const eligibleWerewolvesTargets = getEligibleWerewolvesTargets(game);
+
+  return eligibleWerewolvesTargets.filter(player => player.role.current !== "big-bad-wolf");
 }
 
 function getEligibleWhiteWerewolfTargets(game: Game): Player[] {
@@ -234,6 +248,7 @@ export {
   getAliveWerewolfSidedPlayers,
   getEligiblePiedPiperTargets,
   getEligibleWerewolvesTargets,
+  getEligibleBigBadWolfTargets,
   getEligibleWhiteWerewolfTargets,
   getEligibleCupidTargets,
   getGroupOfPlayers,

@@ -20,6 +20,11 @@ class PiedPiperGameOptions {
   @Prop(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide)
   @Expose()
   public isPowerlessOnWerewolvesSide: boolean;
+
+  @ApiProperty(PIED_PIPER_GAME_OPTIONS_API_PROPERTIES.areCharmedPeopleRevealed as ApiPropertyOptions)
+  @Prop(PIED_PIPER_GAME_OPTIONS_FIELDS_SPECS.areCharmedPeopleRevealed)
+  @Expose()
+  public areCharmedPeopleRevealed: boolean;
 }
 
 const PIED_PIPER_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(PiedPiperGameOptions);

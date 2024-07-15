@@ -1,3 +1,4 @@
+import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
@@ -50,9 +51,9 @@ describe("Game Service", () => {
       updateOne: jest.SpyInstance;
     };
     gameHistoryRecordService: {
-      generateCurrentGameHistoryRecordToInsert: jest.SpyInstance;
       createGameHistoryRecord: jest.SpyInstance;
     };
+    gameHistoryRecordToInsertGeneratorService: { generateCurrentGameHistoryRecordToInsert: jest.SpyInstance };
     gamePlayService: {
       getPhaseUpcomingPlays: jest.SpyInstance;
       proceedToNextGamePlay: jest.SpyInstance;
@@ -95,9 +96,9 @@ describe("Game Service", () => {
         updateOne: jest.fn(),
       },
       gameHistoryRecordService: {
-        generateCurrentGameHistoryRecordToInsert: jest.fn(),
         createGameHistoryRecord: jest.fn(),
       },
+      gameHistoryRecordToInsertGeneratorService: { generateCurrentGameHistoryRecordToInsert: jest.fn() },
       gamePlayService: {
         getPhaseUpcomingPlays: jest.fn(),
         proceedToNextGamePlay: jest.fn(),
@@ -130,6 +131,10 @@ describe("Game Service", () => {
         {
           provide: GameHistoryRecordService,
           useValue: mocks.gameHistoryRecordService,
+        },
+        {
+          provide: GameHistoryRecordToInsertGeneratorService,
+          useValue: mocks.gameHistoryRecordToInsertGeneratorService,
         },
         {
           provide: GamePlayService,
@@ -388,14 +393,14 @@ describe("Game Service", () => {
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
-      expect(mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert).toHaveBeenCalledExactlyOnceWith(clonedGame, game, play);
+      expect(mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordToInsert).toHaveBeenCalledExactlyOnceWith(clonedGame, game, play);
     });
 
     it("should call createGameHistoryRecord method when called.", async() => {
       const clonedGame = createFakeGame(game);
       const makeGamePlayDto = createFakeMakeGamePlayDto();
       const currentGameHistoryRecordToInsert = createFakeGameHistoryRecordToInsert();
-      mocks.gameHistoryRecordService.generateCurrentGameHistoryRecordToInsert.mockReturnValue(currentGameHistoryRecordToInsert);
+      mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordToInsert.mockReturnValue(currentGameHistoryRecordToInsert);
       await services.game.makeGamePlay(clonedGame, makeGamePlayDto);
 
       expect(mocks.gameHistoryRecordService.createGameHistoryRecord).toHaveBeenCalledExactlyOnceWith(currentGameHistoryRecordToInsert);

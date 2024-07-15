@@ -1,9 +1,7 @@
 @fox-role
-
 Feature: 🦊 Fox role
 
   Scenario: 🦊 Fox is powerless if he misses a werewolf of any kind
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | fox                  |
@@ -94,7 +92,6 @@ Feature: 🦊 Fox role
     Then the game's current play should be werewolves to eat
 
   Scenario: 🦊 Fox is not powerless if he misses a werewolf of any kind with game option
-
     Given a created game with options described in files no-sheriff-option.json, fox-not-powerless-if-misses-werewolf-option.json and with the following players
       | name    | role                 |
       | Antoine | fox                  |
@@ -113,7 +110,6 @@ Feature: 🦊 Fox role
     Then the player named Antoine should not have the active powerless from fox attribute
 
   Scenario: 🦊 Fox can't sniff an unknown player
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | fox                  |
@@ -129,7 +125,6 @@ Feature: 🦊 Fox role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🦊 Fox can't sniff a dead player
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | fox                  |
@@ -153,7 +148,6 @@ Feature: 🦊 Fox role
     And the request exception error should be "Fox can't sniff this target"
 
   Scenario: 🦊 Fox can't sniff more than one player
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | fox                  |

@@ -1,3 +1,4 @@
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
@@ -88,6 +89,7 @@ describe("Game Play Augmenter Service", () => {
     };
     gameHelper: {
       getEligibleWerewolvesTargets: jest.SpyInstance;
+      getEligibleBigBadWolfTargets: jest.SpyInstance;
       getEligibleWhiteWerewolfTargets: jest.SpyInstance;
       getEligiblePiedPiperTargets: jest.SpyInstance;
       getEligibleCupidTargets: jest.SpyInstance;
@@ -169,6 +171,7 @@ describe("Game Play Augmenter Service", () => {
       },
       gameHelper: {
         getEligibleWerewolvesTargets: jest.spyOn(GameHelper, "getEligibleWerewolvesTargets"),
+        getEligibleBigBadWolfTargets: jest.spyOn(GameHelper, "getEligibleBigBadWolfTargets"),
         getEligibleWhiteWerewolfTargets: jest.spyOn(GameHelper, "getEligibleWhiteWerewolfTargets"),
         getEligiblePiedPiperTargets: jest.spyOn(GameHelper, "getEligiblePiedPiperTargets"),
         getEligibleCupidTargets: jest.spyOn(GameHelper, "getEligibleCupidTargets"),
@@ -845,7 +848,7 @@ describe("Game Play Augmenter Service", () => {
         createFakeWerewolfAlivePlayer(),
       ];
       const game = createFakeGame({ players });
-      mocks.gameHelper.getEligibleWerewolvesTargets.mockReturnValueOnce([
+      mocks.gameHelper.getEligibleBigBadWolfTargets.mockReturnValueOnce([
         players[0],
         players[1],
       ]);
@@ -869,8 +872,11 @@ describe("Game Play Augmenter Service", () => {
         createFakeVillagerAlivePlayer(),
         createFakeVillagerAlivePlayer(),
       ];
-      const game = createFakeGame({ players });
-      mocks.gameHelper.getEligibleWerewolvesTargets.mockReturnValueOnce([]);
+      const game = createFakeGame({
+        players,
+        options: DEFAULT_GAME_OPTIONS,
+      });
+      mocks.gameHelper.getEligibleBigBadWolfTargets.mockReturnValueOnce([]);
 
       expect(services.gamePlayAugmenter["getBigBadWolfGamePlaySourceInteractions"](game)).toStrictEqual<GamePlaySourceInteraction[]>([]);
     });

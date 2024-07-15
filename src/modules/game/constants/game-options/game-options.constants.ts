@@ -4,7 +4,10 @@ import type { GameOptions } from "@/modules/game/schemas/game-options/game-optio
 
 const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
   composition: { isHidden: false },
-  votes: { canBeSkipped: true },
+  votes: {
+    canBeSkipped: true,
+    duration: 180,
+  },
   roles: {
     areRevealedOnDeath: true,
     doSkipCallIfNoTarget: false,
@@ -17,6 +20,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
       hasDoubledVote: true,
       mustSettleTieInVotes: true,
     },
+    werewolf: { canEatEachOther: false },
     bigBadWolf: { isPowerlessIfWerewolfDies: true },
     whiteWerewolf: { wakingUpInterval: 2 },
     seer: {
@@ -52,6 +56,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     piedPiper: {
       charmedPeopleCountPerNight: 2,
       isPowerlessOnWerewolvesSide: true,
+      areCharmedPeopleRevealed: false,
     },
     scandalmonger: { markPenalty: 2 },
     witch: { doesKnowWerewolvesTargets: true },

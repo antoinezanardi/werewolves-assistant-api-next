@@ -1,6 +1,6 @@
 import type { QueryOptions } from "mongoose";
 
-import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history/game-history-record.mappers";
+import { convertGetGameHistoryDtoToMongooseQueryOptions } from "@/modules/game/helpers/game-history-record/game-history-record.mappers";
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 

@@ -981,6 +981,10 @@ describe("Game Controller", () => {
 
     it(`should create game with different options when called with options specified and some omitted.`, async() => {
       const options: Partial<GameOptions> = {
+        votes: {
+          canBeSkipped: false,
+          duration: 10,
+        },
         roles: {
           areRevealedOnDeath: false,
           doSkipCallIfNoTarget: true,
@@ -993,6 +997,7 @@ describe("Game Controller", () => {
             hasDoubledVote: false,
             mustSettleTieInVotes: false,
           },
+          werewolf: { canEatEachOther: true },
           bigBadWolf: { isPowerlessIfWerewolfDies: false },
           whiteWerewolf: { wakingUpInterval: 5 },
           seer: {
@@ -1028,6 +1033,7 @@ describe("Game Controller", () => {
           piedPiper: {
             charmedPeopleCountPerNight: 1,
             isPowerlessOnWerewolvesSide: false,
+            areCharmedPeopleRevealed: true,
           },
           scandalmonger: { markPenalty: 5 },
           witch: { doesKnowWerewolvesTargets: false },
@@ -1042,7 +1048,6 @@ describe("Game Controller", () => {
       const expectedOptions = createFakeGameOptionsDto({
         ...options,
         composition: createFakeCompositionGameOptions({ isHidden: DEFAULT_GAME_OPTIONS.composition.isHidden }),
-        votes: createFakeVotesGameOptions({ canBeSkipped: DEFAULT_GAME_OPTIONS.votes.canBeSkipped }),
       });
       const response = await app.inject({
         method: "POST",
@@ -1332,6 +1337,7 @@ describe("Game Controller", () => {
         currentPlay,
         upcomingPlays: [createFakeGamePlayWerewolvesEat()],
         players,
+        options: DEFAULT_GAME_OPTIONS,
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
@@ -1363,6 +1369,7 @@ describe("Game Controller", () => {
           players[2],
           players[3],
         ],
+        options: DEFAULT_GAME_OPTIONS,
       });
       const response = await app.inject({
         method: "POST",

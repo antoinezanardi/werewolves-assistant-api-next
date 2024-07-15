@@ -15,6 +15,11 @@ class VotesGameOptions {
   @Prop(VOTES_GAME_OPTIONS_FIELDS_SPECS.canBeSkipped)
   @Expose()
   public canBeSkipped: boolean;
+
+  @ApiProperty(VOTES_GAME_OPTIONS_API_PROPERTIES.duration as ApiPropertyOptions)
+  @Prop(VOTES_GAME_OPTIONS_FIELDS_SPECS.duration)
+  @Expose()
+  public duration: number;
 }
 
 const VOTES_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(VotesGameOptions);

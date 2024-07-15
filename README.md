@@ -43,7 +43,9 @@
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
 
-This is the **next** version of the current **[Werewolves Assistant API](https://github.com/antoinezanardi/werewolves-assistant-api)**. It is still under development.
+This is the **next** version of the deprecated **[Werewolves Assistant API](https://github.com/antoinezanardi/werewolves-assistant-api)**.
+
+This API is used by the **[Werewolves Assistant Web App](https://github.com/antoinezanardi/werewolves-assistant-web-next)**.
 
 #### 🤔 Want to know more about this awesome project ? <a href="https://werewolves-assistant.antoinezanardi.fr/about" target="_blank">**Check out the dedicated about page**</a>.
 

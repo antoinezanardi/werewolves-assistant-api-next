@@ -62,7 +62,7 @@ const GAME_PLAY_SOURCE_NAMES = [
   "actor",
   "bear-tamer",
   "accursed-wolf-father",
-] as const satisfies Readonly<(PlayerAttributeName | PlayerGroup | RoleName)[]>;
+] as const satisfies readonly (PlayerAttributeName | PlayerGroup | RoleName)[];
 
 const GAME_PLAY_CAUSES = [
   "stuttering-judge-request",

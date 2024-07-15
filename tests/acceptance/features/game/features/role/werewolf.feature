@@ -1,9 +1,7 @@
 @werewolf-role
-
 Feature: 🐺 Werewolf role
 
   Scenario: 🐺 Werewolves eat a player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -38,7 +36,6 @@ Feature: 🐺 Werewolf role
     And the player named Juju should be murdered by werewolves from eaten
 
   Scenario: 🐺 Werewolves can't eat an unknown player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -54,7 +51,6 @@ Feature: 🐺 Werewolf role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🐺 Werewolves can't eat a dead player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -81,7 +77,6 @@ Feature: 🐺 Werewolf role
     And the request exception error should be "Werewolves can't eat this target"
 
   Scenario: 🐺 Werewolves can't eat another wolf
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -96,8 +91,63 @@ Feature: 🐺 Werewolf role
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "Werewolves can't eat this target"
 
-  Scenario: 🐺 Werewolves can't skip their turn
+  Scenario: 🐺 Werewolves can eat another wolf with right option
+    Given a created game with options described in file no-sheriff-option.json, werewolf-can-eat-each-other-option.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Juju    | villager |
+      | Doudou  | werewolf |
+      | Thom    | werewolf |
+    Then the game's current play should be werewolves to eat
+    And the game's current play source should have the following interactions
+      | type | source     | minBoundary | maxBoundary |
+      | eat  | werewolves | 1           | 1           |
+    And the game's current play source interaction with type eat should have the following eligible targets
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Doudou  |
+      | Thom    |
 
+    When the werewolves eat the player named Thom
+    Then the player named Thom should be murdered by werewolves from eaten
+
+  Scenario: 🐺 Werewolves can't eat himself if he is the last werewolf alive with cannibalism option
+    Given a created game with options described in file no-sheriff-option.json, werewolf-can-eat-each-other-option.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Juju    | villager |
+      | Doudou  | werewolf |
+      | Thom    | werewolf |
+    Then the game's current play should be werewolves to eat
+    And the game's current play source interaction with type eat should have the following eligible targets
+      | name    |
+      | Antoine |
+      | Juju    |
+      | Doudou  |
+      | Thom    |
+
+    When the werewolves eat the player named Doudou
+    Then the player named Doudou should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+    And the game's current play source interaction with type eat should have the following eligible targets
+      | name    |
+      | Antoine |
+      | Juju    |
+
+    When the werewolves eat the player named Thom
+    Then the request should have failed with status code 400
+    And the request exception status code should be 400
+    And the request exception message should be "Bad game play payload"
+    And the request exception error should be "Werewolves can't eat this target"
+
+  Scenario: 🐺 Werewolves can't skip their turn
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -113,7 +163,6 @@ Feature: 🐺 Werewolf role
     And the request exception error should be "`targets` is required on this current game's state"
 
   Scenario: 🐺 Werewolves can't eat multiple targets at once
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |

@@ -1,9 +1,7 @@
 @game-history
-
 Feature: 📜 Game History
 
   Scenario: 📜 Game's tick, phase and turn are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -63,7 +61,6 @@ Feature: 📜 Game History
     And the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 📜 Game play's type, action, sources and cause are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -334,7 +331,6 @@ Feature: 📜 Game History
       | stuttering-judge-request |
 
   Scenario: 📜 Targets of various roles actions are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | seer                 |
@@ -423,7 +419,6 @@ Feature: 📜 Game History
       | Thomas |
 
   Scenario: 📜 Votes of various roles actions are recorded in the game history
-
     Given a created game with the following players
       | name    | role             |
       | Antoine | stuttering-judge |
@@ -596,7 +591,6 @@ Feature: 📜 Game History
     And the play's voting result from the previous history record should be skipped
 
   Scenario: 📜 Chosen cards are recorded in the game history
-
     Given a created game with additional cards described in file seer-werewolf-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
@@ -636,7 +630,6 @@ Feature: 📜 Game History
     Then the play's chosen side from the previous history record should be the werewolves side
 
   Scenario: 📜 Revealed players are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | idiot    |
@@ -669,7 +662,6 @@ Feature: 📜 Game History
     And the dead players from the previous history record should be undefined
 
   Scenario: 📜 Dead players are recorded in the game history
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | villager |
@@ -710,4 +702,76 @@ Feature: 📜 Game History
       | name   |
       | Thomas |
 
-    # TODO: complete this scenario with multiple dead players at the same time (add witch for example)
+  # TODO: complete this scenario with multiple dead players at the same time (add witch for example)
+  Scenario: 📜 Player attribute alterations are recorded in the game history
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role      |
+      | Antoine | seer      |
+      | Juju    | witch     |
+      | Doudou  | werewolf  |
+      | JB      | villager  |
+      | Thomas  | scapegoat |
+    Then the game's current play should be seer to look
+
+    When the seer looks at the player named Juju
+    And the most recent history record is retrieved
+    Then the player attribute alterations from previous history record should be the following alterations
+      | name | source | playerName | status   |
+      | seen | seer   | Juju       | attached |
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    And the most recent history record is retrieved
+    Then the player attribute alterations from previous history record should be the following alterations
+      | name  | source     | playerName | status   |
+      | eaten | werewolves | Antoine    | attached |
+    And the game's current play should be witch to use-potions
+
+    When the witch uses life potion on the player named Antoine and death potion on the player named JB
+    And the most recent history record is retrieved
+    Then the player attribute alterations from previous history record should be the following alterations
+      | name               | source     | playerName | status   |
+      | seen               | seer       | Juju       | detached |
+      | eaten              | werewolves | Antoine    | detached |
+      | drank-death-potion | witch      | JB         | attached |
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the player attribute alterations from previous history record should be the following alterations
+      | name               | source | playerName | status   |
+      | drank-death-potion | witch  | JB         | detached |
+    And the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter   | target  |
+      | Antoine | Juju    |
+      | Juju    | Antoine |
+    And the most recent history record is retrieved
+    Then the player attribute alterations from previous history record should be undefined
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be scapegoat to ban-voting
+
+    When the scapegoat bans from vote the following players
+      | name    |
+      | Antoine |
+    And the most recent history record is retrieved
+    Then the player attribute alterations from previous history record should be the following alterations
+      | name      | source    | playerName | status   |
+      | cant-vote | scapegoat | Antoine    | attached |
+    And the game's current play should be seer to look
+
+    When the seer looks at the player named Juju
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    Then the game's current play should be witch to use-potions
+
+    When the player or group skips his turn
+    And the most recent history record is retrieved
+    Then the player attribute alterations from previous history record should be the following alterations
+      | name      | source    | playerName | status    |
+      | cant-vote | scapegoat | Antoine    | activated |
+      | seen      | seer      | Juju       | detached  |

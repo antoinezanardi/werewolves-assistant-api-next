@@ -1,9 +1,7 @@
 @cupid-role
-
 Feature: 💘 Cupid role
 
   Scenario: 💘 Cupid makes two people fall in love and they die if one of them dies
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -76,7 +74,6 @@ Feature: 💘 Cupid role
     Then the game's status should be over
 
   Scenario: 💘 Cupid can't skip his turn
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -92,7 +89,6 @@ Feature: 💘 Cupid role
     And the request exception error should be "`targets` is required on this current game's state"
 
   Scenario: 💘 Cupid can't choose only one target
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -110,7 +106,6 @@ Feature: 💘 Cupid role
     And the request exception error should be "There are too less targets for this current game's state"
 
   Scenario: 💘 Cupid can't choose more than two targets
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -130,7 +125,6 @@ Feature: 💘 Cupid role
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 💘 Cupid can't choose an unknown player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -149,7 +143,6 @@ Feature: 💘 Cupid role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 💘 Cupid can't choose a dead player
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -178,7 +171,6 @@ Feature: 💘 Cupid role
     And the request exception error should be "At least one of the cupid targets can't be charmed"
 
   Scenario: 💘 Cupid wins with lovers with right good option
-
     Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -232,7 +224,6 @@ Feature: 💘 Cupid role
       | Thomas  |
 
   Scenario: 💘 Cupid can't choose himself when he must win with lovers
-
     Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -264,7 +255,6 @@ Feature: 💘 Cupid role
     And the request exception error should be "At least one of the cupid targets can't be charmed"
 
   Scenario: 💘 Lovers win anyway even if cupid is dead and he must win with them
-
     Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -301,7 +291,6 @@ Feature: 💘 Cupid role
       | Thomas  |
 
   Scenario: 💘 Cupid can skip if he doesn't have enough targets to charm
-
     Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -344,7 +333,6 @@ Feature: 💘 Cupid role
     Then the player named Antoine should be murdered by werewolves from eaten
 
   Scenario: 💘 Cupid turn is skipped if he has not enough targets and options say that roles must be skipped if no targets
-
     Given a created game with options described in file no-sheriff-option.json, cupid-must-win-with-lovers-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |
@@ -374,7 +362,6 @@ Feature: 💘 Cupid role
     Then the game's current play should be werewolves to eat
 
   Scenario: 💘 Cupid makes two people fall in love only the first night even if they die the first turn
-
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | cupid    |

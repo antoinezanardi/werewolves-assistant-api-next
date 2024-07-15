@@ -1,9 +1,7 @@
 @actor-role
-
 Feature: 🎭 Actor role
 
   Scenario: 🎭 Actor can become the role of the card he choses or can skip
-
     Given a created game with additional cards described in file seer-witch-little-girl-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -103,7 +101,6 @@ Feature: 🎭 Actor role
     And the game's current play should be werewolves to eat
 
   Scenario: 🎭 Actor can't choose an unknown card
-
     Given a created game with additional cards described in file seer-witch-little-girl-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -120,7 +117,6 @@ Feature: 🎭 Actor role
     And the request exception error should be "Game Play - Chosen card is not in the game additional cards"
 
   Scenario: 🎭 Actor can't choose an already used card
-
     Given a created game with additional cards described in file seer-witch-little-girl-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -153,7 +149,6 @@ Feature: 🎭 Actor role
     And the request exception error should be "Chosen card is already used"
 
   Scenario: 🎭 Actor can't choose a card for thief
-
     Given a created game with additional cards described in file valid-additional-cards-for-thief-and-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -173,7 +168,6 @@ Feature: 🎭 Actor role
     And the request exception error should be "Chosen card is not for actor"
 
   Scenario: 🎭 Actor can't choose another card if he becomes powerless by elder
-
     Given a created game with additional cards described in file cupid-defender-hunter-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -204,9 +198,7 @@ Feature: 🎭 Actor role
       | Olivia  |
     And the game's current play should be werewolves to eat
 
-
   Scenario: 🎭 Actor acts as cupid, defender and hunter
-
     Given a created game with additional cards described in file cupid-defender-hunter-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -289,7 +281,6 @@ Feature: 🎭 Actor role
     Then the player named Olivia should be murdered by hunter from shot
 
   Scenario: 🎭 Actor acts as elder, idiot and scapegoat
-
     Given a created game with additional cards described in file elder-idiot-scapegoat-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -364,7 +355,6 @@ Feature: 🎭 Actor role
       | JB   |
 
   Scenario: 🎭 Actor acts as fox, stuttering judge and rusty-sword-knight
-
     Given a created game with additional cards described in file fox-stuttering-judge-rusty-sword-knight-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -444,7 +434,6 @@ Feature: 🎭 Actor role
     Then the player named JB should be murdered by rusty-sword-knight from disease
 
   Scenario: 🎭 Actor acts as angel and wins
-
     Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -475,7 +464,6 @@ Feature: 🎭 Actor role
       | Antoine |
 
   Scenario: 🎭 Actor acts as wild child and becomes a werewolf because the model died and thus becomes powerless
-
     Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -512,7 +500,6 @@ Feature: 🎭 Actor role
     Then the game's current play should be werewolves to eat
 
   Scenario: 🎭 Actor acts as wild child and becomes a werewolf but doesn't becomes powerless with good game option
-
     Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, actor-not-powerless-on-werewolves-side-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -549,7 +536,6 @@ Feature: 🎭 Actor role
     Then the game's current play should be actor to choose-card
 
   Scenario: 🎭 Actor acts as wild child but doesn't become a werewolf because he became back an actor before the model died
-
     Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -597,7 +583,6 @@ Feature: 🎭 Actor role
     And the player named Antoine should not have the active powerless from actor attribute
 
   Scenario: 🎭 Actor acts as wolf-hound and becomes a werewolf and thus becomes powerless
-
     Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -618,7 +603,6 @@ Feature: 🎭 Actor role
     And the game's current play should be werewolves to eat
 
   Scenario: 🎭 Actor acts as wolf-hound and becomes a werewolf but doesn't becomes powerless with good game option
-
     Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, actor-not-powerless-on-werewolves-side-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -648,7 +632,6 @@ Feature: 🎭 Actor role
     Then the game's current play should be actor to choose-card
 
   Scenario: 🎭 Actor acts as wolf-hound and becomes a villager and thus doesn't become powerless
-
     Given a created game with additional cards described in file angel-wild-child-wolf-hound-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -669,7 +652,6 @@ Feature: 🎭 Actor role
     And the game's current play should be werewolves to eat
 
   Scenario: 🎭 Actor acts as pied piper and wins
-
     Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -710,7 +692,6 @@ Feature: 🎭 Actor role
       | Antoine |
 
   Scenario: 🎭 Actor acts as scandalmonger
-
     Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
       | Antoine | actor    |
@@ -743,7 +724,6 @@ Feature: 🎭 Actor role
     Then the game's current play should be actor to choose-card
 
   Scenario: 🎭 Actor becomes powerless when he is infected by the accursed wolf-father
-
     Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | actor                |
@@ -770,7 +750,6 @@ Feature: 🎭 Actor role
     Then the game's current play should be werewolves to eat
 
   Scenario: 🎭 Actor becomes powerless when he is infected by the accursed wolf-father, even if his role is not powerless if infected
-
     Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, pied-piper-not-powerless-on-werewolves-side-option.json and with the following players
       | name    | role                 |
       | Antoine | actor                |
@@ -810,7 +789,6 @@ Feature: 🎭 Actor role
     And the game's current play should be werewolves to eat
 
   Scenario: 🎭 Actor doesn't become powerless when he is infected by the accursed wolf-father with good game option when acting with a role that is powerless if infected
-
     Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, actor-not-powerless-on-werewolves-side-option.json and with the following players
       | name    | role                 |
       | Antoine | actor                |
@@ -839,7 +817,6 @@ Feature: 🎭 Actor role
     And the game's current play should be actor to choose-card
 
   Scenario: 🎭 Actor doesn't become powerless when he is infected by the accursed wolf-father with good game option when acting with a role that is not powerless if infected
-
     Given a created game with additional cards described in file pied-piper-scandalmonger-seer-additional-cards-for-actor.json and with options described in file no-sheriff-option.json, actor-not-powerless-on-werewolves-side-option.json and with the following players
       | name    | role                 |
       | Antoine | actor                |

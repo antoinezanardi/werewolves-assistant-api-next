@@ -1,7 +1,10 @@
+import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
+import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/constants/player/player-attribute/player-attribute.constants";
+import { GameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
-import { GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/constants/game-history-record/game-history-record.constants";
+import { GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_STATUSES, GAME_HISTORY_RECORD_VOTING_RESULTS } from "@/modules/game/constants/game-history-record/game-history-record.constants";
 import { GAME_PLAY_ACTIONS, GAME_PLAY_SOURCE_NAMES, GAME_PLAY_TYPES } from "@/modules/game/constants/game-play/game-play.constants";
 import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
 import { GameHistoryRecordPlayTarget } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-target/game-history-record-play-target.schema";
@@ -46,6 +49,19 @@ function createFakeGameHistoryRecordPlayVoting(gameHistoryRecordPlayVoting: Part
   return plainToInstance(GameHistoryRecordPlayVoting, {
     result: gameHistoryRecordPlayVoting.result ?? faker.helpers.arrayElement(GAME_HISTORY_RECORD_VOTING_RESULTS),
     nominatedPlayers: gameHistoryRecordPlayVoting.nominatedPlayers ?? undefined,
+    ...override,
+  }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
+}
+
+function createFakeGameHistoryRecordPlayerAttributeAlteration(
+  gameHistoryRecordPlayerAttributeAlteration: Partial<GameHistoryRecordPlayerAttributeAlteration> = {},
+  override: object = {},
+): GameHistoryRecordPlayerAttributeAlteration {
+  return plainToInstance(GameHistoryRecordPlayerAttributeAlteration, {
+    name: gameHistoryRecordPlayerAttributeAlteration.name ?? faker.helpers.arrayElement(PLAYER_ATTRIBUTE_NAMES),
+    source: gameHistoryRecordPlayerAttributeAlteration.source ?? faker.helpers.arrayElement(GAME_SOURCES),
+    playerName: gameHistoryRecordPlayerAttributeAlteration.playerName ?? faker.person.firstName(),
+    status: gameHistoryRecordPlayerAttributeAlteration.status ?? faker.helpers.arrayElement(GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_STATUSES),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);
 }
@@ -406,6 +422,7 @@ export {
   createFakeGameHistoryRecordPlayVote,
   createFakeGameHistoryRecordPlayTarget,
   createFakeGameHistoryRecordPlayVoting,
+  createFakeGameHistoryRecordPlayerAttributeAlteration,
   createFakeGameHistoryRecordPlay,
   createFakeGameHistoryRecord,
 };

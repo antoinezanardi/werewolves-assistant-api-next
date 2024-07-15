@@ -1,3 +1,4 @@
+import { CreateWerewolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-werewolf-game-options.dto";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
@@ -52,6 +53,15 @@ class CreateRolesGameOptionsDto {
   @Type(() => CreateSheriffGameOptionsDto)
   @ValidateNested()
   public sheriff: CreateSheriffGameOptionsDto = new CreateSheriffGameOptionsDto();
+
+  @ApiProperty({
+    ...ROLES_GAME_OPTIONS_API_PROPERTIES.werewolf,
+    required: false,
+  } as ApiPropertyOptions)
+  @IsOptional()
+  @Type(() => CreateWerewolfGameOptionsDto)
+  @ValidateNested()
+  public werewolf: CreateWerewolfGameOptionsDto = new CreateWerewolfGameOptionsDto();
 
   @ApiProperty({
     ...ROLES_GAME_OPTIONS_API_PROPERTIES.bigBadWolf,

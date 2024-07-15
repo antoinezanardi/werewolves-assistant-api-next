@@ -1,3 +1,4 @@
+import { WerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
@@ -48,6 +49,12 @@ class RolesGameOptions {
   @Type(() => SheriffGameOptions)
   @Expose()
   public sheriff: SheriffGameOptions;
+
+  @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.werewolf as ApiPropertyOptions)
+  @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.werewolf)
+  @Type(() => WerewolfGameOptions)
+  @Expose()
+  public werewolf: WerewolfGameOptions;
 
   @ApiProperty(ROLES_GAME_OPTIONS_API_PROPERTIES.bigBadWolf as ApiPropertyOptions)
   @Prop(ROLES_GAME_OPTIONS_FIELDS_SPECS.bigBadWolf)

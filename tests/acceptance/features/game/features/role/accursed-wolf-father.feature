@@ -1,9 +1,7 @@
 @accursed-wolf-father-role
-
 Feature: 🐺 Accursed Wolf-Father role
 
   Scenario: 🐺 Accursed Wolf-Father infects a player instead of eating it
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
@@ -47,7 +45,6 @@ Feature: 🐺 Accursed Wolf-Father role
     Then the game's current play should be seer to look
 
   Scenario: 🐺 Accursed Wolf-Father doesn't infect the elder if he still have lives
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
@@ -65,7 +62,6 @@ Feature: 🐺 Accursed Wolf-Father role
     And the player named Olivia should be alive
 
   Scenario: 🐺 Accursed Wolf-Father infects the elder if he only has one life left
-
     Given a created game with options described in files no-sheriff-option.json, elder-one-life-against-werewolves-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
@@ -83,7 +79,6 @@ Feature: 🐺 Accursed Wolf-Father role
     And the player named Olivia should be alive
 
   Scenario: 🐺 Accursed Wolf-Father can't infect if he's dead
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
@@ -112,7 +107,6 @@ Feature: 🐺 Accursed Wolf-Father role
     Then the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 🐺 Accursed Wolf-Father can't infect an unknown target
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
@@ -132,7 +126,6 @@ Feature: 🐺 Accursed Wolf-Father role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🐺 Accursed Wolf-Father can't infect a target which is not a werewolves target
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
@@ -152,7 +145,6 @@ Feature: 🐺 Accursed Wolf-Father role
     And the request exception error should be "Accursed Wolf-father can't infect this target"
 
   Scenario: 🐺 Accursed Wolf-Father can't infect multiple times but can skip his turn
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
@@ -214,7 +206,6 @@ Feature: 🐺 Accursed Wolf-Father role
     Then the game's current play should be survivors to bury-dead-bodies
 
   Scenario: 🐺 Accursed Wolf-Father can't infect multiple targets at once
-
     Given a created game with options described in files no-sheriff-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |
@@ -237,7 +228,6 @@ Feature: 🐺 Accursed Wolf-Father role
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🐺 Accursed Wolf-Father turn is skipped if he already infected someone with the right game option
-
     Given a created game with options described in files no-sheriff-option.json, skip-roles-call-if-no-target-option.json and with the following players
       | name    | role                 |
       | Antoine | accursed-wolf-father |

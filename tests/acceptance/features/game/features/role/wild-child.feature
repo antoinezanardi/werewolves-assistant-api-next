@@ -1,9 +1,7 @@
 @wild-child-role
-
 Feature: 🐒 Wild Child role
 
   Scenario: 🐒 Wild Child changes his side when his model dies
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wild-child |
@@ -56,7 +54,6 @@ Feature: 🐒 Wild Child role
     And the game's current play should be werewolves to eat
 
   Scenario: 🐒 Wild Child can't choose an unknown player
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wild-child |
@@ -72,7 +69,6 @@ Feature: 🐒 Wild Child role
     And the request exception error should be "Game Play - Player in `targets.player` is not in the game players"
 
   Scenario: 🐒 Wild Child can't choose a dead player as a model
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wild-child |
@@ -103,7 +99,6 @@ Feature: 🐒 Wild Child role
     And the request exception error should be "Wild child can't choose this target as a model"
 
   Scenario: 🐒 Wild Child can't skip his turn
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wild-child |
@@ -119,7 +114,6 @@ Feature: 🐒 Wild Child role
     And the request exception error should be "`targets` is required on this current game's state"
 
   Scenario: 🐒 Wild Child can't choose multiple targets as models
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wild-child |
@@ -138,7 +132,6 @@ Feature: 🐒 Wild Child role
     And the request exception error should be "There are too much targets for this current game's state"
 
   Scenario: 🐒 Wild Child can't choose himself as a model
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wild-child |
@@ -154,7 +147,6 @@ Feature: 🐒 Wild Child role
     And the request exception error should be "Wild child can't choose this target as a model"
 
   Scenario: 🐒 Wild Child doesn't join the werewolves side if he's powerless
-
     When a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role       |
       | Antoine | wild-child |
