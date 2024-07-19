@@ -1,3 +1,4 @@
+import { GameEventsGeneratorService } from "@/modules/game/providers/services/game-event/game-events-generator.service";
 import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { Injectable } from "@nestjs/common";
@@ -35,6 +36,7 @@ export class GameService {
     private readonly gameVictoryService: GameVictoryService,
     private readonly gameRepository: GameRepository,
     private readonly playerAttributeService: PlayerAttributeService,
+    private readonly gameEventsGeneratorService: GameEventsGeneratorService,
     private readonly gameHistoryRecordService: GameHistoryRecordService,
     private readonly gameHistoryRecordToInsertGeneratorService: GameHistoryRecordToInsertGeneratorService,
   ) {}
@@ -60,6 +62,8 @@ export class GameService {
     if (this.gamePhaseService.isTwilightPhaseOver(createdGame)) {
       createdGame.phase.name = "night";
     }
+    createdGame.events = this.gameEventsGeneratorService.generateGameEventsFromGameAndLastRecord(createdGame);
+
     return this.updateGame(createdGame._id, createdGame);
   }
 
@@ -86,11 +90,12 @@ export class GameService {
       clonedGame = await this.handleGamePhaseCompletion(clonedGame);
     }
     const gameHistoryRecordToInsert = this.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordToInsert(game, clonedGame, play);
-    await this.gameHistoryRecordService.createGameHistoryRecord(gameHistoryRecordToInsert);
+    const gameHistoryRecord = await this.gameHistoryRecordService.createGameHistoryRecord(gameHistoryRecordToInsert);
     if (this.gameVictoryService.isGameOver(clonedGame)) {
       return this.updateGameAsOver(clonedGame);
     }
     clonedGame = await this.gamePlayService.augmentCurrentGamePlay(clonedGame as GameWithCurrentPlay);
+    clonedGame.events = this.gameEventsGeneratorService.generateGameEventsFromGameAndLastRecord(clonedGame, gameHistoryRecord);
 
     return this.updateGame(clonedGame._id, clonedGame);
   }

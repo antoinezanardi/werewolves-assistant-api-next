@@ -1,0 +1,192 @@
+import { createGameEvent } from "@/modules/game/helpers/game-event/game-event.factory";
+import { doesHavePlayerAttributeAlterationWithNameAndStatus, doesHavePlayerAttributeAlterationWithNameSourceAndStatus } from "@/modules/game/helpers/game-history-record/game-history-record.helpers";
+import { getNearestAliveNeighbor, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
+import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helpers";
+import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
+import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import { Game } from "@/modules/game/schemas/game.schema";
+import { Player } from "@/modules/game/schemas/player/player.schema";
+import { GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
+import { Injectable } from "@nestjs/common";
+
+@Injectable()
+export class GameEventsGeneratorService {
+  public generateGameEventsFromGameAndLastRecord(game: Game, lastGameHistoryRecord?: GameHistoryRecord): GameEvent[] {
+    const gameEvents: GameEvent[] = [];
+    const lastGamePlaySourceGameEvent = this.generateLastGamePlaySourceGameEvent(lastGameHistoryRecord);
+    gameEvents.push(...this.generateFirstTickGameEvents(game));
+    gameEvents.push(...this.generateRevealedPlayersGameEvents(lastGameHistoryRecord));
+    if (lastGamePlaySourceGameEvent) {
+      gameEvents.push(lastGamePlaySourceGameEvent);
+    }
+    gameEvents.push(...this.generateDeadPlayersGameEvents(lastGameHistoryRecord));
+    gameEvents.push(...this.generatePlayerAttributeAlterationsEvents(game, lastGameHistoryRecord));
+    gameEvents.push(...this.generateStartingGamePhaseGameEvents(game));
+    gameEvents.push(this.generateTurnStartsGameEvent(game));
+
+    return gameEvents;
+  }
+
+  private generateSeerHasSeenGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+    return createGameEvent({
+      type: "seer-has-seen",
+      players: gameHistoryRecord.play.targets?.map(target => target.player),
+    });
+  }
+
+  private generateScandalmongerHasMarkedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+    return createGameEvent({
+      type: "scandalmonger-may-have-marked",
+      players: gameHistoryRecord.play.targets?.map(target => target.player),
+    });
+  }
+
+  private generateAccursedWolfFatherMayHaveInfectedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+    return createGameEvent({
+      type: "accursed-wolf-father-may-have-infected",
+      players: gameHistoryRecord.play.targets?.map(target => target.player),
+    });
+  }
+
+  private generateWolfHoundHasChosenSideGameEvent(): GameEvent {
+    return createGameEvent({ type: "wolf-hound-has-chosen-side" });
+  }
+
+  private generatePiedPiperHasCharmedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+    return createGameEvent({
+      type: "pied-piper-has-charmed",
+      players: gameHistoryRecord.play.targets?.map(target => target.player),
+    });
+  }
+
+  private generateCupidHasCharmedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+    return createGameEvent({
+      type: "cupid-has-charmed",
+      players: gameHistoryRecord.play.targets?.map(target => target.player),
+    });
+  }
+
+  private generateFoxHasSniffedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+    return createGameEvent({
+      type: "fox-has-sniffed",
+      players: gameHistoryRecord.play.targets?.map(target => target.player),
+    });
+  }
+
+  private generateLastGamePlaySourceGameEvent(gameHistoryRecord?: GameHistoryRecord): GameEvent | undefined {
+    if (!gameHistoryRecord) {
+      return undefined;
+    }
+    const gamePlaySourcesGameEvent: Partial<Record<GamePlaySourceName, () => GameEvent>> = {
+      "seer": () => this.generateSeerHasSeenGameEvent(gameHistoryRecord),
+      "scandalmonger": () => this.generateScandalmongerHasMarkedGameEvent(gameHistoryRecord),
+      "accursed-wolf-father": () => this.generateAccursedWolfFatherMayHaveInfectedGameEvent(gameHistoryRecord),
+      "wolf-hound": () => this.generateWolfHoundHasChosenSideGameEvent(),
+      "pied-piper": () => this.generatePiedPiperHasCharmedGameEvent(gameHistoryRecord),
+      "cupid": () => this.generateCupidHasCharmedGameEvent(gameHistoryRecord),
+    };
+
+    return gamePlaySourcesGameEvent[gameHistoryRecord.play.source.name]?.();
+  }
+
+  private generateFirstTickGameEvents(game: Game): GameEvent[] {
+    const gameEvents: GameEvent[] = [];
+    if (game.tick !== 1) {
+      return gameEvents;
+    }
+    gameEvents.push(createGameEvent({
+      type: "game-starts",
+      players: game.players,
+    }));
+    const villagerVillagerPlayer = getPlayerWithCurrentRole(game, "villager-villager");
+    if (villagerVillagerPlayer) {
+      gameEvents.push(createGameEvent({
+        type: "villager-villager-introduction",
+        players: [villagerVillagerPlayer],
+      }));
+    }
+    return gameEvents;
+  }
+
+  private generateRevealedPlayersGameEvents(gameHistoryRecord?: GameHistoryRecord): GameEvent[] {
+    const gameEvents: GameEvent[] = [];
+    if (!gameHistoryRecord?.revealedPlayers) {
+      return gameEvents;
+    }
+    const revealedIdiotPlayer = gameHistoryRecord.revealedPlayers.find(player => player.role.current === "idiot");
+    if (revealedIdiotPlayer) {
+      gameEvents.push(createGameEvent({
+        type: "idiot-is-spared",
+        players: [revealedIdiotPlayer],
+      }));
+    }
+    return gameEvents;
+  }
+
+  private generateDeadPlayersGameEvents(gameHistoryRecord?: GameHistoryRecord): GameEvent[] {
+    const gameEvents: GameEvent[] = [];
+    if (!gameHistoryRecord?.deadPlayers) {
+      return gameEvents;
+    }
+    gameEvents.push(createGameEvent({
+      type: "player-dies",
+      players: gameHistoryRecord.deadPlayers,
+    }));
+
+    return gameEvents;
+  }
+
+  private generateBearGrowlsOrSleepsGameEvent(game: Game, bearTamerPlayer: Player): GameEvent {
+    const leftAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, game, { direction: "left" });
+    const rightAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, game, { direction: "right" });
+    const doesBearTamerHaveWerewolfSidedNeighbor = leftAliveNeighbor?.side.current === "werewolves" || rightAliveNeighbor?.side.current === "werewolves";
+    const { doesGrowlOnWerewolvesSide } = game.options.roles.bearTamer;
+    const isBearTamerInfected = bearTamerPlayer.side.current === "werewolves";
+    const doesBearGrowl = doesGrowlOnWerewolvesSide && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor;
+
+    return createGameEvent({
+      type: doesBearGrowl ? "bear-growls" : "bear-sleeps",
+      players: [bearTamerPlayer],
+    });
+  }
+
+  private generateStartingGamePhaseGameEvents(game: Game): GameEvent[] {
+    const gameEvents: GameEvent[] = [];
+    if (game.phase.tick !== 1 || game.phase.name === "twilight") {
+      return gameEvents;
+    }
+    gameEvents.push(createGameEvent({ type: "game-phase-starts" }));
+    const bearTamerPlayer = getPlayerWithCurrentRole(game, "bear-tamer");
+    if (game.phase.name === "day" && bearTamerPlayer && isPlayerAliveAndPowerful(bearTamerPlayer, game)) {
+      gameEvents.push(this.generateBearGrowlsOrSleepsGameEvent(game, bearTamerPlayer));
+    }
+    return gameEvents;
+  }
+
+  private generatePlayerAttributeAlterationsEvents(game: Game, gameHistoryRecord?: GameHistoryRecord): GameEvent[] {
+    const gameEvents: GameEvent[] = [];
+    if (!gameHistoryRecord?.playerAttributeAlterations) {
+      return gameEvents;
+    }
+    if (doesHavePlayerAttributeAlterationWithNameSourceAndStatus(gameHistoryRecord, "powerless", "elder", "attached")) {
+      gameEvents.push(createGameEvent({
+        type: "elder-has-taken-revenge",
+        players: getPlayersWithCurrentRole(game, "elder"),
+      }));
+    }
+    if (doesHavePlayerAttributeAlterationWithNameAndStatus(gameHistoryRecord, "sheriff", "attached")) {
+      gameEvents.push(createGameEvent({
+        type: "sheriff-promotion",
+        players: getPlayersWithActiveAttributeName(game, "sheriff"),
+      }));
+    }
+    return gameEvents;
+  }
+
+  private generateTurnStartsGameEvent(game: Game): GameEvent {
+    return createGameEvent({
+      type: "game-turn-starts",
+      players: game.currentPlay?.source.players,
+    });
+  }
+}

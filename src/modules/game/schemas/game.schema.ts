@@ -1,3 +1,4 @@
+import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
@@ -67,6 +68,12 @@ class Game {
   @Type(() => GamePlay)
   @Expose()
   public upcomingPlays: GamePlay[];
+
+  @ApiProperty(GAME_API_PROPERTIES.events as ApiPropertyOptions)
+  @Prop(GAME_FIELDS_SPECS.events)
+  @Type(() => GameEvent)
+  @Expose()
+  public events?: GameEvent[];
 
   @ApiProperty(GAME_API_PROPERTIES.options as ApiPropertyOptions)
   @Prop(GAME_FIELDS_SPECS.options)
