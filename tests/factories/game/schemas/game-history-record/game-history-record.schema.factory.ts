@@ -89,6 +89,7 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
     tick: gameHistoryRecord.tick ?? faker.number.int({ min: 1 }),
     turn: gameHistoryRecord.turn ?? faker.number.int({ min: 1 }),
     phase: createFakeGamePhase(gameHistoryRecord.phase),
+    events: gameHistoryRecord.events,
     play: createFakeGameHistoryRecordPlay(gameHistoryRecord.play),
     revealedPlayers: gameHistoryRecord.revealedPlayers,
     switchedSidePlayers: gameHistoryRecord.switchedSidePlayers,

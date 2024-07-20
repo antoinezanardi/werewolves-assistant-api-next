@@ -1,3 +1,4 @@
+import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { SchemaTypes } from "mongoose";
@@ -54,6 +55,11 @@ const GAME_HISTORY_RECORD_FIELDS_SPECS = {
     type: [GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_SCHEMA],
     default: undefined,
   },
+  events: {
+    required: false,
+    type: [GAME_EVENT_SCHEMA],
+    default: undefined,
+  },
   createdAt: { required: true },
 } as const satisfies Record<keyof GameHistoryRecord, MongoosePropOptions>;
 
@@ -99,6 +105,10 @@ const GAME_HISTORY_RECORD_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryR
   playerAttributeAlterations: {
     description: "Player attribute alteration(s) as consequence of the play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.playerAttributeAlterations),
+  },
+  events: {
+    description: "Game event(s) as consequence of the play",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.events),
   },
   createdAt: {
     description: "When the game history record was created",

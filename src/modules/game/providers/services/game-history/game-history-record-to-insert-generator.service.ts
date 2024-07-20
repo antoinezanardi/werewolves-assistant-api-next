@@ -33,6 +33,7 @@ export class GameHistoryRecordToInsertGeneratorService {
       turn: baseGame.turn,
       phase: baseGame.phase,
       tick: baseGame.tick,
+      events: baseGame.events,
       play: this.generateCurrentGameHistoryRecordPlayToInsert(baseGame as GameWithCurrentPlay, play),
       revealedPlayers: this.generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame, newGame),
       switchedSidePlayers: this.generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert(baseGame, newGame),

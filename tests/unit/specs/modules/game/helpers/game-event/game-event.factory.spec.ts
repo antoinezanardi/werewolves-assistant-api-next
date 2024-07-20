@@ -2,7 +2,6 @@ import { createGameEvent } from "@/modules/game/helpers/game-event/game-event.fa
 import type { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import { createFakeGameEvent } from "@tests/factories/game/schemas/game-event/game-event.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
-import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
 describe("Game Event Factory", () => {
   describe("createGameEvent", () => {
@@ -15,8 +14,9 @@ describe("Game Event Factory", () => {
           createFakePlayer(),
         ],
       };
+      const gameEventWithExtraProperties = { ...gameEvent, extra: "extra" };
 
-      expect(createGameEvent(gameEvent)).toStrictEqual<GameEvent>(createFakeGameEvent(gameEvent));
+      expect(createGameEvent(gameEventWithExtraProperties)).toStrictEqual<GameEvent>(createFakeGameEvent(gameEvent));
     });
   });
 });

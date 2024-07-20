@@ -1,3 +1,5 @@
+import type { TupleToUnion } from "type-fest";
+
 const GAME_EVENT_TYPES = [
   "game-starts",
   "game-phase-starts",
@@ -22,4 +24,47 @@ const GAME_EVENT_TYPES = [
   "scandalmonger-mark-is-active",
 ] as const;
 
-export { GAME_EVENT_TYPES };
+const GAME_EVENT_PRIORITY_LIST_ON_NIGHTS: TupleToUnion<typeof GAME_EVENT_TYPES>[] = [
+  "game-starts",
+  "villager-villager-introduction",
+  "player-dies",
+  "game-phase-starts",
+  "seer-has-seen",
+  "sheriff-promotion",
+  "scandalmonger-may-have-marked",
+  "accursed-wolf-father-may-have-infected",
+  "pied-piper-has-charmed",
+  "wolf-hound-has-chosen-side",
+  "cupid-has-charmed",
+  "idiot-is-spared",
+  "elder-has-taken-revenge",
+  "fox-may-have-sniffed",
+  "thief-may-have-chosen-card",
+  "wild-child-has-transformed",
+  "actor-may-have-chosen-card",
+  "game-turn-starts",
+] as const;
+
+const GAME_EVENT_PRIORITY_LIST_ON_DAYS: TupleToUnion<typeof GAME_EVENT_TYPES>[] = [
+  "game-starts",
+  "villager-villager-introduction",
+  "game-phase-starts",
+  "bear-growls",
+  "bear-sleeps",
+  "player-dies",
+  "sheriff-promotion",
+  "idiot-is-spared",
+  "elder-has-taken-revenge",
+  "fox-may-have-sniffed",
+  "thief-may-have-chosen-card",
+  "wild-child-has-transformed",
+  "actor-may-have-chosen-card",
+  "scandalmonger-mark-is-active",
+  "game-turn-starts",
+] as const;
+
+export {
+  GAME_EVENT_TYPES,
+  GAME_EVENT_PRIORITY_LIST_ON_NIGHTS,
+  GAME_EVENT_PRIORITY_LIST_ON_DAYS,
+};

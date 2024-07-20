@@ -1,3 +1,4 @@
+import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
@@ -77,6 +78,12 @@ class GameHistoryRecord {
   @Type(() => GameHistoryRecordPlayerAttributeAlteration)
   @Expose()
   public playerAttributeAlterations?: GameHistoryRecordPlayerAttributeAlteration[];
+
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.events as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.events)
+  @Type(() => GameEvent)
+  @Expose()
+  public events?: GameEvent[];
 
   @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.createdAt as ApiPropertyOptions)
   @Type(() => Date)

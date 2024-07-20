@@ -1,3 +1,4 @@
+import { GAME_EVENT_PRIORITY_LIST_ON_DAYS, GAME_EVENT_PRIORITY_LIST_ON_NIGHTS } from "@/modules/game/constants/game-event/game-event.constants";
 import { createGameEvent } from "@/modules/game/helpers/game-event/game-event.factory";
 import { doesHavePlayerAttributeAlterationWithNameAndStatus, doesHavePlayerAttributeAlterationWithNameSourceAndStatus } from "@/modules/game/helpers/game-history-record/game-history-record.helpers";
 import { getNearestAliveNeighbor, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
@@ -20,11 +21,22 @@ export class GameEventsGeneratorService {
       gameEvents.push(lastGamePlaySourceGameEvent);
     }
     gameEvents.push(...this.generateDeadPlayersGameEvents(lastGameHistoryRecord));
+    gameEvents.push(...this.generateSwitchedSidePlayersGameEvents(lastGameHistoryRecord));
     gameEvents.push(...this.generatePlayerAttributeAlterationsEvents(game, lastGameHistoryRecord));
-    gameEvents.push(...this.generateStartingGamePhaseGameEvents(game));
+    gameEvents.push(...this.generateGamePhaseStartsGameEvents(game));
     gameEvents.push(...this.generateTurnStartsGameEvents(game));
 
-    return gameEvents;
+    return this.sortGameEventsByGamePhase(gameEvents, game);
+  }
+
+  private sortGameEventsByGamePhase(gameEvents: GameEvent[], game: Game): GameEvent[] {
+    const priorityList = game.phase.name === "day" ? GAME_EVENT_PRIORITY_LIST_ON_DAYS : GAME_EVENT_PRIORITY_LIST_ON_NIGHTS;
+
+    return gameEvents.toSorted(({ type }) => {
+      const index = priorityList.indexOf(type);
+
+      return index === -1 ? Infinity : index;
+    });
   }
 
   private generateSeerHasSeenGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
@@ -182,7 +194,7 @@ export class GameEventsGeneratorService {
     });
   }
 
-  private generateStartingGamePhaseGameEvents(game: Game): GameEvent[] {
+  private generateGamePhaseStartsGameEvents(game: Game): GameEvent[] {
     const gameEvents: GameEvent[] = [];
     if (game.phase.tick !== 1 || game.phase.name === "twilight") {
       return gameEvents;
