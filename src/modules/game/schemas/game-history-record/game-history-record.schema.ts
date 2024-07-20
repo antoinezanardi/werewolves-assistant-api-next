@@ -60,6 +60,12 @@ class GameHistoryRecord {
   @Expose()
   public revealedPlayers?: Player[];
 
+  @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.switchedSidePlayers as ApiPropertyOptions)
+  @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.switchedSidePlayers)
+  @Type(() => Player)
+  @Expose()
+  public switchedSidePlayers?: Player[];
+
   @ApiProperty(GAME_HISTORY_RECORD_API_PROPERTIES.deadPlayers as ApiPropertyOptions)
   @Prop(GAME_HISTORY_RECORD_FIELDS_SPECS.deadPlayers)
   @Type(() => DeadPlayer)

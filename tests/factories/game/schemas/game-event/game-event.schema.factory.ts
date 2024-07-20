@@ -7,7 +7,6 @@ import { plainToInstance } from "class-transformer";
 
 function createFakeGameEvent(gameEvent: Partial<GameEvent> = {}): GameEvent {
   return plainToInstance(GameEvent, {
-    _id: gameEvent._id ?? createFakeObjectId(),
     type: gameEvent.type ?? faker.helpers.arrayElement(GAME_EVENT_TYPES),
     players: gameEvent.players,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);

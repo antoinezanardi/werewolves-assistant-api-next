@@ -35,6 +35,7 @@ export class GameHistoryRecordToInsertGeneratorService {
       tick: baseGame.tick,
       play: this.generateCurrentGameHistoryRecordPlayToInsert(baseGame as GameWithCurrentPlay, play),
       revealedPlayers: this.generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame, newGame),
+      switchedSidePlayers: this.generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert(baseGame, newGame),
       deadPlayers: this.generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame, newGame),
       playerAttributeAlterations: this.generateCurrentGameHistoryRecordPlayerAttributeAlterationsToInsert(baseGame, newGame),
     };
@@ -53,6 +54,17 @@ export class GameHistoryRecordToInsertGeneratorService {
     }) as DeadPlayer[];
 
     return currentDeadPlayers.length ? currentDeadPlayers : undefined;
+  }
+
+  private generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
+    const { players: newPlayers } = newGame;
+    const currentSwitchedSidePlayers = newPlayers.filter(player => {
+      const matchingBasePlayer = getPlayerWithId(baseGame, player._id);
+
+      return matchingBasePlayer?.side.current !== player.side.current;
+    });
+
+    return currentSwitchedSidePlayers.length ? currentSwitchedSidePlayers : undefined;
   }
 
   private generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {

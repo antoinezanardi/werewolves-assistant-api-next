@@ -8,7 +8,6 @@ describe("Game Event Factory", () => {
   describe("createGameEvent", () => {
     it("should create a game event when called.", () => {
       const gameEvent: GameEvent = {
-        _id: createFakeObjectId(),
         type: "elder-has-taken-revenge",
         players: [
           createFakePlayer(),

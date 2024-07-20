@@ -1,3 +1,4 @@
+import { GameEventsGeneratorService } from "@/modules/game/providers/services/game-event/game-events-generator.service";
 import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
@@ -48,6 +49,7 @@ import { Game, GAME_SCHEMA } from "@/modules/game/schemas/game.schema";
     GameHistoryRecordRepository,
     PlayerKillerService,
     PlayerAttributeService,
+    GameEventsGeneratorService,
   ],
 })
 export class GameModule {}

@@ -15,7 +15,7 @@ const GAME_EVENT_TYPES = [
   "elder-has-taken-revenge",
   "bear-growls",
   "bear-sleeps",
-  "fox-has-sniffed",
+  "fox-may-have-sniffed",
   "thief-may-have-chosen-card",
   "wild-child-has-transformed",
   "actor-may-have-chosen-card",

@@ -90,8 +90,10 @@ function createFakeGameHistoryRecord(gameHistoryRecord: Partial<GameHistoryRecor
     turn: gameHistoryRecord.turn ?? faker.number.int({ min: 1 }),
     phase: createFakeGamePhase(gameHistoryRecord.phase),
     play: createFakeGameHistoryRecordPlay(gameHistoryRecord.play),
-    revealedPlayers: gameHistoryRecord.revealedPlayers ?? undefined,
-    deadPlayers: gameHistoryRecord.deadPlayers ?? undefined,
+    revealedPlayers: gameHistoryRecord.revealedPlayers,
+    switchedSidePlayers: gameHistoryRecord.switchedSidePlayers,
+    deadPlayers: gameHistoryRecord.deadPlayers,
+    playerAttributeAlterations: gameHistoryRecord.playerAttributeAlterations,
     createdAt: gameHistoryRecord.createdAt ?? faker.date.recent(),
     ...override,
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS);

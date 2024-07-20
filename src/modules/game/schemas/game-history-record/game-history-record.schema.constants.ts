@@ -39,6 +39,11 @@ const GAME_HISTORY_RECORD_FIELDS_SPECS = {
     type: [PLAYER_SCHEMA],
     default: undefined,
   },
+  switchedSidePlayers: {
+    required: false,
+    type: [PLAYER_SCHEMA],
+    default: undefined,
+  },
   deadPlayers: {
     required: false,
     type: [DEAD_PLAYER_SCHEMA],
@@ -82,6 +87,10 @@ const GAME_HISTORY_RECORD_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryR
   revealedPlayers: {
     description: "Player(s) which the role has been revealed as consequence of the play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.revealedPlayers),
+  },
+  switchedSidePlayers: {
+    description: "Player(s) which switched their current side as consequence of the play",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.switchedSidePlayers),
   },
   deadPlayers: {
     description: "Player(s) that died as consequence of the play",

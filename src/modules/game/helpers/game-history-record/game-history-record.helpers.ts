@@ -3,7 +3,6 @@ import type { GameHistoryRecordPlayerAttributeAlterationStatus } from "@/modules
 import type { GameSource } from "@/modules/game/types/game.types";
 import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
 
-// TODO: TO TEST
 function doesHavePlayerAttributeAlterationWithNameSourceAndStatus(
   gameHistoryRecord: GameHistoryRecord,
   attributeName: PlayerAttributeName,

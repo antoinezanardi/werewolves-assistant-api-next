@@ -1,6 +1,6 @@
 import { createGameEvent } from "@/modules/game/helpers/game-event/game-event.factory";
 import { doesHavePlayerAttributeAlterationWithNameAndStatus, doesHavePlayerAttributeAlterationWithNameSourceAndStatus } from "@/modules/game/helpers/game-history-record/game-history-record.helpers";
-import { getNearestAliveNeighbor, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
+import { getNearestAliveNeighbor, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helpers";
 import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -13,7 +13,7 @@ import { Injectable } from "@nestjs/common";
 export class GameEventsGeneratorService {
   public generateGameEventsFromGameAndLastRecord(game: Game, lastGameHistoryRecord?: GameHistoryRecord): GameEvent[] {
     const gameEvents: GameEvent[] = [];
-    const lastGamePlaySourceGameEvent = this.generateLastGamePlaySourceGameEvent(lastGameHistoryRecord);
+    const lastGamePlaySourceGameEvent = this.generateLastGamePlaySourceGameEvent(game, lastGameHistoryRecord);
     gameEvents.push(...this.generateFirstTickGameEvents(game));
     gameEvents.push(...this.generateRevealedPlayersGameEvents(lastGameHistoryRecord));
     if (lastGamePlaySourceGameEvent) {
@@ -22,7 +22,7 @@ export class GameEventsGeneratorService {
     gameEvents.push(...this.generateDeadPlayersGameEvents(lastGameHistoryRecord));
     gameEvents.push(...this.generatePlayerAttributeAlterationsEvents(game, lastGameHistoryRecord));
     gameEvents.push(...this.generateStartingGamePhaseGameEvents(game));
-    gameEvents.push(this.generateTurnStartsGameEvent(game));
+    gameEvents.push(...this.generateTurnStartsGameEvents(game));
 
     return gameEvents;
   }
@@ -34,7 +34,7 @@ export class GameEventsGeneratorService {
     });
   }
 
-  private generateScandalmongerHasMarkedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+  private generateScandalmongerHayHaveMarkedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
     return createGameEvent({
       type: "scandalmonger-may-have-marked",
       players: gameHistoryRecord.play.targets?.map(target => target.player),
@@ -66,24 +66,41 @@ export class GameEventsGeneratorService {
     });
   }
 
-  private generateFoxHasSniffedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+  private generateFoxMayHaveSniffedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
     return createGameEvent({
-      type: "fox-has-sniffed",
+      type: "fox-may-have-sniffed",
       players: gameHistoryRecord.play.targets?.map(target => target.player),
     });
   }
 
-  private generateLastGamePlaySourceGameEvent(gameHistoryRecord?: GameHistoryRecord): GameEvent | undefined {
+  private generateThiefMayHaveChosenCardGameEvent(game: Game): GameEvent {
+    return createGameEvent({
+      type: "thief-may-have-chosen-card",
+      players: getPlayersWithCurrentRole(game, "thief"),
+    });
+  }
+
+  private generateActorMayHaveChosenCardGameEvent(game: Game): GameEvent {
+    return createGameEvent({
+      type: "actor-may-have-chosen-card",
+      players: getPlayersWithCurrentRole(game, "actor"),
+    });
+  }
+
+  private generateLastGamePlaySourceGameEvent(game: Game, gameHistoryRecord?: GameHistoryRecord): GameEvent | undefined {
     if (!gameHistoryRecord) {
       return undefined;
     }
     const gamePlaySourcesGameEvent: Partial<Record<GamePlaySourceName, () => GameEvent>> = {
       "seer": () => this.generateSeerHasSeenGameEvent(gameHistoryRecord),
-      "scandalmonger": () => this.generateScandalmongerHasMarkedGameEvent(gameHistoryRecord),
+      "scandalmonger": () => this.generateScandalmongerHayHaveMarkedGameEvent(gameHistoryRecord),
       "accursed-wolf-father": () => this.generateAccursedWolfFatherMayHaveInfectedGameEvent(gameHistoryRecord),
       "wolf-hound": () => this.generateWolfHoundHasChosenSideGameEvent(),
       "pied-piper": () => this.generatePiedPiperHasCharmedGameEvent(gameHistoryRecord),
       "cupid": () => this.generateCupidHasCharmedGameEvent(gameHistoryRecord),
+      "fox": () => this.generateFoxMayHaveSniffedGameEvent(gameHistoryRecord),
+      "thief": () => this.generateThiefMayHaveChosenCardGameEvent(game),
+      "actor": () => this.generateActorMayHaveChosenCardGameEvent(game),
     };
 
     return gamePlaySourcesGameEvent[gameHistoryRecord.play.source.name]?.();
@@ -118,6 +135,21 @@ export class GameEventsGeneratorService {
       gameEvents.push(createGameEvent({
         type: "idiot-is-spared",
         players: [revealedIdiotPlayer],
+      }));
+    }
+    return gameEvents;
+  }
+
+  private generateSwitchedSidePlayersGameEvents(gameHistoryRecord?: GameHistoryRecord): GameEvent[] {
+    const gameEvents: GameEvent[] = [];
+    if (!gameHistoryRecord?.switchedSidePlayers) {
+      return gameEvents;
+    }
+    const switchedWildChildPlayer = gameHistoryRecord.switchedSidePlayers.find(player => player.role.current === "wild-child");
+    if (switchedWildChildPlayer && gameHistoryRecord.play.action === "bury-dead-bodies") {
+      gameEvents.push(createGameEvent({
+        type: "wild-child-has-transformed",
+        players: [switchedWildChildPlayer],
       }));
     }
     return gameEvents;
@@ -183,10 +215,21 @@ export class GameEventsGeneratorService {
     return gameEvents;
   }
 
-  private generateTurnStartsGameEvent(game: Game): GameEvent {
-    return createGameEvent({
-      type: "game-turn-starts",
-      players: game.currentPlay?.source.players,
-    });
+  private generateTurnStartsGameEvents(game: Game): GameEvent[] {
+    const gameEvents: GameEvent[] = [];
+    const scandalmongerMarkedPlayer = getPlayerWithActiveAttributeName(game, "scandalmonger-marked");
+    if (game.currentPlay?.action === "vote" && scandalmongerMarkedPlayer) {
+      gameEvents.push(createGameEvent({
+        type: "scandalmonger-mark-is-active",
+        players: [scandalmongerMarkedPlayer],
+      }));
+    }
+    return [
+      ...gameEvents,
+      createGameEvent({
+        type: "game-turn-starts",
+        players: game.currentPlay?.source.players,
+      }),
+    ];
   }
 }
