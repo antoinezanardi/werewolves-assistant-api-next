@@ -40,6 +40,14 @@ Feature: 🐺 Accursed Wolf-Father role
     And the player named Olivia should be alive
     And the player named Olivia should not have the active eaten from werewolves attribute
     And the game's current play should be survivors to vote
+    And the game should have the following events
+      | type                                   |
+      | accursed-wolf-father-may-have-infected |
+      | game-phase-starts                      |
+      | game-turn-starts                       |
+    And the game's event with type "accursed-wolf-father-may-have-infected" should have the following players
+      | name   |
+      | Olivia |
 
     When the player or group skips his turn
     Then the game's current play should be seer to look

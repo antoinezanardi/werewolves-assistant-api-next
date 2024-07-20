@@ -159,6 +159,83 @@ describe("Game Events Generator Service", () => {
     });
   });
 
+  describe("sortGameEventsByGamePhase", () => {
+    it("should sort events for day phase when game phase is day.", () => {
+      const game = createFakeGame({
+        phase: createFakeGamePhase({ name: "day" }),
+      });
+      const gameEvents = [
+        createFakeGameEvent({ type: "elder-has-taken-revenge" }),
+        createFakeGameEvent({ type: "player-dies" }),
+        createFakeGameEvent({ type: "game-starts" }),
+        createFakeGameEvent({ type: "game-phase-starts" }),
+        createFakeGameEvent({ type: "game-turn-starts" }),
+        createFakeGameEvent({ type: "seer-has-seen" }),
+      ];
+      const sortedGameEvents = services.gameEventsGenerator["sortGameEventsByGamePhase"](gameEvents, game);
+      const expectedSortedGameEvents = [
+        gameEvents[2],
+        gameEvents[3],
+        gameEvents[1],
+        gameEvents[0],
+        gameEvents[4],
+        gameEvents[5],
+      ];
+
+      expect(sortedGameEvents).toStrictEqual<GameEvent[]>(expectedSortedGameEvents);
+    });
+
+    it("should sort events for night phase when game phase is night.", () => {
+      const game = createFakeGame({
+        phase: createFakeGamePhase({ name: "night" }),
+      });
+      const gameEvents = [
+        createFakeGameEvent({ type: "elder-has-taken-revenge" }),
+        createFakeGameEvent({ type: "player-dies" }),
+        createFakeGameEvent({ type: "game-starts" }),
+        createFakeGameEvent({ type: "game-phase-starts" }),
+        createFakeGameEvent({ type: "game-turn-starts" }),
+        createFakeGameEvent({ type: "seer-has-seen" }),
+      ];
+      const sortedGameEvents = services.gameEventsGenerator["sortGameEventsByGamePhase"](gameEvents, game);
+      const expectedSortedGameEvents = [
+        gameEvents[2],
+        gameEvents[1],
+        gameEvents[5],
+        gameEvents[0],
+        gameEvents[3],
+        gameEvents[4],
+      ];
+
+      expect(sortedGameEvents).toStrictEqual<GameEvent[]>(expectedSortedGameEvents);
+    });
+
+    it("should sort events for night phase when game phase is twilight.", () => {
+      const game = createFakeGame({
+        phase: createFakeGamePhase({ name: "twilight" }),
+      });
+      const gameEvents = [
+        createFakeGameEvent({ type: "elder-has-taken-revenge" }),
+        createFakeGameEvent({ type: "player-dies" }),
+        createFakeGameEvent({ type: "game-starts" }),
+        createFakeGameEvent({ type: "game-phase-starts" }),
+        createFakeGameEvent({ type: "game-turn-starts" }),
+        createFakeGameEvent({ type: "seer-has-seen" }),
+      ];
+      const sortedGameEvents = services.gameEventsGenerator["sortGameEventsByGamePhase"](gameEvents, game);
+      const expectedSortedGameEvents = [
+        gameEvents[2],
+        gameEvents[1],
+        gameEvents[5],
+        gameEvents[0],
+        gameEvents[3],
+        gameEvents[4],
+      ];
+
+      expect(sortedGameEvents).toStrictEqual<GameEvent[]>(expectedSortedGameEvents);
+    });
+  });
+
   describe("generateSeerHasSeenGameEvent", () => {
     it("should return seer has seen game event with targets when there are targets in last game history record.", () => {
       const targetedPlayers = [

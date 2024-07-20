@@ -28,7 +28,6 @@ const GAME_EVENT_PRIORITY_LIST_ON_NIGHTS: TupleToUnion<typeof GAME_EVENT_TYPES>[
   "game-starts",
   "villager-villager-introduction",
   "player-dies",
-  "game-phase-starts",
   "seer-has-seen",
   "sheriff-promotion",
   "scandalmonger-may-have-marked",
@@ -42,6 +41,7 @@ const GAME_EVENT_PRIORITY_LIST_ON_NIGHTS: TupleToUnion<typeof GAME_EVENT_TYPES>[
   "thief-may-have-chosen-card",
   "wild-child-has-transformed",
   "actor-may-have-chosen-card",
+  "game-phase-starts",
   "game-turn-starts",
 ] as const;
 

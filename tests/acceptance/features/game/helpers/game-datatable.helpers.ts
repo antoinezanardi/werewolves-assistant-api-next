@@ -2,12 +2,14 @@ import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-
 import type { MakeGamePlayTargetDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target.dto";
 import type { MakeGamePlayVoteDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote.dto";
 import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helpers";
+import type { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import type { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
 import type { GameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 
 import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
+import type { GameEventType } from "@/modules/game/types/game-event/game-event.types";
 import type { GameHistoryRecordPlayerAttributeAlterationStatus } from "@/modules/game/types/game-history-record/game-history-record.types";
 import type { GameSource } from "@/modules/game/types/game.types";
 import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
@@ -86,6 +88,12 @@ function convertDatatableToCreateGamePlayersDto(datatable: string[][]): CreateGa
   }, DEFAULT_PLAIN_TO_INSTANCE_OPTIONS));
 }
 
+function convertDatatableToGameEvents(datatable: string[][]): GameEvent[] {
+  return datatable.map<GameEvent>(([type]) => ({
+    type: type as GameEventType,
+  }));
+}
+
 export {
   convertDatatableToMakeGameplayVotes,
   convertDatatableToMakeGamePlayTargets,
@@ -94,4 +102,5 @@ export {
   convertDatatableToGamePlaySourceInteractions,
   convertDatatableToGameHistoryRecordPlayerAttributeAlterations,
   convertDatatableToCreateGamePlayersDto,
+  convertDatatableToGameEvents,
 };

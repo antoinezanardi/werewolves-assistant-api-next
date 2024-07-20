@@ -1,7 +1,7 @@
 import { GAME_EVENT_PRIORITY_LIST_ON_DAYS, GAME_EVENT_PRIORITY_LIST_ON_NIGHTS } from "@/modules/game/constants/game-event/game-event.constants";
 import { createGameEvent } from "@/modules/game/helpers/game-event/game-event.factory";
 import { doesHavePlayerAttributeAlterationWithNameAndStatus, doesHavePlayerAttributeAlterationWithNameSourceAndStatus } from "@/modules/game/helpers/game-history-record/game-history-record.helpers";
-import { getNearestAliveNeighbor, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
+import { getNearestAliveNeighbor, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole } from "@/modules/game/helpers/game.helpers";
 import { isPlayerAliveAndPowerful } from "@/modules/game/helpers/player/player.helpers";
 import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
@@ -31,32 +31,36 @@ export class GameEventsGeneratorService {
 
   private sortGameEventsByGamePhase(gameEvents: GameEvent[], game: Game): GameEvent[] {
     const priorityList = game.phase.name === "day" ? GAME_EVENT_PRIORITY_LIST_ON_DAYS : GAME_EVENT_PRIORITY_LIST_ON_NIGHTS;
+    const priorityMap = new Map(priorityList.map((event, index) => [event, index]));
 
-    return gameEvents.toSorted(({ type }) => {
-      const index = priorityList.indexOf(type);
-
-      return index === -1 ? Infinity : index;
+    return gameEvents.toSorted((gameEventA, gameEventB) => {
+      const priorityA = priorityMap.get(gameEventA.type);
+      const priorityB = priorityMap.get(gameEventB.type);
+      if (priorityA === undefined || priorityB === undefined) {
+        return 0;
+      }
+      return priorityA - priorityB;
     });
   }
 
-  private generateSeerHasSeenGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+  private generateSeerHasSeenGameEvent(targetedPlayers?: Player[]): GameEvent {
     return createGameEvent({
       type: "seer-has-seen",
-      players: gameHistoryRecord.play.targets?.map(target => target.player),
+      players: targetedPlayers,
     });
   }
 
-  private generateScandalmongerHayHaveMarkedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+  private generateScandalmongerHayHaveMarkedGameEvent(targetedPlayers?: Player[]): GameEvent {
     return createGameEvent({
       type: "scandalmonger-may-have-marked",
-      players: gameHistoryRecord.play.targets?.map(target => target.player),
+      players: targetedPlayers,
     });
   }
 
-  private generateAccursedWolfFatherMayHaveInfectedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+  private generateAccursedWolfFatherMayHaveInfectedGameEvent(targetedPlayers?: Player[]): GameEvent {
     return createGameEvent({
       type: "accursed-wolf-father-may-have-infected",
-      players: gameHistoryRecord.play.targets?.map(target => target.player),
+      players: targetedPlayers,
     });
   }
 
@@ -64,24 +68,24 @@ export class GameEventsGeneratorService {
     return createGameEvent({ type: "wolf-hound-has-chosen-side" });
   }
 
-  private generatePiedPiperHasCharmedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+  private generatePiedPiperHasCharmedGameEvent(targetedPlayers?: Player[]): GameEvent {
     return createGameEvent({
       type: "pied-piper-has-charmed",
-      players: gameHistoryRecord.play.targets?.map(target => target.player),
+      players: targetedPlayers,
     });
   }
 
-  private generateCupidHasCharmedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+  private generateCupidHasCharmedGameEvent(targetedPlayers?: Player[]): GameEvent {
     return createGameEvent({
       type: "cupid-has-charmed",
-      players: gameHistoryRecord.play.targets?.map(target => target.player),
+      players: targetedPlayers,
     });
   }
 
-  private generateFoxMayHaveSniffedGameEvent(gameHistoryRecord: GameHistoryRecord): GameEvent {
+  private generateFoxMayHaveSniffedGameEvent(targetedPlayers?: Player[]): GameEvent {
     return createGameEvent({
       type: "fox-may-have-sniffed",
-      players: gameHistoryRecord.play.targets?.map(target => target.player),
+      players: targetedPlayers,
     });
   }
 
@@ -103,14 +107,16 @@ export class GameEventsGeneratorService {
     if (!gameHistoryRecord) {
       return undefined;
     }
+    const targetedPlayerIds = gameHistoryRecord.play.targets?.map(target => target.player._id);
+    const targetedPlayersInGame = targetedPlayerIds ? getPlayersWithIds(targetedPlayerIds, game) : undefined;
     const gamePlaySourcesGameEvent: Partial<Record<GamePlaySourceName, () => GameEvent>> = {
-      "seer": () => this.generateSeerHasSeenGameEvent(gameHistoryRecord),
-      "scandalmonger": () => this.generateScandalmongerHayHaveMarkedGameEvent(gameHistoryRecord),
-      "accursed-wolf-father": () => this.generateAccursedWolfFatherMayHaveInfectedGameEvent(gameHistoryRecord),
+      "seer": () => this.generateSeerHasSeenGameEvent(targetedPlayersInGame),
+      "scandalmonger": () => this.generateScandalmongerHayHaveMarkedGameEvent(targetedPlayersInGame),
+      "accursed-wolf-father": () => this.generateAccursedWolfFatherMayHaveInfectedGameEvent(targetedPlayersInGame),
       "wolf-hound": () => this.generateWolfHoundHasChosenSideGameEvent(),
-      "pied-piper": () => this.generatePiedPiperHasCharmedGameEvent(gameHistoryRecord),
-      "cupid": () => this.generateCupidHasCharmedGameEvent(gameHistoryRecord),
-      "fox": () => this.generateFoxMayHaveSniffedGameEvent(gameHistoryRecord),
+      "pied-piper": () => this.generatePiedPiperHasCharmedGameEvent(targetedPlayersInGame),
+      "cupid": () => this.generateCupidHasCharmedGameEvent(targetedPlayersInGame),
+      "fox": () => this.generateFoxMayHaveSniffedGameEvent(targetedPlayersInGame),
       "thief": () => this.generateThiefMayHaveChosenCardGameEvent(game),
       "actor": () => this.generateActorMayHaveChosenCardGameEvent(game),
     };
