@@ -64,8 +64,11 @@ export class GameEventsGeneratorService {
     });
   }
 
-  private generateWolfHoundHasChosenSideGameEvent(): GameEvent {
-    return createGameEvent({ type: "wolf-hound-has-chosen-side" });
+  private generateWolfHoundHasChosenSideGameEvent(game: Game): GameEvent {
+    return createGameEvent({
+      type: "wolf-hound-has-chosen-side",
+      players: getPlayersWithCurrentRole(game, "wolf-hound"),
+    });
   }
 
   private generatePiedPiperHasCharmedGameEvent(targetedPlayers?: Player[]): GameEvent {
@@ -89,17 +92,17 @@ export class GameEventsGeneratorService {
     });
   }
 
-  private generateThiefMayHaveChosenCardGameEvent(game: Game): GameEvent {
+  private generateThiefMayHaveChosenCardGameEvent(sourcePlayers?: Player[]): GameEvent {
     return createGameEvent({
       type: "thief-may-have-chosen-card",
-      players: getPlayersWithCurrentRole(game, "thief"),
+      players: sourcePlayers,
     });
   }
 
-  private generateActorMayHaveChosenCardGameEvent(game: Game): GameEvent {
+  private generateActorMayHaveChosenCardGameEvent(sourcePlayers?: Player[]): GameEvent {
     return createGameEvent({
       type: "actor-may-have-chosen-card",
-      players: getPlayersWithCurrentRole(game, "actor"),
+      players: sourcePlayers,
     });
   }
 
@@ -107,18 +110,20 @@ export class GameEventsGeneratorService {
     if (!gameHistoryRecord) {
       return undefined;
     }
-    const targetedPlayerIds = gameHistoryRecord.play.targets?.map(target => target.player._id);
-    const targetedPlayersInGame = targetedPlayerIds ? getPlayersWithIds(targetedPlayerIds, game) : undefined;
+    const lastHistorySourcePlayersIds = gameHistoryRecord.play.source.players?.map(player => player._id);
+    const lastHistoryTargetedPlayerIds = gameHistoryRecord.play.targets?.map(target => target.player._id);
+    const lastHistorySourcePlayersInGame = lastHistorySourcePlayersIds ? getPlayersWithIds(lastHistorySourcePlayersIds, game) : undefined;
+    const lastHistoryTargetedPlayersInGame = lastHistoryTargetedPlayerIds ? getPlayersWithIds(lastHistoryTargetedPlayerIds, game) : undefined;
     const gamePlaySourcesGameEvent: Partial<Record<GamePlaySourceName, () => GameEvent>> = {
-      "seer": () => this.generateSeerHasSeenGameEvent(targetedPlayersInGame),
-      "scandalmonger": () => this.generateScandalmongerHayHaveMarkedGameEvent(targetedPlayersInGame),
-      "accursed-wolf-father": () => this.generateAccursedWolfFatherMayHaveInfectedGameEvent(targetedPlayersInGame),
-      "wolf-hound": () => this.generateWolfHoundHasChosenSideGameEvent(),
-      "pied-piper": () => this.generatePiedPiperHasCharmedGameEvent(targetedPlayersInGame),
-      "cupid": () => this.generateCupidHasCharmedGameEvent(targetedPlayersInGame),
-      "fox": () => this.generateFoxMayHaveSniffedGameEvent(targetedPlayersInGame),
-      "thief": () => this.generateThiefMayHaveChosenCardGameEvent(game),
-      "actor": () => this.generateActorMayHaveChosenCardGameEvent(game),
+      "seer": () => this.generateSeerHasSeenGameEvent(lastHistoryTargetedPlayersInGame),
+      "scandalmonger": () => this.generateScandalmongerHayHaveMarkedGameEvent(lastHistoryTargetedPlayersInGame),
+      "accursed-wolf-father": () => this.generateAccursedWolfFatherMayHaveInfectedGameEvent(lastHistoryTargetedPlayersInGame),
+      "wolf-hound": () => this.generateWolfHoundHasChosenSideGameEvent(game),
+      "pied-piper": () => this.generatePiedPiperHasCharmedGameEvent(lastHistoryTargetedPlayersInGame),
+      "cupid": () => this.generateCupidHasCharmedGameEvent(lastHistoryTargetedPlayersInGame),
+      "fox": () => this.generateFoxMayHaveSniffedGameEvent(lastHistoryTargetedPlayersInGame),
+      "thief": () => this.generateThiefMayHaveChosenCardGameEvent(lastHistorySourcePlayersInGame),
+      "actor": () => this.generateActorMayHaveChosenCardGameEvent(lastHistorySourcePlayersInGame),
     };
 
     return gamePlaySourcesGameEvent[gameHistoryRecord.play.source.name]?.();
@@ -179,7 +184,7 @@ export class GameEventsGeneratorService {
       return gameEvents;
     }
     gameEvents.push(createGameEvent({
-      type: "player-dies",
+      type: "death",
       players: gameHistoryRecord.deadPlayers,
     }));
 

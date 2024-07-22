@@ -46,6 +46,14 @@ Feature: 🪈 Pied Piper role
       | name   |
       | Olivia |
       | Thomas |
+    And the game should have the following events
+      | type                   |
+      | pied-piper-has-charmed |
+      | game-turn-starts       |
+    And the game's event with type "pied-piper-has-charmed" should have the following players
+      | name   |
+      | Olivia |
+      | Thomas |
     And the game's current play should be charmed to meet-each-other
     And the game's current play should be played by the following players
       | name   |
@@ -96,6 +104,14 @@ Feature: 🪈 Pied Piper role
       | Olivia |
       | Dad    |
       | Mom    |
+    And the game should have the following events
+      | type                   |
+      | pied-piper-has-charmed |
+      | game-turn-starts       |
+    And the game's event with type "pied-piper-has-charmed" should have the following players
+      | name |
+      | Dad  |
+      | Mom  |
     And the game's current play should be charmed to meet-each-other
     And the game's current play should be played by the following players
       | name   |

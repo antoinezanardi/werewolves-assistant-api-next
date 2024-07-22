@@ -62,6 +62,14 @@ Feature: 👴🏻 Elder role
       | Antoine |
       | Olivia  |
       | JB      |
+    And the game should have the following events
+      | type                    |
+      | elder-has-taken-revenge |
+      | game-phase-starts       |
+      | game-turn-starts        |
+    And the game's event with type "elder-has-taken-revenge" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Ali
@@ -134,6 +142,13 @@ Feature: 👴🏻 Elder role
       | Doudou |
       | JB     |
       | Thomas |
+    And the game should have the following events
+      | type                    |
+      | elder-has-taken-revenge |
+      | game-turn-starts        |
+    And the game's event with type "elder-has-taken-revenge" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be survivors to vote
 
     When the player or group skips his turn
@@ -170,6 +185,13 @@ Feature: 👴🏻 Elder role
       | name   |
       | Doudou |
       | JB     |
+    And the game should have the following events
+      | type                    |
+      | elder-has-taken-revenge |
+      | game-turn-starts        |
+    And the game's event with type "elder-has-taken-revenge" should have the following players
+      | name    |
+      | Antoine |
     Then the game's current play should be survivors to vote
 
     When the player or group skips his turn
@@ -191,11 +213,15 @@ Feature: 👴🏻 Elder role
       | voter  | target  |
       | Doudou | Antoine |
     Then the player named Antoine should be murdered by survivors from vote
-    And nobody should have the active powerless from elder attribute
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies
-    Then the game's current play should be defender to protect
+    Then nobody should have the active powerless from elder attribute
+    And the game should have the following events
+      | type              |
+      | game-phase-starts |
+      | game-turn-starts  |
+    And the game's current play should be defender to protect
 
   Scenario: 👴🏻 Elder has two lives against werewolves
     Given a created game with options described in file no-sheriff-option.json and with the following players

@@ -1,14 +1,11 @@
-import { isInNightOrTwilightPhase } from "@/modules/game/helpers/game-phase/game-phase.helpers";
-import { Injectable } from "@nestjs/common";
-
-import { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import { DAY_GAME_PLAYS_PRIORITY_LIST, NIGHT_GAME_PLAYS_PRIORITY_LIST } from "@/modules/game/constants/game.constants";
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
+import { isInNightOrTwilightPhase } from "@/modules/game/helpers/game-phase/game-phase.helpers";
 import { createGamePlay, createGamePlayCupidCharms, createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { areGamePlaysEqual, canSurvivorsVote, doesGamePlayHaveCause, findPlayPriorityIndex } from "@/modules/game/helpers/game-play/game-play.helpers";
 import { createGame, createGameWithCurrentGamePlay } from "@/modules/game/helpers/game.factory";
-import { getEligibleCupidTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getNearestAliveNeighbor, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
+import { getEligibleCupidTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getGroupOfPlayers, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
 import { isPlayerAliveAndPowerful, isPlayerPowerful } from "@/modules/game/helpers/player/player.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
@@ -16,11 +13,14 @@ import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-reco
 import type { SheriffGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/sheriff-game-options/sheriff-game-options.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
+
+import { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 import { PlayerGroup } from "@/modules/game/types/player/player.types";
 import { RoleName } from "@/modules/role/types/role.types";
 
 import { createNoGamePlayPriorityUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class GamePlayService {
@@ -33,7 +33,6 @@ export class GamePlayService {
     "white-werewolf": (game: Game) => this.isWhiteWerewolfGamePlaySuitableForCurrentPhase(game),
     "witch": async(game: Game) => this.isWitchGamePlaySuitableForCurrentPhase(game),
     "actor": (game: Game) => this.isActorGamePlaySuitableForCurrentPhase(game),
-    "bear-tamer": async(game: Game) => this.isBearTamerGamePlaySuitableForCurrentPhase(game),
     "accursed-wolf-father": async(game: Game) => this.isAccursedWolfFatherGamePlaySuitableForCurrentPhase(game),
     "stuttering-judge": async(game: Game) => this.isStutteringJudgeGamePlaySuitableForCurrentPhase(game),
   };
@@ -192,25 +191,6 @@ export class GamePlayService {
     const lastAccursedWolfFatherGamePlayRecord = await this.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord(game._id, accursedWolfFatherPlayer._id);
 
     return !doesSkipCallIfNoTarget || !lastAccursedWolfFatherGamePlayRecord;
-  }
-
-  private async isBearTamerGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {
-    if (game instanceof CreateGameDto) {
-      return false;
-    }
-    const bearTamerPlayer = getPlayerWithCurrentRole(game, "bear-tamer");
-    if (!bearTamerPlayer || !isPlayerAliveAndPowerful(bearTamerPlayer, game)) {
-      return false;
-    }
-    const leftAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, game, { direction: "left" });
-    const rightAliveNeighbor = getNearestAliveNeighbor(bearTamerPlayer._id, game, { direction: "right" });
-    const doesBearTamerHaveWerewolfSidedNeighbor = leftAliveNeighbor?.side.current === "werewolves" || rightAliveNeighbor?.side.current === "werewolves";
-    const { doesGrowlOnWerewolvesSide } = game.options.roles.bearTamer;
-    const isBearTamerInfected = bearTamerPlayer.side.current === "werewolves";
-    const lastVoteGamePlay = await this.gameHistoryRecordService.getLastGameHistorySurvivorsVoteRecord(game._id);
-    const didGamePhaseHaveSurvivorsVote = lastVoteGamePlay?.turn === game.turn && lastVoteGamePlay.phase.name === game.phase.name;
-
-    return !didGamePhaseHaveSurvivorsVote && (doesGrowlOnWerewolvesSide && isBearTamerInfected || doesBearTamerHaveWerewolfSidedNeighbor);
   }
 
   private async isSurvivorsGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game, gamePlay: GamePlay): Promise<boolean> {

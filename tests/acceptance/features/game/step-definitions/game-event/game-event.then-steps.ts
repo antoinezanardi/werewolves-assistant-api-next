@@ -24,3 +24,10 @@ Then(/^the game's event with type "(?<type>.+?)" should have the following playe
   expect(gameEvent).toBeDefined();
   expect(gameEvent?.players).toStrictEqual(players);
 });
+
+Then(/^the game's event with type "(?<type>.+?)" should not have any players$/u, function(this: CustomWorld, type: string): void {
+  const gameEvent = this.game.events?.find(event => event.type === type);
+
+  expect(gameEvent).toBeDefined();
+  expect(gameEvent?.players).toBeUndefined();
+});

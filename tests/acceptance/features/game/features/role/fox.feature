@@ -37,6 +37,13 @@ Feature: 🦊 Fox role
     When the fox sniffs the player named Doudou
     Then the request should have succeeded with status code 200
     And the player named Antoine should not have the active powerless from fox attribute
+    And the game should have the following events
+      | type                 |
+      | fox-may-have-sniffed |
+      | game-turn-starts     |
+    And the game's event with type "fox-may-have-sniffed" should have the following players
+      | name   |
+      | Doudou |
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Coco
@@ -60,6 +67,11 @@ Feature: 🦊 Fox role
 
     When the player or group skips his turn
     Then the player named Antoine should not have the active powerless from fox attribute
+    And the game should have the following events
+      | type                 |
+      | fox-may-have-sniffed |
+      | game-turn-starts     |
+    And the game's event with type "fox-may-have-sniffed" should not have any players
 
     When the werewolves eat the player named Juju
     Then the game's current play should be accursed-wolf-father to infect
@@ -76,6 +88,13 @@ Feature: 🦊 Fox role
 
     When the fox sniffs the player named Antoine
     Then the player named Antoine should have the active powerless from fox attribute
+    And the game should have the following events
+      | type                 |
+      | fox-may-have-sniffed |
+      | game-turn-starts     |
+    And the game's event with type "fox-may-have-sniffed" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas

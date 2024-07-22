@@ -24,13 +24,13 @@ import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/c
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
-import { createFakeBearTamerGameOptions, createFakeCupidGameOptions, createFakeRolesGameOptions, createFakeSheriffElectionGameOptions, createFakeSheriffGameOptions, createFakeStutteringJudgeGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
+import { createFakeCupidGameOptions, createFakeRolesGameOptions, createFakeSheriffElectionGameOptions, createFakeSheriffGameOptions, createFakeStutteringJudgeGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
-import { createFakeGamePlay, createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBearTamerGrowls, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeRequestsAnotherVote, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlay, createFakeGamePlayAccursedWolfFatherInfects, createFakeGamePlayActorChoosesCard, createFakeGamePlayBigBadWolfEats, createFakeGamePlayCharmedMeetEachOther, createFakeGamePlayCupidCharms, createFakeGamePlayDefenderProtects, createFakeGamePlayFoxSniffs, createFakeGamePlayHunterShoots, createFakeGamePlayLoversMeetEachOther, createFakeGamePlayPiedPiperCharms, createFakeGamePlayScandalmongerMarks, createFakeGamePlayScapegoatBansVoting, createFakeGamePlaySeerLooks, createFakeGamePlaySheriffDelegates, createFakeGamePlayStutteringJudgeRequestsAnotherVote, createFakeGamePlaySurvivorsBuryDeadBodies, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayThreeBrothersMeetEachOther, createFakeGamePlayTwoSistersMeetEachOther, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWildChildChoosesModel, createFakeGamePlayWitchUsesPotions, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeInLoveByCupidPlayerAttribute, createFakePowerlessByElderPlayerAttribute, createFakePowerlessByWerewolvesPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeAccursedWolfFatherAlivePlayer, createFakeActorAlivePlayer, createFakeAngelAlivePlayer, createFakeBearTamerAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeFoxAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakePlayer, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeAccursedWolfFatherAlivePlayer, createFakeActorAlivePlayer, createFakeAngelAlivePlayer, createFakeBigBadWolfAlivePlayer, createFakeCupidAlivePlayer, createFakeDefenderAlivePlayer, createFakeFoxAlivePlayer, createFakeHunterAlivePlayer, createFakePiedPiperAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeScapegoatAlivePlayer, createFakeSeerAlivePlayer, createFakeStutteringJudgeAlivePlayer, createFakeThiefAlivePlayer, createFakeThreeBrothersAlivePlayer, createFakeTwoSistersAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWhiteWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWitchAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Play Service", () => {
   let services: { gamePlay: GamePlayService };
@@ -59,7 +59,6 @@ describe("Game Play Service", () => {
       isRoleGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isGroupGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isOneNightOnlyGamePlaySuitableForCurrentPhase: jest.SpyInstance;
-      isBearTamerGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isAccursedWolfFatherGamePlaySuitableForCurrentPhase: jest.SpyInstance;
       isStutteringJudgeGamePlaySuitableForCurrentPhase: jest.SpyInstance;
     };
@@ -112,7 +111,6 @@ describe("Game Play Service", () => {
         isRoleGamePlaySuitableForCurrentPhase: jest.fn(),
         isGroupGamePlaySuitableForCurrentPhase: jest.fn(),
         isOneNightOnlyGamePlaySuitableForCurrentPhase: jest.fn(),
-        isBearTamerGamePlaySuitableForCurrentPhase: jest.fn(),
         isAccursedWolfFatherGamePlaySuitableForCurrentPhase: jest.fn(),
         isStutteringJudgeGamePlaySuitableForCurrentPhase: jest.fn(),
       },
@@ -1052,217 +1050,6 @@ describe("Game Play Service", () => {
       mocks.gameHistoryRecordService.getLastGameHistoryAccursedWolfFatherInfectsRecord.mockResolvedValue(lastAccursedWolfFatherGamePlay);
 
       await expect(services.gamePlay["isAccursedWolfFatherGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(expected);
-    });
-  });
-
-  describe("isBearTamerGamePlaySuitableForCurrentPhase", () => {
-    it.each<{
-      test: string;
-      game: CreateGameDto | Game;
-      lastVoteGamePlay: GameHistoryRecord | null;
-      expected: boolean;
-    }>([
-      {
-        test: "should return false when game is dto.",
-        game: createFakeCreateGameDto({
-          players: [
-            createFakeCreateGamePlayerDto({ role: { name: "seer" } }),
-            createFakeCreateGamePlayerDto({ role: { name: "werewolf" } }),
-            createFakeCreateGamePlayerDto({ role: { name: "witch" } }),
-            createFakeCreateGamePlayerDto({ role: { name: "white-werewolf" } }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: false,
-      },
-      {
-        test: "should return false when there no bear tamer in the game.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer(),
-            createFakeSeerAlivePlayer(),
-            createFakeAccursedWolfFatherAlivePlayer(),
-            createFakeCupidAlivePlayer(),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: false,
-      },
-      {
-        test: "should return false when bear tamer is dead.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer(),
-            createFakeSeerAlivePlayer(),
-            createFakeAccursedWolfFatherAlivePlayer(),
-            createFakeBearTamerAlivePlayer({ isAlive: false }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: false,
-      },
-      {
-        test: "should return false when bear tamer is powerless.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeSeerAlivePlayer({ position: 2 }),
-            createFakeAccursedWolfFatherAlivePlayer({ position: 3 }),
-            createFakeBearTamerAlivePlayer({ attributes: [createFakePowerlessByElderPlayerAttribute()], position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: false,
-      },
-      {
-        test: "should return false when any of bear tamer's neighbors are werewolves.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeSeerAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3 }),
-            createFakeVillagerAlivePlayer({ position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: true }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: false,
-      },
-      {
-        test: "should return true when left bear tamer's neighbor are werewolves.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeWerewolfAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3 }),
-            createFakeVillagerAlivePlayer({ position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: true,
-      },
-      {
-        test: "should return true when right bear tamer's neighbor are werewolves.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeVillagerAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3 }),
-            createFakeWerewolfAlivePlayer({ position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: true,
-      },
-      {
-        test: "should return true when both bear tamer's neighbors are werewolves.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeWerewolfAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3 }),
-            createFakeWerewolfAlivePlayer({ position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: true,
-      },
-      {
-        test: "should return false when both bear tamer's neighbors are werewolves but there was already a vote game play on current turn and phase.",
-        game: createFakeGame({
-          turn: 1,
-          phase: createFakeGamePhase({ name: "day" }),
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeWerewolfAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3 }),
-            createFakeWerewolfAlivePlayer({ position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: createFakeGameHistoryRecord({
-          turn: 1,
-          phase: createFakeGamePhase({ name: "day" }),
-        }),
-        expected: false,
-      },
-      {
-        test: "should return true when both bear tamer's neighbors are werewolves and there was already a vote game play but not on current turn.",
-        game: createFakeGame({
-          turn: 1,
-          phase: createFakeGamePhase({ name: "day" }),
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeWerewolfAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3 }),
-            createFakeWerewolfAlivePlayer({ position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: createFakeGameHistoryRecord({
-          turn: 2,
-          phase: createFakeGamePhase({ name: "day" }),
-        }),
-        expected: true,
-      },
-      {
-        test: "should return true when both bear tamer's neighbors are werewolves and there was already a vote game play but not on current phase.",
-        game: createFakeGame({
-          turn: 1,
-          phase: createFakeGamePhase({ name: "day" }),
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeWerewolfAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3 }),
-            createFakeWerewolfAlivePlayer({ position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: createFakeGameHistoryRecord({
-          turn: 1,
-          phase: createFakeGamePhase({ name: "night" }),
-        }),
-        expected: true,
-      },
-      {
-        test: "should return true when any of bear tamer's neighbors are werewolves but he's infected.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeSeerAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3, side: createFakePlayerSide({ current: "werewolves" }) }),
-            createFakeVillagerAlivePlayer({ position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: true }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: true,
-      },
-      {
-        test: "should return false when any of bear tamer's neighbors are werewolves, he's infected but game options say that he doesn't growl on werewolves side.",
-        game: createFakeGame({
-          players: [
-            createFakeWhiteWerewolfAlivePlayer({ position: 1 }),
-            createFakeSeerAlivePlayer({ position: 2 }),
-            createFakeBearTamerAlivePlayer({ position: 3, side: createFakePlayerSide({ current: "werewolves" }) }),
-            createFakeVillagerAlivePlayer({ position: 4 }),
-          ],
-          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ bearTamer: createFakeBearTamerGameOptions({ doesGrowlOnWerewolvesSide: false }) }) }),
-        }),
-        lastVoteGamePlay: null,
-        expected: false,
-      },
-    ])("$test", async({ game, lastVoteGamePlay, expected }) => {
-      mocks.gameHistoryRecordService.getLastGameHistorySurvivorsVoteRecord.mockResolvedValue(lastVoteGamePlay);
-
-      await expect(services.gamePlay["isBearTamerGamePlaySuitableForCurrentPhase"](game)).resolves.toBe(expected);
     });
   });
 
@@ -2752,7 +2539,6 @@ describe("Game Play Service", () => {
       mocks.gamePlayService.isWhiteWerewolfGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isWhiteWerewolfGamePlaySuitableForCurrentPhase }, "isWhiteWerewolfGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isWitchGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isWitchGamePlaySuitableForCurrentPhase }, "isWitchGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isActorGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isActorGamePlaySuitableForCurrentPhase }, "isActorGamePlaySuitableForCurrentPhase").mockImplementation();
-      mocks.gamePlayService.isBearTamerGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isBearTamerGamePlaySuitableForCurrentPhase }, "isBearTamerGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isAccursedWolfFatherGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isAccursedWolfFatherGamePlaySuitableForCurrentPhase }, "isAccursedWolfFatherGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isStutteringJudgeGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isStutteringJudgeGamePlaySuitableForCurrentPhase }, "isStutteringJudgeGamePlaySuitableForCurrentPhase").mockImplementation();
       mocks.gamePlayService.isOneNightOnlyGamePlaySuitableForCurrentPhase = jest.spyOn(services.gamePlay as unknown as { isOneNightOnlyGamePlaySuitableForCurrentPhase }, "isOneNightOnlyGamePlaySuitableForCurrentPhase").mockImplementation();
@@ -2868,20 +2654,6 @@ describe("Game Play Service", () => {
       await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
 
       expect(mocks.gamePlayService.isActorGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
-    });
-
-    it("should call bear tamer method when game plays source role is bear tamer.", async() => {
-      const players = [
-        createFakeWhiteWerewolfAlivePlayer(),
-        createFakeBigBadWolfAlivePlayer(),
-        createFakeBearTamerAlivePlayer(),
-        createFakeWildChildAlivePlayer(),
-      ];
-      const game = createFakeGame({ players });
-      const gamePlay = createFakeGamePlayBearTamerGrowls();
-      await services.gamePlay["isRoleGamePlaySuitableForCurrentPhase"](game, gamePlay);
-
-      expect(mocks.gamePlayService.isBearTamerGamePlaySuitableForCurrentPhase).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should call accursed wolf father method when game plays source role is accursed wolf father.", async() => {

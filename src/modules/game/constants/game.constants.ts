@@ -92,12 +92,6 @@ const GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = [
     occurrence: "consequential",
   },
   {
-    type: "no-action",
-    source: { name: "bear-tamer" },
-    action: "growl",
-    occurrence: "on-days",
-  },
-  {
     type: "vote",
     source: { name: "survivors" },
     action: "vote",

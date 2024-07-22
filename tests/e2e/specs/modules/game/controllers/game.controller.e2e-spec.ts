@@ -1356,7 +1356,7 @@ describe("Game Controller", () => {
       const expectedCurrentPlay = createFakeGamePlayWerewolvesEat({
         source: createFakeGamePlaySource({
           name: "werewolves",
-          players: [createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }), players[3]],
+          players: [seenPlayer, players[3]],
           interactions: [
             createFakeGamePlaySourceInteraction({
               source: "werewolves",
@@ -1371,7 +1371,7 @@ describe("Game Controller", () => {
       const expectedGameEvents = [
         createFakeGameEvent({
           type: "seer-has-seen",
-          players: [players[0]],
+          players: [seenPlayer],
         }),
         createFakeGameEvent({
           type: "game-turn-starts",
@@ -1386,7 +1386,7 @@ describe("Game Controller", () => {
         currentPlay: expectedCurrentPlay,
         upcomingPlays: [],
         players: [
-          createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }),
+          seenPlayer,
           players[1],
           players[2],
           players[3],

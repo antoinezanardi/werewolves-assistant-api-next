@@ -9,7 +9,7 @@ import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/ga
 import { createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakePlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeActorAlivePlayer, createFakeBearTamerAlivePlayer, createFakeElderAlivePlayer, createFakeIdiotAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeActorAlivePlayer, createFakeBearTamerAlivePlayer, createFakeElderAlivePlayer, createFakeIdiotAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeDeadPlayer, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Events Generator Service", () => {
@@ -166,7 +166,7 @@ describe("Game Events Generator Service", () => {
       });
       const gameEvents = [
         createFakeGameEvent({ type: "elder-has-taken-revenge" }),
-        createFakeGameEvent({ type: "player-dies" }),
+        createFakeGameEvent({ type: "death" }),
         createFakeGameEvent({ type: "game-starts" }),
         createFakeGameEvent({ type: "game-phase-starts" }),
         createFakeGameEvent({ type: "game-turn-starts" }),
@@ -191,7 +191,7 @@ describe("Game Events Generator Service", () => {
       });
       const gameEvents = [
         createFakeGameEvent({ type: "elder-has-taken-revenge" }),
-        createFakeGameEvent({ type: "player-dies" }),
+        createFakeGameEvent({ type: "death" }),
         createFakeGameEvent({ type: "game-starts" }),
         createFakeGameEvent({ type: "game-phase-starts" }),
         createFakeGameEvent({ type: "game-turn-starts" }),
@@ -216,7 +216,7 @@ describe("Game Events Generator Service", () => {
       });
       const gameEvents = [
         createFakeGameEvent({ type: "elder-has-taken-revenge" }),
-        createFakeGameEvent({ type: "player-dies" }),
+        createFakeGameEvent({ type: "death" }),
         createFakeGameEvent({ type: "game-starts" }),
         createFakeGameEvent({ type: "game-phase-starts" }),
         createFakeGameEvent({ type: "game-turn-starts" }),
@@ -242,15 +242,7 @@ describe("Game Events Generator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay({
-          targets: [
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[0] }),
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[1] }),
-          ],
-        }),
-      });
-      const gameEvent = services.gameEventsGenerator["generateSeerHasSeenGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateSeerHasSeenGameEvent"](targetedPlayers);
       const expectedGameEvent = createFakeGameEvent({
         type: "seer-has-seen",
         players: targetedPlayers,
@@ -260,10 +252,7 @@ describe("Game Events Generator Service", () => {
     });
 
     it("should return seer has seen game event without targets when there are no targets in last game history record.", () => {
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay(),
-      });
-      const gameEvent = services.gameEventsGenerator["generateSeerHasSeenGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateSeerHasSeenGameEvent"]();
       const expectedGameEvent = createFakeGameEvent({
         type: "seer-has-seen",
       });
@@ -278,15 +267,7 @@ describe("Game Events Generator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay({
-          targets: [
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[0] }),
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[1] }),
-          ],
-        }),
-      });
-      const gameEvent = services.gameEventsGenerator["generateScandalmongerHayHaveMarkedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateScandalmongerHayHaveMarkedGameEvent"](targetedPlayers);
       const expectedGameEvent = createFakeGameEvent({
         type: "scandalmonger-may-have-marked",
         players: targetedPlayers,
@@ -296,10 +277,7 @@ describe("Game Events Generator Service", () => {
     });
 
     it("should return scandalmonger has marked game event without targets when there are no targets in last game history record.", () => {
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay(),
-      });
-      const gameEvent = services.gameEventsGenerator["generateScandalmongerHayHaveMarkedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateScandalmongerHayHaveMarkedGameEvent"]();
       const expectedGameEvent = createFakeGameEvent({
         type: "scandalmonger-may-have-marked",
       });
@@ -314,15 +292,7 @@ describe("Game Events Generator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay({
-          targets: [
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[0] }),
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[1] }),
-          ],
-        }),
-      });
-      const gameEvent = services.gameEventsGenerator["generateAccursedWolfFatherMayHaveInfectedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateAccursedWolfFatherMayHaveInfectedGameEvent"](targetedPlayers);
       const expectedGameEvent = createFakeGameEvent({
         type: "accursed-wolf-father-may-have-infected",
         players: targetedPlayers,
@@ -332,10 +302,7 @@ describe("Game Events Generator Service", () => {
     });
 
     it("should return accursed wolf father may have infected game event without targets when there are no targets in last game history record.", () => {
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay(),
-      });
-      const gameEvent = services.gameEventsGenerator["generateAccursedWolfFatherMayHaveInfectedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateAccursedWolfFatherMayHaveInfectedGameEvent"]();
       const expectedGameEvent = createFakeGameEvent({
         type: "accursed-wolf-father-may-have-infected",
       });
@@ -346,9 +313,14 @@ describe("Game Events Generator Service", () => {
 
   describe("generateWolfHoundHasChosenSideGameEvent", () => {
     it("should return wolf hound has chosen side game event when called.", () => {
-      const gameEvent = services.gameEventsGenerator["generateWolfHoundHasChosenSideGameEvent"]();
+      const wolfHoundPlayer = createFakeWolfHoundAlivePlayer();
+      const game = createFakeGame({
+        players: [wolfHoundPlayer],
+      });
+      const gameEvent = services.gameEventsGenerator["generateWolfHoundHasChosenSideGameEvent"](game);
       const expectedGameEvent = createFakeGameEvent({
         type: "wolf-hound-has-chosen-side",
+        players: [wolfHoundPlayer],
       });
 
       expect(gameEvent).toStrictEqual<GameEvent>(expectedGameEvent);
@@ -361,15 +333,7 @@ describe("Game Events Generator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay({
-          targets: [
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[0] }),
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[1] }),
-          ],
-        }),
-      });
-      const gameEvent = services.gameEventsGenerator["generatePiedPiperHasCharmedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generatePiedPiperHasCharmedGameEvent"](targetedPlayers);
       const expectedGameEvent = createFakeGameEvent({
         type: "pied-piper-has-charmed",
         players: targetedPlayers,
@@ -379,10 +343,7 @@ describe("Game Events Generator Service", () => {
     });
 
     it("should return pied piper has charmed game event without targets when there are no targets in last game history record.", () => {
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay(),
-      });
-      const gameEvent = services.gameEventsGenerator["generatePiedPiperHasCharmedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generatePiedPiperHasCharmedGameEvent"]();
       const expectedGameEvent = createFakeGameEvent({
         type: "pied-piper-has-charmed",
       });
@@ -397,15 +358,7 @@ describe("Game Events Generator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay({
-          targets: [
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[0] }),
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[1] }),
-          ],
-        }),
-      });
-      const gameEvent = services.gameEventsGenerator["generateCupidHasCharmedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateCupidHasCharmedGameEvent"](targetedPlayers);
       const expectedGameEvent = createFakeGameEvent({
         type: "cupid-has-charmed",
         players: targetedPlayers,
@@ -415,10 +368,7 @@ describe("Game Events Generator Service", () => {
     });
 
     it("should return cupid has charmed game event without targets when there are no targets in last game history record.", () => {
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay(),
-      });
-      const gameEvent = services.gameEventsGenerator["generateCupidHasCharmedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateCupidHasCharmedGameEvent"]();
       const expectedGameEvent = createFakeGameEvent({
         type: "cupid-has-charmed",
       });
@@ -433,15 +383,7 @@ describe("Game Events Generator Service", () => {
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
       ];
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay({
-          targets: [
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[0] }),
-            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[1] }),
-          ],
-        }),
-      });
-      const gameEvent = services.gameEventsGenerator["generateFoxMayHaveSniffedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateFoxMayHaveSniffedGameEvent"](targetedPlayers);
       const expectedGameEvent = createFakeGameEvent({
         type: "fox-may-have-sniffed",
         players: targetedPlayers,
@@ -451,10 +393,7 @@ describe("Game Events Generator Service", () => {
     });
 
     it("should return fox may have sniffed game event without targets when there are no targets in last game history record.", () => {
-      const gameHistoryRecord = createFakeGameHistoryRecord({
-        play: createFakeGameHistoryRecordPlay(),
-      });
-      const gameEvent = services.gameEventsGenerator["generateFoxMayHaveSniffedGameEvent"](gameHistoryRecord);
+      const gameEvent = services.gameEventsGenerator["generateFoxMayHaveSniffedGameEvent"]();
       const expectedGameEvent = createFakeGameEvent({
         type: "fox-may-have-sniffed",
       });
@@ -465,15 +404,11 @@ describe("Game Events Generator Service", () => {
 
   describe("generateThiefMayHaveChosenCardGameEvent", () => {
     it("should return thief may have chosen card game event when called.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeThiefAlivePlayer(),
-      ];
-      const game = createFakeGame({ players });
-      const gameEvent = services.gameEventsGenerator["generateThiefMayHaveChosenCardGameEvent"](game);
+      const players = [createFakeThiefAlivePlayer()];
+      const gameEvent = services.gameEventsGenerator["generateThiefMayHaveChosenCardGameEvent"](players);
       const expectedGameEvent = createFakeGameEvent({
         type: "thief-may-have-chosen-card",
-        players: [players[1]],
+        players,
       });
 
       expect(gameEvent).toStrictEqual<GameEvent>(expectedGameEvent);
@@ -482,15 +417,11 @@ describe("Game Events Generator Service", () => {
 
   describe("generateActorMayHaveChosenCardGameEvent", () => {
     it("should return actor may have chosen card game event when called.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeActorAlivePlayer(),
-      ];
-      const game = createFakeGame({ players });
-      const gameEvent = services.gameEventsGenerator["generateActorMayHaveChosenCardGameEvent"](game);
+      const players = [createFakeActorAlivePlayer()];
+      const gameEvent = services.gameEventsGenerator["generateActorMayHaveChosenCardGameEvent"](players);
       const expectedGameEvent = createFakeGameEvent({
         type: "actor-may-have-chosen-card",
-        players: [players[1]],
+        players,
       });
 
       expect(gameEvent).toStrictEqual<GameEvent>(expectedGameEvent);
@@ -518,17 +449,25 @@ describe("Game Events Generator Service", () => {
     });
 
     it("should generate seer has seen game event when the last game play source is seer.", () => {
-      const game = createFakeGame();
+      const targetedPlayers = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGame({ players: targetedPlayers });
       const gameHistoryRecord = createFakeGameHistoryRecord({
         play: createFakeGameHistoryRecordPlay({
           source: createFakeGameHistoryRecordPlaySource({
             name: "seer",
           }),
+          targets: [
+            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[0] }),
+            createFakeGameHistoryRecordPlayTarget({ player: targetedPlayers[1] }),
+          ],
         }),
       });
       services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
 
-      expect(mocks.gameEventsGeneratorService.generateSeerHasSeenGameEvent).toHaveBeenCalledExactlyOnceWith(gameHistoryRecord);
+      expect(mocks.gameEventsGeneratorService.generateSeerHasSeenGameEvent).toHaveBeenCalledExactlyOnceWith(targetedPlayers);
     });
 
     it("should generate scandalmonger may have marked game event when the last game play source is scandalmonger.", () => {
@@ -542,7 +481,7 @@ describe("Game Events Generator Service", () => {
       });
       services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
 
-      expect(mocks.gameEventsGeneratorService.generateScandalmongerHayHaveMarkedGameEvent).toHaveBeenCalledExactlyOnceWith(gameHistoryRecord);
+      expect(mocks.gameEventsGeneratorService.generateScandalmongerHayHaveMarkedGameEvent).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should generate accursed wolf father may have infected game event when the last game play source is accursed wolf father.", () => {
@@ -556,21 +495,23 @@ describe("Game Events Generator Service", () => {
       });
       services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
 
-      expect(mocks.gameEventsGeneratorService.generateAccursedWolfFatherMayHaveInfectedGameEvent).toHaveBeenCalledExactlyOnceWith(gameHistoryRecord);
+      expect(mocks.gameEventsGeneratorService.generateAccursedWolfFatherMayHaveInfectedGameEvent).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should generate wolf hound has chosen side game event when the last game play source is wolf hound.", () => {
       const game = createFakeGame();
+      const wolfHoundPlayer = createFakeWolfHoundAlivePlayer();
       const gameHistoryRecord = createFakeGameHistoryRecord({
         play: createFakeGameHistoryRecordPlay({
           source: createFakeGameHistoryRecordPlaySource({
             name: "wolf-hound",
+            players: [wolfHoundPlayer],
           }),
         }),
       });
       services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
 
-      expect(mocks.gameEventsGeneratorService.generateWolfHoundHasChosenSideGameEvent).toHaveBeenCalledExactlyOnceWith();
+      expect(mocks.gameEventsGeneratorService.generateWolfHoundHasChosenSideGameEvent).toHaveBeenCalledExactlyOnceWith(game);
     });
 
     it("should generate pied piper has charmed game event when the last game play source is pied piper.", () => {
@@ -584,7 +525,7 @@ describe("Game Events Generator Service", () => {
       });
       services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
 
-      expect(mocks.gameEventsGeneratorService.generatePiedPiperHasCharmedGameEvent).toHaveBeenCalledExactlyOnceWith(gameHistoryRecord);
+      expect(mocks.gameEventsGeneratorService.generatePiedPiperHasCharmedGameEvent).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should generate cupid has charmed game event when the last game play source is cupid.", () => {
@@ -598,7 +539,7 @@ describe("Game Events Generator Service", () => {
       });
       services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
 
-      expect(mocks.gameEventsGeneratorService.generateCupidHasCharmedGameEvent).toHaveBeenCalledExactlyOnceWith(gameHistoryRecord);
+      expect(mocks.gameEventsGeneratorService.generateCupidHasCharmedGameEvent).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should generate fox may have sniffed game event when the last game play source is fox.", () => {
@@ -608,25 +549,33 @@ describe("Game Events Generator Service", () => {
           source: createFakeGameHistoryRecordPlaySource({
             name: "fox",
           }),
+          targets: [
+            createFakeGameHistoryRecordPlayTarget({ player: createFakeWerewolfAlivePlayer() }),
+            createFakeGameHistoryRecordPlayTarget({ player: createFakeWerewolfAlivePlayer() }),
+          ],
         }),
       });
       services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
 
-      expect(mocks.gameEventsGeneratorService.generateFoxMayHaveSniffedGameEvent).toHaveBeenCalledExactlyOnceWith(gameHistoryRecord);
+      expect(mocks.gameEventsGeneratorService.generateFoxMayHaveSniffedGameEvent).toHaveBeenCalledExactlyOnceWith([]);
     });
 
     it("should generate thief may have chosen card game event when the last game play source is thief.", () => {
-      const game = createFakeGame();
+      const thiefPlayer = createFakeThiefAlivePlayer();
+      const game = createFakeGame({
+        players: [thiefPlayer],
+      });
       const gameHistoryRecord = createFakeGameHistoryRecord({
         play: createFakeGameHistoryRecordPlay({
           source: createFakeGameHistoryRecordPlaySource({
             name: "thief",
+            players: [thiefPlayer],
           }),
         }),
       });
       services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
 
-      expect(mocks.gameEventsGeneratorService.generateThiefMayHaveChosenCardGameEvent).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gameEventsGeneratorService.generateThiefMayHaveChosenCardGameEvent).toHaveBeenCalledExactlyOnceWith([thiefPlayer]);
     });
 
     it("should generate actor may have chosen card game event when the last game play source is actor.", () => {
@@ -635,12 +584,28 @@ describe("Game Events Generator Service", () => {
         play: createFakeGameHistoryRecordPlay({
           source: createFakeGameHistoryRecordPlaySource({
             name: "actor",
+            players: [createFakeActorAlivePlayer()],
           }),
         }),
       });
       services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
 
-      expect(mocks.gameEventsGeneratorService.generateActorMayHaveChosenCardGameEvent).toHaveBeenCalledExactlyOnceWith(game);
+      expect(mocks.gameEventsGeneratorService.generateActorMayHaveChosenCardGameEvent).toHaveBeenCalledExactlyOnceWith([]);
+    });
+
+    it("should generate actor may have chosen card game event without actor when the last game play source is actor.", () => {
+      const game = createFakeGame();
+      const gameHistoryRecord = createFakeGameHistoryRecord({
+        play: createFakeGameHistoryRecordPlay({
+          source: createFakeGameHistoryRecordPlaySource({
+            name: "actor",
+          }),
+        }),
+      });
+      gameHistoryRecord.play.source.players = undefined;
+      services.gameEventsGenerator["generateLastGamePlaySourceGameEvent"](game, gameHistoryRecord);
+
+      expect(mocks.gameEventsGeneratorService.generateActorMayHaveChosenCardGameEvent).toHaveBeenCalledExactlyOnceWith();
     });
 
     it("should return undefined when the last game play source is not a special role.", () => {
@@ -685,7 +650,7 @@ describe("Game Events Generator Service", () => {
       expect(gameEvents).toStrictEqual<GameEvent[]>([expectedGameEvent]);
     });
 
-    it("should return game starts event with villager villager introduction event when it's the first tick of the game and there is a villager villager", () => {
+    it("should return game starts event with villager villager introduction event when it's the first tick of the game and there is a villager villager.", () => {
       const players = [
         createFakeWerewolfAlivePlayer(),
         createFakeWerewolfAlivePlayer(),
@@ -833,7 +798,7 @@ describe("Game Events Generator Service", () => {
       });
       const gameEvents = services.gameEventsGenerator["generateDeadPlayersGameEvents"](gameHistoryRecord);
       const expectedGameEvent = createFakeGameEvent({
-        type: "player-dies",
+        type: "death",
         players: deadPlayers,
       });
 

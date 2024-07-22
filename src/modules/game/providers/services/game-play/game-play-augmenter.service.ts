@@ -60,7 +60,6 @@ export class GamePlayAugmenterService {
     "cupid": (game: Game) => this.canCupidSkipGamePlay(game),
     "accursed-wolf-father": () => true,
     "stuttering-judge": () => true,
-    "bear-tamer": () => true,
   };
 
   public constructor(private readonly gameHistoryRecordService: GameHistoryRecordService) {}

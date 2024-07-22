@@ -108,9 +108,7 @@ describe("Game History Record Helpers", () => {
         expectedResult: false,
       },
     ])("$test", ({ gameHistoryRecord, attributeName, source, status, expectedResult }) => {
-      const result = doesHavePlayerAttributeAlterationWithNameSourceAndStatus(gameHistoryRecord, attributeName, source, status);
-
-      expect(result).toBe(expectedResult);
+      expect(doesHavePlayerAttributeAlterationWithNameSourceAndStatus(gameHistoryRecord, attributeName, source, status)).toBe(expectedResult);
     });
   });
 
@@ -190,9 +188,7 @@ describe("Game History Record Helpers", () => {
         expectedResult: false,
       },
     ])("$test", ({ gameHistoryRecord, attributeName, status, expectedResult }) => {
-      const result = doesHavePlayerAttributeAlterationWithNameAndStatus(gameHistoryRecord, attributeName, status);
-
-      expect(result).toBe(expectedResult);
+      expect(doesHavePlayerAttributeAlterationWithNameAndStatus(gameHistoryRecord, attributeName, status)).toBe(expectedResult);
     });
   });
 });

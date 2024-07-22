@@ -38,6 +38,13 @@ Feature: 🐶 Wolf-Hound role
 
     When the wolf-hound chooses the werewolves side
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
+    And the game should have the following events
+      | type                       |
+      | wolf-hound-has-chosen-side |
+      | game-turn-starts           |
+    And the game's event with type "wolf-hound-has-chosen-side" should have the following players
+      | name    |
+      | Antoine |
 
   Scenario: 🐶 Wolf-Hound side is randomly chosen if no choice is made with good option
     When a created game with options described in file no-sheriff-option.json, wolf-hound-side-randomly-chosen-option.json and with the following players
@@ -54,6 +61,13 @@ Feature: 🐶 Wolf-Hound role
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
+    And the game should have the following events
+      | type                       |
+      | wolf-hound-has-chosen-side |
+      | game-turn-starts           |
+    And the game's event with type "wolf-hound-has-chosen-side" should have the following players
+      | name    |
+      | Antoine |
 
   Scenario: 🐶 Wolf-Hound can't skip his turn
     When a created game with options described in file no-sheriff-option.json and with the following players

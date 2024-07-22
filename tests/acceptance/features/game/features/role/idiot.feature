@@ -25,6 +25,14 @@ Feature: 🤪 Idiot role
     Then the player named Antoine should be alive
     And the player named Antoine should have his role revealed
     And the player named Antoine should have the active cant-vote from survivors attribute
+    And the game should have the following events
+      | type              |
+      | idiot-is-spared   |
+      | game-phase-starts |
+      | game-turn-starts  |
+    And the game's event with type "idiot-is-spared" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia
@@ -79,6 +87,14 @@ Feature: 🤪 Idiot role
     When the sheriff breaks the tie in votes by choosing the player named Antoine
     Then the player named Antoine should be alive
     And the player named Antoine should have his role revealed
+    And the game should have the following events
+      | type              |
+      | idiot-is-spared   |
+      | game-phase-starts |
+      | game-turn-starts  |
+    And the game's event with type "idiot-is-spared" should have the following players
+      | name    |
+      | Antoine |
 
   Scenario: 🤪 Idiot doesn't die if his role is not revealed and elder dies
     Given a created game with options described in file no-sheriff-option.json, elder-one-life-against-werewolves-option.json and with the following players
