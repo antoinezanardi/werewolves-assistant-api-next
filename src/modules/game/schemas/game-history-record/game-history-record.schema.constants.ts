@@ -1,3 +1,4 @@
+import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { SchemaTypes } from "mongoose";
@@ -39,6 +40,11 @@ const GAME_HISTORY_RECORD_FIELDS_SPECS = {
     type: [PLAYER_SCHEMA],
     default: undefined,
   },
+  switchedSidePlayers: {
+    required: false,
+    type: [PLAYER_SCHEMA],
+    default: undefined,
+  },
   deadPlayers: {
     required: false,
     type: [DEAD_PLAYER_SCHEMA],
@@ -47,6 +53,11 @@ const GAME_HISTORY_RECORD_FIELDS_SPECS = {
   playerAttributeAlterations: {
     required: false,
     type: [GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_SCHEMA],
+    default: undefined,
+  },
+  events: {
+    required: false,
+    type: [GAME_EVENT_SCHEMA],
     default: undefined,
   },
   createdAt: { required: true },
@@ -83,6 +94,10 @@ const GAME_HISTORY_RECORD_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryR
     description: "Player(s) which the role has been revealed as consequence of the play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.revealedPlayers),
   },
+  switchedSidePlayers: {
+    description: "Player(s) which switched their current side as consequence of the play",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.switchedSidePlayers),
+  },
   deadPlayers: {
     description: "Player(s) that died as consequence of the play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.deadPlayers),
@@ -90,6 +105,10 @@ const GAME_HISTORY_RECORD_API_PROPERTIES: ReadonlyDeep<Record<keyof GameHistoryR
   playerAttributeAlterations: {
     description: "Player attribute alteration(s) as consequence of the play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.playerAttributeAlterations),
+  },
+  events: {
+    description: "Game event(s) as consequence of the play",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_HISTORY_RECORD_FIELDS_SPECS.events),
   },
   createdAt: {
     description: "When the game history record was created",

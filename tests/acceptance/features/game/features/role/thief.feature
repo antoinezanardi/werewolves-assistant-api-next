@@ -23,6 +23,13 @@ Feature: 👺 Thief role
     Then the player named Antoine should be currently a seer and originally a thief
     And the game's additional card with role seer for thief should be used
     And the game's additional card with role werewolf for thief should not be used
+    And the game should have the following events
+      | type                       |
+      | thief-may-have-chosen-card |
+      | game-turn-starts           |
+    And the game's event with type "thief-may-have-chosen-card" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be seer to look
 
     When the seer looks at the player named Olivia
@@ -45,6 +52,13 @@ Feature: 👺 Thief role
     When the player or group skips his turn
     Then the game's additional card with role seer for thief should not be used
     And the game's additional card with role werewolf for thief should not be used
+    And the game should have the following events
+      | type                       |
+      | thief-may-have-chosen-card |
+      | game-turn-starts           |
+    And the game's event with type "thief-may-have-chosen-card" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be werewolves to eat
 
   Scenario: 👺 Thief can't steal an unknown card

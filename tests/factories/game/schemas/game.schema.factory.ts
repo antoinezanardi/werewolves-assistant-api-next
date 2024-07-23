@@ -18,6 +18,7 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
     players: game.players ?? [],
     currentPlay: game.currentPlay ?? null,
     upcomingPlays: game.upcomingPlays ?? [],
+    events: game.events,
     phase: createFakeGamePhase(game.phase),
     status: game.status ?? faker.helpers.arrayElement(GAME_STATUSES),
     tick: game.tick ?? faker.number.int({ min: 1 }),

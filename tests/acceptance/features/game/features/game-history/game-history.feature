@@ -661,6 +661,33 @@ Feature: 📜 Game History
       | Antoine |
     And the dead players from the previous history record should be undefined
 
+  Scenario: 📜 Switched side players are recorded in the game history
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role                 |
+      | Antoine | wolf-hound           |
+      | Juju    | villager             |
+      | Doudou  | accursed-wolf-father |
+      | JB      | villager             |
+    Then the game's current play should be wolf-hound to choose-side
+
+    When the wolf-hound chooses the werewolves side
+    And the most recent history record is retrieved
+    Then the switched side players from the previous history record should be the following players
+      | name    |
+      | Antoine |
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named JB
+    And the most recent history record is retrieved
+    Then the switched side players from the previous history record should be undefined
+    And the game's current play should be accursed-wolf-father to infect
+
+    When the accursed wolf-father infects the player named JB
+    And the most recent history record is retrieved
+    Then the switched side players from the previous history record should be the following players
+      | name |
+      | JB   |
+
   Scenario: 📜 Dead players are recorded in the game history
     Given a created game with options described in file no-sheriff-option.json and with the following players
       | name    | role     |
@@ -775,3 +802,45 @@ Feature: 📜 Game History
       | name      | source    | playerName | status    |
       | cant-vote | scapegoat | Antoine    | activated |
       | seen      | seer      | Juju       | detached  |
+
+  Scenario: 📜 Game events are recorded in the game history
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role     |
+      | Antoine | villager |
+      | Juju    | cupid    |
+      | Doudou  | werewolf |
+      | JB      | villager |
+      | Thomas  | villager |
+    Then the game's current play should be cupid to charm
+
+    When the cupid shoots an arrow at the player named Antoine and the player named Juju
+    And the most recent history record is retrieved
+    Then the events from the previous history record should be the following events
+      | name              |
+      | game-starts       |
+      | game-phase-starts |
+      | game-turn-starts  |
+    And the game's current play should be lovers to meet-each-other
+
+    When the lovers meet each other
+    And the most recent history record is retrieved
+    Then the events from the previous history record should be the following events
+      | name              |
+      | cupid-has-charmed |
+      | game-turn-starts  |
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Antoine
+    And the most recent history record is retrieved
+    Then the events from the previous history record should be the following events
+      | name             |
+      | game-turn-starts |
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    And the most recent history record is retrieved
+    Then the events from the previous history record should be the following events
+      | name              |
+      | game-phase-starts |
+      | death             |
+      | game-turn-starts  |

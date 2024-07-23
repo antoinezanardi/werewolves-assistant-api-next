@@ -40,6 +40,14 @@ Feature: 🎖️ Sheriff player attribute
       | Thomas  | Olivia |
     Then the request should have succeeded with status code 200
     And the player named Olivia should have the active sheriff from survivors attribute
+    And the game should have the following events
+      | type              |
+      | sheriff-promotion |
+      | game-phase-starts |
+      | game-turn-starts  |
+    And the game's event with type "sheriff-promotion" should have the following players
+      | name   |
+      | Olivia |
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Babou
@@ -459,6 +467,13 @@ Feature: 🎖️ Sheriff player attribute
 
     When the sheriff delegates his role to the player named Olivia
     Then the request should have succeeded with status code 200
+    And the game should have the following events
+      | type              |
+      | sheriff-promotion |
+      | game-turn-starts  |
+    And the game's event with type "sheriff-promotion" should have the following players
+      | name   |
+      | Olivia |
     And the player named Olivia should have the active sheriff from sheriff attribute
 
   Scenario: 🎖️ Sheriff can't skip his delegation
@@ -605,6 +620,10 @@ Feature: 🎖️ Sheriff player attribute
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
     And the player named Thomas should have the active sheriff from survivors attribute
+    And the game should have the following events
+      | type             |
+      | game-turn-starts |
+    And the game's current play should be survivors to vote
 
   Scenario: 🎖️ Sheriff election is randomized when there is a tie
     Given a created game with the following players

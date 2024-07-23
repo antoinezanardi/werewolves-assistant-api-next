@@ -76,6 +76,15 @@ Feature: 🪄 Witch role
     Then the request should have succeeded with status code 200
     And the player named Juju should be murdered by werewolves from eaten
     And the player named Doudou should be murdered by witch from death-potion
+    And the game should have the following events
+      | type              |
+      | game-phase-starts |
+      | death             |
+      | game-turn-starts  |
+    And the game's event with type "death" should have the following players
+      | name   |
+      | Juju   |
+      | Doudou |
     And the game's current play should be survivors to bury-dead-bodies
 
     When the survivors bury dead bodies

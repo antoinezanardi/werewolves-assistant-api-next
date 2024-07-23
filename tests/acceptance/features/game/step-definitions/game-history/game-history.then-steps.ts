@@ -9,7 +9,7 @@ import type { PlayerSide } from "@/modules/game/schemas/player/player-side/playe
 import type { GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
 import type { GamePlayAction, GamePlaySourceName, GamePlayType, WitchPotion } from "@/modules/game/types/game-play/game-play.types";
 
-import { convertDatatableToGameHistoryRecordPlayerAttributeAlterations, convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
+import { convertDatatableToGameEvents, convertDatatableToGameHistoryRecordPlayerAttributeAlterations, convertDatatableToGameHistoryRecordPlayVotes, convertDatatableToGamePlaySourceInteractions, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
 
 Then(/^the game's tick from the previous history record should be (?<tick>\d)$/u, function(this: CustomWorld, tick: string): void {
@@ -160,6 +160,16 @@ Then(/^the revealed players from the previous history record should be undefined
   expect(this.lastGameHistoryRecord.revealedPlayers).toBeUndefined();
 });
 
+Then(/^the switched side players from the previous history record should be the following players$/u, function(this: CustomWorld, expectedSwitchedSidePlayersDatatable: DataTable): void {
+  const switchedSidePlayers = convertDatatableToPlayers(expectedSwitchedSidePlayersDatatable.rows(), this.game);
+
+  expect(this.lastGameHistoryRecord.switchedSidePlayers).toStrictEqual(switchedSidePlayers);
+});
+
+Then(/^the switched side players from the previous history record should be undefined$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.switchedSidePlayers).toBeUndefined();
+});
+
 Then(/^the dead players from the previous history record should be the following players$/u, function(this: CustomWorld, expectedDeadPlayersDatatable: DataTable): void {
   const revealedPlayers = convertDatatableToPlayers(expectedDeadPlayersDatatable.rows(), this.game);
 
@@ -186,4 +196,17 @@ Then(/^the player attribute alterations from previous history record should be t
 
 Then(/^the player attribute alterations from previous history record should be undefined$/u, function(this: CustomWorld): void {
   expect(this.lastGameHistoryRecord.playerAttributeAlterations).toBeUndefined();
+});
+
+Then(/^the events from the previous history record should be the following events$/u, function(this: CustomWorld, expectedEventsDatatable: DataTable): void {
+  const expectedEvents = convertDatatableToGameEvents(expectedEventsDatatable.rows());
+
+  expect(this.lastGameHistoryRecord.events).toHaveLength(expectedEvents.length);
+  for (const [index, expectedEvent] of expectedEvents.entries()) {
+    expect(this.lastGameHistoryRecord.events?.[index].type).toBe(expectedEvent.type);
+  }
+});
+
+Then(/^the events from the previous history record should be undefined$/u, function(this: CustomWorld): void {
+  expect(this.lastGameHistoryRecord.events).toBeUndefined();
 });

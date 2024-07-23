@@ -51,6 +51,14 @@ Feature: 🐒 Wild Child role
     When the survivors bury dead bodies
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Olivia should not have the active worshiped from wild-child attribute
+    And the game should have the following events
+      | type                       |
+      | wild-child-has-transformed |
+      | game-phase-starts          |
+      | game-turn-starts           |
+    And the game's event with type "wild-child-has-transformed" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be werewolves to eat
 
   Scenario: 🐒 Wild Child can't choose an unknown player

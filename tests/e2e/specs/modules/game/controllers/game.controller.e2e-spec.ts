@@ -1,9 +1,11 @@
+import type { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import { faker } from "@faker-js/faker";
 import type { BadRequestException, NotFoundException } from "@nestjs/common";
 import { HttpStatus } from "@nestjs/common";
 import { getModelToken } from "@nestjs/mongoose";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
+import { createFakeGameEvent } from "@tests/factories/game/schemas/game-event/game-event.schema.factory";
 import type { Model, Types } from "mongoose";
 import { stringify } from "qs";
 
@@ -883,6 +885,7 @@ describe("Game Controller", () => {
           createFakeGamePlayWerewolvesEat(),
           createFakeGamePlayWhiteWerewolfEats(),
         ]) as GamePlay[],
+        events: expect.any(Array) as GameEvent[],
         options: DEFAULT_GAME_OPTIONS,
         lastGameHistoryRecord: null,
         createdAt: expect.any(String) as Date,
@@ -963,6 +966,7 @@ describe("Game Controller", () => {
           createFakeGamePlayWerewolvesEat(),
           createFakeGamePlayWhiteWerewolfEats(),
         ]) as GamePlay[],
+        events: expect.any(Array) as GameEvent[],
         additionalCards: expectedGameAdditionalCards,
         options: DEFAULT_GAME_OPTIONS,
         lastGameHistoryRecord: null,
@@ -1289,11 +1293,18 @@ describe("Game Controller", () => {
         }),
         canBeSkipped: false,
       });
+      const expectedGameEvents = [
+        createFakeGameEvent({
+          type: "game-turn-starts",
+          players,
+        }),
+      ];
       const expectedGame = createFakeGame({
         ...game,
         phase: expectedPhase,
         tick: game.tick + 1,
         currentPlay: expectedCurrentPlay,
+        events: expectedGameEvents,
       });
       const response = await app.inject({
         method: "POST",
@@ -1341,10 +1352,11 @@ describe("Game Controller", () => {
       });
       await models.game.create(game);
       const payload = createFakeMakeGamePlayDto({ targets: [{ playerId: players[0]._id }] });
+      const seenPlayer = createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] });
       const expectedCurrentPlay = createFakeGamePlayWerewolvesEat({
         source: createFakeGamePlaySource({
           name: "werewolves",
-          players: [createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }), players[3]],
+          players: [seenPlayer, players[3]],
           interactions: [
             createFakeGamePlaySourceInteraction({
               source: "werewolves",
@@ -1356,6 +1368,16 @@ describe("Game Controller", () => {
         }),
         canBeSkipped: false,
       });
+      const expectedGameEvents = [
+        createFakeGameEvent({
+          type: "seer-has-seen",
+          players: [seenPlayer],
+        }),
+        createFakeGameEvent({
+          type: "game-turn-starts",
+          players: [seenPlayer, players[3]],
+        }),
+      ];
 
       const expectedGame = createFakeGame({
         ...game,
@@ -1364,11 +1386,12 @@ describe("Game Controller", () => {
         currentPlay: expectedCurrentPlay,
         upcomingPlays: [],
         players: [
-          createFakePlayer({ ...players[0], attributes: [createFakeSeenBySeerPlayerAttribute()] }),
+          seenPlayer,
           players[1],
           players[2],
           players[3],
         ],
+        events: expectedGameEvents,
         options: DEFAULT_GAME_OPTIONS,
       });
       const response = await app.inject({

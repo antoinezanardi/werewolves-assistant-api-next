@@ -28,12 +28,26 @@ Feature: 🎭 Actor role
     And the player named Antoine should have the active acting from actor attribute
     And the player named Antoine should be currently a seer and originally a actor
     And the game's additional card with role seer for actor should be used
+    And the game should have the following events
+      | type                       |
+      | actor-may-have-chosen-card |
+      | game-turn-starts           |
+    And the game's event with type "actor-may-have-chosen-card" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be seer to look
     And the game's current play should be played by the following players
       | name    |
       | Antoine |
 
     When the seer looks at the player named Olivia
+    Then the game should have the following events
+      | type             |
+      | seer-has-seen    |
+      | game-turn-starts |
+    And the game's event with type "seer-has-seen" should have the following players
+      | name   |
+      | Olivia |
     Then the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Olivia
@@ -51,6 +65,13 @@ Feature: 🎭 Actor role
     Then the player named Antoine should be currently a witch and originally a actor
     And the player named Antoine should have the active acting from actor attribute
     And the game's additional card with role witch for actor should be used
+    And the game should have the following events
+      | type                       |
+      | actor-may-have-chosen-card |
+      | game-turn-starts           |
+    And the game's event with type "actor-may-have-chosen-card" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Antoine
@@ -595,11 +616,25 @@ Feature: 🎭 Actor role
     When the actor chooses card with role wolf-hound
     Then the player named Antoine should be currently a wolf-hound and originally a actor
     And the game's additional card with role wolf-hound for actor should be used
+    And the game should have the following events
+      | type                       |
+      | actor-may-have-chosen-card |
+      | game-turn-starts           |
+    And the game's event with type "actor-may-have-chosen-card" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be wolf-hound to choose-side
 
     When the wolf-hound chooses the werewolves side
     Then the player named Antoine should be on werewolves current side and originally be on villagers side
     And the player named Antoine should have the active powerless from actor attribute
+    And the game should have the following events
+      | type                       |
+      | wolf-hound-has-chosen-side |
+      | game-turn-starts           |
+    And the game's event with type "wolf-hound-has-chosen-side" should have the following players
+      | name    |
+      | Antoine |
     And the game's current play should be werewolves to eat
 
   Scenario: 🎭 Actor acts as wolf-hound and becomes a werewolf but doesn't becomes powerless with good game option
