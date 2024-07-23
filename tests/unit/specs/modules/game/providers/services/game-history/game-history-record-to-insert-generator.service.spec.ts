@@ -233,7 +233,7 @@ describe("Game History Record To Insert Generator Service", () => {
         createFakePlayer({ ...players[2], isAlive: false }),
         createFakePlayer({ ...players[3] }),
         createFakePlayer({ ...players[4] }),
-        createFakeAngelAlivePlayer({ isAlive: false }),
+        createFakeAngelAlivePlayer({ name: "NotAGoodName", isAlive: false }),
       ];
       const newGame = createFakeGame({
         ...baseGame,
@@ -261,7 +261,7 @@ describe("Game History Record To Insert Generator Service", () => {
         createFakePlayer({ ...players[2] }),
         createFakePlayer({ ...players[3] }),
         createFakePlayer({ ...players[4] }),
-        createFakeAngelAlivePlayer({ isAlive: false }),
+        createFakeAngelAlivePlayer({ name: "NotAGoodName", isAlive: false }),
       ];
       const newGame = createFakeGame({
         ...baseGame,
