@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   mongo-1:
     container_name: "mongo-test-1"

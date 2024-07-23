@@ -108,7 +108,7 @@ You can also run the app in production mode with Docker, more information in the
 
 This app is Docker ready !
 
-The Dockerfile is available at the root of the project.
+The Dockerfile is available at the root of the project. It uses a multi-stage build to optimize the image size and distroless image to reduce the attack surface.
 
 ### 🔨 Development mode
 
