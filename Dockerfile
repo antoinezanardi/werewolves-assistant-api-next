@@ -1,4 +1,4 @@
-FROM node:22-alpine AS development
+FROM node:22.5.1-alpine AS development
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV CI="true"
