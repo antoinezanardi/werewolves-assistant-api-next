@@ -1,5 +1,15 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.34.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.34.0...v1.34.1) (2024-07-24)
+
+### 🐛 Bug Fixes
+
+* **docker:** back to node 22 image ([#1183](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1183)) ([8e50cbe](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/8e50cbe3785bd1f6ceab8a35c5b2244f84daf9a4))
+
+### 🧹 Chore
+
+* **deps:** update node.js to v22.5.1 ([#1184](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1184)) ([3c4188b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/3c4188b6ca7b7b4d8d113486447715a809a135a1))
+
 ## [1.34.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.33.0...v1.34.0) (2024-07-24)
 
 ### 🚀 Features
