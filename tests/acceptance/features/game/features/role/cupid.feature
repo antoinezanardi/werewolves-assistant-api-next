@@ -43,6 +43,14 @@ Feature: 💘 Cupid role
     And the game's current play occurrence should be one-night-only
     And the game's current play can be skipped
     And the game's current play source should not have interactions
+    And the game should have the following events
+      | type              |
+      | cupid-has-charmed |
+      | game-turn-starts  |
+    And the game's event with type "cupid-has-charmed" should have the following players
+      | name   |
+      | JB     |
+      | Thomas |
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
@@ -65,10 +73,24 @@ Feature: 💘 Cupid role
     Then the player named JB should be murdered by survivors from vote
     And the player named Thomas should be alive
     And the game's current play should be survivors to bury-dead-bodies
+    And the game should have the following events
+      | type             |
+      | death            |
+      | game-turn-starts |
+    And the game's event with type "death" should have the following players
+      | name |
+      | JB   |
 
     When the survivors bury dead bodies
     Then the player named Thomas should be murdered by cupid from broken-heart
     And the game's current play should be survivors to bury-dead-bodies
+    And the game should have the following events
+      | type             |
+      | death            |
+      | game-turn-starts |
+    And the game's event with type "death" should have the following players
+      | name   |
+      | Thomas |
 
     When the survivors bury dead bodies
     Then the game's status should be over

@@ -32,6 +32,11 @@ Feature: 🐦‍⬛ Scandalmonger role
 
     When the player or group skips his turn
     Then the request should have succeeded with status code 200
+    And the game should have the following events
+      | type                          |
+      | scandalmonger-may-have-marked |
+      | game-turn-starts              |
+    And the game's event with type "scandalmonger-may-have-marked" should not have any players
     And nobody should have the active scandalmonger-marked from scandalmonger attribute
     And the game's current play should be werewolves to eat
 
@@ -41,6 +46,9 @@ Feature: 🐦‍⬛ Scandalmonger role
 
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
+    And the game should have the following events
+      | type             |
+      | game-turn-starts |
 
     When the player or group skips his turn
     Then the game's current play should be scandalmonger to mark
@@ -50,6 +58,13 @@ Feature: 🐦‍⬛ Scandalmonger role
 
     When the scandalmonger marks the player named JB
     Then the request should have succeeded with status code 200
+    And the game should have the following events
+      | type                          |
+      | scandalmonger-may-have-marked |
+      | game-turn-starts              |
+    And the game's event with type "scandalmonger-may-have-marked" should have the following players
+      | name |
+      | JB   |
     And the player named JB should have the active scandalmonger-marked from scandalmonger attribute
     And the game's current play should be werewolves to eat
 
@@ -68,6 +83,9 @@ Feature: 🐦‍⬛ Scandalmonger role
 
     When the survivors bury dead bodies
     Then the player named JB should not have the active scandalmonger-marked from scandalmonger attribute
+    And the game should have the following events
+      | type             |
+      | game-turn-starts |
     And the game's current play should be survivors to vote
 
     When the player or group skips his turn
@@ -94,6 +112,13 @@ Feature: 🐦‍⬛ Scandalmonger role
 
     When the survivors bury dead bodies
     Then the game's current play should be survivors to vote
+    And the game should have the following events
+      | type                         |
+      | scandalmonger-mark-is-active |
+      | game-turn-starts             |
+    And the game's event with type "scandalmonger-mark-is-active" should have the following players
+      | name    |
+      | Antoine |
 
     When the player or group skips his turn
     Then the player named Antoine should be murdered by survivors from vote
@@ -189,3 +214,45 @@ Feature: 🐦‍⬛ Scandalmonger role
     And the request exception status code should be 400
     And the request exception message should be "Bad game play payload"
     And the request exception error should be "There are too much targets for this current game's state"
+
+  Scenario: 🐦‍⬛ Scandalmonger's mark is removed after the first vote
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role             |
+      | Antoine | scandalmonger    |
+      | Olivia  | werewolf         |
+      | JB      | villager         |
+      | Camille | villager         |
+      | Thomas  | stuttering-judge |
+      | Pedro   | villager         |
+    Then the game's current play should be scandalmonger to mark
+
+    When the scandalmonger marks the player named JB
+    Then the player named JB should have the active scandalmonger-marked from scandalmonger attribute
+    And the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Camille
+    Then the player named Camille should be murdered by werewolves from eaten
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Olivia  | Pedro  |
+      | Antoine | Pedro  |
+      | Thomas  | Pedro  |
+    Then the player named JB should not have the active scandalmonger-marked from scandalmonger attribute
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be stuttering-judge to request-another-vote
+
+    When the stuttering judge requests another vote
+    Then the game's current play should be survivors to vote
+
+    When the survivors vote with the following votes
+      | voter  | target  |
+      | Thomas | Antoine |
+    Then the player named JB should not have the active scandalmonger-marked from scandalmonger attribute
+    And the player named Antoine should be murdered by survivors from vote

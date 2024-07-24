@@ -992,6 +992,38 @@ describe("Game Play Maker Service", () => {
       expect(mocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(game, nominatedPlayers);
     });
 
+    it("should remove scandalmonger mark when there is this attribute among players.", async() => {
+      const players = [
+        createFakeSeerAlivePlayer(),
+        createFakeScandalmongerAlivePlayer(),
+        createFakeWerewolfAlivePlayer({ attributes: [createFakeScandalmongerMarkedByScandalmongerPlayerAttribute()] }),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote({ causes: ["stuttering-judge-request"] }), players });
+      const votes: MakeGamePlayVoteWithRelationsDto[] = [
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[0], target: players[1] }),
+        createFakeMakeGamePlayVoteWithRelationsDto({ source: players[2], target: players[0] }),
+      ];
+      const play = createFakeMakeGamePlayWithRelationsDto({ votes, doesJudgeRequestAnotherVote: false });
+      const nominatedPlayers = [players[1], players[2]];
+      const expectedGame = createFakeGame({
+        ...game,
+        players: [
+          players[0],
+          players[1],
+          createFakeWerewolfAlivePlayer({
+            ...players[2],
+            attributes: [],
+          }),
+          players[3],
+        ],
+      });
+      mocks.gamePlayVoteService.getNominatedPlayers.mockReturnValue(nominatedPlayers);
+      await services.gamePlayMaker["survivorsVote"](play, game);
+
+      expect(mocks.gamePlayMakerService.handleTieInVotes).toHaveBeenCalledExactlyOnceWith(expectedGame, nominatedPlayers);
+    });
+
     it("should prepend stuttering judge request another vote game play when current play cause is undefined.", async() => {
       const game = createFakeGameWithCurrentPlay({ currentPlay: createFakeGamePlaySurvivorsVote() });
       const votes: MakeGamePlayVoteWithRelationsDto[] = [

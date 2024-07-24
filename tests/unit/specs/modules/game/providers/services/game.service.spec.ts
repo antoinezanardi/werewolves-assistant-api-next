@@ -1,3 +1,4 @@
+import { GameEventsGeneratorService } from "@/modules/game/providers/services/game-event/game-events-generator.service";
 import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
@@ -27,6 +28,7 @@ import { UnexpectedException } from "@/shared/exception/types/unexpected-excepti
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeGameHistoryRecord } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGameVictory } from "@tests/factories/game/schemas/game-victory/game-victory.schema.factory";
@@ -75,6 +77,7 @@ describe("Game Service", () => {
     playerAttributeService: {
       decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.SpyInstance;
     };
+    gameEventsGeneratorService: { generateGameEventsFromGameAndLastRecord: jest.SpyInstance };
     gamePhaseHelper: { isGamePhaseOver: jest.SpyInstance };
     gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
   };
@@ -117,6 +120,7 @@ describe("Game Service", () => {
         isGameOver: jest.fn(),
         generateGameVictoryData: jest.fn(),
       },
+      gameEventsGeneratorService: { generateGameEventsFromGameAndLastRecord: jest.fn() },
       playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
       gamePhaseHelper: { isGamePhaseOver: jest.spyOn(GamePhaseHelper, "isGamePhaseOver").mockImplementation() },
       gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
@@ -159,6 +163,10 @@ describe("Game Service", () => {
         {
           provide: PlayerAttributeService,
           useValue: mocks.playerAttributeService,
+        },
+        {
+          provide: GameEventsGeneratorService,
+          useValue: mocks.gameEventsGeneratorService,
         },
         {
           provide: GameHistoryRecordRepository,
@@ -244,6 +252,14 @@ describe("Game Service", () => {
       await services.game.createGame(toCreateGame);
 
       expect(mocks.gameService.updateGame).toHaveBeenCalledExactlyOnceWith(createdGame._id, createdGame);
+    });
+
+    it("should call generate game events method when called.", async() => {
+      const toCreateGame = createFakeCreateGameDto();
+      mocks.gamePlayService.getPhaseUpcomingPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
+      await services.game.createGame(toCreateGame);
+
+      expect(mocks.gameEventsGeneratorService.generateGameEventsFromGameAndLastRecord).toHaveBeenCalledExactlyOnceWith(createdGame);
     });
 
     it("should call updateGame repository method when called.", async() => {
@@ -439,6 +455,15 @@ describe("Game Service", () => {
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
       expect(mocks.gamePlayService.augmentCurrentGamePlay).not.toHaveBeenCalled();
+    });
+
+    it("should generate game events when the game is not over.", async() => {
+      const makeGamePlayDto = createFakeMakeGamePlayDto();
+      const gameHistoryRecord = createFakeGameHistoryRecord();
+      mocks.gameHistoryRecordService.createGameHistoryRecord.mockResolvedValue(gameHistoryRecord);
+      await services.game.makeGamePlay(game, makeGamePlayDto);
+
+      expect(mocks.gameEventsGeneratorService.generateGameEventsFromGameAndLastRecord).toHaveBeenCalledExactlyOnceWith(game, gameHistoryRecord);
     });
   });
 

@@ -33,8 +33,10 @@ export class GameHistoryRecordToInsertGeneratorService {
       turn: baseGame.turn,
       phase: baseGame.phase,
       tick: baseGame.tick,
+      events: baseGame.events,
       play: this.generateCurrentGameHistoryRecordPlayToInsert(baseGame as GameWithCurrentPlay, play),
       revealedPlayers: this.generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame, newGame),
+      switchedSidePlayers: this.generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert(baseGame, newGame),
       deadPlayers: this.generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame, newGame),
       playerAttributeAlterations: this.generateCurrentGameHistoryRecordPlayerAttributeAlterationsToInsert(baseGame, newGame),
     };
@@ -45,9 +47,9 @@ export class GameHistoryRecordToInsertGeneratorService {
   }
 
   private generateCurrentGameHistoryRecordDeadPlayersToInsert(baseGame: Game, newGame: Game): DeadPlayer[] | undefined {
-    const { players: newPlayers } = newGame;
-    const currentDeadPlayers = newPlayers.filter(player => {
-      const matchingBasePlayer = getPlayerWithId(baseGame, player._id);
+    const basePlayersMap = new Map(baseGame.players.map(player => [player.name, player]));
+    const currentDeadPlayers = newGame.players.filter(player => {
+      const matchingBasePlayer = basePlayersMap.get(player.name);
 
       return matchingBasePlayer?.isAlive === true && !player.isAlive;
     }) as DeadPlayer[];
@@ -55,10 +57,21 @@ export class GameHistoryRecordToInsertGeneratorService {
     return currentDeadPlayers.length ? currentDeadPlayers : undefined;
   }
 
+  private generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
+    const basePlayersMap = new Map(baseGame.players.map(player => [player.name, player]));
+    const currentSwitchedSidePlayers = newGame.players.filter(player => {
+      const matchingBasePlayer = basePlayersMap.get(player.name);
+
+      return matchingBasePlayer?.side.current !== player.side.current;
+    });
+
+    return currentSwitchedSidePlayers.length ? currentSwitchedSidePlayers : undefined;
+  }
+
   private generateCurrentGameHistoryRecordRevealedPlayersToInsert(baseGame: Game, newGame: Game): Player[] | undefined {
-    const { players: newPlayers } = newGame;
-    const currentRevealedPlayers = newPlayers.filter(player => {
-      const matchingBasePlayer = getPlayerWithId(baseGame, player._id);
+    const basePlayersMap = new Map(baseGame.players.map(player => [player.name, player]));
+    const currentRevealedPlayers = newGame.players.filter(player => {
+      const matchingBasePlayer = basePlayersMap.get(player.name);
 
       return matchingBasePlayer?.role.isRevealed === false && player.role.isRevealed && player.isAlive;
     });

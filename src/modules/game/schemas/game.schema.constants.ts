@@ -1,3 +1,4 @@
+import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GAME_HISTORY_RECORD_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
@@ -50,6 +51,11 @@ const GAME_FIELDS_SPECS = {
   upcomingPlays: {
     required: true,
     type: [GAME_PLAY_SCHEMA],
+  },
+  events: {
+    required: false,
+    type: [GAME_EVENT_SCHEMA],
+    default: undefined,
   },
   options: {
     required: true,
@@ -107,6 +113,10 @@ const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> 
   upcomingPlays: {
     description: "Queue of upcoming plays that needs to be performed to continue the game right after the current play",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.upcomingPlays),
+  },
+  events: {
+    description: "Game's events",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.events),
   },
   options: {
     description: "Game's options",

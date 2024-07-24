@@ -20,7 +20,7 @@ import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakePlayerAttributeActivation, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
 import { createFakeAngelAlivePlayer, createFakeHunterAlivePlayer, createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
-import { createFakeDeadPlayer, createFakePlayer, createFakePlayerRole } from "@tests/factories/game/schemas/player/player.schema.factory";
+import { createFakeDeadPlayer, createFakePlayer, createFakePlayerRole, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 
@@ -29,6 +29,7 @@ describe("Game History Record To Insert Generator Service", () => {
     gameHistoryRecordToInsertGeneratorService: {
       generateCurrentGameHistoryRecordPlayToInsert: jest.SpyInstance;
       generateCurrentGameHistoryRecordRevealedPlayersToInsert: jest.SpyInstance;
+      generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert: jest.SpyInstance;
       generateCurrentGameHistoryRecordDeadPlayersToInsert: jest.SpyInstance;
       generateCurrentGameHistoryRecordPlayVotingToInsert: jest.SpyInstance;
       generateCurrentGameHistoryRecordPlayVotingResultToInsert: jest.SpyInstance;
@@ -53,6 +54,7 @@ describe("Game History Record To Insert Generator Service", () => {
       gameHistoryRecordToInsertGeneratorService: {
         generateCurrentGameHistoryRecordPlayToInsert: jest.fn(),
         generateCurrentGameHistoryRecordRevealedPlayersToInsert: jest.fn(),
+        generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert: jest.fn(),
         generateCurrentGameHistoryRecordDeadPlayersToInsert: jest.fn(),
         generateCurrentGameHistoryRecordPlayVotingToInsert: jest.fn(),
         generateCurrentGameHistoryRecordPlayVotingResultToInsert: jest.fn(),
@@ -87,6 +89,7 @@ describe("Game History Record To Insert Generator Service", () => {
     beforeEach(() => {
       mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordPlayToInsert = jest.spyOn(services.gameHistoryRecordToInsertGenerator as unknown as { generateCurrentGameHistoryRecordPlayToInsert }, "generateCurrentGameHistoryRecordPlayToInsert").mockImplementation();
       mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordRevealedPlayersToInsert = jest.spyOn(services.gameHistoryRecordToInsertGenerator as unknown as { generateCurrentGameHistoryRecordRevealedPlayersToInsert }, "generateCurrentGameHistoryRecordRevealedPlayersToInsert").mockImplementation();
+      mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert = jest.spyOn(services.gameHistoryRecordToInsertGenerator as unknown as { generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert }, "generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert").mockImplementation();
       mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordDeadPlayersToInsert = jest.spyOn(services.gameHistoryRecordToInsertGenerator as unknown as { generateCurrentGameHistoryRecordDeadPlayersToInsert }, "generateCurrentGameHistoryRecordDeadPlayersToInsert").mockImplementation();
       mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordPlayVotingToInsert = jest.spyOn(services.gameHistoryRecordToInsertGenerator as unknown as { generateCurrentGameHistoryRecordPlayVotingToInsert }, "generateCurrentGameHistoryRecordPlayVotingToInsert").mockImplementation();
       mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordPlayerAttributeAlterationsToInsert = jest.spyOn(services.gameHistoryRecordToInsertGenerator as unknown as { generateCurrentGameHistoryRecordPlayerAttributeAlterationsToInsert }, "generateCurrentGameHistoryRecordPlayerAttributeAlterationsToInsert").mockImplementation();
@@ -141,6 +144,17 @@ describe("Game History Record To Insert Generator Service", () => {
       services.gameHistoryRecordToInsertGenerator.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
 
       expect(mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordRevealedPlayersToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame);
+    });
+
+    it("should call generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert method when called.", () => {
+      const baseGame = createFakeGameWithCurrentPlay();
+      const newGame = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+      const expectedCurrentGameHistoryPlayToInsert = createFakeGameHistoryRecordPlay();
+      mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordPlayToInsert.mockReturnValue(expectedCurrentGameHistoryPlayToInsert);
+      services.gameHistoryRecordToInsertGenerator.generateCurrentGameHistoryRecordToInsert(baseGame, newGame, play);
+
+      expect(mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert).toHaveBeenCalledExactlyOnceWith(baseGame, newGame);
     });
 
     it("should call generateCurrentGameHistoryRecordDeadPlayersToInsert method when called.", () => {
@@ -219,7 +233,7 @@ describe("Game History Record To Insert Generator Service", () => {
         createFakePlayer({ ...players[2], isAlive: false }),
         createFakePlayer({ ...players[3] }),
         createFakePlayer({ ...players[4] }),
-        createFakeAngelAlivePlayer({ isAlive: false }),
+        createFakeAngelAlivePlayer({ name: "NotAGoodName", isAlive: false }),
       ];
       const newGame = createFakeGame({
         ...baseGame,
@@ -247,7 +261,7 @@ describe("Game History Record To Insert Generator Service", () => {
         createFakePlayer({ ...players[2] }),
         createFakePlayer({ ...players[3] }),
         createFakePlayer({ ...players[4] }),
-        createFakeAngelAlivePlayer({ isAlive: false }),
+        createFakeAngelAlivePlayer({ name: "NotAGoodName", isAlive: false }),
       ];
       const newGame = createFakeGame({
         ...baseGame,
@@ -255,6 +269,57 @@ describe("Game History Record To Insert Generator Service", () => {
       });
 
       expect(services.gameHistoryRecordToInsertGenerator["generateCurrentGameHistoryRecordDeadPlayersToInsert"](baseGame, newGame)).toBeUndefined();
+    });
+  });
+
+  describe("generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert", () => {
+    it("should generate current game history switched side players when called.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const baseGame = createFakeGame({ players });
+      const newPlayers = [
+        createFakePlayer({
+          ...players[0],
+          side: createFakePlayerSide({ current: "villagers" }),
+        }),
+        createFakePlayer({
+          ...players[1],
+          side: createFakePlayerSide({ current: "werewolves" }),
+        }),
+        createFakePlayer({ ...players[2] }),
+      ];
+      const newGame = createFakeGame({
+        ...baseGame,
+        players: newPlayers,
+      });
+
+      expect(services.gameHistoryRecordToInsertGenerator["generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert"](baseGame, newGame)).toStrictEqual<Player[]>([
+        newPlayers[0],
+        newPlayers[1],
+      ]);
+    });
+
+    it("should return undefined when there is no switched side players.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const baseGame = createFakeGame({ players });
+      const newPlayers = [
+        createFakePlayer({ ...players[0] }),
+        createFakePlayer({ ...players[1] }),
+        createFakePlayer({ ...players[2] }),
+      ];
+      const newGame = createFakeGame({
+        ...baseGame,
+        players: newPlayers,
+      });
+
+      expect(services.gameHistoryRecordToInsertGenerator["generateCurrentGameHistoryRecordSwitchedSidePlayersToInsert"](baseGame, newGame)).toBeUndefined();
     });
   });
 

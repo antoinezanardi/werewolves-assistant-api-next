@@ -31,7 +31,6 @@ const GAME_PLAY_ACTIONS = [
   "delegate",
   "settle-votes",
   "bury-dead-bodies",
-  "growl",
   "infect",
   "request-another-vote",
 ] as const;
@@ -60,7 +59,6 @@ const GAME_PLAY_SOURCE_NAMES = [
   "wild-child",
   "witch",
   "actor",
-  "bear-tamer",
   "accursed-wolf-father",
 ] as const satisfies readonly (PlayerAttributeName | PlayerGroup | RoleName)[];
 

@@ -14,6 +14,14 @@ Feature: 🃏 Role
     Then the player named Antoine should be murdered by werewolves from eaten
     And the player named Antoine should not have his role revealed
     And the game's current play should be survivors to bury-dead-bodies
+    And the game should have the following events
+      | type              |
+      | game-phase-starts |
+      | death             |
+      | game-turn-starts  |
+    And the game's event with type "death" should have the following players
+      | name    |
+      | Antoine |
 
     When the survivors bury dead bodies
     Then the player named Antoine should have his role revealed

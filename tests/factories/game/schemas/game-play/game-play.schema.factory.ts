@@ -41,16 +41,6 @@ function createFakeGamePlayAccursedWolfFatherInfects(gamePlay: Partial<GamePlay>
   }, override);
 }
 
-function createFakeGamePlayBearTamerGrowls(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
-  return createFakeGamePlay({
-    type: "no-action",
-    action: "growl",
-    source: createFakeGamePlaySource({ name: "bear-tamer" }),
-    occurrence: "on-days",
-    ...gamePlay,
-  }, override);
-}
-
 function createFakeGamePlayActorChoosesCard(gamePlay: Partial<GamePlay> = {}, override: object = {}): GamePlay {
   return createFakeGamePlay({
     type: "choose-card",
@@ -312,7 +302,6 @@ export {
   createFakeGamePlay,
   createFakeGamePlayStutteringJudgeRequestsAnotherVote,
   createFakeGamePlayAccursedWolfFatherInfects,
-  createFakeGamePlayBearTamerGrowls,
   createFakeGamePlayActorChoosesCard,
   createFakeGamePlaySurvivorsBuryDeadBodies,
   createFakeGamePlaySheriffSettlesVotes,
