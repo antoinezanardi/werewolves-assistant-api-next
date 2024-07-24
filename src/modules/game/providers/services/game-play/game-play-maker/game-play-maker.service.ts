@@ -197,6 +197,10 @@ export class GamePlayMakerService {
       const gamePlayStutteringJudgeRequestsAnotherVote = createGamePlayStutteringJudgeRequestsAnotherVote();
       clonedGame = prependUpcomingPlayInGame(gamePlayStutteringJudgeRequestsAnotherVote, clonedGame) as GameWithCurrentPlay;
     }
+    const scandalmongerMarkedPlayer = getPlayerWithActiveAttributeName(clonedGame, "scandalmonger-marked");
+    if (scandalmongerMarkedPlayer) {
+      clonedGame = removePlayerAttributeByNameInGame(scandalmongerMarkedPlayer._id, clonedGame, "scandalmonger-marked") as GameWithCurrentPlay;
+    }
     if (nominatedPlayers.length > 1) {
       return this.handleTieInVotes(clonedGame, nominatedPlayers);
     }
