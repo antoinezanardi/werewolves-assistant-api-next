@@ -43,7 +43,9 @@ Feature: 🦊 Fox role
       | game-turn-starts     |
     And the game's event with type "fox-may-have-sniffed" should have the following players
       | name   |
+      | Juju   |
       | Doudou |
+      | JB     |
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Coco
@@ -95,6 +97,8 @@ Feature: 🦊 Fox role
     And the game's event with type "fox-may-have-sniffed" should have the following players
       | name    |
       | Antoine |
+      | Doudou  |
+      | Thomas  |
     And the game's current play should be werewolves to eat
 
     When the werewolves eat the player named Thomas
@@ -109,6 +113,43 @@ Feature: 🦊 Fox role
 
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
+
+  Scenario: 🦊 Fox has only 2 targets in event when the group is only two
+    Given a created game with options described in files no-sheriff-option.json, fox-not-powerless-if-misses-werewolf-option.json and with the following players
+      | name    | role     |
+      | Antoine | fox      |
+      | Juju    | villager |
+      | Doudou  | hunter   |
+      | JB      | werewolf |
+    Then the game's current play should be fox to sniff
+
+    When the player or group skips his turn
+    Then the game's current play should be werewolves to eat
+
+    When the werewolves eat the player named Doudou
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be hunter to shoot
+
+    When the hunter shoots at the player named Juju
+    Then the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be survivors to vote
+
+    When the player or group skips his turn
+    Then the game's current play should be fox to sniff
+
+    When the fox sniffs the player named JB
+    And the game should have the following events
+      | type                 |
+      | fox-may-have-sniffed |
+      | game-turn-starts     |
+    And the game's event with type "fox-may-have-sniffed" should have the following players
+      | name    |
+      | Antoine |
+      | JB      |
 
   Scenario: 🦊 Fox is not powerless if he misses a werewolf of any kind with game option
     Given a created game with options described in files no-sheriff-option.json, fox-not-powerless-if-misses-werewolf-option.json and with the following players

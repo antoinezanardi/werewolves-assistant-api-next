@@ -1,3 +1,4 @@
+import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { createGameHistoryRecordPlaySource } from "@/modules/game/helpers/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.factory";
 import { createGameHistoryRecordPlayVoting } from "@/modules/game/helpers/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.factory";
@@ -5,7 +6,7 @@ import { createGameHistoryRecordPlay } from "@/modules/game/helpers/game-history
 import { createGameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/helpers/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.factory";
 import { createGameHistoryRecordToInsert } from "@/modules/game/helpers/game-history-record/game-history-record.factory";
 import { doesGamePlayHaveCause } from "@/modules/game/helpers/game-play/game-play.helpers";
-import { getPlayerWithActiveAttributeName, getPlayerWithId } from "@/modules/game/helpers/game.helpers";
+import { getFoxSniffedPlayers, getPlayerWithActiveAttributeName, getPlayerWithId } from "@/modules/game/helpers/game.helpers";
 import { doesPlayerHaveAttributeWithNameAndSource, isPlayerAttributeActive } from "@/modules/game/helpers/player/player-attribute/player-attribute.helpers";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
 import { GameHistoryRecordPlaySource } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.schema";
@@ -141,6 +142,18 @@ export class GameHistoryRecordToInsertGeneratorService {
     return playerAttributeAlterations.length ? playerAttributeAlterations : undefined;
   }
 
+  private generateCurrentGameHistoryRecordPlayTargetsToInsert(baseGame: GameWithCurrentPlay, play: MakeGamePlayWithRelationsDto): MakeGamePlayTargetWithRelationsDto[] | undefined {
+    if (!play.targets) {
+      return undefined;
+    }
+    if (baseGame.currentPlay.action === "sniff") {
+      const sniffedPlayers = getFoxSniffedPlayers(play.targets[0].player._id, baseGame);
+
+      return sniffedPlayers.map(sniffedPlayer => MakeGamePlayTargetWithRelationsDto.create({ player: sniffedPlayer }));
+    }
+    return play.targets;
+  }
+
   private generateCurrentGameHistoryRecordPlayToInsert(baseGame: GameWithCurrentPlay, play: MakeGamePlayWithRelationsDto): GameHistoryRecordPlay {
     const gameHistoryRecordPlayToInsert: GameHistoryRecordPlay = {
       type: baseGame.currentPlay.type,
@@ -148,7 +161,7 @@ export class GameHistoryRecordToInsertGeneratorService {
       action: baseGame.currentPlay.action,
       causes: baseGame.currentPlay.causes,
       didJudgeRequestAnotherVote: play.doesJudgeRequestAnotherVote,
-      targets: play.targets,
+      targets: this.generateCurrentGameHistoryRecordPlayTargetsToInsert(baseGame, play),
       votes: play.votes,
       chosenCard: play.chosenCard,
       chosenSide: play.chosenSide,
