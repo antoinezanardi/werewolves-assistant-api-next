@@ -1,3 +1,4 @@
+import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import { createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
 import { GamePlayVoteService } from "@/modules/game/providers/services/game-play/game-play-vote/game-play-vote.service";
@@ -10,12 +11,13 @@ import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-histor
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
 import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlayerAttributeAlteration, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget, createFakeGameHistoryRecordPlayVote, createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
-import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
+import { createFakeGamePlayFoxSniffs, createFakeGamePlaySheriffDelegates, createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakeCharmedByPiedPiperPlayerAttribute, createFakeDrankDeathPotionByWitchPlayerAttribute, createFakePlayerAttributeActivation, createFakeSeenBySeerPlayerAttribute, createFakeSheriffBySurvivorsPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
 import { createFakePlayerDeathPotionByWitchDeath, createFakePlayerVoteBySurvivorsDeath, createFakePlayerVoteScapegoatedBySurvivorsDeath } from "@tests/factories/game/schemas/player/player-death/player-death.schema.factory";
@@ -33,6 +35,7 @@ describe("Game History Record To Insert Generator Service", () => {
       generateCurrentGameHistoryRecordDeadPlayersToInsert: jest.SpyInstance;
       generateCurrentGameHistoryRecordPlayVotingToInsert: jest.SpyInstance;
       generateCurrentGameHistoryRecordPlayVotingResultToInsert: jest.SpyInstance;
+      generateCurrentGameHistoryRecordPlayTargetsToInsert: jest.SpyInstance;
       generateCurrentGameHistoryRecordPlaySourceToInsert: jest.SpyInstance;
       generateCurrentGameHistoryRecordPlayerAttributeAlterationsToInsert: jest.SpyInstance;
       generateCurrentGameHistoryRecordAttachedPlayerAttributesToInsertForPlayer: jest.SpyInstance;
@@ -59,6 +62,7 @@ describe("Game History Record To Insert Generator Service", () => {
         generateCurrentGameHistoryRecordPlayVotingToInsert: jest.fn(),
         generateCurrentGameHistoryRecordPlayVotingResultToInsert: jest.fn(),
         generateCurrentGameHistoryRecordPlaySourceToInsert: jest.fn(),
+        generateCurrentGameHistoryRecordPlayTargetsToInsert: jest.fn(),
         generateCurrentGameHistoryRecordPlayerAttributeAlterationsToInsert: jest.fn(),
         generateCurrentGameHistoryRecordAttachedPlayerAttributesToInsertForPlayer: jest.fn(),
         generateCurrentGameHistoryRecordDetachedPlayerAttributesToInsertForPlayer: jest.fn(),
@@ -641,6 +645,57 @@ describe("Game History Record To Insert Generator Service", () => {
       const newGame = createFakeGame({ players: newPlayers });
 
       expect(services.gameHistoryRecordToInsertGenerator["generateCurrentGameHistoryRecordPlayerAttributeAlterationsToInsert"](baseGame, newGame)).toBeUndefined();
+    });
+  });
+
+  describe("generateCurrentGameHistoryRecordPlayTargetsToInsert", () => {
+    it("should return undefined when there are no targets.", () => {
+      const baseGame = createFakeGameWithCurrentPlay();
+      const play = createFakeMakeGamePlayWithRelationsDto();
+
+      expect(services.gameHistoryRecordToInsertGenerator["generateCurrentGameHistoryRecordPlayTargetsToInsert"](baseGame, play)).toBeUndefined();
+    });
+
+    it("should return targets when there are targets and action is not sniff.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+      ];
+      const baseGame = createFakeGameWithCurrentPlay({
+        players,
+        currentPlay: createFakeGamePlaySheriffDelegates(),
+      });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[0] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({
+        targets,
+      });
+
+      expect(services.gameHistoryRecordToInsertGenerator["generateCurrentGameHistoryRecordPlayTargetsToInsert"](baseGame, play)).toStrictEqual<MakeGamePlayTargetWithRelationsDto[]>(targets);
+    });
+
+    it("should return group of 3 targets when action is sniff.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer({ position: 0 }),
+        createFakeVillagerAlivePlayer({ position: 1 }),
+        createFakeWerewolfAlivePlayer({ position: 2 }),
+        createFakeWerewolfAlivePlayer({ position: 3 }),
+      ];
+      const baseGame = createFakeGameWithCurrentPlay({
+        players,
+        currentPlay: createFakeGamePlayFoxSniffs(),
+      });
+      const targets = [createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] })];
+      const play = createFakeMakeGamePlayWithRelationsDto({
+        targets,
+      });
+      const expectedTargets = [
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[0] }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[1] }),
+        createFakeMakeGamePlayTargetWithRelationsDto({ player: players[2] }),
+      ];
+
+      expect(services.gameHistoryRecordToInsertGenerator["generateCurrentGameHistoryRecordPlayTargetsToInsert"](baseGame, play)).toStrictEqual<MakeGamePlayTargetWithRelationsDto[]>(expectedTargets);
     });
   });
 
