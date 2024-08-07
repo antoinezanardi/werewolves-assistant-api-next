@@ -117,3 +117,26 @@ Feature: 👨‍👨‍👦 Three Brothers role
       | name    |
       | Antoine |
       | Olivia  |
+
+  Scenario: 👨‍👨‍👦 Three Brothers are not called if one of them is powerless
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role           |
+      | Antoine | three-brothers |
+      | Olivia  | three-brothers |
+      | Thomas  | three-brothers |
+      | JB      | werewolf       |
+      | Maxime  | angel          |
+      | Julien  | elder          |
+    Then the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Antoine | Julien |
+    Then the player named Julien should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat

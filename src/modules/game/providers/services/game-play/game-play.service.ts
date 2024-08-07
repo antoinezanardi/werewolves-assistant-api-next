@@ -307,8 +307,9 @@ export class GamePlayService {
     }
     const threeBrothersPlayers = getPlayersWithCurrentRole(game, "three-brothers");
     const minimumBrotherCountToCall = 2;
+    const aliveAndPowerfulBrothers = threeBrothersPlayers.filter(brother => isPlayerAliveAndPowerful(brother, game));
 
-    return shouldThreeBrothersBeCalledOnCurrentTurn && threeBrothersPlayers.filter(brother => brother.isAlive).length >= minimumBrotherCountToCall;
+    return shouldThreeBrothersBeCalledOnCurrentTurn && aliveAndPowerfulBrothers.length >= minimumBrotherCountToCall;
   }
 
   private isTwoSistersGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): boolean {
@@ -319,7 +320,7 @@ export class GamePlayService {
     }
     const twoSistersPlayers = getPlayersWithCurrentRole(game, "two-sisters");
 
-    return shouldTwoSistersBeCalledOnCurrentTurn && twoSistersPlayers.length > 0 && twoSistersPlayers.every(sister => sister.isAlive);
+    return shouldTwoSistersBeCalledOnCurrentTurn && twoSistersPlayers.length > 0 && twoSistersPlayers.every(sister => isPlayerAliveAndPowerful(sister, game));
   }
 
   private async isCupidGamePlaySuitableForCurrentPhase(game: CreateGameDto | Game): Promise<boolean> {
