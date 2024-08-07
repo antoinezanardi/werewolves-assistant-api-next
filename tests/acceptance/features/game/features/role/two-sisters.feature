@@ -105,3 +105,26 @@ Feature: 👯‍ Two sisters role
 
     When the player or group skips his turn
     Then the game's current play should be two-sisters to meet-each-other
+
+  Scenario: 👯‍ Two sisters are not called if one of them is powerless
+    Given a created game with options described in file no-sheriff-option.json and with the following players
+      | name    | role        |
+      | Antoine | two-sisters |
+      | Olivia  | two-sisters |
+      | JB      | werewolf    |
+      | Thomas  | angel       |
+      | Maxime  | elder       |
+      | Julien  | villager    |
+    Then the game's current play should be survivors to vote
+    And the game's current play should have the following causes
+      | cause          |
+      | angel-presence |
+
+    When the survivors vote with the following votes
+      | voter   | target |
+      | Antoine | Maxime |
+    Then the player named Maxime should be murdered by survivors from vote
+    And the game's current play should be survivors to bury-dead-bodies
+
+    When the survivors bury dead bodies
+    Then the game's current play should be werewolves to eat
