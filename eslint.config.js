@@ -25,8 +25,10 @@ module.exports = [
   ESLINT_GLOBAL_CONFIG,
   ESLINT_STYLISTIC_CONFIG,
   ESLINT_TYPESCRIPT_CONFIG,
-  // TODO: Uncomment the following line when import plugin supports eslint v9
-  // - ESLINT_IMPORT_CONFIG,
+  /*
+   * TODO: Uncomment the following line when import plugin supports eslint v9
+   * - ESLINT_IMPORT_CONFIG,
+   */
   ESLINT_CONFIGS_CONFIG,
   ESLINT_CONSTANTS_CONFIG,
   ESLINT_DTO_CONFIG,

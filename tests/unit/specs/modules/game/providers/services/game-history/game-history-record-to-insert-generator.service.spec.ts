@@ -702,6 +702,7 @@ describe("Game History Record To Insert Generator Service", () => {
   describe("generateCurrentGameHistoryRecordPlayToInsert", () => {
     beforeEach(() => {
       mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordPlaySourceToInsert = jest.spyOn(services.gameHistoryRecordToInsertGenerator as unknown as { generateCurrentGameHistoryRecordPlaySourceToInsert }, "generateCurrentGameHistoryRecordPlaySourceToInsert").mockImplementation();
+      mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordPlayTargetsToInsert = jest.spyOn(services.gameHistoryRecordToInsertGenerator as unknown as { generateCurrentGameHistoryRecordPlayTargetsToInsert }, "generateCurrentGameHistoryRecordPlayTargetsToInsert").mockImplementation();
     });
 
     it("should generate current game history record play to insert when called.", () => {
@@ -715,6 +716,7 @@ describe("Game History Record To Insert Generator Service", () => {
       });
       const expectedGameHistoryRecordPlaySource = { name: undefined, players: undefined };
       mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordPlaySourceToInsert.mockReturnValue(expectedGameHistoryRecordPlaySource);
+      mocks.gameHistoryRecordToInsertGeneratorService.generateCurrentGameHistoryRecordPlayTargetsToInsert.mockReturnValue(play.targets);
       const expectedGameHistoryRecordPlay = createFakeGameHistoryRecordPlay({
         type: game.currentPlay.type,
         action: game.currentPlay.action,
