@@ -16,9 +16,11 @@ const ESLINT_IMPORT_CONFIG = Object.freeze({
     },
   },
   rules: {
-    // ---- ESLint Import Rules -----
-    // - Static analysis (https://github.com/import-js/eslint-plugin-import#static-analysis)
-    // TODO: Modify webpack for this
+    /*
+     * ---- ESLint Import Rules -----
+     * - Static analysis (https://github.com/import-js/eslint-plugin-import#static-analysis)
+     * TODO: Modify webpack for this
+     */
     "import/no-unresolved": OFF,
     // TODO: Need to check config of this rule
     "import/default": ERROR,

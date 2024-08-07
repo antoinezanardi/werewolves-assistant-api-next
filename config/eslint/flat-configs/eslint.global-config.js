@@ -20,8 +20,10 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
   },
   ignores: ESLINT_IGNORES,
   rules: {
-    // ---- ESLint Rules -----
-    // - Possible Problems (https://eslint.org/docs/rules/#possible-problems)
+    /*
+     * ---- ESLint Rules -----
+     * - Possible Problems (https://eslint.org/docs/rules/#possible-problems)
+     */
     "array-callback-return": ERROR,
     "constructor-super": ERROR,
     "for-direction": ERROR,
@@ -80,8 +82,10 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
     "require-atomic-updates": OFF,
     "use-isnan": ERROR,
     "valid-typeof": ERROR,
-    // ---- ESLint Rules -----
-    // - Suggestions (https://eslint.org/docs/rules/#suggestions)
+    /*
+     * ---- ESLint Rules -----
+     * - Suggestions (https://eslint.org/docs/rules/#suggestions)
+     */
     "accessor-pairs": ERROR,
     "arrow-body-style": [ERROR, "as-needed"],
     "block-scoped-var": ERROR,
@@ -119,7 +123,6 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
     "max-nested-callbacks": [ERROR, MAX_NESTED_CALLBACK],
     "max-params": [ERROR, MAX_PARAMS],
     "max-statements": OFF,
-    "multiline-comment-style": [ERROR, "separate-lines"],
     "new-cap": OFF,
     "no-alert": ERROR,
     "no-array-constructor": ERROR,
@@ -226,9 +229,10 @@ const ESLINT_GLOBAL_CONFIG = Object.freeze({
     "symbol-description": ERROR,
     "vars-on-top": ERROR,
     "yoda": ERROR,
-    // ---- ESLint Rules -----
-    // - Layout & Formatting (https://eslint.org/docs/rules/#layout-formatting)
-    "line-comment-position": ERROR,
+    /*
+     * ---- ESLint Rules -----
+     * - Layout & Formatting (https://eslint.org/docs/rules/#layout-formatting)
+     */
     "unicode-bom": ERROR,
   },
 });
