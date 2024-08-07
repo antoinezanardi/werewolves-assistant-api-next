@@ -11,8 +11,10 @@ const ESLINT_TESTS_CONFIG = Object.freeze({
     "@typescript-eslint/no-magic-numbers": OFF,
     "@typescript-eslint/unbound-method": OFF,
     "@stylistic/max-len": OFF,
-    // ---- Test Rules -----
-    // - Supported Rules (https://github.com/jest-community/eslint-plugin-jest#rules)
+    /*
+     * ---- Test Rules -----
+     * - Supported Rules (https://github.com/jest-community/eslint-plugin-jest#rules)
+     */
     "jest/consistent-test-it": ERROR,
     "jest/expect-expect": ERROR,
     "jest/max-expects": [ERROR, { max: 15 }],
@@ -20,6 +22,8 @@ const ESLINT_TESTS_CONFIG = Object.freeze({
     "jest/no-alias-methods": ERROR,
     "jest/no-commented-out-tests": ERROR,
     "jest/no-conditional-expect": ERROR,
+    "jest/no-conditional-in-test": OFF,
+    "jest/no-confusing-set-timeout": ERROR,
     "jest/no-deprecated-functions": ERROR,
     "jest/no-disabled-tests": ERROR,
     "jest/no-done-callback": ERROR,
@@ -28,8 +32,6 @@ const ESLINT_TESTS_CONFIG = Object.freeze({
     "jest/no-focused-tests": ERROR,
     "jest/no-hooks": OFF,
     "jest/no-identical-title": ERROR,
-    // rule below is deprecated
-    "jest/no-if": OFF,
     "jest/no-interpolation-in-snapshots": ERROR,
     "jest/no-jasmine-globals": ERROR,
     "jest/no-large-snapshots": ERROR,
@@ -48,6 +50,8 @@ const ESLINT_TESTS_CONFIG = Object.freeze({
     "jest/prefer-expect-resolves": ERROR,
     "jest/prefer-hooks-in-order": ERROR,
     "jest/prefer-hooks-on-top": ERROR,
+    "jest/prefer-importing-jest-globals": OFF,
+    "jest/prefer-jest-mocked": ERROR,
     "jest/prefer-lowercase-title": [ERROR, { ignore: ["describe", "test"] }],
     "jest/prefer-mock-promise-shorthand": ERROR,
     "jest/prefer-snapshot-hint": ERROR,
