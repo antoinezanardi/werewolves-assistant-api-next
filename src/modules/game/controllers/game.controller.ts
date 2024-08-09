@@ -69,7 +69,7 @@ export class GameController {
   @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the "playing" status. Body parameters fields are required or optional based on the upcoming game play.` })
   private async makeGamePlay(
     @Param("id", GetGameByIdPipe) game: Game,
-      @Body() makeGamePlayDto: MakeGamePlayDto,
+    @Body() makeGamePlayDto: MakeGamePlayDto,
   ): Promise<Game> {
     return this.gameService.makeGamePlay(game, makeGamePlayDto);
   }
@@ -81,7 +81,7 @@ export class GameController {
   @ApiGameNotFoundResponse()
   private async getGameHistory(
     @Param("id", GetGameByIdPipe) game: Game,
-      @Query() getGameHistoryDto: GetGameHistoryDto,
+    @Query() getGameHistoryDto: GetGameHistoryDto,
   ): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordService.getGameHistory(game._id, getGameHistoryDto);
   }
