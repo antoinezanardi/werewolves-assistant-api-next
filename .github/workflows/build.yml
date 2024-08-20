@@ -11,24 +11,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test-deploy:
-    name: CodeQL Scan ❇️
-    runs-on: ubuntu-latest
-    steps:
-    - name: Deploy to preproduction server 🚀
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.PREPRODUCTION_SERVER_SSH_PRIVATE_KEY }}
-        SSH_USER: ${{ secrets.PREPRODUCTION_SERVER_SSH_USER }}
-        SSH_SERVER_IP: ${{ secrets.PREPRODUCTION_SERVER_SSH_ADDRESS }}
-        UPDATE_SCRIPT_FULL_PATH: ${{ secrets.PREPRODUCTION_UPDATE_SCRIPT_FULL_PATH }}
-      run: |
-        eval $(ssh-agent -s)
-        echo "$SSH_PRIVATE_KEY" | ssh-add -
-  
-        ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_SERVER_IP << EOF
-          $UPDATE_SCRIPT_FULL_PATH
-        EOF
-
   code-ql:
     name: CodeQL Scan ❇️
     runs-on: ubuntu-latest

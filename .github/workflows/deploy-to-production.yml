@@ -2,12 +2,17 @@ name: 🚀 Deploy To Production Workflow
 
 on:
   release:
-    types: [created]
+    types: [ created ]
 
 jobs:
   upload-to-docker-hub:
     name: Upload image with tag version to Docker Hub 🐳
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tag:
+          - ${{ github.event.release.tag_name }}
+          - latest
     steps:
       - name: Checkout GitHub repository 📡
         uses: actions/checkout@v4
@@ -22,18 +27,28 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Build and push Docker image on tag name 🐳
+      - name: Build and push Docker image 🐳
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: antoinezanardi/werewolves-assistant-api:${{ github.event.release.tag_name }}
+          tags: antoinezanardi/werewolves-assistant-api:${{ matrix.tag }}
 
-      - name: Build and push Docker image on latest 🐳
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: antoinezanardi/werewolves-assistant-api:latest
+  deploy-to-production:
+      name: Deploy to production server 🚀
+      runs-on: ubuntu-latest
+      needs: upload-to-docker-hub
+      steps:
+        - name: Deploy to production server 🚀
+          env:
+            SSH_PRIVATE_KEY: ${{ secrets.PRODUCTION_SERVER_SSH_PRIVATE_KEY }}
+            SSH_USER: ${{ secrets.PRODUCTION_SERVER_SSH_USER }}
+            SSH_SERVER_IP: ${{ secrets.PRODUCTION_SERVER_SSH_ADDRESS }}
+            UPDATE_SCRIPT_FULL_PATH: ${{ secrets.PRODUCTION_UPDATE_SCRIPT_FULL_PATH }}
+          run: |
+            eval $(ssh-agent -s)
+            echo "$SSH_PRIVATE_KEY" | ssh-add -
+            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_SERVER_IP << EOF
+              $UPDATE_SCRIPT_FULL_PATH
+            EOF
