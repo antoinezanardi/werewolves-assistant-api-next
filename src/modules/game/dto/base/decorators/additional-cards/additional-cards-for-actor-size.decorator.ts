@@ -1,3 +1,4 @@
+import { MAX_ADDITIONAL_CARDS_COUNT_FOR_RECIPIENT } from "@/modules/game/constants/game-additional-card/game-additional-card.constants";
 import type { ValidationArguments, ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
 import { has } from "lodash";
@@ -5,8 +6,7 @@ import { has } from "lodash";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 
 function isAdditionalCardsForActorSizeRespected(value: unknown, validationArguments: ValidationArguments): boolean {
-  const { players, options } = validationArguments.object as CreateGameDto;
-  const { additionalCardsCount } = options.roles.actor;
+  const { players } = validationArguments.object as CreateGameDto;
   if (value === undefined || !players.some(player => player.role.name === "actor")) {
     return true;
   }
@@ -16,11 +16,11 @@ function isAdditionalCardsForActorSizeRespected(value: unknown, validationArgume
   const cards = value as { recipient: string }[];
   const actorAdditionalCards = cards.filter(card => card.recipient === "actor");
 
-  return actorAdditionalCards.length === additionalCardsCount;
+  return actorAdditionalCards.length !== 0 && actorAdditionalCards.length <= MAX_ADDITIONAL_CARDS_COUNT_FOR_RECIPIENT;
 }
 
 function getAdditionalCardsForActorSizeDefaultMessage(): string {
-  return "additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount";
+  return `additionalCards length for actor must be between 1 and ${MAX_ADDITIONAL_CARDS_COUNT_FOR_RECIPIENT}`;
 }
 
 function AdditionalCardsForActorSize(validationOptions?: ValidationOptions) {

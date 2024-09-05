@@ -407,22 +407,8 @@ Feature: 🎲 Game Creation
       | message                                                                                        |
       | additionalCards must be set if there is a player with one of the following roles : thief,actor |
 
-  Scenario: 🎲 Game can't be created if there are too less additional cards for thief
-    Given a created game with additional cards described in file one-additional-card-for-thief.json and with the following players
-      | name    | role     |
-      | Antoine | villager |
-      | Olivia  | thief    |
-      | JB      | idiot    |
-      | Thomas  | werewolf |
-    Then the request should have failed with status code 400
-    And the request exception status code should be 400
-    And the request exception error should be "Bad Request"
-    And the request exception messages should be
-      | message                                                                                    |
-      | additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount |
-
   Scenario: 🎲 Game can't be created if there are too much additional cards for thief
-    Given a created game with additional cards described in file five-additional-cards-for-thief.json and with the following players
+    Given a created game with additional cards described in file six-additional-cards-for-thief.json and with the following players
       | name    | role     |
       | Antoine | villager |
       | Olivia  | thief    |
@@ -432,8 +418,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                                                                    |
-      | additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount |
+      | message                                                  |
+      | additionalCards length for thief must be between 1 and 5 |
 
   Scenario: 🎲 Game can't be created if one additional card can't be given to thief
     Given a created game with additional cards described in file invalid-additional-cards-for-thief.json and with the following players
@@ -692,22 +678,8 @@ Feature: 🎲 Game Creation
       | message                                                                                        |
       | additionalCards must be set if there is a player with one of the following roles : thief,actor |
 
-  Scenario: 🎲 Game can't be created if there are too less additional cards for actor
-    Given a created game with additional cards described in file one-additional-card-for-actor.json and with the following players
-      | name    | role     |
-      | Antoine | villager |
-      | Olivia  | actor    |
-      | JB      | idiot    |
-      | Thomas  | werewolf |
-    Then the request should have failed with status code 400
-    And the request exception status code should be 400
-    And the request exception error should be "Bad Request"
-    And the request exception messages should be
-      | message                                                                                    |
-      | additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount |
-
   Scenario: 🎲 Game can't be created if there are too much additional cards for actor
-    Given a created game with additional cards described in file five-additional-cards-for-actor.json and with the following players
+    Given a created game with additional cards described in file six-additional-cards-for-actor.json and with the following players
       | name    | role     |
       | Antoine | villager |
       | Olivia  | actor    |
@@ -717,8 +689,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                                                                    |
-      | additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount |
+      | message                                                  |
+      | additionalCards length for actor must be between 1 and 5 |
 
   Scenario: 🎲 Game can't be created if one additional card can't be given to actor
     Given a created game with additional cards described in file invalid-additional-cards-for-actor.json and with the following players
