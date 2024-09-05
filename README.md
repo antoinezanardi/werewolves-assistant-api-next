@@ -27,18 +27,19 @@
 ## 📋 Table of Contents
 
 1. 🐺 [What is this API ?](#what-is-this-api)
-2. 🃏 [Available roles](#available-roles)
-3. 🔨 [Installation](#installation)
-4. 🚀 [Build](#build)
-5. 🐳 [Docker](#docker)
-6. 💯 [Tests](#tests)
-7. 🌿 [Env variables](#env-variables)
-8. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
-9. 📈 [Releases & Changelog](#versions)
-10. 🐙 [GitHub Actions](#github-actions)
-11. ✨ [Misc commands](#misc-commands)
-12. ©️ [License](#license)
-13. ❤️ [Contributors](#contributors)
+2. ✨ [Production and development links](#production-and-development-links)
+3. 🃏 [Available roles](#available-roles)
+4. 🔨 [Installation](#installation)
+5. 🚀 [Build](#build)
+6. 🐳 [Docker](#docker)
+7. 💯 [Tests](#tests)
+8. 🌿 [Env variables](#env-variables)
+9. ☑️ [Code analysis and consistency](#code-analysis-and-consistency)
+10. 📈 [Releases & Changelog](#versions)
+11. 🐙 [GitHub Actions](#github-actions)
+12. ✨ [Misc commands](#misc-commands)
+13. ©️ [License](#license)
+14. ❤️ [Contributors](#contributors)
 
 ## <a name="what-is-this-api">🐺 What is this API ?</a>
 Werewolves Assistant API provides over HTTP requests a way of manage Werewolves games to help the game master.
@@ -47,7 +48,25 @@ This is the **next** version of the deprecated **[Werewolves Assistant API](http
 
 This API is used by the **[Werewolves Assistant Web App](https://github.com/antoinezanardi/werewolves-assistant-web-next)**.
 
-#### 🤔 Want to know more about this awesome project ? <a href="https://werewolves-assistant.antoinezanardi.fr/about" target="_blank">**Check out the dedicated about page**</a>.
+#### 🤔 Want to know more about this awesome project ? <a href="https://werewolves-assistant.com/about" target="_blank">**Check out the dedicated about page**</a>.
+
+## <a name="production-and-development-urls">✨ Production and development links</a>
+
+### 🌐 Production
+
+The production version of this API is available at **[api.werewolves-assistant.com](https://api.werewolves-assistant.com/docs)**.
+
+This API is used by the **[Werewolves Assistant Web App](https://werewolves-assistant.com)**.
+
+The production server is updated automatically with the latest version of the API when a new release is created. (When a new tag is pushed on the `main` branch)
+
+### 🛠️ Development
+
+The development version of this API is available at **[preprod.api.werewolves-assistant.com](https://preprod.api.werewolves-assistant.com/docs)**.
+
+This API is used by the **[Werewolves Assistant Web App](https://preprod.werewolves-assistant.com)**.
+
+The development server is updated automatically when a commit is pushed on the `develop` branch.
 
 ## <a name="available-roles">🃏 Available roles</a>
 
