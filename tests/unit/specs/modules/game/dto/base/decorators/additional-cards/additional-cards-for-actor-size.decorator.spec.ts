@@ -1,11 +1,14 @@
+import type { ValidationArguments } from "class-validator";
+
 import { getAdditionalCardsForActorSizeDefaultMessage, isAdditionalCardsForActorSizeRespected } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-actor-size.decorator";
 import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
+import { createFakeGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
+import { createFakeCreateActorGameOptionsDto, createFakeRolesGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
-import type { ValidationArguments } from "class-validator";
 
 describe("Additional Cards For Actor Size Decorator", () => {
   describe("isAdditionalCardsForActorSizeRespected", () => {
@@ -79,7 +82,7 @@ describe("Additional Cards For Actor Size Decorator", () => {
         expected: false,
       },
       {
-        test: "should return false when cards length is 0.",
+        test: "should return false when cards size doesn't respect the default options.",
         createGameDto: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: "villager" } }),
@@ -87,22 +90,22 @@ describe("Additional Cards For Actor Size Decorator", () => {
           ],
         }),
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "thief" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
+          createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
           createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "thief" }),
         ],
         expected: false,
       },
       {
-        test: "should return false when cards length exceed the max.",
+        test: "should return false when cards size doesn't respect the changed options set to 5.",
         createGameDto: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: "villager" } }),
             createFakeCreateGamePlayerDto({ role: { name: "actor" } }),
           ],
+          options: createFakeGameOptionsDto({ roles: createFakeRolesGameOptionsDto({ actor: createFakeCreateActorGameOptionsDto({ additionalCardsCount: 5 }) }) }),
         }),
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
-          createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
           createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
           createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
           createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
@@ -119,8 +122,6 @@ describe("Additional Cards For Actor Size Decorator", () => {
           ],
         }),
         additionalCards: [
-          createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
-          createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
           createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
           createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
           createFakeCreateGameAdditionalCardDto({ roleName: "villager", recipient: "actor" }),
@@ -146,7 +147,7 @@ describe("Additional Cards For Actor Size Decorator", () => {
 
   describe("getAdditionalCardsForActorSizeDefaultMessage", () => {
     it("should default decorator message when called.", () => {
-      expect(getAdditionalCardsForActorSizeDefaultMessage()).toBe("additionalCards length for actor must be between 1 and 5");
+      expect(getAdditionalCardsForActorSizeDefaultMessage()).toBe("additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount");
     });
   });
 });

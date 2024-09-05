@@ -20,6 +20,11 @@ class ThiefGameOptions {
   @Prop(THIEF_GAME_OPTIONS_FIELDS_SPECS.isChosenCardRevealed)
   @Expose()
   public isChosenCardRevealed: boolean;
+
+  @ApiProperty(THIEF_GAME_OPTIONS_API_PROPERTIES.additionalCardsCount as ApiPropertyOptions)
+  @Prop(THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount)
+  @Expose()
+  public additionalCardsCount: number;
 }
 
 const THIEF_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(ThiefGameOptions);

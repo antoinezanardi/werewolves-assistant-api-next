@@ -51,6 +51,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     thief: {
       mustChooseBetweenWerewolves: true,
       isChosenCardRevealed: false,
+      additionalCardsCount: 2,
     },
     piedPiper: {
       charmedPeopleCountPerNight: 2,
@@ -62,6 +63,7 @@ const DEFAULT_GAME_OPTIONS: ReadonlyDeep<GameOptions> = {
     prejudicedManipulator: { isPowerlessOnWerewolvesSide: true },
     actor: {
       isPowerlessOnWerewolvesSide: true,
+      additionalCardsCount: 3,
     },
   },
 };

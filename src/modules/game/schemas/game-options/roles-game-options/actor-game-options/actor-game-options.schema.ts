@@ -15,6 +15,11 @@ class ActorGameOptions {
   @Prop(ACTOR_GAME_OPTIONS_FIELDS_SPECS.isPowerlessOnWerewolvesSide)
   @Expose()
   public isPowerlessOnWerewolvesSide: boolean;
+
+  @ApiProperty(ACTOR_GAME_OPTIONS_API_PROPERTIES.additionalCardsCount as ApiPropertyOptions)
+  @Prop(ACTOR_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount)
+  @Expose()
+  public additionalCardsCount: number;
 }
 
 const ACTOR_GAME_OPTIONS_SCHEMA = SchemaFactory.createForClass(ActorGameOptions);

@@ -131,8 +131,8 @@ Feature: 👺 Thief role
     When the player or group skips his turn
     Then the game's current play should be werewolves to eat
 
-  Scenario: 👺 Thief can choose between more than two cards
-    Given a created game with additional cards described in file five-additional-cards-for-thief.json and with options described in file no-sheriff-option.json and with the following players
+  Scenario: 👺 Thief can choose between more than two cards with good options
+    Given a created game with additional cards described in file five-additional-cards-for-thief.json and with options described in file no-sheriff-option.json, thief-has-five-additional-cards-option.json and with the following players
       | name    | role     |
       | Antoine | thief    |
       | Olivia  | villager |

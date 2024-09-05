@@ -1,14 +1,23 @@
+import type { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
+import { faker } from "@faker-js/faker";
+import type { BadRequestException, NotFoundException } from "@nestjs/common";
+import { HttpStatus } from "@nestjs/common";
+import { getModelToken } from "@nestjs/mongoose";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { TestingModule } from "@nestjs/testing";
+import { createFakeGameEvent } from "@tests/factories/game/schemas/game-event/game-event.schema.factory";
+import type { Model, Types } from "mongoose";
+import { stringify } from "qs";
+
+import type { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { GetGameRandomCompositionDto } from "@/modules/game/dto/get-game-random-composition/get-game-random-composition.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
-import type { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
-
-import type { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
@@ -16,28 +25,23 @@ import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_C
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
-import { faker } from "@faker-js/faker";
-import type { BadRequestException, NotFoundException } from "@nestjs/common";
-import { HttpStatus } from "@nestjs/common";
-import { getModelToken } from "@nestjs/mongoose";
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-import type { TestingModule } from "@nestjs/testing";
+
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helpers";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helpers";
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-game-options.dto.factory";
+import { createFakeCreateActorGameOptionsDto, createFakeCreateThiefGameOptionsDto, createFakeRolesGameOptionsDto } from "@tests/factories/game/dto/create-game/create-game-options/create-roles-game-options/create-roles-game-options.dto.factory";
 import { bulkCreateFakeCreateGamePlayerDto, createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto, createFakeCreateGameWithPlayersDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
-import { createFakeGameEvent } from "@tests/factories/game/schemas/game-event/game-event.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeCompositionGameOptions } from "@tests/factories/game/schemas/game-options/composition-game-options.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
+import { createFakeRolesGameOptions } from "@tests/factories/game/schemas/game-options/game-roles-options/game-roles-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
-
-import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySourceInteraction } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
 import { createFakeGamePlayCupidCharms, createFakeGamePlaySeerLooks, createFakeGamePlaySurvivorsVote, createFakeGamePlayThiefChoosesCard, createFakeGamePlayWerewolvesEat, createFakeGamePlayWhiteWerewolfEats, createFakeGamePlayWolfHoundChoosesSide } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
@@ -47,8 +51,6 @@ import { createFakeSeerAlivePlayer, createFakeVillagerAlivePlayer, createFakeWer
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helpers";
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";
-import type { Model, Types } from "mongoose";
-import { stringify } from "qs";
 
 describe("Game Controller", () => {
   let app: NestFastifyApplication;
@@ -467,11 +469,26 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "thief" }),
             createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "thief" }),
             createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "thief" }),
+          ],
+        }),
+        errorMessage: "additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount",
+      },
+      {
+        test: "should not allow game creation when thief additional cards are less than the expected limit defined in options.",
+        payload: createFakeCreateGameDto({
+          players: [
+            createFakeCreateGamePlayerDto({ role: { name: "werewolf" } }),
+            createFakeCreateGamePlayerDto({ role: { name: "pied-piper" } }),
+            createFakeCreateGamePlayerDto({ role: { name: "witch" } }),
+            createFakeCreateGamePlayerDto({ role: { name: "thief" } }),
+          ],
+          additionalCards: [
             createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "thief" }),
             createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "thief" }),
           ],
+          options: createFakeGameOptions({ roles: createFakeRolesGameOptions({ thief: createFakeCreateThiefGameOptionsDto({ additionalCardsCount: 4 }) }) }),
         }),
-        errorMessage: "additionalCards length for thief must be between 1 and 5",
+        errorMessage: "additionalCards length for thief must be equal to options.roles.thief.additionalCardsCount",
       },
       {
         test: "should not allow game creation when one thief additional card is the thief himself.",
@@ -683,14 +700,12 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "actor" }),
             createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "actor" }),
             createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "actor" }),
-            createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "actor" }),
-            createFakeCreateGameAdditionalCardDto({ roleName: "werewolf", recipient: "actor" }),
           ],
         }),
-        errorMessage: "additionalCards length for actor must be between 1 and 5",
+        errorMessage: "additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount",
       },
       {
-        test: "should not allow game creation when actor additional cards are more than the expected.",
+        test: "should not allow game creation when actor additional cards are more than the expected changed limit set in options.",
         payload: createFakeCreateGameDto({
           players: [
             createFakeCreateGamePlayerDto({ role: { name: "werewolf" } }),
@@ -703,11 +718,10 @@ describe("Game Controller", () => {
             createFakeCreateGameAdditionalCardDto({ roleName: "hunter", recipient: "actor" }),
             createFakeCreateGameAdditionalCardDto({ roleName: "idiot", recipient: "actor" }),
             createFakeCreateGameAdditionalCardDto({ roleName: "elder", recipient: "actor" }),
-            createFakeCreateGameAdditionalCardDto({ roleName: "little-girl", recipient: "actor" }),
-            createFakeCreateGameAdditionalCardDto({ roleName: "defender", recipient: "actor" }),
           ],
+          options: createFakeGameOptionsDto({ roles: createFakeRolesGameOptionsDto({ actor: createFakeCreateActorGameOptionsDto({ additionalCardsCount: 1 }) }) }),
         }),
-        errorMessage: "additionalCards length for actor must be between 1 and 5",
+        errorMessage: "additionalCards length for actor must be equal to options.roles.actor.additionalCardsCount",
       },
       {
         test: "should not allow game creation when one actor additional card (werewolf role) is is not available for actor.",
@@ -1018,6 +1032,7 @@ describe("Game Controller", () => {
           thief: {
             mustChooseBetweenWerewolves: false,
             isChosenCardRevealed: true,
+            additionalCardsCount: 4,
           },
           piedPiper: {
             charmedPeopleCountPerNight: 1,
@@ -1029,6 +1044,7 @@ describe("Game Controller", () => {
           prejudicedManipulator: { isPowerlessOnWerewolvesSide: false },
           actor: {
             isPowerlessOnWerewolvesSide: false,
+            additionalCardsCount: 5,
           },
         },
       };
