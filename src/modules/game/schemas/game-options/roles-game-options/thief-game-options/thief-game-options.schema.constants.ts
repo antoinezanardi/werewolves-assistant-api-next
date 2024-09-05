@@ -16,12 +16,6 @@ const THIEF_GAME_OPTIONS_FIELDS_SPECS = {
     required: true,
     default: DEFAULT_GAME_OPTIONS.roles.thief.isChosenCardRevealed,
   },
-  additionalCardsCount: {
-    required: true,
-    default: DEFAULT_GAME_OPTIONS.roles.thief.additionalCardsCount,
-    min: 1,
-    max: 5,
-  },
 } as const satisfies Record<keyof ThiefGameOptions, MongoosePropOptions>;
 
 const THIEF_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof ThiefGameOptions, ApiPropertyOptions>> = {
@@ -32,10 +26,6 @@ const THIEF_GAME_OPTIONS_API_PROPERTIES: ReadonlyDeep<Record<keyof ThiefGameOpti
   isChosenCardRevealed: {
     description: "If set to `true`, the `thief` chosen card is revealed to every other players",
     ...convertMongoosePropOptionsToApiPropertyOptions(THIEF_GAME_OPTIONS_FIELDS_SPECS.isChosenCardRevealed),
-  },
-  additionalCardsCount: {
-    description: "Number of additional cards for the `thief` at the beginning of the game",
-    ...convertMongoosePropOptionsToApiPropertyOptions(THIEF_GAME_OPTIONS_FIELDS_SPECS.additionalCardsCount),
   },
 };
 
