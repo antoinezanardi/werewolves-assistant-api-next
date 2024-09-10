@@ -12,7 +12,10 @@ import { PlayerSide } from "@/modules/game/schemas/player/player-side/player-sid
 
 import { toObjectId } from "@/shared/validation/transformers/validation.transformer";
 
-@Schema({ versionKey: false })
+@Schema({
+  versionKey: false,
+  id: false,
+})
 class Player {
   @ApiProperty(PLAYER_API_PROPERTIES._id as ApiPropertyOptions)
   @Transform(toObjectId)
