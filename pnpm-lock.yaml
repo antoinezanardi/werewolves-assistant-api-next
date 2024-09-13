@@ -124,8 +124,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       '@types/jest':
-        specifier: ^29.5.12
-        version: 29.5.12
+        specifier: ^29.5.13
+        version: 29.5.13
       '@types/jest-when':
         specifier: ^3.5.5
         version: 3.5.5
@@ -1660,8 +1660,8 @@ packages:
   '@types/jest-when@3.5.5':
     resolution: {integrity: sha512-H9MDPIrz7NOu6IXP9OHExNN9LnJbGYAzRsGIDKxWr7Fth9vovemNV8yFbkUWLSEmuA8PREvAEvt9yK0PPLmFHA==}
 
-  '@types/jest@29.5.12':
-    resolution: {integrity: sha512-eDC8bTvT/QhYdxJAulQikueigY5AsdBRH2yDKW3yveW7svY3+DzN84/2NUgkw10RTiJbWqZrTtoGVdYlvFJdLw==}
+  '@types/jest@29.5.13':
+    resolution: {integrity: sha512-wd+MVEZCHt23V0/L642O5APvspWply/rGY5BcW4SUETo2UzPU3Z26qr8jC2qxpimI2jjx9h7+2cj2FwIr01bXg==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -7774,9 +7774,9 @@ snapshots:
 
   '@types/jest-when@3.5.5':
     dependencies:
-      '@types/jest': 29.5.12
+      '@types/jest': 29.5.13
 
-  '@types/jest@29.5.12':
+  '@types/jest@29.5.13':
     dependencies:
       expect: 29.7.0
       pretty-format: 29.7.0
