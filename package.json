@@ -81,7 +81,7 @@
     "@nestjs/mongoose": "^10.0.10",
     "@nestjs/platform-express": "^10.4.3",
     "@nestjs/platform-fastify": "^10.4.3",
-    "@nestjs/swagger": "^7.4.1",
+    "@nestjs/swagger": "^7.4.2",
     "@nestjs/terminus": "^10.2.3",
     "@types/lodash": "^4.17.7",
     "@types/validator": "^13.12.2",
