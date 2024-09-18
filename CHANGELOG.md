@@ -1,5 +1,44 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.36.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.36.0...v1.36.1) (2024-09-18)
+
+### 🐛 Bug Fixes
+
+* **deps:** update dependency @fastify/static to v8 ([#1298](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1298)) ([a236006](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a23600627bf2ce006c683c3f4cba0fb3adeae778))
+* **deps:** update dependency @nestjs/swagger to ^7.4.1 ([#1292](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1292)) ([cfb7bbe](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/cfb7bbee809c15ffef0afa0f13374367efe2bfc1))
+* **deps:** update dependency @nestjs/swagger to ^7.4.2 ([#1296](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1296)) ([626ac36](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/626ac36df1451317091254b9e1f4737a5f329f17))
+* **deps:** update dependency @types/validator to ^13.12.2 ([#1294](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1294)) ([bd387bc](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/bd387bc2c89f93b1c9e22ec3252d635411f00d24))
+* **deps:** update dependency fastify to v5 ([#1299](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1299)) ([27b3539](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/27b3539d120f87a32294fdd3809e46309f35ef20))
+* **deps:** update dependency mongoose to ^8.6.1 ([#1231](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1231)) ([e61cf9e](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/e61cf9e3496556322a1b7d11cb5544e5b3932e6d))
+* **deps:** update dependency mongoose to ^8.6.2 ([#1285](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1285)) ([a2c412a](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a2c412aa9ab99632ea9f1e4330614aef330d5cd5))
+* **deps:** update dependency mongoose to ^8.6.3 ([#1300](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1300)) ([cb8a51d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/cb8a51d7e6a02b35d30b3fc054f839fabfb6f9a9))
+* **deps:** update nest monorepo to ^10.4.2 ([#1293](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1293)) ([7da35ca](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/7da35ca53389d0351452d23df712180a260a6ceb))
+* **deps:** update nest monorepo to ^10.4.3 ([#1297](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1297)) ([bba796f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/bba796f81265f65df84654fd65c4048d1e5258f1))
+
+### 🔁 CI
+
+* **node:** use version 22 ([#1282](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1282)) ([3ff3017](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/3ff30173c016879debe4ba8ecfd532157d8bb816))
+
+### 🧹 Chore
+
+* **deps:** update commitlint monorepo to ^19.5.0 ([#1284](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1284)) ([1dc2b46](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/1dc2b46236f89254b9f7b41a9e08bfd0ac32d3bb))
+* **deps:** update dependency @cucumber/cucumber to ^11.0.1 ([#1290](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1290)) ([eaac65d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/eaac65d920286f5b43392a5bee0d6374e1a7fc60))
+* **deps:** update dependency @cucumber/cucumber to v11 ([#1271](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1271)) ([7455f09](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/7455f0928cd3271062141c7b2347f5fec72e21ed))
+* **deps:** update dependency @faker-js/faker to ^9.0.1 ([#1291](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1291)) ([6e4eb21](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/6e4eb21087d87edac3f03abea296df6208158076))
+* **deps:** update dependency @stylistic/eslint-plugin to ^2.8.0 ([#1279](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1279)) ([cb7317f](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/cb7317f19db3c13b91ed0fab85ece0b4122acc42))
+* **deps:** update dependency @types/jest to ^29.5.13 ([#1288](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1288)) ([a42033d](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a42033d5d8a1c146e1c8d5cf4e0dc75269cacb9a))
+* **deps:** update dependency @types/qs to ^6.9.16 ([#1289](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1289)) ([c6abc71](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/c6abc718d8d8019797b8476aca22d9771ab5c7b0))
+* **deps:** update dependency eslint to ^9.10.0 ([#1275](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1275)) ([a97dd49](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a97dd4973f2652ed93a9ec0b0878b2cc901e8f72))
+* **deps:** update dependency husky to ^9.1.6 ([#1286](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1286)) ([fbd9693](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/fbd9693d0e049cda67a6f93d31ca5fcf728d68aa))
+* **deps:** update dependency node to v22.9.0 ([#1301](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1301)) ([703afd7](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/703afd77b119a9b18dd49eb68a7c82519e7777eb))
+* **deps:** update dependency semantic-release to ^24.1.1 ([#1283](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1283)) ([277d28b](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/277d28b468f5c36f11391a333580f35ccba6e244))
+* **deps:** update dependency tsx to ^4.19.1 ([#1287](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1287)) ([0e8abdb](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/0e8abdb65d22ef98ace655742273b1bedc637775))
+* **deps:** update dependency type-fest to ^4.26.1 ([#1277](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1277)) ([3270f94](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/3270f94641ee9c3ce2f2db3da30a667b569a5caf))
+* **deps:** update dependency typescript to ^5.6.2 ([#1280](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1280)) ([f2656bc](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/f2656bcbd1dd9aeeca01cd59f9f15c1404dd622a))
+* **deps:** update pnpm to v9.10.0 ([#1278](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1278)) ([32e8157](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/32e8157d553e090141dd6fe457e96918d5426276))
+* **deps:** update typescript-eslint monorepo to ^8.5.0 ([#1281](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1281)) ([ff27007](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/ff27007a727f505a40288871e8d020703ba3dada))
+* **deps:** update typescript-eslint monorepo to ^8.6.0 ([#1295](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1295)) ([cce4f07](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/cce4f07e8335e4538f31209102961227b53fffbc))
+
 ## [1.36.0](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.35.2...v1.36.0) (2024-09-05)
 
 ### 🚀 Features
