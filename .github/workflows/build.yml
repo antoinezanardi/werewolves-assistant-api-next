@@ -88,6 +88,9 @@ jobs:
       - name: Start Docker containers 🐳
         run: pnpm run docker:dev:start
 
+      - name: Curl health check 🌡️
+        run: curl --retry 3 --retry-delay 1 -sSf http://localhost:8080/health
+
       - name: Stop Docker containers 🐳
         run: pnpm run docker:dev:stop
 
@@ -145,6 +148,9 @@ jobs:
 
       - name: Start Docker containers 🐳
         run: pnpm run docker:production:start
+
+      - name: Curl health check 🌡️
+        run: curl --retry 3 --retry-delay 1 -sSf http://localhost:8082/health
 
       - name: Stop Docker containers 🐳
         run: pnpm run docker:production:stop
