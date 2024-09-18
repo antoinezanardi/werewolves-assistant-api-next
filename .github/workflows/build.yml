@@ -88,6 +88,15 @@ jobs:
       - name: Start Docker containers 🐳
         run: pnpm run docker:dev:start
 
+      - name: Curl health check 🌡️
+        run: |
+          for i in {1..10}; do
+            curl --silent --fail http://localhost:8080/health && break
+            echo "⏱️ Waiting for API to be alive..."
+            sleep 5
+          done
+          echo "⭐️ API is alive!"
+
       - name: Stop Docker containers 🐳
         run: pnpm run docker:dev:stop
 
@@ -145,6 +154,15 @@ jobs:
 
       - name: Start Docker containers 🐳
         run: pnpm run docker:production:start
+
+      - name: Curl health check 🌡️
+        run: |
+          for i in {1..10}; do
+            curl --silent --fail http://localhost:8082/health && break
+            echo "⏱️ Waiting for API to be alive..."
+            sleep 5
+          done
+          echo "⭐️ API is alive!"
 
       - name: Stop Docker containers 🐳
         run: pnpm run docker:production:stop
