@@ -92,9 +92,10 @@ jobs:
         run: |
           for i in {1..10}; do
             curl --silent --fail http://localhost:8080/health && break
-            echo "Waiting for API..."
+            echo "⏱️ Waiting for API to be alive..."
             sleep 5
           done
+          echo "⭐️ API is alive!"
 
       - name: Stop Docker containers 🐳
         run: pnpm run docker:dev:stop
@@ -155,7 +156,13 @@ jobs:
         run: pnpm run docker:production:start
 
       - name: Curl health check 🌡️
-        run: curl --retry 10 --retry-delay 3 -sSf http://localhost:8082/health
+        run: |
+          for i in {1..10}; do
+            curl --silent --fail http://localhost:8082/health && break
+            echo "⏱️ Waiting for API to be alive..."
+            sleep 5
+          done
+          echo "⭐️ API is alive!"
 
       - name: Stop Docker containers 🐳
         run: pnpm run docker:production:stop
