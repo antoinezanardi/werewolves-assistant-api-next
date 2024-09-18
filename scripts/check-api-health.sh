@@ -16,6 +16,7 @@ echo "🔍 Checking API at $URL..."
 # Retry loop
 for ((i=1; i<=MAX_RETRIES; i++)); do
   if curl --silent --fail "$URL"; then
+    echo ""
     echo "⭐️ API is alive on attempt $i!"
     exit 0
   else
