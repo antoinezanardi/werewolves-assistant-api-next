@@ -89,7 +89,12 @@ jobs:
         run: pnpm run docker:dev:start
 
       - name: Curl health check 🌡️
-        run: curl --retry 10 --retry-delay 3 -sSf http://localhost:8080/health
+        run: |
+          for i in {1..10}; do
+            curl --silent --fail http://localhost:8080/health && break
+            echo "Waiting for API..."
+            sleep 5
+          done
 
       - name: Stop Docker containers 🐳
         run: pnpm run docker:dev:stop
