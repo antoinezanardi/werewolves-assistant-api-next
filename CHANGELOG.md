@@ -1,5 +1,19 @@
 # 🐺 Werewolves Assistant API Versioning Changelog
 
+## [1.36.2](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.36.1...v1.36.2) (2024-09-18)
+
+### 🐛 Bug Fixes
+
+* **deps:** update dependency fastify to v5 ([#1305](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1305)) ([b8baa16](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/b8baa1665675bc5fd0596aec2a152d3b84b063e6))
+
+### 🔁 CI
+
+* **docker:** liveness check on dev and production ([#1302](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1302)) ([a260017](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/a260017b871c38cceb818de99d7cb197ea6a8665))
+
+### 🧹 Chore
+
+* **script:** health check script ([#1306](https://github.com/antoinezanardi/werewolves-assistant-api-next/issues/1306)) ([2a2ec24](https://github.com/antoinezanardi/werewolves-assistant-api-next/commit/2a2ec2466e91d9eaa9c58672f42b6760f8ed5dfc))
+
 ## [1.36.1](https://github.com/antoinezanardi/werewolves-assistant-api-next/compare/v1.36.0...v1.36.1) (2024-09-18)
 
 ### 🐛 Bug Fixes
