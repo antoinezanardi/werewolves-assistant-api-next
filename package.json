@@ -113,7 +113,7 @@
     "@stryker-mutator/jest-runner": "^8.5.0",
     "@stryker-mutator/typescript-checker": "^8.5.0",
     "@stylistic/eslint-plugin": "^2.8.0",
-    "@types/express": "^4.17.21",
+    "@types/express": "^5.0.0",
     "@types/jest": "^29.5.13",
     "@types/jest-when": "^3.5.5",
     "@types/node": "^20.16.7",
