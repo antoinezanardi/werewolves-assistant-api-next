@@ -63,7 +63,7 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       mongoose:
-        specifier: ^8.6.4
+        specifier: ^8.7.0
         version: 8.7.0
       qs:
         specifier: ^6.13.0
