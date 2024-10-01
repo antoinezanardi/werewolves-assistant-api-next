@@ -151,8 +151,8 @@ importers:
         specifier: ^7.0.3
         version: 7.0.3
       cucumber-html-reporter:
-        specifier: ^7.1.1
-        version: 7.1.1
+        specifier: ^7.2.0
+        version: 7.2.0
       eslint:
         specifier: ^9.11.1
         version: 9.11.1(jiti@1.21.6)
@@ -2547,8 +2547,8 @@ packages:
     resolution: {integrity: sha512-x8dy3RnvYdlUcPOjkEHqozhiwzKNSq7GcPuXFbnyMOCHxX8V3OgIg/pYuabl2sbUPfIJaeAQB7PMOK8DFIdoRA==}
     engines: {node: '>=12'}
 
-  cucumber-html-reporter@7.1.1:
-    resolution: {integrity: sha512-v1OUqM2aSoC27Dt/mUJfh0uxiyUWjfl/9wu7HqHpeT8ojZbTepPpmvYCmM84VGOU5LnyqGclab00mchetzqEEQ==}
+  cucumber-html-reporter@7.2.0:
+    resolution: {integrity: sha512-vThFFjzEUKeRiAZbWgfvjUjc3nV7kcDW1yU3bWCgHvcpc9dDIdZvaaOIqi4GxTCQzo4vgCK+8ZwbVT/4u35GeQ==}
 
   current-git-branch@1.1.0:
     resolution: {integrity: sha512-n5mwGZllLsFzxDPtTmadqGe4IIBPfqPbiIRX4xgFR9VK/Bx47U+94KiVkxSKAKN6/s43TlkztS2GZpgMKzwQ8A==}
@@ -8747,7 +8747,7 @@ snapshots:
     dependencies:
       type-fest: 1.4.0
 
-  cucumber-html-reporter@7.1.1:
+  cucumber-html-reporter@7.2.0:
     dependencies:
       '@cucumber/cucumber': 9.1.2
       chalk: 2.4.2
