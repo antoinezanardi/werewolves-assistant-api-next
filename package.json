@@ -83,7 +83,7 @@
     "@nestjs/platform-fastify": "^10.4.4",
     "@nestjs/swagger": "^7.4.2",
     "@nestjs/terminus": "^10.2.3",
-    "@types/lodash": "^4.17.9",
+    "@types/lodash": "^4.17.10",
     "@types/validator": "^13.12.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -112,7 +112,7 @@
     "@stryker-mutator/core": "^8.6.0",
     "@stryker-mutator/jest-runner": "^8.6.0",
     "@stryker-mutator/typescript-checker": "^8.6.0",
-    "@stylistic/eslint-plugin": "^2.8.0",
+    "@stylistic/eslint-plugin": "^2.9.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.13",
     "@types/jest-when": "^3.5.5",
@@ -124,8 +124,8 @@
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "cross-env": "^7.0.3",
     "cucumber-html-reporter": "^7.2.0",
-    "eslint": "^9.11.1",
-    "eslint-plugin-import": "^2.30.0",
+    "eslint": "^9.12.0",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.8.3",
     "expect": "^29.7.0",
     "husky": "^9.1.6",
@@ -156,5 +156,5 @@
     "darwin",
     "linux"
   ],
-  "packageManager": "pnpm@9.11.0"
+  "packageManager": "pnpm@9.12.0"
 }
