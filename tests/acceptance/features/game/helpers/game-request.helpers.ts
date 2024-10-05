@@ -1,3 +1,4 @@
+import type { CreateGameFeedbackDto } from "@/modules/game/dto/create-game-feedback/create-game-feedback.dto";
 import type { Response } from "light-my-request";
 import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import { stringify } from "qs";
@@ -31,8 +32,17 @@ async function getGameHistory(getGameHistoryDto: GetGameHistoryDto, game: Game, 
   });
 }
 
+async function createGameFeedback(createGameFeedbackDto: CreateGameFeedbackDto, game: Game, app: NestFastifyApplication): Promise<Response> {
+  return app.inject({
+    method: "POST",
+    url: `/games/${game._id.toString()}/feedback`,
+    payload: createGameFeedbackDto,
+  });
+}
+
 export {
   createGameRequest,
   makeGamePlayRequest,
   getGameHistory,
+  createGameFeedback,
 };

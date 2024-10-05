@@ -1,4 +1,5 @@
 import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
+import { GameFeedback } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
@@ -107,12 +108,25 @@ class Game {
   @Type(() => GameHistoryRecord)
   @Expose()
   public lastGameHistoryRecord: GameHistoryRecord | null = null;
+
+  @ApiProperty(GAME_API_PROPERTIES.feedback as ApiPropertyOptions)
+  @Type(() => GameFeedback)
+  @Expose()
+  public feedback: GameFeedback | null = null;
 }
 
 const GAME_SCHEMA = SchemaFactory.createForClass(Game);
 
 GAME_SCHEMA.virtual("lastGameHistoryRecord", {
   ref: GameHistoryRecord.name,
+  localField: "_id",
+  foreignField: "gameId",
+  justOne: true,
+  options: { sort: { createdAt: -1 } },
+});
+
+GAME_SCHEMA.virtual("feedback", {
+  ref: GameFeedback.name,
   localField: "_id",
   foreignField: "gameId",
   justOne: true,

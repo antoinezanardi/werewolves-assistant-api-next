@@ -1,11 +1,12 @@
+import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record/game-history-record.repository";
 import { GameEventsGeneratorService } from "@/modules/game/providers/services/game-event/game-events-generator.service";
+import { GameFeedbackService } from "@/modules/game/providers/services/game-feedback/game-feedback.service";
 import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
 import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helpers";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helpers";
-import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
@@ -24,10 +25,12 @@ import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-
 import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
+import { createFakeCreateGameFeedbackDto } from "@tests/factories/game/dto/create-game-feedback/create-game-feedback.dto.factory";
 
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";
+import { createFakeGameFeedback } from "@tests/factories/game/schemas/game-feedback/game-feedback.factory";
 import { createFakeGameHistoryRecord } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
@@ -78,6 +81,7 @@ describe("Game Service", () => {
       decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.SpyInstance;
     };
     gameEventsGeneratorService: { generateGameEventsFromGameAndLastRecord: jest.SpyInstance };
+    gameFeedbackService: { createGameFeedback: jest.SpyInstance };
     gamePhaseHelper: { isGamePhaseOver: jest.SpyInstance };
     gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.SpyInstance };
   };
@@ -121,6 +125,7 @@ describe("Game Service", () => {
         generateGameVictoryData: jest.fn(),
       },
       gameEventsGeneratorService: { generateGameEventsFromGameAndLastRecord: jest.fn() },
+      gameFeedbackService: { createGameFeedback: jest.fn() },
       playerAttributeService: { decreaseRemainingPhasesAndRemoveObsoletePlayerAttributes: jest.fn() },
       gamePhaseHelper: { isGamePhaseOver: jest.spyOn(GamePhaseHelper, "isGamePhaseOver").mockImplementation() },
       gamePlayHelper: { createMakeGamePlayDtoWithRelations: jest.spyOn(GamePlayHelper, "createMakeGamePlayDtoWithRelations").mockImplementation() },
@@ -167,6 +172,10 @@ describe("Game Service", () => {
         {
           provide: GameEventsGeneratorService,
           useValue: mocks.gameEventsGeneratorService,
+        },
+        {
+          provide: GameFeedbackService,
+          useValue: mocks.gameFeedbackService,
         },
         {
           provide: GameHistoryRecordRepository,
@@ -464,6 +473,29 @@ describe("Game Service", () => {
       await services.game.makeGamePlay(game, makeGamePlayDto);
 
       expect(mocks.gameEventsGeneratorService.generateGameEventsFromGameAndLastRecord).toHaveBeenCalledExactlyOnceWith(game, gameHistoryRecord);
+    });
+  });
+
+  describe("createGameFeedback", () => {
+    it("should create game feedback when called.", async() => {
+      const game = createFakeGame();
+      const createGameFeedbackDto = createFakeCreateGameFeedbackDto();
+      const updatedGame = await services.game.createGameFeedback(game, createGameFeedbackDto);
+
+      expect(mocks.gameFeedbackService.createGameFeedback).toHaveBeenCalledExactlyOnceWith(updatedGame, createGameFeedbackDto);
+    });
+
+    it("should return game with feedback when called.", async() => {
+      const game = createFakeGame();
+      const createGameFeedbackDto = createFakeCreateGameFeedbackDto();
+      const feedback = createFakeGameFeedback();
+      mocks.gameFeedbackService.createGameFeedback.mockResolvedValue(feedback);
+      const expectedGame = createFakeGame({
+        ...game,
+        feedback,
+      });
+
+      await expect(services.game.createGameFeedback(game, createGameFeedbackDto)).resolves.toStrictEqual<Game>(expectedGame);
     });
   });
 

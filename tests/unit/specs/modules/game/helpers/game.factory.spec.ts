@@ -27,6 +27,7 @@ describe("Game Factory", () => {
         ],
         status: "playing",
         lastGameHistoryRecord: null,
+        feedback: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       };

@@ -1,4 +1,5 @@
 import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
+import { GAME_FEEDBACK_SCHEMA } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
 import { GAME_HISTORY_RECORD_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
@@ -77,6 +78,11 @@ const GAME_FIELDS_SPECS = {
     type: GAME_HISTORY_RECORD_SCHEMA,
     default: null,
   },
+  feedback: {
+    required: true,
+    type: GAME_FEEDBACK_SCHEMA,
+    default: null,
+  },
   createdAt: { required: true },
   updatedAt: { required: true },
 } as const satisfies Record<keyof Game, MongoosePropOptions>;
@@ -133,6 +139,10 @@ const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> 
   lastGameHistoryRecord: {
     description: "Last game history record or the most recent play made in the game",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.lastGameHistoryRecord),
+  },
+  feedback: {
+    description: "Game's feedback",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.feedback),
   },
   createdAt: {
     description: "When the game was created",

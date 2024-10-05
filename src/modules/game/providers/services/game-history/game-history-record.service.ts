@@ -1,6 +1,6 @@
 import type { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import { getAdditionalCardWithId, getNonexistentPlayer } from "@/modules/game/helpers/game.helpers";
-import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
+import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
 import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
