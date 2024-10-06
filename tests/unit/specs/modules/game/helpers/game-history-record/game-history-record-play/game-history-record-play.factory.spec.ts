@@ -1,5 +1,6 @@
 import { createGameHistoryRecordPlay } from "@/modules/game/helpers/game-history-record/game-history-record-play/game-history-record-play.factory";
 import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play.schema";
+
 import { createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 
 describe("Game History Record Play Factory", () => {

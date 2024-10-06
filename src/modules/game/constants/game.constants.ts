@@ -1,6 +1,6 @@
-import type { Game } from "@/modules/game/schemas/game.schema";
 import type { ReadonlyDeep } from "type-fest";
 
+import type { Game } from "@/modules/game/schemas/game.schema";
 import { PLAYER_GROUPS } from "@/modules/game/constants/player/player.constants";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";

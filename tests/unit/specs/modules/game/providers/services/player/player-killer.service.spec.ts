@@ -10,7 +10,7 @@ import type { PlayerDeath } from "@/modules/game/schemas/player/player-death/pla
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { PlayerDeathCause } from "@/modules/game/types/player/player-death/player-death.types";
 
-import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enums";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
@@ -160,6 +160,7 @@ describe("Player Killer Service", () => {
       mocks.playerKillerService.doesPlayerRoleMustBeRevealed.mockReturnValue(true);
 
       await services.playerKiller.killOrRevealPlayer(players[0]._id, game, death);
+
       expect(mocks.playerKillerService.killPlayer).toHaveBeenCalledExactlyOnceWith(players[0], game, death);
     });
 
@@ -178,6 +179,7 @@ describe("Player Killer Service", () => {
       mocks.playerKillerService.doesPlayerRoleMustBeRevealed.mockReturnValue(true);
 
       await services.playerKiller.killOrRevealPlayer(players[0]._id, game, death);
+
       expect(mocks.playerKillerService.killPlayer).not.toHaveBeenCalled();
       expect(mocks.playerKillerService.revealPlayerRole).toHaveBeenCalledExactlyOnceWith(players[0], game);
     });
@@ -1576,6 +1578,7 @@ describe("Player Killer Service", () => {
       ];
       const game = createFakeGame({ players });
       services.playerKiller["applyPlayerRoleDeathOutcomes"](players[0] as DeadPlayer, game);
+
       expect(mocks.playerKillerService.applyElderDeathOutcomes).toHaveBeenCalledExactlyOnceWith(players[0], game);
       expect(mocks.playerKillerService.applyHunterDeathOutcomes).not.toHaveBeenCalled();
       expect(mocks.playerKillerService.applyScapegoatDeathOutcomes).not.toHaveBeenCalled();

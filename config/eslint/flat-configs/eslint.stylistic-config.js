@@ -1,7 +1,6 @@
 const StylisticPlugin = require("@stylistic/eslint-plugin");
 
-const { ALWAYS, ERROR, INDENT_SPACE_COUNT, MAX_LENGTH_DEFAULT_CONFIG, NEVER, OFF } = require("../eslint.constants.js");
-const { ESLINT_IGNORES } = require("../eslint.constants");
+const { ALWAYS, ERROR, INDENT_SPACE_COUNT, MAX_LENGTH_DEFAULT_CONFIG, NEVER, OFF, ESLINT_IGNORES } = require("../eslint.constants");
 
 const ESLINT_STYLISTIC_CONFIG = {
   name: "stylistic",
@@ -166,6 +165,12 @@ const ESLINT_STYLISTIC_CONFIG = {
     "@stylistic/switch-colon-spacing": ERROR,
     "@stylistic/template-curly-spacing": ERROR,
     "@stylistic/template-tag-spacing": ERROR,
+    "@stylistic/curly-newline": [
+      ERROR, {
+        multiline: true,
+        consistent: true,
+      },
+    ],
     "@stylistic/type-annotation-spacing": ERROR,
     "@stylistic/type-generic-spacing": ERROR,
     "@stylistic/type-named-tuple-spacing": ERROR,

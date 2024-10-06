@@ -1,6 +1,6 @@
 import { isGamePhaseOver, isInNightOrTwilightPhase } from "@/modules/game/helpers/game-phase/game-phase.helpers";
-import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 
+import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGame, createFakeGameWithCurrentPlay } from "@tests/factories/game/schemas/game.schema.factory";
 
 describe("Game Phase Helper", () => {

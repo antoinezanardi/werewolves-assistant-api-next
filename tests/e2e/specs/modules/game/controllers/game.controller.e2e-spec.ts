@@ -1,3 +1,12 @@
+import { faker } from "@faker-js/faker";
+import type { BadRequestException, NotFoundException } from "@nestjs/common";
+import { HttpStatus } from "@nestjs/common";
+import { getModelToken } from "@nestjs/mongoose";
+import type { NestFastifyApplication } from "@nestjs/platform-fastify";
+import type { TestingModule } from "@nestjs/testing";
+import type { Model, Types } from "mongoose";
+import { stringify } from "qs";
+
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { CreateGameFeedbackDto } from "@/modules/game/dto/create-game-feedback/create-game-feedback.dto";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
@@ -9,7 +18,6 @@ import type { GameEvent } from "@/modules/game/schemas/game-event/game-event.sch
 import type { GameFeedback } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
-
 import type { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import { Game } from "@/modules/game/schemas/game.schema";
@@ -18,12 +26,7 @@ import { ELIGIBLE_ACTOR_ADDITIONAL_CARDS_ROLE_NAMES, ELIGIBLE_THIEF_ADDITIONAL_C
 
 import { ApiSortOrder } from "@/shared/api/enums/api.enums";
 import { toJSON } from "@/shared/misc/helpers/object.helpers";
-import { faker } from "@faker-js/faker";
-import type { BadRequestException, NotFoundException } from "@nestjs/common";
-import { HttpStatus } from "@nestjs/common";
-import { getModelToken } from "@nestjs/mongoose";
-import type { NestFastifyApplication } from "@nestjs/platform-fastify";
-import type { TestingModule } from "@nestjs/testing";
+
 import { truncateAllCollections } from "@tests/e2e/helpers/mongoose.helpers";
 import { initNestApp } from "@tests/e2e/helpers/nest-app.helpers";
 import { createFakeCreateGameFeedbackDto } from "@tests/factories/game/dto/create-game-feedback/create-game-feedback.dto.factory";
@@ -39,7 +42,6 @@ import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFak
 import { createFakeCompositionGameOptions } from "@tests/factories/game/schemas/game-options/composition-game-options.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeVotesGameOptions } from "@tests/factories/game/schemas/game-options/votes-game-options.schema.factory";
-
 import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySourceInteraction } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema.factory";
 import { createFakeGamePlaySource } from "@tests/factories/game/schemas/game-play/game-play-source/game-play-source.schema.factory";
@@ -51,8 +53,6 @@ import { createFakePlayer } from "@tests/factories/game/schemas/player/player.sc
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
 import { createObjectIdFromString } from "@tests/helpers/mongoose/mongoose.helpers";
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";
-import type { Model, Types } from "mongoose";
-import { stringify } from "qs";
 
 describe("Game Controller", () => {
   let app: NestFastifyApplication;

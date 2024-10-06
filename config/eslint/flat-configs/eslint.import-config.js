@@ -1,6 +1,9 @@
-const { OFF, ERROR } = require("../eslint.constants");
+const ImportPlugin = require("eslint-plugin-import");
+
+const { OFF, ERROR, ESLINT_IGNORES, NEVER, ALWAYS } = require("../eslint.constants");
 
 const ESLINT_IMPORT_CONFIG = Object.freeze({
+  ...ImportPlugin.flatConfigs.recommended,
   name: "import",
   languageOptions: {
     parserOptions: {
@@ -8,29 +11,21 @@ const ESLINT_IMPORT_CONFIG = Object.freeze({
       sourceType: "module",
     },
   },
-  settings: {
-    "import/parsers": { espree: [".js", ".cjs", ".mjs", ".jsx"] },
-    "import/resolver": {
-      typescript: true,
-      node: true,
-    },
-  },
+  ignores: ESLINT_IGNORES,
   rules: {
     /*
      * ---- ESLint Import Rules -----
      * - Static analysis (https://github.com/import-js/eslint-plugin-import#static-analysis)
-     * TODO: Modify webpack for this
      */
     "import/no-unresolved": OFF,
-    // TODO: Need to check config of this rule
+    "import/consistent-type-specifier-style": [ERROR, "prefer-top-level"],
     "import/default": ERROR,
     "import/named": OFF,
     "import/namespace": ERROR,
     "import/no-restricted-paths": ERROR,
     "import/no-absolute-path": ERROR,
-    // TODO: Need to check config of this rule
     "import/no-dynamic-require": ERROR,
-    // TODO: Need to check config of this rule
+    "import/no-empty-named-blocks": ERROR,
     "import/no-internal-modules": ERROR,
     "import/no-webpack-loader-syntax": ERROR,
     "import/no-self-import": ERROR,
@@ -38,27 +33,47 @@ const ESLINT_IMPORT_CONFIG = Object.freeze({
     "import/no-useless-path-segments": ERROR,
     "import/no-relative-parent-imports": ERROR,
     "import/no-relative-packages": ERROR,
-    // - Helpful warnings (https://github.com/import-js/eslint-plugin-import#helpful-warnings)
+    // helpful warnings (https://github.com/import-js/eslint-plugin-import#helpful-warnings)
     "import/export": ERROR,
     "import/no-named-as-default": ERROR,
     "import/no-named-as-default-member": ERROR,
     "import/no-deprecated": ERROR,
     "import/no-extraneous-dependencies": [ERROR, { peerDependencies: false }],
     "import/no-mutable-exports": ERROR,
-    "import/no-unused-modules": [ERROR, { unusedExports: true }],
-    // - Module systems (https://github.com/import-js/eslint-plugin-import#module-systems)
+    "import/no-unused-modules": ERROR,
+    // module systems (https://github.com/import-js/eslint-plugin-import#module-systems)
     "import/unambiguous": OFF,
     "import/no-commonjs": OFF,
     "import/no-amd": ERROR,
     "import/no-nodejs-modules": OFF,
     "import/no-import-module-exports": ERROR,
-    // - Style guide (https://github.com/import-js/eslint-plugin-import#style-guide)
+    // style guide (https://github.com/import-js/eslint-plugin-import#style-guide)
     "import/first": ERROR,
     "import/exports-last": ERROR,
     "import/no-duplicates": ERROR,
     "import/no-namespace": ERROR,
-    // TODO: Check this rule config
-    "import/extensions": OFF,
+    "import/extensions": [
+      ERROR, NEVER, {
+        factory: ALWAYS,
+        helpers: ALWAYS,
+        enums: ALWAYS,
+        types: ALWAYS,
+        transformer: ALWAYS,
+        constants: ALWAYS,
+        class: ALWAYS,
+        schema: ALWAYS,
+        service: ALWAYS,
+        mutators: ALWAYS,
+        repository: ALWAYS,
+        dto: ALWAYS,
+        decorator: ALWAYS,
+        mappers: ALWAYS,
+        controller: ALWAYS,
+        module: ALWAYS,
+        pipe: ALWAYS,
+        json: ALWAYS,
+      },
+    ],
     "import/order": [
       ERROR, {
         "warnOnUnassignedImports": true,
@@ -73,6 +88,7 @@ const ESLINT_IMPORT_CONFIG = Object.freeze({
         "newlines-between": "always",
       },
     ],
+
     "import/newline-after-import": ERROR,
     "import/prefer-default-export": OFF,
     "import/max-dependencies": [
@@ -81,13 +97,12 @@ const ESLINT_IMPORT_CONFIG = Object.freeze({
         ignoreTypeImports: true,
       },
     ],
-    "import/no-unassigned-import": [ERROR, { allow: ["**/*.css"] }],
+    "import/no-unassigned-import": ERROR,
     "import/no-named-default": ERROR,
     "import/no-default-export": ERROR,
     "import/no-named-export": OFF,
     "import/no-anonymous-default-export": OFF,
     "import/group-exports": ERROR,
-    // TODO: Check this rule
     "import/dynamic-import-chunkname": OFF,
   },
 });

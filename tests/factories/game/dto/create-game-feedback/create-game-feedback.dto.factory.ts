@@ -1,7 +1,9 @@
-import { CreateGameFeedbackDto } from "@/modules/game/dto/create-game-feedback/create-game-feedback.dto";
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
+
+import { CreateGameFeedbackDto } from "@/modules/game/dto/create-game-feedback/create-game-feedback.dto";
+
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeCreateGameFeedbackDto(createGameFeedbackDto: Partial<CreateGameFeedbackDto> = {}, override: object = {}): CreateGameFeedbackDto {
   return plainToInstance(CreateGameFeedbackDto, {

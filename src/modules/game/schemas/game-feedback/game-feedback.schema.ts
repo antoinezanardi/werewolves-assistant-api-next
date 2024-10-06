@@ -1,9 +1,12 @@
-import { GAME_FEEDBACK_API_PROPERTIES, GAME_FEEDBACK_FIELDS_SPECS } from "@/modules/game/schemas/game-feedback/game-feedback.schema.constants";
-import { toObjectId } from "@/shared/validation/transformers/validation.transformer";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { ApiProperty, type ApiPropertyOptions } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { Expose, Transform, Type } from "class-transformer";
 import { Types } from "mongoose";
+
+import { GAME_FEEDBACK_API_PROPERTIES, GAME_FEEDBACK_FIELDS_SPECS } from "@/modules/game/schemas/game-feedback/game-feedback.schema.constants";
+
+import { toObjectId } from "@/shared/validation/transformers/validation.transformer";
 
 @Schema({
   timestamps: {

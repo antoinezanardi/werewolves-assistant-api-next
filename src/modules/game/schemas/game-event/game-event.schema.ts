@@ -1,9 +1,11 @@
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ApiProperty } from "@nestjs/swagger";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
+import { Expose, Type } from "class-transformer";
+
 import { GAME_EVENT_API_PROPERTIES, GAME_EVENT_FIELDS_SPECS } from "@/modules/game/schemas/game-event/game-event.schema.constants";
 import { Player } from "@/modules/game/schemas/player/player.schema";
 import { GameEventType } from "@/modules/game/types/game-event/game-event.types";
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { ApiProperty, type ApiPropertyOptions } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
 
 @Schema({
   versionKey: false,

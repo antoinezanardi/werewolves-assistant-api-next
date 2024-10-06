@@ -1,5 +1,6 @@
-import type { GAME_EVENT_TYPES } from "@/modules/game/constants/game-event/game-event.constants";
 import type { TupleToUnion } from "type-fest";
+
+import type { GAME_EVENT_TYPES } from "@/modules/game/constants/game-event/game-event.constants";
 
 type GameEventType = TupleToUnion<typeof GAME_EVENT_TYPES>;
 

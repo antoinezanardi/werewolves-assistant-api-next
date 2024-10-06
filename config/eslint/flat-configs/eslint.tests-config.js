@@ -1,4 +1,5 @@
 const JestPlugin = require("eslint-plugin-jest");
+
 const { OFF, ERROR } = require("../eslint.constants");
 
 const ESLINT_TESTS_CONFIG = Object.freeze({
@@ -10,6 +11,8 @@ const ESLINT_TESTS_CONFIG = Object.freeze({
     "@typescript-eslint/init-declarations": OFF,
     "@typescript-eslint/no-magic-numbers": OFF,
     "@typescript-eslint/unbound-method": OFF,
+    "import/no-namespace": OFF,
+    "import/max-dependencies": OFF,
     "@stylistic/max-len": OFF,
     /*
      * ---- Test Rules -----
@@ -42,6 +45,14 @@ const ESLINT_TESTS_CONFIG = Object.freeze({
     "jest/no-test-prefixes": ERROR,
     "jest/no-test-return-statement": ERROR,
     "jest/no-untyped-mock-factory": ERROR,
+    "jest/padding-around-after-all-blocks": ERROR,
+    "jest/padding-around-after-each-blocks": ERROR,
+    "jest/padding-around-all": ERROR,
+    "jest/padding-around-before-all-blocks": ERROR,
+    "jest/padding-around-before-each-blocks": ERROR,
+    "jest/padding-around-describe-blocks": ERROR,
+    "jest/padding-around-expect-groups": ERROR,
+    "jest/padding-around-test-blocks": ERROR,
     "jest/prefer-called-with": ERROR,
     "jest/prefer-comparison-matcher": ERROR,
     "jest/prefer-each": ERROR,

@@ -1,3 +1,5 @@
+import { plainToInstance } from "class-transformer";
+
 import { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
 import type { MakeGamePlayTargetDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target.dto";
 import type { MakeGamePlayVoteDto } from "@/modules/game/dto/make-game-play/make-game-play-vote/make-game-play-vote.dto";
@@ -5,7 +7,6 @@ import { getPlayerWithNameOrThrow } from "@/modules/game/helpers/game.helpers";
 import type { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import type { GameHistoryRecordPlayVote } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-vote/game-history-record-play-vote.schema";
 import type { GameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
-
 import type { GamePlaySourceInteraction } from "@/modules/game/schemas/game-play/game-play-source/game-play-source-interaction/game-play-source-interaction.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
@@ -18,7 +19,6 @@ import type { PlayerInteractionType } from "@/modules/game/types/player/player-i
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { plainToInstance } from "class-transformer";
 
 const INTENTIONAL_UNKNOWN_PLAYER_NAME = "<UNKNOWN_PLAYER>";
 

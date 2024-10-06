@@ -5,7 +5,7 @@ import { GameVictoryService } from "@/modules/game/providers/services/game-victo
 import type { GameVictory } from "@/modules/game/schemas/game-victory/game-victory.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 
-import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enums";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
@@ -421,6 +421,7 @@ describe("Game Victory Service", () => {
   describe("doVillagersWin", () => {
     it("should return false when there are no players provided.", () => {
       const game = createFakeGame();
+
       expect(services.gameVictory["doVillagersWin"](game)).toBe(false);
     });
 

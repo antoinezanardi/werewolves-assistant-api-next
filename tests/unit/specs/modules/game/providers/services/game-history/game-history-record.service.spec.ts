@@ -1,3 +1,7 @@
+import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
+import { when } from "jest-when";
+
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record/game-history-record.repository";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
@@ -6,10 +10,8 @@ import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schem
 import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record/game-history-record.types";
 
 import { ApiResources } from "@/shared/api/enums/api.enums";
-import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
+import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enums";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
-import type { TestingModule } from "@nestjs/testing";
-import { Test } from "@nestjs/testing";
 
 import { createFakeGetGameHistoryDto } from "@tests/factories/game/dto/get-game-history/get-game-history.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";
@@ -20,7 +22,6 @@ import { createFakeVillagerAlivePlayer, createFakeWerewolfAlivePlayer } from "@t
 import { createFakeDeadPlayer, createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 import { createFakeGameHistoryRecordToInsert } from "@tests/factories/game/types/game-history-record/game-history-record.type.factory";
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { when } from "jest-when";
 
 describe("Game History Record Service", () => {
   let mocks: {

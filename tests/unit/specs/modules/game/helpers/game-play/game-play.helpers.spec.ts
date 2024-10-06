@@ -12,7 +12,7 @@ import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current
 import type { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 
 import { ApiResources } from "@/shared/api/enums/api.enums";
-import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
+import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enums";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";

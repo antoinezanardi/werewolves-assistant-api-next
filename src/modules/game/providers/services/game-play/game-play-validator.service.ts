@@ -15,7 +15,7 @@ import { GamePlaySourceName, GamePlayType } from "@/modules/game/types/game-play
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
 import { PlayerInteractionType } from "@/modules/game/types/player/player-interaction/player-interaction.types";
 
-import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
+import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enums";
 import { createCantFindPlayerWithCurrentRoleUnexpectedException, createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.types";
 

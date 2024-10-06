@@ -1,9 +1,11 @@
-import type { GameFeedback } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
-import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
-import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { SchemaTypes } from "mongoose";
 import type { ReadonlyDeep } from "type-fest";
+
+import type { GameFeedback } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
+
+import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
+import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
 const GAME_FEEDBACK_FIELDS_SPECS = {
   _id: { required: true },

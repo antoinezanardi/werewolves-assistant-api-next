@@ -1,10 +1,10 @@
+import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
+
 import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record/game-history-record.repository";
 import { GameEventsGeneratorService } from "@/modules/game/providers/services/game-event/game-events-generator.service";
 import { GameFeedbackService } from "@/modules/game/providers/services/game-feedback/game-feedback.service";
 import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
-import type { TestingModule } from "@nestjs/testing";
-import { Test } from "@nestjs/testing";
-
 import * as GamePhaseHelper from "@/modules/game/helpers/game-phase/game-phase.helpers";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helpers";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
@@ -20,14 +20,14 @@ import { PlayerAttributeService } from "@/modules/game/providers/services/player
 import type { Game } from "@/modules/game/schemas/game.schema";
 
 import { ApiResources } from "@/shared/api/enums/api.enums";
-import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
-import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enums";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enums";
 import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
+
 import { createFakeCreateGameFeedbackDto } from "@tests/factories/game/dto/create-game-feedback/create-game-feedback.dto.factory";
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
-
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeMakeGamePlayDto } from "@tests/factories/game/dto/make-game-play/make-game-play.dto.factory";

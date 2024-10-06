@@ -3,6 +3,7 @@ import type { GameHistoryRecord } from "@/modules/game/schemas/game-history-reco
 import type { GameHistoryRecordPlayerAttributeAlterationStatus } from "@/modules/game/types/game-history-record/game-history-record.types";
 import type { GameSource } from "@/modules/game/types/game.types";
 import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
+
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlayerAttributeAlteration } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 
 describe("Game History Record Helpers", () => {

@@ -1,7 +1,7 @@
-import { WEREWOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { WEREWOLF_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
 import { ACTOR_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/actor-game-options/actor-game-options.schema";
 import { PREJUDICED_MANIPULATOR_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";
 import { CUPID_GAME_OPTIONS_SCHEMA } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";

@@ -1,8 +1,10 @@
-import { GAME_EVENT_TYPES } from "@/modules/game/constants/game-event/game-event.constants";
-import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
-import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
+
+import { GAME_EVENT_TYPES } from "@/modules/game/constants/game-event/game-event.constants";
+import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
+
+import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
 
 function createFakeGameEvent(gameEvent: Partial<GameEvent> = {}): GameEvent {
   return plainToInstance(GameEvent, {
