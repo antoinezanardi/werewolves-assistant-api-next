@@ -1,9 +1,9 @@
-import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
-import { GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { SchemaTypes } from "mongoose";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
+import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GAME_PHASE_SCHEMA } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { DEAD_PLAYER_SCHEMA } from "@/modules/game/schemas/player/dead-player.schema";
 import { PLAYER_SCHEMA } from "@/modules/game/schemas/player/player.schema";

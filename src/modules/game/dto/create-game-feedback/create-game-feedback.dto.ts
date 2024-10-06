@@ -1,5 +1,6 @@
-import { GAME_FEEDBACK_FIELDS_SPECS } from "@/modules/game/schemas/game-feedback/game-feedback.schema.constants";
 import { IsBoolean, IsInt, IsOptional, IsString, Max, MaxLength, Min } from "class-validator";
+
+import { GAME_FEEDBACK_FIELDS_SPECS } from "@/modules/game/schemas/game-feedback/game-feedback.schema.constants";
 
 class CreateGameFeedbackDto {
   @IsInt()

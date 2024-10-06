@@ -1,10 +1,12 @@
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ApiProperty } from "@nestjs/swagger";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
+import { Expose } from "class-transformer";
+
 import { GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_API_PROPERTIES, GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.constants";
 import { GameHistoryRecordPlayerAttributeAlterationStatus } from "@/modules/game/types/game-history-record/game-history-record.types";
 import { GameSource } from "@/modules/game/types/game.types";
 import { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { ApiProperty, type ApiPropertyOptions } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
 
 @Schema({
   versionKey: false,

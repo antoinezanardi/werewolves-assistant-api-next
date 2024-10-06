@@ -1,9 +1,9 @@
-import { WerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Type } from "class-transformer";
 
+import { WerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
 import { ActorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/actor-game-options/actor-game-options.schema";
 import { PrejudicedManipulatorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";
 import { CupidGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/cupid-game-options/cupid-game-options.schema";

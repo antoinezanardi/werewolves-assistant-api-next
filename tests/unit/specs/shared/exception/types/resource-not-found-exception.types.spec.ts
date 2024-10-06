@@ -1,5 +1,5 @@
 import { ApiResources } from "@/shared/api/enums/api.enums";
-import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
+import { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enums";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";

@@ -82,6 +82,7 @@ describe("Composition Has Two Groups With Prejudiced Manipulator Decorator", () 
   describe("getCompositionHasTwoGroupsWithPrejudicedManipulatorDefaultMessage", () => {
     it("should return the default message when called.", () => {
       const expectedMessage = "there must be exactly two groups among players when `prejudiced-manipulator` in the game";
+
       expect(getCompositionHasTwoGroupsWithPrejudicedManipulatorDefaultMessage()).toBe(expectedMessage);
     });
   });

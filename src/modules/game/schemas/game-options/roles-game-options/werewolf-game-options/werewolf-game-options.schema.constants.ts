@@ -1,9 +1,11 @@
-import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
-import type { WerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
-import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
-import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
+
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
+import type { WerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
+
+import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
+import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
 
 const WEREWOLF_GAME_OPTIONS_FIELDS_SPECS = {
   canEatEachOther: {

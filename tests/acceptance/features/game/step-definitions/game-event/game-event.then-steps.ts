@@ -1,8 +1,9 @@
 import type { DataTable } from "@cucumber/cucumber";
 import { Then } from "@cucumber/cucumber";
+import { expect } from "expect";
+
 import { convertDatatableToGameEvents, convertDatatableToPlayers } from "@tests/acceptance/features/game/helpers/game-datatable.helpers";
 import type { CustomWorld } from "@tests/acceptance/shared/types/world.types";
-import { expect } from "expect";
 
 Then(/^the game should have the following events$/u, function(this: CustomWorld, events: DataTable): void {
   const gameEvents = convertDatatableToGameEvents(events.rows());

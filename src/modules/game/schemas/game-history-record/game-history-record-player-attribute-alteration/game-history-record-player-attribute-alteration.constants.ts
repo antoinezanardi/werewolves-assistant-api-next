@@ -1,11 +1,13 @@
+import type { ApiPropertyOptions } from "@nestjs/swagger";
+import type { ReadonlyDeep } from "type-fest";
+
 import { GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_STATUSES } from "@/modules/game/constants/game-history-record/game-history-record.constants";
 import { GAME_SOURCES } from "@/modules/game/constants/game.constants";
 import { PLAYER_ATTRIBUTE_NAMES } from "@/modules/game/constants/player/player-attribute/player-attribute.constants";
 import type { GameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
+
 import { convertMongoosePropOptionsToApiPropertyOptions } from "@/shared/api/helpers/api.helpers";
 import type { MongoosePropOptions } from "@/shared/mongoose/types/mongoose.types";
-import type { ApiPropertyOptions } from "@nestjs/swagger";
-import type { ReadonlyDeep } from "type-fest";
 
 const GAME_HISTORY_RECORD_PLAYER_ATTRIBUTE_ALTERATION_FIELDS_SPECS = {
   name: {

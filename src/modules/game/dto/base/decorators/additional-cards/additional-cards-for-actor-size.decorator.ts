@@ -1,8 +1,8 @@
-import { MAX_ADDITIONAL_CARDS_COUNT_FOR_RECIPIENT } from "@/modules/game/constants/game-additional-card/game-additional-card.constants";
 import type { ValidationArguments, ValidationOptions } from "class-validator";
 import { registerDecorator } from "class-validator";
 import { has } from "lodash";
 
+import { MAX_ADDITIONAL_CARDS_COUNT_FOR_RECIPIENT } from "@/modules/game/constants/game-additional-card/game-additional-card.constants";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 
 function isAdditionalCardsForActorSizeRespected(value: unknown, validationArguments: ValidationArguments): boolean {

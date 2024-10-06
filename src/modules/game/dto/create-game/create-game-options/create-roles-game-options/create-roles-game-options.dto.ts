@@ -1,9 +1,9 @@
-import { CreateWerewolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-werewolf-game-options.dto";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsBoolean, IsOptional, ValidateNested } from "class-validator";
 
+import { CreateWerewolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-werewolf-game-options.dto";
 import { CreateActorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-actor-game-options.dto";
 import { CreatePrejudicedManipulatorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-prejudiced-manipulator-game-options.dto";
 import { CreateCupidGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-cupid-game-options/create-cupid-game-options.dto";

@@ -1,7 +1,9 @@
-import { WEREWOLF_GAME_OPTIONS_API_PROPERTIES, WEREWOLF_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema.constants";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { ApiProperty, type ApiPropertyOptions } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
+
+import { WEREWOLF_GAME_OPTIONS_API_PROPERTIES, WEREWOLF_GAME_OPTIONS_FIELDS_SPECS } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema.constants";
 
 @Schema({
   versionKey: false,

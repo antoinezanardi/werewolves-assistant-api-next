@@ -1,15 +1,15 @@
-import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record/game-history-record.repository";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 import { when } from "jest-when";
 
+import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record/game-history-record.repository";
 import * as GamePlayHelper from "@/modules/game/helpers/game-play/game-play.helpers";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
 
-import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
-import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enums";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enums";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.types";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";

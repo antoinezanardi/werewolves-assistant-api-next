@@ -1,9 +1,9 @@
-import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
-import { GAME_FEEDBACK_SCHEMA } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
-import { GAME_HISTORY_RECORD_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
+import { GAME_FEEDBACK_SCHEMA } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
+import { GAME_HISTORY_RECORD_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import { GAME_PHASE_SCHEMA } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { GAME_STATUSES } from "@/modules/game/constants/game.constants";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";

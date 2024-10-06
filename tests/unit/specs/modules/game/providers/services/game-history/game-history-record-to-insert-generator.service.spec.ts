@@ -1,3 +1,6 @@
+import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
+
 import type { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import { createGamePlaySurvivorsElectSheriff } from "@/modules/game/helpers/game-play/game-play.factory";
 import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
@@ -8,9 +11,9 @@ import type { GameHistoryRecordPlay } from "@/modules/game/schemas/game-history-
 import type { GameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import type { GameHistoryRecordToInsert } from "@/modules/game/types/game-history-record/game-history-record.types";
+
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
-import type { TestingModule } from "@nestjs/testing";
-import { Test } from "@nestjs/testing";
+
 import { createFakeMakeGamePlayTargetWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-target-with-relations.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
 import { createFakeGameAdditionalCard } from "@tests/factories/game/schemas/game-additional-card/game-additional-card.schema.factory";

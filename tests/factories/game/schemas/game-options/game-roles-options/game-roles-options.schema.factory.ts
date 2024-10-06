@@ -1,7 +1,7 @@
-import { WerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { WerewolfGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/werewolf-game-options/werewolf-game-options.schema";
 import { GAME_PHASE_NAMES } from "@/modules/game/constants/game-phase/game-phase.constants";
 import { ActorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/actor-game-options/actor-game-options.schema";
 import { PrejudicedManipulatorGameOptions } from "@/modules/game/schemas/game-options/roles-game-options/prejudiced-manipulator-game-options/prejudiced-manipulator-game-options.schema";

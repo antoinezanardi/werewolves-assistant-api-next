@@ -1,5 +1,6 @@
 import { createGameEvent } from "@/modules/game/helpers/game-event/game-event.factory";
 import type { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
+
 import { createFakeGameEvent } from "@tests/factories/game/schemas/game-event/game-event.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 

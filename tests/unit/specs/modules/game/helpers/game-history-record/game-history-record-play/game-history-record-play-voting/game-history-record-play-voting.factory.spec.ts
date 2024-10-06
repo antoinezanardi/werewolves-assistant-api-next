@@ -1,5 +1,6 @@
 import { createGameHistoryRecordPlayVoting } from "@/modules/game/helpers/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.factory";
 import type { GameHistoryRecordPlayVoting } from "@/modules/game/schemas/game-history-record/game-history-record-play/game-history-record-play-voting/game-history-record-play-voting.schema";
+
 import { createFakeGameHistoryRecordPlayVoting } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakePlayer } from "@tests/factories/game/schemas/player/player.schema.factory";
 

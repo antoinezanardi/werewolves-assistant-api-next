@@ -1,4 +1,4 @@
-import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enum";
+import { BadGamePlayPayloadReasons } from "@/shared/exception/enums/bad-game-play-payload-error.enums";
 import { BadGamePlayPayloadException } from "@/shared/exception/types/bad-game-play-payload-exception.types";
 
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";

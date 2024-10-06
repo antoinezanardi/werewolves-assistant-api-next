@@ -1,9 +1,9 @@
-import { GAME_POPULATED_FIELDS } from "@/modules/game/constants/game.constants";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import type { FilterQuery, QueryOptions } from "mongoose";
 
+import { GAME_POPULATED_FIELDS } from "@/modules/game/constants/game.constants";
 import type { GameDocument } from "@/modules/game/types/game.types";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import { Game } from "@/modules/game/schemas/game.schema";

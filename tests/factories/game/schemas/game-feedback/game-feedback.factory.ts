@@ -1,9 +1,12 @@
+import { faker } from "@faker-js/faker";
+import { plainToInstance } from "class-transformer";
+
 import { GameFeedback } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
 import { GameFeedbackToInsert } from "@/modules/game/types/game-feedback/game-feedback.types";
+
 import { DEFAULT_PLAIN_TO_INSTANCE_OPTIONS } from "@/shared/validation/constants/validation.constants";
-import { faker } from "@faker-js/faker";
+
 import { createFakeObjectId } from "@tests/factories/shared/mongoose/mongoose.factory";
-import { plainToInstance } from "class-transformer";
 
 function createFakeGameFeedbackToInsert(gameFeedbackToInsert: Partial<GameFeedbackToInsert> = {}): GameFeedbackToInsert {
   return plainToInstance(GameFeedbackToInsert, {

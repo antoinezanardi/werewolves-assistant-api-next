@@ -1,10 +1,13 @@
-import { GameFeedbackRepository } from "@/modules/game/providers/repositories/game-feedback/game-feedback.repository";
-import { GameFeedbackService } from "@/modules/game/providers/services/game-feedback/game-feedback.service";
-import { ApiResources } from "@/shared/api/enums/api.enums";
-import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
-import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
+
+import { GameFeedbackRepository } from "@/modules/game/providers/repositories/game-feedback/game-feedback.repository";
+import { GameFeedbackService } from "@/modules/game/providers/services/game-feedback/game-feedback.service";
+
+import { ApiResources } from "@/shared/api/enums/api.enums";
+import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enums";
+import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
+
 import { createFakeCreateGameFeedbackDto } from "@tests/factories/game/dto/create-game-feedback/create-game-feedback.dto.factory";
 import { createFakeGameFeedback, createFakeGameFeedbackToInsert } from "@tests/factories/game/schemas/game-feedback/game-feedback.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";

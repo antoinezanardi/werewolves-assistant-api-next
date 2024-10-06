@@ -3,7 +3,7 @@ import type { Types } from "mongoose";
 import type { RoleName } from "@/modules/role/types/role.types";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 
-import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enums";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
 function createCantFindPlayerWithIdUnexpectedException(scope: string, interpolations: { gameId: Types.ObjectId; playerId: Types.ObjectId }): UnexpectedException {

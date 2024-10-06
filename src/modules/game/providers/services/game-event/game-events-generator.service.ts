@@ -1,3 +1,5 @@
+import { Injectable } from "@nestjs/common";
+
 import { GAME_EVENT_PRIORITY_LIST_ON_DAYS, GAME_EVENT_PRIORITY_LIST_ON_NIGHTS } from "@/modules/game/constants/game-event/game-event.constants";
 import { createGameEvent } from "@/modules/game/helpers/game-event/game-event.factory";
 import { doesHavePlayerAttributeAlterationWithNameAndStatus, doesHavePlayerAttributeAlterationWithNameSourceAndStatus } from "@/modules/game/helpers/game-history-record/game-history-record.helpers";
@@ -8,7 +10,6 @@ import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/ga
 import { Game } from "@/modules/game/schemas/game.schema";
 import { Player } from "@/modules/game/schemas/player/player.schema";
 import { GamePlaySourceName } from "@/modules/game/types/game-play/game-play.types";
-import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class GameEventsGeneratorService {

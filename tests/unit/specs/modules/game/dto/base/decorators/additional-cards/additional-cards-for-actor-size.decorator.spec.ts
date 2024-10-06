@@ -1,3 +1,5 @@
+import type { ValidationArguments } from "class-validator";
+
 import { getAdditionalCardsForActorSizeDefaultMessage, isAdditionalCardsForActorSizeRespected } from "@/modules/game/dto/base/decorators/additional-cards/additional-cards-for-actor-size.decorator";
 import type { CreateGameAdditionalCardDto } from "@/modules/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto";
 import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
@@ -5,7 +7,6 @@ import type { CreateGameDto } from "@/modules/game/dto/create-game/create-game.d
 import { createFakeCreateGameAdditionalCardDto } from "@tests/factories/game/dto/create-game/create-game-additional-card/create-game-additional-card.dto.factory";
 import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
-import type { ValidationArguments } from "class-validator";
 
 describe("Additional Cards For Actor Size Decorator", () => {
   describe("isAdditionalCardsForActorSizeRespected", () => {

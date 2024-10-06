@@ -1,5 +1,5 @@
 import { ApiResources } from "@/shared/api/enums/api.enums";
-import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enum";
+import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resource-mutation-error.enums";
 import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
 
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";

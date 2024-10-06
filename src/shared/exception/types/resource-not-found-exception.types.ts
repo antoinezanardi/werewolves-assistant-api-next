@@ -2,7 +2,7 @@ import { NotFoundException } from "@nestjs/common";
 import { upperFirst } from "lodash";
 
 import type { ApiResources } from "@/shared/api/enums/api.enums";
-import type { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enum";
+import type { ResourceNotFoundReasons } from "@/shared/exception/enums/resource-not-found-error.enums";
 import { getResourceSingularForm } from "@/shared/api/helpers/api.helpers";
 
 class ResourceNotFoundException extends NotFoundException {

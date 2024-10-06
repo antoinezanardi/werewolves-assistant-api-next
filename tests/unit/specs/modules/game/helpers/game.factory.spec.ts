@@ -1,7 +1,7 @@
 import { createGame } from "@/modules/game/helpers/game.factory";
 import type { Game } from "@/modules/game/schemas/game.schema";
-import { createFakeGameEvent } from "@tests/factories/game/schemas/game-event/game-event.schema.factory";
 
+import { createFakeGameEvent } from "@tests/factories/game/schemas/game-event/game-event.schema.factory";
 import { createFakeGameOptions } from "@tests/factories/game/schemas/game-options/game-options.schema.factory";
 import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";
 import { createFakeGamePlaySurvivorsElectSheriff, createFakeGamePlaySurvivorsVote } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";

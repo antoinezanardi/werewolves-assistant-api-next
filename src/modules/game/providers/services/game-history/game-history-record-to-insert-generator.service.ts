@@ -1,3 +1,5 @@
+import { Injectable } from "@nestjs/common";
+
 import { MakeGamePlayTargetWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-target/make-game-play-target-with-relations.dto";
 import type { MakeGamePlayWithRelationsDto } from "@/modules/game/dto/make-game-play/make-game-play-with-relations.dto";
 import { createGameHistoryRecordPlaySource } from "@/modules/game/helpers/game-history-record/game-history-record-play/game-history-record-play-source/game-history-record-play-source.factory";
@@ -18,8 +20,8 @@ import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schem
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 import { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
+
 import { createNoCurrentGamePlayUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
-import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class GameHistoryRecordToInsertGeneratorService {
