@@ -58,6 +58,11 @@ class Game {
   @Expose()
   public players: Player[];
 
+  @ApiProperty(GAME_API_PROPERTIES.playerGroups as ApiPropertyOptions)
+  @Prop(GAME_FIELDS_SPECS.playerGroups)
+  @Expose()
+  public playerGroups?: string[];
+
   @ApiProperty(GAME_API_PROPERTIES.currentPlay as ApiPropertyOptions)
   @Prop(GAME_FIELDS_SPECS.currentPlay)
   @Type(() => GamePlay)

@@ -19,6 +19,7 @@ describe("Game Factory", () => {
         turn: 2,
         phase: createFakeGamePhase({ name: "day" }),
         players: [createFakePlayer()],
+        playerGroups: ["group1", "group2"],
         options: createFakeGameOptions(),
         upcomingPlays: [createFakeGamePlaySurvivorsElectSheriff()],
         events: [

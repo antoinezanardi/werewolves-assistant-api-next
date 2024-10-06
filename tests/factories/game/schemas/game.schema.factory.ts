@@ -16,6 +16,7 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
   return plainToInstance(Game, {
     _id: game._id ?? createFakeObjectId(),
     players: game.players ?? [],
+    playerGroups: game.playerGroups,
     currentPlay: game.currentPlay ?? null,
     upcomingPlays: game.upcomingPlays ?? [],
     events: game.events,
