@@ -48,3 +48,23 @@ Then(
     expect(this.game.victory?.winners).toStrictEqual(expectedWinners);
   },
 );
+
+Then(/^the game's feedback should be null$/u, function(this: CustomWorld): void {
+  expect(this.game.feedback).toBeNull();
+});
+
+Then(/^the game's feedback score should be (?<score>\d+)$/u, function(this: CustomWorld, score: string): void {
+  expect(this.game.feedback?.score).toBe(parseInt(score));
+});
+
+Then(/^the game's feedback review should be "(?<review>.+?)"$/u, function(this: CustomWorld, review: string): void {
+  expect(this.game.feedback?.review).toBe(review);
+});
+
+Then(/^the game's feedback should mention an encountered error$/u, function(this: CustomWorld): void {
+  expect(this.game.feedback?.hasEncounteredError).toBe(true);
+});
+
+Then(/^the game's feedback should not mention an encountered error$/u, function(this: CustomWorld): void {
+  expect(this.game.feedback?.hasEncounteredError).toBe(false);
+});

@@ -1,21 +1,20 @@
-import { GameEventsGeneratorService } from "@/modules/game/providers/services/game-event/game-events-generator.service";
-import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
-import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
-import { Injectable } from "@nestjs/common";
-import { plainToInstance } from "class-transformer";
-import type { Types } from "mongoose";
+import { CreateGameFeedbackDto } from "@/modules/game/dto/create-game-feedback/create-game-feedback.dto";
 
 import { CreateGameDto } from "@/modules/game/dto/create-game/create-game.dto";
 import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-game-play.dto";
 import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.helpers";
 import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-play/game-play.helpers";
-import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { createGame as createGameFromFactory } from "@/modules/game/helpers/game.factory";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
+import { GameEventsGeneratorService } from "@/modules/game/providers/services/game-event/game-events-generator.service";
+import { GameFeedbackService } from "@/modules/game/providers/services/game-feedback/game-feedback.service";
+import { GameHistoryRecordToInsertGeneratorService } from "@/modules/game/providers/services/game-history/game-history-record-to-insert-generator.service";
+import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePhaseService } from "@/modules/game/providers/services/game-phase/game-phase.service";
 import { GamePlayMakerService } from "@/modules/game/providers/services/game-play/game-play-maker/game-play-maker.service";
 import { GamePlayValidatorService } from "@/modules/game/providers/services/game-play/game-play-validator.service";
 import { GamePlayService } from "@/modules/game/providers/services/game-play/game-play.service";
+import { GameVictoryService } from "@/modules/game/providers/services/game-victory/game-victory.service";
 import { PlayerAttributeService } from "@/modules/game/providers/services/player/player-attribute.service";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { GameWithCurrentPlay } from "@/modules/game/types/game-with-current-play.types";
@@ -25,6 +24,9 @@ import { BadResourceMutationReasons } from "@/shared/exception/enums/bad-resourc
 import { createCantGenerateGamePlaysUnexpectedException } from "@/shared/exception/helpers/unexpected-exception.factory";
 import { BadResourceMutationException } from "@/shared/exception/types/bad-resource-mutation-exception.types";
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
+import { Injectable } from "@nestjs/common";
+import { plainToInstance } from "class-transformer";
+import type { Types } from "mongoose";
 
 @Injectable()
 export class GameService {
@@ -39,6 +41,7 @@ export class GameService {
     private readonly gameEventsGeneratorService: GameEventsGeneratorService,
     private readonly gameHistoryRecordService: GameHistoryRecordService,
     private readonly gameHistoryRecordToInsertGeneratorService: GameHistoryRecordToInsertGeneratorService,
+    private readonly gameFeedbackService: GameFeedbackService,
   ) {}
 
   public async getGames(): Promise<Game[]> {
@@ -98,6 +101,13 @@ export class GameService {
     clonedGame.events = this.gameEventsGeneratorService.generateGameEventsFromGameAndLastRecord(clonedGame, gameHistoryRecord);
 
     return this.updateGame(clonedGame._id, clonedGame);
+  }
+
+  public async createGameFeedback(game: Game, createGameFeedbackDto: CreateGameFeedbackDto): Promise<Game> {
+    const clonedGame = createGameFromFactory(game);
+    clonedGame.feedback = await this.gameFeedbackService.createGameFeedback(clonedGame, createGameFeedbackDto);
+
+    return clonedGame;
   }
 
   private validateGameIsPlaying(game: Game): void {

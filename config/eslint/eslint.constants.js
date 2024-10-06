@@ -1,6 +1,6 @@
 const MAX_LENGTH = 180;
 const MAX_NESTED_CALLBACK = 5;
-const MAX_PARAMS = 10;
+const MAX_PARAMS = 15;
 const INDENT_SPACE_COUNT = 2;
 const ERROR = "error";
 const WARNING = "warn";
@@ -50,6 +50,7 @@ const NAMING_CONVENTION_DEFAULT_CONFIG = [
 const ESLINT_IGNORES = [
   "node_modules/",
   "dist/",
+  "dist/**/*",
   "!.releaserc.js",
   "tests/coverage/*",
   "tests/e2e/coverage/*",
