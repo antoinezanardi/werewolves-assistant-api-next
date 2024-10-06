@@ -26,6 +26,7 @@ import { BadResourceMutationException } from "@/shared/exception/types/bad-resou
 import { ResourceNotFoundException } from "@/shared/exception/types/resource-not-found-exception.types";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 import { createFakeCreateGameFeedbackDto } from "@tests/factories/game/dto/create-game-feedback/create-game-feedback.dto.factory";
+import { createFakeCreateGamePlayerDto } from "@tests/factories/game/dto/create-game/create-game-player/create-game-player.dto.factory";
 
 import { createFakeCreateGameDto } from "@tests/factories/game/dto/create-game/create-game.dto.factory";
 import { createFakeMakeGamePlayWithRelationsDto } from "@tests/factories/game/dto/make-game-play/make-game-play-with-relations/make-game-play-with-relations.dto.factory";
@@ -225,6 +226,25 @@ describe("Game Service", () => {
         ...toCreateGame,
         currentPlay: createFakeGamePlaySurvivorsVote(),
         upcomingPlays: [],
+      });
+
+      expect(repositories.game.create).toHaveBeenCalledExactlyOnceWith(expectedGame);
+    });
+
+    it("should call createGame repository method with distinct player groups when player have groups.", async() => {
+      const toCreateGame = createFakeCreateGameDto({
+        players: [
+          createFakeCreateGamePlayerDto({ group: "group1" }),
+          createFakeCreateGamePlayerDto({ group: "group2" }),
+        ],
+      });
+      mocks.gamePlayService.getPhaseUpcomingPlays.mockReturnValue([createFakeGamePlaySurvivorsVote()]);
+      await services.game.createGame(toCreateGame);
+      const expectedGame = createFakeCreateGameDto({
+        ...toCreateGame,
+        currentPlay: createFakeGamePlaySurvivorsVote(),
+        upcomingPlays: [],
+        playerGroups: ["group1", "group2"],
       });
 
       expect(repositories.game.create).toHaveBeenCalledExactlyOnceWith(expectedGame);

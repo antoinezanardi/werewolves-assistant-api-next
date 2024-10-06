@@ -56,6 +56,10 @@ class CreateGameDto {
 
   @ApiHideProperty()
   @IsOptional()
+  public playerGroups?: string[];
+
+  @ApiHideProperty()
+  @IsOptional()
   public currentPlay: GamePlay;
 
   @ApiHideProperty()

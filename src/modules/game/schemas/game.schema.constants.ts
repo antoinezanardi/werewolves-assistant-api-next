@@ -44,6 +44,11 @@ const GAME_FIELDS_SPECS = {
     minItems: 4,
     maxItems: 40,
   },
+  playerGroups: {
+    required: false,
+    minItems: 2,
+    default: undefined,
+  },
   currentPlay: {
     required: true,
     type: GAME_PLAY_SCHEMA,
@@ -112,6 +117,10 @@ const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> 
     description: "Players of the game",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.players),
   },
+  playerGroups: {
+    description: "Players unique groups. Not set if prejudiced manipulator is not in the game",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.playerGroups),
+  },
   currentPlay: {
     description: "Current play which needs to be performed",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.currentPlay),
@@ -129,7 +138,7 @@ const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> 
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.options),
   },
   additionalCards: {
-    description: "Game's additional cards. Not set if thief is not in the game",
+    description: "Game's additional cards. Not set if thief or actor are not in the game",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.additionalCards),
   },
   victory: {

@@ -5,6 +5,7 @@ import type { MakeGamePlayDto } from "@/modules/game/dto/make-game-play/make-gam
 import { isGamePhaseOver } from "@/modules/game/helpers/game-phase/game-phase.helpers";
 import { createMakeGamePlayDtoWithRelations } from "@/modules/game/helpers/game-play/game-play.helpers";
 import { createGame as createGameFromFactory } from "@/modules/game/helpers/game.factory";
+import { getDistinctPlayerGroups } from "@/modules/game/helpers/game.helpers";
 import { GameRepository } from "@/modules/game/providers/repositories/game.repository";
 import { GameEventsGeneratorService } from "@/modules/game/providers/services/game-event/game-events-generator.service";
 import { GameFeedbackService } from "@/modules/game/providers/services/game-feedback/game-feedback.service";
@@ -55,10 +56,12 @@ export class GameService {
     }
     const currentPlay = upcomingPlays[0];
     upcomingPlays.shift();
+    const distinctPlayerGroups = getDistinctPlayerGroups(game);
     const gameToCreate = plainToInstance(CreateGameDto, {
       ...game,
       currentPlay,
       upcomingPlays,
+      playerGroups: distinctPlayerGroups.length ? distinctPlayerGroups : undefined,
     });
     let createdGame = await this.gameRepository.create(gameToCreate) as GameWithCurrentPlay;
     createdGame = await this.gamePlayService.augmentCurrentGamePlay(createdGame);

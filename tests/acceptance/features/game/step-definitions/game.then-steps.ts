@@ -29,6 +29,16 @@ Then(/^the game's status should be (?<phase>playing|over|canceled)$/u, function(
   expect(this.game.status).toBe(status);
 });
 
+Then(/^the game should not have any player group$/u, function(this: CustomWorld): void {
+  expect(this.game.playerGroups).toBeUndefined();
+});
+
+Then(/^the game should have the following player groups$/u, function(this: CustomWorld, playerGroups: DataTable): void {
+  const expectedPlayerGroups = playerGroups.rows().map(([group]) => group);
+
+  expect(this.game.playerGroups).toStrictEqual(expectedPlayerGroups);
+});
+
 Then(/^the game's last game history record should be null$/u, function(this: CustomWorld): void {
   expect(this.game.lastGameHistoryRecord).toBeNull();
 });
