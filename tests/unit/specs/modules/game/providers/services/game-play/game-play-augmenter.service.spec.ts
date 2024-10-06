@@ -1,7 +1,7 @@
-import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { TestingModule } from "@nestjs/testing";
 import { Test } from "@nestjs/testing";
 
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import * as GameHelper from "@/modules/game/helpers/game.helpers";
 import { GameHistoryRecordService } from "@/modules/game/providers/services/game-history/game-history-record.service";
 import { GamePlayAugmenterService } from "@/modules/game/providers/services/game-play/game-play-augmenter.service";
@@ -10,7 +10,7 @@ import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
 
-import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enums";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 

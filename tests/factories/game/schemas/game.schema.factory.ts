@@ -16,6 +16,7 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
   return plainToInstance(Game, {
     _id: game._id ?? createFakeObjectId(),
     players: game.players ?? [],
+    playerGroups: game.playerGroups,
     currentPlay: game.currentPlay ?? null,
     upcomingPlays: game.upcomingPlays ?? [],
     events: game.events,
@@ -27,6 +28,7 @@ function createFakeGame(game: Partial<Game> = {}, override: object = {}): Game {
     options: createFakeGameOptions(game.options),
     victory: game.victory,
     lastGameHistoryRecord: game.lastGameHistoryRecord ?? null,
+    feedback: game.feedback ?? null,
     createdAt: game.createdAt ?? faker.date.recent(),
     updatedAt: game.updatedAt ?? faker.date.recent(),
     ...override,

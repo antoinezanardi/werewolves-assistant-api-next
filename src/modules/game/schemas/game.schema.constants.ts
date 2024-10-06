@@ -1,8 +1,9 @@
-import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
-import { GAME_HISTORY_RECORD_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import type { ReadonlyDeep } from "type-fest";
 
+import { GAME_EVENT_SCHEMA } from "@/modules/game/schemas/game-event/game-event.schema";
+import { GAME_FEEDBACK_SCHEMA } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
+import { GAME_HISTORY_RECORD_SCHEMA } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import { GAME_PHASE_SCHEMA } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { GAME_STATUSES } from "@/modules/game/constants/game.constants";
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
@@ -43,6 +44,11 @@ const GAME_FIELDS_SPECS = {
     minItems: 4,
     maxItems: 40,
   },
+  playerGroups: {
+    required: false,
+    minItems: 2,
+    default: undefined,
+  },
   currentPlay: {
     required: true,
     type: GAME_PLAY_SCHEMA,
@@ -77,6 +83,11 @@ const GAME_FIELDS_SPECS = {
     type: GAME_HISTORY_RECORD_SCHEMA,
     default: null,
   },
+  feedback: {
+    required: true,
+    type: GAME_FEEDBACK_SCHEMA,
+    default: null,
+  },
   createdAt: { required: true },
   updatedAt: { required: true },
 } as const satisfies Record<keyof Game, MongoosePropOptions>;
@@ -106,6 +117,10 @@ const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> 
     description: "Players of the game",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.players),
   },
+  playerGroups: {
+    description: "Players unique groups. Not set if prejudiced manipulator is not in the game",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.playerGroups),
+  },
   currentPlay: {
     description: "Current play which needs to be performed",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.currentPlay),
@@ -123,7 +138,7 @@ const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> 
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.options),
   },
   additionalCards: {
-    description: "Game's additional cards. Not set if thief is not in the game",
+    description: "Game's additional cards. Not set if thief or actor are not in the game",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.additionalCards),
   },
   victory: {
@@ -133,6 +148,10 @@ const GAME_API_PROPERTIES: ReadonlyDeep<Record<keyof Game, ApiPropertyOptions>> 
   lastGameHistoryRecord: {
     description: "Last game history record or the most recent play made in the game",
     ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.lastGameHistoryRecord),
+  },
+  feedback: {
+    description: "Game's feedback",
+    ...convertMongoosePropOptionsToApiPropertyOptions(GAME_FIELDS_SPECS.feedback),
   },
   createdAt: {
     description: "When the game was created",

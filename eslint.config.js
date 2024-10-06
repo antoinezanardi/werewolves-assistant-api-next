@@ -15,7 +15,8 @@ const { ESLINT_CUCUMBER_CONTEXT_HELPERS_CONFIG } = require("./config/eslint/flat
 const { OFF } = require("./config/eslint/eslint.constants");
 const ESLINT_REPOSITORIES_CONFIG = require("./config/eslint/flat-configs/eslint.repositories-config");
 const ESLINT_STYLISTIC_CONFIG = require("./config/eslint/flat-configs/eslint.stylistic-config");
-// const ESLINT_IMPORT_CONFIG = require("./rules/eslint.import-config");
+const ESLINT_IMPORT_CONFIG = require("./config/eslint/flat-configs/eslint.import-config");
+const ESLINT_MODULES_CONFIG = require("./config/eslint/flat-configs/eslint.modules-config");
 
 module.exports = [
   {
@@ -25,10 +26,7 @@ module.exports = [
   ESLINT_GLOBAL_CONFIG,
   ESLINT_STYLISTIC_CONFIG,
   ESLINT_TYPESCRIPT_CONFIG,
-  /*
-   * TODO: Uncomment the following line when import plugin supports eslint v9
-   * - ESLINT_IMPORT_CONFIG,
-   */
+  ESLINT_IMPORT_CONFIG,
   ESLINT_CONFIGS_CONFIG,
   ESLINT_CONSTANTS_CONFIG,
   ESLINT_DTO_CONFIG,
@@ -36,10 +34,11 @@ module.exports = [
   ESLINT_PIPES_CONFIG,
   ESLINT_DECORATORS_CONFIG,
   ESLINT_TESTS_CONFIG,
-  ESLINT_FACTORIES_CONFIG,
+  ESLINT_MODULES_CONFIG,
   ESLINT_SERVICES_CONFIG,
   ESLINT_REPOSITORIES_CONFIG,
   ESLINT_CONTROLLERS_CONFIG,
   ESLINT_CUCUMBER_STEPS_AND_HOOKS_CONFIG,
   ESLINT_CUCUMBER_CONTEXT_HELPERS_CONFIG,
+  ESLINT_FACTORIES_CONFIG,
 ];

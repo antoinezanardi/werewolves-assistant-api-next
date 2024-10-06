@@ -1,6 +1,6 @@
-import type { Game } from "@/modules/game/schemas/game.schema";
 import type { ReadonlyDeep } from "type-fest";
 
+import type { Game } from "@/modules/game/schemas/game.schema";
 import { PLAYER_GROUPS } from "@/modules/game/constants/player/player.constants";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { PlayerAttributeName } from "@/modules/game/types/player/player-attribute/player-attribute.types";
@@ -217,7 +217,7 @@ const NIGHT_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIO
 
 const DAY_GAME_PLAYS_PRIORITY_LIST: ReadonlyDeep<GamePlay[]> = GAME_PLAYS_PRIORITY_LIST.filter(({ occurrence }) => occurrence === "on-days");
 
-const GAME_POPULATED_FIELDS = ["lastGameHistoryRecord"] as const satisfies (keyof Game)[];
+const GAME_POPULATED_FIELDS = ["lastGameHistoryRecord", "feedback"] as const satisfies (keyof Game)[];
 
 export {
   GAME_STATUSES,

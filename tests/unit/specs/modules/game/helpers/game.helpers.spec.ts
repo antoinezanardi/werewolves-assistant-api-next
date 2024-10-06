@@ -1,8 +1,8 @@
-import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { Types } from "mongoose";
 
+import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import type { CreateGamePlayerDto } from "@/modules/game/dto/create-game/create-game-player/create-game-player.dto";
-import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, doesGameHaveUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getEligibleBigBadWolfTargets, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getFoxSniffedPlayers, getGroupOfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
+import { areAllPlayersDead, areAllVillagersAlive, areAllWerewolvesAlive, doesGameHaveCurrentOrUpcomingPlaySourceAndAction, doesGameHaveUpcomingPlaySourceAndAction, getAdditionalCardWithId, getAlivePlayers, getAliveVillagerSidedPlayers, getAliveWerewolfSidedPlayers, getAllowedToVotePlayers, getDistinctPlayerGroups, getEligibleBigBadWolfTargets, getEligibleCupidTargets, getEligiblePiedPiperTargets, getEligibleWerewolvesTargets, getEligibleWhiteWerewolfTargets, getFoxSniffedPlayers, getGroupOfPlayers, getNearestAliveNeighbor, getNonexistentPlayer, getNonexistentPlayerId, getPlayerDtoWithRole, getPlayersWithActiveAttributeName, getPlayersWithCurrentRole, getPlayersWithCurrentSide, getPlayersWithIds, getPlayerWithActiveAttributeName, getPlayerWithCurrentRole, getPlayerWithId, getPlayerWithIdOrThrow, getPlayerWithName, getPlayerWithNameOrThrow, isGameSourceGroup, isGameSourceRole } from "@/modules/game/helpers/game.helpers";
 import type { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { Player } from "@/modules/game/schemas/player/player.schema";
@@ -11,7 +11,7 @@ import type { GetNearestPlayerOptions } from "@/modules/game/types/game.types";
 import type { PlayerGroup } from "@/modules/game/types/player/player.types";
 import type { RoleName } from "@/modules/role/types/role.types";
 
-import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enums";
 import type { ExceptionInterpolations } from "@/shared/exception/types/exception.types";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
@@ -249,6 +249,34 @@ describe("Game Helper", () => {
       const error = new Error(`Can't find player with name "${unknownPlayerName}" in game "${game._id.toString()}"`);
 
       expect(() => getPlayerWithNameOrThrow(unknownPlayerName, game, error)).toThrow(error);
+    });
+  });
+
+  describe("getDistinctPlayerGroups", () => {
+    it("should return distinct player groups when called.", () => {
+      const players = [
+        createFakeCreateGamePlayerDto({ group: "group1" }),
+        createFakeCreateGamePlayerDto({ group: "group2" }),
+        createFakeCreateGamePlayerDto({ group: "group1" }),
+        createFakeCreateGamePlayerDto({ group: "group3" }),
+        createFakeCreateGamePlayerDto({ group: "group2" }),
+        createFakeCreateGamePlayerDto({ group: "group4" }),
+      ];
+      const game = createFakeCreateGameDto({ players });
+
+      expect(getDistinctPlayerGroups(game)).toStrictEqual<string[]>(["group1", "group2", "group3", "group4"]);
+    });
+
+    it("should return empty array when no player groups are provided.", () => {
+      const game = createFakeCreateGameDto({
+        players: [
+          createFakeCreateGamePlayerDto(),
+          createFakeCreateGamePlayerDto(),
+          createFakeCreateGamePlayerDto(),
+        ],
+      });
+
+      expect(getDistinctPlayerGroups(game)).toStrictEqual<string[]>([]);
     });
   });
 

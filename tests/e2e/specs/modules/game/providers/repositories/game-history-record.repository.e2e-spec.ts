@@ -3,9 +3,9 @@ import type { NestFastifyApplication } from "@nestjs/platform-fastify";
 import type { TestingModule } from "@nestjs/testing";
 import type { Model, Types } from "mongoose";
 
+import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record/game-history-record.repository";
 import type { GamePhaseName } from "@/modules/game/types/game-phase/game-phase.types";
 import type { RoleSide } from "@/modules/role/types/role.types";
-import { GameHistoryRecordRepository } from "@/modules/game/providers/repositories/game-history-record.repository";
 import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import type { GamePlay } from "@/modules/game/schemas/game-play/game-play.schema";
 import type { GameHistoryRecordToInsert, GameHistoryRecordVotingResult } from "@/modules/game/types/game-history-record/game-history-record.types";
@@ -1110,7 +1110,7 @@ describe("Game History Record Repository", () => {
       expect(toJSON(records)).toStrictEqual<GameHistoryRecord[]>(toJSON(expectedRecords) as GameHistoryRecord[]);
     });
 
-    it("should get 2 records when called with gameId, turn and night and twlight phases.", async() => {
+    it("should get 2 records when called with gameId, turn and night and twilight phases.", async() => {
       const gameId = createFakeObjectId();
       const otherGameId = createFakeObjectId();
       const play = createFakeGameHistoryRecordPlay({ source: createFakeGameHistoryRecordPlaySource({ name: "werewolves" }) });

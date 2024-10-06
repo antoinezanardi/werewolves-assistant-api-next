@@ -1,4 +1,4 @@
-import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enums";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 
 import type { ExceptionResponse } from "@tests/types/exception/exception.types";

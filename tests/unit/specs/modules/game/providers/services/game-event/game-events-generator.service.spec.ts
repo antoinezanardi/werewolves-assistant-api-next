@@ -1,8 +1,10 @@
+import type { TestingModule } from "@nestjs/testing";
+import { Test } from "@nestjs/testing";
+
 import { DEFAULT_GAME_OPTIONS } from "@/modules/game/constants/game-options/game-options.constants";
 import { GameEventsGeneratorService } from "@/modules/game/providers/services/game-event/game-events-generator.service";
 import type { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
-import type { TestingModule } from "@nestjs/testing";
-import { Test } from "@nestjs/testing";
+
 import { createFakeGameEvent } from "@tests/factories/game/schemas/game-event/game-event.schema.factory";
 import { createFakeGameHistoryRecord, createFakeGameHistoryRecordPlay, createFakeGameHistoryRecordPlayerAttributeAlteration, createFakeGameHistoryRecordPlaySource, createFakeGameHistoryRecordPlayTarget } from "@tests/factories/game/schemas/game-history-record/game-history-record.schema.factory";
 import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/game-phase.schema.factory";

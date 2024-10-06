@@ -29,6 +29,16 @@ Then(/^the game's status should be (?<phase>playing|over|canceled)$/u, function(
   expect(this.game.status).toBe(status);
 });
 
+Then(/^the game should not have any player group$/u, function(this: CustomWorld): void {
+  expect(this.game.playerGroups).toBeUndefined();
+});
+
+Then(/^the game should have the following player groups$/u, function(this: CustomWorld, playerGroups: DataTable): void {
+  const expectedPlayerGroups = playerGroups.rows().map(([group]) => group);
+
+  expect(this.game.playerGroups).toStrictEqual(expectedPlayerGroups);
+});
+
 Then(/^the game's last game history record should be null$/u, function(this: CustomWorld): void {
   expect(this.game.lastGameHistoryRecord).toBeNull();
 });
@@ -48,3 +58,23 @@ Then(
     expect(this.game.victory?.winners).toStrictEqual(expectedWinners);
   },
 );
+
+Then(/^the game's feedback should be null$/u, function(this: CustomWorld): void {
+  expect(this.game.feedback).toBeNull();
+});
+
+Then(/^the game's feedback score should be (?<score>\d+)$/u, function(this: CustomWorld, score: string): void {
+  expect(this.game.feedback?.score).toBe(parseInt(score));
+});
+
+Then(/^the game's feedback review should be "(?<review>.+?)"$/u, function(this: CustomWorld, review: string): void {
+  expect(this.game.feedback?.review).toBe(review);
+});
+
+Then(/^the game's feedback should mention an encountered error$/u, function(this: CustomWorld): void {
+  expect(this.game.feedback?.hasEncounteredError).toBe(true);
+});
+
+Then(/^the game's feedback should not mention an encountered error$/u, function(this: CustomWorld): void {
+  expect(this.game.feedback?.hasEncounteredError).toBe(false);
+});

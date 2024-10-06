@@ -1,7 +1,7 @@
-import { CreateWerewolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-werewolf-game-options.dto";
 import { faker } from "@faker-js/faker";
 import { plainToInstance } from "class-transformer";
 
+import { CreateWerewolfGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-werewolf-game-options.dto";
 import { GAME_PHASE_NAMES } from "@/modules/game/constants/game-phase/game-phase.constants";
 import { CreateActorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-actor-game-options.dto";
 import { CreatePrejudicedManipulatorGameOptionsDto } from "@/modules/game/dto/create-game/create-game-options/create-roles-game-options/create-prejudiced-manipulator-game-options.dto";

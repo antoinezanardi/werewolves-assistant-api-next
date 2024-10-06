@@ -60,6 +60,10 @@ function getPlayerWithNameOrThrow(playerName: string, game: Game, exception: Err
   return player;
 }
 
+function getDistinctPlayerGroups(game: CreateGameDto): string[] {
+  return [...new Set(game.players.map(({ group }) => group))].filter(Boolean) as string[];
+}
+
 function getAdditionalCardWithId(cards: GameAdditionalCard[] | undefined, id: Types.ObjectId): GameAdditionalCard | undefined {
   return cards?.find(({ _id }) => _id.equals(id));
 }
@@ -237,6 +241,7 @@ export {
   getPlayersWithIds,
   getPlayerWithName,
   getPlayerWithNameOrThrow,
+  getDistinctPlayerGroups,
   getAdditionalCardWithId,
   areAllWerewolvesAlive,
   areAllVillagersAlive,

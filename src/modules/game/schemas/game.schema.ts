@@ -1,11 +1,12 @@
-import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
-import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform, Type } from "class-transformer";
 import { Types } from "mongoose";
 
+import { GameHistoryRecord } from "@/modules/game/schemas/game-history-record/game-history-record.schema";
+import { GameFeedback } from "@/modules/game/schemas/game-feedback/game-feedback.schema";
+import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { GameAdditionalCard } from "@/modules/game/schemas/game-additional-card/game-additional-card.schema";
 import { GameOptions } from "@/modules/game/schemas/game-options/game-options.schema";
@@ -57,6 +58,11 @@ class Game {
   @Expose()
   public players: Player[];
 
+  @ApiProperty(GAME_API_PROPERTIES.playerGroups as ApiPropertyOptions)
+  @Prop(GAME_FIELDS_SPECS.playerGroups)
+  @Expose()
+  public playerGroups?: string[];
+
   @ApiProperty(GAME_API_PROPERTIES.currentPlay as ApiPropertyOptions)
   @Prop(GAME_FIELDS_SPECS.currentPlay)
   @Type(() => GamePlay)
@@ -107,12 +113,25 @@ class Game {
   @Type(() => GameHistoryRecord)
   @Expose()
   public lastGameHistoryRecord: GameHistoryRecord | null = null;
+
+  @ApiProperty(GAME_API_PROPERTIES.feedback as ApiPropertyOptions)
+  @Type(() => GameFeedback)
+  @Expose()
+  public feedback: GameFeedback | null = null;
 }
 
 const GAME_SCHEMA = SchemaFactory.createForClass(Game);
 
 GAME_SCHEMA.virtual("lastGameHistoryRecord", {
   ref: GameHistoryRecord.name,
+  localField: "_id",
+  foreignField: "gameId",
+  justOne: true,
+  options: { sort: { createdAt: -1 } },
+});
+
+GAME_SCHEMA.virtual("feedback", {
+  ref: GameFeedback.name,
   localField: "_id",
   foreignField: "gameId",
   justOne: true,

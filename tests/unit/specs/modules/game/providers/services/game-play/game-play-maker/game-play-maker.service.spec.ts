@@ -13,7 +13,7 @@ import { PlayerKillerService } from "@/modules/game/providers/services/player/pl
 import type { Game } from "@/modules/game/schemas/game.schema";
 import type { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 
-import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enum";
+import { UnexpectedExceptionReasons } from "@/shared/exception/enums/unexpected-exception.enums";
 import * as UnexpectedExceptionFactory from "@/shared/exception/helpers/unexpected-exception.factory";
 import { UnexpectedException } from "@/shared/exception/types/unexpected-exception.types";
 

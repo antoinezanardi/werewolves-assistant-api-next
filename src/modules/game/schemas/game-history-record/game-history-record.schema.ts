@@ -1,11 +1,11 @@
-import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
-import { GameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import type { ApiPropertyOptions } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose, Transform, Type } from "class-transformer";
 import { Types } from "mongoose";
 
+import { GameHistoryRecordPlayerAttributeAlteration } from "@/modules/game/schemas/game-history-record/game-history-record-player-attribute-alteration/game-history-record-player-attribute-alteration.schema";
+import { GameEvent } from "@/modules/game/schemas/game-event/game-event.schema";
 import { GamePhase } from "@/modules/game/schemas/game-phase/game-phase.schema";
 import { DeadPlayer } from "@/modules/game/schemas/player/dead-player.schema";
 import { GAME_HISTORY_RECORD_API_PROPERTIES, GAME_HISTORY_RECORD_FIELDS_SPECS } from "@/modules/game/schemas/game-history-record/game-history-record.schema.constants";

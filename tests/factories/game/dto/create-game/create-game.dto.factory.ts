@@ -13,6 +13,7 @@ function createFakeCreateGameDto(createGameDto: Partial<CreateGameDto> = {}, ove
     turn: createGameDto.turn ?? 1,
     phase: createGameDto.phase ?? DEFAULT_GAME_PHASE,
     players: createGameDto.players ?? [],
+    playerGroups: createGameDto.playerGroups,
     upcomingPlays: createGameDto.upcomingPlays ?? [],
     currentPlay: createGameDto.currentPlay ?? null,
     additionalCards: createGameDto.additionalCards ?? undefined,

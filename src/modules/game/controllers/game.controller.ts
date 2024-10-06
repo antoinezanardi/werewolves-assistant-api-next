@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Query } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+import { CreateGameFeedbackDto } from "@/modules/game/dto/create-game-feedback/create-game-feedback.dto";
 import { GetGameHistoryDto } from "@/modules/game/dto/get-game-history/get-game-history.dto";
 import { ApiGameIdParam } from "@/modules/game/controllers/decorators/api-game-id-param.decorator";
 import { ApiGameNotFoundResponse } from "@/modules/game/controllers/decorators/api-game-not-found-response.decorator";
@@ -67,6 +68,7 @@ export class GameController {
   @Post(":id/play")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Make a game play", description: `Make a play for a game with the "playing" status. Body parameters fields are required or optional based on the upcoming game play.` })
+  @ApiResponse({ status: HttpStatus.OK, type: Game })
   private async makeGamePlay(
     @Param("id", GetGameByIdPipe) game: Game,
     @Body() makeGamePlayDto: MakeGamePlayDto,
@@ -84,5 +86,17 @@ export class GameController {
     @Query() getGameHistoryDto: GetGameHistoryDto,
   ): Promise<GameHistoryRecord[]> {
     return this.gameHistoryRecordService.getGameHistory(game._id, getGameHistoryDto);
+  }
+
+  @Post(":id/feedback")
+  @ApiGameIdParam()
+  @ApiOperation({ summary: "Create a game feedback" })
+  @ApiResponse({ status: HttpStatus.OK, type: Game })
+  @ApiGameNotFoundResponse()
+  private async createGameFeedback(
+    @Param("id", GetGameByIdPipe) game: Game,
+    @Body() createGameFeedbackDto: CreateGameFeedbackDto,
+  ): Promise<Game> {
+    return this.gameService.createGameFeedback(game, createGameFeedbackDto);
   }
 }
