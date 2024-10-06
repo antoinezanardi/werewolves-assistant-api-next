@@ -50,7 +50,6 @@ const NAMING_CONVENTION_DEFAULT_CONFIG = [
 const ESLINT_IGNORES = [
   "node_modules/",
   "dist/",
-  "dist/*",
   "dist/**/*",
   "!.releaserc.js",
   "tests/coverage/*",

@@ -38,7 +38,7 @@ class GameFeedback {
   @Prop(GAME_FEEDBACK_FIELDS_SPECS.hasEncounteredError)
   public hasEncounteredError: boolean;
 
-  @ApiProperty(GAME_FEEDBACK_FIELDS_SPECS.createdAt as ApiPropertyOptions)
+  @ApiProperty(GAME_FEEDBACK_API_PROPERTIES.createdAt as ApiPropertyOptions)
   @Type(() => Date)
   @Expose()
   public createdAt: Date;

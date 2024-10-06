@@ -21,7 +21,7 @@ describe("Game Feedback Factory", () => {
 
   describe("createGameFeedback", () => {
     it("should create a game feedback when called.", () => {
-      const gameFeedbackToInsert: GameFeedback = {
+      const gameFeedback: GameFeedback = {
         _id: createFakeObjectId(),
         gameId: createFakeObjectId(),
         score: 5,
@@ -29,9 +29,9 @@ describe("Game Feedback Factory", () => {
         hasEncounteredError: false,
         createdAt: new Date(),
       };
-      const result = createGameFeedback(gameFeedbackToInsert);
+      const result = createGameFeedback(gameFeedback);
 
-      expect(result).toStrictEqual<GameFeedbackToInsert>(createFakeGameFeedback(gameFeedbackToInsert));
+      expect(result).toStrictEqual<GameFeedback>(createFakeGameFeedback(gameFeedback));
     });
   });
 });
