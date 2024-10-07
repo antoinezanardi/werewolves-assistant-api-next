@@ -178,8 +178,8 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0(jest@29.7.0(@types/node@20.16.10)(ts-node@10.9.2(@types/node@20.16.10)(typescript@5.6.2)))
       light-my-request:
-        specifier: 6.0.0
-        version: 6.0.0
+        specifier: 6.1.0
+        version: 6.1.0
       lint-staged:
         specifier: ^15.2.10
         version: 15.2.10
@@ -2487,6 +2487,10 @@ packages:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
 
+  cookie@0.7.2:
+    resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
+    engines: {node: '>= 0.6'}
+
   core-util-is@1.0.2:
     resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}
 
@@ -3968,6 +3972,9 @@ packages:
 
   light-my-request@6.0.0:
     resolution: {integrity: sha512-kFkFXrmKCL0EEeOmJybMH5amWFd+AFvlvMlvFTRxCUwbhfapZqDmeLMPoWihntnYY6JpoQDE9k+vOzObF1fDqg==}
+
+  light-my-request@6.1.0:
+    resolution: {integrity: sha512-+NFuhlOGoEwxeQfJ/pobkVFxcnKyDtiX847hLjuB/IzBxIl3q4VJeFI8uRCgb3AlTWL1lgOr+u5+8QdUcr33ng==}
 
   lilconfig@3.1.2:
     resolution: {integrity: sha512-eop+wDAvpItUys0FWkHIKeC9ybYrTGbU41U5K7+bttZZeohvnY7M9dZ5kB21GNWiFT2q1OoPTvncPCgSOVO5ow==}
@@ -8680,6 +8687,8 @@ snapshots:
 
   cookie@0.6.0: {}
 
+  cookie@0.7.2: {}
+
   core-util-is@1.0.2: {}
 
   core-util-is@1.0.3: {}
@@ -9413,7 +9422,7 @@ snapshots:
       avvio: 9.0.0
       fast-json-stringify: 6.0.0
       find-my-way: 9.0.1
-      light-my-request: 6.0.0
+      light-my-request: 6.1.0
       pino: 9.4.0
       process-warning: 4.0.0
       proxy-addr: 2.0.7
@@ -10566,6 +10575,12 @@ snapshots:
   light-my-request@6.0.0:
     dependencies:
       cookie: 0.6.0
+      process-warning: 4.0.0
+      set-cookie-parser: 2.7.0
+
+  light-my-request@6.1.0:
+    dependencies:
+      cookie: 0.7.2
       process-warning: 4.0.0
       set-cookie-parser: 2.7.0
 
