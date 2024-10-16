@@ -239,7 +239,6 @@ const VILLAGER_ROLES: ReadonlyDeep<Role[]> = [
     type: "lonely",
     origin: "characters",
     maxInGame: 1,
-    additionalCardsEligibleRecipients: ["thief"],
     recommendedMinPlayers: 12,
   }),
   createRole({
