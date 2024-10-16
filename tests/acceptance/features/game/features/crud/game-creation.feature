@@ -432,8 +432,8 @@ Feature: 🎲 Game Creation
     And the request exception status code should be 400
     And the request exception error should be "Bad Request"
     And the request exception messages should be
-      | message                                                                                                                                                                                                                                                                                                                                                                        |
-      | additionalCards.roleName for thief must be one of the following values: werewolf,big-bad-wolf,accursed-wolf-father,white-werewolf,villager,villager-villager,seer,cupid,witch,hunter,little-girl,defender,elder,scapegoat,idiot,fox,bear-tamer,stuttering-judge,rusty-sword-knight,wild-child,wolf-hound,angel,pied-piper,scandalmonger,prejudiced-manipulator,devoted-servant |
+      | message                                                                                                                                                                                                                                                                                                                                                 |
+      | additionalCards.roleName for thief must be one of the following values: werewolf,big-bad-wolf,accursed-wolf-father,white-werewolf,villager,villager-villager,seer,cupid,witch,hunter,little-girl,defender,elder,scapegoat,idiot,fox,bear-tamer,stuttering-judge,rusty-sword-knight,wild-child,wolf-hound,angel,pied-piper,scandalmonger,devoted-servant |
 
   Scenario: 🎲 Game can't be created if there are two wild children
     Given a created game with the following players
