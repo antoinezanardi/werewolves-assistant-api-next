@@ -24,7 +24,7 @@ async function bootstrap(): Promise<NestFastifyApplication> {
   });
   const host = configService.getOrThrow<string>("HOST");
   const port = configService.getOrThrow<number>("PORT");
-  await app.listen(port, host);
+  await app.listen({ host, port });
   const appUrl = await app.getUrl();
   Logger.log(`🐺 App is available at ${appUrl}`, "NestApplication");
   Logger.log(`📖 API Documentation is available at ${appUrl}/${documentationPath}`, "NestApplication");

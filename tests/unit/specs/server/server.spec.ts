@@ -89,8 +89,12 @@ describe("Server", () => {
       when(configServiceGetOrThrow).calledWith("HOST").mockReturnValue("0.0.0.0");
       when(configServiceGetOrThrow).calledWith("PORT").mockReturnValue(8081);
       app = await bootstrap();
+      const expectedListenOptions = {
+        host: "0.0.0.0",
+        port: 8081,
+      };
 
-      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith(8081, "0.0.0.0");
+      expect(mocks.NestFactory.create.resolvedValue.listen).toHaveBeenCalledExactlyOnceWith(expectedListenOptions);
     });
 
     it("should add validation pipe with transform when Validation Pipe constructor is called.", async() => {
