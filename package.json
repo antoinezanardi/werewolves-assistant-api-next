@@ -102,7 +102,7 @@
     "@commitlint/cli": "^19.5.0",
     "@commitlint/config-conventional": "^19.5.0",
     "@cucumber/cucumber": "^11.0.1",
-    "@eslint/config-inspector": "^0.5.4",
+    "@eslint/config-inspector": "^0.5.5",
     "@faker-js/faker": "^9.0.3",
     "@nestjs/cli": "^10.4.5",
     "@nestjs/schematics": "^10.2.1",
