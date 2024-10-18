@@ -105,7 +105,7 @@
     "@eslint/config-inspector": "^0.5.5",
     "@faker-js/faker": "^9.0.3",
     "@nestjs/cli": "^10.4.5",
-    "@nestjs/schematics": "^10.2.1",
+    "@nestjs/schematics": "^10.2.2",
     "@nestjs/testing": "^10.4.5",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
