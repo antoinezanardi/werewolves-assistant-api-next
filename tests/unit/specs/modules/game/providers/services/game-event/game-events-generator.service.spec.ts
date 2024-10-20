@@ -664,7 +664,7 @@ describe("Game Events Generator Service", () => {
       const gameEvents = services.gameEventsGenerator["generateFirstTickRoleBasedGameEvents"](game);
       const expectedGameEvents = [
         createFakeGameEvent({
-          type: "prejudiced-manipulator-groups-announced",
+          type: "prejudiced-manipulator-groups-announcement",
           players: [players[3]],
         }),
       ];

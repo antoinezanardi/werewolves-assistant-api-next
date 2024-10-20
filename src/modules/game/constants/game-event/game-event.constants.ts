@@ -5,7 +5,7 @@ const GAME_EVENT_TYPES = [
   "game-phase-starts",
   "game-turn-starts",
   "villager-villager-introduction",
-  "prejudiced-manipulator-groups-announced",
+  "prejudiced-manipulator-groups-announcement",
   "death",
   "seer-has-seen",
   "sheriff-promotion",
@@ -28,7 +28,7 @@ const GAME_EVENT_TYPES = [
 const GAME_EVENT_PRIORITY_LIST_ON_NIGHTS: TupleToUnion<typeof GAME_EVENT_TYPES>[] = [
   "game-starts",
   "villager-villager-introduction",
-  "prejudiced-manipulator-groups-announced",
+  "prejudiced-manipulator-groups-announcement",
   "death",
   "seer-has-seen",
   "sheriff-promotion",
@@ -50,7 +50,7 @@ const GAME_EVENT_PRIORITY_LIST_ON_NIGHTS: TupleToUnion<typeof GAME_EVENT_TYPES>[
 const GAME_EVENT_PRIORITY_LIST_ON_DAYS: TupleToUnion<typeof GAME_EVENT_TYPES>[] = [
   "game-starts",
   "villager-villager-introduction",
-  "prejudiced-manipulator-groups-announced",
+  "prejudiced-manipulator-groups-announcement",
   "game-phase-starts",
   "death",
   "bear-growls",

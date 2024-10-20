@@ -142,7 +142,7 @@ export class GameEventsGeneratorService {
     }
     if (prejudicedManipulatorPlayer) {
       gameEvents.push(createGameEvent({
-        type: "prejudiced-manipulator-groups-announced",
+        type: "prejudiced-manipulator-groups-announcement",
         players: [prejudicedManipulatorPlayer],
       }));
     }
