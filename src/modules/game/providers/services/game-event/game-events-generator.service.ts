@@ -130,6 +130,25 @@ export class GameEventsGeneratorService {
     return gamePlaySourcesGameEvent[gameHistoryRecord.play.source.name]?.();
   }
 
+  private generateFirstTickRoleBasedGameEvents(game: Game): GameEvent[] {
+    const gameEvents: GameEvent[] = [];
+    const villagerVillagerPlayer = getPlayerWithCurrentRole(game, "villager-villager");
+    const prejudicedManipulatorPlayer = getPlayerWithCurrentRole(game, "prejudiced-manipulator");
+    if (villagerVillagerPlayer) {
+      gameEvents.push(createGameEvent({
+        type: "villager-villager-introduction",
+        players: [villagerVillagerPlayer],
+      }));
+    }
+    if (prejudicedManipulatorPlayer) {
+      gameEvents.push(createGameEvent({
+        type: "prejudiced-manipulator-groups-announcement",
+        players: [prejudicedManipulatorPlayer],
+      }));
+    }
+    return gameEvents;
+  }
+
   private generateFirstTickGameEvents(game: Game): GameEvent[] {
     const gameEvents: GameEvent[] = [];
     if (game.tick !== 1) {
@@ -139,13 +158,8 @@ export class GameEventsGeneratorService {
       type: "game-starts",
       players: game.players,
     }));
-    const villagerVillagerPlayer = getPlayerWithCurrentRole(game, "villager-villager");
-    if (villagerVillagerPlayer) {
-      gameEvents.push(createGameEvent({
-        type: "villager-villager-introduction",
-        players: [villagerVillagerPlayer],
-      }));
-    }
+    gameEvents.push(...this.generateFirstTickRoleBasedGameEvents(game));
+
     return gameEvents;
   }
 

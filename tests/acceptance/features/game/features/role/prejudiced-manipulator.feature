@@ -10,6 +10,15 @@ Feature: 👺 Prejudiced Manipulator role
       | Thomas  | villager               | girl  |
       | Maxime  | villager               | girl  |
     Then the request should have succeeded with status code 201
+    And the game should have the following events
+      | type                                       |
+      | game-starts                                |
+      | prejudiced-manipulator-groups-announcement |
+      | game-phase-starts                          |
+      | game-turn-starts                           |
+    And the game's event with type "prejudiced-manipulator-groups-announcement" should have the following players
+      | name    |
+      | Antoine |
     And the game should have the following player groups
       | group |
       | boy   |
