@@ -11,12 +11,13 @@ import { createFakeGamePhase } from "@tests/factories/game/schemas/game-phase/ga
 import { createFakeGamePlaySurvivorsVote, createFakeGamePlayWerewolvesEat } from "@tests/factories/game/schemas/game-play/game-play.schema.factory";
 import { createFakeGame } from "@tests/factories/game/schemas/game.schema.factory";
 import { createFakePlayerAttribute, createFakeScandalmongerMarkedByScandalmongerPlayerAttribute } from "@tests/factories/game/schemas/player/player-attribute/player-attribute.schema.factory";
-import { createFakeActorAlivePlayer, createFakeBearTamerAlivePlayer, createFakeElderAlivePlayer, createFakeIdiotAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
+import { createFakeActorAlivePlayer, createFakeBearTamerAlivePlayer, createFakeElderAlivePlayer, createFakeIdiotAlivePlayer, createFakePrejudicedManipulatorAlivePlayer, createFakeScandalmongerAlivePlayer, createFakeThiefAlivePlayer, createFakeVillagerAlivePlayer, createFakeVillagerVillagerAlivePlayer, createFakeWerewolfAlivePlayer, createFakeWildChildAlivePlayer, createFakeWolfHoundAlivePlayer } from "@tests/factories/game/schemas/player/player-with-role.schema.factory";
 import { createFakeDeadPlayer, createFakePlayerSide } from "@tests/factories/game/schemas/player/player.schema.factory";
 
 describe("Game Events Generator Service", () => {
   let mocks: {
     gameEventsGeneratorService: {
+      generateFirstTickRoleBasedGameEvents: jest.SpyInstance;
       generateSeerHasSeenGameEvent: jest.SpyInstance;
       generateScandalmongerHayHaveMarkedGameEvent: jest.SpyInstance;
       generateAccursedWolfFatherMayHaveInfectedGameEvent: jest.SpyInstance;
@@ -41,6 +42,7 @@ describe("Game Events Generator Service", () => {
   beforeEach(async() => {
     mocks = {
       gameEventsGeneratorService: {
+        generateFirstTickRoleBasedGameEvents: jest.fn(),
         generateSeerHasSeenGameEvent: jest.fn(),
         generateScandalmongerHayHaveMarkedGameEvent: jest.fn(),
         generateAccursedWolfFatherMayHaveInfectedGameEvent: jest.fn(),
@@ -625,7 +627,73 @@ describe("Game Events Generator Service", () => {
     });
   });
 
+  describe("generateFirstTickRoleBasedGameEvents", () => {
+    it("should return villager-villager introduction event when there is a villager villager in the game.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({
+        tick: 1,
+        players,
+      });
+      const gameEvents = services.gameEventsGenerator["generateFirstTickRoleBasedGameEvents"](game);
+      const expectedGameEvents = [
+        createFakeGameEvent({
+          type: "villager-villager-introduction",
+          players: [players[3]],
+        }),
+      ];
+
+      expect(gameEvents).toStrictEqual<GameEvent[]>(expectedGameEvents);
+    });
+
+    it("should generate prejudiced manipulator groups announced event when there is a prejudiced manipulator in the game.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakePrejudicedManipulatorAlivePlayer(),
+      ];
+      const game = createFakeGame({
+        tick: 1,
+        players,
+      });
+      const gameEvents = services.gameEventsGenerator["generateFirstTickRoleBasedGameEvents"](game);
+      const expectedGameEvents = [
+        createFakeGameEvent({
+          type: "prejudiced-manipulator-groups-announced",
+          players: [players[3]],
+        }),
+      ];
+
+      expect(gameEvents).toStrictEqual<GameEvent[]>(expectedGameEvents);
+    });
+
+    it("should return empty array when there is no special role in the game.", () => {
+      const players = [
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeWerewolfAlivePlayer(),
+        createFakeVillagerAlivePlayer(),
+      ];
+      const game = createFakeGame({
+        tick: 1,
+        players,
+      });
+      const gameEvents = services.gameEventsGenerator["generateFirstTickRoleBasedGameEvents"](game);
+
+      expect(gameEvents).toStrictEqual<GameEvent[]>([]);
+    });
+  });
+
   describe("generateFirstTickGameEvents", () => {
+    beforeEach(() => {
+      mocks.gameEventsGeneratorService.generateFirstTickRoleBasedGameEvents = jest.spyOn(services.gameEventsGenerator as unknown as { generateFirstTickRoleBasedGameEvents }, "generateFirstTickRoleBasedGameEvents").mockReturnValue([]);
+    });
+
     it("should return empty array when it's not the first tick of the game..", () => {
       const game = createFakeGame({ tick: 2 });
       const gameEvents = services.gameEventsGenerator["generateFirstTickGameEvents"](game);
@@ -652,30 +720,13 @@ describe("Game Events Generator Service", () => {
       expect(gameEvents).toStrictEqual<GameEvent[]>([expectedGameEvent]);
     });
 
-    it("should return game starts event with villager villager introduction event when it's the first tick of the game and there is a villager villager.", () => {
-      const players = [
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeWerewolfAlivePlayer(),
-        createFakeVillagerVillagerAlivePlayer(),
-      ];
+    it("should generate first tick role based game events when it's the first tick of the game.", () => {
       const game = createFakeGame({
         tick: 1,
-        players,
       });
-      const gameEvents = services.gameEventsGenerator["generateFirstTickGameEvents"](game);
-      const expectedGameEvents = [
-        createFakeGameEvent({
-          type: "game-starts",
-          players,
-        }),
-        createFakeGameEvent({
-          type: "villager-villager-introduction",
-          players: [players[3]],
-        }),
-      ];
+      services.gameEventsGenerator["generateFirstTickGameEvents"](game);
 
-      expect(gameEvents).toStrictEqual<GameEvent[]>(expectedGameEvents);
+      expect(mocks.gameEventsGeneratorService.generateFirstTickRoleBasedGameEvents).toHaveBeenCalledExactlyOnceWith(game);
     });
   });
 
